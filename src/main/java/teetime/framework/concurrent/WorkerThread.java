@@ -70,7 +70,11 @@ public class WorkerThread extends Thread {
 			iterations++;
 			this.iterationStopWatch.start();
 
+//			beforeStageExecutionStopWatch.start();
+
 			final IStage stage = this.stageScheduler.get();
+
+//			beforeStageExecutionStopWatch.end();
 
 			this.startStageExecution(stage);
 			stageExecutionStopWatch.start();	// expensive: takes 1/3 of overall time
@@ -78,18 +82,21 @@ public class WorkerThread extends Thread {
 			stageExecutionStopWatch.end();
 			this.finishStageExecution(stage, executedSuccessfully);
 
-			afterStageExecutionStopWatch.start();
+//			afterStageExecutionStopWatch.start();
 
 			if (this.shouldTerminate) {
 				this.executeTerminationPolicy(stage, executedSuccessfully);
 			}
 			this.stageScheduler.determineNextStage(stage, executedSuccessfully);
 
-			afterStageExecutionStopWatch.end();
+//			afterStageExecutionStopWatch.end();
 
 			this.iterationStopWatch.end();
-//			final long schedulingOverhead = this.iterationStopWatch.getDurationInNs() - stageExecutionStopWatch.getDurationInNs();
-			final long schedulingOverhead = afterStageExecutionStopWatch.getDurationInNs();
+			final long schedulingOverhead = this.iterationStopWatch.getDurationInNs() - stageExecutionStopWatch.getDurationInNs();	//3198 ms
+//			final long schedulingOverhead = this.iterationStopWatch.getDurationInNs();			//3656 ms
+//			final long schedulingOverhead = beforeStageExecutionStopWatch.getDurationInNs();	//417 ms
+//			final long schedulingOverhead = stageExecutionStopWatch.getDurationInNs();			//503 ms
+//			final long schedulingOverhead = afterStageExecutionStopWatch.getDurationInNs();		//1214 ms
 			schedulingOverheadInNs += schedulingOverhead;
 			if ((iterations % 10000) == 0) {
 				this.schedulingOverheadsInNs.add(schedulingOverheadInNs);

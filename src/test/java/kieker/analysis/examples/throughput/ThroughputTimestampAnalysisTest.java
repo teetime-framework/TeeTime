@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.examples.throughput;
+package kieker.analysis.examples.throughput;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import kieker.analysis.examples.ThroughputTimestampAnalysis;
+import kieker.analysis.exception.AnalysisConfigurationException;
 import kieker.common.logging.LogFactory;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import teetime.examples.throughput.TimestampObject;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
 
+
 /**
- * @author Christian Wulf
+ * @author Nils Christian Ehmke
  *
  * @since 1.10
  */
@@ -42,13 +46,12 @@ public class ThroughputTimestampAnalysisTest {
 	}
 
 	@Test
-	public void testWithManyObjects() {
+	public void testWithManyObjects() throws IllegalStateException, AnalysisConfigurationException {
 		final StopWatch stopWatch = new StopWatch();
 		final List<TimestampObject> timestampObjects = new ArrayList<TimestampObject>(NUM_OBJECTS_TO_CREATE);
 
 		final ThroughputTimestampAnalysis analysis = new ThroughputTimestampAnalysis();
-		analysis.setShouldUseQueue(true);
-		analysis.setNumNoopFilters(800);		// 4+n
+		analysis.setNumNoopFilters(800);
 		analysis.setTimestampObjects(timestampObjects);
 		analysis.setInput(NUM_OBJECTS_TO_CREATE, new Callable<TimestampObject>() {
 			@Override
