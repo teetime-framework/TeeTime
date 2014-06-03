@@ -38,7 +38,7 @@ import teetime.stage.basic.ObjectProducer;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ThroughputTimestampAnalysis extends Analysis {
@@ -74,7 +74,8 @@ public class ThroughputTimestampAnalysis extends Analysis {
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[numNoopFilters];
 		// create stages
-		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
+		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(
+				this.numInputObjects, this.inputObjectCreator);
 		final StartTimestampFilter startTimestampFilter = new StartTimestampFilter();
 		for (int i = 0; i < noopFilters.length; i++) {
 			noopFilters[i] = new NoopFilter<TimestampObject>();
@@ -133,10 +134,12 @@ public class ThroughputTimestampAnalysis extends Analysis {
 		final long schedulingOverheadInNs = this.workerThread.computeSchedulingOverheadInNs();
 		final int size = this.workerThread.getSchedulingOverheadsInNs().size();
 		System.out.println("scheduling overhead times: " + size);
-		System.out.println("SchedulingOverhead: " + TimeUnit.NANOSECONDS.toMillis(schedulingOverheadInNs) + " ms");
-		System.out.println("avg overhead of iteration: "
-				+ TimeUnit.NANOSECONDS.toMillis(schedulingOverheadInNs / (size / 2)) + " ms");
-		System.out.println("ExecutedUnsuccessfullyCount: " + this.workerThread.getExecutedUnsuccessfullyCount());
+		if (size > 0) {
+			System.out.println("SchedulingOverhead: " + TimeUnit.NANOSECONDS.toMillis(schedulingOverheadInNs) + " ms");
+			System.out.println("avg overhead of iteration: "
+					+ TimeUnit.NANOSECONDS.toMillis(schedulingOverheadInNs * 2 / size) + " ms");
+			System.out.println("ExecutedUnsuccessfullyCount: " + this.workerThread.getExecutedUnsuccessfullyCount());
+		}
 	}
 
 	public int getNumNoopFilters() {

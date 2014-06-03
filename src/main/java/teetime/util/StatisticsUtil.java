@@ -67,15 +67,19 @@ public class StatisticsUtil {
 		final long avgDurInNs = sumInNs / (timestampObjects.size() / 2);
 		System.out.println("avg duration: " + TimeUnit.NANOSECONDS.toMicros(avgDurInNs) + " µs");
 
-		for (final Entry<Double, Long> entry : quintileValues.entrySet()) {
-			System.out.println((entry.getKey() * 100) + " % : " + TimeUnit.NANOSECONDS.toMicros(entry.getValue()) + " µs");
-		}
+		printQuintiles(quintileValues);
 
 		final long confidenceWidthInNs = StatisticsUtil.calculateConfidenceWidth(sortedDurationsInNs, avgDurInNs);
 
 		System.out.println("confidenceWidth: " + confidenceWidthInNs + " ns");
 		System.out.println("[" + TimeUnit.NANOSECONDS.toMicros(avgDurInNs - confidenceWidthInNs) + " µs, "
 				+ TimeUnit.NANOSECONDS.toMicros(avgDurInNs + confidenceWidthInNs) + " µs]");
+	}
+
+	public static void printQuintiles(final Map<Double, Long> quintileValues) {
+		for (final Entry<Double, Long> entry : quintileValues.entrySet()) {
+			System.out.println((entry.getKey() * 100) + " % : " + TimeUnit.NANOSECONDS.toMicros(entry.getValue()) + " µs");
+		}
 	}
 
 	public static long calculateConfidenceWidth(final List<Long> durations, final long avgDurInNs) {

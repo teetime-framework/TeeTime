@@ -29,12 +29,12 @@ import teetime.util.StopWatch;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ThroughputTimestampAnalysisTest {
 
-	private static final int NUM_OBJECTS_TO_CREATE = 100000;
+	private static final int NUM_OBJECTS_TO_CREATE = 50000;
 
 	@Before
 	public void before() {
@@ -49,7 +49,7 @@ public class ThroughputTimestampAnalysisTest {
 	 * <li>SchedulingOverhead: 12629 ms
 	 * <li>ExecutedUnsuccessfullyCount: 80300001
 	 * </ul>
-	 * 
+	 *
 	 * QueuePipes:
 	 * <ul>
 	 * <li>SchedulingOverhead: 11337 ms
