@@ -24,12 +24,13 @@ import kieker.common.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import teetime.examples.throughput.methodcall.MethodCallThroughputAnalysis;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class MethodCallThoughputTimestampAnalysisTest {

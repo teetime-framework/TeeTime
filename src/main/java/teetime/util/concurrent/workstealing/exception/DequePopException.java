@@ -1,4 +1,4 @@
-package teetime.util.concurrent.workstealing;
+package teetime.util.concurrent.workstealing.exception;
 
 import teetime.util.StacklessException;
 

@@ -13,44 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.stage.stringBuffer.handler;
-
-import teetime.stage.stringBuffer.util.KiekerHashMap;
-import kieker.common.logging.Log;
-
+package teetime.examples.throughput.methodcall;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
-public abstract class AbstractDataTypeHandler<T> {
+public class NoopFilter<T> {
 
-	protected Log logger;
-	protected KiekerHashMap stringRepository;
-
-	/**
-	 * @since 1.10
-	 */
-	public abstract boolean canHandle(Object object);
-
-	/**
-	 * @since 1.10
-	 */
-	public abstract T handle(T object);
-
-	/**
-	 * @since 1.10
-	 */
-	public void setLogger(final Log logger) {
-		this.logger = logger;
+	public T execute(final T obj) {
+		return obj;
 	}
-
-	/**
-	 * @since 1.10
-	 */
-	public void setStringRepository(final KiekerHashMap stringRepository) {
-		this.stringRepository = stringRepository;
-	}
-
 }

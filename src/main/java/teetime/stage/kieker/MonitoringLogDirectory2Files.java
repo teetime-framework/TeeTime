@@ -19,15 +19,15 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.Comparator;
 
-import teetime.common.util.filesystem.BinaryCompressionMethod;
-import teetime.common.util.filesystem.FSUtil;
+import kieker.common.util.filesystem.BinaryCompressionMethod;
+import kieker.common.util.filesystem.FSUtil;
 import teetime.framework.core.Context;
 import teetime.framework.core.IInputPort;
 import teetime.stage.io.Directory2FilesFilter;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class MonitoringLogDirectory2Files extends Directory2FilesFilter {
@@ -36,12 +36,13 @@ public class MonitoringLogDirectory2Files extends Directory2FilesFilter {
 
 	/**
 	 * @author Christian Wulf
-	 * 
+	 *
 	 * @since 1.10
 	 */
 	static class MonitoringLogFileFilter implements FileFilter {
 		private String filePrefix;
 
+		@Override
 		public boolean accept(final File pathname) {
 			final String name = pathname.getName();
 			return pathname.isFile()
@@ -59,6 +60,7 @@ public class MonitoringLogDirectory2Files extends Directory2FilesFilter {
 	}
 
 	private static final Comparator<File> FILE_COMPARATOR = new Comparator<File>() {
+		@Override
 		public final int compare(final File f1, final File f2) {
 			return f1.compareTo(f2); // simplified (we expect no dirs!)
 		}

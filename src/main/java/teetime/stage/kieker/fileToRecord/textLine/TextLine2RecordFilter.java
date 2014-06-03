@@ -20,10 +20,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import kieker.analysis.stage.RecordFromTextLineCreator;
-import teetime.common.exception.IllegalRecordFormatException;
-import teetime.common.exception.MonitoringRecordException;
-import teetime.common.exception.UnknownRecordTypeException;
-import teetime.common.record.IMonitoringRecord;
+import kieker.common.exception.IllegalRecordFormatException;
+import kieker.common.exception.MonitoringRecordException;
+import kieker.common.exception.UnknownRecordTypeException;
+import kieker.common.record.IMonitoringRecord;
 import teetime.framework.core.AbstractFilter;
 import teetime.framework.core.Context;
 import teetime.framework.core.IInputPort;
@@ -34,7 +34,7 @@ import teetime.stage.util.TextLine;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class TextLine2RecordFilter extends AbstractFilter<TextLine2RecordFilter> {

@@ -15,13 +15,14 @@
  ***************************************************************************/
 package teetime.stage.stringBuffer.handler;
 
-import teetime.common.exception.MonitoringRecordException;
-import teetime.common.record.AbstractMonitoringRecord;
-import teetime.common.record.IMonitoringRecord;
+import kieker.common.exception.MonitoringRecordException;
+import kieker.common.record.AbstractMonitoringRecord;
+import kieker.common.record.IMonitoringRecord;
+
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class IMonitoringRecordHandler extends AbstractDataTypeHandler<IMonitoringRecord> {

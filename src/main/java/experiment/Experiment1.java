@@ -24,12 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import javax.security.auth.login.Configuration;
-
 import kieker.analysis.AnalysisController;
 import kieker.analysis.IAnalysisController;
 import kieker.analysis.stage.EmptyPassOnFilter;
 import kieker.analysis.stage.ObjectProducer;
+import kieker.common.configuration.Configuration;
 import teetime.framework.concurrent.StageTerminationPolicy;
 import teetime.framework.concurrent.WorkerThread;
 import teetime.framework.core.Analysis;
@@ -41,7 +40,7 @@ import teetime.util.StatisticsUtil;
 
 /**
  * @author Nils Christian Ehmke
- * 
+ *
  * @since 1.10
  */
 public class Experiment1 {

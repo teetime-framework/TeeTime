@@ -20,20 +20,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
-import teetime.analysis.plugin.filter.flow.TraceEventRecords;
-import teetime.analysis.plugin.filter.flow.reconstruction.TraceBuffer;
-import teetime.common.record.flow.IFlowRecord;
-import teetime.common.record.flow.trace.AbstractTraceEvent;
-import teetime.common.record.flow.trace.TraceMetadata;
+import kieker.analysis.plugin.filter.flow.TraceEventRecords;
+import kieker.common.record.flow.IFlowRecord;
+import kieker.common.record.flow.trace.AbstractTraceEvent;
+import kieker.common.record.flow.trace.TraceMetadata;
 import teetime.framework.core.AbstractFilter;
 import teetime.framework.core.Context;
 import teetime.framework.core.IInputPort;
 import teetime.framework.core.IOutputPort;
 import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
+import teetime.util.concurrent.hashmap.TraceBuffer;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class TraceReconstructionFilter extends AbstractFilter<TraceReconstructionFilter> {

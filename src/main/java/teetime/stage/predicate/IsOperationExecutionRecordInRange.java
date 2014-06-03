@@ -15,11 +15,12 @@
  ***************************************************************************/
 package teetime.stage.predicate;
 
-import teetime.common.record.controlflow.OperationExecutionRecord;
+import kieker.common.record.controlflow.OperationExecutionRecord;
+
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class IsOperationExecutionRecordInRange extends IsTimestampInRange<OperationExecutionRecord> {

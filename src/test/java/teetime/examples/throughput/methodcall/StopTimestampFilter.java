@@ -13,44 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.stage.stringBuffer.handler;
+package teetime.examples.throughput.methodcall;
 
-import teetime.stage.stringBuffer.util.KiekerHashMap;
-import kieker.common.logging.Log;
-
+import teetime.examples.throughput.TimestampObject;
 
 /**
  * @author Christian Wulf
  *
  * @since 1.10
  */
-public abstract class AbstractDataTypeHandler<T> {
+public class StopTimestampFilter {
 
-	protected Log logger;
-	protected KiekerHashMap stringRepository;
-
-	/**
-	 * @since 1.10
-	 */
-	public abstract boolean canHandle(Object object);
-
-	/**
-	 * @since 1.10
-	 */
-	public abstract T handle(T object);
-
-	/**
-	 * @since 1.10
-	 */
-	public void setLogger(final Log logger) {
-		this.logger = logger;
+	public TimestampObject execute(final TimestampObject obj) {
+		obj.setStopTimestamp(System.nanoTime());
+		return obj;
 	}
-
-	/**
-	 * @since 1.10
-	 */
-	public void setStringRepository(final KiekerHashMap stringRepository) {
-		this.stringRepository = stringRepository;
-	}
-
 }

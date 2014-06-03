@@ -19,26 +19,21 @@ package teetime.util.concurrent.workstealing.alternative;
 import java.util.concurrent.atomic.AtomicLong;
 
 import teetime.util.concurrent.workstealing.CircularArray;
-import teetime.util.concurrent.workstealing.DequePopException;
+import teetime.util.concurrent.workstealing.exception.DequeIsEmptyException;
+import teetime.util.concurrent.workstealing.exception.DequePopException;
+import teetime.util.concurrent.workstealing.exception.OperationAbortedException;
 
 /**
- * 
+ *
  * @author Christian Wulf
- * 
+ *
  * @see "Dynamic Circular WorkStealing Deque"
- * 
+ *
  * @since 1.10
  */
 public class UntypedExceptionalCircularWorkStealingDeque {
-	public static class DequeIsEmptyException extends DequePopException {
-		private static final long serialVersionUID = -6685406255103741724L;
-	}
 
 	public static final DequeIsEmptyException DEQUE_IS_EMPTY_EXCEPTION = new DequeIsEmptyException();
-
-	public static class OperationAbortedException extends DequePopException {
-		private static final long serialVersionUID = 2983001853326344073L;
-	}
 
 	public static final OperationAbortedException OPERATION_ABORTED_EXCEPTION = new OperationAbortedException();
 
@@ -75,7 +70,7 @@ public class UntypedExceptionalCircularWorkStealingDeque {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 *         <ul>
 	 *         <li><code>EMPTY</code> if the deque contains no elements,
@@ -125,7 +120,7 @@ public class UntypedExceptionalCircularWorkStealingDeque {
 
 	/**
 	 * Tries to steal (return & remove) the oldest element from this deque.
-	 * 
+	 *
 	 * @return
 	 *         <ul>
 	 *         <li><code>EMPTY</code> if the deque contains no elements,
@@ -159,7 +154,7 @@ public class UntypedExceptionalCircularWorkStealingDeque {
 
 	/**
 	 * For debugging purposes
-	 * 
+	 *
 	 * @return but does not remove the bottom element from this deque
 	 */
 	public Object readBottom() {
@@ -182,7 +177,7 @@ public class UntypedExceptionalCircularWorkStealingDeque {
 
 	/**
 	 * For debugging purposes
-	 * 
+	 *
 	 * @return the number of elements this deque contains
 	 */
 	public long size(final Object sourceStage) {

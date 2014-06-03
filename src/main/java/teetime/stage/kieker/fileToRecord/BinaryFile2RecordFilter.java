@@ -20,9 +20,9 @@ import java.io.File;
 import java.io.IOException;
 
 import kieker.analysis.stage.RecordFromBinaryFileCreator;
-import teetime.common.exception.MonitoringRecordException;
-import teetime.common.record.IMonitoringRecord;
-import teetime.common.util.filesystem.BinaryCompressionMethod;
+import kieker.common.exception.MonitoringRecordException;
+import kieker.common.record.IMonitoringRecord;
+import kieker.common.util.filesystem.BinaryCompressionMethod;
 import teetime.framework.core.AbstractFilter;
 import teetime.framework.core.Context;
 import teetime.framework.core.IInputPort;
@@ -31,7 +31,7 @@ import teetime.stage.kieker.className.ClassNameRegistryRepository;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class BinaryFile2RecordFilter extends AbstractFilter<BinaryFile2RecordFilter> {

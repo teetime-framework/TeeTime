@@ -13,44 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.stage.stringBuffer.handler;
+package teetime.examples.throughput.methodcall;
 
-import teetime.stage.stringBuffer.util.KiekerHashMap;
-import kieker.common.logging.Log;
-
+import java.util.List;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
-public abstract class AbstractDataTypeHandler<T> {
+public class CollectorSink<T> {
 
-	protected Log logger;
-	protected KiekerHashMap stringRepository;
+	private static final int THRESHOLD = 10000;
 
-	/**
-	 * @since 1.10
-	 */
-	public abstract boolean canHandle(Object object);
+	private final List<T> elements;
 
 	/**
 	 * @since 1.10
 	 */
-	public abstract T handle(T object);
-
-	/**
-	 * @since 1.10
-	 */
-	public void setLogger(final Log logger) {
-		this.logger = logger;
+	public CollectorSink(final List<T> list) {
+		this.elements = list;
 	}
 
-	/**
-	 * @since 1.10
-	 */
-	public void setStringRepository(final KiekerHashMap stringRepository) {
-		this.stringRepository = stringRepository;
+	public void execute(final T element) {
+		this.elements.add(element);
+		if ((this.elements.size() % THRESHOLD) == 0) {
+			System.out.println("size: " + this.elements.size());
+		}
 	}
-
 }

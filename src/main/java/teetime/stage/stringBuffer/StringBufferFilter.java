@@ -18,16 +18,16 @@ package teetime.stage.stringBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import teetime.analysis.plugin.filter.forward.util.KiekerHashMap;
 import teetime.framework.core.AbstractFilter;
 import teetime.framework.core.Context;
 import teetime.framework.core.IInputPort;
 import teetime.framework.core.IOutputPort;
 import teetime.stage.stringBuffer.handler.AbstractDataTypeHandler;
+import teetime.stage.stringBuffer.util.KiekerHashMap;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class StringBufferFilter<T> extends AbstractFilter<StringBufferFilter<T>> {

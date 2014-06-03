@@ -18,14 +18,14 @@ package teetime.stage.kieker.fileToRecord.textLine;
 
 import java.util.Map;
 
-import teetime.common.util.filesystem.FSUtil;
+import kieker.common.util.filesystem.FSUtil;
 import teetime.framework.core.AbstractFilter;
 import teetime.framework.core.Context;
 import teetime.framework.core.IInputPort;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class TextLine2MappingRegistryFilter extends AbstractFilter<TextLine2MappingRegistryFilter> {

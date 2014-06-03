@@ -22,9 +22,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import teetime.common.exception.MonitoringRecordException;
-import teetime.common.record.AbstractMonitoringRecord;
-import teetime.common.record.IMonitoringRecord;
+import kieker.common.exception.MonitoringRecordException;
+import kieker.common.record.AbstractMonitoringRecord;
+import kieker.common.record.IMonitoringRecord;
 import teetime.framework.core.AbstractFilter;
 import teetime.framework.core.Context;
 import teetime.framework.core.Description;
@@ -32,9 +32,9 @@ import teetime.framework.core.IOutputPort;
 
 /**
  * A very simple database reader that probably only works for small data sets.
- * 
+ *
  * @author Jan Waller, Nils Christian Ehmke
- * 
+ *
  * @since 1.10
  */
 @Description("A reader which reads records from a database")
@@ -141,7 +141,7 @@ public class DbReader extends AbstractFilter<DbReader> {
 
 	/**
 	 * This method uses the given table to read records and sends them to the output port.
-	 * 
+	 *
 	 * @param connection
 	 *            The connection to the database which will be used.
 	 * @param tablename

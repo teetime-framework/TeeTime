@@ -17,7 +17,7 @@ package teetime.stage.kieker.fileToRecord;
 
 import java.io.File;
 
-import teetime.common.record.IMonitoringRecord;
+import kieker.common.record.IMonitoringRecord;
 import teetime.framework.concurrent.ConcurrentWorkStealingPipe;
 import teetime.framework.concurrent.ConcurrentWorkStealingPipeFactory;
 import teetime.framework.core.CompositeFilter;
@@ -30,7 +30,7 @@ import teetime.stage.util.TextLine;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class DatFile2RecordFilter extends CompositeFilter {

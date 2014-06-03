@@ -19,26 +19,20 @@ package teetime.util.concurrent.workstealing.alternative;
 import java.util.concurrent.atomic.AtomicLong;
 
 import teetime.util.concurrent.workstealing.CircularArray;
+import teetime.util.concurrent.workstealing.exception.DequeIsEmptyException;
+import teetime.util.concurrent.workstealing.exception.OperationAbortedException;
 
 /**
- * 
+ *
  * @author Christian Wulf
- * 
+ *
  * @see "Dynamic Circular WorkStealing Deque"
- * 
+ *
  * @since 1.10
  */
 public class ExceptionalCircularWorkStealingDeque<T> {
 
-	public static class DequeIsEmptyException extends Exception {
-		private static final long serialVersionUID = -6685406255103741724L;
-	}
-
 	public static final DequeIsEmptyException DEQUE_IS_EMPTY_EXCEPTION = new DequeIsEmptyException();
-
-	public static class OperationAbortedException extends Exception {
-		private static final long serialVersionUID = 2983001853326344073L;
-	}
 
 	public static final OperationAbortedException OPERATION_ABORTED_EXCEPTION = new OperationAbortedException();
 
@@ -75,9 +69,8 @@ public class ExceptionalCircularWorkStealingDeque<T> {
 	}
 
 	/**
-	 * 
-	 * @return
-	 *         <ul>
+	 *
+	 * @return <ul>
 	 *         <li><code>EMPTY</code> if the deque contains no elements,
 	 *         <li><i>the latest element</i> otherwise
 	 *         </ul>
@@ -125,9 +118,8 @@ public class ExceptionalCircularWorkStealingDeque<T> {
 
 	/**
 	 * Tries to steal (return & remove) the oldest element from this deque.
-	 * 
-	 * @return
-	 *         <ul>
+	 *
+	 * @return <ul>
 	 *         <li><code>EMPTY</code> if the deque contains no elements,
 	 *         <li><code>ABORT</code> if the deque is currently being stolen by another thread,
 	 *         <li><i>the oldest element</i> otherwise
@@ -160,7 +152,7 @@ public class ExceptionalCircularWorkStealingDeque<T> {
 
 	/**
 	 * For debugging purposes
-	 * 
+	 *
 	 * @return but does not remove the bottom element from this deque
 	 */
 	public T readBottom() {
@@ -183,7 +175,7 @@ public class ExceptionalCircularWorkStealingDeque<T> {
 
 	/**
 	 * For debugging purposes
-	 * 
+	 *
 	 * @return the number of elements this deque contains
 	 */
 	public long size(final Object sourceStage) {

@@ -22,23 +22,23 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
-import teetime.common.exception.MonitoringRecordException;
-import teetime.common.logging.Log;
-import teetime.common.logging.LogFactory;
-import teetime.common.record.AbstractMonitoringRecord;
-import teetime.common.record.IMonitoringRecord;
-import teetime.common.record.misc.RegistryRecord;
-import teetime.common.util.registry.ILookup;
-import teetime.common.util.registry.Lookup;
+import kieker.common.exception.MonitoringRecordException;
+import kieker.common.logging.Log;
+import kieker.common.logging.LogFactory;
+import kieker.common.record.AbstractMonitoringRecord;
+import kieker.common.record.IMonitoringRecord;
+import kieker.common.record.misc.RegistryRecord;
+import kieker.common.util.registry.ILookup;
+import kieker.common.util.registry.Lookup;
 import teetime.framework.core.AbstractFilter;
 import teetime.framework.core.Context;
 import teetime.framework.core.IOutputPort;
 
 /**
  * This is a reader which reads the records from a TCP port.
- * 
+ *
  * @author Jan Waller, Nils Christian Ehmke
- * 
+ *
  * @since 1.10
  */
 public class TCPReader extends AbstractFilter<TCPReader> {
@@ -143,9 +143,9 @@ public class TCPReader extends AbstractFilter<TCPReader> {
 }
 
 /**
- * 
+ *
  * @author Jan Waller
- * 
+ *
  * @since 1.8
  */
 class TCPStringReader extends Thread {

@@ -15,11 +15,12 @@
  ***************************************************************************/
 package teetime.stage.predicate;
 
-import teetime.common.record.IMonitoringRecord;
+import kieker.common.record.IMonitoringRecord;
+
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class IsIMonitoringRecordInRange extends IsTimestampInRange<IMonitoringRecord> {

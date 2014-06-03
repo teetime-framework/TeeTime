@@ -17,9 +17,9 @@ package teetime.stage.kieker;
 
 import java.io.File;
 
-import teetime.common.record.IMonitoringRecord;
-import teetime.common.util.filesystem.BinaryCompressionMethod;
-import teetime.common.util.filesystem.FSUtil;
+import kieker.common.record.IMonitoringRecord;
+import kieker.common.util.filesystem.BinaryCompressionMethod;
+import kieker.common.util.filesystem.FSUtil;
 import teetime.framework.concurrent.ConcurrentWorkStealingPipe;
 import teetime.framework.concurrent.ConcurrentWorkStealingPipeFactory;
 import teetime.framework.core.CompositeFilter;
@@ -38,7 +38,7 @@ import teetime.stage.predicate.PredicateFilter;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class File2RecordFilter extends CompositeFilter {

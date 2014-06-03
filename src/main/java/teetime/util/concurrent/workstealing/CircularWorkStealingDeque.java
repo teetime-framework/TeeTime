@@ -19,25 +19,20 @@ package teetime.util.concurrent.workstealing;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import teetime.util.concurrent.workstealing.exception.DequeIsEmptyException;
+import teetime.util.concurrent.workstealing.exception.OperationAbortedException;
+
 /**
- * 
+ *
  * @author Christian Wulf
- * 
+ *
  * @see "Dynamic Circular WorkStealing Deque"
- * 
+ *
  * @since 1.10
  */
 public class CircularWorkStealingDeque<T> {
 
-	public static class DequeIsEmptyException extends DequePopException {
-		private static final long serialVersionUID = -6685406255103741724L;
-	}
-
 	public static final DequeIsEmptyException DEQUE_IS_EMPTY_EXCEPTION = new DequeIsEmptyException();
-
-	public static class OperationAbortedException extends DequePopException {
-		private static final long serialVersionUID = 2983001853326344073L;
-	}
 
 	public static final OperationAbortedException OPERATION_ABORTED_EXCEPTION = new OperationAbortedException();
 
@@ -52,7 +47,7 @@ public class CircularWorkStealingDeque<T> {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param o
 	 *            a non-<code>null</code> element
 	 */
@@ -72,7 +67,7 @@ public class CircularWorkStealingDeque<T> {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param elements
 	 *            a non-<code>null</code> list
 	 */
@@ -97,7 +92,7 @@ public class CircularWorkStealingDeque<T> {
 
 	/**
 	 * Returns and removes the latest element from this deque.
-	 * 
+	 *
 	 * @return
 	 *         <ul>
 	 *         <li><code>null</code> if the deque contains no elements,
@@ -129,9 +124,9 @@ public class CircularWorkStealingDeque<T> {
 
 	/**
 	 * Returns and removes the latest element from this deque.
-	 * 
+	 *
 	 * @return <i>the latest element</i>, otherwise it throws a <code>DequeIsEmptyException</code>
-	 * 
+	 *
 	 * @throws DequeIsEmptyException
 	 */
 	public T popBottomEx() {
@@ -175,7 +170,7 @@ public class CircularWorkStealingDeque<T> {
 
 	/**
 	 * Tries to steal (return & remove) the oldest element from this deque.
-	 * 
+	 *
 	 * @return
 	 *         <ul>
 	 *         <li><code>null</code> if the deque contains no elements,
@@ -208,9 +203,9 @@ public class CircularWorkStealingDeque<T> {
 
 	/**
 	 * Tries to steal (return & remove) the oldest element from this deque.
-	 * 
+	 *
 	 * @return <i>the oldest element</i>, otherwise it throws a <code>DequeIsEmptyException</code> or a <code>OperationAbortedException</code>
-	 * 
+	 *
 	 * @throws DequeIsEmptyException
 	 * @throws OperationAbortedException
 	 */
@@ -260,7 +255,7 @@ public class CircularWorkStealingDeque<T> {
 	/**
 	 * Returns but does not remove the latest element from this deque.<br>
 	 * <i>For debugging purposes</i>
-	 * 
+	 *
 	 * @return <ul>
 	 *         <li><code>null</code> if the deque contains no elements,
 	 *         <li><i>the latest element</i> otherwise
@@ -292,7 +287,7 @@ public class CircularWorkStealingDeque<T> {
 
 	/**
 	 * For debugging purposes
-	 * 
+	 *
 	 * @return the number of elements this deque contains
 	 */
 	public long size(final Object sourceStage) {

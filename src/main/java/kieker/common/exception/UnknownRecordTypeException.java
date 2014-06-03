@@ -13,44 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.stage.stringBuffer.handler;
 
-import teetime.stage.stringBuffer.util.KiekerHashMap;
-import kieker.common.logging.Log;
-
+package kieker.common.exception;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
-public abstract class AbstractDataTypeHandler<T> {
+public class UnknownRecordTypeException extends Exception {
 
-	protected Log logger;
-	protected KiekerHashMap stringRepository;
+	private static final long serialVersionUID = 3967732396720668295L;
+	private final String classname;
 
-	/**
-	 * @since 1.10
-	 */
-	public abstract boolean canHandle(Object object);
-
-	/**
-	 * @since 1.10
-	 */
-	public abstract T handle(T object);
-
-	/**
-	 * @since 1.10
-	 */
-	public void setLogger(final Log logger) {
-		this.logger = logger;
+	public UnknownRecordTypeException(final String message, final String classname, final Throwable cause) {
+		super(message, cause);
+		this.classname = classname;
 	}
 
-	/**
-	 * @since 1.10
-	 */
-	public void setStringRepository(final KiekerHashMap stringRepository) {
-		this.stringRepository = stringRepository;
+	public String getClassName() {
+		return this.classname;
 	}
-
 }

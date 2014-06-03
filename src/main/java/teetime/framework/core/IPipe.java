@@ -18,7 +18,7 @@ package teetime.framework.core;
 
 import java.util.List;
 
-import teetime.util.concurrent.workstealing.DequePopException;
+import teetime.util.concurrent.workstealing.exception.DequePopException;
 
 /**
  * 

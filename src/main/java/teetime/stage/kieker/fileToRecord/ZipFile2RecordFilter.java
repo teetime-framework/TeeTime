@@ -29,8 +29,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import kieker.analysis.stage.MappingFileParser;
-import teetime.common.record.IMonitoringRecord;
-import teetime.common.util.filesystem.FSUtil;
+import kieker.common.record.IMonitoringRecord;
+import kieker.common.util.filesystem.FSUtil;
 import teetime.framework.core.AbstractFilter;
 import teetime.framework.core.Context;
 import teetime.framework.core.IInputPort;
@@ -39,7 +39,7 @@ import teetime.stage.kieker.className.ClassNameRegistry;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ZipFile2RecordFilter extends AbstractFilter<ZipFile2RecordFilter> {
