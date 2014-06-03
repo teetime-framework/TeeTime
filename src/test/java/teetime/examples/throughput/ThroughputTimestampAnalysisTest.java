@@ -34,28 +34,12 @@ import teetime.util.StopWatch;
  */
 public class ThroughputTimestampAnalysisTest {
 
-	private static final int NUM_OBJECTS_TO_CREATE = 50000;
+	private static final int NUM_OBJECTS_TO_CREATE = 100000;
 
 	@Before
 	public void before() {
 		System.setProperty(LogFactory.CUSTOM_LOGGER_JVM, "NONE");
 	}
-
-	// Using QueuePipes ist 1/3 faster than using MethodCallPipes
-	// reason:
-	/*
-	 * MethodCallPipes:
-	 * <ul>
-	 * <li>SchedulingOverhead: 12629 ms
-	 * <li>ExecutedUnsuccessfullyCount: 80300001
-	 * </ul>
-	 *
-	 * QueuePipes:
-	 * <ul>
-	 * <li>SchedulingOverhead: 11337 ms
-	 * <li>ExecutedUnsuccessfullyCount: 804
-	 * </ul>
-	 */
 
 	@Test
 	public void testWithManyObjects() {
@@ -64,7 +48,7 @@ public class ThroughputTimestampAnalysisTest {
 
 		final ThroughputTimestampAnalysis analysis = new ThroughputTimestampAnalysis();
 		analysis.setShouldUseQueue(true);
-		analysis.setNumNoopFilters(800);
+		analysis.setNumNoopFilters(8);
 		analysis.setTimestampObjects(timestampObjects);
 		analysis.setInput(NUM_OBJECTS_TO_CREATE, new Callable<TimestampObject>() {
 			@Override

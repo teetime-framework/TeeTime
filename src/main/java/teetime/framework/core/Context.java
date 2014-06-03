@@ -5,12 +5,9 @@ import java.util.List;
 
 public class Context<S extends IStage> {
 
-	// private final Map<IPipe<Object>, List<Object>> pipesTakenFrom;
-	// private final Set<IStage> pipesPutTo = new HashSet<IStage>();
-
 	/**
 	 * @author Christian Wulf
-	 * 
+	 *
 	 * @since 1.10
 	 */
 	private static class InputPortContainer {
@@ -24,12 +21,11 @@ public class Context<S extends IStage> {
 	private final IOutputPort<S, ?>[] outputPorts;
 
 	// statistics values
-	private int numPushedElements = 0;
-	private int numTakenElements = 0;
+	private long numPushedElements = 0;
+	private long numTakenElements = 0;
 
 	@SuppressWarnings("unchecked")
 	public Context(final IStage owningStage, final List<IInputPort<S, ?>> allTargetPorts) {
-		// this.pipesTakenFrom = this.createPipeMap(allTargetPorts);
 		this.inputPortContainers = this.createInputPortLists(owningStage.getInputPorts());
 		this.outputPorts = new IOutputPort[owningStage.getOutputPorts().size()];
 	}
@@ -56,12 +52,11 @@ public class Context<S extends IStage> {
 		associatedPipe.put(object);
 
 		this.outputPorts[port.getIndex()] = port;
-		// this.pipesPutTo.add(associatedPipe.getTargetPort().getOwningStage());
 		this.numPushedElements++;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param inputPort
 	 * @return
 	 * @since 1.10
@@ -76,7 +71,7 @@ public class Context<S extends IStage> {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param inputPort
 	 * @return
 	 * @since 1.10
@@ -99,10 +94,10 @@ public class Context<S extends IStage> {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param inputPort
 	 * @return
-	 * 
+	 *
 	 * @since 1.10
 	 */
 	public <T> T read(final IInputPort<S, T> inputPort) {
