@@ -34,6 +34,6 @@ public class ExceptionalCircularWorkStealingDequeTest {
 		}
 		this.stopWatch.end();
 
-		Assert.assertThat(this.stopWatch.getDuration(), OrderingComparison.lessThan(UntypedCircularWorkStealingDequeTest.EXPECTED_DURATION));
+		Assert.assertThat(this.stopWatch.getDurationInNs(), OrderingComparison.lessThan(UntypedCircularWorkStealingDequeTest.EXPECTED_DURATION_IN_NS));
 	}
 }

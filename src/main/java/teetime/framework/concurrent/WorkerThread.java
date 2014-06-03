@@ -78,7 +78,7 @@ public class WorkerThread extends Thread {
 			this.stageScheduler.determineNextStage(stage, executedSuccessfully);
 
 			this.iterationStopWatch.end();
-			final long schedulingOverhead = this.iterationStopWatch.getDuration() - stage.getLastDuration();
+			final long schedulingOverhead = this.iterationStopWatch.getDurationInNs() - stage.getLastDuration();
 			schedulingOverheadInNs += schedulingOverhead;
 			if ((iterations % 10000) == 0) {
 				this.schedulingOverheadsInNs.add(schedulingOverheadInNs);
@@ -87,7 +87,7 @@ public class WorkerThread extends Thread {
 		}
 
 		this.stopWatch.end();
-		this.durationInNs = this.stopWatch.getDuration();
+		this.durationInNs = this.stopWatch.getDurationInNs();
 
 		final List<Long> durations = ((NextStageScheduler) this.stageScheduler).getDurations();
 		long overallDuration = 0;

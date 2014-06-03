@@ -27,7 +27,7 @@ import teetime.examples.throughput.TimestampObject;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class StatisticsUtil {
@@ -62,20 +62,20 @@ public class StatisticsUtil {
 
 		final Map<Double, Long> quintileValues = StatisticsUtil.calculateQuintiles(sortedDurationsInNs);
 
-		System.out.println("min: " + TimeUnit.NANOSECONDS.toMicros(minDurationInNs) + " µs");
-		System.out.println("max: " + TimeUnit.NANOSECONDS.toMicros(maxDurationInNs) + " µs");
+		System.out.println("min: " + TimeUnit.NANOSECONDS.toMicros(minDurationInNs) + " Âµs");
+		System.out.println("max: " + TimeUnit.NANOSECONDS.toMicros(maxDurationInNs) + " Âµs");
 		final long avgDurInNs = sumInNs / (timestampObjects.size() / 2);
-		System.out.println("avg duration: " + TimeUnit.NANOSECONDS.toMicros(avgDurInNs) + " µs");
+		System.out.println("avg duration: " + TimeUnit.NANOSECONDS.toMicros(avgDurInNs) + " Âµs");
 
 		for (final Entry<Double, Long> entry : quintileValues.entrySet()) {
-			System.out.println((entry.getKey() * 100) + " % : " + TimeUnit.NANOSECONDS.toMicros(entry.getValue()) + " µs");
+			System.out.println((entry.getKey() * 100) + " % : " + TimeUnit.NANOSECONDS.toMicros(entry.getValue()) + " Âµs");
 		}
 
 		final long confidenceWidthInNs = StatisticsUtil.calculateConfidenceWidth(sortedDurationsInNs, avgDurInNs);
 
 		System.out.println("confidenceWidth: " + confidenceWidthInNs + " ns");
-		System.out.println("[" + TimeUnit.NANOSECONDS.toMicros(avgDurInNs - confidenceWidthInNs) + " µs, "
-				+ TimeUnit.NANOSECONDS.toMicros(avgDurInNs + confidenceWidthInNs) + " µs]");
+		System.out.println("[" + TimeUnit.NANOSECONDS.toMicros(avgDurInNs - confidenceWidthInNs) + " Âµs, "
+				+ TimeUnit.NANOSECONDS.toMicros(avgDurInNs + confidenceWidthInNs) + " Âµs]");
 	}
 
 	public static long calculateConfidenceWidth(final List<Long> durations, final long avgDurInNs) {

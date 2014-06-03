@@ -10,7 +10,7 @@ import teetime.util.StopWatch;
 public class UntypedCircularWorkStealingDequeTest {
 
 	public static final int NUM_ITERATIONS = 100000000;
-	public static final long EXPECTED_DURATION = 1100;
+	public static final long EXPECTED_DURATION_IN_NS = 1100*1000*1000;
 
 	private StopWatch stopWatch;
 
@@ -30,6 +30,6 @@ public class UntypedCircularWorkStealingDequeTest {
 		}
 		this.stopWatch.end();
 
-		Assert.assertThat(this.stopWatch.getDuration(), OrderingComparison.lessThan(UntypedCircularWorkStealingDequeTest.EXPECTED_DURATION));
+		Assert.assertThat(this.stopWatch.getDurationInNs(), OrderingComparison.lessThan(UntypedCircularWorkStealingDequeTest.EXPECTED_DURATION_IN_NS));
 	}
 }

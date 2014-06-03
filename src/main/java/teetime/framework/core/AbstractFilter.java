@@ -128,7 +128,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 			return success;
 		} finally {
 			this.stopWatch.end();
-			this.lastDuration = this.stopWatch.getDuration();
+			this.lastDuration = this.stopWatch.getDurationInNs();
 			this.overallDurationInNs += this.lastDuration;
 		}
 	}

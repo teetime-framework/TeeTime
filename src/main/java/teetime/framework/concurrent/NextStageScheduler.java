@@ -123,7 +123,7 @@ public class NextStageScheduler implements IStageScheduler {
 
 		this.stopWatch.end();
 
-		this.durationInNs += this.stopWatch.getDuration();
+		this.durationInNs += this.stopWatch.getDurationInNs();
 		if ((this.iterations % 10000) == 0) {
 			this.durations.add(this.durationInNs);
 			this.durationInNs = 0;

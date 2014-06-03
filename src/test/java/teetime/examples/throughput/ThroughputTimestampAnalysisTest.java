@@ -81,7 +81,7 @@ public class ThroughputTimestampAnalysisTest {
 			stopWatch.end();
 		}
 
-		StatisticsUtil.printStatistics(stopWatch.getDuration(), timestampObjects);
+		StatisticsUtil.printStatistics(stopWatch.getDurationInNs(), timestampObjects);
 	}
 
 }

@@ -2,18 +2,18 @@ package teetime.util;
 
 public final class StopWatch {
 
-	private long startTimeInMs;
-	private long endTimeInMs;
+	private long startTimeInNs;
+	private long endTimeInNs;
 
 	public final void start() {
-		this.startTimeInMs = System.nanoTime();
+		this.startTimeInNs = System.nanoTime();
 	}
 
 	public final void end() {
-		this.endTimeInMs = System.nanoTime();
+		this.endTimeInNs = System.nanoTime();
 	}
 
-	public final long getDuration() {
-		return this.endTimeInMs - this.startTimeInMs;
+	public final long getDurationInNs() {
+		return this.endTimeInNs - this.startTimeInNs;
 	}
 }

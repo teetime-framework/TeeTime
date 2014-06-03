@@ -26,7 +26,7 @@ import teetime.util.StopWatch;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ThroughputAnalysisTest {
@@ -63,11 +63,11 @@ public class ThroughputAnalysisTest {
 				stopWatch.end();
 			}
 
-			durations[i] = stopWatch.getDuration();
+			durations[i] = stopWatch.getDurationInNs();
 		}
 
 		// for (final long dur : durations) {
-		// System.out.println("Duration: " + (dur / 1000) + " �s");
+		// System.out.println("Duration: " + (dur / 1000) + " µs");
 		// }
 
 		long sum = 0;
@@ -76,7 +76,7 @@ public class ThroughputAnalysisTest {
 		}
 
 		final long avgDur = sum / (numRuns / 2);
-		System.out.println("avg duration: " + (avgDur / 1000) + " �s");
+		System.out.println("avg duration: " + (avgDur / 1000) + " µs");
 	}
 
 }
