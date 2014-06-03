@@ -40,6 +40,8 @@ public class WorkerThread extends Thread {
 
 	private final StopWatch stopWatch = new StopWatch();
 	private final StopWatch iterationStopWatch = new StopWatch();
+	private final StopWatch beforeStageExecutionStopWatch = new StopWatch();
+	private final StopWatch afterStageExecutionStopWatch = new StopWatch();
 	private final StopWatch stageExecutionStopWatch = new StopWatch();
 	private final List<Long> schedulingOverheadsInNs = new LinkedList<Long>();
 	private long durationInNs;
@@ -71,18 +73,23 @@ public class WorkerThread extends Thread {
 			final IStage stage = this.stageScheduler.get();
 
 			this.startStageExecution(stage);
-//			stageExecutionStopWatch.start();	// expensive: takes 1/3 of overall time
+			stageExecutionStopWatch.start();	// expensive: takes 1/3 of overall time
 			final boolean executedSuccessfully = stage.execute();
-//			stageExecutionStopWatch.end();
+			stageExecutionStopWatch.end();
 			this.finishStageExecution(stage, executedSuccessfully);
+
+			afterStageExecutionStopWatch.start();
 
 			if (this.shouldTerminate) {
 				this.executeTerminationPolicy(stage, executedSuccessfully);
 			}
 			this.stageScheduler.determineNextStage(stage, executedSuccessfully);
 
+			afterStageExecutionStopWatch.end();
+
 			this.iterationStopWatch.end();
-			final long schedulingOverhead = this.iterationStopWatch.getDurationInNs() - stageExecutionStopWatch.getDurationInNs();
+//			final long schedulingOverhead = this.iterationStopWatch.getDurationInNs() - stageExecutionStopWatch.getDurationInNs();
+			final long schedulingOverhead = afterStageExecutionStopWatch.getDurationInNs();
 			schedulingOverheadInNs += schedulingOverhead;
 			if ((iterations % 10000) == 0) {
 				this.schedulingOverheadsInNs.add(schedulingOverheadInNs);
