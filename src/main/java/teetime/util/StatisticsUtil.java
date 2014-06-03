@@ -47,23 +47,17 @@ public class StatisticsUtil {
 		System.out.println("Duration: " + TimeUnit.NANOSECONDS.toMillis(overallDurationInNs) + " ms");
 
 		final List<Long> sortedDurationsInNs = new ArrayList<Long>(timestampObjects.size() / 2);
-		long minDurationInNs = Long.MAX_VALUE;
-		long maxDurationInNs = Long.MIN_VALUE;
 		long sumInNs = 0;
 		for (int i = timestampObjects.size() / 2; i < timestampObjects.size(); i++) {
 			final TimestampObject timestampObject = timestampObjects.get(i);
 			final long durationInNs = timestampObject.getStopTimestamp() - timestampObject.getStartTimestamp();
 			// sortedDurationsInNs.set(i - (timestampObjects.size() / 2), durationInNs);
 			sortedDurationsInNs.add(durationInNs);
-			minDurationInNs = Math.min(durationInNs, minDurationInNs);
-			maxDurationInNs = Math.max(durationInNs, maxDurationInNs);
 			sumInNs += durationInNs;
 		}
 
 		final Map<Double, Long> quintileValues = StatisticsUtil.calculateQuintiles(sortedDurationsInNs);
 
-		System.out.println("min: " + TimeUnit.NANOSECONDS.toMicros(minDurationInNs) + " µs");
-		System.out.println("max: " + TimeUnit.NANOSECONDS.toMicros(maxDurationInNs) + " µs");
 		final long avgDurInNs = sumInNs / (timestampObjects.size() / 2);
 		System.out.println("avg duration: " + TimeUnit.NANOSECONDS.toMicros(avgDurInNs) + " µs");
 

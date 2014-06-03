@@ -3,6 +3,11 @@ package teetime.framework.core;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Christian Wulf
+ *
+ * @since 1.10
+ */
 public class Context<S extends IStage> {
 
 	/**

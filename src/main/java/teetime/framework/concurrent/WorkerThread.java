@@ -37,8 +37,10 @@ public class WorkerThread extends Thread {
 	private volatile boolean shouldTerminate = false;
 	private final int accessesDeviceId;
 	private int executedUnsuccessfullyCount;
+
 	private final StopWatch stopWatch = new StopWatch();
 	private final StopWatch iterationStopWatch = new StopWatch();
+	private final StopWatch stageExecutionStopWatch = new StopWatch();
 	private final List<Long> schedulingOverheadsInNs = new LinkedList<Long>();
 	private long durationInNs;
 
@@ -69,7 +71,9 @@ public class WorkerThread extends Thread {
 			final IStage stage = this.stageScheduler.get();
 
 			this.startStageExecution(stage);
+//			stageExecutionStopWatch.start();	// expensive: takes 1/3 of overall time
 			final boolean executedSuccessfully = stage.execute();
+//			stageExecutionStopWatch.end();
 			this.finishStageExecution(stage, executedSuccessfully);
 
 			if (this.shouldTerminate) {
@@ -78,7 +82,7 @@ public class WorkerThread extends Thread {
 			this.stageScheduler.determineNextStage(stage, executedSuccessfully);
 
 			this.iterationStopWatch.end();
-			final long schedulingOverhead = this.iterationStopWatch.getDurationInNs() - stage.getLastDuration();
+			final long schedulingOverhead = this.iterationStopWatch.getDurationInNs() - stageExecutionStopWatch.getDurationInNs();
 			schedulingOverheadInNs += schedulingOverhead;
 			if ((iterations % 10000) == 0) {
 				this.schedulingOverheadsInNs.add(schedulingOverheadInNs);

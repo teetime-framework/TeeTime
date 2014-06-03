@@ -48,7 +48,7 @@ public class ThroughputTimestampAnalysisTest {
 
 		final ThroughputTimestampAnalysis analysis = new ThroughputTimestampAnalysis();
 		analysis.setShouldUseQueue(true);
-		analysis.setNumNoopFilters(8);
+		analysis.setNumNoopFilters(10);		// 4+n
 		analysis.setTimestampObjects(timestampObjects);
 		analysis.setInput(NUM_OBJECTS_TO_CREATE, new Callable<TimestampObject>() {
 			@Override

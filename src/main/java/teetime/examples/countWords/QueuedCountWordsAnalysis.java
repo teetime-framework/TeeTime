@@ -36,7 +36,7 @@ import teetime.util.Pair;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class QueuedCountWordsAnalysis extends Analysis {
@@ -102,21 +102,25 @@ public class QueuedCountWordsAnalysis extends Analysis {
 		repeaterSource.START.setAssociatedPipe(new MethodCallPipe<Boolean>(Boolean.TRUE));
 
 		final IPipeline pipeline = new IPipeline() {
+			@Override
 			@SuppressWarnings("unchecked")
 			public List<? extends IStage> getStartStages() {
 				return Arrays.asList(repeaterSource);
 			}
 
+			@Override
 			public List<IStage> getStages() {
 				return stages;
 			}
 
+			@Override
 			public void fireStartNotification() throws Exception {
 				for (final IStage stage : this.getStartStages()) {
 					stage.notifyPipelineStarts();
 				}
 			}
 
+			@Override
 			public void fireStopNotification() {
 				for (final IStage stage : this.getStartStages()) {
 					stage.notifyPipelineStops();
@@ -145,7 +149,7 @@ public class QueuedCountWordsAnalysis extends Analysis {
 
 		for (final IStage stage : pipeline.getStages()) {
 			if (stage instanceof AbstractFilter<?>) {
-				System.out.println(stage.getClass().getName() + ": " + ((AbstractFilter<?>) stage).getOverallDurationInNs()); // NOPMD (Just for example purposes)
+//				System.out.println(stage.getClass().getName() + ": " + ((AbstractFilter<?>) stage).getOverallDurationInNs()); // NOPMD (Just for example purposes)
 			}
 		}
 

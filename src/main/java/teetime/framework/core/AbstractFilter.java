@@ -22,18 +22,17 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.util.StopWatch;
 import teetime.util.concurrent.workstealing.exception.DequePopException;
 
 /**
- * 
+ *
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
- * 
+ *
  * @param <S>
  *            the extending stage
- * 
+ *
  */
 public abstract class AbstractFilter<S extends IStage> extends AbstractStage implements ISink<S>, ISource, IPortListener<S> {
 
@@ -41,7 +40,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 
 	/**
 	 * @author Christian Wulf
-	 * 
+	 *
 	 * @since 1.10
 	 */
 	public enum StageState {
@@ -66,12 +65,14 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 	private Context<S> context;
 
 	private final IPipeCommand closeCommand = new IPipeCommand() {
+		@Override
 		public void execute(final IPipe<?> pipe) throws Exception {
 			pipe.close();
 		}
 	};
 
 	private final IPipeCommand pipelineStartsCommand = new IPipeCommand() {
+		@Override
 		public void execute(final IPipe<?> pipe) throws Exception {
 			pipe.notifyPipelineStarts();
 		}
@@ -83,20 +84,18 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 	 */
 	private int accessesDeviceId = 0;
 
-	private final StopWatch stopWatch = new StopWatch();
-	private long overallDurationInNs = 0;
-
-	private long lastDuration;
-
+	@Override
 	public int getAccessesDeviceId() {
 		return this.accessesDeviceId;
 	}
 
+	@Override
 	public void setAccessesDeviceId(final int accessesDeviceId) {
 		this.accessesDeviceId = accessesDeviceId;
 	}
 
 	// BETTER return a limited context that allows "read" only
+	@Override
 	public Context<S> getContext() {
 		return this.context;
 	}
@@ -104,10 +103,11 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 	/**
 	 * @since 1.10
 	 */
+	@Override
 	public final boolean execute() {
 		boolean success = false;
 		try {
-			success = this.executeLogged(this.context);
+			success = this.execute(this.context);
 			if (success) { // deprecated boolean return value
 				this.context.clear();
 			} else {
@@ -121,20 +121,9 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 		return success;
 	}
 
-	private boolean executeLogged(final Context<S> context) {
-		this.stopWatch.start();
-		try {
-			final boolean success = this.execute(context);
-			return success;
-		} finally {
-			this.stopWatch.end();
-			this.lastDuration = this.stopWatch.getDurationInNs();
-			this.overallDurationInNs += this.lastDuration;
-		}
-	}
-
 	protected abstract boolean execute(Context<S> context);
 
+	@Override
 	public final void notifyPipelineStarts() throws Exception {
 		if (this.state == StageState.UNINITIALIZED) {
 			this.state = StageState.PIPELINE_STARTED;
@@ -145,7 +134,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 
 	/**
 	 * This method is called exactly once iff the pipeline is started.
-	 * 
+	 *
 	 * @throws Exception
 	 * @since 1.10
 	 */
@@ -156,6 +145,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 	/**
 	 * @since 1.10
 	 */
+	@Override
 	public void notifyOutputPipes(final IPipeCommand pipeCommand) throws Exception {
 		for (final IOutputPort<S, ?> outputPort : this.readOnlyOutputPorts) {
 			final IPipe<?> associatedPipe = outputPort.getAssociatedPipe();
@@ -165,6 +155,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 		}
 	}
 
+	@Override
 	public final void notifyPipelineStops() {
 		if (this.state != StageState.PIPELINE_STOPPED) {
 			this.state = StageState.PIPELINE_STOPPED;
@@ -174,7 +165,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 
 	/**
 	 * This method is called exactly once iff the pipeline is stopped.
-	 * 
+	 *
 	 * @since 1.10
 	 */
 	public void onPipelineStops() {
@@ -184,6 +175,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 	/**
 	 * @since 1.10
 	 */
+	@Override
 	public void onPortIsClosed(final IInputPort<S, ?> inputPort) {
 		// inputPort.setState(IInputPort.State.CLOSING);
 		this.enabledInputPorts--;
@@ -209,6 +201,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 	/**
 	 * @since 1.10
 	 */
+	@Override
 	public void fireSignalClosingToAllInputPorts() {
 		// this.logger.info("Fire closing signal to all input ports of: " + this);
 
@@ -224,6 +217,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 	/**
 	 * @since 1.10
 	 */
+	@Override
 	public void fireSignalClosingToAllOutputPorts() {
 		try {
 			this.notifyOutputPipes(this.closeCommand);
@@ -235,6 +229,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 	/**
 	 * @since 1.10
 	 */
+	@Override
 	public boolean mayBeDisabled() {
 		return this.mayBeDisabled;
 	}
@@ -275,6 +270,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 	/**
 	 * @since 1.10
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<IInputPort<S, ?>> getInputPorts() {
 		return this.readOnlyInputPorts;
@@ -283,6 +279,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 	/**
 	 * @since 1.10
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<IOutputPort<S, ?>> getOutputPorts() {
 		return this.readOnlyOutputPorts;
@@ -300,34 +297,32 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 		return outputStages;
 	}
 
+	@Override
 	public IInputPort<?, ?> getInputPortByIndex(final int index) {
 		return this.readOnlyInputPorts.get(index);
 	}
 
+	@Override
 	public IOutputPort<?, ?> getOutputPortByIndex(final int index) {
 		return this.readOnlyOutputPorts.get(index);
 	}
 
-	public long getOverallDurationInNs() {
-		return this.overallDurationInNs;
-	}
-
-	public long getLastDuration() {
-		return this.lastDuration;
-	}
-
+	@Override
 	public int getDepth() {
 		return this.depth;
 	}
 
+	@Override
 	public void setDepth(final int depth) {
 		this.depth = depth;
 	}
 
+	@Override
 	public int getSchedulingIndex() {
 		return this.schedulingIndex;
 	}
 
+	@Override
 	public void setSchedulingIndex(final int schedulingIndex) {
 		this.schedulingIndex = schedulingIndex;
 	}
