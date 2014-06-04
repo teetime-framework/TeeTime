@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import teetime.framework.concurrent.StageTerminationPolicy;
 import teetime.framework.concurrent.WorkerThread;
@@ -33,7 +32,7 @@ import teetime.stage.basic.ObjectProducer;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ThroughputAnalysis<T> extends Analysis {
@@ -101,7 +100,6 @@ public class ThroughputAnalysis<T> extends Analysis {
 			e.printStackTrace();
 		}
 
-		System.out.println("SchedulingOverhead: " + TimeUnit.NANOSECONDS.toMillis(this.workerThread.computeSchedulingOverheadInNs()) + " ms");
 	}
 
 	public int getNumNoopFilters() {

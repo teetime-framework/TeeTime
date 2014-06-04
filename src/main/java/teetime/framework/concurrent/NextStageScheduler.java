@@ -19,18 +19,15 @@ package teetime.framework.concurrent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import teetime.framework.core.IOutputPort;
 import teetime.framework.core.IPipeline;
 import teetime.framework.core.IStage;
-import teetime.util.StopWatch;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class NextStageScheduler implements IStageScheduler {
@@ -38,11 +35,6 @@ public class NextStageScheduler implements IStageScheduler {
 	protected final Map<IStage, Boolean> statesOfStages = new HashMap<IStage, Boolean>();
 	private final Collection<IStage> highestPrioritizedEnabledStages = new ArrayList<IStage>();
 	private final IStageWorkList workList;
-
-	private final StopWatch stopWatch = new StopWatch();
-	private long durationInNs;
-	private int iterations;
-	private final List<Long> durations = new LinkedList<Long>();
 
 	public NextStageScheduler(final IPipeline pipeline, final int accessesDeviceId) throws Exception {
 		// this.workList = new StageWorkList(accessesDeviceId, pipeline.getStages().size());
@@ -93,10 +85,6 @@ public class NextStageScheduler implements IStageScheduler {
 
 	@Override
 	public void determineNextStage(final IStage stage, final boolean executedSuccessfully) {
-		this.iterations++;
-
-		this.stopWatch.start();
-
 		// final Collection<? extends IStage> outputStages = stage.getContext().getOutputStages();
 		final IOutputPort<?, ?>[] outputPorts = stage.getContext().getOutputPorts();
 		if (outputPorts.length > 0) {
@@ -120,17 +108,5 @@ public class NextStageScheduler implements IStageScheduler {
 		if (this.workList.isEmpty()) {
 			this.workList.pushAll(this.highestPrioritizedEnabledStages);
 		}
-
-		this.stopWatch.end();
-
-		this.durationInNs += this.stopWatch.getDurationInNs();
-		if ((this.iterations % 10000) == 0) {
-			this.durations.add(this.durationInNs);
-			this.durationInNs = 0;
-		}
-	}
-
-	public List<Long> getDurations() {
-		return this.durations;
 	}
 }

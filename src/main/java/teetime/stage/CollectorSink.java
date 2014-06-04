@@ -20,7 +20,6 @@ import java.util.Collection;
 import teetime.framework.core.AbstractFilter;
 import teetime.framework.core.Context;
 import teetime.framework.core.IInputPort;
-import teetime.util.StopWatch;
 
 /**
  * @author Christian Wulf
@@ -50,21 +49,12 @@ public class CollectorSink<T> extends AbstractFilter<CollectorSink<T>> {
 		}
 
 		this.objects.add(object);
+
 		if ((this.objects.size() % THRESHOLD) == 0) {
 			System.out.println("size: " + this.objects.size());
-//			stopWatch.end();
-//			System.out.println("duration: "+TimeUnit.NANOSECONDS.toMillis(stopWatch.getDurationInNs())+" ms");
-//			stopWatch.start();
 		}
 
 		return true;
-	}
-StopWatch stopWatch=new StopWatch();
-
-	@Override
-	public void onPipelineStarts() throws Exception {
-		stopWatch.start();
-		super.onPipelineStarts();
 	}
 
 	public Collection<T> getObjects() {

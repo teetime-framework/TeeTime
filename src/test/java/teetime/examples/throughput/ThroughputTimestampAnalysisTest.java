@@ -35,6 +35,7 @@ import teetime.util.StopWatch;
 public class ThroughputTimestampAnalysisTest {
 
 	private static final int NUM_OBJECTS_TO_CREATE = 100000;
+	private static final int NUM_NOOP_FILTERS = 800;
 
 	@Before
 	public void before() {
@@ -43,12 +44,14 @@ public class ThroughputTimestampAnalysisTest {
 
 	@Test
 	public void testWithManyObjects() {
+		System.out.println("Testing teetime with NUM_OBJECTS_TO_CREATE=" + NUM_OBJECTS_TO_CREATE + ", NUM_NOOP_FILTERS="
+				+ NUM_NOOP_FILTERS + "...");
 		final StopWatch stopWatch = new StopWatch();
 		final List<TimestampObject> timestampObjects = new ArrayList<TimestampObject>(NUM_OBJECTS_TO_CREATE);
 
 		final ThroughputTimestampAnalysis analysis = new ThroughputTimestampAnalysis();
 		analysis.setShouldUseQueue(true);
-		analysis.setNumNoopFilters(800);		// 4+n
+		analysis.setNumNoopFilters(NUM_NOOP_FILTERS); // 4+n
 		analysis.setTimestampObjects(timestampObjects);
 		analysis.setInput(NUM_OBJECTS_TO_CREATE, new Callable<TimestampObject>() {
 			@Override

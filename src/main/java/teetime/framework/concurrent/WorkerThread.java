@@ -38,13 +38,10 @@ public class WorkerThread extends Thread {
 	private final int accessesDeviceId;
 	private int executedUnsuccessfullyCount;
 
+	// statistics
 	private final StopWatch stopWatch = new StopWatch();
-	private final StopWatch iterationStopWatch = new StopWatch();
-	private final StopWatch beforeStageExecutionStopWatch = new StopWatch();
-	private final StopWatch afterStageExecutionStopWatch = new StopWatch();
-	private final StopWatch stageExecutionStopWatch = new StopWatch();
-	private final List<Long> schedulingOverheadsInNs = new LinkedList<Long>();
-	private long durationInNs;
+	private final List<Long> durationPer10000IterationsInNs = new LinkedList<Long>();
+	private int iterations;
 
 	public WorkerThread(final IPipeline pipeline, final int accessesDeviceId) {
 		this.pipeline = pipeline;
@@ -62,63 +59,62 @@ public class WorkerThread extends Thread {
 			throw new IllegalStateException(e);
 		}
 
-		long iterations = 0;
-		long schedulingOverheadInNs = 0;
+		this.iterations = 0;
 		this.stopWatch.start();
 
 		while (this.stageScheduler.isAnyStageActive()) {
-			iterations++;
-			this.iterationStopWatch.start();
+			this.iterations++;
+			// this.iterationStopWatch.start();
 
-//			beforeStageExecutionStopWatch.start();
+			// beforeStageExecutionStopWatch.start();
 
 			final IStage stage = this.stageScheduler.get();
 
-//			beforeStageExecutionStopWatch.end();
+			// beforeStageExecutionStopWatch.end();
 
 			this.startStageExecution(stage);
-			stageExecutionStopWatch.start();	// expensive: takes 1/3 of overall time
+			// stageExecutionStopWatch.start(); // expensive: takes 1/3 of overall time
 			final boolean executedSuccessfully = stage.execute();
-			stageExecutionStopWatch.end();
+			// stageExecutionStopWatch.end();
 			this.finishStageExecution(stage, executedSuccessfully);
 
-//			afterStageExecutionStopWatch.start();
+			// afterStageExecutionStopWatch.start();
 
 			if (this.shouldTerminate) {
 				this.executeTerminationPolicy(stage, executedSuccessfully);
 			}
 			this.stageScheduler.determineNextStage(stage, executedSuccessfully);
 
-//			afterStageExecutionStopWatch.end();
+			// afterStageExecutionStopWatch.end();
 
-			this.iterationStopWatch.end();
-			final long schedulingOverhead = this.iterationStopWatch.getDurationInNs() - stageExecutionStopWatch.getDurationInNs();	//3198 ms
-//			final long schedulingOverhead = this.iterationStopWatch.getDurationInNs();			//3656 ms
-//			final long schedulingOverhead = beforeStageExecutionStopWatch.getDurationInNs();	//417 ms
-//			final long schedulingOverhead = stageExecutionStopWatch.getDurationInNs();			//503 ms
-//			final long schedulingOverhead = afterStageExecutionStopWatch.getDurationInNs();		//1214 ms
-			schedulingOverheadInNs += schedulingOverhead;
+			// this.iterationStopWatch.end();
+
+			// all stop watches are activated
+			// final long schedulingOverhead = this.iterationStopWatch.getDurationInNs() -
+			// stageExecutionStopWatch.getDurationInNs(); //4952
+
+			// 6268 -> 5350 (w/o after) -> 4450 (w/o before) -> 3800 (w/o stage)
+//			final long schedulingOverhead = this.iterationStopWatch.getDurationInNs();
+			// final long schedulingOverhead = beforeStageExecutionStopWatch.getDurationInNs(); //327
+			// final long schedulingOverhead = stageExecutionStopWatch.getDurationInNs(); //1416
+			// final long schedulingOverhead = afterStageExecutionStopWatch.getDurationInNs(); //2450
+			// rest: ~2000 (measurement overhead?)
 			if ((iterations % 10000) == 0) {
-				this.schedulingOverheadsInNs.add(schedulingOverheadInNs);
-				schedulingOverheadInNs = 0;
+				this.stopWatch.end();
+				this.durationPer10000IterationsInNs.add(stopWatch.getDurationInNs());
+				this.stopWatch.start();
 			}
 		}
 
 		this.stopWatch.end();
-		this.durationInNs = this.stopWatch.getDurationInNs();
-
-		final List<Long> durations = ((NextStageScheduler) this.stageScheduler).getDurations();
-		long overallDuration = 0;
-		for (int i = durations.size() / 2; i < durations.size(); i++) {
-			overallDuration += durations.get(i);
-		}
-		// System.out.println("Scheduler determine next stage (" + (durations.size() / 2) + "): " + TimeUnit.NANOSECONDS.toMillis(overallDuration) + " ms");
+		this.durationPer10000IterationsInNs.add(stopWatch.getDurationInNs());
 
 		this.cleanUpDatastructures();
 	}
 
 	private void executeTerminationPolicy(final IStage executedStage, final boolean executedSuccessfully) {
-		// System.out.println("WorkerThread.executeTerminationPolicy(): " + this.terminationPolicy + ", executedSuccessfully=" + executedSuccessfully
+		// System.out.println("WorkerThread.executeTerminationPolicy(): " + this.terminationPolicy +
+		// ", executedSuccessfully=" + executedSuccessfully
 		// + ", mayBeDisabled=" + executedStage.mayBeDisabled());
 
 		switch (this.terminationPolicy) {
@@ -172,7 +168,8 @@ public class WorkerThread extends Thread {
 		return this.pipeline;
 	}
 
-	// BETTER remove this method since it is not intuitive; add a check to onStartPipeline so that a stage automatically disables itself if it has no input ports
+	// BETTER remove this method since it is not intuitive; add a check to onStartPipeline so that a stage automatically
+	// disables itself if it has no input ports
 	public void terminate(final StageTerminationPolicy terminationPolicyToUse) {
 		for (final IStage startStage : this.pipeline.getStartStages()) {
 			startStage.fireSignalClosingToAllInputPorts();
@@ -195,31 +192,15 @@ public class WorkerThread extends Thread {
 		return this.executedUnsuccessfullyCount;
 	}
 
-	public List<Long> getSchedulingOverheadsInNs() {
-		return this.schedulingOverheadsInNs;
+	public List<Long> getDurationPer10000IterationsInNs() {
+		return durationPer10000IterationsInNs;
 	}
 
 	/**
 	 * @since 1.10
 	 */
-	public long getDurationInNs() {
-		return this.durationInNs;
+	public int getIterations() {
+		return iterations;
 	}
 
-	/**
-	 * Uses the last half of values to compute the scheduling overall overhead in ns
-	 *
-	 * @since 1.10
-	 */
-	public long computeSchedulingOverheadInNs() {
-		final int size = this.schedulingOverheadsInNs.size();
-
-		long schedulingOverheadInNs = 0;
-		for (int i = size / 2; i < size; i++) {
-			final Long iterationOverhead = this.schedulingOverheadsInNs.get(i);
-			schedulingOverheadInNs += iterationOverhead;
-		}
-
-		return schedulingOverheadInNs;
-	}
 }

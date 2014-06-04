@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import teetime.framework.concurrent.ConcurrentWorkStealingPipe;
 import teetime.framework.concurrent.ConcurrentWorkStealingPipeFactory;
@@ -43,7 +42,7 @@ import teetime.util.Pair;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ConcurrentCountWordsAnalysis extends Analysis {
@@ -155,21 +154,25 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 		repeaterSource.START.setAssociatedPipe(new MethodCallPipe<Boolean>(Boolean.TRUE));
 
 		final IPipeline pipeline = new IPipeline() {
+			@Override
 			@SuppressWarnings("unchecked")
 			public List<? extends IStage> getStartStages() {
 				return Arrays.asList(repeaterSource);
 			}
 
+			@Override
 			public List<IStage> getStages() {
 				return stages;
 			}
 
+			@Override
 			public void fireStartNotification() throws Exception {
 				for (final IStage stage : this.getStartStages()) {
 					stage.notifyPipelineStarts();
 				}
 			}
 
+			@Override
 			public void fireStopNotification() {
 				for (final IStage stage : this.getStartStages()) {
 					stage.notifyPipelineStops();
@@ -205,21 +208,25 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 		SingleProducerSingleConsumerPipe.connect(merger.outputPort, printingMerger.getNewInputPort());
 
 		final IPipeline pipeline = new IPipeline() {
+			@Override
 			@SuppressWarnings("unchecked")
 			public List<? extends IStage> getStartStages() {
 				return Arrays.asList(distributor);
 			}
 
+			@Override
 			public List<IStage> getStages() {
 				return stages;
 			}
 
+			@Override
 			public void fireStartNotification() throws Exception {
 				for (final IStage stage : this.getStartStages()) {
 					stage.notifyPipelineStarts();
 				}
 			}
 
+			@Override
 			public void fireStopNotification() {
 				for (final IStage stage : this.getStartStages()) {
 					stage.notifyPipelineStops();
@@ -246,21 +253,25 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 		QueuePipe.connect(merger.outputPort, outputWordsCountStage.fileWordcountTupleInputPort);
 
 		final IPipeline pipeline = new IPipeline() {
+			@Override
 			@SuppressWarnings("unchecked")
 			public List<? extends IStage> getStartStages() {
 				return Arrays.asList(merger);
 			}
 
+			@Override
 			public List<IStage> getStages() {
 				return stages;
 			}
 
+			@Override
 			public void fireStartNotification() throws Exception {
 				for (final IStage stage : this.getStartStages()) {
 					stage.notifyPipelineStarts();
 				}
 			}
 
+			@Override
 			public void fireStopNotification() {
 				for (final IStage stage : this.getStartStages()) {
 					stage.notifyPipelineStops();
@@ -316,8 +327,8 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 				System.out.println(stage); // NOPMD (Just for example purposes)
 			}
 
-			final long durationInNs = thread.getDurationInNs();
-			System.out.println(thread + " takes " + TimeUnit.NANOSECONDS.toMillis(durationInNs) + " ms");
+//			final long durationInNs = thread.getDurationInNs();
+//			System.out.println(thread + " takes " + TimeUnit.NANOSECONDS.toMillis(durationInNs) + " ms");
 		}
 
 		for (final WorkerThread thread : this.nonIoThreads) {
@@ -326,16 +337,16 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 				System.out.println(stage); // NOPMD (Just for example purposes)
 			}
 
-			final long durationInNs = thread.getDurationInNs();
-			System.out.println(thread + " takes " + TimeUnit.NANOSECONDS.toMillis(durationInNs) + " ms");
+//			final long durationInNs = thread.getDurationInNs();
+//			System.out.println(thread + " takes " + TimeUnit.NANOSECONDS.toMillis(durationInNs) + " ms");
 
-			if (durationInNs > maxDuration) {
-				maxDuration = durationInNs;
-				maxThread = thread;
-			}
+//			if (durationInNs > maxDuration) {
+//				maxDuration = durationInNs;
+//				maxThread = thread;
+//			}
 		}
 
-		System.out.println("maxThread: " + maxThread.toString() + " takes " + TimeUnit.NANOSECONDS.toMillis(maxDuration) + " ms"); // NOPMD (Just for example
+//		System.out.println("maxThread: " + maxThread.toString() + " takes " + TimeUnit.NANOSECONDS.toMillis(maxDuration) + " ms"); // NOPMD (Just for example
 																																	// purposes)
 	}
 }

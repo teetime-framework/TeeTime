@@ -131,15 +131,24 @@ public class ThroughputTimestampAnalysis extends Analysis {
 			e.printStackTrace();
 		}
 
-		final long schedulingOverheadInNs = this.workerThread.computeSchedulingOverheadInNs();
-		final int size = this.workerThread.getSchedulingOverheadsInNs().size();
-		System.out.println("scheduling overhead times: " + size);
-		if (size > 0) {
-			System.out.println("SchedulingOverhead: " + TimeUnit.NANOSECONDS.toMillis(schedulingOverheadInNs) + " ms");
-			System.out.println("avg overhead of iteration: "
-					+ TimeUnit.NANOSECONDS.toMillis(schedulingOverheadInNs * 2 / size) + " ms");
-			System.out.println("ExecutedUnsuccessfullyCount: " + this.workerThread.getExecutedUnsuccessfullyCount());
+		List<Long> durationPer10000IterationsInNs = workerThread.getDurationPer10000IterationsInNs();
+
+		long overallSumInNs = 0;
+		for (int i = 0; i < durationPer10000IterationsInNs.size(); i++) {
+			overallSumInNs += durationPer10000IterationsInNs.get(i);
 		}
+
+		long sumInNs = 0;
+		for (int i = durationPer10000IterationsInNs.size() / 2; i < durationPer10000IterationsInNs.size(); i++) {
+			sumInNs += durationPer10000IterationsInNs.get(i);
+		}
+
+		System.out.println("Thread iterations: " + workerThread.getIterations() + " times");
+		System.out.println("Thread execution time: " + TimeUnit.NANOSECONDS.toMillis(overallSumInNs) + " ms");
+		System.out.println("Thread half duration/iterations: " + sumInNs / (workerThread.getIterations() / 2)
+				+ " ns/iteration");
+		System.out.println("Thread unsuccessfully executed stages: " + workerThread.getExecutedUnsuccessfullyCount()
+				+ " times");
 	}
 
 	public int getNumNoopFilters() {
