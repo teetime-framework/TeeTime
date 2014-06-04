@@ -19,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -133,6 +134,9 @@ public class Experiment2 {
 		private WorkerThread workerThread;
 		private final boolean shouldUseQueue;
 
+		// FIXME instantiate me
+		private Collection<TimestampObject> timestampObjects;
+
 		public TeeTimeAnalysis(final boolean shouldUseQueue) {
 			this.shouldUseQueue = shouldUseQueue;
 		}
@@ -215,6 +219,9 @@ public class Experiment2 {
 	private static final class KiekerAnalysis implements IAnalysis {
 
 		private IAnalysisController ac;
+
+		// FIXME instantiate me
+		private Collection<TimestampObject> timestampObjects;
 
 		public KiekerAnalysis() {}
 

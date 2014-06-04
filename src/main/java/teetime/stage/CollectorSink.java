@@ -16,7 +16,6 @@
 package teetime.stage;
 
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
 import teetime.framework.core.AbstractFilter;
 import teetime.framework.core.Context;
@@ -53,9 +52,9 @@ public class CollectorSink<T> extends AbstractFilter<CollectorSink<T>> {
 		this.objects.add(object);
 		if ((this.objects.size() % THRESHOLD) == 0) {
 			System.out.println("size: " + this.objects.size());
-			stopWatch.end();
-			System.out.println("duration: "+TimeUnit.NANOSECONDS.toMillis(stopWatch.getDurationInNs())+" ms");
-			stopWatch.start();
+//			stopWatch.end();
+//			System.out.println("duration: "+TimeUnit.NANOSECONDS.toMillis(stopWatch.getDurationInNs())+" ms");
+//			stopWatch.start();
 		}
 
 		return true;

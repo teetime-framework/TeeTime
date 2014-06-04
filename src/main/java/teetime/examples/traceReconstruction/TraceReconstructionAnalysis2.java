@@ -46,7 +46,7 @@ import teetime.stage.util.TextLine;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class TraceReconstructionAnalysis2 extends Analysis {
@@ -111,11 +111,11 @@ public class TraceReconstructionAnalysis2 extends Analysis {
 		QueuePipe.connect(cache.objectOutputPort, textLine2RecordFilter.textLineInputPort);
 		QueuePipe.connect(textLine2RecordFilter.recordOutputPort, stringBufferFilter.objectInputPort);
 		QueuePipe.connect(stringBufferFilter.objectOutputPort, timestampFilter.inputPort);
-		QueuePipe.connect(timestampFilter.matchingOutputPort, traceIdFilter.inputPort);
+//		QueuePipe.connect(timestampFilter.matchingOutputPort, traceIdFilter.inputPort);
 		// QueuePipe.connect(timestampFilter.mismatchingOutputPort, YYY); // ignore this case
 		QueuePipe.connect(traceIdFilter.matchingOutputPort, instanceOfFilter.inputPort);
 		// QueuePipe.connect(traceIdFilter.mismatchingOutputPort, traceIdFilter.inputPort); // ignore this case
-		QueuePipe.connect(XXX, traceReconstructionFilter.timestampInputPort);
+//		QueuePipe.connect(XXX, traceReconstructionFilter.timestampInputPort);
 		QueuePipe.connect(instanceOfFilter.matchingOutputPort, traceReconstructionFilter.recordInputPort);
 		// QueuePipe.connect(instanceOfFilter.mismatchingOutputPort, instanceOfFilter.inputPort); // ignore this case
 		QueuePipe.connect(traceReconstructionFilter.traceValidOutputPort, countingFilter.INPUT_OBJECT);
