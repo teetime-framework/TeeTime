@@ -15,8 +15,8 @@
  ***************************************************************************/
 package teetime.stage.stringBuffer;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 
 import teetime.framework.core.AbstractFilter;
 import teetime.framework.core.Context;
@@ -39,7 +39,7 @@ public class StringBufferFilter<T> extends AbstractFilter<StringBufferFilter<T>>
 	// BETTER use a non shared data structure to avoid synchronization between threads
 	private KiekerHashMap kiekerHashMap = new KiekerHashMap();
 
-	private Collection<AbstractDataTypeHandler<?>> dataTypeHandlers = new ArrayList<AbstractDataTypeHandler<?>>();
+	private Collection<AbstractDataTypeHandler<?>> dataTypeHandlers = new LinkedList<AbstractDataTypeHandler<?>>();
 
 	@Override
 	protected boolean execute(final Context<StringBufferFilter<T>> context) {
