@@ -56,14 +56,20 @@ public class TraceReconstructionAnalysis2 extends Analysis {
 
 	private ClassNameRegistryRepository classNameRegistryRepository;
 
+
 	@Override
 	public void init() {
 		super.init();
+//		IPipeline clockPipeline = buildClockPipeline();
+//		this.clockThread = new WorkerThread(clockPipeline, 1);
+//		Clock clockStage=(Clock) clockPipeline.getStartStages().get(0);
+
 		final IPipeline pipeline = this.buildPipeline();
 		this.workerThread = new WorkerThread(pipeline, 0);
 	}
 
 	/**
+	 * @param clockStage
 	 * @since 1.10
 	 */
 	private IPipeline buildPipeline() {
@@ -107,7 +113,7 @@ public class TraceReconstructionAnalysis2 extends Analysis {
 		QueuePipe.connect(classNameRegistryCreationFilter.relayDirectoryOutputPort, directory2FilesFilter.directoryInputPort);
 		QueuePipe.connect(directory2FilesFilter.fileOutputPort, file2TextLinesFilter.fileInputPort);
 		QueuePipe.connect(file2TextLinesFilter.textLineOutputPort, cache.objectInputPort);
-		// QueuePipe.connect(XXX, cache.sendInputPort);
+//		 QueuePipe.connect(XXX, cache.sendInputPort);
 		QueuePipe.connect(cache.objectOutputPort, textLine2RecordFilter.textLineInputPort);
 		QueuePipe.connect(textLine2RecordFilter.recordOutputPort, stringBufferFilter.objectInputPort);
 		QueuePipe.connect(stringBufferFilter.objectOutputPort, timestampFilter.inputPort);
@@ -115,11 +121,11 @@ public class TraceReconstructionAnalysis2 extends Analysis {
 		// QueuePipe.connect(timestampFilter.mismatchingOutputPort, YYY); // ignore this case
 		QueuePipe.connect(traceIdFilter.matchingOutputPort, instanceOfFilter.inputPort);
 		// QueuePipe.connect(traceIdFilter.mismatchingOutputPort, traceIdFilter.inputPort); // ignore this case
-//		QueuePipe.connect(XXX, traceReconstructionFilter.timestampInputPort);
+//		QueuePipe.connect(clockStage.timestampOutputPort, traceReconstructionFilter.timestampInputPort);	// ignore this case
 		QueuePipe.connect(instanceOfFilter.matchingOutputPort, traceReconstructionFilter.recordInputPort);
 		// QueuePipe.connect(instanceOfFilter.mismatchingOutputPort, instanceOfFilter.inputPort); // ignore this case
 		QueuePipe.connect(traceReconstructionFilter.traceValidOutputPort, countingFilter.INPUT_OBJECT);
-		// QueuePipe.connect(traceReconstructionFilter.traceInvalidOutputPort, XXX); // ignore this case
+		// QueuePipe.connect(traceReconstructionFilter.traceInvalidOutputPort, ); // ignore this case
 
 		final Pipeline pipeline = new Pipeline();
 		pipeline.setStartStages(startStages);

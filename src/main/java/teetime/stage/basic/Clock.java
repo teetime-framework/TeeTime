@@ -12,11 +12,10 @@ import teetime.framework.core.IOutputPort;
  *
  * @since 1.10
  *
- * @param <T>
  */
-public class Clock<T> extends AbstractFilter<Clock<T>> {
+public class Clock extends AbstractFilter<Clock> {
 
-	public final IOutputPort<Clock<T>, Long> timestampOutputPort = this.createOutputPort();
+	public final IOutputPort<Clock, Long> timestampOutputPort = this.createOutputPort();
 
 	private boolean initialDelayExceeded = false;
 
@@ -27,7 +26,7 @@ public class Clock<T> extends AbstractFilter<Clock<T>> {
 	 * @since 1.10
 	 */
 	@Override
-	protected boolean execute(final Context<Clock<T>> context) {
+	protected boolean execute(final Context<Clock> context) {
 		if (!initialDelayExceeded) {
 			initialDelayExceeded = true;
 			sleep(initialDelayInMs);
