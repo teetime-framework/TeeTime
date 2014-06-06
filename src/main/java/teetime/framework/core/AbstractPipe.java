@@ -18,9 +18,9 @@ package teetime.framework.core;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
- * 
+ *
  * @param <T>
  *            The type of the pipe
  * @param <P>
@@ -30,7 +30,7 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 
 	/**
 	 * @author Christian Wulf
-	 * 
+	 *
 	 * @since 1.10
 	 */
 	public enum PipeState {
@@ -42,19 +42,23 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	private IOutputPort<?, ? extends T> sourcePort;
 	private IInputPort<?, T> targetPort;
 
+	@Override
 	public IOutputPort<?, ? extends T> getSourcePort() {
 		return this.sourcePort;
 	}
 
+	@Override
 	public IInputPort<?, T> getTargetPort() {
 		return this.targetPort;
 	}
 
+	@Override
 	public <S extends ISource, A extends T> void setSourcePort(final IOutputPort<S, A> sourcePort) {
 		sourcePort.setAssociatedPipe(this);
 		this.sourcePort = sourcePort;
 	}
 
+	@Override
 	public <S extends ISink<S>, A extends T> void setTargetPort(final IInputPort<S, T> targetPort) {
 		targetPort.setAssociatedPipe(this);
 		this.targetPort = targetPort;
@@ -63,6 +67,7 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	// BETTER remove if it does not add any new functionality
 	protected abstract void putInternal(T token);
 
+	@Override
 	public void put(final T token) {
 		this.putInternal(token);
 	}
@@ -70,10 +75,12 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	// BETTER remove if it does not add any new functionality
 	protected abstract T tryTakeInternal();
 
+	@Override
 	public final T tryTake() {
 		return this.tryTakeInternal();
 	}
 
+	@Override
 	public final void notifyPipelineStarts() throws Exception {
 		if (this.state == PipeState.UNINITIALIZED) {
 			this.state = PipeState.PIPELINE_STARTED;
@@ -84,13 +91,14 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 
 	/**
 	 * This method is called exactly once iff the pipeline is started.
-	 * 
+	 *
 	 * @since 1.10
 	 */
 	public void onPipelineStarts() {
 		// empty default implementation
 	}
 
+	@Override
 	public final void notifyPipelineStops() {
 		if (this.state != PipeState.PIPELINE_STOPPED) {
 			this.state = PipeState.PIPELINE_STOPPED;
@@ -101,13 +109,14 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 
 	/**
 	 * This method is called exactly once iff the pipeline is stopped.
-	 * 
+	 *
 	 * @since 1.10
 	 */
 	public void onPipelineStops() {
 		// empty default implementation
 	}
 
+	@Override
 	public void close() {
 		this.targetPort.close();
 	}

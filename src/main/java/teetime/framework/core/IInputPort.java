@@ -1,9 +1,9 @@
 package teetime.framework.core;
 
 /**
- * 
+ *
  * @author Christian Wulf
- * 
+ *
  * @param <S>
  *            the stage, this port belongs to<br>
  *            <i>(used for ensuring type safety)</i>
@@ -14,24 +14,24 @@ public interface IInputPort<S extends IStage, T> extends IPort<S, T> {
 	/**
 	 * @since 1.10
 	 */
-	enum State {
-		OPEN, CLOSING
+	public enum PortState {
+		OPENED, CLOSED
 	}
 
 	/**
 	 * @since 1.10
 	 */
-	public abstract State getState();
+	public abstract PortState getState();
 
 	/**
 	 * @since 1.10
 	 */
-	public abstract void setState(final State state);
+	public abstract void setState(final PortState state);
 
 	/**
 	 * @since 1.10
 	 */
-	public abstract void setPortListener(final IPortListener<S> stageListener);
+	public abstract void setPortListener(final IPortListener portListener);
 
 	/**
 	 * @since 1.10

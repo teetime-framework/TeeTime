@@ -14,13 +14,14 @@
  * limitations under the License.
  ***************************************************************************/
 
-package teetime.framework.concurrent;
+package teetime.framework.scheduling;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+import teetime.framework.concurrent.IStageScheduler;
+import teetime.framework.concurrent.IStageWorkList;
+import teetime.framework.concurrent.StageWorkArrayList;
 import teetime.framework.core.IOutputPort;
 import teetime.framework.core.IPipeline;
 import teetime.framework.core.IStage;
@@ -30,13 +31,14 @@ import teetime.framework.core.IStage;
  *
  * @since 1.10
  */
-public class NextStageScheduler implements IStageScheduler {
+public final class NextStageScheduler implements IStageScheduler {
 
-	protected final Map<IStage, Boolean> statesOfStages = new HashMap<IStage, Boolean>();
-	private final Collection<IStage> highestPrioritizedEnabledStages = new ArrayList<IStage>();
+	private final Set<IStage> highestPrioritizedEnabledStages = new LinkedHashSet<IStage>();
 	private final IStageWorkList workList;
+	private final StageStateManager stageStateManager;
 
-	public NextStageScheduler(final IPipeline pipeline, final int accessesDeviceId) throws Exception {
+	public NextStageScheduler(final IPipeline pipeline, final int accessesDeviceId, final StageStateManager stageStateManager) {
+		this.stageStateManager = stageStateManager;
 		// this.workList = new StageWorkList(accessesDeviceId, pipeline.getStages().size());
 		this.workList = new StageWorkArrayList(pipeline, accessesDeviceId); // faster implementation
 
@@ -45,10 +47,6 @@ public class NextStageScheduler implements IStageScheduler {
 		this.workList.pushAll(this.highestPrioritizedEnabledStages);
 		// System.out.println("Initial work list: " + this.workList);
 		// this.workList.addAll(pipeline.getStages());
-
-		for (final IStage stage : pipeline.getStages()) {
-			this.enable(stage);
-		}
 	}
 
 	@Override
@@ -58,28 +56,23 @@ public class NextStageScheduler implements IStageScheduler {
 
 	@Override
 	public boolean isAnyStageActive() {
-		// System.out.println("workList: " + this.workList);
 		return !this.workList.isEmpty();
-	}
-
-	protected void enable(final IStage stage) {
-		// // / TODO consider to move state (enabled/disabled) of stage to stage for performance reasons
-		this.statesOfStages.put(stage, Boolean.TRUE);
 	}
 
 	@Override
 	public void disable(final IStage stage) {
-		this.statesOfStages.put(stage, Boolean.FALSE);
+		this.stageStateManager.disable(stage);
 
 		if (this.highestPrioritizedEnabledStages.contains(stage)) {
 			this.highestPrioritizedEnabledStages.remove(stage);
 			for (final IStage outputStage : stage.getAllOutputStages()) {
-				if (this.statesOfStages.get(outputStage) == Boolean.TRUE) {
+				if (this.stageStateManager.isStageEnabled(outputStage)) {
 					this.highestPrioritizedEnabledStages.add(outputStage);
 				}
 			}
 		}
 
+//		System.out.println("highestPrioritizedEnabledStages: "+this.highestPrioritizedEnabledStages);
 		stage.fireSignalClosingToAllOutputPorts();
 	}
 

@@ -18,28 +18,35 @@ package teetime.framework.core;
 
 class InputPortImpl<S extends IStage, T> extends AbstractPort<S, T> implements IInputPort<S, T> {
 
-	private volatile State state = State.OPEN;
+	private volatile PortState state = PortState.OPENED;
 
-	private IPortListener<S> stageListener;
+	private IPortListener portListener;
 
 	public InputPortImpl(final S owningStage) {
 		this.setOwningStage(owningStage);
 	}
 
-	public void setState(final State state) {
+	@Override
+	public void setState(final PortState state) {
 		this.state = state;
 	}
 
-	public State getState() {
+	@Override
+	public PortState getState() {
 		return this.state;
 	}
 
-	public void setPortListener(final IPortListener<S> stageListener) {
-		this.stageListener = stageListener;
+	@Override
+	public void setPortListener(final IPortListener portListener) {
+		this.portListener = portListener;
 	}
 
+	@Override
 	public void close() {
-		this.stageListener.onPortIsClosed(this);
+		if (this.portListener == null) {
+			throw new NullPointerException("stage: "+this.getOwningStage().getClass().getName()+", port="+this.getIndex());
+		}
+		this.portListener.onPortIsClosed(this);
 	}
 
 }

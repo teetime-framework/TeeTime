@@ -17,10 +17,10 @@ package teetime.framework.core;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
-public interface IPortListener<S extends IStage> {
+public interface IPortListener {
 
-	void onPortIsClosed(IInputPort<S, ?> inputPort);
+	void onPortIsClosed(IInputPort<?, ?> inputPort);
 }

@@ -15,21 +15,15 @@
  ***************************************************************************/
 package teetime.framework.concurrent;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import teetime.framework.core.IOutputPort;
-import teetime.framework.core.IPipe;
-import teetime.framework.core.IPipeCommand;
 import teetime.framework.core.IPipeline;
 import teetime.framework.core.IStage;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class StageWorkArrayList implements IStageWorkList {
@@ -41,7 +35,6 @@ public class StageWorkArrayList implements IStageWorkList {
 		public int numToBeExecuted;
 	}
 
-	private final IPipeline pipeline;
 	private final int accessesDeviceId;
 
 	/** sorted array where the last stage has highest priority */
@@ -53,75 +46,25 @@ public class StageWorkArrayList implements IStageWorkList {
 	 * @since 1.10
 	 */
 	public StageWorkArrayList(final IPipeline pipeline, final int accessesDeviceId) {
-		this.pipeline = pipeline;
 		this.accessesDeviceId = accessesDeviceId;
-		final List<IStage> localStages = this.init();
 
-		this.stages = new SchedulableStage[localStages.size()];
-		for (int i = 0; i < localStages.size(); i++) {
+		this.stages = new SchedulableStage[pipeline.getStages().size()];
+		for (IStage stage : pipeline.getStages()) {
 			final SchedulableStage schedulableStage = new SchedulableStage();
-			schedulableStage.stage = localStages.get(i);
+			schedulableStage.stage = stage;
 			schedulableStage.numToBeExecuted = 0;
-			this.stages[i] = schedulableStage;
+			this.stages[stage.getSchedulingIndex()] = schedulableStage;
 		}
 	}
 
-	private List<IStage> init() {
-		this.setDepthForEachStage();
-
-		final List<IStage> stageList = new ArrayList<IStage>(this.pipeline.getStages());
-		final Comparator<? super IStage> depthComparator = new Comparator<IStage>() {
-			public int compare(final IStage o1, final IStage o2) {
-				if (o1.getDepth() == o2.getDepth()) {
-					return 0;
-				} else if (o1.getDepth() < o2.getDepth()) {
-					return -1;
-				} else {
-					return 1;
-				}
-			}
-		};
-
-		Collections.sort(stageList, depthComparator);
-
-		for (int i = 0; i < stageList.size(); i++) {
-			stageList.get(i).setSchedulingIndex(i);
-		}
-
-		return stageList;
-	}
-
-	private void setDepthForEachStage() {
-		final IPipeCommand setDepthCommand = new IPipeCommand() {
-			public void execute(final IPipe<?> pipe) throws Exception {
-				final IStage sourceStage = pipe.getSourcePort().getOwningStage();
-				final IStage owningStage = pipe.getTargetPort().getOwningStage();
-				if (owningStage.getDepth() == IStage.DEPTH_NOT_SET) {
-					owningStage.setDepth(sourceStage.getDepth() + 1);
-					owningStage.notifyOutputPipes(this);
-				}
-			}
-		};
-
-		for (final IStage startStage : this.pipeline.getStartStages()) {
-			startStage.setDepth(0);
-		}
-
-		for (final IStage startStage : this.pipeline.getStartStages()) {
-			try {
-				startStage.notifyOutputPipes(setDepthCommand);
-			} catch (final Exception e) {
-				throw new IllegalStateException("may not happen", e);
-			}
-		}
-	}
-
+	@Override
 	public void pushAll(final Collection<? extends IStage> stages) {
 		for (final IStage stage : stages) {
 			this.push(stage);
 		}
 	}
 
+	@Override
 	public void pushAll(final IOutputPort<?, ?>[] outputPorts) {
 		for (final IOutputPort<?, ?> outputPort : outputPorts) {
 			if (outputPort != null) {
@@ -148,12 +91,12 @@ public class StageWorkArrayList implements IStageWorkList {
 		return isValid;
 	}
 
+	@Override
 	public IStage pop() {
 		final SchedulableStage schedulableStage = this.stages[this.lastIndex];
 		// schedulableStage.numToBeExecuted--;
 		schedulableStage.numToBeExecuted = 0;
-		cond:
-		if (schedulableStage.numToBeExecuted == 0)
+		cond: if (schedulableStage.numToBeExecuted == 0)
 		{
 			for (int i = this.lastIndex - 1; i >= this.firstIndex; i--) {
 				if (this.stages[i].numToBeExecuted > 0) {
@@ -167,11 +110,13 @@ public class StageWorkArrayList implements IStageWorkList {
 		return schedulableStage.stage;
 	}
 
+	@Override
 	public IStage read() {
 		final SchedulableStage schedulableStage = this.stages[this.lastIndex];
 		return schedulableStage.stage;
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return this.lastIndex == -1;
 	}

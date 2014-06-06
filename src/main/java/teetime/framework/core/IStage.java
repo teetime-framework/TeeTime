@@ -70,22 +70,9 @@ public interface IStage extends IBaseStage {
 	// void execute(TaskBundle taskBundle);
 
 	/**
-	 *
-	 * @return <code>true</code> if the stage may be disabled by the pipeline scheduler, <code>false</code> otherwise.
-	 *
-	 * @since 1.10
-	 */
-	boolean mayBeDisabled();
-
-	/**
 	 * @since 1.10
 	 */
 	void fireSignalClosingToAllOutputPorts();
-
-	/**
-	 * @since 1.10
-	 */
-	void fireSignalClosingToAllInputPorts();
 
 	/**
 	 * @since 1.10

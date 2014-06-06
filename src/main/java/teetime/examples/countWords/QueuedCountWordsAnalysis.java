@@ -17,7 +17,6 @@
 package teetime.examples.countWords;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,8 +24,10 @@ import teetime.framework.concurrent.StageTerminationPolicy;
 import teetime.framework.concurrent.WorkerThread;
 import teetime.framework.core.AbstractFilter;
 import teetime.framework.core.Analysis;
+import teetime.framework.core.IInputPort.PortState;
 import teetime.framework.core.IPipeline;
 import teetime.framework.core.IStage;
+import teetime.framework.core.Pipeline;
 import teetime.framework.sequential.MethodCallPipe;
 import teetime.framework.sequential.QueuePipe;
 import teetime.stage.basic.RepeaterSource;
@@ -81,6 +82,9 @@ public class QueuedCountWordsAnalysis extends Analysis {
 		final OutputWordsCountSink outputWordsCountStage = new OutputWordsCountSink();
 
 		// add each stage to a stage list
+		final List<IStage> startStages = new LinkedList<IStage>();
+		startStages.add(repeaterSource);
+
 		final List<IStage> stages = new LinkedList<IStage>();
 		stages.add(repeaterSource);
 		stages.add(findFilesStage);
@@ -100,34 +104,11 @@ public class QueuedCountWordsAnalysis extends Analysis {
 		QueuePipe.connect(merger.outputPort, outputWordsCountStage.fileWordcountTupleInputPort);
 
 		repeaterSource.START.setAssociatedPipe(new MethodCallPipe<Boolean>(Boolean.TRUE));
+		repeaterSource.START.setState(PortState.CLOSED);
 
-		final IPipeline pipeline = new IPipeline() {
-			@Override
-			@SuppressWarnings("unchecked")
-			public List<? extends IStage> getStartStages() {
-				return Arrays.asList(repeaterSource);
-			}
-
-			@Override
-			public List<IStage> getStages() {
-				return stages;
-			}
-
-			@Override
-			public void fireStartNotification() throws Exception {
-				for (final IStage stage : this.getStartStages()) {
-					stage.notifyPipelineStarts();
-				}
-			}
-
-			@Override
-			public void fireStopNotification() {
-				for (final IStage stage : this.getStartStages()) {
-					stage.notifyPipelineStops();
-				}
-			}
-		};
-
+		final Pipeline pipeline = new Pipeline();
+		pipeline.setStartStages(startStages);
+		pipeline.setStages(stages);
 		return pipeline;
 	}
 

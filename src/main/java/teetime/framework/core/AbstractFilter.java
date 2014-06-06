@@ -34,9 +34,7 @@ import teetime.util.concurrent.workstealing.exception.DequePopException;
  *            the extending stage
  *
  */
-public abstract class AbstractFilter<S extends IStage> extends AbstractStage implements ISink<S>, ISource, IPortListener<S> {
-
-	protected volatile boolean mayBeDisabled; // BETTER write only non-concurrent code in a stage
+public abstract class AbstractFilter<S extends IStage> extends AbstractStage implements ISink<S>, ISource {
 
 	/**
 	 * @author Christian Wulf
@@ -78,7 +76,6 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 		}
 	};
 
-	private int enabledInputPorts = 0;
 	/**
 	 * 0=in-memory, x>0=disk0, disk1, display0, display1, socket0, socket1 etc.
 	 */
@@ -176,62 +173,12 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 	 * @since 1.10
 	 */
 	@Override
-	public void onPortIsClosed(final IInputPort<S, ?> inputPort) {
-		// inputPort.setState(IInputPort.State.CLOSING);
-		this.enabledInputPorts--;	// FIXME not thread-safe
-		// this.logger.info("Closed " + "(" + this.enabledInputPorts + " remaining) " + inputPort + " of " + this);
-
-		if (this.enabledInputPorts < 0) {
-			this.logger.error("Closed port more than once: portIndex=" + inputPort.getIndex() + " for stage " + this);
-		}
-
-		this.checkWhetherThisStageMayBeDisabled();
-	}
-
-	/**
-	 * @since 1.10
-	 */
-	private void checkWhetherThisStageMayBeDisabled() {
-		if (this.enabledInputPorts == 0) {
-			this.mayBeDisabled = true;
-			// this.logger.info(this.toString() + " can now be disabled by the pipeline scheduler.");
-		}
-	}
-
-	/**
-	 * @since 1.10
-	 */
-	@Override
-	public void fireSignalClosingToAllInputPorts() {
-		// this.logger.info("Fire closing signal to all input ports of: " + this);
-
-		if (!this.inputPorts.isEmpty()) {
-			for (final IInputPort<S, ?> port : this.inputPorts) {
-				port.close();
-			}
-		} else {
-			this.checkWhetherThisStageMayBeDisabled();
-		}
-	}
-
-	/**
-	 * @since 1.10
-	 */
-	@Override
 	public void fireSignalClosingToAllOutputPorts() {
 		try {
 			this.notifyOutputPipes(this.closeCommand);
 		} catch (final Exception e) {
-			throw new IllegalStateException("may not happen");
+			throw new IllegalStateException("may not happen", e);
 		}
-	}
-
-	/**
-	 * @since 1.10
-	 */
-	@Override
-	public boolean mayBeDisabled() {
-		return this.mayBeDisabled;
 	}
 
 	@Override
@@ -250,8 +197,6 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 		final InputPortImpl<S, T> inputPort = new InputPortImpl<S, T>((S) this);
 		inputPort.setIndex(this.inputPorts.size());
 		this.inputPorts.add(inputPort);
-		inputPort.setPortListener(this);
-		this.enabledInputPorts++;
 		return inputPort;
 	}
 

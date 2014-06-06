@@ -16,11 +16,20 @@
 
 package teetime.framework.concurrent;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import teetime.framework.core.IInputPort;
+import teetime.framework.core.IInputPort.PortState;
+import teetime.framework.core.IPipe;
+import teetime.framework.core.IPipeCommand;
 import teetime.framework.core.IPipeline;
 import teetime.framework.core.IStage;
+import teetime.framework.scheduling.NextStageScheduler;
+import teetime.framework.scheduling.StageStateManager;
 import teetime.util.StopWatch;
 
 /**
@@ -30,8 +39,11 @@ import teetime.util.StopWatch;
  */
 public class WorkerThread extends Thread {
 
+	private static final int NUM_ITERATIONS_TO_MEASURE = 10000;
+
 	private final IPipeline pipeline;
 	private IStageScheduler stageScheduler;
+	private StageStateManager stageStateManager;
 
 	private volatile StageTerminationPolicy terminationPolicy;
 	private volatile boolean shouldTerminate = false;
@@ -40,15 +52,72 @@ public class WorkerThread extends Thread {
 
 	// statistics
 	private final StopWatch stopWatch = new StopWatch();
-	private final List<Long> durationPer10000IterationsInNs = new LinkedList<Long>();
+	private final List<Long> durationPerXIterationsInNs = new LinkedList<Long>();
 	private int iterations;
 
 	public WorkerThread(final IPipeline pipeline, final int accessesDeviceId) {
 		this.pipeline = pipeline;
+		this.accessesDeviceId = accessesDeviceId;
+	}
+
+	private void initStages(final IPipeline pipeline) {
 		for (final IStage stage : pipeline.getStages()) {
 			stage.setOwningThread(this);
 		}
-		this.accessesDeviceId = accessesDeviceId;
+
+		this.setDepthForEachStage(pipeline);
+		this.setSchedulingIndexForEachhStage(pipeline);
+	}
+
+	private void setDepthForEachStage(final IPipeline pipeline) {
+		final IPipeCommand setDepthCommand = new IPipeCommand() {
+			@Override
+			public void execute(final IPipe<?> pipe) throws Exception {
+				final IStage sourceStage = pipe.getSourcePort().getOwningStage();
+				final IStage owningStage = pipe.getTargetPort().getOwningStage();
+				if (owningStage.getDepth() == IStage.DEPTH_NOT_SET) {
+					owningStage.setDepth(sourceStage.getDepth() + 1);
+					owningStage.notifyOutputPipes(this);
+				}
+			}
+		};
+
+		for (final IStage startStage : pipeline.getStartStages()) {
+			startStage.setDepth(0);
+		}
+
+		for (final IStage startStage : pipeline.getStartStages()) {
+			try {
+				startStage.notifyOutputPipes(setDepthCommand);
+			} catch (final Exception e) {
+				throw new IllegalStateException("may not happen", e);
+			}
+		}
+	}
+
+	private List<IStage> setSchedulingIndexForEachhStage(final IPipeline pipeline) {
+		final List<IStage> stageList = new ArrayList<IStage>(pipeline.getStages());
+
+		final Comparator<? super IStage> depthComparator = new Comparator<IStage>() {
+			@Override
+			public int compare(final IStage o1, final IStage o2) {
+				if (o1.getDepth() == o2.getDepth()) {
+					return 0;
+				} else if (o1.getDepth() < o2.getDepth()) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+		};
+
+		Collections.sort(stageList, depthComparator);
+
+		for (int i = 0; i < stageList.size(); i++) {
+			stageList.get(i).setSchedulingIndex(i);
+		}
+
+		return stageList;
 	}
 
 	@Override
@@ -94,38 +163,37 @@ public class WorkerThread extends Thread {
 			// stageExecutionStopWatch.getDurationInNs(); //4952
 
 			// 6268 -> 5350 (w/o after) -> 4450 (w/o before) -> 3800 (w/o stage)
-//			final long schedulingOverhead = this.iterationStopWatch.getDurationInNs();
+			// final long schedulingOverhead = this.iterationStopWatch.getDurationInNs();
 			// final long schedulingOverhead = beforeStageExecutionStopWatch.getDurationInNs(); //327
 			// final long schedulingOverhead = stageExecutionStopWatch.getDurationInNs(); //1416
 			// final long schedulingOverhead = afterStageExecutionStopWatch.getDurationInNs(); //2450
 			// rest: ~2000 (measurement overhead?)
-			if ((iterations % 10000) == 0) {
+			if ((this.iterations % NUM_ITERATIONS_TO_MEASURE) == 0) {
 				this.stopWatch.end();
-				this.durationPer10000IterationsInNs.add(stopWatch.getDurationInNs());
+				this.durationPerXIterationsInNs.add(this.stopWatch.getDurationInNs());
 				this.stopWatch.start();
 			}
 		}
 
 		this.stopWatch.end();
-		this.durationPer10000IterationsInNs.add(stopWatch.getDurationInNs());
+		this.durationPerXIterationsInNs.add(this.stopWatch.getDurationInNs());
 
 		this.cleanUpDatastructures();
 	}
 
 	private void executeTerminationPolicy(final IStage executedStage, final boolean executedSuccessfully) {
-		// System.out.println("WorkerThread.executeTerminationPolicy(): " + this.terminationPolicy +
-		// ", executedSuccessfully=" + executedSuccessfully
-		// + ", mayBeDisabled=" + executedStage.mayBeDisabled());
+//		 System.out.println("executeTerminationPolicy executedStage=" + executedStage + ", executedSuccessfully=" + executedSuccessfully);
+//		 System.out.println("executeTerminationPolicy areAllInputPortsClosed(executedStage)=" + this.stageStateManager.areAllInputPortsClosed(executedStage));
 
 		switch (this.terminationPolicy) {
 		case TERMINATE_STAGE_AFTER_NEXT_EXECUTION:
-			if (executedStage.mayBeDisabled()) {
+			if (this.stageStateManager.areAllInputPortsClosed(executedStage)) {
 				this.stageScheduler.disable(executedStage);
 			}
 			break;
 		case TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION:
 			if (!executedSuccessfully) {
-				if (executedStage.mayBeDisabled()) {
+				if (this.stageStateManager.areAllInputPortsClosed(executedStage)) {
 					this.stageScheduler.disable(executedStage);
 				}
 			}
@@ -141,8 +209,20 @@ public class WorkerThread extends Thread {
 	}
 
 	private void initDatastructures() throws Exception {
+		// stages need to be initialized here, because in a concurrent context some stages (e.g., a merger) is executed after its pipeline has been created.
+		this.initStages(this.pipeline);
+		this.stageStateManager = new StageStateManager(this.pipeline);
+		this.stageScheduler = new NextStageScheduler(this.pipeline, this.accessesDeviceId, this.stageStateManager);
+
+		for (final IStage startStage : this.pipeline.getStartStages()) {
+			for (IInputPort<IStage, ?> inputPort : startStage.getInputPorts()) {
+				if (inputPort.getState() == PortState.CLOSED) {
+					inputPort.close();
+				}
+			}
+		}
+
 		this.pipeline.fireStartNotification();
-		this.stageScheduler = new NextStageScheduler(this.pipeline, this.accessesDeviceId);
 	}
 
 	private void startStageExecution(final IStage stage) {
@@ -150,18 +230,13 @@ public class WorkerThread extends Thread {
 	}
 
 	private void finishStageExecution(final IStage stage, final boolean executedSuccessfully) {
-		// System.out.println("Executed stage " + stage + " successfully: " + executedSuccessfully);
 		if (!executedSuccessfully) { // statistics
 			this.executedUnsuccessfullyCount++;
 		}
 	}
 
 	private void cleanUpDatastructures() {
-		// System.out.println("Cleaning up datastructures...");
-		// System.out.println("Firing stop notification...");
 		this.pipeline.fireStopNotification();
-		// System.out.println("Thread terminated:" + this);
-		// System.out.println(this.getName() + ": executedUnsuccessfullyCount=" + this.executedUnsuccessfullyCount);
 	}
 
 	public IPipeline getPipeline() {
@@ -171,9 +246,11 @@ public class WorkerThread extends Thread {
 	// BETTER remove this method since it is not intuitive; add a check to onStartPipeline so that a stage automatically
 	// disables itself if it has no input ports
 	public void terminate(final StageTerminationPolicy terminationPolicyToUse) {
-		for (final IStage startStage : this.pipeline.getStartStages()) {
-			startStage.fireSignalClosingToAllInputPorts();
-		}
+//		for (final IStage startStage : this.pipeline.getStartStages()) {
+//			if (this.stageStateManager.areAllInputPortsClosed(startStage)) {
+//				startStage.fireSignalClosingToAllInputPorts();
+//			}
+//		}
 
 		this.setTerminationPolicy(terminationPolicyToUse);
 	}
@@ -193,14 +270,14 @@ public class WorkerThread extends Thread {
 	}
 
 	public List<Long> getDurationPer10000IterationsInNs() {
-		return durationPer10000IterationsInNs;
+		return this.durationPerXIterationsInNs;
 	}
 
 	/**
 	 * @since 1.10
 	 */
 	public int getIterations() {
-		return iterations;
+		return this.iterations;
 	}
 
 }

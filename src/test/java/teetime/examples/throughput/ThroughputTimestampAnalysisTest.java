@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import kieker.common.logging.LogFactory;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
+
+import kieker.common.logging.LogFactory;
 
 /**
  * @author Christian Wulf

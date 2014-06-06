@@ -17,7 +17,6 @@
 package teetime.examples.countWords;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,11 +27,13 @@ import teetime.framework.concurrent.StageTerminationPolicy;
 import teetime.framework.concurrent.WorkerThread;
 import teetime.framework.core.Analysis;
 import teetime.framework.core.IInputPort;
+import teetime.framework.core.IInputPort.PortState;
 import teetime.framework.core.IOutputPort;
 import teetime.framework.core.IPipeline;
 import teetime.framework.core.ISink;
 import teetime.framework.core.ISource;
 import teetime.framework.core.IStage;
+import teetime.framework.core.Pipeline;
 import teetime.framework.sequential.MethodCallPipe;
 import teetime.framework.sequential.QueuePipe;
 import teetime.stage.basic.RepeaterSource;
@@ -51,7 +52,7 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 	private static final String START_DIRECTORY_NAME = ".";
 	private static final int SECONDS = 1000;
 
-	private static final int MAX_NUM_THREADS = 3;
+	private static final int MAX_NUM_THREADS = 2; // 1:2150, 2:1400, 3:~1400, 4:~1400
 
 	private WorkerThread[] ioThreads;
 	private WorkerThread[] nonIoThreads;
@@ -82,6 +83,7 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 
 		int numThreads = Runtime.getRuntime().availableProcessors();
 		numThreads = Math.min(MAX_NUM_THREADS, numThreads); // only for testing purposes
+		System.out.println("Using " + numThreads + " Threads.");
 
 		this.nonIoThreads = new WorkerThread[numThreads];
 		for (int i = 0; i < this.nonIoThreads.length; i++) {
@@ -142,6 +144,9 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 		distributor.setAccessesDeviceId(1);
 
 		// add each stage to a stage list
+		final List<IStage> startStages = new LinkedList<IStage>();
+		startStages.add(repeaterSource);
+
 		final List<IStage> stages = new LinkedList<IStage>();
 		stages.add(repeaterSource);
 		stages.add(directoryName2Files);
@@ -152,34 +157,11 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 		QueuePipe.connect(directoryName2Files.fileOutputPort, distributor.genericInputPort);
 
 		repeaterSource.START.setAssociatedPipe(new MethodCallPipe<Boolean>(Boolean.TRUE));
+		repeaterSource.START.setState(PortState.CLOSED);
 
-		final IPipeline pipeline = new IPipeline() {
-			@Override
-			@SuppressWarnings("unchecked")
-			public List<? extends IStage> getStartStages() {
-				return Arrays.asList(repeaterSource);
-			}
-
-			@Override
-			public List<IStage> getStages() {
-				return stages;
-			}
-
-			@Override
-			public void fireStartNotification() throws Exception {
-				for (final IStage stage : this.getStartStages()) {
-					stage.notifyPipelineStarts();
-				}
-			}
-
-			@Override
-			public void fireStopNotification() {
-				for (final IStage stage : this.getStartStages()) {
-					stage.notifyPipelineStops();
-				}
-			}
-		};
-
+		final Pipeline pipeline = new Pipeline();
+		pipeline.setStartStages(startStages);
+		pipeline.setStages(stages);
 		return pipeline;
 	}
 
@@ -191,6 +173,9 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 		final Merger<Pair<File, Integer>> merger = new Merger<Pair<File, Integer>>();
 
 		// add each stage to a stage list
+		final List<IStage> startStages = new LinkedList<IStage>();
+		startStages.add(distributor);
+
 		final List<IStage> stages = new LinkedList<IStage>();
 		stages.add(distributor);
 		stages.add(countWordsStage0);
@@ -207,33 +192,9 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 
 		SingleProducerSingleConsumerPipe.connect(merger.outputPort, printingMerger.getNewInputPort());
 
-		final IPipeline pipeline = new IPipeline() {
-			@Override
-			@SuppressWarnings("unchecked")
-			public List<? extends IStage> getStartStages() {
-				return Arrays.asList(distributor);
-			}
-
-			@Override
-			public List<IStage> getStages() {
-				return stages;
-			}
-
-			@Override
-			public void fireStartNotification() throws Exception {
-				for (final IStage stage : this.getStartStages()) {
-					stage.notifyPipelineStarts();
-				}
-			}
-
-			@Override
-			public void fireStopNotification() {
-				for (final IStage stage : this.getStartStages()) {
-					stage.notifyPipelineStops();
-				}
-			}
-		};
-
+		final Pipeline pipeline = new Pipeline();
+		pipeline.setStartStages(startStages);
+		pipeline.setStages(stages);
 		return pipeline;
 	}
 
@@ -245,6 +206,9 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 		outputWordsCountStage.setAccessesDeviceId(2);
 
 		// add each stage to a stage list
+		final List<IStage> startStages = new LinkedList<IStage>();
+		startStages.add(merger);
+
 		final List<IStage> stages = new LinkedList<IStage>();
 		stages.add(merger);
 		stages.add(outputWordsCountStage);
@@ -252,33 +216,9 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 		// connect stages by pipes
 		QueuePipe.connect(merger.outputPort, outputWordsCountStage.fileWordcountTupleInputPort);
 
-		final IPipeline pipeline = new IPipeline() {
-			@Override
-			@SuppressWarnings("unchecked")
-			public List<? extends IStage> getStartStages() {
-				return Arrays.asList(merger);
-			}
-
-			@Override
-			public List<IStage> getStages() {
-				return stages;
-			}
-
-			@Override
-			public void fireStartNotification() throws Exception {
-				for (final IStage stage : this.getStartStages()) {
-					stage.notifyPipelineStarts();
-				}
-			}
-
-			@Override
-			public void fireStopNotification() {
-				for (final IStage stage : this.getStartStages()) {
-					stage.notifyPipelineStops();
-				}
-			}
-		};
-
+		final Pipeline pipeline = new Pipeline();
+		pipeline.setStartStages(startStages);
+		pipeline.setStages(stages);
 		return pipeline;
 	}
 
@@ -327,8 +267,8 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 				System.out.println(stage); // NOPMD (Just for example purposes)
 			}
 
-//			final long durationInNs = thread.getDurationInNs();
-//			System.out.println(thread + " takes " + TimeUnit.NANOSECONDS.toMillis(durationInNs) + " ms");
+			// final long durationInNs = thread.getDurationInNs();
+			// System.out.println(thread + " takes " + TimeUnit.NANOSECONDS.toMillis(durationInNs) + " ms");
 		}
 
 		for (final WorkerThread thread : this.nonIoThreads) {
@@ -337,16 +277,16 @@ public class ConcurrentCountWordsAnalysis extends Analysis {
 				System.out.println(stage); // NOPMD (Just for example purposes)
 			}
 
-//			final long durationInNs = thread.getDurationInNs();
-//			System.out.println(thread + " takes " + TimeUnit.NANOSECONDS.toMillis(durationInNs) + " ms");
+			// final long durationInNs = thread.getDurationInNs();
+			// System.out.println(thread + " takes " + TimeUnit.NANOSECONDS.toMillis(durationInNs) + " ms");
 
-//			if (durationInNs > maxDuration) {
-//				maxDuration = durationInNs;
-//				maxThread = thread;
-//			}
+			// if (durationInNs > maxDuration) {
+			// maxDuration = durationInNs;
+			// maxThread = thread;
+			// }
 		}
 
-//		System.out.println("maxThread: " + maxThread.toString() + " takes " + TimeUnit.NANOSECONDS.toMillis(maxDuration) + " ms"); // NOPMD (Just for example
-																																	// purposes)
+		// System.out.println("maxThread: " + maxThread.toString() + " takes " + TimeUnit.NANOSECONDS.toMillis(maxDuration) + " ms"); // NOPMD (Just for example
+		// purposes)
 	}
 }
