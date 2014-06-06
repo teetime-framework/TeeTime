@@ -73,7 +73,7 @@ public class WorkerThread extends Thread {
 			// beforeStageExecutionStopWatch.end();
 
 			this.startStageExecution(stage);
-			// stageExecutionStopWatch.start(); // expensive: takes 1/3 of overall time
+			// stageExecutionStopWatch.start();
 			final boolean executedSuccessfully = stage.execute();
 			// stageExecutionStopWatch.end();
 			this.finishStageExecution(stage, executedSuccessfully);

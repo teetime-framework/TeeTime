@@ -178,7 +178,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 	@Override
 	public void onPortIsClosed(final IInputPort<S, ?> inputPort) {
 		// inputPort.setState(IInputPort.State.CLOSING);
-		this.enabledInputPorts--;
+		this.enabledInputPorts--;	// FIXME not thread-safe
 		// this.logger.info("Closed " + "(" + this.enabledInputPorts + " remaining) " + inputPort + " of " + this);
 
 		if (this.enabledInputPorts < 0) {
