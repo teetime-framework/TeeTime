@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import kieker.common.record.IMonitoringRecord;
 import teetime.framework.concurrent.StageTerminationPolicy;
 import teetime.framework.concurrent.WorkerThread;
 import teetime.framework.core.AbstractFilter;
@@ -38,9 +37,11 @@ import teetime.stage.CollectorSink;
 import teetime.stage.kieker.File2RecordFilter;
 import teetime.stage.kieker.className.ClassNameRegistryRepository;
 
+import kieker.common.record.IMonitoringRecord;
+
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class RecordReaderAnalysis extends Analysis {
@@ -65,7 +66,7 @@ public class RecordReaderAnalysis extends Analysis {
 	public void start() {
 		super.start();
 
-		this.workerThread.terminate(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
+		this.workerThread.setTerminationPolicy(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
 
 		this.workerThread.start();
 		try {
@@ -152,7 +153,7 @@ public class RecordReaderAnalysis extends Analysis {
 
 		for (final IStage stage : pipeline.getStages()) {
 			if (stage instanceof AbstractFilter<?>) {
-//				System.out.println(stage.getClass().getName() + ": " + ((AbstractFilter<?>) stage).getOverallDurationInNs()); // NOPMD (Just for example purposes)
+				// System.out.println(stage.getClass().getName() + ": " + ((AbstractFilter<?>) stage).getOverallDurationInNs()); // NOPMD (Just for example purposes)
 			}
 		}
 	}

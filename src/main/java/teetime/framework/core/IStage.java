@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public interface IStage extends IBaseStage {
@@ -36,11 +36,11 @@ public interface IStage extends IBaseStage {
 	/**
 	 * @return <code>true</code> if the execution took enough tokens from the input ports so that the stage made progress due to this execution, <code>false</code>
 	 *         otherwise. The definition of <i>progress</i> depends on the semantics of the particular stage.
-	 *
+	 * 
 	 *         <p>
 	 *         Example usage:
 	 *         </p>
-	 *
+	 * 
 	 *         <pre>
 	 * <code>
 	 * boolean execute() {
@@ -53,7 +53,7 @@ public interface IStage extends IBaseStage {
 	 * }
 	 * 	</code>
 	 * </pre>
-	 *
+	 * 
 	 * @since 1.10
 	 */
 	boolean execute();
@@ -86,7 +86,7 @@ public interface IStage extends IBaseStage {
 
 	/**
 	 * <i>Hint: Used by the scheduler</i>
-	 *
+	 * 
 	 * @since 1.10
 	 */
 	Context<?> getContext();
@@ -113,7 +113,7 @@ public interface IStage extends IBaseStage {
 
 	/**
 	 * <i>Hint: Only needed by stage schedulers.</i>
-	 *
+	 * 
 	 * @return
 	 */
 	public Collection<? extends IStage> getAllOutputStages();
@@ -156,5 +156,10 @@ public interface IStage extends IBaseStage {
 	 * @since 1.10
 	 */
 	public void setSchedulingIndex(int schedulingIndex);
+
+	/**
+	 * @since 1.10
+	 */
+	public boolean isSchedulable();
 
 }

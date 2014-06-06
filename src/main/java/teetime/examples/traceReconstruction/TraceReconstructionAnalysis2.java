@@ -18,10 +18,6 @@ package teetime.examples.traceReconstruction;
 import java.util.LinkedList;
 import java.util.List;
 
-import kieker.analysis.plugin.filter.flow.TraceEventRecords;
-import kieker.common.record.IMonitoringRecord;
-import kieker.common.record.controlflow.OperationExecutionRecord;
-import kieker.common.record.flow.IFlowRecord;
 import teetime.framework.concurrent.StageTerminationPolicy;
 import teetime.framework.concurrent.WorkerThread;
 import teetime.framework.core.Analysis;
@@ -46,9 +42,14 @@ import teetime.stage.stringBuffer.handler.IMonitoringRecordHandler;
 import teetime.stage.stringBuffer.handler.StringHandler;
 import teetime.stage.util.TextLine;
 
+import kieker.analysis.plugin.filter.flow.TraceEventRecords;
+import kieker.common.record.IMonitoringRecord;
+import kieker.common.record.controlflow.OperationExecutionRecord;
+import kieker.common.record.flow.IFlowRecord;
+
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class TraceReconstructionAnalysis2 extends Analysis {
@@ -150,7 +151,7 @@ public class TraceReconstructionAnalysis2 extends Analysis {
 	public void start() {
 		super.start();
 
-		this.workerThread.terminate(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
+		this.workerThread.setTerminationPolicy(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
 
 		this.workerThread.start();
 		try {

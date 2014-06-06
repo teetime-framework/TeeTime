@@ -23,7 +23,7 @@ import teetime.framework.core.IStage;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class StageWorkArrayList implements IStageWorkList {
@@ -75,7 +75,7 @@ public class StageWorkArrayList implements IStageWorkList {
 	}
 
 	private void push(final IStage stage) {
-		if (this.isValid(stage)) {
+		if (stage.isSchedulable() && this.isValid(stage)) {
 			this.firstIndex = Math.min(stage.getSchedulingIndex(), this.firstIndex);
 			this.lastIndex = Math.max(stage.getSchedulingIndex(), this.lastIndex);
 			this.stages[stage.getSchedulingIndex()].numToBeExecuted++;

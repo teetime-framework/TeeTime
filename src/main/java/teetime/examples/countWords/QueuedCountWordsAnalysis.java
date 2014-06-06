@@ -37,7 +37,7 @@ import teetime.util.Pair;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class QueuedCountWordsAnalysis extends Analysis {
@@ -61,7 +61,7 @@ public class QueuedCountWordsAnalysis extends Analysis {
 	public void start() {
 		super.start();
 
-		this.workerThread.terminate(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
+		this.workerThread.setTerminationPolicy(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
 
 		this.workerThread.start();
 		try {
@@ -130,7 +130,7 @@ public class QueuedCountWordsAnalysis extends Analysis {
 
 		for (final IStage stage : pipeline.getStages()) {
 			if (stage instanceof AbstractFilter<?>) {
-//				System.out.println(stage.getClass().getName() + ": " + ((AbstractFilter<?>) stage).getOverallDurationInNs()); // NOPMD (Just for example purposes)
+				// System.out.println(stage.getClass().getName() + ": " + ((AbstractFilter<?>) stage).getOverallDurationInNs()); // NOPMD (Just for example purposes)
 			}
 		}
 

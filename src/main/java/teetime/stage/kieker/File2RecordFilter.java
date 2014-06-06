@@ -17,15 +17,11 @@ package teetime.stage.kieker;
 
 import java.io.File;
 
-import kieker.common.record.IMonitoringRecord;
-import kieker.common.util.filesystem.BinaryCompressionMethod;
-import kieker.common.util.filesystem.FSUtil;
 import teetime.framework.concurrent.ConcurrentWorkStealingPipe;
 import teetime.framework.concurrent.ConcurrentWorkStealingPipeFactory;
 import teetime.framework.core.CompositeFilter;
 import teetime.framework.core.IInputPort;
 import teetime.framework.core.IOutputPort;
-import teetime.framework.sequential.MethodCallPipe;
 import teetime.stage.FileExtensionFilter;
 import teetime.stage.basic.merger.Merger;
 import teetime.stage.kieker.className.ClassNameRegistryCreationFilter;
@@ -36,9 +32,13 @@ import teetime.stage.kieker.fileToRecord.ZipFile2RecordFilter;
 import teetime.stage.predicate.IsDirectoryPredicate;
 import teetime.stage.predicate.PredicateFilter;
 
+import kieker.common.record.IMonitoringRecord;
+import kieker.common.util.filesystem.BinaryCompressionMethod;
+import kieker.common.util.filesystem.FSUtil;
+
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class File2RecordFilter extends CompositeFilter {
@@ -55,7 +55,7 @@ public class File2RecordFilter extends CompositeFilter {
 	public File2RecordFilter(final ClassNameRegistryRepository classNameRegistryRepository) {
 		this.classNameRegistryRepository = classNameRegistryRepository;
 
-		// FIXME does not yet work with more than one thread due to classNameRegistryRepository
+		// FIXME does not yet work with more than one thread due to classNameRegistryRepository (reason not comprehensible)
 		// create stages
 		final PredicateFilter<File> isDirectoryFilter = new PredicateFilter<File>(new IsDirectoryPredicate());
 		final ClassNameRegistryCreationFilter classNameRegistryCreationFilter = new ClassNameRegistryCreationFilter(this.classNameRegistryRepository);
@@ -76,12 +76,12 @@ public class File2RecordFilter extends CompositeFilter {
 		final IOutputPort<FileExtensionFilter, File> zipFileOutputPort = fileExtensionFilter.createOutputPortForFileExtension(FSUtil.ZIP_FILE_EXTENSION);
 
 		// connect ports by pipes
-		MethodCallPipe.connect(isDirectoryFilter.matchingOutputPort, classNameRegistryCreationFilter.directoryInputPort);
-		MethodCallPipe.connect(isDirectoryFilter.mismatchingOutputPort, fileMerger.getNewInputPort()); // BETTER restructure pipeline
-		MethodCallPipe.connect(classNameRegistryCreationFilter.relayDirectoryOutputPort, directory2FilesFilter.directoryInputPort);
-		MethodCallPipe.connect(classNameRegistryCreationFilter.filePrefixOutputPort, directory2FilesFilter.filePrefixInputPort);
-		MethodCallPipe.connect(directory2FilesFilter.fileOutputPort, fileExtensionFilter.fileInputPort);
-		MethodCallPipe.connect(zipFileOutputPort, fileMerger.getNewInputPort());
+		this.connectWithPipe(isDirectoryFilter.matchingOutputPort, classNameRegistryCreationFilter.directoryInputPort);
+		this.connectWithPipe(isDirectoryFilter.mismatchingOutputPort, fileMerger.getNewInputPort()); // BETTER restructure pipeline
+		this.connectWithPipe(classNameRegistryCreationFilter.relayDirectoryOutputPort, directory2FilesFilter.directoryInputPort);
+		this.connectWithPipe(classNameRegistryCreationFilter.filePrefixOutputPort, directory2FilesFilter.filePrefixInputPort);
+		this.connectWithPipe(directory2FilesFilter.fileOutputPort, fileExtensionFilter.fileInputPort);
+		this.connectWithPipe(zipFileOutputPort, fileMerger.getNewInputPort());
 
 		final ConcurrentWorkStealingPipeFactory<File> concurrentWorkStealingPipeFactory0 = new ConcurrentWorkStealingPipeFactory<File>();
 		final ConcurrentWorkStealingPipe<File> concurrentWorkStealingPipe0 = concurrentWorkStealingPipeFactory0.create();

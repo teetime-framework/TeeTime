@@ -29,7 +29,7 @@ import kieker.common.logging.LogFactory;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class ThroughputTimestampAnalysisTest {

@@ -38,7 +38,7 @@ import teetime.stage.basic.ObjectProducer;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class ThroughputTimestampAnalysis extends Analysis {
@@ -63,7 +63,7 @@ public class ThroughputTimestampAnalysis extends Analysis {
 		final IPipeline pipeline = this.buildPipeline(this.numNoopFilters);
 
 		this.workerThread = new WorkerThread(pipeline, 0);
-		this.workerThread.terminate(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
+		this.workerThread.setTerminationPolicy(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
 	}
 
 	/**
@@ -89,12 +89,12 @@ public class ThroughputTimestampAnalysis extends Analysis {
 
 		final List<IStage> stages = new LinkedList<IStage>();
 		stages.add(objectProducer);
-		if (this.shouldUseQueue) {
-			stages.add(startTimestampFilter);
-			stages.addAll(Arrays.asList(noopFilters));
-			stages.add(stopTimestampFilter);
-			stages.add(collectorSink);
+		stages.add(startTimestampFilter);
+		stages.addAll(Arrays.asList(noopFilters));
+		stages.add(stopTimestampFilter);
+		stages.add(collectorSink);
 
+		if (this.shouldUseQueue) {
 			// connect stages by pipes
 			QueuePipe.connect(objectProducer.outputPort, startTimestampFilter.inputPort);
 			QueuePipe.connect(startTimestampFilter.outputPort, noopFilters[0].inputPort);
@@ -104,6 +104,12 @@ public class ThroughputTimestampAnalysis extends Analysis {
 			QueuePipe.connect(noopFilters[noopFilters.length - 1].outputPort, stopTimestampFilter.inputPort);
 			QueuePipe.connect(stopTimestampFilter.outputPort, collectorSink.objectInputPort);
 		} else {
+			startTimestampFilter.setSchedulable(false);
+			for (NoopFilter<TimestampObject> noopFilter : noopFilters) {
+				noopFilter.setSchedulable(false);
+			}
+			stopTimestampFilter.setSchedulable(false);
+			collectorSink.setSchedulable(false);
 			// connect stages by pipes
 			MethodCallPipe.connect(objectProducer.outputPort, startTimestampFilter.inputPort);
 			MethodCallPipe.connect(startTimestampFilter.outputPort, noopFilters[0].inputPort);
@@ -131,7 +137,7 @@ public class ThroughputTimestampAnalysis extends Analysis {
 			e.printStackTrace();
 		}
 
-		List<Long> durationPer10000IterationsInNs = workerThread.getDurationPer10000IterationsInNs();
+		List<Long> durationPer10000IterationsInNs = this.workerThread.getDurationPer10000IterationsInNs();
 
 		long overallSumInNs = 0;
 		for (int i = 0; i < durationPer10000IterationsInNs.size(); i++) {
@@ -143,11 +149,11 @@ public class ThroughputTimestampAnalysis extends Analysis {
 			sumInNs += durationPer10000IterationsInNs.get(i);
 		}
 
-		System.out.println("Thread iterations: " + workerThread.getIterations() + " times");
+		System.out.println("Thread iterations: " + this.workerThread.getIterations() + " times");
 		System.out.println("Thread execution time: " + TimeUnit.NANOSECONDS.toMillis(overallSumInNs) + " ms");
-		System.out.println("Thread half duration/iterations: " + sumInNs / (workerThread.getIterations() / 2)
+		System.out.println("Thread half duration/iterations: " + sumInNs / (this.workerThread.getIterations() / 2)
 				+ " ns/iteration");
-		System.out.println("Thread unsuccessfully executed stages: " + workerThread.getExecutedUnsuccessfullyCount()
+		System.out.println("Thread unsuccessfully executed stages: " + this.workerThread.getExecutedUnsuccessfullyCount()
 				+ " times");
 	}
 

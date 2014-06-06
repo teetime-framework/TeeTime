@@ -25,20 +25,20 @@ import java.util.List;
 import teetime.util.concurrent.workstealing.exception.DequePopException;
 
 /**
- *
+ * 
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
- *
+ * 
  * @param <S>
  *            the extending stage
- *
+ * 
  */
 public abstract class AbstractFilter<S extends IStage> extends AbstractStage implements ISink<S>, ISource {
 
 	/**
 	 * @author Christian Wulf
-	 *
+	 * 
 	 * @since 1.10
 	 */
 	public enum StageState {
@@ -53,6 +53,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 
 	private int depth = IStage.DEPTH_NOT_SET;
 	private int schedulingIndex;
+	private boolean schedulable = true;
 
 	private final List<IInputPort<S, ?>> inputPorts = new ArrayList<IInputPort<S, ?>>();
 	private final List<IInputPort<S, ?>> readOnlyInputPorts = Collections.unmodifiableList(this.inputPorts);
@@ -131,7 +132,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 
 	/**
 	 * This method is called exactly once iff the pipeline is started.
-	 *
+	 * 
 	 * @throws Exception
 	 * @since 1.10
 	 */
@@ -162,7 +163,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 
 	/**
 	 * This method is called exactly once iff the pipeline is stopped.
-	 *
+	 * 
 	 * @since 1.10
 	 */
 	public void onPipelineStops() {
@@ -270,5 +271,14 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 	@Override
 	public void setSchedulingIndex(final int schedulingIndex) {
 		this.schedulingIndex = schedulingIndex;
+	}
+
+	@Override
+	public boolean isSchedulable() {
+		return this.schedulable;
+	}
+
+	public void setSchedulable(final boolean schedulable) {
+		this.schedulable = schedulable;
 	}
 }

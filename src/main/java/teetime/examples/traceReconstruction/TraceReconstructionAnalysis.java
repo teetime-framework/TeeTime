@@ -67,21 +67,24 @@ public class TraceReconstructionAnalysis extends Analysis {
 		final List<IStage> stages = new LinkedList<IStage>();
 
 		final IPipeline pipeline = new IPipeline() {
-			@SuppressWarnings("unchecked")
+			@Override
 			public List<? extends IStage> getStartStages() {
 				return startStages;
 			}
 
+			@Override
 			public List<IStage> getStages() {
 				return stages;
 			}
 
+			@Override
 			public void fireStartNotification() throws Exception {
 				for (final IStage stage : this.getStartStages()) {
 					stage.notifyPipelineStarts();
 				}
 			}
 
+			@Override
 			public void fireStopNotification() {
 				for (final IStage stage : this.getStartStages()) {
 					stage.notifyPipelineStops();
@@ -96,7 +99,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 	public void start() {
 		super.start();
 
-		this.workerThread.terminate(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
+		this.workerThread.setTerminationPolicy(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
 
 		this.workerThread.start();
 		try {

@@ -32,7 +32,7 @@ import teetime.stage.basic.ObjectProducer;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class ThroughputAnalysis<T> extends Analysis {
@@ -53,7 +53,7 @@ public class ThroughputAnalysis<T> extends Analysis {
 		final IPipeline pipeline = this.buildPipeline(this.numNoopFilters);
 
 		this.workerThread = new WorkerThread(pipeline, 0);
-		this.workerThread.terminate(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
+		this.workerThread.setTerminationPolicy(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
 	}
 
 	/**

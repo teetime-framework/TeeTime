@@ -16,7 +16,9 @@
 package teetime.framework.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Christian Wulf
@@ -27,7 +29,17 @@ public abstract class CompositeFilter implements IBaseStage {
 
 	protected final List<IBaseStage> schedulableStages = new ArrayList<IBaseStage>();
 
+	private final Map<IOutputPort<?, ?>, IInputPort<?, ?>> connections = new HashMap<IOutputPort<?, ?>, IInputPort<?, ?>>();
+
 	public List<IBaseStage> getSchedulableStages() {
 		return this.schedulableStages;
+	}
+
+	protected <T, S1 extends ISink<S1>, S0 extends ISource> void connectWithPipe(final IOutputPort<S0, T> sourcePort, final IInputPort<S1, T> targetPort) {
+		this.connections.put(sourcePort, targetPort);
+	}
+
+	public Map<IOutputPort<?, ?>, IInputPort<?, ?>> getConnections() {
+		return this.connections;
 	}
 }

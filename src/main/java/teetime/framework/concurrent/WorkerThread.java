@@ -34,7 +34,7 @@ import teetime.util.StopWatch;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class WorkerThread extends Thread {
@@ -182,8 +182,8 @@ public class WorkerThread extends Thread {
 	}
 
 	private void executeTerminationPolicy(final IStage executedStage, final boolean executedSuccessfully) {
-//		 System.out.println("executeTerminationPolicy executedStage=" + executedStage + ", executedSuccessfully=" + executedSuccessfully);
-//		 System.out.println("executeTerminationPolicy areAllInputPortsClosed(executedStage)=" + this.stageStateManager.areAllInputPortsClosed(executedStage));
+		// System.out.println("executeTerminationPolicy executedStage=" + executedStage + ", executedSuccessfully=" + executedSuccessfully);
+		// System.out.println("executeTerminationPolicy areAllInputPortsClosed(executedStage)=" + this.stageStateManager.areAllInputPortsClosed(executedStage));
 
 		switch (this.terminationPolicy) {
 		case TERMINATE_STAGE_AFTER_NEXT_EXECUTION:
@@ -243,21 +243,9 @@ public class WorkerThread extends Thread {
 		return this.pipeline;
 	}
 
-	// BETTER remove this method since it is not intuitive; add a check to onStartPipeline so that a stage automatically
-	// disables itself if it has no input ports
-	public void terminate(final StageTerminationPolicy terminationPolicyToUse) {
-//		for (final IStage startStage : this.pipeline.getStartStages()) {
-//			if (this.stageStateManager.areAllInputPortsClosed(startStage)) {
-//				startStage.fireSignalClosingToAllInputPorts();
-//			}
-//		}
-
-		this.setTerminationPolicy(terminationPolicyToUse);
-	}
-
 	/**
 	 * If not set, this thread will run infinitely.
-	 *
+	 * 
 	 * @param terminationPolicyToUse
 	 */
 	public void setTerminationPolicy(final StageTerminationPolicy terminationPolicyToUse) {

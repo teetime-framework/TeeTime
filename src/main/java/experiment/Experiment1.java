@@ -29,6 +29,7 @@ import teetime.framework.concurrent.WorkerThread;
 import teetime.framework.core.Analysis;
 import teetime.framework.core.IStage;
 import teetime.framework.core.Pipeline;
+import teetime.framework.sequential.MethodCallPipe;
 import teetime.framework.sequential.QueuePipe;
 import teetime.stage.NoopFilter;
 import teetime.util.StatisticsUtil;
@@ -41,7 +42,7 @@ import kieker.common.configuration.Configuration;
 
 /**
  * @author Nils Christian Ehmke
- *
+ * 
  * @since 1.10
  */
 public class Experiment1 {
@@ -55,7 +56,7 @@ public class Experiment1 {
 	private static final int NUMBER_OF_MAXIMAL_FILTERS = 1000;
 	private static final int NUMBER_OF_FILTERS_PER_STEP = 50;
 
-	private static final IAnalysis[] analyses = { new TeeTimeAnalysis(), new KiekerAnalysis() };
+	private static final IAnalysis[] analyses = { new TeeTimeMethodCallAnalysis(), new TeeTimeAnalysis(), new KiekerAnalysis() };
 
 	private static final List<Long> measuredTimes = new ArrayList<Long>();
 
@@ -122,6 +123,74 @@ public class Experiment1 {
 
 	}
 
+	private static final class TeeTimeMethodCallAnalysis extends Analysis implements IAnalysis {
+
+		private static final int SECONDS = 1000;
+
+		private Pipeline pipeline;
+		private WorkerThread workerThread;
+
+		public TeeTimeMethodCallAnalysis() {}
+
+		@Override
+		public void initialize(final int numberOfFilters, final int numberOfObjectsToSend) {
+
+			@SuppressWarnings("unchecked")
+			final NoopFilter<Object>[] noopFilters = new NoopFilter[numberOfFilters];
+			// create stages
+			final teetime.stage.basic.ObjectProducer<Object> objectProducer = new teetime.stage.basic.ObjectProducer<Object>(
+					numberOfObjectsToSend, new Callable<Object>() {
+						@Override
+						public Object call() throws Exception {
+							return new Object();
+						}
+					});
+			for (int i = 0; i < noopFilters.length; i++) {
+				noopFilters[i] = new NoopFilter<Object>();
+				noopFilters[i].setSchedulable(false);
+			}
+
+			// add each stage to a stage list
+			final List<IStage> startStages = new LinkedList<IStage>();
+			startStages.add(objectProducer);
+
+			final List<IStage> stages = new LinkedList<IStage>();
+			stages.add(objectProducer);
+			stages.addAll(Arrays.asList(noopFilters));
+
+			// connect stages by pipes
+			MethodCallPipe.connect(objectProducer.outputPort, noopFilters[0].inputPort);
+			for (int i = 1; i < noopFilters.length; i++) {
+				MethodCallPipe.connect(noopFilters[i - 1].outputPort, noopFilters[i].inputPort);
+			}
+
+			this.pipeline = new Pipeline();
+			this.pipeline.setStartStages(startStages);
+			this.pipeline.setStages(stages);
+
+			this.workerThread = new WorkerThread(this.pipeline, 0);
+			this.workerThread.setTerminationPolicy(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
+		}
+
+		@Override
+		public String getName() {
+			return "TeeTimeMethodCall";
+		}
+
+		@Override
+		public void execute() {
+			super.start();
+
+			this.workerThread.start();
+			try {
+				this.workerThread.join(60 * SECONDS);
+			} catch (final InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
 	private static final class TeeTimeAnalysis extends Analysis implements IAnalysis {
 
 		private static final int SECONDS = 1000;
@@ -167,7 +236,7 @@ public class Experiment1 {
 			this.pipeline.setStages(stages);
 
 			this.workerThread = new WorkerThread(this.pipeline, 0);
-			this.workerThread.terminate(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
+			this.workerThread.setTerminationPolicy(StageTerminationPolicy.TERMINATE_STAGE_AFTER_UNSUCCESSFUL_EXECUTION);
 		}
 
 		@Override
