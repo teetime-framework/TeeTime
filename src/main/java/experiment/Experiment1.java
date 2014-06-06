@@ -24,11 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import kieker.analysis.AnalysisController;
-import kieker.analysis.IAnalysisController;
-import kieker.analysis.stage.EmptyPassOnFilter;
-import kieker.analysis.stage.ObjectProducer;
-import kieker.common.configuration.Configuration;
 import teetime.framework.concurrent.StageTerminationPolicy;
 import teetime.framework.concurrent.WorkerThread;
 import teetime.framework.core.Analysis;
@@ -37,6 +32,12 @@ import teetime.framework.core.Pipeline;
 import teetime.framework.sequential.QueuePipe;
 import teetime.stage.NoopFilter;
 import teetime.util.StatisticsUtil;
+
+import kieker.analysis.AnalysisController;
+import kieker.analysis.IAnalysisController;
+import kieker.analysis.stage.EmptyPassOnFilter;
+import kieker.analysis.stage.ObjectProducer;
+import kieker.common.configuration.Configuration;
 
 /**
  * @author Nils Christian Ehmke
