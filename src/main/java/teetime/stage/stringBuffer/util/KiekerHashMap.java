@@ -89,7 +89,8 @@ public class KiekerHashMap {
 
 	public final String get(final String value) {
 		final int hash = KiekerHashMap.hash(value);
-		return this.segments[(hash >>> this.segmentShift) & this.segmentMask].get(value, hash);
+		Segment segment = this.segments[(hash >>> this.segmentShift) & this.segmentMask];
+		return segment.get(value, hash);
 	}
 
 	// ---------------- Inner Classes --------------

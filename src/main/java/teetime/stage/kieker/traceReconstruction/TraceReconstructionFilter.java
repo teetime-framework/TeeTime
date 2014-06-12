@@ -20,10 +20,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
-import kieker.analysis.plugin.filter.flow.TraceEventRecords;
-import kieker.common.record.flow.IFlowRecord;
-import kieker.common.record.flow.trace.AbstractTraceEvent;
-import kieker.common.record.flow.trace.TraceMetadata;
 import teetime.framework.core.AbstractFilter;
 import teetime.framework.core.Context;
 import teetime.framework.core.IInputPort;
@@ -31,9 +27,14 @@ import teetime.framework.core.IOutputPort;
 import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
 
+import kieker.analysis.plugin.filter.flow.TraceEventRecords;
+import kieker.common.record.flow.IFlowRecord;
+import kieker.common.record.flow.trace.AbstractTraceEvent;
+import kieker.common.record.flow.trace.TraceMetadata;
+
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class TraceReconstructionFilter extends AbstractFilter<TraceReconstructionFilter> {
@@ -50,7 +51,7 @@ public class TraceReconstructionFilter extends AbstractFilter<TraceReconstructio
 	private boolean timeout;
 	private long maxEncounteredLoggingTimestamp = -1;
 
-	private Map<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
+	private static final Map<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
 
 	@Override
 	protected boolean execute(final Context<TraceReconstructionFilter> context) {
@@ -96,10 +97,10 @@ public class TraceReconstructionFilter extends AbstractFilter<TraceReconstructio
 	}
 
 	private void putIfFinished(final Long traceId, final Context<TraceReconstructionFilter> context) {
-		final TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
+		final TraceBuffer traceBuffer = TraceReconstructionFilter.traceId2trace.get(traceId);
 		if (traceBuffer.isFinished()) {
 			synchronized (this) { // has to be synchronized because of timeout cleanup
-				this.traceId2trace.remove(traceId);
+				TraceReconstructionFilter.traceId2trace.remove(traceId);
 			}
 			this.put(traceBuffer, context);
 		}
@@ -109,12 +110,12 @@ public class TraceReconstructionFilter extends AbstractFilter<TraceReconstructio
 		Long traceId = null;
 		if (record instanceof TraceMetadata) {
 			traceId = ((TraceMetadata) record).getTraceId();
-			final TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
+			final TraceBuffer traceBuffer = TraceReconstructionFilter.traceId2trace.get(traceId);
 
 			traceBuffer.setTrace((TraceMetadata) record);
 		} else if (record instanceof AbstractTraceEvent) {
 			traceId = ((AbstractTraceEvent) record).getTraceId();
-			final TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
+			final TraceBuffer traceBuffer = TraceReconstructionFilter.traceId2trace.get(traceId);
 
 			traceBuffer.insertEvent((AbstractTraceEvent) record);
 		}
@@ -132,7 +133,7 @@ public class TraceReconstructionFilter extends AbstractFilter<TraceReconstructio
 		final long duration = timestamp - this.maxTraceDuration;
 		final long traceTimeout = timestamp - this.maxTraceTimeout;
 
-		for (final Iterator<Entry<Long, TraceBuffer>> iterator = this.traceId2trace.entrySet().iterator(); iterator.hasNext();) {
+		for (final Iterator<Entry<Long, TraceBuffer>> iterator = TraceReconstructionFilter.traceId2trace.entrySet().iterator(); iterator.hasNext();) {
 			final TraceBuffer traceBuffer = iterator.next().getValue();
 			if ((traceBuffer.getMaxLoggingTimestamp() <= traceTimeout) // long time no see
 					|| (traceBuffer.getMinLoggingTimestamp() <= duration)) { // max duration is gone
@@ -180,12 +181,12 @@ public class TraceReconstructionFilter extends AbstractFilter<TraceReconstructio
 		this.maxEncounteredLoggingTimestamp = maxEncounteredLoggingTimestamp;
 	}
 
-	public Map<Long, TraceBuffer> getTraceId2trace() {
-		return this.traceId2trace;
-	}
-
-	public void setTraceId2trace(final Map<Long, TraceBuffer> traceId2trace) {
-		this.traceId2trace = traceId2trace;
-	}
+	// public Map<Long, TraceBuffer> getTraceId2trace() {
+	// return TraceReconstructionFilter.traceId2trace;
+	// }
+	//
+	// public void setTraceId2trace(final Map<Long, TraceBuffer> traceId2trace) {
+	// TraceReconstructionFilter.traceId2trace = traceId2trace;
+	// }
 
 }
