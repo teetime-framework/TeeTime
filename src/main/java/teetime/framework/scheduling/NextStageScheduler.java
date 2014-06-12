@@ -28,7 +28,7 @@ import teetime.framework.core.IStage;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public final class NextStageScheduler implements IStageScheduler {
@@ -50,17 +50,17 @@ public final class NextStageScheduler implements IStageScheduler {
 	}
 
 	@Override
-	public IStage get() {
+	public final IStage get() {
 		return this.workList.read();
 	}
 
 	@Override
-	public boolean isAnyStageActive() {
+	public final boolean isAnyStageActive() {
 		return !this.workList.isEmpty();
 	}
 
 	@Override
-	public void disable(final IStage stage) {
+	public final void disable(final IStage stage) {
 		this.stageStateManager.disable(stage);
 
 		if (this.highestPrioritizedEnabledStages.contains(stage)) {
@@ -72,12 +72,12 @@ public final class NextStageScheduler implements IStageScheduler {
 			}
 		}
 
-//		System.out.println("highestPrioritizedEnabledStages: "+this.highestPrioritizedEnabledStages);
+		// System.out.println("highestPrioritizedEnabledStages: "+this.highestPrioritizedEnabledStages);
 		stage.fireSignalClosingToAllOutputPorts();
 	}
 
 	@Override
-	public void determineNextStage(final IStage stage, final boolean executedSuccessfully) {
+	public final void determineNextStage(final IStage stage, final boolean executedSuccessfully) {
 		// final Collection<? extends IStage> outputStages = stage.getContext().getOutputStages();
 		final IOutputPort<?, ?>[] outputPorts = stage.getContext().getOutputPorts();
 		if (outputPorts.length > 0) {

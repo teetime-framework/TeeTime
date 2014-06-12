@@ -5,14 +5,14 @@ import java.util.List;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class Context<S extends IStage> {
 
 	/**
 	 * @author Christian Wulf
-	 *
+	 * 
 	 * @since 1.10
 	 */
 	private static class InputPortContainer {
@@ -61,7 +61,7 @@ public class Context<S extends IStage> {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param inputPort
 	 * @return
 	 * @since 1.10
@@ -76,7 +76,7 @@ public class Context<S extends IStage> {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param inputPort
 	 * @return
 	 * @since 1.10
@@ -90,19 +90,19 @@ public class Context<S extends IStage> {
 		return token;
 	}
 
-	private <T> void logTransaction(final IInputPort<S, T> inputPort, final T token) {
-		final InputPortContainer inputPortContainer = this.inputPortContainers[inputPort.getIndex()];
+	private final <T> void logTransaction(final IInputPort<S, T> inputPort, final T token) {
+		// final InputPortContainer inputPortContainer = this.inputPortContainers[inputPort.getIndex()];
 		// final List<Object> tokenList = this.pipesTakenFrom.get(inputPort);
-		inputPortContainer.takenElements.add(token);
+		// inputPortContainer.takenElements.add(token);
 
-		this.numTakenElements++;
+		// this.numTakenElements++;
 	}
 
 	/**
-	 *
+	 * 
 	 * @param inputPort
 	 * @return
-	 *
+	 * 
 	 * @since 1.10
 	 */
 	public <T> T read(final IInputPort<S, T> inputPort) {
@@ -113,7 +113,9 @@ public class Context<S extends IStage> {
 	void clear() {
 		// for (final List<Object> takenElements : this.pipesTakenFrom.values()) {
 		for (final InputPortContainer inputPortContainer : this.inputPortContainers) {
-			inputPortContainer.takenElements.clear();
+			// inputPortContainer.takenElements.clear();
+			IReservablePipe<Object> reservablePipe = (IReservablePipe<Object>) inputPortContainer.pipe;
+			reservablePipe.commit();
 		}
 	}
 
@@ -124,10 +126,13 @@ public class Context<S extends IStage> {
 
 		for (final InputPortContainer inputPortContainer : this.inputPortContainers) {
 
-			for (int k = inputPortContainer.takenElements.size() - 1; k >= 0; k--) {
-				final Object element = inputPortContainer.takenElements.get(k);
-				inputPortContainer.pipe.put(element);
-			}
+			// for (int k = inputPortContainer.takenElements.size() - 1; k >= 0; k--) {
+			// final Object element = inputPortContainer.takenElements.get(k);
+			// inputPortContainer.pipe.put(element);
+			// }
+
+			IReservablePipe<Object> reservablePipe = (IReservablePipe<Object>) inputPortContainer.pipe;
+			reservablePipe.rollback();
 
 			this.numTakenElements -= inputPortContainer.takenElements.size();
 		}

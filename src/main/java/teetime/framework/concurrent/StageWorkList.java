@@ -7,6 +7,7 @@ import java.util.List;
 import teetime.framework.core.IOutputPort;
 import teetime.framework.core.IStage;
 
+@Deprecated
 public class StageWorkList implements IStageWorkList {
 
 	// private static final Log LOG = LogFactory.getLog(StageWorkList.class);
@@ -67,6 +68,7 @@ public class StageWorkList implements IStageWorkList {
 		return this.workList.toString();
 	}
 
+	@Override
 	public void pushAll(final IOutputPort<?, ?>[] outputPorts) {
 		final Collection<IStage> filteredCollection = new ArrayList<IStage>(outputPorts.length);
 		for (final IOutputPort<?, ?> outputPort : outputPorts) {

@@ -30,6 +30,7 @@ import teetime.framework.core.IStage;
 import teetime.framework.core.Pipeline;
 import teetime.framework.sequential.MethodCallPipe;
 import teetime.framework.sequential.QueuePipe;
+import teetime.framework.sequential.ReservableQueuePipe;
 import teetime.stage.CollectorSink;
 import teetime.stage.NoopFilter;
 import teetime.stage.StartTimestampFilter;
@@ -96,13 +97,13 @@ public class ThroughputTimestampAnalysis extends Analysis {
 
 		if (this.shouldUseQueue) {
 			// connect stages by pipes
-			QueuePipe.connect(objectProducer.outputPort, startTimestampFilter.inputPort);
-			QueuePipe.connect(startTimestampFilter.outputPort, noopFilters[0].inputPort);
+			ReservableQueuePipe.connect(objectProducer.outputPort, startTimestampFilter.inputPort);
+			ReservableQueuePipe.connect(startTimestampFilter.outputPort, noopFilters[0].inputPort);
 			for (int i = 1; i < noopFilters.length; i++) {
-				QueuePipe.connect(noopFilters[i - 1].outputPort, noopFilters[i].inputPort);
+				ReservableQueuePipe.connect(noopFilters[i - 1].outputPort, noopFilters[i].inputPort);
 			}
-			QueuePipe.connect(noopFilters[noopFilters.length - 1].outputPort, stopTimestampFilter.inputPort);
-			QueuePipe.connect(stopTimestampFilter.outputPort, collectorSink.objectInputPort);
+			ReservableQueuePipe.connect(noopFilters[noopFilters.length - 1].outputPort, stopTimestampFilter.inputPort);
+			ReservableQueuePipe.connect(stopTimestampFilter.outputPort, collectorSink.objectInputPort);
 		} else {
 			startTimestampFilter.setSchedulable(false);
 			for (NoopFilter<TimestampObject> noopFilter : noopFilters) {

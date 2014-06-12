@@ -35,7 +35,7 @@ public interface IPipe<T> {
 	/**
 	 * @since 1.10
 	 */
-	void put(T object);
+	void put(T element);
 
 	/**
 	 * @since 1.10

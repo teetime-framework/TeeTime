@@ -39,7 +39,7 @@ import teetime.util.StopWatch;
  */
 public class WorkerThread extends Thread {
 
-	private static final int NUM_ITERATIONS_TO_MEASURE = 10000;
+	private static final int NUM_ITERATIONS_TO_MEASURE = 100000;
 
 	private final IPipeline pipeline;
 	private IStageScheduler stageScheduler;
@@ -225,11 +225,11 @@ public class WorkerThread extends Thread {
 		this.pipeline.fireStartNotification();
 	}
 
-	private void startStageExecution(final IStage stage) {
+	private final void startStageExecution(final IStage stage) {
 		// System.out.println("Executing stage: " + stage);
 	}
 
-	private void finishStageExecution(final IStage stage, final boolean executedSuccessfully) {
+	private final void finishStageExecution(final IStage stage, final boolean executedSuccessfully) {
 		if (!executedSuccessfully) { // statistics
 			this.executedUnsuccessfullyCount++;
 		}
