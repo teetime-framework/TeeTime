@@ -15,12 +15,14 @@
  ***************************************************************************/
 package teetime.framework.sequential;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import teetime.framework.core.AbstractPipe;
 import teetime.framework.core.IInputPort;
 import teetime.framework.core.IOutputPort;
+import teetime.framework.core.IReservablePipe;
 import teetime.framework.core.ISink;
 import teetime.framework.core.ISource;
 import teetime.util.concurrent.workstealing.CircularWorkStealingDeque;
@@ -30,9 +32,10 @@ import teetime.util.concurrent.workstealing.CircularWorkStealingDeque;
  * 
  * @since 1.10
  */
-public class QueuePipe<T> extends AbstractPipe<T> {
+public class QueuePipe<T> extends AbstractPipe<T> implements IReservablePipe<T> {
 
-	private final List<T> queue = new ArrayList<T>(10);
+	// private final List<T> queue = new ArrayList<T>(10);
+	private final Queue<T> queue = new LinkedList<T>();
 
 	// private final List<T> queue = new ReservableArrayList<T>(10);
 
@@ -58,8 +61,8 @@ public class QueuePipe<T> extends AbstractPipe<T> {
 
 	@Override
 	public T tryTakeInternal() {
-		// return this.queue.poll();
-		return this.queue.remove(this.queue.size() - 1);
+		return this.queue.poll();
+		// return this.queue.remove(this.queue.size() - 1);
 		// return this.queue.pop();
 	}
 
@@ -74,8 +77,8 @@ public class QueuePipe<T> extends AbstractPipe<T> {
 
 	@Override
 	public T read() {
-		// return this.queue.peek();
-		return this.queue.get(this.queue.size() - 1);
+		return this.queue.peek();
+		// return this.queue.get(this.queue.size() - 1);
 		// return this.queue.read();
 	}
 
@@ -88,6 +91,18 @@ public class QueuePipe<T> extends AbstractPipe<T> {
 	public boolean isEmpty() {
 		return this.queue.isEmpty();
 		// return this.queue.size() == 0;
+	}
+
+	@Override
+	public void commit() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void rollback() {
+		// TODO Auto-generated method stub
+
 	}
 
 }

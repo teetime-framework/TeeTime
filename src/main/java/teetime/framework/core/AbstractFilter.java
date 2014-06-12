@@ -107,7 +107,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 		try {
 			success = this.execute(this.context);
 			if (success) { // deprecated boolean return value
-				this.context.clear();
+				this.context.commit();
 			} else {
 				this.context.rollback();
 			}
@@ -115,6 +115,7 @@ public abstract class AbstractFilter<S extends IStage> extends AbstractStage imp
 			this.context.rollback();
 		} catch (final Exception e) {
 			this.logger.error("Error in stage execution", e);
+			throw new IllegalStateException(e);
 		}
 		return success;
 	}

@@ -32,4 +32,19 @@ public class ReservableArrayListTest {
 		Assert.assertTrue(reservableArrayList.isEmpty());
 		// Assert.assertEquals(element, reservableArrayList.getLast());
 	}
+
+	@Test
+	public void testRemove() throws Exception {
+		ReservableArrayList<Object> reservableArrayList = new ReservableArrayList<Object>(10);
+		Object element = new Object();
+		reservableArrayList.reservedAdd(element);
+		reservableArrayList.commit();
+
+		Assert.assertEquals(element, reservableArrayList.reservedRemoveLast());
+		Assert.assertFalse(reservableArrayList.isEmpty());
+
+		reservableArrayList.commit();
+
+		Assert.assertTrue(reservableArrayList.isEmpty());
+	}
 }

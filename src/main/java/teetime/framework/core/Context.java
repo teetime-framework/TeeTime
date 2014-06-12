@@ -29,6 +29,8 @@ public class Context<S extends IStage> {
 	private long numPushedElements = 0;
 	private long numTakenElements = 0;
 
+	private long numTakenElementsInCurrentTransaction = 0;
+
 	@SuppressWarnings("unchecked")
 	public Context(final IStage owningStage, final List<IInputPort<S, ?>> allTargetPorts) {
 		this.inputPortContainers = this.createInputPortLists(owningStage.getInputPorts());
@@ -92,10 +94,9 @@ public class Context<S extends IStage> {
 
 	private final <T> void logTransaction(final IInputPort<S, T> inputPort, final T token) {
 		// final InputPortContainer inputPortContainer = this.inputPortContainers[inputPort.getIndex()];
-		// final List<Object> tokenList = this.pipesTakenFrom.get(inputPort);
 		// inputPortContainer.takenElements.add(token);
 
-		// this.numTakenElements++;
+		this.numTakenElementsInCurrentTransaction++;
 	}
 
 	/**
@@ -110,31 +111,43 @@ public class Context<S extends IStage> {
 		return associatedPipe.read();
 	}
 
-	void clear() {
+	void commit() {
 		// for (final List<Object> takenElements : this.pipesTakenFrom.values()) {
 		for (final InputPortContainer inputPortContainer : this.inputPortContainers) {
 			// inputPortContainer.takenElements.clear();
+
 			IReservablePipe<Object> reservablePipe = (IReservablePipe<Object>) inputPortContainer.pipe;
 			reservablePipe.commit();
+		}
+
+		this.numTakenElements += this.numTakenElementsInCurrentTransaction;
+		this.numTakenElementsInCurrentTransaction = 0;
+
+		for (final IOutputPort<S, ?> outputPort : this.outputPorts) {
+			if (outputPort != null) {
+				@SuppressWarnings("unchecked")
+				IReservablePipe<Object> reservablePipe = (IReservablePipe<Object>) outputPort.getAssociatedPipe();
+				reservablePipe.commit();
+			}
 		}
 	}
 
 	void rollback() {
-		// for (final Entry<IPipe<Object>, List<Object>> entry : this.pipesTakenFrom.entrySet()) {
-		// final IPipe<Object> associatedPipe = entry.getKey();
-		// final List<Object> takenElements = entry.getValue();
-
 		for (final InputPortContainer inputPortContainer : this.inputPortContainers) {
-
 			// for (int k = inputPortContainer.takenElements.size() - 1; k >= 0; k--) {
 			// final Object element = inputPortContainer.takenElements.get(k);
 			// inputPortContainer.pipe.put(element);
 			// }
-
 			IReservablePipe<Object> reservablePipe = (IReservablePipe<Object>) inputPortContainer.pipe;
 			reservablePipe.rollback();
+		}
 
-			this.numTakenElements -= inputPortContainer.takenElements.size();
+		for (final IOutputPort<S, ?> outputPort : this.outputPorts) {
+			if (outputPort != null) {
+				@SuppressWarnings("unchecked")
+				IReservablePipe<Object> reservablePipe = (IReservablePipe<Object>) outputPort.getAssociatedPipe();
+				reservablePipe.rollback();
+			}
 		}
 	}
 

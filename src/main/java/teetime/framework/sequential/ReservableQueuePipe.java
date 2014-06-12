@@ -1,5 +1,7 @@
 package teetime.framework.sequential;
 
+import java.util.List;
+
 import teetime.framework.core.IInputPort;
 import teetime.framework.core.IOutputPort;
 import teetime.framework.core.IReservablePipe;
@@ -45,6 +47,16 @@ public class ReservableQueuePipe<T> extends QueuePipe<T> implements IReservableP
 	@Override
 	public boolean isEmpty() {
 		return this.reservableQueue.isEmpty();
+	}
+
+	@Override
+	public void putMultiple(final List<T> elements) {
+		throw new IllegalStateException();
+	}
+
+	@Override
+	public List<?> tryTakeMultiple(final int numElementsToTake) {
+		throw new IllegalStateException();
 	}
 
 }

@@ -20,12 +20,13 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 
+import teetime.stage.kieker.className.ClassNameRegistry;
+import teetime.stage.kieker.className.ClassNameRegistryRepository;
+
 import kieker.common.exception.MonitoringRecordException;
 import kieker.common.logging.Log;
 import kieker.common.record.AbstractMonitoringRecord;
 import kieker.common.record.IMonitoringRecord;
-import teetime.stage.kieker.className.ClassNameRegistry;
-import teetime.stage.kieker.className.ClassNameRegistryRepository;
 
 /**
  * @author Christian Wulf
@@ -66,41 +67,51 @@ public class RecordFromBinaryFileCreator {
 		int idx = -1;
 		for (final Class<?> type : typeArray) {
 			idx++;
-			if (type == String.class) {
-				final Integer strId = inputStream.readInt();
-				final String str = classNameRegistry.get(strId);
-				if (str == null) {
-					this.logger.error("No String mapping found for id " + strId.toString());
-					objectArray[idx] = "";
-				} else {
-					objectArray[idx] = str;
-				}
-			} else if ((type == int.class) || (type == Integer.class)) {
-				objectArray[idx] = inputStream.readInt();
-			} else if ((type == long.class) || (type == Long.class)) {
-				objectArray[idx] = inputStream.readLong();
-			} else if ((type == float.class) || (type == Float.class)) {
-				objectArray[idx] = inputStream.readFloat();
-			} else if ((type == double.class) || (type == Double.class)) {
-				objectArray[idx] = inputStream.readDouble();
-			} else if ((type == byte.class) || (type == Byte.class)) {
-				objectArray[idx] = inputStream.readByte();
-			} else if ((type == short.class) || (type == Short.class)) { // NOPMD (short)
-				objectArray[idx] = inputStream.readShort();
-			} else if ((type == boolean.class) || (type == Boolean.class)) {
-				objectArray[idx] = inputStream.readBoolean();
-			} else {
-				if (inputStream.readByte() != 0) {
-					this.logger.error("Unexpected value for unsupported type: " + clazz.getName());
-					return null; // breaking error (break would not terminate the correct loop)
-				}
-				this.logger.warn("Unsupported type: " + clazz.getName());
-				objectArray[idx] = null;
+			boolean successful = this.writeToObjectArray(inputStream, classNameRegistry, clazz, objectArray, idx, type);
+			if (!successful) {
+				return null;
 			}
 		}
 		final IMonitoringRecord record = AbstractMonitoringRecord.createFromArray(clazz, objectArray);
 		record.setLoggingTimestamp(loggingTimestamp);
 
 		return record;
+	}
+
+	private boolean writeToObjectArray(final DataInputStream inputStream, final ClassNameRegistry classNameRegistry, final Class<? extends IMonitoringRecord> clazz,
+			final Object[] objectArray, final int idx, final Class<?> type) throws IOException {
+		if (type == String.class) {
+			final Integer strId = inputStream.readInt();
+			final String str = classNameRegistry.get(strId);
+			if (str == null) {
+				this.logger.error("No String mapping found for id " + strId.toString());
+				objectArray[idx] = "";
+			} else {
+				objectArray[idx] = str;
+			}
+		} else if ((type == int.class) || (type == Integer.class)) {
+			objectArray[idx] = inputStream.readInt();
+		} else if ((type == long.class) || (type == Long.class)) {
+			objectArray[idx] = inputStream.readLong();
+		} else if ((type == float.class) || (type == Float.class)) {
+			objectArray[idx] = inputStream.readFloat();
+		} else if ((type == double.class) || (type == Double.class)) {
+			objectArray[idx] = inputStream.readDouble();
+		} else if ((type == byte.class) || (type == Byte.class)) {
+			objectArray[idx] = inputStream.readByte();
+		} else if ((type == short.class) || (type == Short.class)) { // NOPMD (short)
+			objectArray[idx] = inputStream.readShort();
+		} else if ((type == boolean.class) || (type == Boolean.class)) {
+			objectArray[idx] = inputStream.readBoolean();
+		} else {
+			if (inputStream.readByte() != 0) {
+				this.logger.error("Unexpected value for unsupported type: " + clazz.getName());
+				return false; // breaking error (break would not terminate the correct loop)
+			}
+			this.logger.warn("Unsupported type: " + clazz.getName());
+			objectArray[idx] = null;
+		}
+
+		return true;
 	}
 }

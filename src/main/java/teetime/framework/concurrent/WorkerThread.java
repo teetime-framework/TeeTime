@@ -45,8 +45,8 @@ public class WorkerThread extends Thread {
 	private IStageScheduler stageScheduler;
 	private StageStateManager stageStateManager;
 
-	private volatile StageTerminationPolicy terminationPolicy;
-	private volatile boolean shouldTerminate = false;
+	private StageTerminationPolicy terminationPolicy;
+	private boolean shouldTerminate = false;
 	private final int accessesDeviceId;
 	private int executedUnsuccessfullyCount;
 
@@ -54,6 +54,10 @@ public class WorkerThread extends Thread {
 	private final StopWatch stopWatch = new StopWatch();
 	private final List<Long> durationPerXIterationsInNs = new LinkedList<Long>();
 	private int iterations;
+
+	private final StopWatch afterStageExecutionStopWatch = new StopWatch();
+
+	private final List<Long> afterStageExecutions = new LinkedList<Long>();
 
 	public WorkerThread(final IPipeline pipeline, final int accessesDeviceId) {
 		this.pipeline = pipeline;
@@ -147,14 +151,14 @@ public class WorkerThread extends Thread {
 			// stageExecutionStopWatch.end();
 			this.finishStageExecution(stage, executedSuccessfully);
 
-			// afterStageExecutionStopWatch.start();
+			// this.afterStageExecutionStopWatch.start();
 
 			if (this.shouldTerminate) {
 				this.executeTerminationPolicy(stage, executedSuccessfully);
 			}
 			this.stageScheduler.determineNextStage(stage, executedSuccessfully);
 
-			// afterStageExecutionStopWatch.end();
+			// this.afterStageExecutionStopWatch.end();
 
 			// this.iterationStopWatch.end();
 
@@ -166,7 +170,11 @@ public class WorkerThread extends Thread {
 			// final long schedulingOverhead = this.iterationStopWatch.getDurationInNs();
 			// final long schedulingOverhead = beforeStageExecutionStopWatch.getDurationInNs(); //327
 			// final long schedulingOverhead = stageExecutionStopWatch.getDurationInNs(); //1416
-			// final long schedulingOverhead = afterStageExecutionStopWatch.getDurationInNs(); //2450
+			// final long schedulingOverhead = this.afterStageExecutionStopWatch.getDurationInNs(); // 2450
+
+			// if (this.iterations > 50000 && this.iterations % 1000 == 0)
+			// this.afterStageExecutions.add(this.afterStageExecutionStopWatch.getDurationInNs());
+
 			// rest: ~2000 (measurement overhead?)
 			if ((this.iterations % NUM_ITERATIONS_TO_MEASURE) == 0) {
 				this.stopWatch.end();
@@ -177,6 +185,8 @@ public class WorkerThread extends Thread {
 
 		this.stopWatch.end();
 		this.durationPerXIterationsInNs.add(this.stopWatch.getDurationInNs());
+
+		// System.out.println("avg: " + StatisticsUtil.calculateAverage(this.afterStageExecutions) + " ns");
 
 		this.cleanUpDatastructures();
 	}

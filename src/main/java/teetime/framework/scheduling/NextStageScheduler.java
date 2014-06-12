@@ -101,5 +101,6 @@ public final class NextStageScheduler implements IStageScheduler {
 		if (this.workList.isEmpty()) {
 			this.workList.pushAll(this.highestPrioritizedEnabledStages);
 		}
+
 	}
 }

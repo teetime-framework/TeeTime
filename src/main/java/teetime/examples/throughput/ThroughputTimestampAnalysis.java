@@ -29,7 +29,6 @@ import teetime.framework.core.IPipeline;
 import teetime.framework.core.IStage;
 import teetime.framework.core.Pipeline;
 import teetime.framework.sequential.MethodCallPipe;
-import teetime.framework.sequential.QueuePipe;
 import teetime.framework.sequential.ReservableQueuePipe;
 import teetime.stage.CollectorSink;
 import teetime.stage.NoopFilter;

@@ -17,6 +17,9 @@ public class ReservableArrayList<T> implements List<T> {
 	}
 
 	public void reservedAdd(final T element) {
+		if (this.lastFreeReservedIndex == this.elements.length) {
+			throw new IllegalStateException("not enough space");
+		}
 		this.elements[this.lastFreeReservedIndex++] = element;
 	}
 
@@ -64,9 +67,8 @@ public class ReservableArrayList<T> implements List<T> {
 
 	@Override
 	public boolean add(final T e) {
-		this.elements[this.lastFreeIndex++] = e;
-		this.lastFreeReservedIndex = this.lastFreeIndex;
-		return true;
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
@@ -111,7 +113,10 @@ public class ReservableArrayList<T> implements List<T> {
 	}
 
 	@Override
-	public final T get(final int index) {
+	public T get(final int index) {
+		if (index < 0) {
+			return null;
+		}
 		T element = this.elements[index];
 		return element;
 	}
@@ -170,7 +175,7 @@ public class ReservableArrayList<T> implements List<T> {
 	}
 
 	public T reservedRemoveLast() {
-		T element = this.get(this.lastFreeReservedIndex--);
+		T element = this.get(--this.lastFreeReservedIndex);
 		return element;
 	}
 }

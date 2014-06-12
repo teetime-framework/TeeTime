@@ -58,7 +58,7 @@ public class ObjectProducer<T> extends AbstractFilter<ObjectProducer<T>> {
 			final T newObject = this.objectCreator.call();
 			context.put(this.outputPort, newObject);
 		} catch (final Exception e) {
-			throw new IllegalStateException();
+			throw new IllegalStateException(e);
 		}
 
 		this.numObjectsToCreate--;
