@@ -32,6 +32,7 @@ public class CircularArray<T> {
 
 	private final long logSize;
 	private final T[] segment;
+	private final long mask;
 
 	/**
 	 * 
@@ -42,6 +43,7 @@ public class CircularArray<T> {
 	public CircularArray(final long logSize) {
 		this.logSize = logSize;
 		this.segment = (T[]) new Object[1 << this.logSize];
+		this.mask = this.getCapacity() - 1; // mask = 0..01..1
 	}
 
 	public long getCapacity() {
@@ -49,11 +51,11 @@ public class CircularArray<T> {
 	}
 
 	public T get(final long i) {
-		return this.segment[(int) (i % this.getCapacity())]; // risk of overflow
+		return this.segment[(int) (i & this.mask)]; // risk of overflow
 	}
 
 	public void put(final long i, final T o) {
-		this.segment[(int) (i % this.getCapacity())] = o; // risk of overflow
+		this.segment[(int) (i & this.mask)] = o; // risk of overflow
 	}
 
 	public CircularArray<T> grow(final long b, final long t) {
