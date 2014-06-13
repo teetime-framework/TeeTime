@@ -30,7 +30,7 @@ public class ObjectPooledLinkedList<T> {
 	}
 
 	public void push(final T element) {
-		ListContainer<T> listContainer = this.objectPool.get();
+		ListContainer<T> listContainer = this.objectPool.acquire();
 		listContainer.previous = this.top;
 		listContainer.value = element;
 		this.top = listContainer;

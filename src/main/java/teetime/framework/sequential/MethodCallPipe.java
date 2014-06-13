@@ -21,6 +21,7 @@ import java.util.List;
 import teetime.framework.core.AbstractPipe;
 import teetime.framework.core.IInputPort;
 import teetime.framework.core.IOutputPort;
+import teetime.framework.core.IReservablePipe;
 import teetime.framework.core.ISink;
 import teetime.framework.core.ISource;
 
@@ -29,7 +30,7 @@ import teetime.framework.core.ISource;
  * 
  * @since 1.10
  */
-public class MethodCallPipe<T> extends AbstractPipe<T> {
+public class MethodCallPipe<T> extends AbstractPipe<T> implements IReservablePipe<T> {
 
 	private T storedToken;
 
@@ -60,18 +61,22 @@ public class MethodCallPipe<T> extends AbstractPipe<T> {
 		return temp;
 	}
 
+	@Override
 	public T take() {
 		return this.tryTake();
 	}
 
+	@Override
 	public T read() {
 		return this.storedToken;
 	}
 
+	@Override
 	public void putMultiple(final List<T> items) {
 		throw new IllegalStateException("Putting more than one element is not possible. You tried to put " + items.size() + " items.");
 	}
 
+	@Override
 	public List<?> tryTakeMultiple(final int numElementsToTake) {
 		throw new IllegalStateException("Taking more than one element is not possible. You tried to take " + numElementsToTake + " items.");
 	}
@@ -80,8 +85,21 @@ public class MethodCallPipe<T> extends AbstractPipe<T> {
 		// is not needed in a synchronous execution
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return this.storedToken == null;
+	}
+
+	@Override
+	public void commit() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void rollback() {
+		// TODO Auto-generated method stub
+
 	}
 
 }

@@ -7,11 +7,12 @@ import teetime.framework.core.IOutputPort;
 import teetime.framework.core.IReservablePipe;
 import teetime.framework.core.ISink;
 import teetime.framework.core.ISource;
-import teetime.util.list.ReservableArrayList;
+import teetime.util.list.CommittableQueue;
+import teetime.util.list.CommittableResizableArrayQueue;
 
 public class ReservableQueuePipe<T> extends QueuePipe<T> implements IReservablePipe<T> {
 
-	private final ReservableArrayList<T> reservableQueue = new ReservableArrayList<T>(10);
+	private final CommittableQueue<T> reservableQueue = new CommittableResizableArrayQueue<T>(EMPTY_OBJECT, 10);
 
 	static public <S0 extends ISource, S1 extends ISink<S1>, T> void connect(final IOutputPort<S0, ? extends T> sourcePort, final IInputPort<S1, T> targetPort) {
 		final QueuePipe<T> pipe = new ReservableQueuePipe<T>();
@@ -31,17 +32,17 @@ public class ReservableQueuePipe<T> extends QueuePipe<T> implements IReservableP
 
 	@Override
 	public void putInternal(final T element) {
-		this.reservableQueue.reservedAdd(element);
+		this.reservableQueue.addToTailUncommitted(element);
 	}
 
 	@Override
 	public T tryTakeInternal() {
-		return this.reservableQueue.reservedRemoveLast();
+		return this.reservableQueue.removeFromHeadUncommitted();
 	}
 
 	@Override
 	public T read() {
-		return this.reservableQueue.getLast();
+		return this.reservableQueue.getTail();
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class CircularArray<T> {
 	}
 
 	public long getCapacity() {
-		return 1 << this.logSize;
+		return this.segment.length;
 	}
 
 	public T get(final long i) {

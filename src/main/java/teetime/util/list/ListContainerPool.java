@@ -14,7 +14,7 @@ public class ListContainerPool<T> implements ObjectPool<ListContainer<T>> {
 	}
 
 	@Override
-	public ListContainer<T> get() {
+	public ListContainer<T> acquire() {
 		ListContainer<T> obj;
 		if (this.pool.size() > 0) {
 			obj = this.pool.remove(this.pool.size() - 1);

@@ -3,27 +3,27 @@ package teetime.util.list;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ReservableArrayListTest {
+public class CommittableResizableArrayQueueTest {
 
 	@Test
 	public void testCommit() throws Exception {
-		ReservableArrayList<Object> reservableArrayList = new ReservableArrayList<Object>(10);
+		CommittableResizableArrayQueue<Object> reservableArrayList = new CommittableResizableArrayQueue<Object>(null, 10);
 		Object element = new Object();
-		reservableArrayList.reservedAdd(element);
+		reservableArrayList.addToTailUncommitted(element);
 
 		Assert.assertTrue(reservableArrayList.isEmpty());
 
 		reservableArrayList.commit();
 
 		Assert.assertFalse(reservableArrayList.isEmpty());
-		Assert.assertEquals(element, reservableArrayList.getLast());
+		Assert.assertEquals(element, reservableArrayList.getTail());
 	}
 
 	@Test
 	public void testRollback() throws Exception {
-		ReservableArrayList<Object> reservableArrayList = new ReservableArrayList<Object>(10);
+		CommittableResizableArrayQueue<Object> reservableArrayList = new CommittableResizableArrayQueue<Object>(null, 10);
 		Object element = new Object();
-		reservableArrayList.reservedAdd(element);
+		reservableArrayList.addToTailUncommitted(element);
 
 		Assert.assertTrue(reservableArrayList.isEmpty());
 
@@ -35,12 +35,12 @@ public class ReservableArrayListTest {
 
 	@Test
 	public void testRemove() throws Exception {
-		ReservableArrayList<Object> reservableArrayList = new ReservableArrayList<Object>(10);
+		CommittableResizableArrayQueue<Object> reservableArrayList = new CommittableResizableArrayQueue<Object>(null, 10);
 		Object element = new Object();
-		reservableArrayList.reservedAdd(element);
+		reservableArrayList.addToTailUncommitted(element);
 		reservableArrayList.commit();
 
-		Assert.assertEquals(element, reservableArrayList.reservedRemoveLast());
+		Assert.assertEquals(element, reservableArrayList.removeFromHeadUncommitted());
 		Assert.assertFalse(reservableArrayList.isEmpty());
 
 		reservableArrayList.commit();

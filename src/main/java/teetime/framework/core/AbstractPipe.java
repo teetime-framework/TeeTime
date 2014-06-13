@@ -18,9 +18,9 @@ package teetime.framework.core;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
- *
+ * 
  * @param <T>
  *            The type of the pipe
  * @param <P>
@@ -28,9 +28,11 @@ package teetime.framework.core;
  */
 public abstract class AbstractPipe<T> implements IPipe<T> {
 
+	public static final Object EMPTY_OBJECT = null;
+
 	/**
 	 * @author Christian Wulf
-	 *
+	 * 
 	 * @since 1.10
 	 */
 	public enum PipeState {
@@ -91,7 +93,7 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 
 	/**
 	 * This method is called exactly once iff the pipeline is started.
-	 *
+	 * 
 	 * @since 1.10
 	 */
 	public void onPipelineStarts() {
@@ -109,7 +111,7 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 
 	/**
 	 * This method is called exactly once iff the pipeline is stopped.
-	 *
+	 * 
 	 * @since 1.10
 	 */
 	public void onPipelineStops() {

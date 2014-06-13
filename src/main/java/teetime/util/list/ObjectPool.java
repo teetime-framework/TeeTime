@@ -2,8 +2,8 @@ package teetime.util.list;
 
 public interface ObjectPool<T> {
 
-	T get();
+	T acquire();
 
-	void release(T obj);
+	void release(T element);
 
 }
