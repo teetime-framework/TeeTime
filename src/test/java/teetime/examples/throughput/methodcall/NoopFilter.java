@@ -20,9 +20,15 @@ package teetime.examples.throughput.methodcall;
  * 
  * @since 1.10
  */
-public class NoopFilter<T> {
+public class NoopFilter<T> extends AbstractStage<T, T> {
 
 	public T execute(final T obj) {
 		return obj;
+	}
+
+	@Override
+	public void execute3() {
+		T element = this.getInputPort().receive();
+		this.getOutputPort().send(element);
 	}
 }

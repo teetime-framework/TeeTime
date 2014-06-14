@@ -19,13 +19,20 @@ import teetime.examples.throughput.TimestampObject;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
-public class StopTimestampFilter {
+public class StopTimestampFilter extends AbstractStage<TimestampObject, TimestampObject> {
 
 	public TimestampObject execute(final TimestampObject obj) {
 		obj.setStopTimestamp(System.nanoTime());
 		return obj;
+	}
+
+	@Override
+	public void execute3() {
+		TimestampObject element = this.getInputPort().receive();
+		element.setStopTimestamp(System.nanoTime());
+		this.getOutputPort().send(element);
 	}
 }

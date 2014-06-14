@@ -22,7 +22,7 @@ import java.util.concurrent.Callable;
  * 
  * @since 1.10
  */
-public class ObjectProducer<T> {
+public class ObjectProducer<T> extends AbstractStage<Void, T> {
 
 	private long numInputObjects;
 	private Callable<T> inputObjectCreator;
@@ -33,6 +33,8 @@ public class ObjectProducer<T> {
 	public ObjectProducer(final long numInputObjects, final Callable<T> inputObjectCreator) {
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;
+
+		this.endSignalCheck = this.inputPortIsNotUsed;
 	}
 
 	public T execute() {
@@ -46,7 +48,7 @@ public class ObjectProducer<T> {
 
 			return newObject;
 		} catch (final Exception e) {
-			throw new IllegalStateException();
+			throw new IllegalStateException(e);
 		}
 	}
 
@@ -65,4 +67,22 @@ public class ObjectProducer<T> {
 	public void setInputObjectCreator(final Callable<T> inputObjectCreator) {
 		this.inputObjectCreator = inputObjectCreator;
 	}
+
+	@Override
+	protected void execute3() {
+		if (this.numInputObjects == 0) {
+			this.getOutputPort().send((T) END_SIGNAL);
+			return;
+		}
+
+		try {
+			final T newObject = this.inputObjectCreator.call();
+			this.numInputObjects--;
+
+			this.getOutputPort().send(newObject);
+		} catch (final Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
 }

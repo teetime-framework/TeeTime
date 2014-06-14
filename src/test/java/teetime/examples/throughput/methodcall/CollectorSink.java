@@ -22,7 +22,7 @@ import java.util.List;
  * 
  * @since 1.10
  */
-public class CollectorSink<T> {
+public class CollectorSink<T> extends AbstractStage<T, T> {
 
 	private static final int THRESHOLD = 10000;
 
@@ -36,6 +36,16 @@ public class CollectorSink<T> {
 	}
 
 	public void execute(final T element) {
+		this.elements.add(element);
+		if ((this.elements.size() % THRESHOLD) == 0) {
+			System.out.println("size: " + this.elements.size());
+		}
+	}
+
+	@Override
+	public void execute3() {
+		T element = this.getInputPort().receive();
+
 		this.elements.add(element);
 		if ((this.elements.size() % THRESHOLD) == 0) {
 			System.out.println("size: " + this.elements.size());
