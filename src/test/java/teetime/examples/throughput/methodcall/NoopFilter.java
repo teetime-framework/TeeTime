@@ -22,7 +22,7 @@ import teetime.util.list.CommittableQueue;
  * 
  * @since 1.10
  */
-public class NoopFilter<T> extends AbstractStage<T, T> {
+public class NoopFilter<T> extends ConsumerStage<T, T> {
 
 	public T execute(final T obj) {
 		return obj;

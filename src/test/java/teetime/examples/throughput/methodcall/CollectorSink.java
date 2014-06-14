@@ -24,7 +24,7 @@ import teetime.util.list.CommittableQueue;
  * 
  * @since 1.10
  */
-public class CollectorSink<T> extends AbstractStage<T, Void> {
+public class CollectorSink<T> extends ConsumerStage<T, Void> {
 
 	private static final int THRESHOLD = 10000;
 

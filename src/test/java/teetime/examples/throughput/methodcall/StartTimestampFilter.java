@@ -23,7 +23,7 @@ import teetime.util.list.CommittableQueue;
  * 
  * @since 1.10
  */
-public class StartTimestampFilter extends AbstractStage<TimestampObject, TimestampObject> {
+public class StartTimestampFilter extends ConsumerStage<TimestampObject, TimestampObject> {
 
 	public TimestampObject execute(final TimestampObject obj) {
 		obj.setStartTimestamp(System.nanoTime());

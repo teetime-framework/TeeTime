@@ -12,5 +12,13 @@ public interface Stage<I, O> {
 
 	CommittableQueue<O> execute2(CommittableQueue<I> elements);
 
+	SchedulingInformation getSchedulingInformation();
+
 	// OutputPort<O> getOutputPort();
+
+	Stage getParentStage();
+
+	void setParentStage(Stage parentStage, int index);
+
+	void setListener(OnDisableListener listener);
 }

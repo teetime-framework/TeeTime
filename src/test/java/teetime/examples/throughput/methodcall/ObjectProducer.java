@@ -24,7 +24,7 @@ import teetime.util.list.CommittableQueue;
  * 
  * @since 1.10
  */
-public class ObjectProducer<T> extends AbstractStage<Void, T> {
+public class ObjectProducer<T> extends ProducerStage<Void, T> {
 
 	private long numInputObjects;
 	private Callable<T> inputObjectCreator;
@@ -88,7 +88,6 @@ public class ObjectProducer<T> extends AbstractStage<Void, T> {
 	@Override
 	protected void execute4(final CommittableQueue<Void> elements) {
 		if (this.numInputObjects == 0) {
-			this.send((T) END_SIGNAL);
 			return;
 		}
 

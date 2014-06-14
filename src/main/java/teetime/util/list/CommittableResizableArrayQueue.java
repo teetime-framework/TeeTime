@@ -21,24 +21,24 @@ public class CommittableResizableArrayQueue<T> implements CommittableQueue<T> {
 	}
 
 	@Override
-	public T get(final int index) {
+	public final T get(final int index) {
 		T element = this.elements[index + 1];
 		return element;
 	}
 
 	@Override
 	public void addToTailUncommitted(final T element) {
-		if (this.lastFreeIndexUncommitted == this.capacity()) {
-			this.grow();
-		}
+		// if (this.lastFreeIndexUncommitted == this.capacity()) { // TODO uncomment
+		// this.grow();
+		// }
 		this.put(this.lastFreeIndexUncommitted++, element);
 	}
 
 	@Override
 	public T removeFromHeadUncommitted() {
-		if (this.capacity() > this.MIN_CAPACITY && this.lastFreeIndexUncommitted < this.capacity() / 2) {
-			this.shrink();
-		}
+		// if (this.capacity() > this.MIN_CAPACITY && this.lastFreeIndexUncommitted < this.capacity() / 2) { // TODO uncomment
+		// this.shrink();
+		// }
 		T element = this.get(--this.lastFreeIndexUncommitted);
 		return element;
 	}

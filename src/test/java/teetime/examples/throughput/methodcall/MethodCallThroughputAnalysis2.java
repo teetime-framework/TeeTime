@@ -78,7 +78,7 @@ public class MethodCallThroughputAnalysis2 extends Analysis {
 				CommittableQueue<Void> inputQueue = new CommittableResizableArrayQueue<Void>(null, 0);
 				CommittableQueue<Void> outputQueue = new CommittableResizableArrayQueue<Void>(null, 0);
 
-				while (!(outputQueue.getTail() == Stage.END_SIGNAL)) {
+				while (pipeline.getSchedulingInformation().isActive()) {
 					outputQueue = pipeline.execute2(inputQueue);
 				}
 			}
