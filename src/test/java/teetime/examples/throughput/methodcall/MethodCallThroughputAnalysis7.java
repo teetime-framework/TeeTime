@@ -64,7 +64,7 @@ public class MethodCallThroughputAnalysis7 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final List<Stage> stageList = new ArrayList<Stage>();
+		final List<AbstractStage> stageList = new ArrayList<AbstractStage>();
 		stageList.add(objectProducer);
 		stageList.add(startTimestampFilter);
 		stageList.addAll(Arrays.asList(noopFilters));
@@ -72,19 +72,30 @@ public class MethodCallThroughputAnalysis7 extends Analysis {
 		stageList.add(collectorSink);
 
 		// using an array decreases the performance from 60ms to 200ms (by 3x)
-		final Stage[] stages = stageList.toArray(new Stage[0]);
+		final AbstractStage[] stages = stageList.toArray(new AbstractStage[0]);
 
 		final WrappingPipeline pipeline = new WrappingPipeline() {
 			@Override
 			public boolean execute() {
 				// using the foreach for arrays (i.e., w/o using an iterator variable) increases the performance from 200ms to 130ms
 				Object element = null;
-				for (Stage stage : stages) {
+				for (AbstractStage stage : stages) {
 					element = stage.execute(element);
 					if (element == null) {
 						return false;
 					}
 				}
+
+				// changing the type of stages decreases performance by 2 (e.g., NoopFilter -> Stage)
+				// the VM seems to not optimize the code anymore if the concrete type is not declared
+
+				// for (final NoopFilter<TimestampObject> noopFilter : noopFilters) {
+				// element = noopFilter.execute(element);
+				// }
+				//
+				// element = stopTimestampFilter.execute(element);
+				// element = collectorSink.execute(element);
+
 				return true;
 			}
 

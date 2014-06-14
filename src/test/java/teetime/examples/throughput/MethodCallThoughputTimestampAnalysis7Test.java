@@ -22,7 +22,6 @@ import java.util.concurrent.Callable;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.examples.throughput.methodcall.MethodCallThroughputAnalysis6;
 import teetime.examples.throughput.methodcall.MethodCallThroughputAnalysis7;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;

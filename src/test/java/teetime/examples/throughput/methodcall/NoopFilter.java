@@ -24,6 +24,7 @@ import teetime.util.list.CommittableQueue;
  */
 public class NoopFilter<T> extends ConsumerStage<T, T> {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public T execute(final Object obj) {
 		return (T) obj;

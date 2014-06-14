@@ -78,15 +78,20 @@ public class MethodCallThroughputAnalysis3 extends Analysis {
 			@Override
 			public boolean execute() {
 				// extracting the null-check does NOT improve performance
-				Stage stage = stages[0];
-				Object element = stage.execute(null);
-				if (element == null) {
-					return false;
-				}
+				// Stage stage = stages[0];
+				// Object element = stage.execute(null);
+				// if (element == null) {
+				// return false;
+				// }
 
-				for (int i = 1; i < stages.length; i++) {
-					stage = stages[i];
+				Object element = null;
+
+				for (int i = 0; i < stages.length; i++) {
+					Stage stage = stages[i];
 					element = stage.execute(element);
+					if (element == null) {
+						return false;
+					}
 				}
 
 				return true;

@@ -27,7 +27,7 @@ import teetime.examples.throughput.TimestampObject;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class StatisticsUtil {
@@ -72,7 +72,7 @@ public class StatisticsUtil {
 
 	public static void printQuintiles(final Map<Double, Long> quintileValues) {
 		for (final Entry<Double, Long> entry : quintileValues.entrySet()) {
-			System.out.println((entry.getKey() * 100) + " % : " + TimeUnit.NANOSECONDS.toMicros(entry.getValue()) + " µs");
+			System.out.println((entry.getKey() * 100) + " % : " + TimeUnit.NANOSECONDS.toNanos(entry.getValue()) + " ns");
 		}
 	}
 
