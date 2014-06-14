@@ -28,7 +28,7 @@ import teetime.framework.core.Analysis;
  * 
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis3 extends Analysis {
+public class MethodCallThroughputAnalysis5 extends Analysis {
 
 	public abstract class WrappingPipeline {
 
@@ -71,24 +71,29 @@ public class MethodCallThroughputAnalysis3 extends Analysis {
 		stageList.add(stopTimestampFilter);
 		stageList.add(collectorSink);
 
-		// using an array decreases the performance from 60ms to 200ms (by 3x)
+		// using an array decreases the performance from 60ms to 440ms (by 7x)
 		final Stage[] stages = stageList.toArray(new Stage[0]);
+		for (int i = 0; i < stages.length - 1; i++) {
+			stages[i].setSuccessor(stages[i + 1]);
+		}
+		final Stage startStage = stages[0];
 
 		final WrappingPipeline pipeline = new WrappingPipeline() {
 			@Override
 			public boolean execute() {
-				// extracting the null-check does NOT improve performance
-				Stage stage = stages[0];
-				Object element = stage.execute(null);
+				Object element = null;
+				Stage stage = startStage;
+
+				element = stage.execute(element);
 				if (element == null) {
 					return false;
 				}
+				stage = stage.next();
 
-				for (int i = 1; i < stages.length; i++) {
-					stage = stages[i];
+				do {
 					element = stage.execute(element);
-				}
-
+					stage = stage.next();
+				} while (stage != null);
 				return true;
 			}
 

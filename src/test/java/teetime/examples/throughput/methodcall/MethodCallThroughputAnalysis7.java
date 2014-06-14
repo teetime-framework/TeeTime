@@ -28,7 +28,7 @@ import teetime.framework.core.Analysis;
  * 
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis3 extends Analysis {
+public class MethodCallThroughputAnalysis7 extends Analysis {
 
 	public abstract class WrappingPipeline {
 
@@ -77,18 +77,14 @@ public class MethodCallThroughputAnalysis3 extends Analysis {
 		final WrappingPipeline pipeline = new WrappingPipeline() {
 			@Override
 			public boolean execute() {
-				// extracting the null-check does NOT improve performance
-				Stage stage = stages[0];
-				Object element = stage.execute(null);
-				if (element == null) {
-					return false;
-				}
-
-				for (int i = 1; i < stages.length; i++) {
-					stage = stages[i];
+				// using the foreach for arrays (i.e., w/o using an iterator variable) increases the performance from 200ms to 130ms
+				Object element = null;
+				for (Stage stage : stages) {
 					element = stage.execute(element);
+					if (element == null) {
+						return false;
+					}
 				}
-
 				return true;
 			}
 

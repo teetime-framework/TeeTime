@@ -146,6 +146,16 @@ public class Pipeline<I, O> implements Stage<I, O>, OnDisableListener {
 		throw new IllegalStateException();
 	}
 
+	@Override
+	public Stage next() {
+		throw new IllegalStateException();
+	}
+
+	@Override
+	public void setSuccessor(final Stage<?, ?> successor) {
+		throw new IllegalStateException();
+	}
+
 	// @Override
 	// public OutputPort getOutputPort() {
 	// return this.lastStage.getOutputPort();

@@ -23,4 +23,8 @@ public interface Stage<I, O> {
 	void setParentStage(Stage parentStage, int index);
 
 	void setListener(OnDisableListener listener);
+
+	Stage next();
+
+	void setSuccessor(Stage<?, ?> successor);
 }

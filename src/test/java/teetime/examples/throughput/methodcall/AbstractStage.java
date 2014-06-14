@@ -18,6 +18,8 @@ abstract class AbstractStage<I, O> implements Stage<I, O> {
 
 	private int index;
 
+	private Stage successor;
+
 	// @Override
 	// public InputPort<I> getInputPort() {
 	// return this.inputPort;
@@ -100,8 +102,19 @@ abstract class AbstractStage<I, O> implements Stage<I, O> {
 		return this.listener;
 	}
 
+	@Override
 	public void setListener(final OnDisableListener listener) {
 		this.listener = listener;
+	}
+
+	@Override
+	public Stage next() {
+		return this.successor;
+	}
+
+	@Override
+	public void setSuccessor(final Stage<?, ?> successor) {
+		this.successor = successor;
 	}
 
 }

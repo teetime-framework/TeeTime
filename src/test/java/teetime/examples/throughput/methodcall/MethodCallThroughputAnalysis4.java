@@ -82,6 +82,7 @@ public class MethodCallThroughputAnalysis4 extends Analysis {
 				for (final NoopFilter<TimestampObject> noopFilter : noopFilters) {
 					object = noopFilter.execute(object);
 				}
+
 				object = stopTimestampFilter.execute(object);
 				collectorSink.execute(object);
 				return true;
