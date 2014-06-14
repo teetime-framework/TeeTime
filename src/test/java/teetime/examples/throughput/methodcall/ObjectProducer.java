@@ -37,7 +37,8 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 		this.inputObjectCreator = inputObjectCreator;
 	}
 
-	public T execute() {
+	@Override
+	public T execute(final Object element) {
 		if (this.numInputObjects == 0) {
 			return null;
 		}

@@ -20,15 +20,13 @@ import java.util.concurrent.Callable;
 
 import teetime.examples.throughput.TimestampObject;
 import teetime.framework.core.Analysis;
-import teetime.util.list.CommittableQueue;
-import teetime.util.list.CommittableResizableArrayQueue;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis2 extends Analysis {
+public class MethodCallThroughputAnalysis1 extends Analysis {
 
 	private long numInputObjects;
 	private Callable<TimestampObject> inputObjectCreator;
@@ -58,32 +56,23 @@ public class MethodCallThroughputAnalysis2 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final Pipeline<Void, Object> pipeline = new Pipeline<Void, Object>();
-		pipeline.setFirstStage(objectProducer);
-		pipeline.addIntermediateStage(startTimestampFilter);
-		pipeline.addIntermediateStages(noopFilters);
-		pipeline.addIntermediateStage(stopTimestampFilter);
-		pipeline.setLastStage(collectorSink);
-
-		pipeline.onStart();
-
-		// pipeline.getInputPort().pipe = new Pipe<Void>();
-		// pipeline.getInputPort().pipe.add(new Object());
-
-		// pipeline.getOutputPort().pipe = new Pipe<Void>();
-
 		final Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-				CommittableQueue<Void> inputQueue = new CommittableResizableArrayQueue<Void>(null, 0);
-				CommittableQueue<Object> outputQueue = new CommittableResizableArrayQueue<Object>(null, 0);
-
-				while (pipeline.getSchedulingInformation().isActive()) {
-					outputQueue = pipeline.execute2(inputQueue);
+				while (true) {
+					TimestampObject object = objectProducer.execute(null);
+					if (object == null) {
+						return;
+					}
+					object = startTimestampFilter.execute(object);
+					for (final NoopFilter<TimestampObject> noopFilter : noopFilters) {
+						object = noopFilter.execute(object);
+					}
+					object = stopTimestampFilter.execute(object);
+					collectorSink.execute(object);
 				}
 			}
 		};
-
 		return runnable;
 	}
 

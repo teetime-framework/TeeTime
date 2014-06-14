@@ -15,6 +15,8 @@
  ***************************************************************************/
 package teetime.examples.throughput.methodcall;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -23,10 +25,16 @@ import teetime.framework.core.Analysis;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis extends Analysis {
+public class MethodCallThroughputAnalysis3 extends Analysis {
+
+	public abstract class WrappingPipeline {
+
+		public abstract boolean execute();
+
+	}
 
 	private long numInputObjects;
 	private Callable<TimestampObject> inputObjectCreator;
@@ -56,21 +64,42 @@ public class MethodCallThroughputAnalysis extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
+		final List<Stage> stageList = new ArrayList<Stage>();
+		stageList.add(objectProducer);
+		stageList.add(startTimestampFilter);
+		stageList.addAll(Arrays.asList(noopFilters));
+		stageList.add(stopTimestampFilter);
+		stageList.add(collectorSink);
+
+		// using an array decreases the performance from 60ms to 200ms (by 3x)
+		final Stage[] stages = stageList.toArray(new Stage[0]);
+
+		final WrappingPipeline pipeline = new WrappingPipeline() {
+			@Override
+			public boolean execute() {
+				// extracting the null-check does NOT improve performance
+				Stage stage = stages[0];
+				Object element = stage.execute(null);
+				if (element == null) {
+					return false;
+				}
+
+				for (int i = 1; i < stages.length; i++) {
+					stage = stages[i];
+					element = stage.execute(element);
+				}
+				return true;
+			}
+
+		};
+
 		final Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-				while (true) {
-					TimestampObject object = objectProducer.execute();
-					if (object == null) {
-						return;
-					}
-					object = startTimestampFilter.execute(object);
-					for (final NoopFilter<TimestampObject> noopFilter : noopFilters) {
-						object = noopFilter.execute(object);
-					}
-					object = stopTimestampFilter.execute(object);
-					collectorSink.execute(object);
-				}
+				boolean success;
+				do {
+					success = pipeline.execute();
+				} while (success);
 			}
 		};
 		return runnable;

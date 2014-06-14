@@ -6,6 +6,8 @@ public interface Stage<I, O> {
 
 	public static final Object END_SIGNAL = new Object();
 
+	O execute(Object element);
+
 	// CommittableQueue<O> execute2();
 
 	// InputPort<I> getInputPort();

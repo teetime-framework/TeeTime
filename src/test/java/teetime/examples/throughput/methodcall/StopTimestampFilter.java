@@ -25,9 +25,11 @@ import teetime.util.list.CommittableQueue;
  */
 public class StopTimestampFilter extends ConsumerStage<TimestampObject, TimestampObject> {
 
-	public TimestampObject execute(final TimestampObject obj) {
-		obj.setStopTimestamp(System.nanoTime());
-		return obj;
+	@Override
+	public TimestampObject execute(final Object obj) {
+		TimestampObject timestampObject = (TimestampObject) obj;
+		timestampObject.setStopTimestamp(System.nanoTime());
+		return timestampObject;
 	}
 
 	// @Override

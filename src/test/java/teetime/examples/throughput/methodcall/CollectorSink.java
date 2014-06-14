@@ -24,9 +24,10 @@ import teetime.util.list.CommittableQueue;
  * 
  * @since 1.10
  */
-public class CollectorSink<T> extends ConsumerStage<T, Void> {
+public class CollectorSink<T> extends ConsumerStage<T, Object> {
 
 	private static final int THRESHOLD = 10000;
+	private static final Object continueSignal = new Object();
 
 	private final List<T> elements;
 
@@ -37,11 +38,13 @@ public class CollectorSink<T> extends ConsumerStage<T, Void> {
 		this.elements = list;
 	}
 
-	public void execute(final T element) {
-		this.elements.add(element);
+	@Override
+	public Object execute(final Object element) {
+		this.elements.add((T) element);
 		if ((this.elements.size() % THRESHOLD) == 0) {
 			System.out.println("size: " + this.elements.size());
 		}
+		return continueSignal;
 	}
 
 	// @Override

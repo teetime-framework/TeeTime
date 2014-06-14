@@ -22,7 +22,7 @@ import java.util.concurrent.Callable;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.examples.throughput.methodcall.MethodCallThroughputAnalysis;
+import teetime.examples.throughput.methodcall.MethodCallThroughputAnalysis4;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
 
@@ -33,7 +33,7 @@ import kieker.common.logging.LogFactory;
  * 
  * @since 1.10
  */
-public class MethodCallThoughputTimestampAnalysisTest {
+public class MethodCallThoughputTimestampAnalysis4Test {
 
 	private static final int NUM_OBJECTS_TO_CREATE = 100000;
 	private static final int NUM_NOOP_FILTERS = 800;
@@ -53,7 +53,7 @@ public class MethodCallThoughputTimestampAnalysisTest {
 		final StopWatch stopWatch = new StopWatch();
 		final List<TimestampObject> timestampObjects = new ArrayList<TimestampObject>(NUM_OBJECTS_TO_CREATE);
 
-		final MethodCallThroughputAnalysis analysis = new MethodCallThroughputAnalysis();
+		final MethodCallThroughputAnalysis4 analysis = new MethodCallThroughputAnalysis4();
 		analysis.setNumNoopFilters(NUM_NOOP_FILTERS);
 		analysis.setTimestampObjects(timestampObjects);
 		analysis.setInput(NUM_OBJECTS_TO_CREATE, new Callable<TimestampObject>() {

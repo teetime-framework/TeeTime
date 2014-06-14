@@ -15,20 +15,26 @@
  ***************************************************************************/
 package teetime.examples.throughput.methodcall;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import teetime.examples.throughput.TimestampObject;
 import teetime.framework.core.Analysis;
-import teetime.util.list.CommittableQueue;
-import teetime.util.list.CommittableResizableArrayQueue;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis2 extends Analysis {
+public class MethodCallThroughputAnalysis4 extends Analysis {
+
+	public abstract class WrappingPipeline {
+
+		public abstract boolean execute();
+
+	}
 
 	private long numInputObjects;
 	private Callable<TimestampObject> inputObjectCreator;
@@ -58,32 +64,40 @@ public class MethodCallThroughputAnalysis2 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final Pipeline<Void, Object> pipeline = new Pipeline<Void, Object>();
-		pipeline.setFirstStage(objectProducer);
-		pipeline.addIntermediateStage(startTimestampFilter);
-		pipeline.addIntermediateStages(noopFilters);
-		pipeline.addIntermediateStage(stopTimestampFilter);
-		pipeline.setLastStage(collectorSink);
+		List<Stage> stages = new ArrayList<Stage>();
+		stages.add(objectProducer);
+		stages.add(startTimestampFilter);
+		stages.addAll(Arrays.asList(noopFilters));
+		stages.add(stopTimestampFilter);
+		stages.add(collectorSink);
 
-		pipeline.onStart();
+		final WrappingPipeline pipeline = new WrappingPipeline() {
+			@Override
+			public boolean execute() {
+				TimestampObject object = objectProducer.execute(null);
+				if (object == null) {
+					return false;
+				}
+				object = startTimestampFilter.execute(object);
+				for (final NoopFilter<TimestampObject> noopFilter : noopFilters) {
+					object = noopFilter.execute(object);
+				}
+				object = stopTimestampFilter.execute(object);
+				collectorSink.execute(object);
+				return true;
+			}
 
-		// pipeline.getInputPort().pipe = new Pipe<Void>();
-		// pipeline.getInputPort().pipe.add(new Object());
-
-		// pipeline.getOutputPort().pipe = new Pipe<Void>();
+		};
 
 		final Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-				CommittableQueue<Void> inputQueue = new CommittableResizableArrayQueue<Void>(null, 0);
-				CommittableQueue<Object> outputQueue = new CommittableResizableArrayQueue<Object>(null, 0);
-
-				while (pipeline.getSchedulingInformation().isActive()) {
-					outputQueue = pipeline.execute2(inputQueue);
-				}
+				boolean success;
+				do {
+					success = pipeline.execute();
+				} while (success);
 			}
 		};
-
 		return runnable;
 	}
 
