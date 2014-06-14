@@ -33,8 +33,6 @@ public class ObjectProducer<T> extends AbstractStage<Void, T> {
 	public ObjectProducer(final long numInputObjects, final Callable<T> inputObjectCreator) {
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;
-
-		this.endSignalCheck = this.inputPortIsNotUsed;
 	}
 
 	public T execute() {
