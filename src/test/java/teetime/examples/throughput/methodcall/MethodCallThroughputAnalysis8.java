@@ -15,20 +15,26 @@
  ***************************************************************************/
 package teetime.examples.throughput.methodcall;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import teetime.examples.throughput.TimestampObject;
 import teetime.framework.core.Analysis;
-import teetime.util.list.CommittableQueue;
-import teetime.util.list.CommittableResizableArrayQueue;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis2 extends Analysis {
+public class MethodCallThroughputAnalysis8 extends Analysis {
+
+	public abstract class WrappingPipeline {
+
+		public abstract boolean execute();
+
+	}
 
 	private long numInputObjects;
 	private Callable<TimestampObject> inputObjectCreator;
@@ -58,32 +64,53 @@ public class MethodCallThroughputAnalysis2 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final Pipeline<Void, Object> pipeline = new Pipeline<Void, Object>();
-		pipeline.setFirstStage(objectProducer);
-		pipeline.addIntermediateStage(startTimestampFilter);
-		pipeline.addIntermediateStages(noopFilters);
-		pipeline.addIntermediateStage(stopTimestampFilter);
-		pipeline.setLastStage(collectorSink);
+		final List<AbstractStage> stageList = new ArrayList<AbstractStage>();
+		stageList.add(objectProducer);
+		stageList.add(startTimestampFilter);
+		stageList.addAll(Arrays.asList(noopFilters));
+		stageList.add(stopTimestampFilter);
+		stageList.add(collectorSink);
 
-		pipeline.onStart();
+		// using an array decreases the performance from 60ms to 200ms (by 3x)
+		final AbstractStage[] stages = stageList.toArray(new AbstractStage[0]);
 
-		// pipeline.getInputPort().pipe = new Pipe<Void>();
-		// pipeline.getInputPort().pipe.add(new Object());
+		final WrappingPipeline pipeline = new WrappingPipeline() {
+			@Override
+			public boolean execute() {
+				// using the foreach for arrays (i.e., w/o using an iterator variable) increases the performance from 200ms to 130ms
+				Object element = null;
+				for (int i = 0; i < stages.length; i++) {
+					Stage stage = stages[i];
+					element = stage.execute(element);
+					if (element == null) {
+						return false;
+					}
+				}
 
-		// pipeline.getOutputPort().pipe = new Pipe<Void>();
+				// changing the type of stages decreases performance by 2 (e.g., NoopFilter -> Stage)
+				// the VM seems to not optimize the code anymore if the concrete type is not declared
+
+				// for (final NoopFilter<TimestampObject> noopFilter : noopFilters) {
+				// element = noopFilter.execute(element);
+				// }
+				//
+				// element = stopTimestampFilter.execute(element);
+				// element = collectorSink.execute(element);
+
+				return true;
+			}
+
+		};
 
 		final Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-				CommittableQueue<Void> inputQueue = new CommittableResizableArrayQueue<Void>(null, 0);
-				CommittableQueue<Object> outputQueue = new CommittableResizableArrayQueue<Object>(null, 0);
-
+				boolean success;
 				do {
-					outputQueue = pipeline.execute2(inputQueue);
-				} while (pipeline.getSchedulingInformation().isActive());
+					success = pipeline.execute();
+				} while (success);
 			}
 		};
-
 		return runnable;
 	}
 
