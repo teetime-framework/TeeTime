@@ -17,12 +17,14 @@ package teetime.examples.throughput.methodcall;
 
 import java.util.List;
 
+import teetime.util.list.CommittableQueue;
+
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class CollectorSink<T> extends AbstractStage<T, T> {
+public class CollectorSink<T> extends AbstractStage<T, Void> {
 
 	private static final int THRESHOLD = 10000;
 
@@ -42,13 +44,23 @@ public class CollectorSink<T> extends AbstractStage<T, T> {
 		}
 	}
 
-	@Override
-	public void execute3() {
-		T element = this.getInputPort().receive();
+	// @Override
+	// public void execute3() {
+	// T element = this.getInputPort().receive();
+	//
+	// this.elements.add(element);
+	// if ((this.elements.size() % THRESHOLD) == 0) {
+	// System.out.println("size: " + this.elements.size());
+	// }
+	// }
 
+	@Override
+	protected void execute4(final CommittableQueue<T> elements) {
+		T element = elements.removeFromHead();
 		this.elements.add(element);
 		if ((this.elements.size() % THRESHOLD) == 0) {
 			System.out.println("size: " + this.elements.size());
 		}
 	}
+
 }

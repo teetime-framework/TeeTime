@@ -16,6 +16,7 @@
 package teetime.examples.throughput.methodcall;
 
 import teetime.examples.throughput.TimestampObject;
+import teetime.util.list.CommittableQueue;
 
 /**
  * @author Christian Wulf
@@ -29,10 +30,17 @@ public class StartTimestampFilter extends AbstractStage<TimestampObject, Timesta
 		return obj;
 	}
 
+	// @Override
+	// public void execute3() {
+	// TimestampObject element = this.getInputPort().receive();
+	// element.setStartTimestamp(System.nanoTime());
+	// // this.getOutputPort().send(element);
+	// }
+
 	@Override
-	public void execute3() {
-		TimestampObject element = this.getInputPort().receive();
+	protected void execute4(final CommittableQueue<TimestampObject> elements) {
+		TimestampObject element = elements.removeFromHead();
 		element.setStartTimestamp(System.nanoTime());
-		this.getOutputPort().send(element);
+		this.send(element);
 	}
 }

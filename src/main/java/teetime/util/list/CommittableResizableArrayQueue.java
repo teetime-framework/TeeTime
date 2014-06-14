@@ -13,8 +13,8 @@ public class CommittableResizableArrayQueue<T> implements CommittableQueue<T> {
 	public CommittableResizableArrayQueue(final Object emptyObject, final int initialCapacity) {
 		super();
 		this.arrayPool = new ArrayPool<T>();
-		this.MIN_CAPACITY = initialCapacity;
-		this.elements = this.arrayPool.acquire(initialCapacity);
+		this.MIN_CAPACITY = initialCapacity + 1;
+		this.elements = this.arrayPool.acquire(initialCapacity + 1);
 
 		this.elements[0] = (T) emptyObject; // optimization: avoids the use of an index out-of-bounds check
 		this.clear();
@@ -106,5 +106,12 @@ public class CommittableResizableArrayQueue<T> implements CommittableQueue<T> {
 
 	private final int capacity() {
 		return this.elements.length - 1;
+	}
+
+	@Override
+	public T removeFromHead() {
+		T element = this.removeFromHeadUncommitted();
+		this.commit();
+		return element;
 	}
 }

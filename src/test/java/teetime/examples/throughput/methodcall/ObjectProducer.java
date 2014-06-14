@@ -17,6 +17,8 @@ package teetime.examples.throughput.methodcall;
 
 import java.util.concurrent.Callable;
 
+import teetime.util.list.CommittableQueue;
+
 /**
  * @author Christian Wulf
  * 
@@ -66,10 +68,27 @@ public class ObjectProducer<T> extends AbstractStage<Void, T> {
 		this.inputObjectCreator = inputObjectCreator;
 	}
 
+	// @Override
+	// protected void execute3() {
+	// if (this.numInputObjects == 0) {
+	// // this.getOutputPort().send((T) END_SIGNAL);
+	// return;
+	// }
+	//
+	// try {
+	// final T newObject = this.inputObjectCreator.call();
+	// this.numInputObjects--;
+	//
+	// // this.getOutputPort().send(newObject);
+	// } catch (final Exception e) {
+	// throw new IllegalStateException(e);
+	// }
+	// }
+
 	@Override
-	protected void execute3() {
+	protected void execute4(final CommittableQueue<Void> elements) {
 		if (this.numInputObjects == 0) {
-			this.getOutputPort().send((T) END_SIGNAL);
+			this.send((T) END_SIGNAL);
 			return;
 		}
 
@@ -77,7 +96,7 @@ public class ObjectProducer<T> extends AbstractStage<Void, T> {
 			final T newObject = this.inputObjectCreator.call();
 			this.numInputObjects--;
 
-			this.getOutputPort().send(newObject);
+			this.send(newObject);
 		} catch (final Exception e) {
 			throw new IllegalStateException(e);
 		}

@@ -15,6 +15,8 @@
  ***************************************************************************/
 package teetime.examples.throughput.methodcall;
 
+import teetime.util.list.CommittableQueue;
+
 /**
  * @author Christian Wulf
  * 
@@ -26,9 +28,16 @@ public class NoopFilter<T> extends AbstractStage<T, T> {
 		return obj;
 	}
 
+	// @Override
+	// public void execute3() {
+	// T element = this.getInputPort().receive();
+	// // this.getOutputPort().send(element);
+	// }
+
 	@Override
-	public void execute3() {
-		T element = this.getInputPort().receive();
-		this.getOutputPort().send(element);
+	protected void execute4(final CommittableQueue<T> elements) {
+		T element = elements.removeFromHead();
+		this.send(element);
 	}
+
 }

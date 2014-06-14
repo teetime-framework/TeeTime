@@ -20,6 +20,8 @@ import java.util.concurrent.Callable;
 
 import teetime.examples.throughput.TimestampObject;
 import teetime.framework.core.Analysis;
+import teetime.util.list.CommittableQueue;
+import teetime.util.list.CommittableResizableArrayQueue;
 
 /**
  * @author Christian Wulf
@@ -56,7 +58,7 @@ public class MethodCallThroughputAnalysis2 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final Pipeline pipeline = new Pipeline();
+		final Pipeline<Void, Void> pipeline = new Pipeline<Void, Void>();
 		pipeline.setFirstStage(objectProducer);
 		pipeline.addIntermediateStage(startTimestampFilter);
 		pipeline.addIntermediateStages(noopFilters);
@@ -66,14 +68,18 @@ public class MethodCallThroughputAnalysis2 extends Analysis {
 		// pipeline.getInputPort().pipe = new Pipe<Void>();
 		// pipeline.getInputPort().pipe.add(new Object());
 
-		pipeline.getOutputPort().pipe = new Pipe<Void>();
+		// pipeline.getOutputPort().pipe = new Pipe<Void>();
 
 		final Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
 				pipeline.onStart();
-				while (!(pipeline.getOutputPort().pipe.readLast() == Stage.END_SIGNAL)) {
-					pipeline.execute2();
+
+				CommittableQueue<Void> inputQueue = new CommittableResizableArrayQueue<Void>(null, 0);
+				CommittableQueue<Void> outputQueue = new CommittableResizableArrayQueue<Void>(null, 0);
+
+				while (!(outputQueue.getTail() == Stage.END_SIGNAL)) {
+					outputQueue = pipeline.execute2(inputQueue);
 				}
 			}
 		};

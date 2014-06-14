@@ -24,4 +24,9 @@ public class Pipe<T> {
 	public T readLast() {
 		return this.elements.getTail();
 	}
+
+	public CommittableResizableArrayQueue<T> getElements() {
+		return this.elements;
+	}
+
 }

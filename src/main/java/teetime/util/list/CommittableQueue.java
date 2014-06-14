@@ -24,4 +24,6 @@ public interface CommittableQueue<T> {
 
 	T getTail();
 
+	T removeFromHead();
+
 }
