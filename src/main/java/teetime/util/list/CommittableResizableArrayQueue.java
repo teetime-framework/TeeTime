@@ -2,6 +2,8 @@ package teetime.util.list;
 
 public class CommittableResizableArrayQueue<T> implements CommittableQueue<T> {
 
+	private final int MIN_CAPACITY;
+
 	private final ArrayPool<T> arrayPool;
 	private T[] elements;
 
@@ -11,6 +13,7 @@ public class CommittableResizableArrayQueue<T> implements CommittableQueue<T> {
 	public CommittableResizableArrayQueue(final Object emptyObject, final int initialCapacity) {
 		super();
 		this.arrayPool = new ArrayPool<T>();
+		this.MIN_CAPACITY = initialCapacity;
 		this.elements = this.arrayPool.acquire(initialCapacity);
 
 		this.elements[0] = (T) emptyObject; // optimization: avoids the use of an index out-of-bounds check
@@ -33,7 +36,7 @@ public class CommittableResizableArrayQueue<T> implements CommittableQueue<T> {
 
 	@Override
 	public T removeFromHeadUncommitted() {
-		if (this.lastFreeIndexUncommitted < this.capacity() / 2) {
+		if (this.capacity() > this.MIN_CAPACITY && this.lastFreeIndexUncommitted < this.capacity() / 2) {
 			this.shrink();
 		}
 		T element = this.get(--this.lastFreeIndexUncommitted);
@@ -73,12 +76,14 @@ public class CommittableResizableArrayQueue<T> implements CommittableQueue<T> {
 	}
 
 	private void grow() {
-		T[] newElements = this.arrayPool.acquire(this.capacity() * 2);
+		T[] newElements = this.arrayPool.acquire(this.elements.length * 2);
+		// System.out.println("grow: " + this.lastFreeIndexUncommitted);
 		this.replaceCurrentArrayBy(newElements);
 	}
 
 	private void shrink() {
-		T[] newElements = this.arrayPool.acquire(this.capacity() / 2);
+		T[] newElements = this.arrayPool.acquire(this.elements.length / 2);
+		// System.out.println("shrink: " + this.lastFreeIndexUncommitted);
 		this.replaceCurrentArrayBy(newElements);
 	}
 
