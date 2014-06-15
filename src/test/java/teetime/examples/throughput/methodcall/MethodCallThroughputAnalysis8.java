@@ -75,11 +75,13 @@ public class MethodCallThroughputAnalysis8 extends Analysis {
 		final AbstractStage[] stages = stageList.toArray(new AbstractStage[0]);
 
 		final WrappingPipeline pipeline = new WrappingPipeline() {
+			private int startIndex;
+
 			@Override
 			public boolean execute() {
 				// using the foreach for arrays (i.e., w/o using an iterator variable) increases the performance from 200ms to 130ms
 				Object element = null;
-				for (int i = 0; i < stages.length; i++) {
+				for (int i = this.startIndex; i < stages.length; i++) {
 					Stage stage = stages[i];
 					element = stage.execute(element);
 					if (element == null) {

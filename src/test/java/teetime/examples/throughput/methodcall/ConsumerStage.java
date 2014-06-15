@@ -12,7 +12,9 @@ public abstract class ConsumerStage<I, O> extends AbstractStage<I, O> {
 			return this.outputElements;
 		}
 
-		return super.execute2(elements);
+		CommittableQueue<O> output = super.execute2(elements);
+		this.setReschedulable(!elements.isEmpty()); // costs ~1200 ns on chw-work
+		return output;
 	}
 
 }

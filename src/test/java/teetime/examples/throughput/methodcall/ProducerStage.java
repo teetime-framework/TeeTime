@@ -4,6 +4,10 @@ import teetime.util.list.CommittableQueue;
 
 public abstract class ProducerStage<I, O> extends AbstractStage<I, O> {
 
+	public ProducerStage() {
+		this.setReschedulable(true);
+	}
+
 	@Override
 	public CommittableQueue<O> execute2(final CommittableQueue<I> elements) {
 		CommittableQueue<O> outputElements = super.execute2(elements);
@@ -15,4 +19,5 @@ public abstract class ProducerStage<I, O> extends AbstractStage<I, O> {
 
 		return outputElements;
 	}
+
 }

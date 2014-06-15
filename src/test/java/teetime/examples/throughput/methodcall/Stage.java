@@ -27,4 +27,6 @@ public interface Stage<I, O> {
 	Stage next();
 
 	void setSuccessor(Stage<?, ?> successor);
+
+	boolean isReschedulable();
 }

@@ -20,6 +20,8 @@ abstract class AbstractStage<I, O> implements Stage<I, O> {
 
 	private Stage successor;
 
+	private boolean reschedulable;
+
 	// @Override
 	// public InputPort<I> getInputPort() {
 	// return this.inputPort;
@@ -48,17 +50,9 @@ abstract class AbstractStage<I, O> implements Stage<I, O> {
 		// throw new IllegalStateException();
 		// }
 
-		// boolean inputIsEmpty = elements.isEmpty();
-
 		this.execute4(elements);
 
 		this.outputElements.commit();
-
-		// boolean outputIsEmpty = this.outputElements.isEmpty();
-		//
-		// if (inputIsEmpty && outputIsEmpty) {
-		// this.disable();
-		// }
 
 		return this.outputElements;
 	}
@@ -69,6 +63,11 @@ abstract class AbstractStage<I, O> implements Stage<I, O> {
 
 	protected final void send(final O element) {
 		this.outputElements.addToTailUncommitted(element);
+
+		this.outputElements.commit();
+		do {
+			CommittableQueue execute = this.next().execute2(this.outputElements);
+		} while (this.next().isReschedulable());
 	}
 
 	@Override
@@ -115,6 +114,15 @@ abstract class AbstractStage<I, O> implements Stage<I, O> {
 	@Override
 	public void setSuccessor(final Stage<?, ?> successor) {
 		this.successor = successor;
+	}
+
+	@Override
+	public boolean isReschedulable() {
+		return this.reschedulable;
+	}
+
+	public void setReschedulable(final boolean reschedulable) {
+		this.reschedulable = reschedulable;
 	}
 
 }

@@ -20,6 +20,8 @@ public class Pipeline<I, O> implements Stage<I, O>, OnDisableListener {
 	private int startIndex;
 	private OnDisableListener listener;
 
+	private boolean reschedulable;
+
 	void setFirstStage(final Stage<I, ?> stage) {
 		this.firstStage = stage;
 	}
@@ -46,10 +48,14 @@ public class Pipeline<I, O> implements Stage<I, O>, OnDisableListener {
 
 		// below is faster than above (probably because of the instantiation of a list iterator in each (!) execution)
 		CommittableQueue queue = elements;
-		for (int i = this.startIndex; i < this.stages.length; i++) {
-			Stage<?, ?> stage = this.stages[i];
-			queue = stage.execute2(queue);
-		}
+
+		// for (int i = this.startIndex; i < this.stages.length; i++) {
+		// Stage<?, ?> stage = this.stages[i];
+		// queue = stage.execute2(queue);
+		// }
+
+		this.stages[0].execute2(elements);
+		this.setReschedulable(this.stages[0].isReschedulable());
 		return queue;
 	}
 
@@ -88,6 +94,11 @@ public class Pipeline<I, O> implements Stage<I, O>, OnDisableListener {
 			Stage<?, ?> stage = this.stages[i];
 			stage.setParentStage(this, i);
 			stage.setListener(this);
+		}
+
+		for (int i = 0; i < this.stages.length - 1; i++) {
+			Stage<?, ?> stage = this.stages[i];
+			stage.setSuccessor(this.stages[i + 1]);
 		}
 	}
 
@@ -154,6 +165,15 @@ public class Pipeline<I, O> implements Stage<I, O>, OnDisableListener {
 	@Override
 	public void setSuccessor(final Stage<?, ?> successor) {
 		throw new IllegalStateException();
+	}
+
+	@Override
+	public boolean isReschedulable() {
+		return this.reschedulable;
+	}
+
+	public void setReschedulable(final boolean reschedulable) {
+		this.reschedulable = reschedulable;
 	}
 
 	// @Override
