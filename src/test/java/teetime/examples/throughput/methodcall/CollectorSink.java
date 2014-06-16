@@ -60,6 +60,11 @@ public class CollectorSink<T> extends ConsumerStage<T, Object> {
 	@Override
 	protected void execute4(final CommittableQueue<T> elements) {
 		T element = elements.removeFromHead();
+		this.execute5(element);
+	}
+
+	@Override
+	protected void execute5(final T element) {
 		this.elements.add(element);
 		if ((this.elements.size() % THRESHOLD) == 0) {
 			System.out.println("size: " + this.elements.size());

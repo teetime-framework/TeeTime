@@ -10,13 +10,9 @@ public interface Stage<I, O> {
 
 	// CommittableQueue<O> execute2();
 
-	// InputPort<I> getInputPort();
-
 	CommittableQueue<O> execute2(CommittableQueue<I> elements);
 
 	SchedulingInformation getSchedulingInformation();
-
-	// OutputPort<O> getOutputPort();
 
 	Stage getParentStage();
 

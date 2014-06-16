@@ -20,4 +20,9 @@ public abstract class ProducerStage<I, O> extends AbstractStage<I, O> {
 		return outputElements;
 	}
 
+	@Override
+	public void executeWithPorts() {
+		this.execute5(null);
+	}
+
 }

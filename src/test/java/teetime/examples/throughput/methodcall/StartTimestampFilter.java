@@ -42,6 +42,11 @@ public class StartTimestampFilter extends ConsumerStage<TimestampObject, Timesta
 	@Override
 	protected void execute4(final CommittableQueue<TimestampObject> elements) {
 		TimestampObject element = elements.removeFromHead();
+		this.execute5(element);
+	}
+
+	@Override
+	protected void execute5(final TimestampObject element) {
 		element.setStartTimestamp(System.nanoTime());
 		this.send(element);
 	}

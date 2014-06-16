@@ -17,4 +17,10 @@ public abstract class ConsumerStage<I, O> extends AbstractStage<I, O> {
 		return output;
 	}
 
+	@Override
+	public void executeWithPorts() {
+		I element = this.getInputPort().receive();
+		this.execute5(element);
+	}
+
 }

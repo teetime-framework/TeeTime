@@ -3,10 +3,10 @@ package teetime.examples.throughput.methodcall;
 import teetime.util.list.CommittableQueue;
 import teetime.util.list.CommittableResizableArrayQueue;
 
-abstract class AbstractStage<I, O> implements Stage<I, O> {
+abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
-	// private final InputPort<I> inputPort = new InputPort<I>();
-	// private final OutputPort<O> outputPort = new OutputPort<O>();
+	private final InputPort<I> inputPort = new InputPort<I>();
+	private final OutputPort<O> outputPort = new OutputPort<O>();
 
 	protected final CommittableQueue<O> outputElements = new CommittableResizableArrayQueue<O>(null, 4);
 
@@ -22,15 +22,15 @@ abstract class AbstractStage<I, O> implements Stage<I, O> {
 
 	private boolean reschedulable;
 
-	// @Override
-	// public InputPort<I> getInputPort() {
-	// return this.inputPort;
-	// }
+	@Override
+	public InputPort<I> getInputPort() {
+		return this.inputPort;
+	}
 
-	// @Override
-	// public OutputPort<O> getOutputPort() {
-	// return this.outputPort;
-	// }
+	@Override
+	public OutputPort<O> getOutputPort() {
+		return this.outputPort;
+	}
 
 	@Override
 	public CommittableQueue<O> execute2(final CommittableQueue<I> elements) {
@@ -57,9 +57,9 @@ abstract class AbstractStage<I, O> implements Stage<I, O> {
 		return this.outputElements;
 	}
 
-	// protected abstract void execute3();
-
 	protected abstract void execute4(CommittableQueue<I> elements);
+
+	protected abstract void execute5(I element);
 
 	protected final void send(final O element) {
 		this.outputElements.addToTailUncommitted(element);

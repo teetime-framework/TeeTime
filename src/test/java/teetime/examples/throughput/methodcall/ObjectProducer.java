@@ -89,6 +89,11 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 
 	@Override
 	protected void execute4(final CommittableQueue<Void> elements) {
+		this.execute5(null);
+	}
+
+	@Override
+	protected void execute5(final Void element) {
 		if (this.numInputObjects == 0) {
 			this.setReschedulable(false);
 			return;

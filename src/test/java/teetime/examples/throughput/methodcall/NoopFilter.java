@@ -39,6 +39,11 @@ public class NoopFilter<T> extends ConsumerStage<T, T> {
 	@Override
 	protected void execute4(final CommittableQueue<T> elements) {
 		T element = elements.removeFromHead();
+		this.execute5(element);
+	}
+
+	@Override
+	protected void execute5(final T element) {
 		this.send(element);
 	}
 
