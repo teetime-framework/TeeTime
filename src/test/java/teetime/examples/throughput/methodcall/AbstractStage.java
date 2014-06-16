@@ -18,7 +18,7 @@ abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
 	private int index;
 
-	private Stage successor;
+	private StageWithPort successor;
 
 	private boolean reschedulable;
 
@@ -62,12 +62,18 @@ abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	protected abstract void execute5(I element);
 
 	protected final void send(final O element) {
-		this.outputElements.addToTailUncommitted(element);
+		// this.outputElements.addToTailUncommitted(element);
+		// this.outputElements.commit();
 
-		this.outputElements.commit();
+		this.getOutputPort().send(element);
+
+		CommittableQueue execute;
 		do {
-			CommittableQueue execute = this.next().execute2(this.outputElements);
+			// execute = this.next().execute2(this.outputElements);
+			// execute = this.next().execute2(this.getOutputPort().pipe.getElements());
+			this.next().executeWithPorts();
 		} while (this.next().isReschedulable());
+		// } while (execute.size() > 0);
 	}
 
 	@Override
@@ -107,13 +113,18 @@ abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	}
 
 	@Override
-	public Stage next() {
+	public StageWithPort next() {
 		return this.successor;
 	}
 
 	@Override
-	public void setSuccessor(final Stage<?, ?> successor) {
+	public void setSuccessor(final StageWithPort<?, ?> successor) {
 		this.successor = successor;
+	}
+
+	@Override
+	public void setSuccessor(final Stage<?, ?> successor) {
+		throw new IllegalStateException();
 	}
 
 	@Override

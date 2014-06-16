@@ -6,14 +6,15 @@ public abstract class ConsumerStage<I, O> extends AbstractStage<I, O> {
 
 	@Override
 	public CommittableQueue<O> execute2(final CommittableQueue<I> elements) {
-		boolean inputIsEmpty = elements.isEmpty();
-		if (inputIsEmpty) {
-			this.disable();
-			return this.outputElements;
-		}
+		// the following code block does not harm the performance
+		// boolean inputIsEmpty = elements.isEmpty();
+		// if (inputIsEmpty) {
+		// this.disable();
+		// return this.outputElements;
+		// }
 
 		CommittableQueue<O> output = super.execute2(elements);
-		this.setReschedulable(!elements.isEmpty()); // costs ~1200 ns on chw-work
+		this.setReschedulable(!elements.isEmpty()); // costs ~1200 ns on chw-work (not reproducible)
 		return output;
 	}
 

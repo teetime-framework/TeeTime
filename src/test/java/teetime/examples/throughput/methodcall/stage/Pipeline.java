@@ -104,13 +104,13 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 		this.stages[this.stages.length - 1] = this.lastStage;
 
 		for (int i = 0; i < this.stages.length; i++) {
-			Stage<?, ?> stage = this.stages[i];
+			StageWithPort<?, ?> stage = this.stages[i];
 			stage.setParentStage(this, i);
 			stage.setListener(this);
 		}
 
 		for (int i = 0; i < this.stages.length - 1; i++) {
-			Stage<?, ?> stage = this.stages[i];
+			StageWithPort<?, ?> stage = this.stages[i];
 			stage.setSuccessor(this.stages[i + 1]);
 		}
 	}
@@ -177,6 +177,11 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 
 	@Override
 	public void setSuccessor(final Stage<?, ?> successor) {
+		throw new IllegalStateException();
+	}
+
+	@Override
+	public void setSuccessor(final StageWithPort<?, ?> successor) {
 		throw new IllegalStateException();
 	}
 
