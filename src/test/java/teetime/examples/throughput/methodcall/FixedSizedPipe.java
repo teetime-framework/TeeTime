@@ -45,4 +45,9 @@ public class FixedSizedPipe<T> implements IPipe<T> {
 		// return this.elements.get(this.lastFreeIndex - 1);
 	}
 
+	@Override
+	public int size() {
+		return this.lastFreeIndex;
+	}
+
 }

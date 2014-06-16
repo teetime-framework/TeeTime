@@ -92,12 +92,14 @@ abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
 		this.getOutputPort().send(element);
 
-		CommittableQueue execute;
+		// CommittableQueue execute;
+
 		do {
 			// execute = this.next().execute2(this.outputElements);
 			// execute = this.next().execute2(this.getOutputPort().pipe.getElements());
 			this.next().executeWithPorts();
 		} while (this.next().isReschedulable());
+		// } while (this.next().getInputPort().pipe.size() > 0);
 		// } while (execute.size() > 0);
 	}
 

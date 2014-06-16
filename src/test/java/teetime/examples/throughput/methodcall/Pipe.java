@@ -59,4 +59,9 @@ public class Pipe<T> implements IPipe<T> {
 		return this.elements;
 	}
 
+	@Override
+	public int size() {
+		return this.elements.size();
+	}
+
 }

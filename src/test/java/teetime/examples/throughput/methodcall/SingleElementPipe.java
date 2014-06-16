@@ -24,12 +24,17 @@ public class SingleElementPipe<T> implements IPipe<T> {
 
 	@Override
 	public boolean isEmpty() {
-		return this.element != null;
+		return this.element == null;
 	}
 
 	@Override
 	public T readLast() {
 		return this.element;
+	}
+
+	@Override
+	public int size() {
+		return (this.element == null) ? 0 : 1;
 	}
 
 }

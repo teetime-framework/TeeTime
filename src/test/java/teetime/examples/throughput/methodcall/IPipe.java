@@ -8,6 +8,8 @@ public interface IPipe<T> {
 
 	public abstract boolean isEmpty();
 
+	public abstract int size();
+
 	public abstract T readLast();
 
 }
