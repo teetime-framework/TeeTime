@@ -1,0 +1,9 @@
+[increases overhead]
+-for loop with list vs. array (due to new instantiation of iterator)
+-for loop with super type vs. concrete type (due to less JIT optimization possibilities)
+-
+
+[irrelevant w.r.t. overhead]
+-foreach vs. index-based iteration
+-iterative vs. recursive execution
+-

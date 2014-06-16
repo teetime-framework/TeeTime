@@ -19,6 +19,12 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import teetime.examples.throughput.TimestampObject;
+import teetime.examples.throughput.methodcall.stage.CollectorSink;
+import teetime.examples.throughput.methodcall.stage.NoopFilter;
+import teetime.examples.throughput.methodcall.stage.ObjectProducer;
+import teetime.examples.throughput.methodcall.stage.Pipeline;
+import teetime.examples.throughput.methodcall.stage.StartTimestampFilter;
+import teetime.examples.throughput.methodcall.stage.StopTimestampFilter;
 import teetime.framework.core.Analysis;
 
 /**

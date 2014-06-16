@@ -1,9 +1,15 @@
-package teetime.examples.throughput.methodcall;
+package teetime.examples.throughput.methodcall.stage;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import teetime.examples.throughput.methodcall.InputPort;
+import teetime.examples.throughput.methodcall.OnDisableListener;
+import teetime.examples.throughput.methodcall.OutputPort;
+import teetime.examples.throughput.methodcall.SchedulingInformation;
+import teetime.examples.throughput.methodcall.Stage;
+import teetime.examples.throughput.methodcall.StageWithPort;
 import teetime.util.list.CommittableQueue;
 
 public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
@@ -22,19 +28,19 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 
 	private boolean reschedulable;
 
-	void setFirstStage(final StageWithPort<I, ?> stage) {
+	public void setFirstStage(final StageWithPort<I, ?> stage) {
 		this.firstStage = stage;
 	}
 
-	void addIntermediateStages(final StageWithPort... stages) {
+	public void addIntermediateStages(final StageWithPort... stages) {
 		this.intermediateStages.addAll(Arrays.asList(stages));
 	}
 
-	void addIntermediateStage(final StageWithPort stage) {
+	public void addIntermediateStage(final StageWithPort stage) {
 		this.intermediateStages.add(stage);
 	}
 
-	void setLastStage(final StageWithPort<?, O> stage) {
+	public void setLastStage(final StageWithPort<?, O> stage) {
 		this.lastStage = stage;
 	}
 
@@ -66,7 +72,7 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 		this.setReschedulable(this.stages[0].isReschedulable());
 	}
 
-	void onStart() {
+	public void onStart() {
 		// Pipe pipe = new Pipe();
 		// this.outputPort.pipe = pipe;
 		// this.firstStage.getInputPort().pipe = pipe;

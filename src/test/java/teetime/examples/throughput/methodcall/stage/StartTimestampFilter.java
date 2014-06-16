@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.examples.throughput.methodcall;
+package teetime.examples.throughput.methodcall.stage;
 
 import teetime.examples.throughput.TimestampObject;
+import teetime.examples.throughput.methodcall.ConsumerStage;
 import teetime.util.list.CommittableQueue;
 
 /**

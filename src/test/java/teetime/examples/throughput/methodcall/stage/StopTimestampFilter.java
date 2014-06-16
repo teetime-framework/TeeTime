@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.examples.throughput.methodcall;
+package teetime.examples.throughput.methodcall.stage;
 
+import teetime.examples.throughput.TimestampObject;
+import teetime.examples.throughput.methodcall.ConsumerStage;
 import teetime.util.list.CommittableQueue;
 
 /**
@@ -22,29 +24,31 @@ import teetime.util.list.CommittableQueue;
  * 
  * @since 1.10
  */
-public class NoopFilter<T> extends ConsumerStage<T, T> {
+public class StopTimestampFilter extends ConsumerStage<TimestampObject, TimestampObject> {
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public T execute(final Object obj) {
-		return (T) obj;
+	public TimestampObject execute(final Object obj) {
+		TimestampObject timestampObject = (TimestampObject) obj;
+		timestampObject.setStopTimestamp(System.nanoTime());
+		return timestampObject;
 	}
 
 	// @Override
 	// public void execute3() {
-	// T element = this.getInputPort().receive();
+	// TimestampObject element = this.getInputPort().receive();
+	// element.setStopTimestamp(System.nanoTime());
 	// // this.getOutputPort().send(element);
 	// }
 
 	@Override
-	protected void execute4(final CommittableQueue<T> elements) {
-		T element = elements.removeFromHead();
+	protected void execute4(final CommittableQueue<TimestampObject> elements) {
+		TimestampObject element = elements.removeFromHead();
 		this.execute5(element);
 	}
 
 	@Override
-	protected void execute5(final T element) {
+	protected void execute5(final TimestampObject element) {
+		element.setStopTimestamp(System.nanoTime());
 		this.send(element);
 	}
-
 }

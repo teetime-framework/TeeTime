@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.examples.throughput.methodcall;
+package teetime.examples.throughput.methodcall.stage;
 
 import java.util.concurrent.Callable;
 
+import teetime.examples.throughput.methodcall.ProducerStage;
 import teetime.util.list.CommittableQueue;
 
 /**
