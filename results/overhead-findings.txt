@@ -8,13 +8,16 @@
 [irrelevant w.r.t. overhead]
 -foreach vs. index-based iteration
 -iterative vs. recursive execution
+-null-check vs. NullObject
 -
 
 
 [analysis performance results (50%)]
 
 2:	7400 ns
-9:	9400 ns
+8:	1200 ns (iterative; argument/return w/o pipe)
+9:	9400 ns (queued pipe)
 10:	4900 ns (single element pipe)
 11: 7400 ns (fixed sized pipe)
- 
+12: 3300 ns (recursive; argument/return w/o pipe)
+13: 3300 ns (recursive; argument/return w/o pipe; w/o pipeline class)

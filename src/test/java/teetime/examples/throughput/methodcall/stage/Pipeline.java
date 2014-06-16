@@ -72,6 +72,11 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 		this.setReschedulable(this.stages[0].isReschedulable());
 	}
 
+	@Override
+	public Object executeRecursively(final Object element) {
+		return this.stages[0].executeRecursively(element);
+	}
+
 	public void onStart() {
 		// Pipe pipe = new Pipe();
 		// this.outputPort.pipe = pipe;
@@ -113,6 +118,7 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 			StageWithPort<?, ?> stage = this.stages[i];
 			stage.setSuccessor(this.stages[i + 1]);
 		}
+		this.stages[this.stages.length - 1].setSuccessor(new EndStage<Object>());
 	}
 
 	//

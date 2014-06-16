@@ -32,9 +32,6 @@ public class CollectorSink<T> extends ConsumerStage<T, Object> {
 
 	private final List<T> elements;
 
-	/**
-	 * @since 1.10
-	 */
 	public CollectorSink(final List<T> list) {
 		this.elements = list;
 	}

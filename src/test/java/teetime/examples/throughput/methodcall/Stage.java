@@ -6,6 +6,8 @@ public interface Stage<I, O> {
 
 	public static final Object END_SIGNAL = new Object();
 
+	Object executeRecursively(Object element);
+
 	O execute(Object element);
 
 	// CommittableQueue<O> execute2();
@@ -25,4 +27,5 @@ public interface Stage<I, O> {
 	void setSuccessor(Stage<?, ?> successor);
 
 	boolean isReschedulable();
+
 }

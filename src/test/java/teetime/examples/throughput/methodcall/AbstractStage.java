@@ -23,6 +23,21 @@ abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	private boolean reschedulable;
 
 	@Override
+	public Object executeRecursively(final Object element) {
+		O result = this.execute(element);
+		if (result == null) {
+			return null;
+		}
+		StageWithPort next = this.next();
+		// if (next != null) {
+		// return next.executeRecursively(result);
+		// } else {
+		// return result;
+		// }
+		return next.executeRecursively(result);
+	}
+
+	@Override
 	public InputPort<I> getInputPort() {
 		return this.inputPort;
 	}
@@ -56,6 +71,16 @@ abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
 		return this.outputElements;
 	}
+
+	// @Override
+	// public void executeWithPorts() {
+	// CommittableQueue execute;
+	// do {
+	// // execute = this.next().execute2(this.outputElements);
+	// // execute = this.next().execute2(this.getOutputPort().pipe.getElements());
+	// this.next().executeWithPorts();
+	// } while (this.next().isReschedulable());
+	// }
 
 	protected abstract void execute4(CommittableQueue<I> elements);
 

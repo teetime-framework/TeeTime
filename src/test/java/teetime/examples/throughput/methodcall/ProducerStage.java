@@ -23,6 +23,10 @@ public abstract class ProducerStage<I, O> extends AbstractStage<I, O> {
 	@Override
 	public void executeWithPorts() {
 		this.execute5(null);
+
+		// if (!this.getOutputPort().pipe.isEmpty()) {
+		// super.executeWithPorts();
+		// }
 	}
 
 }
