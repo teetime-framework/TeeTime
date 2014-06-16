@@ -3,6 +3,7 @@
 -for loop with super type vs. concrete type (reason: due to less JIT optimization possibilities)
 -passing by argument vs. instance variable (reason: unknown)
 -pipe with array vs. single element (reason: unknown)
+-access via array wrapper vs. array directly
 -
 
 [irrelevant w.r.t. overhead]
@@ -16,8 +17,10 @@
 
 2:	7400 ns
 8:	1200 ns (iterative; argument/return w/o pipe)
-9:	9400 ns (queued pipe)
-10:	4900 ns (single element pipe)
-11: 7400 ns (fixed sized pipe)
+9:	9400 ns (executeWithPorts: queued pipe)
+10:	4900 ns (executeWithPorts: single element pipe)
+11: 7400 ns (executeWithPorts: fixed sized pipe)
+	11: 8600 ns (executeWithPorts: fixed sized pipe with CircularArray(int))
+	11: 8200 ns (executeWithPorts: fixed sized pipe with CircularArray(int) w/o mask)
 12: 3300 ns (recursive; argument/return w/o pipe)
 13: 3300 ns (recursive; argument/return w/o pipe; w/o pipeline class)
