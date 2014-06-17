@@ -26,3 +26,4 @@
 	11: 7800 ns (executeWithPorts: fixed sized pipe; with setReschedulable() after each read)
 12: 3300 ns (recursive; argument/return w/o pipe)
 13: 3300 ns (recursive; argument/return w/o pipe; w/o pipeline class)
+14: 21,000 ns (spsc pipe)
