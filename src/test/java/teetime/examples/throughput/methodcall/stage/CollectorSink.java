@@ -45,6 +45,11 @@ public class CollectorSink<T> extends ConsumerStage<T, Object> {
 		return continueSignal;
 	}
 
+	@Override
+	public void onIsPipelineHead() {
+		System.out.println("size: " + this.elements.size());
+	}
+
 	// @Override
 	// public void execute3() {
 	// T element = this.getInputPort().receive();

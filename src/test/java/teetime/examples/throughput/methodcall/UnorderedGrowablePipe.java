@@ -1,6 +1,6 @@
 package teetime.examples.throughput.methodcall;
 
-public class FixedSizedPipe<T> implements IPipe<T> {
+public class UnorderedGrowablePipe<T> implements IPipe<T> {
 
 	// private static final class ArrayWrapper2<T> {
 	//
@@ -34,13 +34,13 @@ public class FixedSizedPipe<T> implements IPipe<T> {
 	private int lastFreeIndex;
 
 	@SuppressWarnings("unchecked")
-	public FixedSizedPipe() {
+	public UnorderedGrowablePipe() {
 		this.MIN_CAPACITY = 4;
 		this.elements = (T[]) new Object[this.MIN_CAPACITY];
 	}
 
 	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
-		IPipe<T> pipe = new FixedSizedPipe<T>();
+		IPipe<T> pipe = new UnorderedGrowablePipe<T>();
 		sourcePort.pipe = pipe;
 		targetPort.pipe = pipe;
 	}
@@ -80,6 +80,7 @@ public class FixedSizedPipe<T> implements IPipe<T> {
 
 	private T[] grow() {
 		int newSize = this.elements.length * 2;
+		// System.out.println("growing to " + newSize);
 		return this.newArray(newSize);
 	}
 

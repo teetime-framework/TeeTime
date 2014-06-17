@@ -31,7 +31,7 @@ public class Analysis {
 
 	}
 
-	public void terminate() {
+	public void onTerminate() {
 
 	}
 }

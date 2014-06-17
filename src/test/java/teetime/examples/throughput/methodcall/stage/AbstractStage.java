@@ -127,6 +127,11 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	}
 
 	@Override
+	public void onStart() {
+		// empty default implementation
+	}
+
+	@Override
 	public Stage getParentStage() {
 		return this.parentStage;
 	}

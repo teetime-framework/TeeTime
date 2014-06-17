@@ -105,15 +105,15 @@ public class MethodCallThroughputAnalysis15 extends Analysis {
 
 		SpScPipe.connect(clock.getOutputPort(), delay.getTimestampTriggerInputPort());
 
-		FixedSizedPipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
-		FixedSizedPipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
+		UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
+		UnorderedGrowablePipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
 		for (int i = 0; i < noopFilters.length - 1; i++) {
-			FixedSizedPipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
+			UnorderedGrowablePipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
 		}
-		FixedSizedPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
-		FixedSizedPipe.connect(stopTimestampFilter.getOutputPort(), delay.getInputPort());
+		UnorderedGrowablePipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
+		UnorderedGrowablePipe.connect(stopTimestampFilter.getOutputPort(), delay.getInputPort());
 
-		FixedSizedPipe.connect(delay.getOutputPort(), collectorSink.getInputPort());
+		UnorderedGrowablePipe.connect(delay.getOutputPort(), collectorSink.getInputPort());
 
 		pipeline.onStart();
 

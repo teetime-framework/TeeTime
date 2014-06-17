@@ -97,4 +97,10 @@ public class EndStage<T> implements StageWithPort<T, T> {
 
 	}
 
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+
+	}
+
 }

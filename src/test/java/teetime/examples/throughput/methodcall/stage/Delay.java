@@ -26,7 +26,8 @@ public class Delay<I> extends AbstractStage<I, I> {
 			this.send(element);
 		}
 
-		this.setReschedulable(this.getInputPort().pipe.size() > 0);
+		// this.setReschedulable(this.getInputPort().pipe.size() > 0);
+		this.setReschedulable(false);
 		// System.out.println("delay: " + this.getInputPort().pipe.size());
 	}
 

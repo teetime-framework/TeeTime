@@ -30,4 +30,6 @@ public interface Stage<I, O> {
 
 	void onIsPipelineHead();
 
+	void onStart();
+
 }

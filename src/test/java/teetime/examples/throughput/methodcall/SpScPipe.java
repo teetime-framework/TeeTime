@@ -4,7 +4,7 @@ import teetime.util.concurrent.spsc.FFBufferOrdered3;
 
 public class SpScPipe<T> implements IPipe<T> {
 
-	private final FFBufferOrdered3<T> queue = new FFBufferOrdered3<T>(4);
+	private final FFBufferOrdered3<T> queue = new FFBufferOrdered3<T>(100010);
 
 	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
 		IPipe<T> pipe = new SpScPipe<T>();
