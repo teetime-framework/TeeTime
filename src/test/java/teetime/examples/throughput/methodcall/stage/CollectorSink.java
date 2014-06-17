@@ -67,6 +67,10 @@ public class CollectorSink<T> extends ConsumerStage<T, Object> {
 		if ((this.elements.size() % THRESHOLD) == 0) {
 			System.out.println("size: " + this.elements.size());
 		}
+
+		if (this.elements.size() > 90000) {
+			// System.out.println("size > 90000: " + this.elements.size());
+		}
 	}
 
 }

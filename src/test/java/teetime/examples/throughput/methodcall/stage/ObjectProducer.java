@@ -103,7 +103,7 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 		try {
 			final T newObject = this.inputObjectCreator.call();
 			this.numInputObjects--;
-
+			// System.out.println(this.getClass().getSimpleName() + ": sending " + this.numInputObjects);
 			this.send(newObject);
 		} catch (final Exception e) {
 			throw new IllegalStateException(e);

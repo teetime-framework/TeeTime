@@ -27,11 +27,17 @@ public class FixedSizedPipe<T> implements IPipe<T> {
 	// }
 	//
 	// }
+	private final int MIN_CAPACITY;
 
-	@SuppressWarnings("unchecked")
-	private final T[] elements = (T[]) new Object[4];
+	private T[] elements;
 	// private final ArrayWrapper2<T> elements = new ArrayWrapper2<T>(2);
 	private int lastFreeIndex;
+
+	@SuppressWarnings("unchecked")
+	public FixedSizedPipe() {
+		this.MIN_CAPACITY = 4;
+		this.elements = (T[]) new Object[this.MIN_CAPACITY];
+	}
 
 	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
 		IPipe<T> pipe = new FixedSizedPipe<T>();
@@ -43,13 +49,7 @@ public class FixedSizedPipe<T> implements IPipe<T> {
 	public void add(final T element) {
 		if (this.lastFreeIndex == this.elements.length) {
 			// if (this.lastFreeIndex == this.elements.getCapacity()) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			// grow
+			this.elements = this.grow();
 		}
 		this.elements[this.lastFreeIndex++] = element;
 		// this.elements.put(this.lastFreeIndex++, element);
@@ -57,8 +57,9 @@ public class FixedSizedPipe<T> implements IPipe<T> {
 
 	@Override
 	public T removeLast() {
-		return this.elements[--this.lastFreeIndex];
-		// return this.elements.get(--this.lastFreeIndex);
+		T element = this.elements[--this.lastFreeIndex];
+		// T element = this.elements.get(--this.lastFreeIndex);
+		return element;
 	}
 
 	@Override
@@ -75,6 +76,26 @@ public class FixedSizedPipe<T> implements IPipe<T> {
 	@Override
 	public int size() {
 		return this.lastFreeIndex;
+	}
+
+	private T[] grow() {
+		int newSize = this.elements.length * 2;
+		return this.newArray(newSize);
+	}
+
+	// we do not support shrink since it causes too much overhead due to the capacity checks
+	// private T[] shrink() {
+	// int newSize = this.elements.length / 2;
+	// return this.newArray(newSize);
+	// }
+
+	private T[] newArray(final int newSize) {
+		@SuppressWarnings("unchecked")
+		T[] newElements = (T[]) new Object[newSize];
+
+		System.arraycopy(this.elements, 0, newElements, 0, this.elements.length);
+
+		return newElements;
 	}
 
 }

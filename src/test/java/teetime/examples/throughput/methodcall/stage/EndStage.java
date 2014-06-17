@@ -21,6 +21,11 @@ public class EndStage<T> implements StageWithPort<T, T> {
 	}
 
 	@Override
+	public void onIsPipelineHead() {
+		// do nothing
+	}
+
+	@Override
 	public CommittableQueue<T> execute2(final CommittableQueue<T> elements) {
 		// TODO Auto-generated method stub
 		return null;

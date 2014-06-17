@@ -28,4 +28,6 @@ public interface Stage<I, O> {
 
 	boolean isReschedulable();
 
+	void onIsPipelineHead();
+
 }

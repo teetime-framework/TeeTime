@@ -1,9 +1,15 @@
-package teetime.examples.throughput.methodcall;
+package teetime.examples.throughput.methodcall.stage;
 
+import teetime.examples.throughput.methodcall.InputPort;
+import teetime.examples.throughput.methodcall.OnDisableListener;
+import teetime.examples.throughput.methodcall.OutputPort;
+import teetime.examples.throughput.methodcall.SchedulingInformation;
+import teetime.examples.throughput.methodcall.Stage;
+import teetime.examples.throughput.methodcall.StageWithPort;
 import teetime.util.list.CommittableQueue;
 import teetime.util.list.CommittableResizableArrayQueue;
 
-abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
+public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
 	private final InputPort<I> inputPort = new InputPort<I>();
 	private final OutputPort<O> outputPort = new OutputPort<O>();
@@ -98,6 +104,7 @@ abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 			// execute = this.next().execute2(this.outputElements);
 			// execute = this.next().execute2(this.getOutputPort().pipe.getElements());
 			this.next().executeWithPorts();
+			// System.out.println("Executed " + this.next().getClass().getSimpleName());
 		} while (this.next().isReschedulable());
 		// } while (this.next().getInputPort().pipe.size() > 0);
 		// } while (execute.size() > 0);

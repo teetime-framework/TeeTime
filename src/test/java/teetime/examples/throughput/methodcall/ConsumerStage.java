@@ -1,5 +1,6 @@
 package teetime.examples.throughput.methodcall;
 
+import teetime.examples.throughput.methodcall.stage.AbstractStage;
 import teetime.util.list.CommittableQueue;
 
 public abstract class ConsumerStage<I, O> extends AbstractStage<I, O> {
@@ -31,6 +32,11 @@ public abstract class ConsumerStage<I, O> extends AbstractStage<I, O> {
 		// if (!this.getOutputPort().pipe.isEmpty()) {
 		// super.executeWithPorts();
 		// }
+	}
+
+	@Override
+	public void onIsPipelineHead() {
+		// do nothing
 	}
 
 }

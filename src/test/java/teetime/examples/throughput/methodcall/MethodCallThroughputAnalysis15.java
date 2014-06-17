@@ -15,16 +15,17 @@
  ***************************************************************************/
 package teetime.examples.throughput.methodcall;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import teetime.examples.throughput.TimestampObject;
-import teetime.examples.throughput.methodcall.stage.AbstractStage;
+import teetime.examples.throughput.methodcall.stage.Clock;
 import teetime.examples.throughput.methodcall.stage.CollectorSink;
+import teetime.examples.throughput.methodcall.stage.Delay;
+import teetime.examples.throughput.methodcall.stage.EndStage;
 import teetime.examples.throughput.methodcall.stage.NoopFilter;
 import teetime.examples.throughput.methodcall.stage.ObjectProducer;
+import teetime.examples.throughput.methodcall.stage.Pipeline;
 import teetime.examples.throughput.methodcall.stage.StartTimestampFilter;
 import teetime.examples.throughput.methodcall.stage.StopTimestampFilter;
 import teetime.framework.core.Analysis;
@@ -34,35 +35,59 @@ import teetime.framework.core.Analysis;
  * 
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis8 extends Analysis {
-
-	public abstract class WrappingPipeline {
-
-		public abstract boolean execute();
-
-	}
+public class MethodCallThroughputAnalysis15 extends Analysis {
 
 	private long numInputObjects;
 	private Callable<TimestampObject> inputObjectCreator;
 	private int numNoopFilters;
 	private List<TimestampObject> timestampObjects;
+
+	private Runnable clockRunnable;
 	private Runnable runnable;
+	private Clock clock;
 
 	@Override
 	public void init() {
 		super.init();
-		this.runnable = this.buildPipeline();
+
+		this.clockRunnable = this.buildClockPipeline();
+		this.runnable = this.buildPipeline(this.clock);
+	}
+
+	private Runnable buildClockPipeline() {
+		this.clock = new Clock();
+
+		this.clock.setInitialDelayInMs(100);
+		this.clock.setIntervalDelayInMs(100);
+
+		final Pipeline<Void, Long> pipeline = new Pipeline<Void, Long>();
+		pipeline.setFirstStage(this.clock);
+		pipeline.setLastStage(new EndStage<Long>());
+
+		pipeline.onStart();
+
+		final Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				do {
+					pipeline.executeWithPorts();
+				} while (pipeline.isReschedulable());
+			}
+		};
+
+		return runnable;
 	}
 
 	/**
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
-	private Runnable buildPipeline() {
+	private Runnable buildPipeline(final Clock clock) {
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
 		// create stages
 		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
+		Delay<TimestampObject> delay = new Delay<TimestampObject>();
 		final StartTimestampFilter startTimestampFilter = new StartTimestampFilter();
 		for (int i = 0; i < noopFilters.length; i++) {
 			noopFilters[i] = new NoopFilter<TimestampObject>();
@@ -70,62 +95,52 @@ public class MethodCallThroughputAnalysis8 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final List<AbstractStage> stageList = new ArrayList<AbstractStage>();
-		stageList.add(objectProducer);
-		stageList.add(startTimestampFilter);
-		stageList.addAll(Arrays.asList(noopFilters));
-		stageList.add(stopTimestampFilter);
-		stageList.add(collectorSink);
+		final Pipeline<Void, Object> pipeline = new Pipeline<Void, Object>();
+		pipeline.setFirstStage(objectProducer);
+		pipeline.addIntermediateStage(startTimestampFilter);
+		pipeline.addIntermediateStages(noopFilters);
+		pipeline.addIntermediateStage(stopTimestampFilter);
+		pipeline.addIntermediateStage(delay);
+		pipeline.setLastStage(collectorSink);
 
-		// using an array decreases the performance from 60ms to 200ms (by 3x)
-		final AbstractStage[] stages = stageList.toArray(new AbstractStage[0]);
+		SpScPipe.connect(clock.getOutputPort(), delay.getTimestampTriggerInputPort());
 
-		final WrappingPipeline pipeline = new WrappingPipeline() {
-			private int startIndex;
+		FixedSizedPipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
+		FixedSizedPipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
+		for (int i = 0; i < noopFilters.length - 1; i++) {
+			FixedSizedPipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
+		}
+		FixedSizedPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
+		FixedSizedPipe.connect(stopTimestampFilter.getOutputPort(), delay.getInputPort());
 
-			@Override
-			public boolean execute() {
-				// using the foreach for arrays (i.e., w/o using an iterator variable) increases the performance from 200ms to 130ms
-				Object element = null;
-				for (int i = this.startIndex; i < stages.length; i++) {
-					Stage stage = stages[i];
-					element = stage.execute(element);
-					if (element == null) {
-						return false;
-					}
-				}
+		FixedSizedPipe.connect(delay.getOutputPort(), collectorSink.getInputPort());
 
-				// changing the type of stages decreases performance by 2 (e.g., NoopFilter -> Stage)
-				// the VM seems to not optimize the code anymore if the concrete type is not declared
+		pipeline.onStart();
 
-				// for (final NoopFilter<TimestampObject> noopFilter : noopFilters) {
-				// element = noopFilter.execute(element);
-				// }
-				//
-				// element = stopTimestampFilter.execute(element);
-				// element = collectorSink.execute(element);
+		// pipeline.getInputPort().pipe = new Pipe<Void>();
+		// pipeline.getInputPort().pipe.add(new Object());
 
-				return true;
-			}
-
-		};
+		// pipeline.getOutputPort().pipe = new Pipe<Void>();
 
 		final Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-				boolean success;
 				do {
-					success = pipeline.execute();
-				} while (success);
+					pipeline.executeWithPorts();
+				} while (pipeline.getSchedulingInformation().isActive() && pipeline.isReschedulable());
 			}
 		};
+
 		return runnable;
 	}
 
 	@Override
 	public void start() {
 		super.start();
+		Thread clockThread = new Thread(this.clockRunnable);
+		clockThread.start();
 		this.runnable.run();
+		clockThread.interrupt();
 	}
 
 	public void setInput(final int numInputObjects, final Callable<TimestampObject> inputObjectCreator) {

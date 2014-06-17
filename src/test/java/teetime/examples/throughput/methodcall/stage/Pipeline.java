@@ -27,6 +27,7 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 	private OnDisableListener listener;
 
 	private boolean reschedulable;
+	private int firstStageIndex;
 
 	public void setFirstStage(final StageWithPort<I, ?> stage) {
 		this.firstStage = stage;
@@ -67,9 +68,30 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 
 	@Override
 	public void executeWithPorts() {
-		this.stages[0].executeWithPorts();
+		StageWithPort firstStage = this.stages[this.firstStageIndex];
+		firstStage.executeWithPorts();
 
-		this.setReschedulable(this.stages[0].isReschedulable());
+		this.updateRescheduable(firstStage);
+		// this.setReschedulable(stage.isReschedulable());
+	}
+
+	private final void updateRescheduable(Stage stage) {
+		while (!stage.isReschedulable()) {
+			this.firstStageIndex++;
+			stage = stage.next();
+			if (stage == null) { // loop reaches the last stage
+				this.setReschedulable(false);
+				return;
+			}
+			stage.onIsPipelineHead();
+			// System.out.println("firstStageIndex: " + this.firstStageIndex + ", class:" + stage.getClass().getSimpleName());
+		}
+		this.setReschedulable(true);
+	}
+
+	@Override
+	public void onIsPipelineHead() {
+		// do nothing
 	}
 
 	@Override

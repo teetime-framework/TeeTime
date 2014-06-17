@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import teetime.examples.throughput.TimestampObject;
+import teetime.examples.throughput.methodcall.stage.AbstractStage;
 import teetime.examples.throughput.methodcall.stage.CollectorSink;
 import teetime.examples.throughput.methodcall.stage.EndStage;
 import teetime.examples.throughput.methodcall.stage.NoopFilter;
