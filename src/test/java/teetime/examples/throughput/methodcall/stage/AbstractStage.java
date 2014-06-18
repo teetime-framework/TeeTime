@@ -1,30 +1,24 @@
 package teetime.examples.throughput.methodcall.stage;
 
 import teetime.examples.throughput.methodcall.InputPort;
-import teetime.examples.throughput.methodcall.OnDisableListener;
 import teetime.examples.throughput.methodcall.OutputPort;
-import teetime.examples.throughput.methodcall.SchedulingInformation;
 import teetime.examples.throughput.methodcall.Stage;
 import teetime.examples.throughput.methodcall.StageWithPort;
 import teetime.util.list.CommittableQueue;
-import teetime.util.list.CommittableResizableArrayQueue;
 
 public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
 	private final InputPort<I> inputPort = new InputPort<I>();
 	private final OutputPort<O> outputPort = new OutputPort<O>();
 
-	protected final CommittableQueue<O> outputElements = new CommittableResizableArrayQueue<O>(null, 4);
+	// protected final CommittableQueue<O> outputElements = new CommittableResizableArrayQueue<O>(null, 4);
+	protected final CommittableQueue<O> outputElements = null;
 
-	private final SchedulingInformation schedulingInformation = new SchedulingInformation();
-
-	private Stage parentStage;
-
-	private OnDisableListener listener;
+	private Stage<?, ?> parentStage;
 
 	private int index;
 
-	private StageWithPort successor;
+	private StageWithPort<?, ?> successor;
 
 	private boolean reschedulable;
 
@@ -34,7 +28,7 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 		if (result == null) {
 			return null;
 		}
-		StageWithPort next = this.next();
+		StageWithPort<?, ?> next = this.next();
 		// if (next != null) {
 		// return next.executeRecursively(result);
 		// } else {
@@ -100,31 +94,32 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
 		// CommittableQueue execute;
 
+		StageWithPort<?, ?> next = this.next();
 		do {
 			// execute = this.next().execute2(this.outputElements);
 			// execute = this.next().execute2(this.getOutputPort().pipe.getElements());
-			this.next().executeWithPorts();
+			next.executeWithPorts();
 			// System.out.println("Executed " + this.next().getClass().getSimpleName());
-		} while (this.next().isReschedulable());
+		} while (next.isReschedulable());
 		// } while (this.next().getInputPort().pipe.size() > 0);
 		// } while (execute.size() > 0);
 	}
 
-	@Override
-	public SchedulingInformation getSchedulingInformation() {
-		return this.schedulingInformation;
-	}
+	// @Override
+	// public SchedulingInformation getSchedulingInformation() {
+	// return this.schedulingInformation;
+	// }
 
-	public void disable() {
-		this.schedulingInformation.setActive(false);
-		this.fireOnDisable();
-	}
+	// public void disable() {
+	// this.schedulingInformation.setActive(false);
+	// this.fireOnDisable();
+	// }
 
-	private void fireOnDisable() {
-		if (this.listener != null) {
-			this.listener.onDisable(this, this.index);
-		}
-	}
+	// private void fireOnDisable() {
+	// if (this.listener != null) {
+	// this.listener.onDisable(this, this.index);
+	// }
+	// }
 
 	@Override
 	public void onStart() {
@@ -132,27 +127,18 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	}
 
 	@Override
-	public Stage getParentStage() {
+	public Stage<?, ?> getParentStage() {
 		return this.parentStage;
 	}
 
 	@Override
-	public void setParentStage(final Stage parentStage, final int index) {
+	public void setParentStage(final Stage<?, ?> parentStage, final int index) {
 		this.index = index;
 		this.parentStage = parentStage;
 	}
 
-	public OnDisableListener getListener() {
-		return this.listener;
-	}
-
 	@Override
-	public void setListener(final OnDisableListener listener) {
-		this.listener = listener;
-	}
-
-	@Override
-	public StageWithPort next() {
+	public StageWithPort<?, ?> next() {
 		return this.successor;
 	}
 

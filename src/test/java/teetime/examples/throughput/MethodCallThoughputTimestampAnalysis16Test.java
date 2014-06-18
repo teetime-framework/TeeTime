@@ -15,7 +15,6 @@
  ***************************************************************************/
 package teetime.examples.throughput;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -23,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import teetime.examples.throughput.methodcall.MethodCallThroughputAnalysis16;
+import teetime.util.ListUtil;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
 
@@ -67,11 +67,7 @@ public class MethodCallThoughputTimestampAnalysis16Test {
 			analysis.onTerminate();
 		}
 
-		// merge
-		List<TimestampObject> timestampObjects = new LinkedList<TimestampObject>();
-		for (List<TimestampObject> timestampObjectList : analysis.getTimestampObjectsList()) {
-			timestampObjects.addAll(timestampObjectList);
-		}
+		List<TimestampObject> timestampObjects = ListUtil.merge(analysis.getTimestampObjectsList());
 		StatisticsUtil.printStatistics(stopWatch.getDurationInNs(), timestampObjects);
 	}
 }

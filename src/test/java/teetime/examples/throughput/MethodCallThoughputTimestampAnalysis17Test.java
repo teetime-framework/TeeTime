@@ -15,14 +15,14 @@
  ***************************************************************************/
 package teetime.examples.throughput;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import teetime.examples.throughput.methodcall.Closure;
 import teetime.examples.throughput.methodcall.MethodCallThroughputAnalysis17;
+import teetime.util.ListUtil;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
 
@@ -51,14 +51,15 @@ public class MethodCallThoughputTimestampAnalysis17Test {
 
 		final MethodCallThroughputAnalysis17 analysis = new MethodCallThroughputAnalysis17();
 		analysis.setNumNoopFilters(NUM_NOOP_FILTERS);
-		analysis.setInput(NUM_OBJECTS_TO_CREATE, new Callable<TimestampObject>() {
+		analysis.setInput(NUM_OBJECTS_TO_CREATE, new Closure<Void, TimestampObject>() {
 			@Override
-			public TimestampObject call() throws Exception {
+			public TimestampObject execute(final Void element) {
 				return new TimestampObject();
 			}
 		});
 		analysis.init();
 
+		System.out.println("starting");
 		stopWatch.start();
 		try {
 			analysis.start();
@@ -67,12 +68,7 @@ public class MethodCallThoughputTimestampAnalysis17Test {
 			analysis.onTerminate();
 		}
 
-		// merge
-		List<TimestampObject> timestampObjects = analysis.getTimestampObjectsList().get(0);
-		for (int i = 1; i < analysis.getTimestampObjectsList().size(); i++) {
-			Collection<? extends TimestampObject> timestampObjectList = analysis.getTimestampObjectsList().get(i);
-			timestampObjects.addAll(timestampObjectList);
-		}
+		List<TimestampObject> timestampObjects = ListUtil.merge(analysis.getTimestampObjectsList());
 		StatisticsUtil.printStatistics(stopWatch.getDurationInNs(), timestampObjects);
 	}
 }

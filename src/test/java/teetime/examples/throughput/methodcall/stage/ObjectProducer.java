@@ -15,8 +15,7 @@
  ***************************************************************************/
 package teetime.examples.throughput.methodcall.stage;
 
-import java.util.concurrent.Callable;
-
+import teetime.examples.throughput.methodcall.Closure;
 import teetime.examples.throughput.methodcall.ProducerStage;
 import teetime.util.list.CommittableQueue;
 
@@ -28,12 +27,12 @@ import teetime.util.list.CommittableQueue;
 public class ObjectProducer<T> extends ProducerStage<Void, T> {
 
 	private long numInputObjects;
-	private Callable<T> inputObjectCreator;
+	private Closure<Void, T> inputObjectCreator;
 
 	/**
 	 * @since 1.10
 	 */
-	public ObjectProducer(final long numInputObjects, final Callable<T> inputObjectCreator) {
+	public ObjectProducer(final long numInputObjects, final Closure<Void, T> inputObjectCreator) {
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;
 	}
@@ -46,7 +45,8 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 		}
 
 		try {
-			final T newObject = this.inputObjectCreator.call();
+			// final T newObject = this.inputObjectCreator.call();
+			final T newObject = null;
 			this.numInputObjects--;
 
 			return newObject;
@@ -63,11 +63,11 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 		this.numInputObjects = numInputObjects;
 	}
 
-	public Callable<T> getInputObjectCreator() {
+	public Closure<Void, T> getInputObjectCreator() {
 		return this.inputObjectCreator;
 	}
 
-	public void setInputObjectCreator(final Callable<T> inputObjectCreator) {
+	public void setInputObjectCreator(final Closure<Void, T> inputObjectCreator) {
 		this.inputObjectCreator = inputObjectCreator;
 	}
 
@@ -100,14 +100,21 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 			return;
 		}
 
-		try {
-			final T newObject = this.inputObjectCreator.call();
-			this.numInputObjects--;
-			// System.out.println(this.getClass().getSimpleName() + ": sending " + this.numInputObjects);
-			this.send(newObject);
-		} catch (final Exception e) {
-			throw new IllegalStateException(e);
-		}
+		// try {
+		T newObject = null;
+		newObject = this.inputObjectCreator.execute(null);
+		this.numInputObjects--;
+		// System.out.println(this.getClass().getSimpleName() + ": sending " + this.numInputObjects);
+		this.send(newObject);
+		// } catch (final Exception e) {
+		// throw new IllegalStateException(e);
+		// }
+	}
+
+	@Override
+	public void onIsPipelineHead() {
+		// this.getOutputPort().pipe = null; // no performance increase
+		super.onIsPipelineHead();
 	}
 
 }

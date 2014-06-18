@@ -5,18 +5,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 import teetime.examples.throughput.methodcall.InputPort;
-import teetime.examples.throughput.methodcall.OnDisableListener;
 import teetime.examples.throughput.methodcall.OutputPort;
 import teetime.examples.throughput.methodcall.SchedulingInformation;
 import teetime.examples.throughput.methodcall.Stage;
 import teetime.examples.throughput.methodcall.StageWithPort;
 import teetime.util.list.CommittableQueue;
 
-public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
+public class Pipeline<I, O> implements StageWithPort<I, O> {
 
-	private StageWithPort firstStage;
+	private StageWithPort<I, ?> firstStage;
 	private final List<StageWithPort> intermediateStages = new LinkedList<StageWithPort>();
-	private StageWithPort lastStage;
+	private StageWithPort<?, O> lastStage;
 
 	private final SchedulingInformation schedulingInformation = new SchedulingInformation();
 
@@ -24,7 +23,6 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 	private Stage parentStage;
 	private int index;
 	private int startIndex;
-	private OnDisableListener listener;
 
 	private boolean reschedulable;
 	private int firstStageIndex;
@@ -75,12 +73,13 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 		// this.setReschedulable(stage.isReschedulable());
 	}
 
-	private final void updateRescheduable(Stage stage) {
+	private final void updateRescheduable(Stage<?, ?> stage) {
 		while (!stage.isReschedulable()) {
 			this.firstStageIndex++;
 			stage = stage.next();
 			if (stage == null) { // loop reaches the last stage
 				this.setReschedulable(false);
+				this.cleanUp();
 				return;
 			}
 			stage.onIsPipelineHead();
@@ -134,7 +133,7 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 		for (int i = 0; i < this.stages.length; i++) {
 			StageWithPort<?, ?> stage = this.stages[i];
 			stage.setParentStage(this, i);
-			stage.setListener(this);
+			// stage.setListener(this);
 		}
 
 		for (int i = 0; i < this.stages.length - 1; i++) {
@@ -155,11 +154,6 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 	// }
 
 	@Override
-	public SchedulingInformation getSchedulingInformation() {
-		return this.schedulingInformation;
-	}
-
-	@Override
 	public Stage getParentStage() {
 		return this.parentStage;
 	}
@@ -168,34 +162,6 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 	public void setParentStage(final Stage parentStage, final int index) {
 		this.index = index;
 		this.parentStage = parentStage;
-	}
-
-	@Override
-	public void onDisable(final Stage stage, final int index) {
-		this.startIndex = index + 1;
-		if (this.startIndex == this.stages.length) {
-			this.disable();
-		}
-	}
-
-	public void disable() {
-		this.schedulingInformation.setActive(false);
-		this.fireOnDisable();
-	}
-
-	private void fireOnDisable() {
-		if (this.listener != null) {
-			this.listener.onDisable(this, this.index);
-		}
-	}
-
-	public OnDisableListener getListener() {
-		return this.listener;
-	}
-
-	@Override
-	public void setListener(final OnDisableListener listener) {
-		this.listener = listener;
 	}
 
 	@Override
@@ -237,9 +203,20 @@ public class Pipeline<I, O> implements StageWithPort<I, O>, OnDisableListener {
 		return this.lastStage.getOutputPort();
 	}
 
-	// @Override
-	// public OutputPort getOutputPort() {
-	// return this.lastStage.getOutputPort();
-	// }
+	// TODO remove since it does not increase performances
+	private void cleanUp() {
+		for (int i = 0; i < this.stages.length; i++) {
+			StageWithPort<?, ?> stage = this.stages[i];
+			stage.setParentStage(null, i);
+			// stage.setListener(null);
+			stage.setSuccessor(null);
+		}
+
+		this.firstStage = null;
+		this.intermediateStages.clear();
+		this.lastStage = null;
+
+		System.out.println("cleaned up");
+	}
 
 }

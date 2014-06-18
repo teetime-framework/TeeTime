@@ -15,7 +15,7 @@ public abstract class ProducerStage<I, O> extends AbstractStage<I, O> {
 
 		boolean outputIsEmpty = outputElements.isEmpty();
 		if (outputIsEmpty) {
-			this.disable();
+			this.getOutputPort().pipe.close();
 		}
 
 		return outputElements;

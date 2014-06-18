@@ -24,7 +24,7 @@ package teetime.framework.core;
 public class Analysis {
 
 	public void init() {
-
+		System.out.println("Analysis initialized.");
 	}
 
 	public void start() {

@@ -12,15 +12,15 @@ public interface Stage<I, O> {
 
 	CommittableQueue<O> execute2(CommittableQueue<I> elements);
 
-	SchedulingInformation getSchedulingInformation();
+	// SchedulingInformation getSchedulingInformation();
 
-	Stage getParentStage();
+	Stage<?, ?> getParentStage();
 
-	void setParentStage(Stage parentStage, int index);
+	void setParentStage(Stage<?, ?> parentStage, int index);
 
-	void setListener(OnDisableListener listener);
+	// void setListener(OnDisableListener listener);
 
-	Stage next();
+	Stage<?, ?> next();
 
 	void setSuccessor(Stage<?, ?> successor);
 

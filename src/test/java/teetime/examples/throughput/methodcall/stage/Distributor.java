@@ -44,6 +44,12 @@ public class Distributor<T> extends ConsumerStage<T, T> {
 			op.pipe.close();
 			System.out.println("End signal sent, size: " + op.pipe.size());
 		}
+
+		// for (OutputPort<?> op : this.outputPorts) {
+		// op.pipe = null;
+		// }
+		// this.outputPorts = null;
+		// this.outputPortList.clear();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -57,7 +63,12 @@ public class Distributor<T> extends ConsumerStage<T, T> {
 		System.out.println("outputPorts: " + this.outputPorts);
 	}
 
-	public OutputPort<T> getNewOutputPort() {
+	@Override
+	public OutputPort<T> getOutputPort() {
+		return this.getNewOutputPort();
+	}
+
+	private OutputPort<T> getNewOutputPort() {
 		OutputPort<T> outputPort = new OutputPort<T>();
 		this.outputPortList.add(outputPort);
 		return outputPort;

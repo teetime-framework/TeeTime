@@ -58,6 +58,7 @@ public class UnorderedGrowablePipe<T> extends AbstractPipe<T> {
 	@Override
 	public T removeLast() {
 		T element = this.elements[--this.lastFreeIndex];
+		this.elements[this.lastFreeIndex] = null;
 		// T element = this.elements.get(--this.lastFreeIndex);
 		return element;
 	}
