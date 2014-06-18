@@ -2,7 +2,7 @@ package teetime.examples.throughput.methodcall;
 
 import teetime.util.concurrent.workstealing.CircularArray;
 
-public class OrderedGrowableArrayPipe<T> implements IPipe<T> {
+public class OrderedGrowableArrayPipe<T> extends AbstractPipe<T> {
 
 	private CircularArray<T> elements;
 	private int head;

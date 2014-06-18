@@ -2,7 +2,7 @@ package teetime.examples.throughput.methodcall;
 
 import teetime.util.concurrent.spsc.FFBufferOrdered3;
 
-public class SpScPipe<T> implements IPipe<T> {
+public class SpScPipe<T> extends AbstractPipe<T> {
 
 	private final FFBufferOrdered3<T> queue = new FFBufferOrdered3<T>(100010);
 

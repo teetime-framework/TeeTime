@@ -2,7 +2,7 @@ package teetime.examples.throughput.methodcall;
 
 import teetime.util.list.CommittableResizableArrayQueue;
 
-public class Pipe<T> implements IPipe<T> {
+public class Pipe<T> extends AbstractPipe<T> {
 
 	private final CommittableResizableArrayQueue<T> elements = new CommittableResizableArrayQueue<T>(null, 4);
 

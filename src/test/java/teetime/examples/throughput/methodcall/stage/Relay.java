@@ -12,10 +12,11 @@ public class Relay<T> extends AbstractStage<T, T> {
 	public void executeWithPorts() {
 		T element = this.getInputPort().receive();
 		if (null == element) {
-			return;
-		} else if (END_SIGNAL == element) {
-			this.setReschedulable(false);
-			System.out.println("got end signal; pipe.size: " + this.getInputPort().pipe.size());
+			if (this.getInputPort().pipe.isClosed()) {
+				this.setReschedulable(false);
+				System.out.println("got end signal; pipe.size: " + this.getInputPort().pipe.size());
+				return;
+			}
 			return;
 		}
 

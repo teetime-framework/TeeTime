@@ -1,6 +1,6 @@
 package teetime.examples.throughput.methodcall;
 
-public class UnorderedGrowablePipe<T> implements IPipe<T> {
+public class UnorderedGrowablePipe<T> extends AbstractPipe<T> {
 
 	// private static final class ArrayWrapper2<T> {
 	//

@@ -24,7 +24,6 @@ import teetime.examples.throughput.TimestampObject;
 import teetime.examples.throughput.methodcall.stage.CollectorSink;
 import teetime.examples.throughput.methodcall.stage.Distributor;
 import teetime.examples.throughput.methodcall.stage.NoopFilter;
-import teetime.examples.throughput.methodcall.stage.ObjectProducer;
 import teetime.examples.throughput.methodcall.stage.Pipeline;
 import teetime.examples.throughput.methodcall.stage.Relay;
 import teetime.examples.throughput.methodcall.stage.StartTimestampFilter;
@@ -36,7 +35,7 @@ import teetime.framework.core.Analysis;
  * 
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis16 extends Analysis {
+public class MethodCallThroughputAnalysis17 extends Analysis {
 
 	private static final int NUM_WORKER_THREADS = Runtime.getRuntime().availableProcessors();
 
@@ -54,8 +53,8 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		Runnable producerRunnable = this.buildProducerPipeline();
-		this.producerThread = new Thread(producerRunnable);
+		// Runnable producerRunnable = this.buildProducerPipeline();
+		// this.producerThread = new Thread(producerRunnable);
 
 		int numWorkerThreads = Math.min(NUM_WORKER_THREADS, 1); // only for testing purpose
 
@@ -68,28 +67,28 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 			this.workerThreads[i] = new Thread(workerRunnable);
 		}
 
-		this.producerThread.start();
-
-		try {
-			this.producerThread.join();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		// this.producerThread.start();
+		//
+		// try {
+		// this.producerThread.join();
+		// } catch (InterruptedException e1) {
+		// // TODO Auto-generated catch block
+		// e1.printStackTrace();
+		// }
 	}
 
-	private Runnable buildProducerPipeline() {
-		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
-		this.distributor = new Distributor<TimestampObject>();
-
-		final Pipeline<Void, TimestampObject> pipeline = new Pipeline<Void, TimestampObject>();
-		pipeline.setFirstStage(objectProducer);
-		pipeline.setLastStage(this.distributor);
-
-		UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), this.distributor.getInputPort());
-
-		return new RunnableStage(pipeline);
-	}
+	// private Runnable buildProducerPipeline() {
+	// final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
+	// this.distributor = new Distributor<TimestampObject>();
+	//
+	// final Pipeline<Void, TimestampObject> pipeline = new Pipeline<Void, TimestampObject>();
+	// pipeline.setFirstStage(objectProducer);
+	// pipeline.setLastStage(this.distributor);
+	//
+	// UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), this.distributor.getInputPort());
+	//
+	// return new RunnableStage(pipeline);
+	// }
 
 	/**
 	 * @param numNoopFilters
@@ -114,7 +113,17 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 		pipeline.addIntermediateStage(stopTimestampFilter);
 		pipeline.setLastStage(collectorSink);
 
-		SpScPipe.connect(distributor.getNewOutputPort(), relay.getInputPort());
+		IPipe<TimestampObject> startPipe = new SpScPipe<TimestampObject>();
+		try {
+			for (int i = 0; i < this.numInputObjects; i++) {
+				startPipe.add(this.inputObjectCreator.call());
+			}
+			startPipe.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		relay.getInputPort().pipe = startPipe;
 
 		UnorderedGrowablePipe.connect(relay.getOutputPort(), startTimestampFilter.getInputPort());
 

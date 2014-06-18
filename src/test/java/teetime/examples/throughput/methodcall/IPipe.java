@@ -12,4 +12,8 @@ public interface IPipe<T> {
 
 	public abstract T readLast();
 
+	public abstract void close();
+
+	public abstract boolean isClosed();
+
 }

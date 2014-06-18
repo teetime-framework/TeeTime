@@ -1,6 +1,7 @@
 package teetime.examples.throughput.methodcall;
 
-public class SingleElementPipe<T> implements IPipe<T> {
+//public class SingleElementPipe<T> implements IPipe<T> {
+public class SingleElementPipe<T> extends AbstractPipe<T> {
 
 	private T element;
 
@@ -36,5 +37,17 @@ public class SingleElementPipe<T> implements IPipe<T> {
 	public int size() {
 		return (this.element == null) ? 0 : 1;
 	}
+
+	// @Override
+	// public void close() {
+	//
+	//
+	// }
+	//
+	// @Override
+	// public boolean isClosed() {
+	//
+	// return false;
+	// }
 
 }

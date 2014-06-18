@@ -10,6 +10,7 @@
 -foreach vs. index-based iteration
 -iterative vs. recursive execution
 -null-check vs. NullObject
+-AbstractPipe vs. IPipe
 -
 
 
@@ -29,3 +30,5 @@
 12: 3300 ns (recursive; argument/return w/o pipe)
 13: 3300 ns (recursive; argument/return w/o pipe; w/o pipeline class)
 14: 21,000 ns (spsc pipe)
+16: 14,500 ns (with distributor thread)
+17: 9800 ns (as 16, but with direct feeding of SpScPipe)

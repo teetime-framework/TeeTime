@@ -17,7 +17,7 @@ public class Distributor<T> extends ConsumerStage<T, T> {
 
 	private int size;
 
-	private int mask;
+	// private int mask;
 
 	@Override
 	public T execute(final Object element) {
@@ -40,9 +40,9 @@ public class Distributor<T> extends ConsumerStage<T, T> {
 
 	@Override
 	public void onIsPipelineHead() {
-		for (OutputPort op : this.outputPorts) {
-			op.send(END_SIGNAL);
-			System.out.println("End signal sent, size: " + op.pipe.size() + ", end signal:" + (op.pipe.readLast() == END_SIGNAL));
+		for (OutputPort<?> op : this.outputPorts) {
+			op.pipe.close();
+			System.out.println("End signal sent, size: " + op.pipe.size());
 		}
 	}
 

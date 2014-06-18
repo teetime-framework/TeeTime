@@ -28,10 +28,10 @@ public class Analysis {
 	}
 
 	public void start() {
-
+		// System.out.println("Analysis started.");
 	}
 
 	public void onTerminate() {
-
+		// System.out.println("Analysis stopped.");
 	}
 }

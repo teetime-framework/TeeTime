@@ -2,7 +2,7 @@ package teetime.examples.throughput.methodcall;
 
 import java.util.LinkedList;
 
-public class OrderedGrowablePipe<T> implements IPipe<T> {
+public class OrderedGrowablePipe<T> extends AbstractPipe<T> {
 
 	private LinkedList<T> elements;
 
@@ -22,12 +22,12 @@ public class OrderedGrowablePipe<T> implements IPipe<T> {
 
 	@Override
 	public void add(final T element) {
-		this.elements.add(element);
+		this.elements.offer(element);
 	}
 
 	@Override
 	public T removeLast() {
-		return this.elements.removeFirst();
+		return this.elements.poll();
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class OrderedGrowablePipe<T> implements IPipe<T> {
 
 	@Override
 	public T readLast() {
-		return this.elements.getFirst();
+		return this.elements.peek();
 	}
 
 	@Override

@@ -13,4 +13,5 @@ public class InputPort<T> {
 		T element = this.pipe.readLast();
 		return element;
 	}
+
 }

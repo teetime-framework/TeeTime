@@ -4,8 +4,6 @@ import teetime.util.list.CommittableQueue;
 
 public interface Stage<I, O> {
 
-	public static final Object END_SIGNAL = new Object();
-
 	Object executeRecursively(Object element);
 
 	O execute(Object element);
