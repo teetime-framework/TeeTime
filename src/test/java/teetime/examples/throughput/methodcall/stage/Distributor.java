@@ -61,7 +61,7 @@ public final class Distributor<T> extends AbstractStage<T, T> {
 
 		int sizeInPow2 = Pow2.findNextPositivePowerOfTwo(this.size); // is not necessary so far
 		this.outputPorts = this.outputPortList.toArray(new OutputPort[sizeInPow2]);
-		System.out.println("outputPorts: " + this.outputPorts);
+		// System.out.println("outputPorts: " + this.outputPorts);
 	}
 
 	@Override
