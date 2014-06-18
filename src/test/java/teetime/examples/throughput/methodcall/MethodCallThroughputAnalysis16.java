@@ -88,18 +88,7 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 
 		UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), this.distributor.getInputPort());
 
-		final Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				pipeline.onStart();
-				do {
-					pipeline.executeWithPorts();
-				} while (pipeline.isReschedulable());
-				// System.out.println("buildProducerPipeline finished");
-			}
-		};
-
-		return runnable;
+		return new RunnableStage(pipeline);
 	}
 
 	/**
@@ -136,18 +125,7 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 		UnorderedGrowablePipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
 		UnorderedGrowablePipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
-		final Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				pipeline.onStart();
-				do {
-					pipeline.executeWithPorts();
-				} while (pipeline.isReschedulable());
-				// System.out.println("buildPipeline finished");
-			}
-		};
-
-		return runnable;
+		return new RunnableStage(pipeline);
 	}
 
 	@Override
