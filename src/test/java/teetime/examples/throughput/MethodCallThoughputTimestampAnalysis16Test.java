@@ -44,12 +44,20 @@ public class MethodCallThoughputTimestampAnalysis16Test {
 	}
 
 	@Test
-	public void testWithManyObjects() {
+	public void testWithManyObjectsAnd1Thread() {
+		long durationWith1Thread = this.performAnalysis(1, -1);
+		this.performAnalysis(2, durationWith1Thread);
+		this.performAnalysis(4, durationWith1Thread);
+		// this.performAnalysis(8, stopWatch.getDurationInNs());
+	}
+
+	private long performAnalysis(final int numThreads, final long durationWith1Thread) {
 		System.out.println("Testing teetime (mc) with NUM_OBJECTS_TO_CREATE=" + NUM_OBJECTS_TO_CREATE + ", NUM_NOOP_FILTERS="
 				+ NUM_NOOP_FILTERS + "...");
 		final StopWatch stopWatch = new StopWatch();
 
 		final MethodCallThroughputAnalysis16 analysis = new MethodCallThroughputAnalysis16();
+		analysis.setNumWorkerThreads(numThreads);
 		analysis.setNumNoopFilters(NUM_NOOP_FILTERS);
 		analysis.setInput(NUM_OBJECTS_TO_CREATE, new ConstructorClosure<TimestampObject>() {
 			@Override
@@ -69,11 +77,18 @@ public class MethodCallThoughputTimestampAnalysis16Test {
 
 		List<TimestampObject> timestampObjects = ListUtil.merge(analysis.getTimestampObjectsList());
 		StatisticsUtil.printStatistics(stopWatch.getDurationInNs(), timestampObjects);
+
+		if (durationWith1Thread != -1) {
+			double speedup = (double) durationWith1Thread / stopWatch.getDurationInNs();
+			System.out.println("Speedup (from 1 to " + numThreads + " threads): " + String.format("%.2f", speedup));
+		}
+
+		return stopWatch.getDurationInNs();
 	}
 
 	public static void main(final String[] args) {
 		MethodCallThoughputTimestampAnalysis16Test test = new MethodCallThoughputTimestampAnalysis16Test();
 		test.before();
-		test.testWithManyObjects();
+		test.testWithManyObjectsAnd1Thread();
 	}
 }

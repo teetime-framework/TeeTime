@@ -50,15 +50,17 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 
 	private Thread[] workerThreads;
 
+	private int numWorkerThreads;
+
 	@Override
 	public void init() {
 		super.init();
 		Pipeline<Void, TimestampObject> producerPipeline = this.buildProducerPipeline(this.numInputObjects, this.inputObjectCreator);
 		this.producerThread = new Thread(new RunnableStage(producerPipeline));
 
-		int numWorkerThreads = Math.min(NUM_WORKER_THREADS, 1); // only for testing purpose
+		this.numWorkerThreads = Math.min(NUM_WORKER_THREADS, this.numWorkerThreads);
 
-		this.workerThreads = new Thread[numWorkerThreads];
+		this.workerThreads = new Thread[this.numWorkerThreads];
 		for (int i = 0; i < this.workerThreads.length; i++) {
 			List<TimestampObject> resultList = new ArrayList<TimestampObject>(this.numInputObjects);
 			this.timestampObjectsList.add(resultList);
@@ -67,14 +69,14 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 			this.workerThreads[i] = new Thread(workerRunnable);
 		}
 
-		this.producerThread.start();
-
-		try {
-			this.producerThread.join();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		// this.producerThread.start();
+		//
+		// try {
+		// this.producerThread.join();
+		// } catch (InterruptedException e1) {
+		// // TODO Auto-generated catch block
+		// e1.printStackTrace();
+		// }
 	}
 
 	private Pipeline<Void, TimestampObject> buildProducerPipeline(final int numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
@@ -131,8 +133,17 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 	public void start() {
 		super.start();
 
+		this.producerThread.start();
+
 		for (Thread workerThread : this.workerThreads) {
 			workerThread.start();
+		}
+
+		try {
+			this.producerThread.join();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 
 		try {
@@ -160,6 +171,14 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 
 	public List<List<TimestampObject>> getTimestampObjectsList() {
 		return this.timestampObjectsList;
+	}
+
+	public int getNumWorkerThreads() {
+		return this.numWorkerThreads;
+	}
+
+	public void setNumWorkerThreads(final int numWorkerThreads) {
+		this.numWorkerThreads = numWorkerThreads;
 	}
 
 }

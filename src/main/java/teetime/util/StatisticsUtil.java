@@ -107,4 +107,5 @@ public class StatisticsUtil {
 		}
 		return quintileValues;
 	}
+
 }

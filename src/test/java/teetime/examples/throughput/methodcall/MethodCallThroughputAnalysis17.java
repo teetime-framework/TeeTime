@@ -31,7 +31,6 @@ import teetime.examples.throughput.methodcall.stage.Sink;
 import teetime.examples.throughput.methodcall.stage.StartTimestampFilter;
 import teetime.examples.throughput.methodcall.stage.StopTimestampFilter;
 import teetime.framework.core.Analysis;
-import teetime.util.StopWatch;
 
 /**
  * @author Christian Wulf
@@ -90,24 +89,11 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		// this.producerThread.run();
 		new RunnableStage(producerPipeline).run();
 
-		// Pipeline<Void, TimestampObject> stage = producerPipeline;
-		// stage.onStart();
-		// do {
-		// stage.executeWithPorts();
-		// } while (stage.isReschedulable());
-
 		// try {
 		// this.producerThread.join();
 		// } catch (InterruptedException e1) {
 		// // TODO Auto-generated catch block
 		// e1.printStackTrace();
-		// }
-
-		// try {
-		// Thread.sleep(1000);
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
 		// }
 
 		super.init();
@@ -186,11 +172,8 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		return new RunnableStage(pipeline);
 	}
 
-	private final StopWatch stopWatch = new StopWatch();
-
 	@Override
 	public void start() {
-		this.stopWatch.start();
 		super.start();
 
 		for (Thread workerThread : this.workerThreads) {
@@ -205,8 +188,6 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.stopWatch.end();
-		System.out.println("dur: " + this.stopWatch.getDurationInNs() + " ns");
 	}
 
 	public void setInput(final int numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {

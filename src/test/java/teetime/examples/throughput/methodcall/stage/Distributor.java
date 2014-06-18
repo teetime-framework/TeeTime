@@ -9,6 +9,8 @@ import teetime.util.list.CommittableQueue;
 
 public final class Distributor<T> extends AbstractStage<T, T> {
 
+	// TODO do not inherit from AbstractStage since it provides the default output port that is unnecessary for the distributor
+
 	private final List<OutputPort<T>> outputPortList = new ArrayList<OutputPort<T>>();
 
 	private OutputPort<T>[] outputPorts;

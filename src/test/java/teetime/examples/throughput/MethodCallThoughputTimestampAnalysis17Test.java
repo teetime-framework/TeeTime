@@ -49,6 +49,8 @@ public class MethodCallThoughputTimestampAnalysis17Test {
 				+ NUM_NOOP_FILTERS + "...");
 		final StopWatch stopWatch = new StopWatch();
 
+		// int count = 10;
+		// while (count-- > 0) {
 		final MethodCallThroughputAnalysis17 analysis = new MethodCallThroughputAnalysis17();
 		analysis.setNumNoopFilters(NUM_NOOP_FILTERS);
 		analysis.setInput(NUM_OBJECTS_TO_CREATE, new ConstructorClosure<TimestampObject>() {
@@ -70,5 +72,6 @@ public class MethodCallThoughputTimestampAnalysis17Test {
 
 		List<TimestampObject> timestampObjects = ListUtil.merge(analysis.getTimestampObjectsList());
 		StatisticsUtil.printStatistics(stopWatch.getDurationInNs(), timestampObjects);
+		// }
 	}
 }
