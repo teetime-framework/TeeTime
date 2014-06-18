@@ -41,8 +41,8 @@ public class UnorderedGrowablePipe<T> extends AbstractPipe<T> {
 
 	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
 		IPipe<T> pipe = new UnorderedGrowablePipe<T>();
-		sourcePort.pipe = pipe;
-		targetPort.pipe = pipe;
+		sourcePort.setPipe(pipe);
+		targetPort.setPipe(pipe);
 	}
 
 	@Override
@@ -57,6 +57,9 @@ public class UnorderedGrowablePipe<T> extends AbstractPipe<T> {
 
 	@Override
 	public T removeLast() {
+		// if (this.lastFreeIndex == 0) {
+		// return null;
+		// }
 		T element = this.elements[--this.lastFreeIndex];
 		this.elements[this.lastFreeIndex] = null;
 		// T element = this.elements.get(--this.lastFreeIndex);

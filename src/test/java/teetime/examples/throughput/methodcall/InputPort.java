@@ -2,7 +2,7 @@ package teetime.examples.throughput.methodcall;
 
 public class InputPort<T> {
 
-	public IPipe<T> pipe;
+	private IPipe<T> pipe;
 
 	public T receive() {
 		T element = this.pipe.removeLast();
@@ -12,6 +12,14 @@ public class InputPort<T> {
 	public T read() {
 		T element = this.pipe.readLast();
 		return element;
+	}
+
+	public IPipe<T> getPipe() {
+		return this.pipe;
+	}
+
+	public void setPipe(final IPipe<T> pipe) {
+		this.pipe = pipe;
 	}
 
 }

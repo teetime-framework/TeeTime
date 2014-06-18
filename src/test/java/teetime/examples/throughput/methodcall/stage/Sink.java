@@ -1,6 +1,5 @@
 package teetime.examples.throughput.methodcall.stage;
 
-import teetime.examples.throughput.methodcall.ConsumerStage;
 import teetime.util.list.CommittableQueue;
 
 public class Sink<T> extends ConsumerStage<T, T> {

@@ -1,6 +1,5 @@
-package teetime.examples.throughput.methodcall;
+package teetime.examples.throughput.methodcall.stage;
 
-import teetime.examples.throughput.methodcall.stage.AbstractStage;
 import teetime.util.list.CommittableQueue;
 
 public abstract class ConsumerStage<I, O> extends AbstractStage<I, O> {
@@ -23,7 +22,7 @@ public abstract class ConsumerStage<I, O> extends AbstractStage<I, O> {
 	public void executeWithPorts() {
 		I element = this.getInputPort().receive();
 
-		this.setReschedulable(this.getInputPort().pipe.size() > 0);
+		this.setReschedulable(this.getInputPort().getPipe().size() > 0);
 
 		this.execute5(element);
 

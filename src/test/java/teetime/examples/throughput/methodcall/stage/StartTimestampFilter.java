@@ -16,7 +16,6 @@
 package teetime.examples.throughput.methodcall.stage;
 
 import teetime.examples.throughput.TimestampObject;
-import teetime.examples.throughput.methodcall.ConsumerStage;
 import teetime.util.list.CommittableQueue;
 
 /**

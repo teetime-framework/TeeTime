@@ -15,8 +15,7 @@
  ***************************************************************************/
 package teetime.examples.throughput.methodcall.stage;
 
-import teetime.examples.throughput.methodcall.Closure;
-import teetime.examples.throughput.methodcall.ProducerStage;
+import teetime.examples.throughput.methodcall.ConstructorClosure;
 import teetime.util.list.CommittableQueue;
 
 /**
@@ -27,27 +26,31 @@ import teetime.util.list.CommittableQueue;
 public class ObjectProducer<T> extends ProducerStage<Void, T> {
 
 	private long numInputObjects;
-	private Closure<Void, T> inputObjectCreator;
+	private ConstructorClosure<T> inputObjectCreator;
 
 	/**
 	 * @since 1.10
 	 */
-	public ObjectProducer(final long numInputObjects, final Closure<Void, T> inputObjectCreator) {
+	public ObjectProducer(final long numInputObjects, final ConstructorClosure<T> inputObjectCreator) {
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;
 	}
 
 	@Override
 	public T execute(final Object element) {
-		if (this.numInputObjects == 0) {
-			this.setReschedulable(false);
-			return null;
-		}
+		// if (this.numInputObjects == 0) {
+		// this.setReschedulable(false);
+		// return null;
+		// }
 
 		try {
-			// final T newObject = this.inputObjectCreator.call();
-			final T newObject = null;
+			final T newObject = this.inputObjectCreator.create();
+			// final T newObject = null;
 			this.numInputObjects--;
+
+			if (this.numInputObjects == 0) {
+				this.setReschedulable(false);
+			}
 
 			return newObject;
 		} catch (final Exception e) {
@@ -63,11 +66,11 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 		this.numInputObjects = numInputObjects;
 	}
 
-	public Closure<Void, T> getInputObjectCreator() {
+	public ConstructorClosure<T> getInputObjectCreator() {
 		return this.inputObjectCreator;
 	}
 
-	public void setInputObjectCreator(final Closure<Void, T> inputObjectCreator) {
+	public void setInputObjectCreator(final ConstructorClosure<T> inputObjectCreator) {
 		this.inputObjectCreator = inputObjectCreator;
 	}
 
@@ -95,26 +98,23 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 
 	@Override
 	protected void execute5(final Void element) {
+		T newObject = null;
+		newObject = this.inputObjectCreator.create();
+		this.numInputObjects--;
+
 		if (this.numInputObjects == 0) {
 			this.setReschedulable(false);
-			return;
+			// this.getOutputPort().pipe.close();
 		}
 
-		// try {
-		T newObject = null;
-		newObject = this.inputObjectCreator.execute(null);
-		this.numInputObjects--;
 		// System.out.println(this.getClass().getSimpleName() + ": sending " + this.numInputObjects);
 		this.send(newObject);
-		// } catch (final Exception e) {
-		// throw new IllegalStateException(e);
-		// }
 	}
 
-	@Override
-	public void onIsPipelineHead() {
-		// this.getOutputPort().pipe = null; // no performance increase
-		super.onIsPipelineHead();
-	}
+	// @Override
+	// public void onIsPipelineHead() {
+	// // this.getOutputPort().pipe = null; // no performance increase
+	// super.onIsPipelineHead();
+	// }
 
 }

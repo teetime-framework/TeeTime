@@ -17,7 +17,6 @@ package teetime.examples.throughput.methodcall.stage;
 
 import java.util.List;
 
-import teetime.examples.throughput.methodcall.ConsumerStage;
 import teetime.util.list.CommittableQueue;
 
 /**

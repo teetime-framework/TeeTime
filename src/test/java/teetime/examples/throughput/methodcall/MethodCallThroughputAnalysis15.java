@@ -16,7 +16,6 @@
 package teetime.examples.throughput.methodcall;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import teetime.examples.throughput.TimestampObject;
 import teetime.examples.throughput.methodcall.stage.Clock;
@@ -37,8 +36,8 @@ import teetime.framework.core.Analysis;
  */
 public class MethodCallThroughputAnalysis15 extends Analysis {
 
-	private long numInputObjects;
-	private Callable<TimestampObject> inputObjectCreator;
+	private int numInputObjects;
+	private ConstructorClosure<TimestampObject> inputObjectCreator;
 	private int numNoopFilters;
 	private List<TimestampObject> timestampObjects;
 
@@ -104,23 +103,7 @@ public class MethodCallThroughputAnalysis15 extends Analysis {
 
 		UnorderedGrowablePipe.connect(delay.getOutputPort(), collectorSink.getInputPort());
 
-		pipeline.onStart();
-
-		// pipeline.getInputPort().pipe = new Pipe<Void>();
-		// pipeline.getInputPort().pipe.add(new Object());
-
-		// pipeline.getOutputPort().pipe = new Pipe<Void>();
-
-		final Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				do {
-					pipeline.executeWithPorts();
-				} while (pipeline.getSchedulingInformation().isActive() && pipeline.isReschedulable());
-			}
-		};
-
-		return runnable;
+		return new RunnableStage(pipeline);
 	}
 
 	@Override
@@ -132,7 +115,7 @@ public class MethodCallThroughputAnalysis15 extends Analysis {
 		clockThread.interrupt();
 	}
 
-	public void setInput(final int numInputObjects, final Callable<TimestampObject> inputObjectCreator) {
+	public void setInput(final int numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;
 	}

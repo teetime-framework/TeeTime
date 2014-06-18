@@ -40,7 +40,7 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 	private static final int NUM_WORKER_THREADS = Runtime.getRuntime().availableProcessors();
 
 	private int numInputObjects;
-	private Closure<Void, TimestampObject> inputObjectCreator;
+	private ConstructorClosure<TimestampObject> inputObjectCreator;
 	private int numNoopFilters;
 
 	private final List<List<TimestampObject>> timestampObjectsList = new LinkedList<List<TimestampObject>>();
@@ -77,7 +77,7 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 		}
 	}
 
-	private Pipeline<Void, TimestampObject> buildProducerPipeline(final int numInputObjects, final Closure<Void, TimestampObject> inputObjectCreator) {
+	private Pipeline<Void, TimestampObject> buildProducerPipeline(final int numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
 		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(numInputObjects, inputObjectCreator);
 		this.distributor = new Distributor<TimestampObject>();
 
@@ -145,7 +145,7 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 		}
 	}
 
-	public void setInput(final int numInputObjects, final Closure<Void, TimestampObject> inputObjectCreator) {
+	public void setInput(final int numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;
 	}

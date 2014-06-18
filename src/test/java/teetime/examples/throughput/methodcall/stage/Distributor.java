@@ -3,12 +3,11 @@ package teetime.examples.throughput.methodcall.stage;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.examples.throughput.methodcall.ConsumerStage;
 import teetime.examples.throughput.methodcall.OutputPort;
 import teetime.util.concurrent.spsc.Pow2;
 import teetime.util.list.CommittableQueue;
 
-public class Distributor<T> extends ConsumerStage<T, T> {
+public final class Distributor<T> extends AbstractStage<T, T> {
 
 	private final List<OutputPort<T>> outputPortList = new ArrayList<OutputPort<T>>();
 
@@ -41,8 +40,8 @@ public class Distributor<T> extends ConsumerStage<T, T> {
 	@Override
 	public void onIsPipelineHead() {
 		for (OutputPort<?> op : this.outputPorts) {
-			op.pipe.close();
-			System.out.println("End signal sent, size: " + op.pipe.size());
+			op.getPipe().close();
+			System.out.println("End signal sent, size: " + op.getPipe().size());
 		}
 
 		// for (OutputPort<?> op : this.outputPorts) {
@@ -72,6 +71,15 @@ public class Distributor<T> extends ConsumerStage<T, T> {
 		OutputPort<T> outputPort = new OutputPort<T>();
 		this.outputPortList.add(outputPort);
 		return outputPort;
+	}
+
+	@Override
+	public void executeWithPorts() {
+		T element = this.getInputPort().receive();
+
+		this.setReschedulable(this.getInputPort().getPipe().size() > 0);
+
+		this.execute5(element);
 	}
 
 }

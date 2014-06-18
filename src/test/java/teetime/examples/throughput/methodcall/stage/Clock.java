@@ -1,6 +1,5 @@
 package teetime.examples.throughput.methodcall.stage;
 
-import teetime.examples.throughput.methodcall.ProducerStage;
 import teetime.util.list.CommittableQueue;
 
 public class Clock extends ProducerStage<Void, Long> {

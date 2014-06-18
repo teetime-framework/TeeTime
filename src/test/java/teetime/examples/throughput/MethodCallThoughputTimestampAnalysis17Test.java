@@ -20,7 +20,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.examples.throughput.methodcall.Closure;
+import teetime.examples.throughput.methodcall.ConstructorClosure;
 import teetime.examples.throughput.methodcall.MethodCallThroughputAnalysis17;
 import teetime.util.ListUtil;
 import teetime.util.StatisticsUtil;
@@ -51,9 +51,9 @@ public class MethodCallThoughputTimestampAnalysis17Test {
 
 		final MethodCallThroughputAnalysis17 analysis = new MethodCallThroughputAnalysis17();
 		analysis.setNumNoopFilters(NUM_NOOP_FILTERS);
-		analysis.setInput(NUM_OBJECTS_TO_CREATE, new Closure<Void, TimestampObject>() {
+		analysis.setInput(NUM_OBJECTS_TO_CREATE, new ConstructorClosure<TimestampObject>() {
 			@Override
-			public TimestampObject execute(final Void element) {
+			public TimestampObject create() {
 				return new TimestampObject();
 			}
 		});

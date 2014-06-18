@@ -63,23 +63,24 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	@Override
 	public void executeWithPorts() {
-		StageWithPort firstStage = this.stages[this.firstStageIndex];
+		StageWithPort<?, ?> firstStage = this.stages[this.firstStageIndex];
 		firstStage.executeWithPorts();
 
 		this.updateRescheduable(firstStage);
 		// this.setReschedulable(stage.isReschedulable());
 	}
 
-	private final void updateRescheduable(Stage<?, ?> stage) {
-		while (!stage.isReschedulable()) {
+	private final void updateRescheduable(final Stage<?, ?> stage) {
+		Stage<?, ?> currentStage = stage;
+		while (!currentStage.isReschedulable()) {
 			this.firstStageIndex++;
-			stage = stage.next();
-			if (stage == null) { // loop reaches the last stage
+			currentStage = currentStage.next();
+			if (currentStage == null) { // loop reaches the last stage
 				this.setReschedulable(false);
 				this.cleanUp();
 				return;
 			}
-			stage.onIsPipelineHead();
+			currentStage.onIsPipelineHead();
 			// System.out.println("firstStageIndex: " + this.firstStageIndex + ", class:" + stage.getClass().getSimpleName());
 		}
 		this.setReschedulable(true);

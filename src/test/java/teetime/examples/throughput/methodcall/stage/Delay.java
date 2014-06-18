@@ -21,7 +21,7 @@ public class Delay<I> extends AbstractStage<I, I> {
 
 		// System.out.println("#elements: " + this.getInputPort().pipe.size());
 		// TODO implement receiveAll() and sendMultiple()
-		while (!this.getInputPort().pipe.isEmpty()) {
+		while (!this.getInputPort().getPipe().isEmpty()) {
 			I element = this.getInputPort().receive();
 			this.send(element);
 		}

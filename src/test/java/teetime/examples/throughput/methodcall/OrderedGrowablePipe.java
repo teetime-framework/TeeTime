@@ -16,8 +16,8 @@ public class OrderedGrowablePipe<T> extends AbstractPipe<T> {
 
 	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
 		IPipe<T> pipe = new OrderedGrowablePipe<T>();
-		sourcePort.pipe = pipe;
-		targetPort.pipe = pipe;
+		sourcePort.setPipe(pipe);
+		targetPort.setPipe(pipe);
 	}
 
 	@Override

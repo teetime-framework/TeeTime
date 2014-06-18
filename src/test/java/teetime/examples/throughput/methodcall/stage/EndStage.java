@@ -3,7 +3,7 @@ package teetime.examples.throughput.methodcall.stage;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.examples.throughput.methodcall.Closure;
+import teetime.examples.throughput.methodcall.ConstructorClosure;
 import teetime.examples.throughput.methodcall.InputPort;
 import teetime.examples.throughput.methodcall.OutputPort;
 import teetime.examples.throughput.methodcall.Stage;
@@ -18,7 +18,7 @@ public class EndStage<T> implements StageWithPort<T, T> {
 	}
 
 	public int count;
-	public Closure<Void, ?> closure;
+	public ConstructorClosure<?> closure;
 	public List<Object> list = new LinkedList<Object>();
 
 	@Override

@@ -1,6 +1,5 @@
-package teetime.examples.throughput.methodcall;
+package teetime.examples.throughput.methodcall.stage;
 
-import teetime.examples.throughput.methodcall.stage.AbstractStage;
 import teetime.util.list.CommittableQueue;
 
 public abstract class ProducerStage<I, O> extends AbstractStage<I, O> {
@@ -15,7 +14,7 @@ public abstract class ProducerStage<I, O> extends AbstractStage<I, O> {
 
 		boolean outputIsEmpty = outputElements.isEmpty();
 		if (outputIsEmpty) {
-			this.getOutputPort().pipe.close();
+			this.getOutputPort().getPipe().close();
 		}
 
 		return outputElements;
