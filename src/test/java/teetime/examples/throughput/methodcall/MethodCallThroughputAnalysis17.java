@@ -126,7 +126,7 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 
 		pipeline.setLastStage(distributor);
 		// pipeline.setLastStage(sink);
-		pipeline.setLastStage(new EndStage<TimestampObject>());
+		// pipeline.setLastStage(new EndStage<TimestampObject>());
 
 		// UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), sink.getInputPort());
 		// objectProducer.getOutputPort().pipe = new UnorderedGrowablePipe<TimestampObject>();

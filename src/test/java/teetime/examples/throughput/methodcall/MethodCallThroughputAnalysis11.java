@@ -16,7 +16,6 @@
 package teetime.examples.throughput.methodcall;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import teetime.examples.throughput.TimestampObject;
 import teetime.examples.throughput.methodcall.stage.CollectorSink;
@@ -35,7 +34,7 @@ import teetime.framework.core.Analysis;
 public class MethodCallThroughputAnalysis11 extends Analysis {
 
 	private long numInputObjects;
-	private Callable<TimestampObject> inputObjectCreator;
+	private Closure<Void, TimestampObject> inputObjectCreator;
 	private int numNoopFilters;
 	private List<TimestampObject> timestampObjects;
 	private Runnable runnable;
@@ -43,18 +42,19 @@ public class MethodCallThroughputAnalysis11 extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		this.runnable = this.buildPipeline();
+		Pipeline<Void, Object> pipeline = this.buildPipeline(this.numInputObjects, this.inputObjectCreator);
+		this.runnable = new RunnableStage(pipeline);
 	}
 
 	/**
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
-	private Runnable buildPipeline() {
+	private Pipeline<Void, Object> buildPipeline(final long numInputObjects, final Closure<Void, TimestampObject> inputObjectCreator) {
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
 		// create stages
-		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
+		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(numInputObjects, inputObjectCreator);
 		final StartTimestampFilter startTimestampFilter = new StartTimestampFilter();
 		for (int i = 0; i < noopFilters.length; i++) {
 			noopFilters[i] = new NoopFilter<TimestampObject>();
@@ -83,22 +83,7 @@ public class MethodCallThroughputAnalysis11 extends Analysis {
 		UnorderedGrowablePipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
 		UnorderedGrowablePipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
-		// pipeline.getInputPort().pipe = new Pipe<Void>();
-		// pipeline.getInputPort().pipe.add(new Object());
-
-		// pipeline.getOutputPort().pipe = new Pipe<Void>();
-
-		final Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				pipeline.onStart();
-				do {
-					pipeline.executeWithPorts();
-				} while (pipeline.getSchedulingInformation().isActive() && pipeline.isReschedulable());
-			}
-		};
-
-		return runnable;
+		return pipeline;
 	}
 
 	@Override
@@ -107,7 +92,7 @@ public class MethodCallThroughputAnalysis11 extends Analysis {
 		this.runnable.run();
 	}
 
-	public void setInput(final int numInputObjects, final Callable<TimestampObject> inputObjectCreator) {
+	public void setInput(final int numInputObjects, final Closure<Void, TimestampObject> inputObjectCreator) {
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;
 	}

@@ -86,7 +86,7 @@ public class MethodCallThroughputAnalysis2 extends Analysis {
 
 				do {
 					outputQueue = pipeline.execute2(inputQueue);
-				} while (pipeline.getSchedulingInformation().isActive() && pipeline.isReschedulable());
+				} while (pipeline.isReschedulable());
 			}
 		};
 

@@ -17,11 +17,11 @@ package teetime.examples.throughput;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import teetime.examples.throughput.methodcall.Closure;
 import teetime.examples.throughput.methodcall.MethodCallThroughputAnalysis11;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
@@ -53,9 +53,9 @@ public class MethodCallThoughputTimestampAnalysis11Test {
 		final MethodCallThroughputAnalysis11 analysis = new MethodCallThroughputAnalysis11();
 		analysis.setNumNoopFilters(NUM_NOOP_FILTERS);
 		analysis.setTimestampObjects(timestampObjects);
-		analysis.setInput(NUM_OBJECTS_TO_CREATE, new Callable<TimestampObject>() {
+		analysis.setInput(NUM_OBJECTS_TO_CREATE, new Closure<Void, TimestampObject>() {
 			@Override
-			public TimestampObject call() throws Exception {
+			public TimestampObject execute(final Void element) {
 				return new TimestampObject();
 			}
 		});

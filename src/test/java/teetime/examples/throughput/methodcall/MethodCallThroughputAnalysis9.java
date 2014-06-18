@@ -77,23 +77,7 @@ public class MethodCallThroughputAnalysis9 extends Analysis {
 		Pipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
 		Pipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
-		pipeline.onStart();
-
-		// pipeline.getInputPort().pipe = new Pipe<Void>();
-		// pipeline.getInputPort().pipe.add(new Object());
-
-		// pipeline.getOutputPort().pipe = new Pipe<Void>();
-
-		final Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				do {
-					pipeline.executeWithPorts();
-				} while (pipeline.getSchedulingInformation().isActive() && pipeline.isReschedulable());
-			}
-		};
-
-		return runnable;
+		return new RunnableStage(pipeline);
 	}
 
 	@Override

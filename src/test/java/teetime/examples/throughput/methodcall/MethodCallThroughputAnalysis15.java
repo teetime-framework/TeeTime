@@ -64,18 +64,7 @@ public class MethodCallThroughputAnalysis15 extends Analysis {
 		pipeline.setFirstStage(this.clock);
 		pipeline.setLastStage(new EndStage<Long>());
 
-		pipeline.onStart();
-
-		final Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				do {
-					pipeline.executeWithPorts();
-				} while (pipeline.isReschedulable());
-			}
-		};
-
-		return runnable;
+		return new RunnableStage(pipeline);
 	}
 
 	/**
