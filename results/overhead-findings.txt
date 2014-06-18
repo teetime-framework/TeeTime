@@ -31,4 +31,4 @@
 13: 3300 ns (recursive; argument/return w/o pipe; w/o pipeline class)
 14: 21,000 ns (spsc pipe)
 16: 14,500 ns (with distributor thread)
-17: 9800 ns (as 16, but with direct feeding of SpScPipe)
+17: 8600 ns (as 16, but with direct feeding of SpScPipe)

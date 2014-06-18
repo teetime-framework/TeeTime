@@ -87,7 +87,7 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 
 		// this.producerThread.start();
 		// this.producerThread.run();
-		new RunnableStage(producerPipeline).run();
+		// new RunnableStage(producerPipeline).run();
 
 		// Pipeline<Void, TimestampObject> stage = producerPipeline;
 		// stage.onStart();

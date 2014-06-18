@@ -6,7 +6,6 @@ import java.util.List;
 
 import teetime.examples.throughput.methodcall.InputPort;
 import teetime.examples.throughput.methodcall.OutputPort;
-import teetime.examples.throughput.methodcall.SchedulingInformation;
 import teetime.examples.throughput.methodcall.Stage;
 import teetime.examples.throughput.methodcall.StageWithPort;
 import teetime.util.list.CommittableQueue;
@@ -14,13 +13,11 @@ import teetime.util.list.CommittableQueue;
 public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	private StageWithPort<I, ?> firstStage;
-	private final List<StageWithPort> intermediateStages = new LinkedList<StageWithPort>();
+	private final List<StageWithPort<?, ?>> intermediateStages = new LinkedList<StageWithPort<?, ?>>();
 	private StageWithPort<?, O> lastStage;
 
-	private final SchedulingInformation schedulingInformation = new SchedulingInformation();
-
-	private StageWithPort[] stages;
-	private Stage parentStage;
+	private StageWithPort<?, ?>[] stages;
+	private Stage<?, ?> parentStage;
 	private int index;
 	private int startIndex;
 
@@ -31,7 +28,7 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 		this.firstStage = stage;
 	}
 
-	public void addIntermediateStages(final StageWithPort... stages) {
+	public void addIntermediateStages(final StageWithPort<?, ?>... stages) {
 		this.intermediateStages.addAll(Arrays.asList(stages));
 	}
 
@@ -59,8 +56,8 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 		// queue = stage.execute2(queue);
 		// }
 
-		this.stages[0].execute2(elements);
-		this.setReschedulable(this.stages[0].isReschedulable());
+		this.firstStage.execute2(elements);
+		this.setReschedulable(this.firstStage.isReschedulable());
 		return queue;
 	}
 
@@ -132,7 +129,7 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 		for (int i = 0; i < this.stages.length; i++) {
 			StageWithPort<?, ?> stage = this.stages[i];
-			stage.setParentStage(this, i);
+			// stage.setParentStage(this, i);
 			// stage.setListener(this);
 		}
 

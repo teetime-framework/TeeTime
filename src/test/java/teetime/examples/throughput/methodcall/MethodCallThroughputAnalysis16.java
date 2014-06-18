@@ -18,7 +18,6 @@ package teetime.examples.throughput.methodcall;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import teetime.examples.throughput.TimestampObject;
 import teetime.examples.throughput.methodcall.stage.CollectorSink;
@@ -41,7 +40,7 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 	private static final int NUM_WORKER_THREADS = Runtime.getRuntime().availableProcessors();
 
 	private int numInputObjects;
-	private Callable<TimestampObject> inputObjectCreator;
+	private Closure<Void, TimestampObject> inputObjectCreator;
 	private int numNoopFilters;
 
 	private final List<List<TimestampObject>> timestampObjectsList = new LinkedList<List<TimestampObject>>();
@@ -54,7 +53,7 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		Pipeline<Void, TimestampObject> producerPipeline = this.buildProducerPipeline();
+		Pipeline<Void, TimestampObject> producerPipeline = this.buildProducerPipeline(this.numInputObjects, this.inputObjectCreator);
 		this.producerThread = new Thread(new RunnableStage(producerPipeline));
 
 		int numWorkerThreads = Math.min(NUM_WORKER_THREADS, 1); // only for testing purpose
@@ -78,8 +77,8 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 		}
 	}
 
-	private Pipeline<Void, TimestampObject> buildProducerPipeline() {
-		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
+	private Pipeline<Void, TimestampObject> buildProducerPipeline(final int numInputObjects, final Closure<Void, TimestampObject> inputObjectCreator) {
+		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(numInputObjects, inputObjectCreator);
 		this.distributor = new Distributor<TimestampObject>();
 
 		final Pipeline<Void, TimestampObject> pipeline = new Pipeline<Void, TimestampObject>();
@@ -146,7 +145,7 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 		}
 	}
 
-	public void setInput(final int numInputObjects, final Callable<TimestampObject> inputObjectCreator) {
+	public void setInput(final int numInputObjects, final Closure<Void, TimestampObject> inputObjectCreator) {
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;
 	}

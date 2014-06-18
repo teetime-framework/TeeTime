@@ -12,7 +12,7 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	private final OutputPort<O> outputPort = new OutputPort<O>();
 
 	// protected final CommittableQueue<O> outputElements = new CommittableResizableArrayQueue<O>(null, 4);
-	protected final CommittableQueue<O> outputElements = null;
+	private final CommittableQueue<O> outputElements = null;
 
 	private Stage<?, ?> parentStage;
 
