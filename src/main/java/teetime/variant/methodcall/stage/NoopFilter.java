@@ -31,21 +31,11 @@ public class NoopFilter<T> extends ConsumerStage<T, T> {
 		return (T) obj;
 	}
 
-	// @Override
-	// public void execute3() {
-	// T element = this.getInputPort().receive();
-	// // this.getOutputPort().send(element);
-	// }
-
 	@Override
 	protected void execute4(final CommittableQueue<T> elements) {
 		T element = elements.removeFromHead();
-		this.execute5(element);
-	}
-
-	@Override
-	protected void execute5(final T element) {
-		this.send(element); // "send" calls the next stage and so on
+		// this.send(element); // "send" calls the next stage and so on
+		throw new IllegalStateException();
 	}
 
 }

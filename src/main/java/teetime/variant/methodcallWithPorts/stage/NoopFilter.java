@@ -13,54 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcall.stage;
-
-import java.util.List;
+package teetime.variant.methodcallWithPorts.stage;
 
 import teetime.util.list.CommittableQueue;
-import teetime.variant.methodcall.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class CollectorSink<T> extends ConsumerStage<T, Object> {
+public class NoopFilter<T> extends ConsumerStage<T, T> {
 
-	private static final int THRESHOLD = 10000;
-	private static final Object continueSignal = new Object();
-
-	private final List<T> elements;
-
-	public CollectorSink(final List<T> list) {
-		this.elements = list;
-	}
-
-	@Override
-	public Object execute(final Object element) {
-		this.elements.add((T) element);
-		if ((this.elements.size() % THRESHOLD) == 0) {
-			System.out.println("size: " + this.elements.size());
-		}
-		return continueSignal;
-	}
-
-	@Override
-	public void onIsPipelineHead() {
-		System.out.println("size: " + this.elements.size());
-	}
+	// @Override
+	// public void execute3() {
+	// T element = this.getInputPort().receive();
+	// // this.getOutputPort().send(element);
+	// }
 
 	@Override
 	protected void execute4(final CommittableQueue<T> elements) {
 		T element = elements.removeFromHead();
-		this.elements.add(element);
-		if ((this.elements.size() % THRESHOLD) == 0) {
-			System.out.println("size: " + this.elements.size());
-		}
+		this.execute5(element);
+	}
 
-		if (this.elements.size() > 90000) {
-			// System.out.println("size > 90000: " + this.elements.size());
-		}
+	@Override
+	protected void execute5(final T element) {
+		this.send(element); // "send" calls the next stage and so on
 	}
 
 }

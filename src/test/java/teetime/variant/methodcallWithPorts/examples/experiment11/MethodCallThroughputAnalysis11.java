@@ -13,30 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcall.examples.experiment02;
+package teetime.variant.methodcallWithPorts.examples.experiment11;
 
 import java.util.List;
 
 import teetime.util.ConstructorClosure;
-import teetime.util.list.CommittableQueue;
-import teetime.util.list.CommittableResizableArrayQueue;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
-import teetime.variant.methodcall.framework.core.Pipeline;
-import teetime.variant.methodcall.stage.CollectorSink;
-import teetime.variant.methodcall.stage.NoopFilter;
-import teetime.variant.methodcall.stage.ObjectProducer;
-import teetime.variant.methodcall.stage.StartTimestampFilter;
-import teetime.variant.methodcall.stage.StopTimestampFilter;
+import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
+import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.UnorderedGrowablePipe;
+import teetime.variant.methodcallWithPorts.stage.CollectorSink;
+import teetime.variant.methodcallWithPorts.stage.NoopFilter;
+import teetime.variant.methodcallWithPorts.stage.ObjectProducer;
+import teetime.variant.methodcallWithPorts.stage.StartTimestampFilter;
+import teetime.variant.methodcallWithPorts.stage.StopTimestampFilter;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis2 extends Analysis {
+public class MethodCallThroughputAnalysis11 extends Analysis {
 
-	private int numInputObjects;
+	private long numInputObjects;
 	private ConstructorClosure<TimestampObject> inputObjectCreator;
 	private int numNoopFilters;
 	private List<TimestampObject> timestampObjects;
@@ -45,18 +45,21 @@ public class MethodCallThroughputAnalysis2 extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		this.runnable = this.buildPipeline();
+		Pipeline<Void, Object> pipeline = this.buildPipeline(this.numInputObjects, this.inputObjectCreator);
+		this.runnable = new RunnableStage(pipeline);
 	}
 
 	/**
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
-	private Runnable buildPipeline() {
+	private Pipeline<Void, Object> buildPipeline(final long numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
 		// create stages
-		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
+		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(numInputObjects, inputObjectCreator);
+		// Relay<TimestampObject> relay = new Relay<TimestampObject>();
+		// NoopFilter<TimestampObject> relayFake = new NoopFilter<TimestampObject>();
 		final StartTimestampFilter startTimestampFilter = new StartTimestampFilter();
 		for (int i = 0; i < noopFilters.length; i++) {
 			noopFilters[i] = new NoopFilter<TimestampObject>();
@@ -66,26 +69,24 @@ public class MethodCallThroughputAnalysis2 extends Analysis {
 
 		final Pipeline<Void, Object> pipeline = new Pipeline<Void, Object>();
 		pipeline.setFirstStage(objectProducer);
+		// pipeline.addIntermediateStage(relayFake);
 		pipeline.addIntermediateStage(startTimestampFilter);
 		pipeline.addIntermediateStages(noopFilters);
 		pipeline.addIntermediateStage(stopTimestampFilter);
 		pipeline.setLastStage(collectorSink);
 
-		pipeline.onStart();
+		UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
+		// UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), relayFake.getInputPort());
+		// UnorderedGrowablePipe.connect(relayFake.getOutputPort(), startTimestampFilter.getInputPort());
 
-		final Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				CommittableQueue<Void> inputQueue = new CommittableResizableArrayQueue<Void>(null, 0);
-				CommittableQueue<Object> outputQueue = new CommittableResizableArrayQueue<Object>(null, 0);
+		UnorderedGrowablePipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
+		for (int i = 0; i < noopFilters.length - 1; i++) {
+			UnorderedGrowablePipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
+		}
+		UnorderedGrowablePipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
+		UnorderedGrowablePipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
-				do {
-					outputQueue = pipeline.execute2(inputQueue);
-				} while (pipeline.isReschedulable());
-			}
-		};
-
-		return runnable;
+		return pipeline;
 	}
 
 	@Override

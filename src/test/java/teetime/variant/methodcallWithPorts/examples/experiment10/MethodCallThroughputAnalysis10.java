@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcall.examples.experiment02;
+package teetime.variant.methodcallWithPorts.examples.experiment10;
 
 import java.util.List;
 
 import teetime.util.ConstructorClosure;
-import teetime.util.list.CommittableQueue;
-import teetime.util.list.CommittableResizableArrayQueue;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcall.framework.core.Pipeline;
+import teetime.variant.methodcall.framework.core.RunnableStage;
+import teetime.variant.methodcall.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcall.stage.CollectorSink;
 import teetime.variant.methodcall.stage.NoopFilter;
 import teetime.variant.methodcall.stage.ObjectProducer;
@@ -34,9 +34,9 @@ import teetime.variant.methodcall.stage.StopTimestampFilter;
  * 
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis2 extends Analysis {
+public class MethodCallThroughputAnalysis10 extends Analysis {
 
-	private int numInputObjects;
+	private long numInputObjects;
 	private ConstructorClosure<TimestampObject> inputObjectCreator;
 	private int numNoopFilters;
 	private List<TimestampObject> timestampObjects;
@@ -71,21 +71,15 @@ public class MethodCallThroughputAnalysis2 extends Analysis {
 		pipeline.addIntermediateStage(stopTimestampFilter);
 		pipeline.setLastStage(collectorSink);
 
-		pipeline.onStart();
+		SingleElementPipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
+		SingleElementPipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
+		for (int i = 0; i < noopFilters.length - 1; i++) {
+			SingleElementPipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
+		}
+		SingleElementPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
+		SingleElementPipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
-		final Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				CommittableQueue<Void> inputQueue = new CommittableResizableArrayQueue<Void>(null, 0);
-				CommittableQueue<Object> outputQueue = new CommittableResizableArrayQueue<Object>(null, 0);
-
-				do {
-					outputQueue = pipeline.execute2(inputQueue);
-				} while (pipeline.isReschedulable());
-			}
-		};
-
-		return runnable;
+		return new RunnableStage(pipeline);
 	}
 
 	@Override

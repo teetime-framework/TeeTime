@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcall.stage;
+package teetime.variant.methodcallWithPorts.stage;
 
 import java.util.List;
 
 import teetime.util.list.CommittableQueue;
-import teetime.variant.methodcall.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
 /**
  * @author Christian Wulf
@@ -28,21 +28,11 @@ import teetime.variant.methodcall.framework.core.ConsumerStage;
 public class CollectorSink<T> extends ConsumerStage<T, Object> {
 
 	private static final int THRESHOLD = 10000;
-	private static final Object continueSignal = new Object();
 
 	private final List<T> elements;
 
 	public CollectorSink(final List<T> list) {
 		this.elements = list;
-	}
-
-	@Override
-	public Object execute(final Object element) {
-		this.elements.add((T) element);
-		if ((this.elements.size() % THRESHOLD) == 0) {
-			System.out.println("size: " + this.elements.size());
-		}
-		return continueSignal;
 	}
 
 	@Override
@@ -53,6 +43,11 @@ public class CollectorSink<T> extends ConsumerStage<T, Object> {
 	@Override
 	protected void execute4(final CommittableQueue<T> elements) {
 		T element = elements.removeFromHead();
+		this.execute5(element);
+	}
+
+	@Override
+	protected void execute5(final T element) {
 		this.elements.add(element);
 		if ((this.elements.size() % THRESHOLD) == 0) {
 			System.out.println("size: " + this.elements.size());

@@ -1,20 +1,17 @@
 package teetime.variant.methodcall.framework.core;
 
 import teetime.util.list.CommittableQueue;
+import teetime.util.list.CommittableResizableArrayQueue;
 
-public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
+public abstract class AbstractStage<I, O> implements Stage<I, O> {
 
-	private final InputPort<I> inputPort = new InputPort<I>();
-	private final OutputPort<O> outputPort = new OutputPort<O>();
-
-	// protected final CommittableQueue<O> outputElements = new CommittableResizableArrayQueue<O>(null, 4);
-	// private final CommittableQueue<O> outputElements = null;
+	protected final CommittableQueue<O> outputElements = new CommittableResizableArrayQueue<O>(null, 4);
 
 	private Stage<?, ?> parentStage;
 
 	private int index;
 
-	private StageWithPort<?, ?> successor;
+	private Stage<?, ?> successor;
 
 	private boolean reschedulable;
 
@@ -24,23 +21,13 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 		if (result == null) {
 			return null;
 		}
-		StageWithPort<?, ?> next = this.next();
+		Stage<?, ?> next = this.next();
 		// if (next != null) {
 		// return next.executeRecursively(result);
 		// } else {
 		// return result;
 		// }
 		return next.executeRecursively(result);
-	}
-
-	@Override
-	public InputPort<I> getInputPort() {
-		return this.inputPort;
-	}
-
-	@Override
-	public OutputPort<O> getOutputPort() {
-		return this.outputPort;
 	}
 
 	@Override
@@ -63,60 +50,16 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
 		this.execute4(elements);
 
-		// this.outputElements.commit();
+		this.outputElements.commit();
 
-		// return this.outputElements;
-		return null;
+		return this.outputElements;
 	}
-
-	// @Override
-	// public void executeWithPorts() {
-	// CommittableQueue execute;
-	// do {
-	// // execute = this.next().execute2(this.outputElements);
-	// // execute = this.next().execute2(this.getOutputPort().pipe.getElements());
-	// this.next().executeWithPorts();
-	// } while (this.next().isReschedulable());
-	// }
 
 	protected abstract void execute4(CommittableQueue<I> elements);
 
-	protected abstract void execute5(I element);
-
-	protected final void send(final O element) {
-		// this.outputElements.addToTailUncommitted(element);
-		// this.outputElements.commit();
-
-		this.getOutputPort().send(element);
-
-		// CommittableQueue execute;
-
-		StageWithPort<?, ?> next = this.next();
-		do {
-			// execute = this.next().execute2(this.outputElements);
-			// execute = this.next().execute2(this.getOutputPort().pipe.getElements());
-			next.executeWithPorts();
-			// System.out.println("Executed " + this.next().getClass().getSimpleName());
-		} while (next.isReschedulable());
-		// } while (this.next().getInputPort().pipe.size() > 0);
-		// } while (execute.size() > 0);
+	protected void send(final O element) {
+		this.outputElements.addToTailUncommitted(element);
 	}
-
-	// @Override
-	// public SchedulingInformation getSchedulingInformation() {
-	// return this.schedulingInformation;
-	// }
-
-	// public void disable() {
-	// this.schedulingInformation.setActive(false);
-	// this.fireOnDisable();
-	// }
-
-	// private void fireOnDisable() {
-	// if (this.listener != null) {
-	// this.listener.onDisable(this, this.index);
-	// }
-	// }
 
 	@Override
 	public void onStart() {
@@ -135,18 +78,13 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	}
 
 	@Override
-	public StageWithPort<?, ?> next() {
+	public Stage<?, ?> next() {
 		return this.successor;
 	}
 
 	@Override
-	public void setSuccessor(final StageWithPort<?, ?> successor) {
+	public void setSuccessor(final Stage<? super O, ?> successor) {
 		this.successor = successor;
-	}
-
-	@Override
-	public void setSuccessor(final Stage<?, ?> successor) {
-		throw new IllegalStateException();
 	}
 
 	@Override

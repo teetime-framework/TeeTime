@@ -1,4 +1,4 @@
-package teetime.variant.methodcall.framework.core;
+package teetime.variant.methodcallWithPorts.framework.core;
 
 import teetime.util.list.CommittableQueue;
 
@@ -14,10 +14,19 @@ public abstract class ProducerStage<I, O> extends AbstractStage<I, O> {
 
 		boolean outputIsEmpty = outputElements.isEmpty();
 		if (outputIsEmpty) {
-			// this.getOutputPort().getPipe().close();
+			this.getOutputPort().getPipe().close();
 		}
 
 		return outputElements;
+	}
+
+	@Override
+	public void executeWithPorts() {
+		this.execute5(null);
+
+		// if (!this.getOutputPort().pipe.isEmpty()) {
+		// super.executeWithPorts();
+		// }
 	}
 
 	@Override

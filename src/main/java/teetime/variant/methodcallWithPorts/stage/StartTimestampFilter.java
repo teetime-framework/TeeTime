@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcall.stage;
+package teetime.variant.methodcallWithPorts.stage;
 
 import teetime.util.list.CommittableQueue;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-import teetime.variant.methodcall.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
 /**
  * @author Christian Wulf
@@ -26,18 +26,22 @@ import teetime.variant.methodcall.framework.core.ConsumerStage;
  */
 public class StartTimestampFilter extends ConsumerStage<TimestampObject, TimestampObject> {
 
-	@Override
-	public TimestampObject execute(final Object obj) {
-		TimestampObject timestampObject = (TimestampObject) obj;
-		timestampObject.setStartTimestamp(System.nanoTime());
-		return timestampObject;
-	}
+	// @Override
+	// public void execute3() {
+	// TimestampObject element = this.getInputPort().receive();
+	// element.setStartTimestamp(System.nanoTime());
+	// // this.getOutputPort().send(element);
+	// }
 
 	@Override
 	protected void execute4(final CommittableQueue<TimestampObject> elements) {
 		TimestampObject element = elements.removeFromHead();
+		this.execute5(element);
+	}
+
+	@Override
+	protected void execute5(final TimestampObject element) {
 		element.setStartTimestamp(System.nanoTime());
-		// this.send(element);
-		throw new IllegalStateException();
+		this.send(element);
 	}
 }

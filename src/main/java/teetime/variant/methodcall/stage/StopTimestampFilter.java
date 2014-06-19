@@ -43,12 +43,9 @@ public class StopTimestampFilter extends ConsumerStage<TimestampObject, Timestam
 	@Override
 	protected void execute4(final CommittableQueue<TimestampObject> elements) {
 		TimestampObject element = elements.removeFromHead();
-		this.execute5(element);
+		element.setStopTimestamp(System.nanoTime());
+		// this.send(element);
+		throw new IllegalStateException();
 	}
 
-	@Override
-	protected void execute5(final TimestampObject element) {
-		element.setStopTimestamp(System.nanoTime());
-		this.send(element);
-	}
 }
