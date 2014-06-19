@@ -33,15 +33,16 @@ import kieker.analysis.stage.ObjectProducer;
 import kieker.analysis.stage.StartTimestampFilter;
 import kieker.analysis.stage.StopTimestampFilter;
 import kieker.common.configuration.Configuration;
-import teetime.examples.throughput.TimestampObject;
-import teetime.framework.concurrent.WorkerThread;
-import teetime.framework.core.Analysis;
-import teetime.framework.core.IStage;
-import teetime.framework.core.Pipeline;
-import teetime.framework.sequential.MethodCallPipe;
-import teetime.framework.sequential.QueuePipe;
-import teetime.stage.NoopFilter;
+
 import teetime.util.StatisticsUtil;
+import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
+import teetime.variant.explicitScheduling.framework.concurrent.WorkerThread;
+import teetime.variant.explicitScheduling.framework.core.Analysis;
+import teetime.variant.explicitScheduling.framework.core.IStage;
+import teetime.variant.explicitScheduling.framework.core.Pipeline;
+import teetime.variant.explicitScheduling.framework.sequential.MethodCallPipe;
+import teetime.variant.explicitScheduling.framework.sequential.QueuePipe;
+import teetime.variant.explicitScheduling.stage.NoopFilter;
 
 /**
  * @author Nils Christian Ehmke
@@ -146,19 +147,19 @@ public class Experiment2 {
 			@SuppressWarnings("unchecked")
 			final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[numberOfFilters];
 			// create stages
-			final teetime.stage.basic.ObjectProducer<TimestampObject> objectProducer = new teetime.stage.basic.ObjectProducer<TimestampObject>(
+			final teetime.variant.explicitScheduling.stage.basic.ObjectProducer<TimestampObject> objectProducer = new teetime.variant.explicitScheduling.stage.basic.ObjectProducer<TimestampObject>(
 					numberOfObjectsToSend, new Callable<TimestampObject>() {
 						@Override
 						public TimestampObject call() throws Exception {
 							return new TimestampObject();
 						}
 					});
-			final teetime.stage.StartTimestampFilter startTimestampFilter = new teetime.stage.StartTimestampFilter();
+			final teetime.variant.explicitScheduling.stage.StartTimestampFilter startTimestampFilter = new teetime.variant.explicitScheduling.stage.StartTimestampFilter();
 			for (int i = 0; i < noopFilters.length; i++) {
 				noopFilters[i] = new NoopFilter<TimestampObject>();
 			}
-			final teetime.stage.StopTimestampFilter stopTimestampFilter = new teetime.stage.StopTimestampFilter();
-			final teetime.stage.CollectorSink<TimestampObject> collectorSink = new teetime.stage.CollectorSink<TimestampObject>(
+			final teetime.variant.explicitScheduling.stage.StopTimestampFilter stopTimestampFilter = new teetime.variant.explicitScheduling.stage.StopTimestampFilter();
+			final teetime.variant.explicitScheduling.stage.CollectorSink<TimestampObject> collectorSink = new teetime.variant.explicitScheduling.stage.CollectorSink<TimestampObject>(
 					this.timestampObjects);
 
 			// add each stage to a stage list

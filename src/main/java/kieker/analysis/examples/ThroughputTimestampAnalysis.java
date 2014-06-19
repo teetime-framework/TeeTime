@@ -27,7 +27,8 @@ import kieker.analysis.stage.ObjectProducer;
 import kieker.analysis.stage.StartTimestampFilter;
 import kieker.analysis.stage.StopTimestampFilter;
 import kieker.common.configuration.Configuration;
-import teetime.examples.throughput.TimestampObject;
+
+import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 
 /**
  * @author Nils Christian Ehmke

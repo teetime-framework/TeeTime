@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
-import teetime.examples.throughput.TimestampObject;
+import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 
 /**
  * @author Christian Wulf

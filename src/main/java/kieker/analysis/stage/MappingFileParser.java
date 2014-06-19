@@ -25,7 +25,8 @@ import java.util.Map;
 
 import kieker.common.logging.Log;
 import kieker.common.util.filesystem.FSUtil;
-import teetime.stage.kieker.className.ClassNameRegistry;
+
+import teetime.variant.explicitScheduling.stage.kieker.className.ClassNameRegistry;
 
 
 /**

@@ -24,15 +24,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import teetime.framework.concurrent.StageTerminationPolicy;
-import teetime.framework.concurrent.WorkerThread;
-import teetime.framework.core.Analysis;
-import teetime.framework.core.IStage;
-import teetime.framework.core.Pipeline;
-import teetime.framework.sequential.MethodCallPipe;
-import teetime.framework.sequential.QueuePipe;
-import teetime.stage.NoopFilter;
 import teetime.util.StatisticsUtil;
+import teetime.variant.explicitScheduling.framework.concurrent.StageTerminationPolicy;
+import teetime.variant.explicitScheduling.framework.concurrent.WorkerThread;
+import teetime.variant.explicitScheduling.framework.core.Analysis;
+import teetime.variant.explicitScheduling.framework.core.IStage;
+import teetime.variant.explicitScheduling.framework.core.Pipeline;
+import teetime.variant.explicitScheduling.framework.sequential.MethodCallPipe;
+import teetime.variant.explicitScheduling.framework.sequential.QueuePipe;
+import teetime.variant.explicitScheduling.stage.NoopFilter;
 
 import kieker.analysis.AnalysisController;
 import kieker.analysis.IAnalysisController;
@@ -138,7 +138,7 @@ public class Experiment1 {
 			@SuppressWarnings("unchecked")
 			final NoopFilter<Object>[] noopFilters = new NoopFilter[numberOfFilters];
 			// create stages
-			final teetime.stage.basic.ObjectProducer<Object> objectProducer = new teetime.stage.basic.ObjectProducer<Object>(
+			final teetime.variant.explicitScheduling.stage.basic.ObjectProducer<Object> objectProducer = new teetime.variant.explicitScheduling.stage.basic.ObjectProducer<Object>(
 					numberOfObjectsToSend, new Callable<Object>() {
 						@Override
 						public Object call() throws Exception {
@@ -206,7 +206,7 @@ public class Experiment1 {
 			@SuppressWarnings("unchecked")
 			final NoopFilter<Object>[] noopFilters = new NoopFilter[numberOfFilters];
 			// create stages
-			final teetime.stage.basic.ObjectProducer<Object> objectProducer = new teetime.stage.basic.ObjectProducer<Object>(
+			final teetime.variant.explicitScheduling.stage.basic.ObjectProducer<Object> objectProducer = new teetime.variant.explicitScheduling.stage.basic.ObjectProducer<Object>(
 					numberOfObjectsToSend, new Callable<Object>() {
 						@Override
 						public Object call() throws Exception {

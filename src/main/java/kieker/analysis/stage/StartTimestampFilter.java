@@ -21,7 +21,8 @@ import kieker.analysis.plugin.annotation.OutputPort;
 import kieker.analysis.plugin.annotation.Plugin;
 import kieker.analysis.plugin.filter.AbstractFilterPlugin;
 import kieker.common.configuration.Configuration;
-import teetime.examples.throughput.TimestampObject;
+
+import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 
 @Plugin(outputPorts = @OutputPort(name = StartTimestampFilter.OUTPUT_PORT_NAME))
 public class StartTimestampFilter extends AbstractFilterPlugin {

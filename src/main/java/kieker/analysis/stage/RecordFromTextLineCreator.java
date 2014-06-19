@@ -23,9 +23,10 @@ import kieker.common.exception.UnknownRecordTypeException;
 import kieker.common.record.AbstractMonitoringRecord;
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.controlflow.OperationExecutionRecord;
-import teetime.stage.MappingException;
-import teetime.stage.kieker.className.ClassNameRegistry;
-import teetime.stage.kieker.className.ClassNameRegistryRepository;
+
+import teetime.variant.explicitScheduling.stage.MappingException;
+import teetime.variant.explicitScheduling.stage.kieker.className.ClassNameRegistry;
+import teetime.variant.explicitScheduling.stage.kieker.className.ClassNameRegistryRepository;
 
 /**
  * @author Christian Wulf

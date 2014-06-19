@@ -26,9 +26,9 @@ import kieker.common.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.examples.throughput.TimestampObject;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
+import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 
 
 /**

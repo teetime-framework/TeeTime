@@ -20,8 +20,8 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 
-import teetime.stage.kieker.className.ClassNameRegistry;
-import teetime.stage.kieker.className.ClassNameRegistryRepository;
+import teetime.variant.explicitScheduling.stage.kieker.className.ClassNameRegistry;
+import teetime.variant.explicitScheduling.stage.kieker.className.ClassNameRegistryRepository;
 
 import kieker.common.exception.MonitoringRecordException;
 import kieker.common.logging.Log;
