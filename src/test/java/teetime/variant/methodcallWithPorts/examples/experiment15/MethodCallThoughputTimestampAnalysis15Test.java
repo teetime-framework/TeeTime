@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcall.examples.experiment17;
+package teetime.variant.methodcallWithPorts.examples.experiment15;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import teetime.util.ConstructorClosure;
-import teetime.util.ListUtil;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
@@ -33,7 +33,7 @@ import kieker.common.logging.LogFactory;
  * 
  * @since 1.10
  */
-public class MethodCallThoughputTimestampAnalysis17Test {
+public class MethodCallThoughputTimestampAnalysis15Test {
 
 	private static final int NUM_OBJECTS_TO_CREATE = 100000;
 	private static final int NUM_NOOP_FILTERS = 800;
@@ -48,11 +48,11 @@ public class MethodCallThoughputTimestampAnalysis17Test {
 		System.out.println("Testing teetime (mc) with NUM_OBJECTS_TO_CREATE=" + NUM_OBJECTS_TO_CREATE + ", NUM_NOOP_FILTERS="
 				+ NUM_NOOP_FILTERS + "...");
 		final StopWatch stopWatch = new StopWatch();
+		final List<TimestampObject> timestampObjects = new ArrayList<TimestampObject>(NUM_OBJECTS_TO_CREATE);
 
-		// int count = 10;
-		// while (count-- > 0) {
-		final MethodCallThroughputAnalysis17 analysis = new MethodCallThroughputAnalysis17();
+		final MethodCallThroughputAnalysis15 analysis = new MethodCallThroughputAnalysis15();
 		analysis.setNumNoopFilters(NUM_NOOP_FILTERS);
+		analysis.setTimestampObjects(timestampObjects);
 		analysis.setInput(NUM_OBJECTS_TO_CREATE, new ConstructorClosure<TimestampObject>() {
 			@Override
 			public TimestampObject create() {
@@ -61,17 +61,14 @@ public class MethodCallThoughputTimestampAnalysis17Test {
 		});
 		analysis.init();
 
-		System.out.println("starting");
 		stopWatch.start();
 		try {
 			analysis.start();
 		} finally {
 			stopWatch.end();
-			analysis.onTerminate();
 		}
 
-		List<TimestampObject> timestampObjects = ListUtil.merge(analysis.getTimestampObjectsList());
 		StatisticsUtil.printStatistics(stopWatch.getDurationInNs(), timestampObjects);
-		// }
 	}
+
 }

@@ -23,7 +23,7 @@ import teetime.util.ConstructorClosure;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcall.framework.core.AbstractStage;
-import teetime.variant.methodcall.framework.core.StageWithPort;
+import teetime.variant.methodcall.framework.core.Stage;
 import teetime.variant.methodcall.stage.CollectorSink;
 import teetime.variant.methodcall.stage.EndStage;
 import teetime.variant.methodcall.stage.NoopFilter;
@@ -83,7 +83,7 @@ public class MethodCallThroughputAnalysis13 extends Analysis {
 		final AbstractStage[] stages = stageList.toArray(new AbstractStage[0]);
 
 		for (int i = 0; i < stages.length - 1; i++) {
-			StageWithPort<?, ?> stage = stages[i];
+			Stage<?, ?> stage = stages[i];
 			stage.setSuccessor(stages[i + 1]);
 		}
 		stages[stages.length - 1].setSuccessor(new EndStage<Object>());

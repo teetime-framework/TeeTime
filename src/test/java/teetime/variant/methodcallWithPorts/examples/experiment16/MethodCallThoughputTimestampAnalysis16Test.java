@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcall.examples.experiment16;
+package teetime.variant.methodcallWithPorts.examples.experiment16;
 
 import java.util.List;
 

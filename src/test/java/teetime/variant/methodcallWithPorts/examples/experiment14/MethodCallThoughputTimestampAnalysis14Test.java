@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcall.examples.experiment15;
+package teetime.variant.methodcallWithPorts.examples.experiment14;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import kieker.common.logging.LogFactory;
  * 
  * @since 1.10
  */
-public class MethodCallThoughputTimestampAnalysis15Test {
+public class MethodCallThoughputTimestampAnalysis14Test {
 
 	private static final int NUM_OBJECTS_TO_CREATE = 100000;
 	private static final int NUM_NOOP_FILTERS = 800;
@@ -50,7 +50,7 @@ public class MethodCallThoughputTimestampAnalysis15Test {
 		final StopWatch stopWatch = new StopWatch();
 		final List<TimestampObject> timestampObjects = new ArrayList<TimestampObject>(NUM_OBJECTS_TO_CREATE);
 
-		final MethodCallThroughputAnalysis15 analysis = new MethodCallThroughputAnalysis15();
+		final MethodCallThroughputAnalysis14 analysis = new MethodCallThroughputAnalysis14();
 		analysis.setNumNoopFilters(NUM_NOOP_FILTERS);
 		analysis.setTimestampObjects(timestampObjects);
 		analysis.setInput(NUM_OBJECTS_TO_CREATE, new ConstructorClosure<TimestampObject>() {

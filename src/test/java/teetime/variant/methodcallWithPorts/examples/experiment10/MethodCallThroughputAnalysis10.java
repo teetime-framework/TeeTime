@@ -20,14 +20,14 @@ import java.util.List;
 import teetime.util.ConstructorClosure;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
-import teetime.variant.methodcall.framework.core.Pipeline;
-import teetime.variant.methodcall.framework.core.RunnableStage;
-import teetime.variant.methodcall.framework.core.pipe.SingleElementPipe;
-import teetime.variant.methodcall.stage.CollectorSink;
-import teetime.variant.methodcall.stage.NoopFilter;
-import teetime.variant.methodcall.stage.ObjectProducer;
-import teetime.variant.methodcall.stage.StartTimestampFilter;
-import teetime.variant.methodcall.stage.StopTimestampFilter;
+import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
+import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
+import teetime.variant.methodcallWithPorts.stage.CollectorSink;
+import teetime.variant.methodcallWithPorts.stage.NoopFilter;
+import teetime.variant.methodcallWithPorts.stage.ObjectProducer;
+import teetime.variant.methodcallWithPorts.stage.StartTimestampFilter;
+import teetime.variant.methodcallWithPorts.stage.StopTimestampFilter;
 
 /**
  * @author Christian Wulf

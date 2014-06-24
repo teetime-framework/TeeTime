@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcall.examples.experiment15;
+package teetime.variant.methodcallWithPorts.examples.experiment15;
 
 import java.util.List;
 
 import teetime.util.ConstructorClosure;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
-import teetime.variant.methodcall.framework.core.Pipeline;
-import teetime.variant.methodcall.framework.core.RunnableStage;
-import teetime.variant.methodcall.framework.core.pipe.SpScPipe;
-import teetime.variant.methodcall.framework.core.pipe.UnorderedGrowablePipe;
-import teetime.variant.methodcall.stage.Clock;
-import teetime.variant.methodcall.stage.CollectorSink;
-import teetime.variant.methodcall.stage.Delay;
-import teetime.variant.methodcall.stage.EndStage;
-import teetime.variant.methodcall.stage.NoopFilter;
-import teetime.variant.methodcall.stage.ObjectProducer;
-import teetime.variant.methodcall.stage.StartTimestampFilter;
-import teetime.variant.methodcall.stage.StopTimestampFilter;
+import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
+import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.UnorderedGrowablePipe;
+import teetime.variant.methodcallWithPorts.stage.Clock;
+import teetime.variant.methodcallWithPorts.stage.CollectorSink;
+import teetime.variant.methodcallWithPorts.stage.Delay;
+import teetime.variant.methodcallWithPorts.stage.EndStage;
+import teetime.variant.methodcallWithPorts.stage.NoopFilter;
+import teetime.variant.methodcallWithPorts.stage.ObjectProducer;
+import teetime.variant.methodcallWithPorts.stage.StartTimestampFilter;
+import teetime.variant.methodcallWithPorts.stage.StopTimestampFilter;
 
 /**
  * @author Christian Wulf
