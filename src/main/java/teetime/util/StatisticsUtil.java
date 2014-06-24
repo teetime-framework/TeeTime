@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
+import test.PerformanceResult;
 
 /**
  * @author Christian Wulf
@@ -43,7 +44,9 @@ public class StatisticsUtil {
 
 	}
 
-	public static void printStatistics(final long overallDurationInNs, final List<TimestampObject> timestampObjects) {
+	public static PerformanceResult printStatistics(final long overallDurationInNs, final List<TimestampObject> timestampObjects) {
+		PerformanceResult performanceResult = new PerformanceResult();
+
 		System.out.println("Duration: " + TimeUnit.NANOSECONDS.toMillis(overallDurationInNs) + " ms");
 
 		final List<Long> sortedDurationsInNs = new ArrayList<Long>(timestampObjects.size() / 2);
@@ -56,18 +59,28 @@ public class StatisticsUtil {
 			sumInNs += durationInNs;
 		}
 
+		performanceResult.sumInNs = sumInNs;
+
 		final Map<Double, Long> quintileValues = StatisticsUtil.calculateQuintiles(sortedDurationsInNs);
+
+		performanceResult.quantiles = quintileValues;
 
 		final long avgDurInNs = sumInNs / (timestampObjects.size() / 2);
 		System.out.println("avg duration: " + TimeUnit.NANOSECONDS.toMicros(avgDurInNs) + " µs");
+
+		performanceResult.avgDurInNs = avgDurInNs;
 
 		printQuintiles(quintileValues);
 
 		final long confidenceWidthInNs = StatisticsUtil.calculateConfidenceWidth(sortedDurationsInNs, avgDurInNs);
 
+		performanceResult.confidenceWidthInNs = confidenceWidthInNs;
+
 		System.out.println("confidenceWidth: " + confidenceWidthInNs + " ns");
 		System.out.println("[" + TimeUnit.NANOSECONDS.toMicros(avgDurInNs - confidenceWidthInNs) + " µs, "
 				+ TimeUnit.NANOSECONDS.toMicros(avgDurInNs + confidenceWidthInNs) + " µs]");
+
+		return performanceResult;
 	}
 
 	public static void printQuintiles(final Map<Double, Long> quintileValues) {
