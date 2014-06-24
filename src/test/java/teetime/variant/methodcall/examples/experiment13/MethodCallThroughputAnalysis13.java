@@ -60,8 +60,8 @@ public class MethodCallThroughputAnalysis13 extends Analysis {
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Runnable buildPipeline() {
-		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
 		// create stages
 		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
@@ -89,11 +89,10 @@ public class MethodCallThroughputAnalysis13 extends Analysis {
 		stages[stages.length - 1].setSuccessor(new EndStage<Object>());
 
 		final WrappingPipeline pipeline = new WrappingPipeline() {
-			private int startIndex;
-
 			@Override
 			public boolean execute() {
-				return stages[0].executeRecursively(null) != null;
+				Object result = stages[0].executeRecursively(null);
+				return result != null;
 			}
 
 		};

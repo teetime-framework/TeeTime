@@ -58,6 +58,7 @@ public class MethodCallThroughputAnalysis7 extends Analysis {
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
+	@SuppressWarnings("rawtypes")
 	private Runnable buildPipeline() {
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];

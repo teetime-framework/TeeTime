@@ -39,19 +39,14 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 
 	@Override
 	public T execute(final Object element) {
-		// if (this.numInputObjects == 0) {
-		// // this.setReschedulable(false);
-		// return null;
-		// }
+		if (this.numInputObjects == 0) {
+			return null;
+		}
 
 		try {
 			final T newObject = this.inputObjectCreator.create();
 			// final T newObject = null;
 			this.numInputObjects--;
-
-			if (this.numInputObjects == 0) {
-				this.setReschedulable(false);
-			}
 
 			return newObject;
 		} catch (final Exception e) {

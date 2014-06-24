@@ -17,28 +17,19 @@ package teetime.variant.explicitScheduling.examples.throughput;
 
 import java.util.concurrent.Callable;
 
-import kieker.common.logging.LogFactory;
-
-import org.junit.Before;
 import org.junit.Test;
 
 import teetime.util.StopWatch;
-import teetime.variant.explicitScheduling.examples.throughput.ThroughputAnalysis;
+import test.PerformanceTest;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
-public class ThroughputAnalysisTest {
+public class ThroughputAnalysisTest extends PerformanceTest {
 
-	private static final int NUM_OBJECTS_TO_CREATE = 100000;
 	private static final int numRuns = 2;
-
-	@Before
-	public void before() {
-		System.setProperty(LogFactory.CUSTOM_LOGGER_JVM, "NONE");
-	}
 
 	@Test
 	public void testWithMultipleRuns() {

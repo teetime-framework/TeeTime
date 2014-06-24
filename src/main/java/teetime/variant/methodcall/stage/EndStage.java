@@ -15,7 +15,7 @@ public class EndStage<T> implements Stage<T, T> {
 
 	@Override
 	public T execute(final Object element) {
-		return null;
+		throw new IllegalStateException();
 	}
 
 	@Override
@@ -43,7 +43,6 @@ public class EndStage<T> implements Stage<T, T> {
 
 	@Override
 	public Stage next() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -54,11 +53,6 @@ public class EndStage<T> implements Stage<T, T> {
 	}
 
 	@Override
-	public boolean isReschedulable() {
-		return false;
-	}
-
-	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
 
@@ -66,8 +60,12 @@ public class EndStage<T> implements Stage<T, T> {
 
 	@Override
 	public Object executeRecursively(final Object element) {
-		// TODO Auto-generated method stub
-		return null;
+		return element;
+	}
+
+	@Override
+	public boolean isReschedulable() {
+		return false;
 	}
 
 }

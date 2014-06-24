@@ -18,33 +18,20 @@ package teetime.variant.methodcall.examples.experiment07;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import teetime.util.ConstructorClosure;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-
-import kieker.common.logging.LogFactory;
+import test.PerformanceTest;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class MethodCallThoughputTimestampAnalysis7Test {
-
-	private static final int NUM_OBJECTS_TO_CREATE = 100000;
-	private static final int NUM_NOOP_FILTERS = 800;
-
-	@Before
-	public void before() {
-		System.setProperty(LogFactory.CUSTOM_LOGGER_JVM, "NONE");
-	}
-
-	// 500 times faster than our new framework
-	// TODO check why
+public class MethodCallThoughputTimestampAnalysis7Test extends PerformanceTest {
 
 	@Test
 	public void testWithManyObjects() {

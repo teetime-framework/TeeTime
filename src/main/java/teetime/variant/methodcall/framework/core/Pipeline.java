@@ -142,13 +142,13 @@ public class Pipeline<I, O> implements Stage<I, O> {
 		throw new IllegalStateException();
 	}
 
+	public void setReschedulable(final boolean reschedulable) {
+		this.reschedulable = reschedulable;
+	}
+
 	@Override
 	public boolean isReschedulable() {
 		return this.reschedulable;
-	}
-
-	public void setReschedulable(final boolean reschedulable) {
-		this.reschedulable = reschedulable;
 	}
 
 }

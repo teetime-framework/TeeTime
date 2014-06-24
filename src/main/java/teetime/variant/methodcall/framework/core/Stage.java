@@ -24,6 +24,11 @@ public interface Stage<I, O> {
 
 	void setSuccessor(Stage<? super O, ?> successor);
 
+	/**
+	 * Used for execute4() (experiment02)
+	 * 
+	 * @return
+	 */
 	boolean isReschedulable();
 
 	void onIsPipelineHead();

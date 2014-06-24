@@ -65,12 +65,10 @@ public class MethodCallThroughputAnalysis1 extends Analysis {
 			@Override
 			public void run() {
 				while (true) {
-					if (!objectProducer.isReschedulable()) {
+					TimestampObject object = objectProducer.execute(null);
+					if (object == null) {
 						return;
 					}
-					TimestampObject object = objectProducer.execute(null);
-					// if (object == null)
-					// return;
 
 					object = startTimestampFilter.execute(object);
 					for (final NoopFilter<TimestampObject> noopFilter : noopFilters) {

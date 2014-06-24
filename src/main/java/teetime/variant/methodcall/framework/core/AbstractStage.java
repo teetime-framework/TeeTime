@@ -9,8 +9,6 @@ public abstract class AbstractStage<I, O> implements Stage<I, O> {
 
 	private Stage<?, ?> parentStage;
 
-	private int index;
-
 	private Stage<?, ?> successor;
 
 	private boolean reschedulable;
@@ -73,7 +71,6 @@ public abstract class AbstractStage<I, O> implements Stage<I, O> {
 
 	@Override
 	public void setParentStage(final Stage<?, ?> parentStage, final int index) {
-		this.index = index;
 		this.parentStage = parentStage;
 	}
 

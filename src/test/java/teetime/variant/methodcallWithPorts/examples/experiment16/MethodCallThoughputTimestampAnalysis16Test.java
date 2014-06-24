@@ -17,7 +17,6 @@ package teetime.variant.methodcallWithPorts.examples.experiment16;
 
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import teetime.util.ConstructorClosure;
@@ -25,23 +24,14 @@ import teetime.util.ListUtil;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-
-import kieker.common.logging.LogFactory;
+import test.PerformanceTest;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class MethodCallThoughputTimestampAnalysis16Test {
-
-	private static final int NUM_OBJECTS_TO_CREATE = 100000;
-	private static final int NUM_NOOP_FILTERS = 800;
-
-	@Before
-	public void before() {
-		System.setProperty(LogFactory.CUSTOM_LOGGER_JVM, "NONE");
-	}
+public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest {
 
 	@Test
 	public void testWithManyObjectsAnd1Thread() {

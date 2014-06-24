@@ -58,8 +58,8 @@ public class MethodCallThroughputAnalysis5 extends Analysis {
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Runnable buildPipeline() {
-		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
 		// create stages
 		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(this.numInputObjects, this.inputObjectCreator);

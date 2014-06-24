@@ -19,30 +19,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
-import teetime.variant.explicitScheduling.examples.throughput.ThroughputTimestampAnalysis;
-import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-
-import kieker.common.logging.LogFactory;
+import test.PerformanceTest;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class ThroughputTimestampAnalysisTest {
-
-	private static final int NUM_OBJECTS_TO_CREATE = 100000;
-	private static final int NUM_NOOP_FILTERS = 800;
-
-	@Before
-	public void before() {
-		System.setProperty(LogFactory.CUSTOM_LOGGER_JVM, "NONE");
-	}
+public class ThroughputTimestampAnalysisTest extends PerformanceTest {
 
 	@Test
 	public void testWithManyObjects() {
