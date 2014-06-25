@@ -6,6 +6,7 @@ import teetime.util.StatisticsUtil;
 
 public class PerformanceResult {
 
+	public long overallDurationInNs;
 	public long sumInNs;
 	public Map<Double, Long> quantiles;
 	public long avgDurInNs;
@@ -14,6 +15,10 @@ public class PerformanceResult {
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("overallDurationInNs: ");
+		stringBuilder.append(this.overallDurationInNs);
+		stringBuilder.append("\n");
+
 		stringBuilder.append("sumInNs: ");
 		stringBuilder.append(this.sumInNs);
 		stringBuilder.append("\n");

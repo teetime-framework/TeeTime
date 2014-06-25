@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcallWithPorts.examples.experiment17;
+package teetime.variant.methodcallWithPorts.examples.experiment19;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -25,16 +25,13 @@ import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.OrderedGrowableArrayPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.UnorderedGrowablePipe;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.Distributor;
-import teetime.variant.methodcallWithPorts.stage.EndStage;
 import teetime.variant.methodcallWithPorts.stage.NoopFilter;
 import teetime.variant.methodcallWithPorts.stage.ObjectProducer;
 import teetime.variant.methodcallWithPorts.stage.Relay;
-import teetime.variant.methodcallWithPorts.stage.Sink;
 import teetime.variant.methodcallWithPorts.stage.StartTimestampFilter;
 import teetime.variant.methodcallWithPorts.stage.StopTimestampFilter;
 
@@ -43,7 +40,7 @@ import teetime.variant.methodcallWithPorts.stage.StopTimestampFilter;
  * 
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis17 extends Analysis {
+public class MethodCallThroughputAnalysis19 extends Analysis {
 
 	private static final int SPSC_INITIAL_CAPACITY = 100100;
 	private static final int NUM_WORKER_THREADS = Runtime.getRuntime().availableProcessors();
@@ -54,79 +51,41 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 
 	private final List<List<TimestampObject>> timestampObjectsList = new LinkedList<List<TimestampObject>>();
 
+	private Distributor<TimestampObject> distributor;
 	private Thread producerThread;
+
 	private Thread[] workerThreads;
+
+	private int numWorkerThreads;
 
 	@Override
 	public void init() {
-		final Pipeline<Void, TimestampObject> producerPipeline = this.buildProducerPipeline(this.numInputObjects, this.inputObjectCreator);
+		super.init();
+		Pipeline<Void, TimestampObject> producerPipeline = this.buildProducerPipeline(this.numInputObjects, this.inputObjectCreator);
 		this.producerThread = new Thread(new RunnableStage(producerPipeline));
 
-		int numWorkerThreads = Math.min(NUM_WORKER_THREADS, 1); // only for testing purpose
+		this.numWorkerThreads = Math.min(NUM_WORKER_THREADS, this.numWorkerThreads);
 
-		this.workerThreads = new Thread[numWorkerThreads];
+		this.workerThreads = new Thread[this.numWorkerThreads];
 		for (int i = 0; i < this.workerThreads.length; i++) {
 			List<TimestampObject> resultList = new ArrayList<TimestampObject>(this.numInputObjects);
 			this.timestampObjectsList.add(resultList);
 
-			Runnable workerRunnable = this.buildPipeline(null, resultList);
+			Runnable workerRunnable = this.buildPipeline(producerPipeline, resultList);
 			this.workerThreads[i] = new Thread(workerRunnable);
 		}
 
-		// this.producerThread = new Thread(new Runnable() {
-		// @Override
-		// public void run() {
-		// TimestampObject ts;
-		// try {
-		// ts = MethodCallThroughputAnalysis17.this.inputObjectCreator.call();
-		// System.out.println("test" + producerPipeline + ", # filters: " + MethodCallThroughputAnalysis17.this.numNoopFilters + ", ts: "
-		// + ts);
-		// MethodCallThroughputAnalysis17.this.numInputObjects++;
-		// System.out.println("numInputObjects: " + MethodCallThroughputAnalysis17.this.numInputObjects);
-		// MethodCallThroughputAnalysis17.this.numInputObjects--;
-		// } catch (Exception e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// System.out.println("run end");
-		// }
-		// });
-
-		// this.producerThread.start();
-		// this.producerThread.run();
-		new RunnableStage(producerPipeline).run();
-
-		// try {
-		// this.producerThread.join();
-		// } catch (InterruptedException e1) {
-		// // TODO Auto-generated catch block
-		// e1.printStackTrace();
-		// }
-
-		super.init();
 	}
 
 	private Pipeline<Void, TimestampObject> buildProducerPipeline(final int numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
 		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(numInputObjects, inputObjectCreator);
-		Distributor<TimestampObject> distributor = new Distributor<TimestampObject>();
-		Sink<TimestampObject> sink = new Sink<TimestampObject>();
-		EndStage<Void> endStage = new EndStage<Void>();
-		endStage.closure = inputObjectCreator;
+		this.distributor = new Distributor<TimestampObject>();
 
 		final Pipeline<Void, TimestampObject> pipeline = new Pipeline<Void, TimestampObject>();
 		pipeline.setFirstStage(objectProducer);
-		// pipeline.setFirstStage(sink);
-		// pipeline.setFirstStage(endStage);
+		pipeline.setLastStage(this.distributor);
 
-		pipeline.setLastStage(distributor);
-		// pipeline.setLastStage(sink);
-		// pipeline.setLastStage(new EndStage<TimestampObject>());
-
-		// UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), sink.getInputPort());
-		// objectProducer.getOutputPort().pipe = new UnorderedGrowablePipe<TimestampObject>();
-
-		UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), distributor.getInputPort());
-		distributor.getOutputPort().setPipe(new UnorderedGrowablePipe<TimestampObject>());
+		OrderedGrowableArrayPipe.connect(objectProducer.getOutputPort(), this.distributor.getInputPort());
 
 		return pipeline;
 	}
@@ -137,10 +96,10 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 	 */
 	private Runnable buildPipeline(final StageWithPort<Void, TimestampObject> previousStage, final List<TimestampObject> timestampObjects) {
 		Relay<TimestampObject> relay = new Relay<TimestampObject>();
-		// create stages
-		final StartTimestampFilter startTimestampFilter = new StartTimestampFilter();
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
+		// create stages
+		final StartTimestampFilter startTimestampFilter = new StartTimestampFilter();
 		for (int i = 0; i < noopFilters.length; i++) {
 			noopFilters[i] = new NoopFilter<TimestampObject>();
 		}
@@ -154,27 +113,16 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		pipeline.addIntermediateStage(stopTimestampFilter);
 		pipeline.setLastStage(collectorSink);
 
-		IPipe<TimestampObject> startPipe = new SpScPipe<TimestampObject>(SPSC_INITIAL_CAPACITY);
-		try {
-			for (int i = 0; i < this.numInputObjects; i++) {
-				startPipe.add(this.inputObjectCreator.create());
-			}
-			startPipe.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		relay.getInputPort().setPipe(startPipe);
-		// previousStage.getOutputPort().pipe = startPipe;
+		SpScPipe.connect(previousStage.getOutputPort(), relay.getInputPort(), SPSC_INITIAL_CAPACITY);
 
-		UnorderedGrowablePipe.connect(relay.getOutputPort(), startTimestampFilter.getInputPort());
+		OrderedGrowableArrayPipe.connect(relay.getOutputPort(), startTimestampFilter.getInputPort());
 
-		UnorderedGrowablePipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
+		OrderedGrowableArrayPipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
 		for (int i = 0; i < noopFilters.length - 1; i++) {
-			UnorderedGrowablePipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
+			OrderedGrowableArrayPipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
 		}
-		UnorderedGrowablePipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
-		UnorderedGrowablePipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
+		OrderedGrowableArrayPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
+		OrderedGrowableArrayPipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
 		return new RunnableStage(pipeline);
 	}
@@ -183,8 +131,17 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 	public void start() {
 		super.start();
 
+		this.producerThread.start();
+
 		for (Thread workerThread : this.workerThreads) {
 			workerThread.start();
+		}
+
+		try {
+			this.producerThread.join();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 
 		try {
@@ -212,6 +169,14 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 
 	public List<List<TimestampObject>> getTimestampObjectsList() {
 		return this.timestampObjectsList;
+	}
+
+	public int getNumWorkerThreads() {
+		return this.numWorkerThreads;
+	}
+
+	public void setNumWorkerThreads(final int numWorkerThreads) {
+		this.numWorkerThreads = numWorkerThreads;
 	}
 
 }

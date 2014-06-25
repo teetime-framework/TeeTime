@@ -6,10 +6,14 @@ import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 public class SpScPipe<T> extends AbstractPipe<T> {
 
-	private final FFBufferOrdered3<T> queue = new FFBufferOrdered3<T>(100010);
+	private final FFBufferOrdered3<T> queue;
 
-	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
-		IPipe<T> pipe = new SpScPipe<T>();
+	public SpScPipe(final int initialCapacity) {
+		this.queue = new FFBufferOrdered3<T>(initialCapacity);
+	}
+
+	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort, final int initialCapacity) {
+		IPipe<T> pipe = new SpScPipe<T>(initialCapacity);
 		sourcePort.setPipe(pipe);
 		targetPort.setPipe(pipe);
 	}

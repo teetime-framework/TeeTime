@@ -25,8 +25,8 @@ import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.UnorderedGrowablePipe;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.Distributor;
 import teetime.variant.methodcallWithPorts.stage.NoopFilter;
@@ -42,6 +42,7 @@ import teetime.variant.methodcallWithPorts.stage.StopTimestampFilter;
  */
 public class MethodCallThroughputAnalysis16 extends Analysis {
 
+	private static final int SPSC_INITIAL_CAPACITY = 100100;
 	private static final int NUM_WORKER_THREADS = Runtime.getRuntime().availableProcessors();
 
 	private int numInputObjects;
@@ -92,7 +93,7 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 		pipeline.setFirstStage(objectProducer);
 		pipeline.setLastStage(this.distributor);
 
-		UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), this.distributor.getInputPort());
+		SingleElementPipe.connect(objectProducer.getOutputPort(), this.distributor.getInputPort());
 
 		return pipeline;
 	}
@@ -120,16 +121,16 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 		pipeline.addIntermediateStage(stopTimestampFilter);
 		pipeline.setLastStage(collectorSink);
 
-		SpScPipe.connect(previousStage.getOutputPort(), relay.getInputPort());
+		SpScPipe.connect(previousStage.getOutputPort(), relay.getInputPort(), SPSC_INITIAL_CAPACITY);
 
-		UnorderedGrowablePipe.connect(relay.getOutputPort(), startTimestampFilter.getInputPort());
+		SingleElementPipe.connect(relay.getOutputPort(), startTimestampFilter.getInputPort());
 
-		UnorderedGrowablePipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
+		SingleElementPipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
 		for (int i = 0; i < noopFilters.length - 1; i++) {
-			UnorderedGrowablePipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
+			SingleElementPipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
 		}
-		UnorderedGrowablePipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
-		UnorderedGrowablePipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
+		SingleElementPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
+		SingleElementPipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
 		return new RunnableStage(pipeline);
 	}

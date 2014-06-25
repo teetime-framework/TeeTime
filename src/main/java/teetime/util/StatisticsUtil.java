@@ -47,6 +47,7 @@ public class StatisticsUtil {
 	public static PerformanceResult printStatistics(final long overallDurationInNs, final List<TimestampObject> timestampObjects) {
 		PerformanceResult performanceResult = new PerformanceResult();
 
+		performanceResult.overallDurationInNs = overallDurationInNs;
 		System.out.println("Duration: " + TimeUnit.NANOSECONDS.toMillis(overallDurationInNs) + " ms");
 
 		final List<Long> sortedDurationsInNs = new ArrayList<Long>(timestampObjects.size() / 2);

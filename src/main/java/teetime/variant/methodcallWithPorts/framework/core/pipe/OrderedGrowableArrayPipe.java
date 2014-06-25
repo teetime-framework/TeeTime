@@ -11,7 +11,7 @@ public class OrderedGrowableArrayPipe<T> extends AbstractPipe<T> {
 	private int tail;
 
 	public OrderedGrowableArrayPipe() {
-		this(17);
+		this(1);
 	}
 
 	public OrderedGrowableArrayPipe(final int initialCapacity) {

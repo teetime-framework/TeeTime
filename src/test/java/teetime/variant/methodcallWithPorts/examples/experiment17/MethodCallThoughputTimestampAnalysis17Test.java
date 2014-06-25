@@ -15,13 +15,10 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.examples.experiment17;
 
-import java.util.List;
-
 import org.junit.Test;
 
 import teetime.util.ConstructorClosure;
 import teetime.util.ListUtil;
-import teetime.util.StatisticsUtil;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import test.PerformanceTest;
 
@@ -58,10 +55,7 @@ public class MethodCallThoughputTimestampAnalysis17Test extends PerformanceTest 
 			analysis.onTerminate();
 		}
 
-		// TODO refactor test
-
-		List<TimestampObject> timestampObjects = ListUtil.merge(analysis.getTimestampObjectsList());
-		StatisticsUtil.printStatistics(this.stopWatch.getDurationInNs(), timestampObjects);
+		this.timestampObjects = ListUtil.merge(analysis.getTimestampObjectsList());
 		// }
 	}
 }

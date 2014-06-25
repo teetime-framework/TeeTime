@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcallWithPorts.examples.experiment16;
+package teetime.variant.methodcallWithPorts.examples.experiment19;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -30,7 +30,7 @@ import test.PerformanceTest;
  * @since 1.10
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest {
+public class MethodCallThoughputTimestampAnalysis19Test extends PerformanceTest {
 
 	// TODO use @Parameter for the number of threads
 
@@ -66,7 +66,7 @@ public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest 
 		System.out.println("Testing teetime (mc) with NUM_OBJECTS_TO_CREATE=" + NUM_OBJECTS_TO_CREATE + ", NUM_NOOP_FILTERS="
 				+ NUM_NOOP_FILTERS + "...");
 
-		final MethodCallThroughputAnalysis16 analysis = new MethodCallThroughputAnalysis16();
+		final MethodCallThroughputAnalysis19 analysis = new MethodCallThroughputAnalysis19();
 		analysis.setNumWorkerThreads(numThreads);
 		analysis.setNumNoopFilters(NUM_NOOP_FILTERS);
 		analysis.setInput(NUM_OBJECTS_TO_CREATE, new ConstructorClosure<TimestampObject>() {

@@ -42,6 +42,7 @@ import teetime.variant.methodcallWithPorts.stage.StopTimestampFilter;
  */
 public class MethodCallThroughputAnalysis18 extends Analysis {
 
+	private static final int SPSC_INITIAL_CAPACITY = 4;
 	private static final int NUM_WORKER_THREADS = Runtime.getRuntime().availableProcessors();
 
 	private int numInputObjects;
@@ -111,7 +112,7 @@ public class MethodCallThroughputAnalysis18 extends Analysis {
 		pipeline.addIntermediateStage(stopTimestampFilter);
 		pipeline.setLastStage(collectorSink);
 
-		SpScPipe.connect(previousStage.getOutputPort(), relay.getInputPort());
+		SpScPipe.connect(previousStage.getOutputPort(), relay.getInputPort(), SPSC_INITIAL_CAPACITY);
 
 		UnorderedGrowablePipe.connect(relay.getOutputPort(), startTimestampFilter.getInputPort());
 

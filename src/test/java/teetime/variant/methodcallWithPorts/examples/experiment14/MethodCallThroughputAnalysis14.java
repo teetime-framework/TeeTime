@@ -36,6 +36,8 @@ import teetime.variant.methodcallWithPorts.stage.StopTimestampFilter;
  */
 public class MethodCallThroughputAnalysis14 extends Analysis {
 
+	private static final int SPSC_INITIAL_CAPACITY = 4;
+
 	private long numInputObjects;
 	private ConstructorClosure<TimestampObject> inputObjectCreator;
 	private int numNoopFilters;
@@ -71,13 +73,13 @@ public class MethodCallThroughputAnalysis14 extends Analysis {
 		pipeline.addIntermediateStage(stopTimestampFilter);
 		pipeline.setLastStage(collectorSink);
 
-		SpScPipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
-		SpScPipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
+		SpScPipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort(), SPSC_INITIAL_CAPACITY);
+		SpScPipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort(), SPSC_INITIAL_CAPACITY);
 		for (int i = 0; i < noopFilters.length - 1; i++) {
-			SpScPipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
+			SpScPipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort(), SPSC_INITIAL_CAPACITY);
 		}
-		SpScPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
-		SpScPipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
+		SpScPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort(), SPSC_INITIAL_CAPACITY);
+		SpScPipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort(), SPSC_INITIAL_CAPACITY);
 
 		return new RunnableStage(pipeline);
 	}
