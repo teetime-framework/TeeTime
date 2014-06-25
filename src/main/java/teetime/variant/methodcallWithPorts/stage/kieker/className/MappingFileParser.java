@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package kieker.analysis.stage;
+package teetime.variant.methodcallWithPorts.stage.kieker.className;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,9 +25,6 @@ import java.util.Map;
 
 import kieker.common.logging.Log;
 import kieker.common.util.filesystem.FSUtil;
-
-import teetime.variant.explicitScheduling.stage.kieker.className.ClassNameRegistry;
-
 
 /**
  * @author Christian Wulf

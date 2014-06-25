@@ -13,28 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.explicitScheduling.stage.kieker.className;
+package teetime.variant.methodcallWithPorts.stage.kieker.className;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import teetime.variant.explicitScheduling.framework.core.AbstractFilter;
-import teetime.variant.explicitScheduling.framework.core.Context;
-import teetime.variant.explicitScheduling.framework.core.IInputPort;
-import teetime.variant.explicitScheduling.framework.core.IOutputPort;
+import teetime.util.list.CommittableQueue;
+import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class ClassNameRegistryCreationFilter extends AbstractFilter<ClassNameRegistryCreationFilter> {
-
-	public final IInputPort<ClassNameRegistryCreationFilter, File> directoryInputPort = this.createInputPort();
-
-	public final IOutputPort<ClassNameRegistryCreationFilter, File> relayDirectoryOutputPort = this.createOutputPort();
-	public final IOutputPort<ClassNameRegistryCreationFilter, String> filePrefixOutputPort = this.createOutputPort();
+public class ClassNameRegistryCreationFilter extends ConsumerStage<File, File> {
 
 	private ClassNameRegistryRepository classNameRegistryRepository;
 
@@ -57,29 +50,22 @@ public class ClassNameRegistryCreationFilter extends AbstractFilter<ClassNameReg
 	}
 
 	@Override
-	protected boolean execute(final Context<ClassNameRegistryCreationFilter> context) {
-		final File inputDir = context.tryTake(this.directoryInputPort);
-		if (inputDir == null) {
-			return false;
-		}
-
+	protected void execute5(final File inputDir) {
 		final File mappingFile = this.mappingFileParser.findMappingFile(inputDir);
 		if (mappingFile == null) {
-			return true;
+			return;
 		}
 
 		try {
 			final ClassNameRegistry classNameRegistry = this.mappingFileParser.parseFromStream(new FileInputStream(mappingFile));
 			this.classNameRegistryRepository.put(inputDir, classNameRegistry);
-			context.put(this.relayDirectoryOutputPort, inputDir);
+			this.send(inputDir);
 
-			final String filePrefix = this.mappingFileParser.getFilePrefixFromMappingFile(mappingFile);
-			context.put(this.filePrefixOutputPort, filePrefix);
+			// final String filePrefix = this.mappingFileParser.getFilePrefixFromMappingFile(mappingFile);
+			// context.put(this.filePrefixOutputPort, filePrefix); // TODO pass prefix
 		} catch (final FileNotFoundException e) {
 			this.logger.error("Mapping file not found.", e); // and skip this directory
 		}
-
-		return true;
 	}
 
 	public ClassNameRegistryRepository getClassNameRegistryRepository() {
@@ -88,6 +74,11 @@ public class ClassNameRegistryCreationFilter extends AbstractFilter<ClassNameReg
 
 	public void setClassNameRegistryRepository(final ClassNameRegistryRepository classNameRegistryRepository) {
 		this.classNameRegistryRepository = classNameRegistryRepository;
+	}
+
+	@Override
+	protected void execute4(final CommittableQueue<File> elements) {
+		throw new IllegalStateException();
 	}
 
 }

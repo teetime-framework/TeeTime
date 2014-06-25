@@ -14,19 +14,17 @@
  * limitations under the License.
  ***************************************************************************/
 
-package teetime.variant.explicitScheduling.stage.kieker.fileToRecord.textLine;
+package teetime.variant.methodcallWithPorts.stage.kieker.fileToRecord.textLine;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import teetime.variant.explicitScheduling.framework.core.AbstractFilter;
-import teetime.variant.explicitScheduling.framework.core.Context;
-import teetime.variant.explicitScheduling.framework.core.IInputPort;
-import teetime.variant.explicitScheduling.framework.core.IOutputPort;
+import teetime.util.list.CommittableQueue;
 import teetime.variant.explicitScheduling.stage.MappingException;
-import teetime.variant.explicitScheduling.stage.kieker.className.ClassNameRegistryRepository;
-import teetime.variant.explicitScheduling.stage.kieker.fileToRecord.RecordFromTextLineCreator;
 import teetime.variant.explicitScheduling.stage.util.TextLine;
+import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
+import teetime.variant.methodcallWithPorts.stage.kieker.fileToRecord.RecordFromTextLineCreator;
 
 import kieker.common.exception.IllegalRecordFormatException;
 import kieker.common.exception.MonitoringRecordException;
@@ -38,11 +36,7 @@ import kieker.common.record.IMonitoringRecord;
  * 
  * @since 1.10
  */
-public class TextLine2RecordFilter extends AbstractFilter<TextLine2RecordFilter> {
-
-	public final IInputPort<TextLine2RecordFilter, TextLine> textLineInputPort = this.createInputPort();
-
-	public final IOutputPort<TextLine2RecordFilter, IMonitoringRecord> recordOutputPort = this.createOutputPort();
+public class TextLine2RecordFilter extends ConsumerStage<TextLine, IMonitoringRecord> {
 
 	private final Set<String> unknownTypesObserved = new HashSet<String>();
 
@@ -66,19 +60,32 @@ public class TextLine2RecordFilter extends AbstractFilter<TextLine2RecordFilter>
 		super();
 	}
 
-	/**
-	 * @since 1.10
-	 */
-	@Override
-	protected boolean execute(final Context<TextLine2RecordFilter> context) {
-		final TextLine textLine = context.tryTake(this.textLineInputPort);
-		if (textLine == null) {
-			return false;
-		}
+	public boolean isIgnoreUnknownRecordTypes() {
+		return this.ignoreUnknownRecordTypes;
+	}
 
+	public void setIgnoreUnknownRecordTypes(final boolean ignoreUnknownRecordTypes) {
+		this.ignoreUnknownRecordTypes = ignoreUnknownRecordTypes;
+	}
+
+	public RecordFromTextLineCreator getRecordFromTextLineCreator() {
+		return this.recordFromTextLineCreator;
+	}
+
+	public void setRecordFromTextLineCreator(final RecordFromTextLineCreator recordFromTextLineCreator) {
+		this.recordFromTextLineCreator = recordFromTextLineCreator;
+	}
+
+	@Override
+	protected void execute4(final CommittableQueue<TextLine> elements) {
+		throw new IllegalStateException();
+	}
+
+	@Override
+	protected void execute5(final TextLine textLine) {
 		try {
 			final IMonitoringRecord record = this.recordFromTextLineCreator.createRecordFromLine(textLine.getTextFile(), textLine.getTextLine());
-			context.put(this.recordOutputPort, record);
+			this.send(record);
 		} catch (final MonitoringRecordException e) {
 			this.logger.error("Could not create record from text line: '" + textLine + "'", e);
 		} catch (final IllegalRecordFormatException e) {
@@ -95,24 +102,6 @@ public class TextLine2RecordFilter extends AbstractFilter<TextLine2RecordFilter>
 				this.logger.error("Failed to load record type " + classname, e); // log once for this type
 			}
 		}
-
-		return true;
-	}
-
-	public boolean isIgnoreUnknownRecordTypes() {
-		return this.ignoreUnknownRecordTypes;
-	}
-
-	public void setIgnoreUnknownRecordTypes(final boolean ignoreUnknownRecordTypes) {
-		this.ignoreUnknownRecordTypes = ignoreUnknownRecordTypes;
-	}
-
-	public RecordFromTextLineCreator getRecordFromTextLineCreator() {
-		return this.recordFromTextLineCreator;
-	}
-
-	public void setRecordFromTextLineCreator(final RecordFromTextLineCreator recordFromTextLineCreator) {
-		this.recordFromTextLineCreator = recordFromTextLineCreator;
 	}
 
 }

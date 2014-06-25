@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package kieker.analysis.stage;
+package teetime.variant.methodcallWithPorts.stage.kieker.fileToRecord;
 
 import java.io.File;
+
+import teetime.variant.explicitScheduling.stage.MappingException;
+import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistry;
+import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
 
 import kieker.common.exception.IllegalRecordFormatException;
 import kieker.common.exception.MonitoringRecordException;
@@ -24,13 +28,9 @@ import kieker.common.record.AbstractMonitoringRecord;
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.controlflow.OperationExecutionRecord;
 
-import teetime.variant.explicitScheduling.stage.MappingException;
-import teetime.variant.explicitScheduling.stage.kieker.className.ClassNameRegistry;
-import teetime.variant.explicitScheduling.stage.kieker.className.ClassNameRegistryRepository;
-
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class RecordFromTextLineCreator {

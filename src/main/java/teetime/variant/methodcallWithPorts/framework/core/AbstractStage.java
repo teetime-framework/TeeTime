@@ -1,8 +1,19 @@
 package teetime.variant.methodcallWithPorts.framework.core;
 
+import java.util.UUID;
+
 import teetime.util.list.CommittableQueue;
 
+import kieker.common.logging.Log;
+import kieker.common.logging.LogFactory;
+
 public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
+
+	private final String id;
+	/**
+	 * A unique logger instance per stage instance
+	 */
+	protected Log logger;
 
 	private final InputPort<I> inputPort = new InputPort<I>();
 	private final OutputPort<O> outputPort = new OutputPort<O>();
@@ -17,6 +28,11 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	private StageWithPort<?, ?> successor;
 
 	private boolean reschedulable;
+
+	public AbstractStage() {
+		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
+		this.logger = LogFactory.getLog(this.id);
+	}
 
 	@Override
 	public InputPort<I> getInputPort() {
@@ -64,7 +80,11 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	// } while (this.next().isReschedulable());
 	// }
 
-	protected abstract void execute4(CommittableQueue<I> elements);
+	// protected abstract void execute4(CommittableQueue<I> elements);
+
+	protected void execute4(final CommittableQueue<I> elements) {
+		throw new IllegalStateException(); // default implementation
+	}
 
 	protected abstract void execute5(I element);
 
@@ -136,6 +156,10 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
 	public void setReschedulable(final boolean reschedulable) {
 		this.reschedulable = reschedulable;
+	}
+
+	public String getId() {
+		return this.id;
 	}
 
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.explicitScheduling.stage.kieker.fileToRecord;
+package teetime.variant.methodcallWithPorts.stage.kieker.fileToRecord;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -28,12 +28,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import teetime.variant.explicitScheduling.framework.core.AbstractFilter;
-import teetime.variant.explicitScheduling.framework.core.Context;
-import teetime.variant.explicitScheduling.framework.core.IInputPort;
-import teetime.variant.explicitScheduling.framework.core.IOutputPort;
-import teetime.variant.explicitScheduling.stage.kieker.className.ClassNameRegistry;
-import teetime.variant.explicitScheduling.stage.kieker.className.MappingFileParser;
+import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistry;
+import teetime.variant.methodcallWithPorts.stage.kieker.className.MappingFileParser;
 
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.util.filesystem.FSUtil;
@@ -43,11 +40,7 @@ import kieker.common.util.filesystem.FSUtil;
  * 
  * @since 1.10
  */
-public class ZipFile2RecordFilter extends AbstractFilter<ZipFile2RecordFilter> {
-
-	public final IInputPort<ZipFile2RecordFilter, File> fileInputPort = this.createInputPort();
-
-	public final IOutputPort<ZipFile2RecordFilter, IMonitoringRecord> recordOutputPort = this.createOutputPort();
+public class ZipFile2RecordFilter extends ConsumerStage<File, IMonitoringRecord> {
 
 	private final MappingFileParser mappingFileParser;
 
@@ -59,29 +52,22 @@ public class ZipFile2RecordFilter extends AbstractFilter<ZipFile2RecordFilter> {
 	}
 
 	@Override
-	protected boolean execute(final Context<ZipFile2RecordFilter> context) {
-		final File zipFile = context.tryTake(this.fileInputPort);
-		if (zipFile == null) {
-			return false;
-		}
-
+	protected void execute5(final File zipFile) {
 		final InputStream mappingFileInputStream = this.findMappingFileInputStream(zipFile);
 		if (mappingFileInputStream == null) {
-			return true;
+			return;
 		}
 		final ClassNameRegistry classNameRegistry = this.mappingFileParser.parseFromStream(mappingFileInputStream);
 
 		try {
-			this.createAndSendRecordsFromZipFile(context, zipFile, classNameRegistry);
+			this.createAndSendRecordsFromZipFile(zipFile, classNameRegistry);
 		} catch (final FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		return true;
 	}
 
-	private void createAndSendRecordsFromZipFile(final Context<ZipFile2RecordFilter> context, final File zipFile, final ClassNameRegistry classNameRegistry)
+	private void createAndSendRecordsFromZipFile(final File zipFile, final ClassNameRegistry classNameRegistry)
 			throws FileNotFoundException {
 		final ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFile));
 		final BufferedReader reader;
@@ -132,4 +118,5 @@ public class ZipFile2RecordFilter extends AbstractFilter<ZipFile2RecordFilter> {
 
 		return null;
 	}
+
 }
