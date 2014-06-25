@@ -22,26 +22,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import teetime.variant.explicitScheduling.framework.core.Description;
+import teetime.variant.methodcallWithPorts.framework.core.ProducerStage;
+
 import kieker.common.exception.MonitoringRecordException;
 import kieker.common.record.AbstractMonitoringRecord;
 import kieker.common.record.IMonitoringRecord;
 
-import teetime.variant.explicitScheduling.framework.core.AbstractFilter;
-import teetime.variant.explicitScheduling.framework.core.Context;
-import teetime.variant.explicitScheduling.framework.core.Description;
-import teetime.variant.explicitScheduling.framework.core.IOutputPort;
-
 /**
  * A very simple database reader that probably only works for small data sets.
- *
+ * 
  * @author Jan Waller, Nils Christian Ehmke
- *
+ * 
  * @since 1.10
  */
 @Description("A reader which reads records from a database")
-public class DbReader extends AbstractFilter<DbReader> {
-
-	private final IOutputPort<DbReader, IMonitoringRecord> outputPort = super.createOutputPort();
+public class DbReader extends ProducerStage<Void, IMonitoringRecord> {
 
 	@Description("The classname of the driver used for the connection.")
 	private String driverClassname = "org.apache.derby.jdbc.EmbeddedDrive";
@@ -53,24 +49,23 @@ public class DbReader extends AbstractFilter<DbReader> {
 	private volatile boolean running = true;
 
 	@Override
-	public void onPipelineStarts() throws Exception {
-		super.onPipelineStarts();
+	public void onStart() {
 		try {
 			Class.forName(this.driverClassname).newInstance();
 		} catch (final Exception ex) { // NOPMD NOCS (IllegalCatchCheck)
-			throw new Exception("DB driver registration failed. Perhaps the driver jar is missing?", ex);
+			throw new RuntimeException("DB driver registration failed. Perhaps the driver jar is missing?", ex);
 		}
 	}
 
-	@Override
-	public void onPipelineStops() {
-		super.logger.info("Shutdown of DBReader requested.");
-		this.running = false;
-		super.onPipelineStops();
-	}
+	// @Override // TODO implement onStop
+	// public void onPipelineStops() {
+	// super.logger.info("Shutdown of DBReader requested.");
+	// this.running = false;
+	// super.onPipelineStops();
+	// }
 
 	@Override
-	protected boolean execute(final Context<DbReader> context) {
+	protected void execute5(final Void element) {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(this.connectionString);
@@ -84,7 +79,7 @@ public class DbReader extends AbstractFilter<DbReader> {
 						final String tablename = indexTable.getString(1);
 						final String classname = indexTable.getString(2);
 						try { // NOCS (nested try)
-							this.table2record(context, connection, tablename, AbstractMonitoringRecord.classForName(classname));
+							this.table2record(connection, tablename, AbstractMonitoringRecord.classForName(classname));
 						} catch (final MonitoringRecordException ex) {
 							// log error but continue with next table
 							super.logger.error("Failed to load records of type " + classname + " from table " + tablename, ex);
@@ -103,7 +98,6 @@ public class DbReader extends AbstractFilter<DbReader> {
 			}
 		} catch (final SQLException ex) {
 			super.logger.error("SQLException with SQLState: '" + ex.getSQLState() + "' and VendorError: '" + ex.getErrorCode() + "'", ex);
-			return false;
 		} finally {
 			if (connection != null) {
 				try {
@@ -113,7 +107,6 @@ public class DbReader extends AbstractFilter<DbReader> {
 				}
 			}
 		}
-		return true;
 	}
 
 	public final String getDriverClassname() {
@@ -142,7 +135,7 @@ public class DbReader extends AbstractFilter<DbReader> {
 
 	/**
 	 * This method uses the given table to read records and sends them to the output port.
-	 *
+	 * 
 	 * @param connection
 	 *            The connection to the database which will be used.
 	 * @param tablename
@@ -154,7 +147,7 @@ public class DbReader extends AbstractFilter<DbReader> {
 	 * @throws MonitoringRecordException
 	 *             If the data within the table could not be converted into a valid record.
 	 */
-	private void table2record(final Context<DbReader> context, final Connection connection, final String tablename, final Class<? extends IMonitoringRecord> clazz)
+	private void table2record(final Connection connection, final String tablename, final Class<? extends IMonitoringRecord> clazz)
 			throws SQLException, MonitoringRecordException {
 		Statement selectRecord = null;
 		try {
@@ -170,7 +163,7 @@ public class DbReader extends AbstractFilter<DbReader> {
 					}
 					final IMonitoringRecord record = AbstractMonitoringRecord.createFromArray(clazz, recordValues);
 					record.setLoggingTimestamp(records.getLong(2));
-					context.put(this.outputPort, record);
+					this.send(record);
 				}
 			} finally {
 				if (records != null) {

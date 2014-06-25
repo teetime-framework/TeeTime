@@ -21,21 +21,14 @@ import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import teetime.variant.explicitScheduling.framework.core.AbstractFilter;
-import teetime.variant.explicitScheduling.framework.core.Context;
-import teetime.variant.explicitScheduling.framework.core.IInputPort;
-import teetime.variant.explicitScheduling.framework.core.IOutputPort;
+import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class Directory2FilesFilter extends AbstractFilter<Directory2FilesFilter> {
-
-	public final IInputPort<Directory2FilesFilter, File> directoryInputPort = this.createInputPort();
-
-	public final IOutputPort<Directory2FilesFilter, File> fileOutputPort = this.createOutputPort();
+public class Directory2FilesFilter extends ConsumerStage<File, File> {
 
 	private FileFilter filter;
 	private Comparator<File> fileComparator;
@@ -69,21 +62,13 @@ public class Directory2FilesFilter extends AbstractFilter<Directory2FilesFilter>
 		super();
 	}
 
-	/**
-	 * @since 1.10
-	 */
 	@Override
-	protected boolean execute(final Context<Directory2FilesFilter> context) {
-		final File inputDir = context.tryTake(this.directoryInputPort);
-		if (inputDir == null) {
-			return false;
-		}
-
+	protected void execute5(final File inputDir) {
 		final File[] inputFiles = inputDir.listFiles(this.filter);
 
 		if (inputFiles == null) {
 			this.logger.error("Directory '" + inputDir + "' does not exist or an I/O error occured.");
-			return true;
+			return;
 		}
 
 		if (this.fileComparator != null) {
@@ -91,10 +76,8 @@ public class Directory2FilesFilter extends AbstractFilter<Directory2FilesFilter>
 		}
 
 		for (final File file : inputFiles) {
-			context.put(this.fileOutputPort, file);
+			this.send(file);
 		}
-
-		return true;
 	}
 
 	public FileFilter getFilter() {

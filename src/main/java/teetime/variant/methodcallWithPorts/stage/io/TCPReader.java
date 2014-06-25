@@ -22,52 +22,36 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
+import teetime.variant.methodcallWithPorts.framework.core.ProducerStage;
+
 import kieker.common.exception.MonitoringRecordException;
-import kieker.common.logging.Log;
-import kieker.common.logging.LogFactory;
 import kieker.common.record.AbstractMonitoringRecord;
 import kieker.common.record.IMonitoringRecord;
-import kieker.common.record.misc.RegistryRecord;
 import kieker.common.util.registry.ILookup;
 import kieker.common.util.registry.Lookup;
 
-import teetime.variant.explicitScheduling.framework.core.AbstractFilter;
-import teetime.variant.explicitScheduling.framework.core.Context;
-import teetime.variant.explicitScheduling.framework.core.IOutputPort;
-
 /**
  * This is a reader which reads the records from a TCP port.
- *
+ * 
  * @author Jan Waller, Nils Christian Ehmke
- *
+ * 
  * @since 1.10
  */
-public class TCPReader extends AbstractFilter<TCPReader> {
+public class TCPReader extends ProducerStage<Void, IMonitoringRecord> {
 
 	private static final int MESSAGE_BUFFER_SIZE = 65535;
-
-	private final IOutputPort<TCPReader, IMonitoringRecord> outputPort = super.createOutputPort();
 
 	// BETTER use a non thread-safe implementation to increase performance. A thread-safe version is not necessary.
 	private final ILookup<String> stringRegistry = new Lookup<String>();
 	private int port1 = 10133;
 	private int port2 = 10134;
 
-	@Override
-	public void onPipelineStarts() throws Exception {
-		super.onPipelineStarts();
-
-		// FIXME use the implementation from the thread or from execute(), but not both
-		final TCPStringReader tcpStringReader = new TCPStringReader(this.port2, this.stringRegistry);
-		tcpStringReader.start();
-	}
-
-	@Override
-	public void onPipelineStops() {
-		super.logger.info("Shutdown of TCPReader requested.");
-		// TODO actually implement terminate!
-		super.onPipelineStops();
-	}
+	// @Override // implement onStop
+	// public void onPipelineStops() {
+	// super.logger.info("Shutdown of TCPReader requested.");
+	// // TODO actually implement terminate!
+	// super.onPipelineStops();
+	// }
 
 	public final int getPort1() {
 		return this.port1;
@@ -86,7 +70,7 @@ public class TCPReader extends AbstractFilter<TCPReader> {
 	}
 
 	@Override
-	protected boolean execute(final Context<TCPReader> context) {
+	protected void execute5(final Void element) {
 		ServerSocketChannel serversocket = null;
 		try {
 			serversocket = ServerSocketChannel.open();
@@ -109,7 +93,7 @@ public class TCPReader extends AbstractFilter<TCPReader> {
 						try { // NOCS (Nested try-catch)
 							record = AbstractMonitoringRecord.createFromByteBuffer(clazzid, buffer, this.stringRegistry);
 							record.setLoggingTimestamp(loggingTimestamp);
-							context.put(this.outputPort, record);
+							this.send(record);
 						} catch (final MonitoringRecordException ex) {
 							super.logger.error("Failed to create record.", ex);
 						}
@@ -126,7 +110,6 @@ public class TCPReader extends AbstractFilter<TCPReader> {
 			// END also loop this one?
 		} catch (final IOException ex) {
 			super.logger.error("Error while reading", ex);
-			return false;
 		} finally {
 			if (null != serversocket) {
 				try {
@@ -134,71 +117,6 @@ public class TCPReader extends AbstractFilter<TCPReader> {
 				} catch (final IOException e) {
 					if (super.logger.isDebugEnabled()) {
 						super.logger.debug("Failed to close TCP connection!", e);
-					}
-				}
-			}
-		}
-		return true;
-	}
-
-}
-
-/**
- *
- * @author Jan Waller
- *
- * @since 1.8
- */
-class TCPStringReader extends Thread {
-
-	private static final int MESSAGE_BUFFER_SIZE = 65535;
-
-	private static final Log LOG = LogFactory.getLog(TCPStringReader.class);
-
-	private final int port;
-	private final ILookup<String> stringRegistry;
-
-	public TCPStringReader(final int port, final ILookup<String> stringRegistry) {
-		this.port = port;
-		this.stringRegistry = stringRegistry;
-	}
-
-	@Override
-	public void run() {
-		ServerSocketChannel serversocket = null;
-		try {
-			serversocket = ServerSocketChannel.open();
-			serversocket.socket().bind(new InetSocketAddress(this.port));
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Listening on port " + this.port);
-			}
-			// BEGIN also loop this one?
-			final SocketChannel socketChannel = serversocket.accept();
-			final ByteBuffer buffer = ByteBuffer.allocateDirect(MESSAGE_BUFFER_SIZE);
-			while (socketChannel.read(buffer) != -1) {
-				buffer.flip();
-				try {
-					while (buffer.hasRemaining()) {
-						buffer.mark();
-						RegistryRecord.registerRecordInRegistry(buffer, this.stringRegistry);
-					}
-					buffer.clear();
-				} catch (final BufferUnderflowException ex) {
-					buffer.reset();
-					buffer.compact();
-				}
-			}
-			socketChannel.close();
-			// END also loop this one?
-		} catch (final IOException ex) {
-			LOG.error("Error while reading", ex);
-		} finally {
-			if (null != serversocket) {
-				try {
-					serversocket.close();
-				} catch (final IOException e) {
-					if (LOG.isDebugEnabled()) {
-						LOG.debug("Failed to close TCP connection!", e);
 					}
 				}
 			}

@@ -20,10 +20,8 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import teetime.variant.explicitScheduling.framework.core.AbstractFilter;
-import teetime.variant.explicitScheduling.framework.core.Context;
 import teetime.variant.explicitScheduling.framework.core.Description;
-import teetime.variant.explicitScheduling.framework.core.IInputPort;
+import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
 /**
  * @author Matthias Rohr, Jan Waller, Nils Christian Ehmke
@@ -31,7 +29,7 @@ import teetime.variant.explicitScheduling.framework.core.IInputPort;
  * @since 1.10
  */
 @Description("A filter to print objects to a configured stream")
-public class Printer<T> extends AbstractFilter<Printer<T>> {
+public class Printer<T> extends ConsumerStage<T, Void> {
 
 	public static final String STREAM_STDOUT = "STDOUT";
 	public static final String STREAM_STDERR = "STDERR";
@@ -40,13 +38,28 @@ public class Printer<T> extends AbstractFilter<Printer<T>> {
 
 	public static final String ENCODING_UTF8 = "UTF-8";
 
-	public final IInputPort<Printer<T>, T> input = this.createInputPort();
-
 	private PrintStream printStream;
 	private String streamName = STREAM_STDOUT;
 	private String encoding = ENCODING_UTF8;
 	private boolean active = true;
 	private boolean append = true;
+
+	@Override
+	protected void execute5(final T object) {
+		if (this.active) {
+			final StringBuilder sb = new StringBuilder(128);
+
+			sb.append(super.getId());
+			sb.append('(').append(object.getClass().getSimpleName()).append(") ").append(object.toString());
+
+			final String msg = sb.toString();
+			if (this.printStream != null) {
+				this.printStream.println(msg);
+			} else {
+				super.logger.info(msg);
+			}
+		}
+	}
 
 	public String getStreamName() {
 		return this.streamName;
@@ -73,16 +86,15 @@ public class Printer<T> extends AbstractFilter<Printer<T>> {
 	}
 
 	@Override
-	public void onPipelineStarts() throws Exception {
-		super.onPipelineStarts();
+	public void onStart() {
 		this.initializeStream();
 	}
 
-	@Override
-	public void onPipelineStops() {
-		this.closeStream();
-		super.onPipelineStops();
-	}
+	// @Override // TODO implement onStop
+	// public void onPipelineStops() {
+	// this.closeStream();
+	// super.onPipelineStops();
+	// }
 
 	private void initializeStream() {
 		if (STREAM_STDOUT.equals(this.streamName)) {
@@ -115,30 +127,6 @@ public class Printer<T> extends AbstractFilter<Printer<T>> {
 		if ((this.printStream != null) && (this.printStream != System.out) && (this.printStream != System.err)) {
 			this.printStream.close();
 		}
-	}
-
-	@Override
-	protected boolean execute(final Context<Printer<T>> context) {
-		final T object = context.tryTake(this.input);
-		if (null == object) {
-			return false;
-		}
-
-		if (this.active) {
-			final StringBuilder sb = new StringBuilder(128);
-
-			sb.append(super.getId());
-			sb.append('(').append(object.getClass().getSimpleName()).append(") ").append(object.toString());
-
-			final String msg = sb.toString();
-			if (this.printStream != null) {
-				this.printStream.println(msg);
-			} else {
-				super.logger.info(msg);
-			}
-		}
-
-		return true;
 	}
 
 }
