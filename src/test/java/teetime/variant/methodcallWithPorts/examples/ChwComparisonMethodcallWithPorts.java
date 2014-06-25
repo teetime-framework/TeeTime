@@ -34,7 +34,7 @@ import test.PerformanceTest;
 	MethodCallThoughputTimestampAnalysis17Test.class,
 	MethodCallThoughputTimestampAnalysis19Test.class,
 })
-public class AllTests {
+public class ChwComparisonMethodcallWithPorts {
 
 	private static final double RESULT_TESTS_16 = 30;
 	private static final double RESULT_TESTS_19 = 70;

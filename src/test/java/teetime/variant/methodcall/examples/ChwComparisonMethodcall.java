@@ -36,7 +36,7 @@ import test.PerformanceTest;
 	MethodCallThoughputTimestampAnalysis12Test.class,
 	MethodCallThoughputTimestampAnalysis13Test.class,
 })
-public class AllTests {
+public class ChwComparisonMethodcall {
 
 	@AfterClass
 	public static void doYourOneTimeTeardown() {
