@@ -15,32 +15,30 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.examples.recordReader;
 
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Before;
 import org.junit.Test;
 
-import teetime.util.ConstructorClosure;
-import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-import test.PerformanceTest;
+import teetime.util.StopWatch;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class RecordReaderAnalysisTest extends PerformanceTest {
+public class RecordReaderAnalysisTest {
+
+	private StopWatch stopWatch;
+
+	@Before
+	public void before() {
+		this.stopWatch = new StopWatch();
+	}
 
 	@Test
-	public void performAnalysis(final int numThreads) {
-		System.out.println("Testing teetime (mc) with NUM_OBJECTS_TO_CREATE=" + NUM_OBJECTS_TO_CREATE + ", NUM_NOOP_FILTERS="
-				+ NUM_NOOP_FILTERS + "...");
-
+	public void performAnalysis() {
 		final RecordReaderAnalysis analysis = new RecordReaderAnalysis();
-		analysis.setNumNoopFilters(NUM_NOOP_FILTERS);
-		analysis.setInput(NUM_OBJECTS_TO_CREATE, new ConstructorClosure<TimestampObject>() {
-			@Override
-			public TimestampObject create() {
-				return new TimestampObject();
-			}
-		});
 		analysis.init();
 
 		this.stopWatch.start();
@@ -51,7 +49,8 @@ public class RecordReaderAnalysisTest extends PerformanceTest {
 			analysis.onTerminate();
 		}
 
-		// this.timestampObjects = analysis.getTimestampObjectsList();
+		long overallDurationInNs = this.stopWatch.getDurationInNs();
+		System.out.println("Duration: " + TimeUnit.NANOSECONDS.toMillis(overallDurationInNs) + " ms");
 	}
 
 }

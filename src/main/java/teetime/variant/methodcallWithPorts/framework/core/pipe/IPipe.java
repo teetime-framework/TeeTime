@@ -1,5 +1,7 @@
 package teetime.variant.methodcallWithPorts.framework.core.pipe;
 
+import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
+
 public interface IPipe<T> {
 
 	public abstract void add(T element);
@@ -15,5 +17,7 @@ public interface IPipe<T> {
 	public abstract void close();
 
 	public abstract boolean isClosed();
+
+	public abstract StageWithPort<T, ?> getTargetStage();
 
 }

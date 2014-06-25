@@ -25,8 +25,6 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
 	private int index;
 
-	private StageWithPort<?, ?> successor;
-
 	private boolean reschedulable;
 
 	public AbstractStage() {
@@ -70,18 +68,6 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 		return null;
 	}
 
-	// @Override
-	// public void executeWithPorts() {
-	// CommittableQueue execute;
-	// do {
-	// // execute = this.next().execute2(this.outputElements);
-	// // execute = this.next().execute2(this.getOutputPort().pipe.getElements());
-	// this.next().executeWithPorts();
-	// } while (this.next().isReschedulable());
-	// }
-
-	// protected abstract void execute4(CommittableQueue<I> elements);
-
 	protected void execute4(final CommittableQueue<I> elements) {
 		throw new IllegalStateException(); // default implementation
 	}
@@ -89,22 +75,18 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	protected abstract void execute5(I element);
 
 	protected final void send(final O element) {
-		// this.outputElements.addToTailUncommitted(element);
-		// this.outputElements.commit();
+		this.send(this.getOutputPort(), element);
+	}
 
-		this.getOutputPort().send(element);
+	protected final void send(final OutputPort<O> outputPort, final O element) {
+		outputPort.send(element);
 
-		// CommittableQueue execute;
+		StageWithPort<O, ?> next = outputPort.getPipe().getTargetStage();
 
-		StageWithPort<?, ?> next = this.next();
+		// StageWithPort<?, ?> next = this.next();
 		do {
-			// execute = this.next().execute2(this.outputElements);
-			// execute = this.next().execute2(this.getOutputPort().pipe.getElements());
 			next.executeWithPorts();
-			// System.out.println("Executed " + this.next().getClass().getSimpleName());
 		} while (next.isReschedulable());
-		// } while (this.next().getInputPort().pipe.size() > 0);
-		// } while (execute.size() > 0);
 	}
 
 	// @Override
@@ -137,16 +119,6 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	public void setParentStage(final StageWithPort<?, ?> parentStage, final int index) {
 		this.index = index;
 		this.parentStage = parentStage;
-	}
-
-	@Override
-	public StageWithPort<?, ?> next() {
-		return this.successor;
-	}
-
-	@Override
-	public void setSuccessor(final StageWithPort<? super O, ?> successor) {
-		this.successor = successor;
 	}
 
 	@Override

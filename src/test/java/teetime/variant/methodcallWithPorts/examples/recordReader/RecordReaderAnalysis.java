@@ -19,12 +19,11 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.util.ConstructorClosure;
-import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.kieker.File2RecordFilter;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
@@ -38,11 +37,7 @@ import kieker.common.record.IMonitoringRecord;
  */
 public class RecordReaderAnalysis extends Analysis {
 
-	private int numInputObjects;
-	private ConstructorClosure<TimestampObject> inputObjectCreator;
-	private int numNoopFilters;
-
-	private final List<IMonitoringRecord> timestampObjectsList = new LinkedList<IMonitoringRecord>();
+	private final List<IMonitoringRecord> elementCollection = new LinkedList<IMonitoringRecord>();
 
 	private Thread producerThread;
 
@@ -51,21 +46,25 @@ public class RecordReaderAnalysis extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		Pipeline<File, Object> producerPipeline = this.buildProducerPipeline(this.numInputObjects, this.inputObjectCreator);
+		Pipeline<File, Object> producerPipeline = this.buildProducerPipeline();
 		this.producerThread = new Thread(new RunnableStage(producerPipeline));
 	}
 
-	private Pipeline<File, Object> buildProducerPipeline(final int numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
+	private Pipeline<File, Object> buildProducerPipeline() {
 		this.classNameRegistryRepository = new ClassNameRegistryRepository();
 		// create stages
 		File2RecordFilter file2RecordFilter = new File2RecordFilter(this.classNameRegistryRepository);
-		CollectorSink<IMonitoringRecord> collector = new CollectorSink<IMonitoringRecord>(this.timestampObjectsList);
+		CollectorSink<IMonitoringRecord> collector = new CollectorSink<IMonitoringRecord>(this.elementCollection);
 
 		final Pipeline<File, Object> pipeline = new Pipeline<File, Object>();
 		pipeline.setFirstStage(file2RecordFilter);
 		pipeline.setLastStage(collector);
 
 		SingleElementPipe.connect(file2RecordFilter.getOutputPort(), collector.getInputPort());
+
+		SpScPipe<File> dirInputPipe = new SpScPipe<File>(1);
+		dirInputPipe.add(new File("src/test/data/bookstore-logs"));
+		file2RecordFilter.getInputPort().setPipe(dirInputPipe);
 
 		return pipeline;
 	}
@@ -83,21 +82,8 @@ public class RecordReaderAnalysis extends Analysis {
 		}
 	}
 
-	public void setInput(final int numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
-		this.numInputObjects = numInputObjects;
-		this.inputObjectCreator = inputObjectCreator;
-	}
-
-	public int getNumNoopFilters() {
-		return this.numNoopFilters;
-	}
-
-	public void setNumNoopFilters(final int numNoopFilters) {
-		this.numNoopFilters = numNoopFilters;
-	}
-
-	public List<IMonitoringRecord> getTimestampObjectsList() {
-		return this.timestampObjectsList;
+	public List<IMonitoringRecord> getElementCollection() {
+		return this.elementCollection;
 	}
 
 }

@@ -3,15 +3,26 @@ package teetime.variant.methodcallWithPorts.framework.core;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import teetime.util.list.CommittableQueue;
-import teetime.variant.methodcallWithPorts.stage.EndStage;
+
+import kieker.common.logging.Log;
+import kieker.common.logging.LogFactory;
 
 public class Pipeline<I, O> implements StageWithPort<I, O> {
+
+	private final String id;
+	/**
+	 * A unique logger instance per stage instance
+	 */
+	protected Log logger;
 
 	private StageWithPort<I, ?> firstStage;
 	private final List<StageWithPort<?, ?>> intermediateStages = new LinkedList<StageWithPort<?, ?>>();
 	private StageWithPort<?, O> lastStage;
+
+	private StageWithPort<?, ?> successor;
 
 	private StageWithPort<?, ?>[] stages;
 	private StageWithPort<?, ?> parentStage;
@@ -20,6 +31,15 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	private boolean reschedulable;
 	private int firstStageIndex;
+
+	public Pipeline() {
+		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
+		this.logger = LogFactory.getLog(this.id);
+	}
+
+	public String getId() {
+		return this.id;
+	}
 
 	public void setFirstStage(final StageWithPort<I, ?> stage) {
 		this.firstStage = stage;
@@ -60,6 +80,7 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	@Override
 	public void executeWithPorts() {
+		this.logger.debug("Executing stage...");
 		StageWithPort<?, ?> firstStage = this.stages[this.firstStageIndex];
 		firstStage.executeWithPorts();
 
@@ -71,7 +92,8 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 		StageWithPort<?, ?> currentStage = stage;
 		while (!currentStage.isReschedulable()) {
 			this.firstStageIndex++;
-			currentStage = currentStage.next();
+			// currentStage = currentStage.getOutputPort().getPipe().getTargetStage(); // FIXME what to do with a stage with more than one output port?
+			currentStage = this.stages[this.firstStageIndex];
 			if (currentStage == null) { // loop reaches the last stage
 				this.setReschedulable(false);
 				this.cleanUp();
@@ -120,17 +142,17 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 		}
 		this.stages[this.stages.length - 1] = this.lastStage;
 
-		for (int i = 0; i < this.stages.length; i++) {
-			// StageWithPort<?, ?> stage = this.stages[i];
-			// stage.setParentStage(this, i);
-			// stage.setListener(this);
-		}
+		// for (int i = 0; i < this.stages.length; i++) {
+		// StageWithPort<?, ?> stage = this.stages[i];
+		// stage.setParentStage(this, i);
+		// stage.setListener(this);
+		// }
 
-		for (int i = 0; i < this.stages.length - 1; i++) {
-			StageWithPort stage = this.stages[i];
-			stage.setSuccessor(this.stages[i + 1]);
-		}
-		this.stages[this.stages.length - 1].setSuccessor(new EndStage<Object>());
+		// for (int i = 0; i < this.stages.length - 1; i++) {
+		// StageWithPort stage = this.stages[i];
+		// stage.setSuccessor(this.stages[i + 1]);
+		// }
+		// this.stages[this.stages.length - 1].setSuccessor(new EndStage<Object>());
 
 		for (StageWithPort<?, ?> stage : this.stages) {
 			stage.onStart();
@@ -146,16 +168,6 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 	public void setParentStage(final StageWithPort<?, ?> parentStage, final int index) {
 		this.index = index;
 		this.parentStage = parentStage;
-	}
-
-	@Override
-	public StageWithPort<?, ?> next() {
-		throw new IllegalStateException();
-	}
-
-	@Override
-	public void setSuccessor(final StageWithPort<? super O, ?> successor) {
-		throw new IllegalStateException();
 	}
 
 	@Override
@@ -183,7 +195,7 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 			StageWithPort<?, ?> stage = this.stages[i];
 			stage.setParentStage(null, i);
 			// stage.setListener(null);
-			stage.setSuccessor(null);
+			// stage.setSuccessor(null);
 		}
 
 		this.firstStage = null;

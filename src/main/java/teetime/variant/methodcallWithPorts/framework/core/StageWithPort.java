@@ -10,25 +10,13 @@ public interface StageWithPort<I, O> {
 
 	void executeWithPorts();
 
-	// void executeWithPorts(Object element);
-
-	// O execute(Object element);
-
-	// CommittableQueue<O> execute2();
-
 	CommittableQueue<O> execute2(CommittableQueue<I> elements);
-
-	// SchedulingInformation getSchedulingInformation();
 
 	StageWithPort<?, ?> getParentStage();
 
 	void setParentStage(StageWithPort<?, ?> parentStage, int index);
 
 	// void setListener(OnDisableListener listener);
-
-	StageWithPort<?, ?> next();
-
-	void setSuccessor(StageWithPort<? super O, ?> successor);
 
 	boolean isReschedulable();
 

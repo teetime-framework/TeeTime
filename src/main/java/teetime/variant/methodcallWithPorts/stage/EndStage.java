@@ -27,25 +27,13 @@ public class EndStage<T> implements StageWithPort<T, T> {
 	}
 
 	@Override
-	public StageWithPort getParentStage() {
+	public StageWithPort<?, ?> getParentStage() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setParentStage(final StageWithPort parentStage, final int index) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public StageWithPort next() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setSuccessor(final StageWithPort<? super T, ?> successor) {
+	public void setParentStage(final StageWithPort<?, ?> parentStage, final int index) {
 		// TODO Auto-generated method stub
 
 	}
