@@ -70,7 +70,7 @@ public class StatisticsUtil {
 
 		performanceResult.avgDurInNs = avgDurInNs;
 
-		printQuintiles(quintileValues);
+		System.out.println(getQuantilesString(quintileValues));
 
 		final long confidenceWidthInNs = StatisticsUtil.calculateConfidenceWidth(sortedDurationsInNs, avgDurInNs);
 
@@ -83,10 +83,14 @@ public class StatisticsUtil {
 		return performanceResult;
 	}
 
-	public static void printQuintiles(final Map<Double, Long> quintileValues) {
-		for (final Entry<Double, Long> entry : quintileValues.entrySet()) {
-			System.out.println((entry.getKey() * 100) + " % : " + TimeUnit.NANOSECONDS.toNanos(entry.getValue()) + " ns");
+	public static String getQuantilesString(final Map<Double, Long> quantilesValues) {
+		StringBuilder builder = new StringBuilder();
+		for (final Entry<Double, Long> entry : quantilesValues.entrySet()) {
+			String quantile = (entry.getKey() * 100) + " % : " + TimeUnit.NANOSECONDS.toNanos(entry.getValue()) + " ns";
+			builder.append(quantile);
+			builder.append("\n");
 		}
+		return builder.toString();
 	}
 
 	public static long calculateConfidenceWidth(final List<Long> durations, final long avgDurInNs) {

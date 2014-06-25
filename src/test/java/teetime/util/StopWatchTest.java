@@ -24,7 +24,7 @@ public class StopWatchTest {
 		}
 
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(durationsInNs);
-		StatisticsUtil.printQuintiles(quintiles);
+		StatisticsUtil.getQuantilesString(quintiles);
 	}
 
 	public static BigInteger fib(final BigInteger n) {

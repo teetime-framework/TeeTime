@@ -21,7 +21,7 @@ public abstract class PerformanceTest {
 	protected static final int NUM_OBJECTS_TO_CREATE = 100000;
 	protected static final int NUM_NOOP_FILTERS = 800;
 
-	private static MeasurementRepository measurementRepository = new MeasurementRepository();
+	public static final MeasurementRepository measurementRepository = new MeasurementRepository();
 
 	private Description description;
 

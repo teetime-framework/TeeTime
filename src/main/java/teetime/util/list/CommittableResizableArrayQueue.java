@@ -28,9 +28,9 @@ public class CommittableResizableArrayQueue<T> implements CommittableQueue<T> {
 
 	@Override
 	public void addToTailUncommitted(final T element) {
-		// if (this.lastFreeIndexUncommitted == this.capacity()) { // TODO uncomment
-		// this.grow();
-		// }
+		if (this.lastFreeIndexUncommitted == this.capacity()) {
+			this.grow();
+		}
 		this.put(this.lastFreeIndexUncommitted++, element);
 	}
 

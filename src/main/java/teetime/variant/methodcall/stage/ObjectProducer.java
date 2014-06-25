@@ -72,14 +72,15 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 
 	@Override
 	protected void execute4(final CommittableQueue<Void> elements) {
-		T newObject = null;
-		newObject = this.inputObjectCreator.create();
-		this.numInputObjects--;
-
 		if (this.numInputObjects == 0) {
 			this.setReschedulable(false);
 			// this.getOutputPort().pipe.close();
+			return;
 		}
+
+		T newObject = null;
+		newObject = this.inputObjectCreator.create();
+		this.numInputObjects--;
 
 		// System.out.println(this.getClass().getSimpleName() + ": sending " + this.numInputObjects);
 		this.send(newObject);

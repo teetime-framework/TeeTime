@@ -34,8 +34,7 @@ public class NoopFilter<T> extends ConsumerStage<T, T> {
 	@Override
 	protected void execute4(final CommittableQueue<T> elements) {
 		T element = elements.removeFromHead();
-		// this.send(element); // "send" calls the next stage and so on
-		throw new IllegalStateException();
+		this.send(element); // TODO ? "send" calls the next stage and so on
 	}
 
 }

@@ -28,9 +28,6 @@ import test.PerformanceTest;
  */
 public class MethodCallThoughputTimestampAnalysis2Test extends PerformanceTest {
 
-	// 500 times faster than our new framework
-	// TODO check why
-
 	@Test
 	public void testWithManyObjects() {
 		System.out.println("Testing teetime (mc) with NUM_OBJECTS_TO_CREATE=" + NUM_OBJECTS_TO_CREATE + ", NUM_NOOP_FILTERS="

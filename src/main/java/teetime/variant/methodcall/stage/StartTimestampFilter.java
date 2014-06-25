@@ -37,7 +37,6 @@ public class StartTimestampFilter extends ConsumerStage<TimestampObject, Timesta
 	protected void execute4(final CommittableQueue<TimestampObject> elements) {
 		TimestampObject element = elements.removeFromHead();
 		element.setStartTimestamp(System.nanoTime());
-		// this.send(element);
-		throw new IllegalStateException();
+		this.send(element);
 	}
 }

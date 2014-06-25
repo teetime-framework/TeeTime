@@ -46,12 +46,16 @@ public class Pipeline<I, O> implements Stage<I, O> {
 		// below is faster than above (probably because of the instantiation of a list iterator in each (!) execution)
 		CommittableQueue queue = elements;
 
-		// for (int i = this.startIndex; i < this.stages.length; i++) {
-		// Stage<?, ?> stage = this.stages[i];
-		// queue = stage.execute2(queue);
-		// }
+		for (int i = 0; i < this.stages.length; i++) {
+			Stage<?, ?> stage = this.stages[i];
+			queue = stage.execute2(queue);
+			if (queue.isEmpty()) {
+				break;
+			}
+		}
 
-		queue = this.firstStage.execute2(elements);
+		// queue = this.firstStage.execute2(elements);
+
 		this.setReschedulable(this.firstStage.isReschedulable());
 
 		return queue;

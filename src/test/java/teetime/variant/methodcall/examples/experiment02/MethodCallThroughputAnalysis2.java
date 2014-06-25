@@ -77,10 +77,8 @@ public class MethodCallThroughputAnalysis2 extends Analysis {
 			@Override
 			public void run() {
 				CommittableQueue<Void> inputQueue = new CommittableResizableArrayQueue<Void>(null, 0);
-				CommittableQueue<Object> outputQueue = new CommittableResizableArrayQueue<Object>(null, 0);
-
 				do {
-					outputQueue = pipeline.execute2(inputQueue);
+					pipeline.execute2(inputQueue);
 				} while (pipeline.isReschedulable());
 			}
 		};

@@ -36,6 +36,7 @@ public class CollectorSink<T> extends ConsumerStage<T, Object> {
 		this.elements = list;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object execute(final Object element) {
 		this.elements.add((T) element);
@@ -56,10 +57,6 @@ public class CollectorSink<T> extends ConsumerStage<T, Object> {
 		this.elements.add(element);
 		if ((this.elements.size() % THRESHOLD) == 0) {
 			System.out.println("size: " + this.elements.size());
-		}
-
-		if (this.elements.size() > 90000) {
-			// System.out.println("size > 90000: " + this.elements.size());
 		}
 	}
 
