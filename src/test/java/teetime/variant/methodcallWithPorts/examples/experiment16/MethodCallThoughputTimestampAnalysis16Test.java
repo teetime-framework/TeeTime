@@ -22,7 +22,6 @@ import org.junit.Test;
 import teetime.util.ConstructorClosure;
 import teetime.util.ListUtil;
 import teetime.util.StatisticsUtil;
-import teetime.util.StopWatch;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import test.PerformanceTest;
 
@@ -44,7 +43,6 @@ public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest 
 	private long performAnalysis(final int numThreads, final long durationWith1Thread) {
 		System.out.println("Testing teetime (mc) with NUM_OBJECTS_TO_CREATE=" + NUM_OBJECTS_TO_CREATE + ", NUM_NOOP_FILTERS="
 				+ NUM_NOOP_FILTERS + "...");
-		final StopWatch stopWatch = new StopWatch();
 
 		final MethodCallThroughputAnalysis16 analysis = new MethodCallThroughputAnalysis16();
 		analysis.setNumWorkerThreads(numThreads);
@@ -57,23 +55,25 @@ public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest 
 		});
 		analysis.init();
 
-		stopWatch.start();
+		this.stopWatch.start();
 		try {
 			analysis.start();
 		} finally {
-			stopWatch.end();
+			this.stopWatch.end();
 			analysis.onTerminate();
 		}
 
+		// TODO refactor test
+
 		List<TimestampObject> timestampObjects = ListUtil.merge(analysis.getTimestampObjectsList());
-		StatisticsUtil.printStatistics(stopWatch.getDurationInNs(), timestampObjects);
+		StatisticsUtil.printStatistics(this.stopWatch.getDurationInNs(), timestampObjects);
 
 		if (durationWith1Thread != -1) {
-			double speedup = (double) durationWith1Thread / stopWatch.getDurationInNs();
+			double speedup = (double) durationWith1Thread / this.stopWatch.getDurationInNs();
 			System.out.println("Speedup (from 1 to " + numThreads + " threads): " + String.format("%.2f", speedup));
 		}
 
-		return stopWatch.getDurationInNs();
+		return this.stopWatch.getDurationInNs();
 	}
 
 	public static void main(final String[] args) {

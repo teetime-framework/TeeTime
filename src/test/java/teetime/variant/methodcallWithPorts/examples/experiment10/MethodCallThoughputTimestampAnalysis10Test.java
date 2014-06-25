@@ -15,14 +15,9 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.examples.experiment10;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 
 import teetime.util.ConstructorClosure;
-import teetime.util.StatisticsUtil;
-import teetime.util.StopWatch;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import test.PerformanceTest;
 
@@ -37,12 +32,10 @@ public class MethodCallThoughputTimestampAnalysis10Test extends PerformanceTest 
 	public void testWithManyObjects() {
 		System.out.println("Testing teetime (mc) with NUM_OBJECTS_TO_CREATE=" + NUM_OBJECTS_TO_CREATE + ", NUM_NOOP_FILTERS="
 				+ NUM_NOOP_FILTERS + "...");
-		final StopWatch stopWatch = new StopWatch();
-		final List<TimestampObject> timestampObjects = new ArrayList<TimestampObject>(NUM_OBJECTS_TO_CREATE);
 
 		final MethodCallThroughputAnalysis10 analysis = new MethodCallThroughputAnalysis10();
 		analysis.setNumNoopFilters(NUM_NOOP_FILTERS);
-		analysis.setTimestampObjects(timestampObjects);
+		analysis.setTimestampObjects(this.timestampObjects);
 		analysis.setInput(NUM_OBJECTS_TO_CREATE, new ConstructorClosure<TimestampObject>() {
 			@Override
 			public TimestampObject create() {
@@ -51,14 +44,12 @@ public class MethodCallThoughputTimestampAnalysis10Test extends PerformanceTest 
 		});
 		analysis.init();
 
-		stopWatch.start();
+		this.stopWatch.start();
 		try {
 			analysis.start();
 		} finally {
-			stopWatch.end();
+			this.stopWatch.end();
 		}
-
-		StatisticsUtil.printStatistics(stopWatch.getDurationInNs(), timestampObjects);
 	}
 
 }

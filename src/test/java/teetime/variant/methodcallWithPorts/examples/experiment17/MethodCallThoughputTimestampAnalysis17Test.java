@@ -22,7 +22,6 @@ import org.junit.Test;
 import teetime.util.ConstructorClosure;
 import teetime.util.ListUtil;
 import teetime.util.StatisticsUtil;
-import teetime.util.StopWatch;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import test.PerformanceTest;
 
@@ -37,7 +36,6 @@ public class MethodCallThoughputTimestampAnalysis17Test extends PerformanceTest 
 	public void testWithManyObjects() {
 		System.out.println("Testing teetime (mc) with NUM_OBJECTS_TO_CREATE=" + NUM_OBJECTS_TO_CREATE + ", NUM_NOOP_FILTERS="
 				+ NUM_NOOP_FILTERS + "...");
-		final StopWatch stopWatch = new StopWatch();
 
 		// int count = 10;
 		// while (count-- > 0) {
@@ -52,16 +50,18 @@ public class MethodCallThoughputTimestampAnalysis17Test extends PerformanceTest 
 		analysis.init();
 
 		System.out.println("starting");
-		stopWatch.start();
+		this.stopWatch.start();
 		try {
 			analysis.start();
 		} finally {
-			stopWatch.end();
+			this.stopWatch.end();
 			analysis.onTerminate();
 		}
 
+		// TODO refactor test
+
 		List<TimestampObject> timestampObjects = ListUtil.merge(analysis.getTimestampObjectsList());
-		StatisticsUtil.printStatistics(stopWatch.getDurationInNs(), timestampObjects);
+		StatisticsUtil.printStatistics(this.stopWatch.getDurationInNs(), timestampObjects);
 		// }
 	}
 }
