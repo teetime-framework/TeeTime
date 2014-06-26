@@ -1,0 +1,4 @@
+-a pipeline needs to be a stage, too, to allow the composition of stages
+-instead of using work-stealing, sort the input in desc order to process the most computationally intensive elements first (load-balancing)
+-for a novice programmer, it is difficult to select the best choice and combination of patterns to maximize performance
+-

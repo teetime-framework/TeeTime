@@ -1,0 +1,20 @@
+[conditional stages]
+-switch (more general than if)
+
+[split and join stages]
+-distributor
+	-necessary to distribute tasks to multiple threads
+-merge
+	-necessary to merge multiple tcp input streams to a single one
+
+[trigger-based stages]
+-aggregation
+	-necessary for trace aggregation
+-cache
+	-necessary to measure performance without being influenced by I/O delay
+
+[stages with internal states]
+-counting
+	-necessary to measure the throughput with multiple threads
+
+[]
