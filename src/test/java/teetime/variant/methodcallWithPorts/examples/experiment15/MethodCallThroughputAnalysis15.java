@@ -40,6 +40,7 @@ import teetime.variant.methodcallWithPorts.stage.StopTimestampFilter;
  * @since 1.10
  */
 public class MethodCallThroughputAnalysis15 extends Analysis {
+	// FIXME this analysis sometimes runs infinitely
 
 	private static final int SPSC_INITIAL_CAPACITY = 4;
 

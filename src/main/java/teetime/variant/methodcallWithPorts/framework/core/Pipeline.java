@@ -31,6 +31,8 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 	private boolean reschedulable;
 	private int firstStageIndex;
 
+	// private final Set<StageWithPort<?, ?>> currentHeads = new HashSet<StageWithPort<?, ?>>();
+
 	public Pipeline() {
 		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
 		this.logger = LogFactory.getLog(this.id);
@@ -80,16 +82,23 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 	@Override
 	public void executeWithPorts() {
 		this.logger.debug("Executing stage...");
-		StageWithPort<?, ?> firstStage = this.stages[this.firstStageIndex];
-		firstStage.executeWithPorts();
 
-		this.updateRescheduable(firstStage);
-		// this.setReschedulable(stage.isReschedulable());
+		// StageWithPort<?, ?> headStage = this.currentHeads.next();
+		StageWithPort<?, ?> headStage = this.stages[this.firstStageIndex];
+
+		do {
+			headStage.executeWithPorts();
+		} while (headStage.isReschedulable());
+
+		this.updateRescheduable(headStage);
 	}
 
 	private final void updateRescheduable(final StageWithPort<?, ?> stage) {
 		StageWithPort<?, ?> currentStage = stage;
 		while (!currentStage.isReschedulable()) {
+			// this.currentHeads.remove(currentStage);
+			// this.currentHeads.addAll(currentStage.getOutputPorts());
+
 			this.firstStageIndex++;
 			// currentStage = currentStage.getOutputPort().getPipe().getTargetStage(); // FIXME what to do with a stage with more than one output port?
 			// if (currentStage == null) { // loop reaches the last stage
@@ -100,7 +109,6 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 			}
 			currentStage = this.stages[this.firstStageIndex];
 			currentStage.onIsPipelineHead();
-			// System.out.println("firstStageIndex: " + this.firstStageIndex + ", class:" + stage.getClass().getSimpleName());
 		}
 		this.setReschedulable(true);
 	}
