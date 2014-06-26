@@ -22,6 +22,8 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 	private final List<StageWithPort<?, ?>> intermediateStages = new LinkedList<StageWithPort<?, ?>>();
 	private StageWithPort<?, O> lastStage;
 
+	// BETTER remove the stage array and use the output ports instead for passing a signal to all stages in the same thread; what about multiple same signals due to
+	// multiple input ports?
 	private StageWithPort<?, ?>[] stages;
 	private StageWithPort<?, ?> parentStage;
 	// private int startIndex;

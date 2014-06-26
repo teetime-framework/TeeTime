@@ -22,8 +22,9 @@ import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.OrderedGrowableArrayPipe;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.UnorderedGrowablePipe;
 import teetime.variant.methodcallWithPorts.stage.Clock;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.Delay;
@@ -99,15 +100,15 @@ public class MethodCallThroughputAnalysis15 extends Analysis {
 
 		SpScPipe.connect(clock.getOutputPort(), delay.getTimestampTriggerInputPort(), SPSC_INITIAL_CAPACITY);
 
-		UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
-		UnorderedGrowablePipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
+		SingleElementPipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
+		SingleElementPipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
 		for (int i = 0; i < noopFilters.length - 1; i++) {
-			UnorderedGrowablePipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
+			SingleElementPipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
 		}
-		UnorderedGrowablePipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
-		UnorderedGrowablePipe.connect(stopTimestampFilter.getOutputPort(), delay.getInputPort());
+		SingleElementPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
+		OrderedGrowableArrayPipe.connect(stopTimestampFilter.getOutputPort(), delay.getInputPort());
 
-		UnorderedGrowablePipe.connect(delay.getOutputPort(), collectorSink.getInputPort());
+		SingleElementPipe.connect(delay.getOutputPort(), collectorSink.getInputPort());
 
 		return new RunnableStage(pipeline);
 	}

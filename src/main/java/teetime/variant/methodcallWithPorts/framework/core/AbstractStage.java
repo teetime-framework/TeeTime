@@ -22,6 +22,11 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
 	private boolean reschedulable;
 
+	/**
+	 * cached successor for default output port
+	 */
+	private StageWithPort<?, ?> next;
+
 	public AbstractStage() {
 		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
 		this.logger = LogFactory.getLog(this.getClass().getName() + "(" + this.id + ")");
@@ -81,7 +86,8 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	protected final void send(final OutputPort<O> outputPort, final O element) {
 		outputPort.send(element);
 
-		StageWithPort<?, ?> next = outputPort.getPipe().getTargetPort().getOwningStage();
+		// StageWithPort<?, ?> next = outputPort.getPipe().getTargetPort().getOwningStage();
+		StageWithPort<?, ?> next = outputPort.getCachedTargetStage();
 
 		do {
 			next.executeWithPorts();
@@ -102,6 +108,7 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	@Override
 	public void onStart() {
 		// empty default implementation
+		this.next = (this.outputPort.getPipe() != null) ? this.outputPort.getPipe().getTargetPort().getOwningStage() : null;
 	}
 
 	@Override

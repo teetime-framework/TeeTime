@@ -46,6 +46,7 @@ public class UnorderedGrowablePipe<T> extends AbstractPipe<T> {
 		IPipe<T> pipe = new UnorderedGrowablePipe<T>();
 		sourcePort.setPipe(pipe);
 		targetPort.setPipe(pipe);
+		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
 	}
 
 	@Override

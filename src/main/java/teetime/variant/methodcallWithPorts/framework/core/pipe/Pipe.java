@@ -12,6 +12,7 @@ public class Pipe<T> extends AbstractPipe<T> {
 		IPipe<T> pipe = new Pipe<T>();
 		sourcePort.setPipe(pipe);
 		targetPort.setPipe(pipe);
+		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
 	}
 
 	/*

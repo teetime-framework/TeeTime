@@ -26,6 +26,11 @@ public class InputPort<T> {
 		return this.pipe;
 	}
 
+	/**
+	 * Connects this input port with the given <code>pipe</code> bi-directionally
+	 * 
+	 * @param pipe
+	 */
 	public void setPipe(final IPipe<T> pipe) {
 		this.pipe = pipe;
 		pipe.setTargetPort(this);

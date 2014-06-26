@@ -22,6 +22,7 @@ public class OrderedGrowableArrayPipe<T> extends AbstractPipe<T> {
 		IPipe<T> pipe = new OrderedGrowableArrayPipe<T>();
 		sourcePort.setPipe(pipe);
 		targetPort.setPipe(pipe);
+		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
 	}
 
 	@Override

@@ -12,6 +12,7 @@ public class SingleElementPipe<T> extends AbstractPipe<T> {
 		IPipe<T> pipe = new SingleElementPipe<T>();
 		sourcePort.setPipe(pipe);
 		targetPort.setPipe(pipe);
+		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
 	}
 
 	@Override
