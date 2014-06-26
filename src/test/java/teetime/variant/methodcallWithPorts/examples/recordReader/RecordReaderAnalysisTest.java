@@ -25,6 +25,10 @@ import org.junit.Test;
 
 import teetime.util.StopWatch;
 
+import kieker.common.record.IMonitoringRecord;
+import kieker.common.record.controlflow.OperationExecutionRecord;
+import kieker.common.record.misc.KiekerMetadataRecord;
+
 /**
  * @author Christian Wulf
  * 
@@ -59,6 +63,22 @@ public class RecordReaderAnalysisTest {
 		}
 
 		assertEquals(6541, analysis.getElementCollection().size());
+
+		KiekerMetadataRecord metadataRecord = (KiekerMetadataRecord) analysis.getElementCollection().get(0);
+		assertEquals("1.9-SNAPSHOT", metadataRecord.getVersion());
+		assertEquals("NANOSECONDS", metadataRecord.getTimeUnit());
+
+		IMonitoringRecord monitoringRecord = analysis.getElementCollection().get(1);
+		OperationExecutionRecord oer = (OperationExecutionRecord) monitoringRecord;
+		assertEquals("bookstoreTracing.Catalog.getBook(boolean)", oer.getOperationSignature());
+		assertEquals(1283156498771185344l, oer.getTin());
+		assertEquals(1283156498773323582l, oer.getTout());
+
+		monitoringRecord = analysis.getElementCollection().get(analysis.getElementCollection().size() - 1);
+		oer = (OperationExecutionRecord) monitoringRecord;
+		assertEquals("bookstoreTracing.Bookstore.searchBook()", oer.getOperationSignature());
+		assertEquals(1283156499331233504l, oer.getTin());
+		assertEquals(1283156499363031606l, oer.getTout());
 	}
 
 }
