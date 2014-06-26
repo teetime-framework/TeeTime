@@ -8,15 +8,17 @@ public class SpScPipe<T> extends AbstractPipe<T> {
 
 	private final FFBufferOrdered3<T> queue;
 
-	public SpScPipe(final int initialCapacity) {
+	private SpScPipe(final int initialCapacity) {
 		this.queue = new FFBufferOrdered3<T>(initialCapacity);
 	}
 
 	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort, final int initialCapacity) {
 		IPipe<T> pipe = new SpScPipe<T>(initialCapacity);
-		sourcePort.setPipe(pipe);
 		targetPort.setPipe(pipe);
-		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
+		if (sourcePort != null) {
+			sourcePort.setPipe(pipe);
+			sourcePort.setCachedTargetStage(targetPort.getOwningStage());
+		}
 	}
 
 	@Override

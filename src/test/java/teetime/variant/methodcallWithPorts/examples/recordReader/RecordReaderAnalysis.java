@@ -25,7 +25,7 @@ import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
-import teetime.variant.methodcallWithPorts.stage.kieker.Dir2RecordFilter;
+import teetime.variant.methodcallWithPorts.stage.kieker.Dir2RecordsFilter;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
 
 import kieker.common.record.IMonitoringRecord;
@@ -53,7 +53,7 @@ public class RecordReaderAnalysis extends Analysis {
 	private Pipeline<File, Object> buildProducerPipeline() {
 		this.classNameRegistryRepository = new ClassNameRegistryRepository();
 		// create stages
-		Dir2RecordFilter file2RecordFilter = new Dir2RecordFilter(this.classNameRegistryRepository);
+		Dir2RecordsFilter file2RecordFilter = new Dir2RecordsFilter(this.classNameRegistryRepository);
 		CollectorSink<IMonitoringRecord> collector = new CollectorSink<IMonitoringRecord>(this.elementCollection);
 
 		final Pipeline<File, Object> pipeline = new Pipeline<File, Object>();
@@ -62,9 +62,8 @@ public class RecordReaderAnalysis extends Analysis {
 
 		SingleElementPipe.connect(file2RecordFilter.getOutputPort(), collector.getInputPort());
 
-		SpScPipe<File> dirInputPipe = new SpScPipe<File>(1);
-		dirInputPipe.add(new File("src/test/data/bookstore-logs"));
-		file2RecordFilter.getInputPort().setPipe(dirInputPipe);
+		SpScPipe.connect(null, file2RecordFilter.getInputPort(), 1);
+		file2RecordFilter.getInputPort().getPipe().add(new File("src/test/data/bookstore-logs"));
 
 		return pipeline;
 	}

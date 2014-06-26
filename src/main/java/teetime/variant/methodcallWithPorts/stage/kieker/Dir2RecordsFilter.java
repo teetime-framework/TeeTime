@@ -38,14 +38,14 @@ import kieker.common.util.filesystem.FSUtil;
  * 
  * @since 1.10
  */
-public class Dir2RecordFilter extends Pipeline<File, IMonitoringRecord> {
+public class Dir2RecordsFilter extends Pipeline<File, IMonitoringRecord> {
 
 	private ClassNameRegistryRepository classNameRegistryRepository;
 
 	/**
 	 * @since 1.10
 	 */
-	public Dir2RecordFilter(final ClassNameRegistryRepository classNameRegistryRepository) {
+	public Dir2RecordsFilter(final ClassNameRegistryRepository classNameRegistryRepository) {
 		this.classNameRegistryRepository = classNameRegistryRepository;
 
 		// FIXME does not yet work with more than one thread due to classNameRegistryRepository: classNameRegistryRepository is set after the ctor
@@ -91,7 +91,7 @@ public class Dir2RecordFilter extends Pipeline<File, IMonitoringRecord> {
 	/**
 	 * @since 1.10
 	 */
-	public Dir2RecordFilter() {
+	public Dir2RecordsFilter() {
 		this(null);
 	}
 

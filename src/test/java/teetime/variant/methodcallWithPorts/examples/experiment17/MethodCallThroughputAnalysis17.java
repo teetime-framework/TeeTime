@@ -154,18 +154,12 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		pipeline.addIntermediateStage(stopTimestampFilter);
 		pipeline.setLastStage(collectorSink);
 
-		IPipe<TimestampObject> startPipe = new SpScPipe<TimestampObject>(SPSC_INITIAL_CAPACITY);
-		try {
-			for (int i = 0; i < this.numInputObjects; i++) {
-				startPipe.add(this.inputObjectCreator.create());
-			}
-			startPipe.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		SpScPipe.connect(null, relay.getInputPort(), SPSC_INITIAL_CAPACITY);
+		IPipe<TimestampObject> startPipe = relay.getInputPort().getPipe();
+		for (int i = 0; i < this.numInputObjects; i++) {
+			startPipe.add(this.inputObjectCreator.create());
 		}
-		relay.getInputPort().setPipe(startPipe);
-		// previousStage.getOutputPort().pipe = startPipe;
+		startPipe.close();
 
 		UnorderedGrowablePipe.connect(relay.getOutputPort(), startTimestampFilter.getInputPort());
 
