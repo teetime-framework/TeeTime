@@ -13,7 +13,7 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	/**
 	 * A unique logger instance per stage instance
 	 */
-	protected Log logger;
+	protected final Log logger; // BETTER use SLF4J as interface and logback as impl
 
 	private final InputPort<I> inputPort = new InputPort<I>(this);
 	private final OutputPort<O> outputPort = new OutputPort<O>();
@@ -21,11 +21,6 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	private StageWithPort<?, ?> parentStage;
 
 	private boolean reschedulable;
-
-	/**
-	 * cached successor for default output port
-	 */
-	private StageWithPort<?, ?> next;
 
 	public AbstractStage() {
 		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
@@ -90,7 +85,7 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 		StageWithPort<?, ?> next = outputPort.getCachedTargetStage();
 
 		do {
-			next.executeWithPorts();
+			next.executeWithPorts(); // PERFORMANCE use the return value as indicator for re-schedulability instead
 		} while (next.isReschedulable());
 	}
 
@@ -108,7 +103,6 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	@Override
 	public void onStart() {
 		// empty default implementation
-		this.next = (this.outputPort.getPipe() != null) ? this.outputPort.getPipe().getTargetPort().getOwningStage() : null;
 	}
 
 	@Override

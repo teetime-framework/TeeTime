@@ -112,27 +112,6 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	@Override
 	public void onStart() {
-		// Pipe pipe = new Pipe();
-		// this.outputPort.pipe = pipe;
-		// this.firstStage.getInputPort().pipe = pipe;
-
-		// Pipe pipe = new Pipe();
-		// this.firstStage.getOutputPort().pipe = pipe;
-		// this.intermediateStages.get(0).getInputPort().pipe = pipe;
-		//
-		// for (int i = 0; i < this.intermediateStages.size() - 1; i++) {
-		// Stage left = this.intermediateStages.get(i);
-		// Stage right = this.intermediateStages.get(i + 1);
-		//
-		// pipe = new Pipe();
-		// left.getOutputPort().pipe = pipe;
-		// right.getInputPort().pipe = pipe;
-		// }
-		//
-		// pipe = new Pipe();
-		// this.intermediateStages.get(this.intermediateStages.size() - 1).getOutputPort().pipe = pipe;
-		// this.lastStage.getInputPort().pipe = pipe;
-
 		int size = 1 + this.intermediateStages.size() + 1;
 		this.stages = new StageWithPort[size];
 		this.stages[0] = this.firstStage;
@@ -180,12 +159,12 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	@Override
 	public InputPort<I> getInputPort() {
-		return this.firstStage.getInputPort();
+		return this.firstStage.getInputPort(); // CACHE pipeline's input port
 	}
 
 	@Override
 	public OutputPort<O> getOutputPort() {
-		return this.lastStage.getOutputPort();
+		return this.lastStage.getOutputPort(); // CACHE pipeline's output port
 	}
 
 	// TODO remove since it does not increase performances
