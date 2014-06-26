@@ -45,7 +45,7 @@ public class MethodCallThroughputAnalysis11 extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		Pipeline<Void, Object> pipeline = this.buildPipeline(this.numInputObjects, this.inputObjectCreator);
+		Pipeline<?, ?> pipeline = this.buildPipeline(this.numInputObjects, this.inputObjectCreator);
 		this.runnable = new RunnableStage(pipeline);
 	}
 
@@ -53,7 +53,7 @@ public class MethodCallThroughputAnalysis11 extends Analysis {
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
-	private Pipeline<Void, Object> buildPipeline(final long numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
+	private Pipeline<Void, Void> buildPipeline(final long numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
 		// create stages
@@ -67,7 +67,7 @@ public class MethodCallThroughputAnalysis11 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final Pipeline<Void, Object> pipeline = new Pipeline<Void, Object>();
+		final Pipeline<Void, Void> pipeline = new Pipeline<Void, Void>();
 		pipeline.setFirstStage(objectProducer);
 		// pipeline.addIntermediateStage(relayFake);
 		pipeline.addIntermediateStage(startTimestampFilter);

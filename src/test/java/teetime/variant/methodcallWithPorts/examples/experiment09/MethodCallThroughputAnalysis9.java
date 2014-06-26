@@ -64,7 +64,7 @@ public class MethodCallThroughputAnalysis9 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final Pipeline<Void, Object> pipeline = new Pipeline<Void, Object>();
+		final Pipeline<Void, Void> pipeline = new Pipeline<Void, Void>();
 		pipeline.setFirstStage(objectProducer);
 		pipeline.addIntermediateStage(startTimestampFilter);
 		pipeline.addIntermediateStages(noopFilters);

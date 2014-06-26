@@ -46,24 +46,24 @@ public class RecordReaderAnalysis extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		Pipeline<File, Object> producerPipeline = this.buildProducerPipeline();
+		Pipeline<?, ?> producerPipeline = this.buildProducerPipeline();
 		this.producerThread = new Thread(new RunnableStage(producerPipeline));
 	}
 
-	private Pipeline<File, Object> buildProducerPipeline() {
+	private Pipeline<File, Void> buildProducerPipeline() {
 		this.classNameRegistryRepository = new ClassNameRegistryRepository();
 		// create stages
-		Dir2RecordsFilter file2RecordFilter = new Dir2RecordsFilter(this.classNameRegistryRepository);
+		Dir2RecordsFilter dir2RecordsFilter = new Dir2RecordsFilter(this.classNameRegistryRepository);
 		CollectorSink<IMonitoringRecord> collector = new CollectorSink<IMonitoringRecord>(this.elementCollection);
 
-		final Pipeline<File, Object> pipeline = new Pipeline<File, Object>();
-		pipeline.setFirstStage(file2RecordFilter);
+		final Pipeline<File, Void> pipeline = new Pipeline<File, Void>();
+		pipeline.setFirstStage(dir2RecordsFilter);
 		pipeline.setLastStage(collector);
 
-		SingleElementPipe.connect(file2RecordFilter.getOutputPort(), collector.getInputPort());
+		SpScPipe.connect(null, dir2RecordsFilter.getInputPort(), 1);
+		SingleElementPipe.connect(dir2RecordsFilter.getOutputPort(), collector.getInputPort());
 
-		SpScPipe.connect(null, file2RecordFilter.getInputPort(), 1);
-		file2RecordFilter.getInputPort().getPipe().add(new File("src/test/data/bookstore-logs"));
+		dir2RecordsFilter.getInputPort().getPipe().add(new File("src/test/data/bookstore-logs"));
 
 		return pipeline;
 	}
