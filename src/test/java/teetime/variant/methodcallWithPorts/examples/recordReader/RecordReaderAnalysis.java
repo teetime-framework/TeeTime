@@ -25,7 +25,7 @@ import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
-import teetime.variant.methodcallWithPorts.stage.kieker.File2RecordFilter;
+import teetime.variant.methodcallWithPorts.stage.kieker.Dir2RecordFilter;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
 
 import kieker.common.record.IMonitoringRecord;
@@ -53,7 +53,7 @@ public class RecordReaderAnalysis extends Analysis {
 	private Pipeline<File, Object> buildProducerPipeline() {
 		this.classNameRegistryRepository = new ClassNameRegistryRepository();
 		// create stages
-		File2RecordFilter file2RecordFilter = new File2RecordFilter(this.classNameRegistryRepository);
+		Dir2RecordFilter file2RecordFilter = new Dir2RecordFilter(this.classNameRegistryRepository);
 		CollectorSink<IMonitoringRecord> collector = new CollectorSink<IMonitoringRecord>(this.elementCollection);
 
 		final Pipeline<File, Object> pipeline = new Pipeline<File, Object>();
