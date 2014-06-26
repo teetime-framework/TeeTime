@@ -41,16 +41,4 @@ public class SingleElementPipe<T> extends AbstractPipe<T> {
 		return (this.element == null) ? 0 : 1;
 	}
 
-	// @Override
-	// public void close() {
-	//
-	//
-	// }
-	//
-	// @Override
-	// public boolean isClosed() {
-	//
-	// return false;
-	// }
-
 }

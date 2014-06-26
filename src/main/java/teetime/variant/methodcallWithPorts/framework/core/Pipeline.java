@@ -22,12 +22,9 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 	private final List<StageWithPort<?, ?>> intermediateStages = new LinkedList<StageWithPort<?, ?>>();
 	private StageWithPort<?, O> lastStage;
 
-	private StageWithPort<?, ?> successor;
-
 	private StageWithPort<?, ?>[] stages;
 	private StageWithPort<?, ?> parentStage;
-	private int index;
-	private int startIndex;
+	// private int startIndex;
 
 	private boolean reschedulable;
 	private int firstStageIndex;
@@ -49,7 +46,7 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 		this.intermediateStages.addAll(Arrays.asList(stages));
 	}
 
-	public void addIntermediateStage(final StageWithPort stage) {
+	public void addIntermediateStage(final StageWithPort<?, ?> stage) {
 		this.intermediateStages.add(stage);
 	}
 
@@ -93,12 +90,13 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 		while (!currentStage.isReschedulable()) {
 			this.firstStageIndex++;
 			// currentStage = currentStage.getOutputPort().getPipe().getTargetStage(); // FIXME what to do with a stage with more than one output port?
-			currentStage = this.stages[this.firstStageIndex];
-			if (currentStage == null) { // loop reaches the last stage
+			// if (currentStage == null) { // loop reaches the last stage
+			if (this.firstStageIndex == this.stages.length) { // loop reaches the last stage
 				this.setReschedulable(false);
 				this.cleanUp();
 				return;
 			}
+			currentStage = this.stages[this.firstStageIndex];
 			currentStage.onIsPipelineHead();
 			// System.out.println("firstStageIndex: " + this.firstStageIndex + ", class:" + stage.getClass().getSimpleName());
 		}
@@ -166,7 +164,6 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	@Override
 	public void setParentStage(final StageWithPort<?, ?> parentStage, final int index) {
-		this.index = index;
 		this.parentStage = parentStage;
 	}
 
@@ -191,12 +188,12 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	// TODO remove since it does not increase performances
 	private void cleanUp() {
-		for (int i = 0; i < this.stages.length; i++) {
-			StageWithPort<?, ?> stage = this.stages[i];
-			stage.setParentStage(null, i);
-			// stage.setListener(null);
-			// stage.setSuccessor(null);
-		}
+		// for (int i = 0; i < this.stages.length; i++) {
+		// StageWithPort<?, ?> stage = this.stages[i];
+		// // stage.setParentStage(null, i);
+		// // stage.setListener(null);
+		// // stage.setSuccessor(null);
+		// }
 
 		this.firstStage = null;
 		this.intermediateStages.clear();

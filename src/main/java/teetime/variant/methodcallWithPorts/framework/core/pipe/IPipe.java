@@ -1,23 +1,25 @@
 package teetime.variant.methodcallWithPorts.framework.core.pipe;
 
-import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
+import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 
 public interface IPipe<T> {
 
-	public abstract void add(T element);
+	void add(T element);
 
-	public abstract T removeLast();
+	T removeLast();
 
-	public abstract boolean isEmpty();
+	boolean isEmpty();
 
-	public abstract int size();
+	int size();
 
-	public abstract T readLast();
+	T readLast();
 
-	public abstract void close();
+	void close();
 
-	public abstract boolean isClosed();
+	boolean isClosed();
 
-	public abstract StageWithPort<T, ?> getTargetStage();
+	InputPort<T> getTargetPort();
+
+	void setTargetPort(InputPort<T> targetPort);
 
 }

@@ -27,7 +27,7 @@ import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
  */
 public class CollectorSink<T> extends ConsumerStage<T, Object> {
 
-	private static final int THRESHOLD = 10000;
+	private static final int THRESHOLD = 100; // TODO make configurable or use an sysout stage instead
 
 	private final List<T> elements;
 

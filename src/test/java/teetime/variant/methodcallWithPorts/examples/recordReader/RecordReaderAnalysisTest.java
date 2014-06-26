@@ -15,8 +15,11 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.examples.recordReader;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,6 +39,12 @@ public class RecordReaderAnalysisTest {
 		this.stopWatch = new StopWatch();
 	}
 
+	@After
+	public void after() {
+		long overallDurationInNs = this.stopWatch.getDurationInNs();
+		System.out.println("Duration: " + TimeUnit.NANOSECONDS.toMillis(overallDurationInNs) + " ms");
+	}
+
 	@Test
 	public void performAnalysis() {
 		final RecordReaderAnalysis analysis = new RecordReaderAnalysis();
@@ -49,8 +58,7 @@ public class RecordReaderAnalysisTest {
 			analysis.onTerminate();
 		}
 
-		long overallDurationInNs = this.stopWatch.getDurationInNs();
-		System.out.println("Duration: " + TimeUnit.NANOSECONDS.toMillis(overallDurationInNs) + " ms");
+		assertEquals(6541, analysis.getElementCollection().size());
 	}
 
 }

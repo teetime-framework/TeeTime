@@ -2,12 +2,12 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
+import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 
 public abstract class AbstractPipe<T> implements IPipe<T> {
 
 	private final AtomicBoolean closed = new AtomicBoolean();
-	private StageWithPort<T, ?> targetStage;
+	private InputPort<T> targetPort;
 
 	@Override
 	public boolean isClosed() {
@@ -20,12 +20,13 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	}
 
 	@Override
-	public StageWithPort<T, ?> getTargetStage() {
-		return this.targetStage;
+	public InputPort<T> getTargetPort() {
+		return this.targetPort;
 	}
 
-	public void setTargetStage(StageWithPort<T, ?> targetStage) {
-		this.targetStage = targetStage;
+	@Override
+	public void setTargetPort(final InputPort<T> targetPort) {
+		this.targetPort = targetPort;
 	}
 
 }

@@ -26,12 +26,6 @@ public abstract class ConsumerStage<I, O> extends AbstractStage<I, O> {
 		this.setReschedulable(this.getInputPort().getPipe().size() > 0);
 
 		this.execute5(element);
-
-		// this.send(result);
-
-		// if (!this.getOutputPort().pipe.isEmpty()) {
-		// super.executeWithPorts();
-		// }
 	}
 
 	@Override

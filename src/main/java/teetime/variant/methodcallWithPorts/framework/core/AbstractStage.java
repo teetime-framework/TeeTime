@@ -15,21 +15,16 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	 */
 	protected Log logger;
 
-	private final InputPort<I> inputPort = new InputPort<I>();
+	private final InputPort<I> inputPort = new InputPort<I>(this);
 	private final OutputPort<O> outputPort = new OutputPort<O>();
 
-	// protected final CommittableQueue<O> outputElements = new CommittableResizableArrayQueue<O>(null, 4);
-	// private final CommittableQueue<O> outputElements = null;
-
 	private StageWithPort<?, ?> parentStage;
-
-	private int index;
 
 	private boolean reschedulable;
 
 	public AbstractStage() {
 		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
-		this.logger = LogFactory.getLog(this.id);
+		this.logger = LogFactory.getLog(this.getClass().getName() + "(" + this.id + ")");
 	}
 
 	@Override
@@ -74,6 +69,11 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
 	protected abstract void execute5(I element);
 
+	/**
+	 * Sends the <code>element</code> using the default output port
+	 * 
+	 * @param element
+	 */
 	protected final void send(final O element) {
 		this.send(this.getOutputPort(), element);
 	}
@@ -81,18 +81,12 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	protected final void send(final OutputPort<O> outputPort, final O element) {
 		outputPort.send(element);
 
-		StageWithPort<O, ?> next = outputPort.getPipe().getTargetStage();
+		StageWithPort<?, ?> next = outputPort.getPipe().getTargetPort().getOwningStage();
 
-		// StageWithPort<?, ?> next = this.next();
 		do {
 			next.executeWithPorts();
 		} while (next.isReschedulable());
 	}
-
-	// @Override
-	// public SchedulingInformation getSchedulingInformation() {
-	// return this.schedulingInformation;
-	// }
 
 	// public void disable() {
 	// this.schedulingInformation.setActive(false);
@@ -117,7 +111,6 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
 	@Override
 	public void setParentStage(final StageWithPort<?, ?> parentStage, final int index) {
-		this.index = index;
 		this.parentStage = parentStage;
 	}
 
@@ -132,6 +125,11 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 
 	public String getId() {
 		return this.id;
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getName() + ": " + this.id;
 	}
 
 }

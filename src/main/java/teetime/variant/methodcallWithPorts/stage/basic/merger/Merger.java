@@ -19,11 +19,12 @@ package teetime.variant.methodcallWithPorts.stage.basic.merger;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.variant.explicitScheduling.framework.core.Description;
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 
 /**
+ * 
+ * This stage merges data from the input ports, by taking elements according to the chosen merge strategy and by putting them to the output port.
  * 
  * @author Christian Wulf
  * 
@@ -32,11 +33,11 @@ import teetime.variant.methodcallWithPorts.framework.core.InputPort;
  * @param <T>
  *            the type of the input ports and the output port
  */
-@Description("This stage merges data from the input ports, by taking elements according to the chosen merge strategy and by putting them to the output port.")
 public class Merger<T> extends ConsumerStage<T, T> {
 
 	// TODO do not inherit from AbstractStage since it provides the default input port that is unnecessary for the merger
 
+	// BETTER use an array since a list always creates a new iterator when looping
 	private final List<InputPort<T>> inputPortList = new ArrayList<InputPort<T>>();
 
 	private IMergerStrategy<T> strategy = new RoundRobinStrategy<T>();
@@ -47,6 +48,19 @@ public class Merger<T> extends ConsumerStage<T, T> {
 
 	public void setStrategy(final IMergerStrategy<T> strategy) {
 		this.strategy = strategy;
+	}
+
+	@Override
+	public void executeWithPorts() {
+		this.logger.debug("Executing stage...");
+
+		this.execute5(null);
+
+		boolean isReschedulable = false;
+		for (InputPort<T> inputPort : this.inputPortList) {
+			isReschedulable = isReschedulable || !inputPort.getPipe().isEmpty();
+		}
+		this.setReschedulable(isReschedulable);
 	}
 
 	@Override
@@ -65,7 +79,7 @@ public class Merger<T> extends ConsumerStage<T, T> {
 	}
 
 	private InputPort<T> getNewInputPort() {
-		InputPort<T> inputPort = new InputPort<T>();
+		InputPort<T> inputPort = new InputPort<T>(this);
 		this.inputPortList.add(inputPort);
 		return inputPort;
 	}
