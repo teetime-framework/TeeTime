@@ -108,14 +108,13 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 
 	@Override
 	public void onIsPipelineHead() {
-		this.logger.info("traceId2trace: " + TraceReconstructionFilter.traceId2trace.keySet());
-
 		Iterator<TraceBuffer> iterator = TraceReconstructionFilter.traceId2trace.values().iterator();
 		while (iterator.hasNext()) {
 			TraceBuffer traceBuffer = iterator.next();
 			this.put(traceBuffer);
 			iterator.remove();
 		}
+
 		super.onIsPipelineHead();
 	}
 
