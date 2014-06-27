@@ -7,13 +7,13 @@ import java.util.List;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
+import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.Cache;
 import teetime.variant.methodcallWithPorts.stage.Clock;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.CountingFilter;
-import teetime.variant.methodcallWithPorts.stage.EndStage;
 import teetime.variant.methodcallWithPorts.stage.InstanceOfFilter;
 import teetime.variant.methodcallWithPorts.stage.ThroughputFilter;
 import teetime.variant.methodcallWithPorts.stage.kieker.Dir2RecordsFilter;
@@ -32,6 +32,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 	private final List<TraceEventRecords> elementCollection = new LinkedList<TraceEventRecords>();
 
 	private Thread producerThread;
+	private Thread clockThread;
 
 	private ClassNameRegistryRepository classNameRegistryRepository;
 
@@ -39,29 +40,28 @@ public class TraceReconstructionAnalysis extends Analysis {
 
 	private CountingFilter<TraceEventRecords> traceCounter;
 
-	private ThroughputFilter<TraceEventRecords> throughputFilter;
+	private ThroughputFilter<IFlowRecord> throughputFilter;
+
+	private File inputDir;
 
 	@Override
 	public void init() {
 		super.init();
-		Pipeline<Void, Void> clockPipeline = this.buildClockPipeline();
-		this.producerThread = new Thread(new RunnableStage(clockPipeline));
+		StageWithPort<Void, Long> clockStage = this.buildClockPipeline();
+		this.clockThread = new Thread(new RunnableStage(clockStage));
 
-		Pipeline<File, Void> producerPipeline = this.buildProducerPipeline(clockPipeline);
+		Pipeline<File, Void> producerPipeline = this.buildProducerPipeline(clockStage);
 		this.producerThread = new Thread(new RunnableStage(producerPipeline));
 	}
 
-	private Pipeline<Void, Void> buildClockPipeline() {
+	private StageWithPort<Void, Long> buildClockPipeline() {
 		Clock clock = new Clock();
-		clock.setIntervalDelayInMs(1000);
+		clock.setIntervalDelayInMs(50);
 
-		Pipeline<Void, Void> pipeline = new Pipeline<Void, Void>();
-		pipeline.setFirstStage(clock);
-		pipeline.setLastStage(new EndStage<Void>());
-		return pipeline;
+		return clock;
 	}
 
-	private Pipeline<File, Void> buildProducerPipeline(final Pipeline<Void, Void> clockPipeline) {
+	private Pipeline<File, Void> buildProducerPipeline(final StageWithPort<Void, Long> clockStage) {
 		this.classNameRegistryRepository = new ClassNameRegistryRepository();
 
 		// final IsIMonitoringRecordInRange isIMonitoringRecordInRange = new IsIMonitoringRecordInRange(0, 1000);
@@ -79,8 +79,8 @@ public class TraceReconstructionAnalysis extends Analysis {
 		// isOperationExecutionRecordTraceIdPredicate);
 		final InstanceOfFilter<IMonitoringRecord, IFlowRecord> instanceOfFilter = new InstanceOfFilter<IMonitoringRecord, IFlowRecord>(
 				IFlowRecord.class);
+		this.throughputFilter = new ThroughputFilter<IFlowRecord>();
 		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter();
-		this.throughputFilter = new ThroughputFilter<TraceEventRecords>();
 		this.traceCounter = new CountingFilter<TraceEventRecords>();
 		final CollectorSink<TraceEventRecords> collector = new CollectorSink<TraceEventRecords>(this.elementCollection);
 
@@ -94,15 +94,16 @@ public class TraceReconstructionAnalysis extends Analysis {
 		SingleElementPipe.connect(this.recordCounter.getOutputPort(), cache.getInputPort());
 		SingleElementPipe.connect(cache.getOutputPort(), stringBufferFilter.getInputPort());
 		SingleElementPipe.connect(stringBufferFilter.getOutputPort(), instanceOfFilter.getInputPort());
-		SingleElementPipe.connect(instanceOfFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
-		SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), this.throughputFilter.getInputPort());
-		SingleElementPipe.connect(this.throughputFilter.getOutputPort(), this.traceCounter.getInputPort());
+		SingleElementPipe.connect(instanceOfFilter.getOutputPort(), this.throughputFilter.getInputPort());
+		SingleElementPipe.connect(this.throughputFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
+		// SingleElementPipe.connect(instanceOfFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
+		SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), this.traceCounter.getInputPort());
 		SingleElementPipe.connect(this.traceCounter.getOutputPort(), collector.getInputPort());
 
-		SpScPipe.connect(clockPipeline.getOutputPort(), this.throughputFilter.getTriggerInputPort(), 1);
+		SpScPipe.connect(clockStage.getOutputPort(), this.throughputFilter.getTriggerInputPort(), 1);
 
 		// fill input ports
-		dir2RecordsFilter.getInputPort().getPipe().add(new File("src/test/data/Eprints-logs"));
+		dir2RecordsFilter.getInputPort().getPipe().add(this.inputDir);
 
 		// create and configure pipeline
 		Pipeline<File, Void> pipeline = new Pipeline<File, Void>();
@@ -111,8 +112,8 @@ public class TraceReconstructionAnalysis extends Analysis {
 		pipeline.addIntermediateStage(cache);
 		pipeline.addIntermediateStage(stringBufferFilter);
 		pipeline.addIntermediateStage(instanceOfFilter);
-		pipeline.addIntermediateStage(traceReconstructionFilter);
 		pipeline.addIntermediateStage(this.throughputFilter);
+		pipeline.addIntermediateStage(traceReconstructionFilter);
 		pipeline.addIntermediateStage(this.traceCounter);
 		pipeline.setLastStage(collector);
 		return pipeline;
@@ -122,6 +123,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 	public void start() {
 		super.start();
 
+		this.clockThread.start();
 		this.producerThread.start();
 
 		try {
@@ -129,6 +131,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 		} catch (InterruptedException e) {
 			throw new IllegalStateException(e);
 		}
+		this.clockThread.interrupt();
 	}
 
 	public List<TraceEventRecords> getElementCollection() {
@@ -145,5 +148,13 @@ public class TraceReconstructionAnalysis extends Analysis {
 
 	public List<Long> getThroughputs() {
 		return this.throughputFilter.getThroughputs();
+	}
+
+	public File getInputDir() {
+		return inputDir;
+	}
+
+	public void setInputDir(File inputDir) {
+		this.inputDir = inputDir;
 	}
 }

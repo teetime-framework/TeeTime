@@ -2,6 +2,7 @@ package teetime.variant.methodcallWithPorts.stage;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
@@ -17,8 +18,8 @@ public class ThroughputFilter<T> extends ConsumerStage<T, T> {
 
 	@Override
 	protected void execute5(final T element) {
-		Long trigger = this.triggerInputPort.receive();
-		if (trigger != null) {
+		Long timestampInNs = this.triggerInputPort.receive();
+		if (timestampInNs != null) {
 			this.computeThroughput();
 			this.resetTimestamp();
 		}
@@ -34,9 +35,10 @@ public class ThroughputFilter<T> extends ConsumerStage<T, T> {
 
 	private void computeThroughput() {
 		long diffInNs = System.nanoTime() - this.timestamp;
-		long throughput = this.numPassedElements / diffInNs;
-		// this.throughputs.add(throughput);
-		this.logger.info("Throughput: " + throughput + " ns");
+		long diffInMs = TimeUnit.NANOSECONDS.toMillis(diffInNs);
+		long throughputPerMs = this.numPassedElements / diffInMs;
+		this.throughputs.add(throughputPerMs);
+		// this.logger.info("Throughput: " + throughputPerMs + " elements/ms");
 	}
 
 	private void resetTimestamp() {
@@ -49,7 +51,7 @@ public class ThroughputFilter<T> extends ConsumerStage<T, T> {
 	}
 
 	public InputPort<Long> getTriggerInputPort() {
-		return triggerInputPort;
+		return this.triggerInputPort;
 	}
 
 }

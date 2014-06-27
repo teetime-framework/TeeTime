@@ -40,10 +40,6 @@ public class StatisticsUtil {
 		// utility class
 	}
 
-	public static void calculateAvg(final List<Long> durations) {
-
-	}
-
 	public static PerformanceResult printStatistics(final long overallDurationInNs, final List<TimestampObject> timestampObjects) {
 		PerformanceResult performanceResult = new PerformanceResult();
 
