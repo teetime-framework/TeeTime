@@ -15,7 +15,12 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.examples.traceReconstruction;
 
+import static org.hamcrest.Matchers.both;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.util.Map;
@@ -35,7 +40,7 @@ import kieker.analysis.plugin.filter.flow.TraceEventRecords;
  * 
  * @since 1.10
  */
-public class TraceReconstructionAnalysisTest {
+public class ChwWorkTraceReconstructionAnalysisTest {
 
 	private StopWatch stopWatch;
 
@@ -102,6 +107,8 @@ public class TraceReconstructionAnalysisTest {
 
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
 		System.out.println("Mean throughput: " + quintiles.get(0.5) + " elements/ms");
+
+		assertThat(quintiles.get(0.5), is(both(greaterThan(1100l)).and(lessThan(1400l))));
 	}
 
 	@Test
