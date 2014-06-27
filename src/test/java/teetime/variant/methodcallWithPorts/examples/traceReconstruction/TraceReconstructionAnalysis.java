@@ -56,7 +56,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 
 	private StageWithPort<Void, Long> buildClockPipeline() {
 		Clock clock = new Clock();
-		clock.setIntervalDelayInMs(50);
+		clock.setIntervalDelayInMs(100);
 
 		return clock;
 	}
@@ -64,19 +64,12 @@ public class TraceReconstructionAnalysis extends Analysis {
 	private Pipeline<File, Void> buildPipeline(final StageWithPort<Void, Long> clockStage) {
 		this.classNameRegistryRepository = new ClassNameRegistryRepository();
 
-		// final IsIMonitoringRecordInRange isIMonitoringRecordInRange = new IsIMonitoringRecordInRange(0, 1000);
-		// final IsOperationExecutionRecordTraceIdPredicate isOperationExecutionRecordTraceIdPredicate = new IsOperationExecutionRecordTraceIdPredicate(
-		// false, null);
 		// create stages
 		final Dir2RecordsFilter dir2RecordsFilter = new Dir2RecordsFilter(this.classNameRegistryRepository);
 		this.recordCounter = new CountingFilter<IMonitoringRecord>();
 		final Cache<IMonitoringRecord> cache = new Cache<IMonitoringRecord>();
 
 		final StringBufferFilter<IMonitoringRecord> stringBufferFilter = new StringBufferFilter<IMonitoringRecord>();
-		// final PredicateFilter<IMonitoringRecord> timestampFilter = new PredicateFilter<IMonitoringRecord>(
-		// isIMonitoringRecordInRange);
-		// final PredicateFilter<OperationExecutionRecord> traceIdFilter = new PredicateFilter<OperationExecutionRecord>(
-		// isOperationExecutionRecordTraceIdPredicate);
 		final InstanceOfFilter<IMonitoringRecord, IFlowRecord> instanceOfFilter = new InstanceOfFilter<IMonitoringRecord, IFlowRecord>(
 				IFlowRecord.class);
 		this.throughputFilter = new ThroughputFilter<IFlowRecord>();

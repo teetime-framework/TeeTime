@@ -9,6 +9,7 @@ public class CountingFilter<T> extends ConsumerStage<T, T> {
 	@Override
 	protected void execute5(final T element) {
 		this.numElementsPassed++;
+		// this.logger.info("count: " + this.numElementsPassed);
 		this.send(element);
 	}
 

@@ -52,7 +52,9 @@ public class Merger<T> extends ConsumerStage<T, T> {
 
 	@Override
 	public void executeWithPorts() {
-		this.logger.debug("Executing stage...");
+		// if (this.logger.isDebugEnabled()) {
+		// this.logger.debug("Executing stage...");
+		// }
 
 		this.execute5(null);
 

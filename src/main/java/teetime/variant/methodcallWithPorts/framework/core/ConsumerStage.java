@@ -20,7 +20,10 @@ public abstract class ConsumerStage<I, O> extends AbstractStage<I, O> {
 
 	@Override
 	public void executeWithPorts() {
-		this.logger.debug("Executing stage...");
+		// if (this.logger.isDebugEnabled()) {
+		// this.logger.debug("Executing stage...");
+		// }
+
 		I element = this.getInputPort().receive();
 
 		this.setReschedulable(this.getInputPort().getPipe().size() > 0);

@@ -17,6 +17,9 @@ package kieker.analysis.stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import teetime.util.StopWatch;
 
 import kieker.analysis.IProjectContext;
 import kieker.analysis.plugin.annotation.InputPort;
@@ -45,9 +48,13 @@ public class CacheFilter extends AbstractFilterPlugin {
 
 	@Override
 	public void terminate(final boolean error) {
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
 		for (final Object data : this.cache) {
 			super.deliver(EmptyPassOnFilter.OUTPUT_PORT_NAME, data);
 		}
+		stopWatch.end();
+		System.out.println("dur: " + TimeUnit.NANOSECONDS.toMillis(stopWatch.getDurationInNs()) + " ms");
 		super.terminate(error);
 	}
 

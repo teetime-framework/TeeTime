@@ -35,12 +35,13 @@ public class ThroughputFilter<T> extends ConsumerStage<T, T> {
 
 	private void computeThroughput() {
 		long diffInNs = System.nanoTime() - this.timestamp;
-		// long diffInMs = TimeUnit.NANOSECONDS.toMillis(diffInNs);
-		// long throughputPerMs = this.numPassedElements / diffInMs;
-		long diffInSec = TimeUnit.NANOSECONDS.toSeconds(diffInNs);
-		long throughputPerSec = this.numPassedElements / diffInSec;
-		this.throughputs.add(throughputPerSec);
-		this.logger.info("Throughput: " + throughputPerSec + " elements/s");
+		long diffInMs = TimeUnit.NANOSECONDS.toMillis(diffInNs);
+		long throughputPerMs = this.numPassedElements / diffInMs;
+		this.throughputs.add(throughputPerMs);
+		// this.logger.info("Throughput: " + throughputPerMs + " elements/ms");
+
+		// long diffInSec = TimeUnit.NANOSECONDS.toSeconds(diffInNs);
+		// long throughputPerSec = this.numPassedElements / diffInSec;
 	}
 
 	private void resetTimestamp() {
