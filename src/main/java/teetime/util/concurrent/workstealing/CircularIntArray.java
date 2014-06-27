@@ -28,12 +28,12 @@ import java.util.Arrays;
  * 
  * @param <T>
  */
-public final class CircularArray<T> {
+public final class CircularIntArray<T> {
 
-	private final long logSize;
+	private final int logSize;
 	private final T[] segment;
-	private final long mask;
-	private long currentIndex;
+	private final int mask;
+	private int currentIndex;
 
 	/**
 	 * 
@@ -41,41 +41,41 @@ public final class CircularArray<T> {
 	 *            The initial size of this array in log2, i.e., the number of bits to use
 	 */
 	@SuppressWarnings("unchecked")
-	public CircularArray(final long logSize) {
+	public CircularIntArray(final int logSize) {
 		this.logSize = logSize;
 		this.segment = (T[]) new Object[1 << this.logSize];
 		this.mask = this.getCapacity() - 1; // mask = 0..01..1
 	}
 
-	public long getCapacity() {
+	public int getCapacity() {
 		return this.segment.length;
 	}
 
-	public T get(final long i) {
-		return this.segment[(int) (i & this.mask)]; // risk of overflow
+	public T get(final int i) {
+		return this.segment[i & this.mask]; // risk of overflow
 	}
 
 	public T getNext() {
-		long index = this.currentIndex;
+		int index = this.currentIndex;
 		this.currentIndex = (this.currentIndex + 1) & this.mask;
-		return this.segment[(int) index];
+		return this.segment[index];
 	}
 
-	public void put(final long i, final T o) {
-		this.segment[(int) (i & this.mask)] = o; // risk of overflow
+	public void put(final int i, final T o) {
+		this.segment[i & this.mask] = o; // risk of overflow
 	}
 
-	public CircularArray<T> grow(final long b, final long t) {
-		final CircularArray<T> a = new CircularArray<T>(this.logSize + 1);
-		for (long i = t; i < b; i++) {
+	public CircularIntArray<T> grow(final int b, final int t) {
+		final CircularIntArray<T> a = new CircularIntArray<T>(this.logSize + 1);
+		for (int i = t; i < b; i++) {
 			a.put(i, this.get(i));
 		}
 		return a;
 	}
 
-	public CircularArray<T> shrink(final long b, final long t) {
-		final CircularArray<T> a = new CircularArray<T>(this.logSize - 1);
-		for (long i = t; i < b; i++) {
+	public CircularIntArray<T> shrink(final int b, final int t) {
+		final CircularIntArray<T> a = new CircularIntArray<T>(this.logSize - 1);
+		for (int i = t; i < b; i++) {
 			a.put(i, this.get(i));
 		}
 		return a;
