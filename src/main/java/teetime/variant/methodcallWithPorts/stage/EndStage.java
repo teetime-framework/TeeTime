@@ -11,6 +11,8 @@ import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 
 public class EndStage<T> implements StageWithPort<T, T> {
 
+	private final InputPort<T> inputPort = new InputPort<T>(this);
+
 	public int count;
 	public ConstructorClosure<?> closure;
 	public List<Object> list = new LinkedList<Object>();
@@ -46,8 +48,7 @@ public class EndStage<T> implements StageWithPort<T, T> {
 
 	@Override
 	public InputPort<T> getInputPort() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.inputPort;
 	}
 
 	@Override

@@ -79,7 +79,7 @@ public class ChwWorkTraceReconstructionAnalysisTest {
 		assertEquals(6886, trace6886.getTraceMetadata().getTraceId());
 
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
-		System.out.println("Mean throughput: " + quintiles.get(0.5) + " elements/ms");
+		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/ms");
 	}
 
 	@Test
@@ -106,7 +106,7 @@ public class ChwWorkTraceReconstructionAnalysisTest {
 		assertEquals(8974347286117089281l, trace1.getTraceMetadata().getTraceId());
 
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
-		System.out.println("Mean throughput: " + quintiles.get(0.5) + " elements/ms");
+		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/ms");
 
 		assertThat(quintiles.get(0.5), is(both(greaterThan(1100l)).and(lessThan(1400l))));
 	}
@@ -135,7 +135,7 @@ public class ChwWorkTraceReconstructionAnalysisTest {
 		assertEquals(1, trace1.getTraceMetadata().getTraceId());
 
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
-		System.out.println("Mean throughput: " + quintiles.get(0.5) + " elements/ms");
+		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/ms");
 	}
 
 }

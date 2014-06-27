@@ -31,8 +31,8 @@ public class TraceReconstructionAnalysis extends Analysis {
 
 	private final List<TraceEventRecords> elementCollection = new LinkedList<TraceEventRecords>();
 
-	private Thread producerThread;
 	private Thread clockThread;
+	private Thread workerThread;
 
 	private ClassNameRegistryRepository classNameRegistryRepository;
 
@@ -50,8 +50,8 @@ public class TraceReconstructionAnalysis extends Analysis {
 		StageWithPort<Void, Long> clockStage = this.buildClockPipeline();
 		this.clockThread = new Thread(new RunnableStage(clockStage));
 
-		Pipeline<File, Void> producerPipeline = this.buildProducerPipeline(clockStage);
-		this.producerThread = new Thread(new RunnableStage(producerPipeline));
+		Pipeline<?, ?> pipeline = this.buildPipeline(clockStage);
+		this.workerThread = new Thread(new RunnableStage(pipeline));
 	}
 
 	private StageWithPort<Void, Long> buildClockPipeline() {
@@ -61,7 +61,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 		return clock;
 	}
 
-	private Pipeline<File, Void> buildProducerPipeline(final StageWithPort<Void, Long> clockStage) {
+	private Pipeline<File, Void> buildPipeline(final StageWithPort<Void, Long> clockStage) {
 		this.classNameRegistryRepository = new ClassNameRegistryRepository();
 
 		// final IsIMonitoringRecordInRange isIMonitoringRecordInRange = new IsIMonitoringRecordInRange(0, 1000);
@@ -124,10 +124,10 @@ public class TraceReconstructionAnalysis extends Analysis {
 		super.start();
 
 		this.clockThread.start();
-		this.producerThread.start();
+		this.workerThread.start();
 
 		try {
-			this.producerThread.join();
+			this.workerThread.join();
 		} catch (InterruptedException e) {
 			throw new IllegalStateException(e);
 		}
@@ -151,10 +151,10 @@ public class TraceReconstructionAnalysis extends Analysis {
 	}
 
 	public File getInputDir() {
-		return inputDir;
+		return this.inputDir;
 	}
 
-	public void setInputDir(File inputDir) {
+	public void setInputDir(final File inputDir) {
 		this.inputDir = inputDir;
 	}
 }
