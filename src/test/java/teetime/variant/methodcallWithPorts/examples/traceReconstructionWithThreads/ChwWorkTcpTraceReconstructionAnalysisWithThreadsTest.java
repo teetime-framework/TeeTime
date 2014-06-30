@@ -48,9 +48,23 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 	}
 
 	@Test
-	public void performAnalysis() {
+	public void performAnalysisWith1Thread() {
+		this.performAnalysis(1);
+	}
+
+	@Test
+	public void performAnalysisWith2Threads() {
+		this.performAnalysis(2);
+	}
+
+	@Test
+	public void performAnalysisWith4Threads() {
+		this.performAnalysis(4);
+	}
+
+	void performAnalysis(final int numWorkerThreads) {
 		final TcpTraceReconstructionAnalysisWithThreads analysis = new TcpTraceReconstructionAnalysisWithThreads();
-		analysis.setNumWorkerThreads(2);
+		analysis.setNumWorkerThreads(numWorkerThreads);
 		analysis.init();
 
 		this.stopWatch.start();
@@ -77,6 +91,33 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 
 		// assertEquals(21001, analysis.getNumRecords());
 		assertEquals(21000001, analysis.getNumRecords());
+	}
+
+	public static void main(final String[] args) {
+		ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest analysis = new ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest();
+		analysis.before();
+		try {
+			analysis.performAnalysisWith1Thread();
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		analysis.after();
+
+		analysis.before();
+		try {
+			analysis.performAnalysisWith2Threads();
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		analysis.after();
+
+		analysis.before();
+		try {
+			analysis.performAnalysisWith4Threads();
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		analysis.after();
 	}
 
 }

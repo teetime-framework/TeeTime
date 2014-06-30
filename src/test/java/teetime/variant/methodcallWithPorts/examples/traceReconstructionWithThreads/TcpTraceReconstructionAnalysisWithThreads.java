@@ -136,7 +136,7 @@ public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
 		Pipeline<IMonitoringRecord, IMonitoringRecord> pipeline = new Pipeline<IMonitoringRecord, IMonitoringRecord>();
 		pipeline.setFirstStage(relay);
 		// pipeline.addIntermediateStage(this.recordCounter);
-		pipeline.addIntermediateStage(sysout);
+		// pipeline.addIntermediateStage(sysout);
 		// pipeline.addIntermediateStage(instanceOfFilter);
 		// pipeline.addIntermediateStage(this.recordThroughputFilter);
 		// pipeline.addIntermediateStage(traceReconstructionFilter);
