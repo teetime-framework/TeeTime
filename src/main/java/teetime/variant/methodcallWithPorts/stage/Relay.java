@@ -18,6 +18,7 @@ public class Relay<T> extends AbstractStage<T, T> {
 				this.logger.debug("got end signal; pipe.size: " + this.getInputPort().getPipe().size());
 				assert 0 == this.getInputPort().getPipe().size();
 			}
+			Thread.yield();
 			return;
 		}
 		this.send(element);

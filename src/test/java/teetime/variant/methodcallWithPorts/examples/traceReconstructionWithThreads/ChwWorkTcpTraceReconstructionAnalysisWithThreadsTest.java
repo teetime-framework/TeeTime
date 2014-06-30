@@ -22,7 +22,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
@@ -32,6 +34,7 @@ import teetime.util.StopWatch;
  * 
  * @since 1.10
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 
 	private StopWatch stopWatch;
