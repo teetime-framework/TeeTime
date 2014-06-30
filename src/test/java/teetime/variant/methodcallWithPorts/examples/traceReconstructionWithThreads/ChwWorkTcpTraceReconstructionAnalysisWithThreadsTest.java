@@ -50,6 +50,7 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 	@Test
 	public void performAnalysis() {
 		final TcpTraceReconstructionAnalysisWithThreads analysis = new TcpTraceReconstructionAnalysisWithThreads();
+		analysis.setNumWorkerThreads(2);
 		analysis.init();
 
 		this.stopWatch.start();
@@ -60,7 +61,7 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 			analysis.onTerminate();
 		}
 
-		System.out.println("Max size of pipe: " + analysis.getTcpRelayPipe().getMaxSize());
+		System.out.println("Max size of tcp-relay pipe: " + analysis.getTcpRelayPipe().getMaxSize());
 
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceThroughputs());
 		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/ms");

@@ -25,8 +25,8 @@ public class Clock extends ProducerStage<Void, Long> {
 			this.sleep(this.intervalDelayInMs);
 		}
 
-		// System.out.println("Emitting timestamp");
-		this.getOutputPort().send(this.getCurrentTimeInNs());
+		this.logger.debug("Emitting timestamp");
+		this.send(this.getCurrentTimeInNs());
 	}
 
 	private void sleep(final long delayInMs) {

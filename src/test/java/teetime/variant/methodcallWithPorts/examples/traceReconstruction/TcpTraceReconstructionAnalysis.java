@@ -11,6 +11,7 @@ import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.Clock;
 import teetime.variant.methodcallWithPorts.stage.CountingFilter;
+import teetime.variant.methodcallWithPorts.stage.Distributor;
 import teetime.variant.methodcallWithPorts.stage.EndStage;
 import teetime.variant.methodcallWithPorts.stage.InstanceOfFilter;
 import teetime.variant.methodcallWithPorts.stage.ThroughputFilter;
@@ -39,28 +40,28 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		StageWithPort<Void, Long> clockStage = this.buildClockPipeline();
+		StageWithPort<Void, Long> clockStage = this.buildClockPipeline(1000);
 		this.clockThread = new Thread(new RunnableStage(clockStage));
 
-		StageWithPort<Void, Long> clock2Stage = this.buildClock2Pipeline();
+		StageWithPort<Void, Long> clock2Stage = this.buildClockPipeline(2000);
 		this.clock2Thread = new Thread(new RunnableStage(clock2Stage));
 
 		Pipeline<?, ?> pipeline = this.buildPipeline(clockStage, clock2Stage);
 		this.workerThread = new Thread(new RunnableStage(pipeline));
 	}
 
-	private StageWithPort<Void, Long> buildClockPipeline() {
+	private StageWithPort<Void, Long> buildClockPipeline(final long intervalDelayInMs) {
 		Clock clock = new Clock();
-		clock.setIntervalDelayInMs(1000);
+		clock.setIntervalDelayInMs(intervalDelayInMs);
+		Distributor<Long> distributor = new Distributor<Long>();
 
-		return clock;
-	}
+		SingleElementPipe.connect(clock.getOutputPort(), distributor.getInputPort());
 
-	private StageWithPort<Void, Long> buildClock2Pipeline() {
-		Clock clock = new Clock();
-		clock.setIntervalDelayInMs(2000);
-
-		return clock;
+		// create and configure pipeline
+		Pipeline<Void, Long> pipeline = new Pipeline<Void, Long>();
+		pipeline.setFirstStage(clock);
+		pipeline.setLastStage(distributor);
+		return pipeline;
 	}
 
 	private Pipeline<Void, TraceEventRecords> buildPipeline(final StageWithPort<Void, Long> clockStage, final StageWithPort<Void, Long> clock2Stage) {
