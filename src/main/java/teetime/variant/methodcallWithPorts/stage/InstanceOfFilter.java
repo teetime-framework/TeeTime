@@ -18,10 +18,11 @@ public class InstanceOfFilter<I, O> extends ConsumerStage<I, O> {
 		this.type = type;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void execute5(final I element) {
 		if (this.type.isInstance(element)) {
-			this.send(this.type.cast(element));
+			this.send((O) element);
 		} else { // swallow up the element
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("element is not an instance of " + this.type.getName() + ", but of " + element.getClass());

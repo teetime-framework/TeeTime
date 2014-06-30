@@ -40,7 +40,7 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 	private long maxTraceTimeout = Long.MAX_VALUE;
 	private long maxEncounteredLoggingTimestamp = -1;
 
-	private static final Map<Long, TraceBuffer> traceId2trace = new HashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
+	private final Map<Long, TraceBuffer> traceId2trace = new HashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
 
 	@Override
 	protected void execute5(final IFlowRecord element) {
@@ -51,9 +51,9 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 	}
 
 	private void putIfFinished(final Long traceId) {
-		final TraceBuffer traceBuffer = TraceReconstructionFilter.traceId2trace.get(traceId);
+		final TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
 		if (traceBuffer.isFinished()) {
-			TraceReconstructionFilter.traceId2trace.remove(traceId);
+			this.traceId2trace.remove(traceId);
 			this.put(traceBuffer);
 		}
 	}
@@ -62,12 +62,12 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 		Long traceId = null;
 		if (record instanceof TraceMetadata) {
 			traceId = ((TraceMetadata) record).getTraceId();
-			final TraceBuffer traceBuffer = TraceReconstructionFilter.traceId2trace.get(traceId);
+			final TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
 
 			traceBuffer.setTrace((TraceMetadata) record);
 		} else if (record instanceof AbstractTraceEvent) {
 			traceId = ((AbstractTraceEvent) record).getTraceId();
-			final TraceBuffer traceBuffer = TraceReconstructionFilter.traceId2trace.get(traceId);
+			final TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
 
 			traceBuffer.insertEvent((AbstractTraceEvent) record);
 		}
@@ -77,7 +77,7 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 
 	@Override
 	public void onIsPipelineHead() {
-		Iterator<TraceBuffer> iterator = TraceReconstructionFilter.traceId2trace.values().iterator();
+		Iterator<TraceBuffer> iterator = this.traceId2trace.values().iterator();
 		while (iterator.hasNext()) {
 			TraceBuffer traceBuffer = iterator.next();
 			this.put(traceBuffer);
