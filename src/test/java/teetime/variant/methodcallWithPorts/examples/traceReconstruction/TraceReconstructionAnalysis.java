@@ -14,8 +14,8 @@ import teetime.variant.methodcallWithPorts.stage.Cache;
 import teetime.variant.methodcallWithPorts.stage.Clock;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.CountingFilter;
+import teetime.variant.methodcallWithPorts.stage.ElementThroughputMeasuringStage;
 import teetime.variant.methodcallWithPorts.stage.InstanceOfFilter;
-import teetime.variant.methodcallWithPorts.stage.ThroughputFilter;
 import teetime.variant.methodcallWithPorts.stage.kieker.Dir2RecordsFilter;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
 import teetime.variant.methodcallWithPorts.stage.kieker.traceReconstruction.TraceReconstructionFilter;
@@ -40,7 +40,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 
 	private CountingFilter<TraceEventRecords> traceCounter;
 
-	private ThroughputFilter<IFlowRecord> throughputFilter;
+	private ElementThroughputMeasuringStage<IFlowRecord> throughputFilter;
 
 	private File inputDir;
 
@@ -72,7 +72,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 		final StringBufferFilter<IMonitoringRecord> stringBufferFilter = new StringBufferFilter<IMonitoringRecord>();
 		final InstanceOfFilter<IMonitoringRecord, IFlowRecord> instanceOfFilter = new InstanceOfFilter<IMonitoringRecord, IFlowRecord>(
 				IFlowRecord.class);
-		this.throughputFilter = new ThroughputFilter<IFlowRecord>();
+		this.throughputFilter = new ElementThroughputMeasuringStage<IFlowRecord>();
 		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter();
 		this.traceCounter = new CountingFilter<TraceEventRecords>();
 		final CollectorSink<TraceEventRecords> collector = new CollectorSink<TraceEventRecords>(this.elementCollection);

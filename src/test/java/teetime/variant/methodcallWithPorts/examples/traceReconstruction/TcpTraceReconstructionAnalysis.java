@@ -12,9 +12,9 @@ import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.Clock;
 import teetime.variant.methodcallWithPorts.stage.CountingFilter;
 import teetime.variant.methodcallWithPorts.stage.Distributor;
+import teetime.variant.methodcallWithPorts.stage.ElementThroughputMeasuringStage;
 import teetime.variant.methodcallWithPorts.stage.EndStage;
 import teetime.variant.methodcallWithPorts.stage.InstanceOfFilter;
-import teetime.variant.methodcallWithPorts.stage.ThroughputFilter;
 import teetime.variant.methodcallWithPorts.stage.io.TCPReader;
 import teetime.variant.methodcallWithPorts.stage.kieker.traceReconstruction.TraceReconstructionFilter;
 
@@ -34,8 +34,8 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 
 	private CountingFilter<TraceEventRecords> traceCounter;
 
-	private ThroughputFilter<IFlowRecord> recordThroughputFilter;
-	private ThroughputFilter<TraceEventRecords> traceThroughputFilter;
+	private ElementThroughputMeasuringStage<IFlowRecord> recordThroughputFilter;
+	private ElementThroughputMeasuringStage<TraceEventRecords> traceThroughputFilter;
 
 	@Override
 	public void init() {
@@ -70,9 +70,9 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 		this.recordCounter = new CountingFilter<IMonitoringRecord>();
 		final InstanceOfFilter<IMonitoringRecord, IFlowRecord> instanceOfFilter = new InstanceOfFilter<IMonitoringRecord, IFlowRecord>(
 				IFlowRecord.class);
-		this.recordThroughputFilter = new ThroughputFilter<IFlowRecord>();
+		this.recordThroughputFilter = new ElementThroughputMeasuringStage<IFlowRecord>();
 		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter();
-		this.traceThroughputFilter = new ThroughputFilter<TraceEventRecords>();
+		this.traceThroughputFilter = new ElementThroughputMeasuringStage<TraceEventRecords>();
 		this.traceCounter = new CountingFilter<TraceEventRecords>();
 		EndStage<TraceEventRecords> endStage = new EndStage<TraceEventRecords>();
 

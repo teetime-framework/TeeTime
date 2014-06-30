@@ -81,8 +81,6 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	@Override
 	public void executeWithPorts() {
-		this.logger.debug("Executing stage...");
-
 		// StageWithPort<?, ?> headStage = this.currentHeads.next();
 		StageWithPort<?, ?> headStage = this.stages[this.firstStageIndex];
 
@@ -187,8 +185,6 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 		this.firstStage = null;
 		this.intermediateStages.clear();
 		this.lastStage = null;
-
-		System.out.println("cleaned up");
 	}
 
 }

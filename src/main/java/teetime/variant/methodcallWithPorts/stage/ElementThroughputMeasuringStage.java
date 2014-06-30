@@ -2,17 +2,16 @@ package teetime.variant.methodcallWithPorts.stage;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 
-public class ThroughputFilter<T> extends ConsumerStage<T, T> {
+public class ElementThroughputMeasuringStage<T> extends ConsumerStage<T, T> {
 
 	private final InputPort<Long> triggerInputPort = new InputPort<Long>(this);
 
 	private long numPassedElements;
-	private long timestamp;
+	private long lastTimestampInNs;
 
 	private final List<Long> throughputs = new LinkedList<Long>();
 
@@ -20,8 +19,7 @@ public class ThroughputFilter<T> extends ConsumerStage<T, T> {
 	protected void execute5(final T element) {
 		Long timestampInNs = this.triggerInputPort.receive();
 		if (timestampInNs != null) {
-			this.computeThroughput();
-			this.resetTimestamp();
+			this.computeElementThroughput(System.nanoTime());
 		}
 		this.numPassedElements++;
 		this.send(element);
@@ -29,24 +27,24 @@ public class ThroughputFilter<T> extends ConsumerStage<T, T> {
 
 	@Override
 	public void onStart() {
-		this.resetTimestamp();
+		this.resetTimestamp(System.nanoTime());
 		super.onStart();
 	}
 
-	private void computeThroughput() {
-		long diffInNs = System.nanoTime() - this.timestamp;
-		long diffInMs = TimeUnit.NANOSECONDS.toMillis(diffInNs);
-		long throughputPerMs = this.numPassedElements / diffInMs;
-		this.throughputs.add(throughputPerMs);
-		// this.logger.info("Throughput: " + throughputPerMs + " elements/ms");
+	private void computeElementThroughput(final Long timestampInNs) {
+		long diffInNs = timestampInNs - this.lastTimestampInNs;
+		if (diffInNs > 0) {
+			long throughputInNsPerElement = this.numPassedElements / diffInNs;
+			this.throughputs.add(throughputInNsPerElement);
+			this.logger.info("Throughput: " + throughputInNsPerElement + " elements/time unit");
 
-		// long diffInSec = TimeUnit.NANOSECONDS.toSeconds(diffInNs);
-		// long throughputPerSec = this.numPassedElements / diffInSec;
+			this.resetTimestamp(timestampInNs);
+		}
 	}
 
-	private void resetTimestamp() {
+	private void resetTimestamp(final Long timestampInNs) {
 		this.numPassedElements = 0;
-		this.timestamp = System.nanoTime();
+		this.lastTimestampInNs = timestampInNs;
 	}
 
 	public List<Long> getThroughputs() {

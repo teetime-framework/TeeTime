@@ -61,7 +61,7 @@ public class ChwWorkTcpTraceReconstructionAnalysisTest {
 		}
 
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceThroughputs());
-		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/ms");
+		System.out.println("Median throughput: " + quintiles.get(0.5) + " time units/element");
 
 		// assertEquals(1000, analysis.getNumTraces());
 		assertEquals(1000000, analysis.getNumTraces());
