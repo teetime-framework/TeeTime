@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 cp=.:teetime.jar:lib/kieker-1.9_aspectj.jar
 jvmParams=
