@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcallWithPorts.examples.traceReconstruction;
+package teetime.variant.methodcallWithPorts.examples.traceReconstructionWithThreads;
 
 import static org.junit.Assert.assertEquals;
 
@@ -32,7 +32,7 @@ import teetime.util.StopWatch;
  * 
  * @since 1.10
  */
-public class ChwWorkTcpTraceReconstructionAnalysisTest {
+public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 
 	private StopWatch stopWatch;
 
@@ -49,7 +49,7 @@ public class ChwWorkTcpTraceReconstructionAnalysisTest {
 
 	@Test
 	public void performAnalysis() {
-		final TcpTraceReconstructionAnalysis analysis = new TcpTraceReconstructionAnalysis();
+		final TcpTraceReconstructionAnalysisWithThreads analysis = new TcpTraceReconstructionAnalysisWithThreads();
 		analysis.init();
 
 		this.stopWatch.start();
@@ -59,6 +59,8 @@ public class ChwWorkTcpTraceReconstructionAnalysisTest {
 			this.stopWatch.end();
 			analysis.onTerminate();
 		}
+
+		System.out.println("Max size of pipe: " + analysis.getTcpRelayPipe().getMaxSize());
 
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceThroughputs());
 		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/ms");

@@ -17,10 +17,9 @@ package teetime.variant.methodcallWithPorts.stage.kieker.traceReconstruction;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
-import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
+import teetime.util.HashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
@@ -39,46 +38,22 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 	private TimeUnit timeunit;
 	private long maxTraceDuration = Long.MAX_VALUE;
 	private long maxTraceTimeout = Long.MAX_VALUE;
-	private boolean timeout;
 	private long maxEncounteredLoggingTimestamp = -1;
 
-	private static final Map<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
+	private static final Map<Long, TraceBuffer> traceId2trace = new HashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
 
 	@Override
 	protected void execute5(final IFlowRecord element) {
 		final Long traceId = this.reconstructTrace(element);
 		if (traceId != null) {
 			this.putIfFinished(traceId);
-			this.processTimestamp(element);
 		}
-	}
-
-	private void processTimestamp(final IFlowRecord record) {
-		if (this.timeout) {
-			synchronized (this) {
-				final long loggingTimestamp = this.getTimestamp(record);
-				// can we assume a rough order of logging timestamps? (yes, except with DB reader)
-				if (loggingTimestamp > this.maxEncounteredLoggingTimestamp) {
-					this.maxEncounteredLoggingTimestamp = loggingTimestamp;
-				}
-				this.processTimeoutQueue(this.maxEncounteredLoggingTimestamp);
-			}
-		}
-	}
-
-	private long getTimestamp(final IFlowRecord record) {
-		if (record instanceof AbstractTraceEvent) {
-			return ((AbstractTraceEvent) record).getTimestamp();
-		}
-		return -1;
 	}
 
 	private void putIfFinished(final Long traceId) {
 		final TraceBuffer traceBuffer = TraceReconstructionFilter.traceId2trace.get(traceId);
 		if (traceBuffer.isFinished()) {
-			synchronized (this) { // has to be synchronized because of timeout cleanup
-				TraceReconstructionFilter.traceId2trace.remove(traceId);
-			}
+			TraceReconstructionFilter.traceId2trace.remove(traceId);
 			this.put(traceBuffer);
 		}
 	}
@@ -101,12 +76,6 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 	}
 
 	@Override
-	public void onStart() {
-		this.timeout = !((this.maxTraceTimeout == Long.MAX_VALUE) && (this.maxTraceDuration == Long.MAX_VALUE));
-		super.onStart();
-	}
-
-	@Override
 	public void onIsPipelineHead() {
 		Iterator<TraceBuffer> iterator = TraceReconstructionFilter.traceId2trace.values().iterator();
 		while (iterator.hasNext()) {
@@ -116,20 +85,6 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 		}
 
 		super.onIsPipelineHead();
-	}
-
-	private void processTimeoutQueue(final long timestamp) {
-		final long duration = timestamp - this.maxTraceDuration;
-		final long traceTimeout = timestamp - this.maxTraceTimeout;
-
-		for (final Iterator<Entry<Long, TraceBuffer>> iterator = TraceReconstructionFilter.traceId2trace.entrySet().iterator(); iterator.hasNext();) {
-			final TraceBuffer traceBuffer = iterator.next().getValue();
-			if ((traceBuffer.getMaxLoggingTimestamp() <= traceTimeout) // long time no see
-					|| (traceBuffer.getMinLoggingTimestamp() <= duration)) { // max duration is gone
-				this.put(traceBuffer);
-				iterator.remove();
-			}
-		}
 	}
 
 	private void put(final TraceBuffer traceBuffer) {

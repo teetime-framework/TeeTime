@@ -16,6 +16,7 @@ public class Relay<T> extends AbstractStage<T, T> {
 			if (this.getInputPort().getPipe().isClosed()) {
 				this.setReschedulable(false);
 				System.out.println("got end signal; pipe.size: " + this.getInputPort().getPipe().size());
+				assert 0 == this.getInputPort().getPipe().size();
 			}
 			return;
 		}
