@@ -15,7 +15,6 @@ public class Relay<T> extends AbstractStage<T, T> {
 		if (null == element) {
 			if (this.getInputPort().getPipe().isClosed()) {
 				this.setReschedulable(false);
-				this.logger.debug("got end signal; pipe.size: " + this.getInputPort().getPipe().size());
 				assert 0 == this.getInputPort().getPipe().size();
 			}
 			Thread.yield();
@@ -26,7 +25,6 @@ public class Relay<T> extends AbstractStage<T, T> {
 
 	@Override
 	public void onIsPipelineHead() {
-		this.logger.debug("onIsPipelineHead");
 		if (this.getInputPort().getPipe().isClosed()) {
 			this.setReschedulable(false);
 		}

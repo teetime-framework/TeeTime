@@ -80,11 +80,13 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 
 		System.out.println("Max size of tcp-relay pipe: " + analysis.getTcpRelayPipe().getMaxSize());
 
-		Map<Double, Long> recordQuintiles = StatisticsUtil.calculateQuintiles(analysis.getRecordDelays());
-		System.out.println("Median record delay: " + recordQuintiles.get(0.5) + " time units/record");
+		// Map<Double, Long> recordQuintiles = StatisticsUtil.calculateQuintiles(analysis.getRecordDelays());
+		// System.out.println("Median record delay: " + recordQuintiles.get(0.5) + " time units/record");
 
-		Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceDelays());
-		System.out.println("Median trace delay: " + traceQuintiles.get(0.5) + " time units/trace");
+		// Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceDelays());
+		// System.out.println("Median trace delay: " + traceQuintiles.get(0.5) + " time units/trace");
+		Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceThroughputs());
+		System.out.println("Median trace throughput: " + traceQuintiles.get(0.5) + " traces/time unit");
 
 		// assertEquals(1000, analysis.getNumTraces());
 		assertEquals(1000000, analysis.getNumTraces());

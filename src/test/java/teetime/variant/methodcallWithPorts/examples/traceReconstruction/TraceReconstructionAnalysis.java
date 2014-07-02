@@ -3,7 +3,10 @@ package teetime.variant.methodcallWithPorts.examples.traceReconstruction;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
+import teetime.util.concurrent.hashmap.TraceBuffer;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
@@ -35,11 +38,10 @@ public class TraceReconstructionAnalysis extends Analysis {
 	private Thread workerThread;
 
 	private ClassNameRegistryRepository classNameRegistryRepository;
+	private final Map<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
 
 	private CountingFilter<IMonitoringRecord> recordCounter;
-
 	private CountingFilter<TraceEventRecords> traceCounter;
-
 	private ElementThroughputMeasuringStage<IFlowRecord> throughputFilter;
 
 	private File inputDir;
@@ -73,7 +75,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 		final InstanceOfFilter<IMonitoringRecord, IFlowRecord> instanceOfFilter = new InstanceOfFilter<IMonitoringRecord, IFlowRecord>(
 				IFlowRecord.class);
 		this.throughputFilter = new ElementThroughputMeasuringStage<IFlowRecord>();
-		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter();
+		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter(this.traceId2trace);
 		this.traceCounter = new CountingFilter<TraceEventRecords>();
 		final CollectorSink<TraceEventRecords> collector = new CollectorSink<TraceEventRecords>(this.elementCollection);
 

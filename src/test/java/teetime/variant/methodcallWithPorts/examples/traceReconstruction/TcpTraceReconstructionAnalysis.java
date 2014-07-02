@@ -2,7 +2,10 @@ package teetime.variant.methodcallWithPorts.examples.traceReconstruction;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
+import teetime.util.concurrent.hashmap.TraceBuffer;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
@@ -30,10 +33,10 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 	private Thread clock2Thread;
 	private Thread workerThread;
 
+	private final Map<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
+
 	private CountingFilter<IMonitoringRecord> recordCounter;
-
 	private CountingFilter<TraceEventRecords> traceCounter;
-
 	private ElementThroughputMeasuringStage<IFlowRecord> recordThroughputFilter;
 	private ElementThroughputMeasuringStage<TraceEventRecords> traceThroughputFilter;
 
@@ -71,7 +74,7 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 		final InstanceOfFilter<IMonitoringRecord, IFlowRecord> instanceOfFilter = new InstanceOfFilter<IMonitoringRecord, IFlowRecord>(
 				IFlowRecord.class);
 		this.recordThroughputFilter = new ElementThroughputMeasuringStage<IFlowRecord>();
-		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter();
+		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter(this.traceId2trace);
 		this.traceThroughputFilter = new ElementThroughputMeasuringStage<TraceEventRecords>();
 		this.traceCounter = new CountingFilter<TraceEventRecords>();
 		EndStage<TraceEventRecords> endStage = new EndStage<TraceEventRecords>();

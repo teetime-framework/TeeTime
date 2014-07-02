@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import teetime.util.HashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
@@ -40,7 +39,12 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 	private long maxTraceTimeout = Long.MAX_VALUE;
 	private long maxEncounteredLoggingTimestamp = -1;
 
-	private final Map<Long, TraceBuffer> traceId2trace = new HashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
+	private final Map<Long, TraceBuffer> traceId2trace;
+
+	public TraceReconstructionFilter(final Map<Long, TraceBuffer> traceId2trace) {
+		super();
+		this.traceId2trace = traceId2trace;
+	}
 
 	@Override
 	protected void execute5(final IFlowRecord element) {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcallWithPorts.examples.traceReconstruction;
+package teetime.variant.methodcallWithPorts.examples.traceReductionWithThreads;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,7 +22,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
@@ -32,7 +34,8 @@ import teetime.util.StopWatch;
  * 
  * @since 1.10
  */
-public class ChwWorkTcpTraceReconstructionAnalysisTest {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class ChwWorkTcpTraceReductionAnalysisWithThreadsTest {
 
 	private StopWatch stopWatch;
 
@@ -48,8 +51,23 @@ public class ChwWorkTcpTraceReconstructionAnalysisTest {
 	}
 
 	@Test
-	public void performAnalysis() {
-		final TcpTraceReconstructionAnalysis analysis = new TcpTraceReconstructionAnalysis();
+	public void performAnalysisWith1Thread() {
+		this.performAnalysis(1);
+	}
+
+	@Test
+	public void performAnalysisWith2Threads() {
+		this.performAnalysis(2);
+	}
+
+	@Test
+	public void performAnalysisWith4Threads() {
+		this.performAnalysis(4);
+	}
+
+	void performAnalysis(final int numWorkerThreads) {
+		final TcpTraceReductionAnalysisWithThreads analysis = new TcpTraceReductionAnalysisWithThreads();
+		analysis.setNumWorkerThreads(numWorkerThreads);
 		analysis.init();
 
 		this.stopWatch.start();
@@ -60,8 +78,15 @@ public class ChwWorkTcpTraceReconstructionAnalysisTest {
 			analysis.onTerminate();
 		}
 
-		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceThroughputs());
-		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
+		System.out.println("Max size of tcp-relay pipe: " + analysis.getTcpRelayPipe().getMaxSize());
+
+		// Map<Double, Long> recordQuintiles = StatisticsUtil.calculateQuintiles(analysis.getRecordDelays());
+		// System.out.println("Median record delay: " + recordQuintiles.get(0.5) + " time units/record");
+
+		// Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceDelays());
+		// System.out.println("Median trace delay: " + traceQuintiles.get(0.5) + " time units/trace");
+		Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceThroughputs());
+		System.out.println("Median trace throughput: " + traceQuintiles.get(0.5) + " traces/time unit");
 
 		// assertEquals(1000, analysis.getNumTraces());
 		assertEquals(1000000, analysis.getNumTraces());
@@ -74,6 +99,33 @@ public class ChwWorkTcpTraceReconstructionAnalysisTest {
 
 		// assertEquals(21001, analysis.getNumRecords());
 		assertEquals(21000001, analysis.getNumRecords());
+	}
+
+	public static void main(final String[] args) {
+		ChwWorkTcpTraceReductionAnalysisWithThreadsTest analysis = new ChwWorkTcpTraceReductionAnalysisWithThreadsTest();
+		analysis.before();
+		try {
+			analysis.performAnalysisWith1Thread();
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		analysis.after();
+
+		analysis.before();
+		try {
+			analysis.performAnalysisWith2Threads();
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		analysis.after();
+
+		analysis.before();
+		try {
+			analysis.performAnalysisWith4Threads();
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		analysis.after();
 	}
 
 }
