@@ -58,7 +58,7 @@ public class EndStage<T> implements StageWithPort<T, T> {
 
 	@Override
 	public void executeWithPorts() {
-		// this.getInputPort().receive(); // just consume
+		this.getInputPort().receive(); // just consume
 		// do nothing
 		// this.count++;
 		// Object r = this.closure.execute(null);

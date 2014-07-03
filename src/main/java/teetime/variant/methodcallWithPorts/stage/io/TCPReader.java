@@ -28,6 +28,7 @@ import teetime.variant.methodcallWithPorts.framework.core.ProducerStage;
 import kieker.common.exception.MonitoringRecordException;
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
+import kieker.common.record.AbstractMonitoringRecord;
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.flow.trace.TraceMetadata;
 import kieker.common.record.flow.trace.operation.AfterOperationEvent;
@@ -150,8 +151,8 @@ public class TCPReader extends ProducerStage<Void, IMonitoringRecord> {
 						final long loggingTimestamp = buffer.getLong();
 						final IMonitoringRecord record;
 						try { // NOCS (Nested try-catch)
-							record = this.recordFactory.create(clazzid, buffer, this.stringRegistry);
-							// record = AbstractMonitoringRecord.createFromByteBuffer(clazzid, buffer, this.stringRegistry);
+						// record = this.recordFactory.create(clazzid, buffer, this.stringRegistry);
+							record = AbstractMonitoringRecord.createFromByteBuffer(clazzid, buffer, this.stringRegistry);
 							record.setLoggingTimestamp(loggingTimestamp);
 							this.send(record);
 						} catch (final MonitoringRecordException ex) {
