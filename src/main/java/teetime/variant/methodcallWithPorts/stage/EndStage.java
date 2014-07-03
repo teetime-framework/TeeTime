@@ -42,7 +42,6 @@ public class EndStage<T> implements StageWithPort<T, T> {
 
 	@Override
 	public boolean isReschedulable() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

@@ -9,7 +9,6 @@ import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.stage.EndStage;
-import teetime.variant.methodcallWithPorts.stage.io.TCPReader;
 
 import kieker.analysis.plugin.filter.flow.TraceEventRecords;
 import kieker.common.record.IMonitoringRecord;
@@ -30,7 +29,7 @@ public class TcpTraceLogging extends Analysis {
 	}
 
 	private StageWithPort<Void, IMonitoringRecord> buildTcpPipeline() {
-		TCPReader tcpReader = new TCPReader();
+		TCPReaderSink tcpReader = new TCPReaderSink();
 		EndStage<IMonitoringRecord> endStage = new EndStage<IMonitoringRecord>();
 
 		SingleElementPipe.connect(tcpReader.getOutputPort(), endStage.getInputPort());

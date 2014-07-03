@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcallWithPorts.stage.io;
+package teetime.variant.methodcallWithPorts.examples.kiekerdays;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -28,12 +28,8 @@ import teetime.variant.methodcallWithPorts.framework.core.ProducerStage;
 import kieker.common.exception.MonitoringRecordException;
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
+import kieker.common.record.AbstractMonitoringRecord;
 import kieker.common.record.IMonitoringRecord;
-import kieker.common.record.flow.trace.TraceMetadata;
-import kieker.common.record.flow.trace.operation.AfterOperationEvent;
-import kieker.common.record.flow.trace.operation.BeforeOperationEvent;
-import kieker.common.record.flow.trace.operation.CallOperationEvent;
-import kieker.common.record.misc.KiekerMetadataRecord;
 import kieker.common.record.misc.RegistryRecord;
 import kieker.common.util.registry.ILookup;
 import kieker.common.util.registry.Lookup;
@@ -45,7 +41,7 @@ import kieker.common.util.registry.Lookup;
  * 
  * @since 1.10
  */
-public class TCPReader extends ProducerStage<Void, IMonitoringRecord> {
+public class TCPReaderSink extends ProducerStage<Void, IMonitoringRecord> {
 
 	private static final int MESSAGE_BUFFER_SIZE = 65535;
 
@@ -55,15 +51,6 @@ public class TCPReader extends ProducerStage<Void, IMonitoringRecord> {
 	private int port2 = 10134;
 
 	private TCPStringReader tcpStringReader;
-
-	private RecordFactory recordFactory;
-
-	// @Override // implement onStop
-	// public void onPipelineStops() {
-	// super.logger.info("Shutdown of TCPReader requested.");
-	// // TODO actually implement terminate!
-	// super.onPipelineStops();
-	// }
 
 	public final int getPort1() {
 		return this.port1;
@@ -83,49 +70,9 @@ public class TCPReader extends ProducerStage<Void, IMonitoringRecord> {
 
 	@Override
 	public void onStart() {
-		this.recordFactory = new RecordFactory();
-		this.register();
-
 		this.tcpStringReader = new TCPStringReader(this.port2, this.stringRegistry);
 		this.tcpStringReader.start();
 		super.onStart();
-	}
-
-	private void register() {
-		this.recordFactory.register(TraceMetadata.class.getCanonicalName(), new IRecordFactoryMethod() {
-			@Override
-			public IMonitoringRecord create(final ByteBuffer buffer, final ILookup<String> stringRegistry) {
-				return new TraceMetadata(buffer, stringRegistry);
-			}
-		});
-
-		this.recordFactory.register(KiekerMetadataRecord.class.getCanonicalName(), new IRecordFactoryMethod() {
-			@Override
-			public IMonitoringRecord create(final ByteBuffer buffer, final ILookup<String> stringRegistry) {
-				return new KiekerMetadataRecord(buffer, stringRegistry);
-			}
-		});
-
-		this.recordFactory.register(BeforeOperationEvent.class.getCanonicalName(), new IRecordFactoryMethod() {
-			@Override
-			public IMonitoringRecord create(final ByteBuffer buffer, final ILookup<String> stringRegistry) {
-				return new BeforeOperationEvent(buffer, stringRegistry);
-			}
-		});
-
-		this.recordFactory.register(AfterOperationEvent.class.getCanonicalName(), new IRecordFactoryMethod() {
-			@Override
-			public IMonitoringRecord create(final ByteBuffer buffer, final ILookup<String> stringRegistry) {
-				return new AfterOperationEvent(buffer, stringRegistry);
-			}
-		});
-
-		this.recordFactory.register(CallOperationEvent.class.getCanonicalName(), new IRecordFactoryMethod() {
-			@Override
-			public IMonitoringRecord create(final ByteBuffer buffer, final ILookup<String> stringRegistry) {
-				return new CallOperationEvent(buffer, stringRegistry);
-			}
-		});
 	}
 
 	@Override
@@ -150,10 +97,9 @@ public class TCPReader extends ProducerStage<Void, IMonitoringRecord> {
 						final long loggingTimestamp = buffer.getLong();
 						final IMonitoringRecord record;
 						try { // NOCS (Nested try-catch)
-							record = this.recordFactory.create(clazzid, buffer, this.stringRegistry);
-							// record = AbstractMonitoringRecord.createFromByteBuffer(clazzid, buffer, this.stringRegistry);
+							record = AbstractMonitoringRecord.createFromByteBuffer(clazzid, buffer, this.stringRegistry);
 							record.setLoggingTimestamp(loggingTimestamp);
-							this.send(record);
+							// this.send(record);
 						} catch (final MonitoringRecordException ex) {
 							super.logger.error("Failed to create record.", ex);
 						}
