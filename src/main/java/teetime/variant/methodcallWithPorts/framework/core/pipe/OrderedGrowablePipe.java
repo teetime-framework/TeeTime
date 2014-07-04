@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public class OrderedGrowablePipe<T> extends AbstractPipe<T> {
+public class OrderedGrowablePipe<T> extends IntraThreadPipe<T> {
 
 	private LinkedList<T> elements;
 
@@ -48,5 +48,4 @@ public class OrderedGrowablePipe<T> extends AbstractPipe<T> {
 	public int size() {
 		return this.elements.size();
 	}
-
 }

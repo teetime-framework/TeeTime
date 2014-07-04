@@ -3,8 +3,7 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-//public class SingleElementPipe<T> implements IPipe<T> {
-public class SingleElementPipe<T> extends AbstractPipe<T> {
+public class SingleElementPipe<T> extends IntraThreadPipe<T> {
 
 	private T element;
 

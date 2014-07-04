@@ -6,6 +6,7 @@ import java.util.List;
 import teetime.util.ConstructorClosure;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
+import teetime.variant.methodcallWithPorts.framework.core.Signal;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 
 public class EndStage<T> implements StageWithPort<T, T> {
@@ -62,6 +63,11 @@ public class EndStage<T> implements StageWithPort<T, T> {
 	public void onStart() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
+		// do nothing
 	}
 
 }

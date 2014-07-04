@@ -3,12 +3,12 @@ package teetime.variant.methodcallWithPorts.framework.core;
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
 
-public class RunnableStage implements Runnable {
+public class RunnableStage<I> implements Runnable {
 
-	private final StageWithPort<?, ?> stage;
+	private final StageWithPort<I, ?> stage;
 	private final Log logger;
 
-	public RunnableStage(final StageWithPort<?, ?> stage) {
+	public RunnableStage(final StageWithPort<I, ?> stage) {
 		this.stage = stage;
 		this.logger = LogFactory.getLog(stage.getClass());
 	}
@@ -22,12 +22,11 @@ public class RunnableStage implements Runnable {
 				this.stage.executeWithPorts();
 			} while (this.stage.isReschedulable());
 
-			// stage.sendFinishedSignalToAllSuccessorStages();
+			this.stage.onSignal(Signal.FINISHED, this.stage.getInputPort());
 
 		} catch (RuntimeException e) {
 			this.logger.error("Terminating thread due to the following exception: ", e);
 			throw e;
 		}
 	}
-
 }

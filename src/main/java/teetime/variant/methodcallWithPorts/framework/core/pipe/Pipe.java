@@ -4,7 +4,7 @@ import teetime.util.list.CommittableResizableArrayQueue;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public class Pipe<T> extends AbstractPipe<T> {
+public class Pipe<T> extends IntraThreadPipe<T> {
 
 	private final CommittableResizableArrayQueue<T> elements = new CommittableResizableArrayQueue<T>(null, 4);
 
@@ -66,5 +66,4 @@ public class Pipe<T> extends AbstractPipe<T> {
 	public int size() {
 		return this.elements.size();
 	}
-
 }

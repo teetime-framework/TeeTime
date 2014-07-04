@@ -24,6 +24,7 @@ import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
+import teetime.variant.methodcallWithPorts.framework.core.Signal;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
@@ -159,7 +160,8 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		for (int i = 0; i < this.numInputObjects; i++) {
 			startPipe.add(this.inputObjectCreator.create());
 		}
-		startPipe.close();
+		// startPipe.close();
+		startPipe.setSignal(Signal.FINISHED);
 
 		UnorderedGrowablePipe.connect(relay.getOutputPort(), startTimestampFilter.getInputPort());
 

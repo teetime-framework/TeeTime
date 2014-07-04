@@ -3,33 +3,8 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public class UnorderedGrowablePipe<T> extends AbstractPipe<T> {
+public class UnorderedGrowablePipe<T> extends IntraThreadPipe<T> {
 
-	// private static final class ArrayWrapper2<T> {
-	//
-	// private final T[] elements;
-	//
-	// // private int lastFreeIndex;
-	//
-	// @SuppressWarnings("unchecked")
-	// public ArrayWrapper2(final int initialCapacity) {
-	// super();
-	// this.elements = (T[]) new Object[initialCapacity];
-	// }
-	//
-	// public final T get(final int index) {
-	// return this.elements[index];
-	// }
-	//
-	// public final void put(final int index, final T element) {
-	// this.elements[index] = element;
-	// }
-	//
-	// public final int getCapacity() {
-	// return this.elements.length;
-	// }
-	//
-	// }
 	private final int MIN_CAPACITY;
 
 	private T[] elements;

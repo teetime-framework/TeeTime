@@ -102,6 +102,27 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 		return this.id;
 	}
 
+	/**
+	 * May not be invoked outside of IPipe implementations
+	 */
+	@Override
+	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
+		switch (signal) {
+		case FINISHED:
+			this.onFinished();
+			break;
+		default:
+			this.logger.warn("Aborted sending signal " + signal + ". Reason: Unknown signal.");
+			break;
+		}
+
+		this.getOutputPort().sendSignal(signal);
+	}
+
+	protected void onFinished() {
+		// empty default implementation
+	}
+
 	@Override
 	public String toString() {
 		return this.getClass().getName() + ": " + this.id;

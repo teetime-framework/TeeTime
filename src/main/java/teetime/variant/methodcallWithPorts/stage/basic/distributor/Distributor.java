@@ -54,10 +54,10 @@ public class Distributor<T> extends AbstractStage<T, T> {
 
 	@Override
 	public void onIsPipelineHead() {
-		for (OutputPort<T> op : this.outputPortList) {
-			op.getPipe().close();
-			System.out.println("End signal sent, size: " + op.getPipe().size());
-		}
+		// for (OutputPort<T> op : this.outputPortList) {
+		// op.getPipe().close();
+		// System.out.println("End signal sent, size: " + op.getPipe().size());
+		// }
 	}
 
 	@Override
@@ -83,4 +83,5 @@ public class Distributor<T> extends AbstractStage<T, T> {
 
 		this.execute5(element);
 	}
+
 }

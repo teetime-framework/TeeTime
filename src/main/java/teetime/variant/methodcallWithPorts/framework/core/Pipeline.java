@@ -61,13 +61,13 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 	public void executeWithPorts() {
 		StageWithPort<?, ?> headStage = this.stages[this.firstStageIndex];
 
-		do {
-			headStage.executeWithPorts();
-		} while (headStage.isReschedulable());
+		// do {
+		headStage.executeWithPorts();
+		// } while (headStage.isReschedulable());
 
 		// headStage.sendFinishedSignalToAllSuccessorStages();
 
-		this.updateRescheduable(headStage);
+		// this.updateRescheduable(headStage);
 	}
 
 	private final void updateRescheduable(final StageWithPort<?, ?> stage) {
@@ -162,6 +162,11 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 		this.firstStage = null;
 		this.intermediateStages.clear();
 		this.lastStage = null;
+	}
+
+	@Override
+	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
+		throw new IllegalStateException("Should not be used since the signal is directly passed via the first stage's input port.");
 	}
 
 }

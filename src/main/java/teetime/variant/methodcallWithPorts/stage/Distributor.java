@@ -36,12 +36,12 @@ public final class Distributor<T> extends AbstractStage<T, T> {
 
 	@Override
 	public void onIsPipelineHead() {
-		for (OutputPort<?> op : this.outputPorts) {
-			op.getPipe().close();
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("End signal sent, size: " + op.getPipe().size());
-			}
-		}
+		// for (OutputPort<?> op : this.outputPorts) {
+		// op.getPipe().close();
+		// if (this.logger.isDebugEnabled()) {
+		// this.logger.debug("End signal sent, size: " + op.getPipe().size());
+		// }
+		// }
 
 		// for (OutputPort<?> op : this.outputPorts) {
 		// op.pipe = null;

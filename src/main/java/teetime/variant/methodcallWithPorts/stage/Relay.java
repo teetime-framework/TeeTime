@@ -2,8 +2,12 @@ package teetime.variant.methodcallWithPorts.stage;
 
 import teetime.util.list.CommittableQueue;
 import teetime.variant.methodcallWithPorts.framework.core.AbstractStage;
+import teetime.variant.methodcallWithPorts.framework.core.Signal;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 
 public class Relay<T> extends AbstractStage<T, T> {
+
+	private SpScPipe<T> inputPipe;
 
 	public Relay() {
 		this.setReschedulable(true);
@@ -13,7 +17,8 @@ public class Relay<T> extends AbstractStage<T, T> {
 	public void executeWithPorts() {
 		T element = this.getInputPort().receive();
 		if (null == element) {
-			if (this.getInputPort().getPipe().isClosed()) {
+			// if (this.getInputPort().getPipe().isClosed()) {
+			if (this.inputPipe.getSignal() == Signal.FINISHED) {
 				this.setReschedulable(false);
 				assert 0 == this.getInputPort().getPipe().size();
 			}
@@ -24,10 +29,16 @@ public class Relay<T> extends AbstractStage<T, T> {
 	}
 
 	@Override
+	public void onStart() {
+		this.inputPipe = (SpScPipe<T>) this.getInputPort().getPipe();
+		super.onStart();
+	}
+
+	@Override
 	public void onIsPipelineHead() {
-		if (this.getInputPort().getPipe().isClosed()) {
-			this.setReschedulable(false);
-		}
+		// if (this.getInputPort().getPipe().isClosed()) {
+		// this.setReschedulable(false);
+		// }
 	}
 
 	@Override

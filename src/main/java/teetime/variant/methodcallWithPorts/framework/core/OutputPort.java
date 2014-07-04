@@ -34,4 +34,8 @@ public class OutputPort<T> {
 		this.cachedTargetStage = cachedTargetStage;
 	}
 
+	public void sendSignal(final Signal signal) {
+		this.pipe.setSignal(signal);
+	}
+
 }

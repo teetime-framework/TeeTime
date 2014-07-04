@@ -1,6 +1,7 @@
 package teetime.variant.methodcallWithPorts.framework.core.pipe;
 
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
+import teetime.variant.methodcallWithPorts.framework.core.Signal;
 
 public interface IPipe<T> {
 
@@ -14,12 +15,14 @@ public interface IPipe<T> {
 
 	T readLast();
 
-	void close();
-
-	boolean isClosed();
+	// void close();
+	//
+	// boolean isClosed();
 
 	InputPort<T> getTargetPort();
 
 	void setTargetPort(InputPort<T> targetPort);
+
+	void setSignal(Signal signal);
 
 }
