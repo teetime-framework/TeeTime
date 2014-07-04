@@ -8,6 +8,7 @@ import java.util.UUID;
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
 
+// BETTER remove the pipeline since it does not add any new functionality
 public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	private final String id;
@@ -58,22 +59,20 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	@Override
 	public void executeWithPorts() {
-		// StageWithPort<?, ?> headStage = this.currentHeads.next();
 		StageWithPort<?, ?> headStage = this.stages[this.firstStageIndex];
 
 		do {
 			headStage.executeWithPorts();
 		} while (headStage.isReschedulable());
 
+		// headStage.sendFinishedSignalToAllSuccessorStages();
+
 		this.updateRescheduable(headStage);
 	}
 
 	private final void updateRescheduable(final StageWithPort<?, ?> stage) {
 		StageWithPort<?, ?> currentStage = stage;
-		while (!currentStage.isReschedulable()) {
-			// this.currentHeads.remove(currentStage);
-			// this.currentHeads.addAll(currentStage.getOutputPorts());
-
+		do {
 			this.firstStageIndex++;
 			// currentStage = currentStage.getOutputPort().getPipe().getTargetStage(); // FIXME what to do with a stage with more than one output port?
 			// if (currentStage == null) { // loop reaches the last stage
@@ -84,7 +83,8 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 			}
 			currentStage = this.stages[this.firstStageIndex];
 			currentStage.onIsPipelineHead();
-		}
+		} while (!currentStage.isReschedulable());
+
 		this.setReschedulable(true);
 	}
 

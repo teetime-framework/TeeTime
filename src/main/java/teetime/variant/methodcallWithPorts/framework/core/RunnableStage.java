@@ -21,6 +21,9 @@ public class RunnableStage implements Runnable {
 			do {
 				this.stage.executeWithPorts();
 			} while (this.stage.isReschedulable());
+
+			// stage.sendFinishedSignalToAllSuccessorStages();
+
 		} catch (RuntimeException e) {
 			this.logger.error("Terminating thread due to the following exception: ", e);
 			throw e;
