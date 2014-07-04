@@ -73,6 +73,20 @@ public class ChwComparisonMethodcallWithPorts {
 		PerformanceResult test19c = performanceResults
 				.get("testWithManyObjectsAnd4Threads(teetime.variant.methodcallWithPorts.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
 
+		double value14 = (double) test14.quantiles.get(0.5) / test1.quantiles.get(0.5);
+		double value10 = (double) test10.quantiles.get(0.5) / test1.quantiles.get(0.5);
+		double value11 = (double) test11.quantiles.get(0.5) / test1.quantiles.get(0.5);
+		double value9 = (double) test9.quantiles.get(0.5) / test1.quantiles.get(0.5);
+		double value15 = (double) test15.quantiles.get(0.5) / test1.quantiles.get(0.5);
+		double value17 = (double) test17.quantiles.get(0.5) / test1.quantiles.get(0.5);
+
+		System.out.println("value14: " + value14);
+		System.out.println("value10: " + value10);
+		System.out.println("value11: " + value11);
+		System.out.println("value9: " + value9);
+		System.out.println("value15: " + value15);
+		System.out.println("value17: " + value17);
+
 		// until 25.06.2014 (incl.)
 		// assertEquals(60, (double) test14.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
 		// assertEquals(14, (double) test10.quantiles.get(0.5) / test1.quantiles.get(0.5), 2.1);
@@ -82,12 +96,20 @@ public class ChwComparisonMethodcallWithPorts {
 		// assertEquals(39, (double) test17.quantiles.get(0.5) / test1.quantiles.get(0.5), 4.1);
 
 		// since 26.06.2014 (incl.)
-		assertEquals(76, (double) test14.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1); // +16
-		assertEquals(26, (double) test10.quantiles.get(0.5) / test1.quantiles.get(0.5), 2.1); // +14
-		assertEquals(44, (double) test11.quantiles.get(0.5) / test1.quantiles.get(0.5), 4.1); // +12
-		assertEquals(36, (double) test9.quantiles.get(0.5) / test1.quantiles.get(0.5), 2.1); // +14
-		assertEquals(44, (double) test15.quantiles.get(0.5) / test1.quantiles.get(0.5), 4.1); // +0
-		assertEquals(53, (double) test17.quantiles.get(0.5) / test1.quantiles.get(0.5), 4.1); // +14
+		// assertEquals(76, value14, 5.1); // +16
+		// assertEquals(26, value10, 2.1); // +14
+		// assertEquals(44, value11, 4.1); // +12
+		// assertEquals(36, value9, 2.1); // +14
+		// assertEquals(44, value15, 4.1); // +0
+		// assertEquals(53, value17, 4.1); // +14
+
+		// since 04.07.2014 (incl.)
+		assertEquals(86, value14, 5.1); // +16
+		assertEquals(26, value10, 2.1); // +0
+		assertEquals(37, value11, 4.1); // -7
+		assertEquals(42, value9, 2.1); // +6
+		assertEquals(44, value15, 4.1); // +0
+		assertEquals(53, value17, 4.1); // +0
 
 		// below results vary too much, possibly due to the OS' scheduler
 		// assertEquals(RESULT_TESTS_16, (double) test16a.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);

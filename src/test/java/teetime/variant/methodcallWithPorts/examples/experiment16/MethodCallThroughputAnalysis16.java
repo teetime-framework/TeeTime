@@ -62,7 +62,7 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 	public void init() {
 		super.init();
 		Pipeline<Void, TimestampObject> producerPipeline = this.buildProducerPipeline(this.numInputObjects, this.inputObjectCreator);
-		this.producerThread = new Thread(new RunnableStage(producerPipeline));
+		this.producerThread = new Thread(new RunnableStage<Void>(producerPipeline));
 
 		this.numWorkerThreads = Math.min(NUM_WORKER_THREADS, this.numWorkerThreads);
 
@@ -71,8 +71,8 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 			List<TimestampObject> resultList = new ArrayList<TimestampObject>(this.numInputObjects);
 			this.timestampObjectsList.add(resultList);
 
-			Runnable workerRunnable = this.buildPipeline(producerPipeline, resultList);
-			this.workerThreads[i] = new Thread(workerRunnable);
+			Pipeline<TimestampObject, Void> workerPipeline = this.buildPipeline(producerPipeline, resultList);
+			this.workerThreads[i] = new Thread(new RunnableStage<TimestampObject>(workerPipeline));
 		}
 
 		// this.producerThread.start();
@@ -102,7 +102,7 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
-	private Runnable buildPipeline(final StageWithPort<Void, TimestampObject> previousStage, final List<TimestampObject> timestampObjects) {
+	private Pipeline<TimestampObject, Void> buildPipeline(final StageWithPort<Void, TimestampObject> previousStage, final List<TimestampObject> timestampObjects) {
 		Relay<TimestampObject> relay = new Relay<TimestampObject>();
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
@@ -132,7 +132,7 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 		SingleElementPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
 		SingleElementPipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
-		return new RunnableStage(pipeline);
+		return pipeline;
 	}
 
 	@Override

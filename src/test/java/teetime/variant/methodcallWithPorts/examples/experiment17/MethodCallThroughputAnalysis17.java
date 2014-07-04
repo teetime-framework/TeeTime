@@ -61,7 +61,7 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 	@Override
 	public void init() {
 		final Pipeline<Void, TimestampObject> producerPipeline = this.buildProducerPipeline(this.numInputObjects, this.inputObjectCreator);
-		this.producerThread = new Thread(new RunnableStage(producerPipeline));
+		this.producerThread = new Thread(new RunnableStage<Void>(producerPipeline));
 
 		int numWorkerThreads = Math.min(NUM_WORKER_THREADS, 1); // only for testing purpose
 
@@ -95,7 +95,7 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 
 		// this.producerThread.start();
 		// this.producerThread.run();
-		new RunnableStage(producerPipeline).run();
+		new RunnableStage<Void>(producerPipeline).run();
 
 		// try {
 		// this.producerThread.join();
@@ -155,7 +155,7 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		pipeline.addIntermediateStage(stopTimestampFilter);
 		pipeline.setLastStage(collectorSink);
 
-		SpScPipe.connect(null, relay.getInputPort(), SPSC_INITIAL_CAPACITY);
+		relay.getInputPort().setPipe(new SpScPipe<TimestampObject>(SPSC_INITIAL_CAPACITY));
 		IPipe<TimestampObject> startPipe = relay.getInputPort().getPipe();
 		for (int i = 0; i < this.numInputObjects; i++) {
 			startPipe.add(this.inputObjectCreator.create());

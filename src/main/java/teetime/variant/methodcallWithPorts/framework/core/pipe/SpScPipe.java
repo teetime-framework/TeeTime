@@ -13,7 +13,7 @@ public class SpScPipe<T> extends AbstractPipe<T> {
 	private int maxSize;
 	private final AtomicReference<Signal> signal = new AtomicReference<Signal>();
 
-	private SpScPipe(final int capacity) {
+	public SpScPipe(final int capacity) {
 		this.queue = new FFBufferOrdered3<T>(capacity);
 	}
 
