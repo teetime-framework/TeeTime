@@ -37,32 +37,6 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 		return this.outputPort;
 	}
 
-	@Override
-	public CommittableQueue<O> execute2(final CommittableQueue<I> elements) {
-		// pass through the end signal
-		// InputPort<I> port = this.getInputPort();
-		// if (elements != null) {
-		// // I element = port.read();
-		// // I element = elements.getTail();
-		// // if (element == END_SIGNAL) {
-		// // this.send((O) END_SIGNAL);
-		// // } else {
-		// // // elements = this.getInputPort().pipe.getElements();
-		// // }
-		//
-		// this.execute4(elements);
-		// } else {
-		// throw new IllegalStateException();
-		// }
-
-		this.execute4(elements);
-
-		// this.outputElements.commit();
-
-		// return this.outputElements;
-		return null;
-	}
-
 	protected void execute4(final CommittableQueue<I> elements) {
 		throw new IllegalStateException(); // default implementation
 	}

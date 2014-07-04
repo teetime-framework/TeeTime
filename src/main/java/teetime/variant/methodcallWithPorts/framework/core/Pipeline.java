@@ -5,8 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import teetime.util.list.CommittableQueue;
-
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
 
@@ -56,27 +54,6 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	public void setLastStage(final StageWithPort<?, O> stage) {
 		this.lastStage = stage;
-	}
-
-	@Override
-	public CommittableQueue<O> execute2(final CommittableQueue<I> elements) {
-		// CommittableQueue queue = this.firstStage.execute2(elements);
-		// for (Stage<?, ?> stage : this.intermediateStages) {
-		// queue = stage.execute2(queue);
-		// }
-		// return this.lastStage.execute2(queue);
-
-		// below is faster than above (probably because of the instantiation of a list iterator in each (!) execution)
-		CommittableQueue queue = elements;
-
-		// for (int i = this.startIndex; i < this.stages.length; i++) {
-		// Stage<?, ?> stage = this.stages[i];
-		// queue = stage.execute2(queue);
-		// }
-
-		this.firstStage.execute2(elements);
-		this.setReschedulable(this.firstStage.isReschedulable());
-		return queue;
 	}
 
 	@Override

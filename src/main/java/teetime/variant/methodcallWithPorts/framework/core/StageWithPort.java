@@ -1,6 +1,5 @@
 package teetime.variant.methodcallWithPorts.framework.core;
 
-import teetime.util.list.CommittableQueue;
 
 public interface StageWithPort<I, O> {
 
@@ -9,8 +8,6 @@ public interface StageWithPort<I, O> {
 	OutputPort<O> getOutputPort();
 
 	void executeWithPorts();
-
-	CommittableQueue<O> execute2(CommittableQueue<I> elements);
 
 	StageWithPort<?, ?> getParentStage();
 

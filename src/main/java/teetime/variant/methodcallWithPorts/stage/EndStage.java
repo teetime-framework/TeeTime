@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import teetime.util.ConstructorClosure;
-import teetime.util.list.CommittableQueue;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
@@ -20,12 +19,6 @@ public class EndStage<T> implements StageWithPort<T, T> {
 	@Override
 	public void onIsPipelineHead() {
 		// do nothing
-	}
-
-	@Override
-	public CommittableQueue<T> execute2(final CommittableQueue<T> elements) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
