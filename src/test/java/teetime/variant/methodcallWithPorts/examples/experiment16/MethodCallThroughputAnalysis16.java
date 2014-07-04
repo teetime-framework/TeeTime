@@ -74,15 +74,6 @@ public class MethodCallThroughputAnalysis16 extends Analysis {
 			Pipeline<TimestampObject, Void> workerPipeline = this.buildPipeline(producerPipeline, resultList);
 			this.workerThreads[i] = new Thread(new RunnableStage<TimestampObject>(workerPipeline));
 		}
-
-		// this.producerThread.start();
-		//
-		// try {
-		// this.producerThread.join();
-		// } catch (InterruptedException e1) {
-		// // TODO Auto-generated catch block
-		// e1.printStackTrace();
-		// }
 	}
 
 	private Pipeline<Void, TimestampObject> buildProducerPipeline(final int numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
