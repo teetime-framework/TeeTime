@@ -18,7 +18,7 @@ package teetime.variant.methodcallWithPorts.stage.kieker.fileToRecord;
 import java.io.File;
 
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.stage.io.File2TextLinesFilter;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
 import teetime.variant.methodcallWithPorts.stage.kieker.fileToRecord.textLine.TextLine2RecordFilter;
@@ -40,6 +40,6 @@ public class DatFile2RecordFilter extends Pipeline<File, IMonitoringRecord> {
 		this.setLastStage(textLine2RecordFilter);
 
 		// BETTER let the framework choose the optimal pipe implementation
-		SpScPipe.connect(file2TextLinesFilter.getOutputPort(), textLine2RecordFilter.getInputPort(), 1);
+		SingleElementPipe.connect(file2TextLinesFilter.getOutputPort(), textLine2RecordFilter.getInputPort());
 	}
 }

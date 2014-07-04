@@ -18,14 +18,14 @@ public class Cache<T> extends ConsumerStage<T, T> {
 
 	@Override
 	public void onIsPipelineHead() {
-		this.logger.debug("Emitting cached elements...");
+		this.logger.debug("Emitting " + this.cachedObjects.size() + " cached elements...");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		for (T cachedElement : this.cachedObjects) {
 			this.send(cachedElement);
 		}
 		stopWatch.end();
-		System.out.println("dur: " + TimeUnit.NANOSECONDS.toMillis(stopWatch.getDurationInNs()) + " ms");
+		this.logger.debug("Emitting took " + TimeUnit.NANOSECONDS.toMillis(stopWatch.getDurationInNs()) + " ms");
 		super.onIsPipelineHead();
 	}
 

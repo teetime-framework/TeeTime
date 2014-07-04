@@ -23,6 +23,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -78,8 +80,9 @@ public class ChwWorkTraceReconstructionAnalysisTest {
 		TraceEventRecords trace6886 = analysis.getElementCollection().get(1);
 		assertEquals(6886, trace6886.getTraceMetadata().getTraceId());
 
+		this.removeFirstZeroThroughputs(analysis);
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
-		System.out.println("Median throughput: " + quintiles.get(0.5) + " time units/element");
+		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
 	}
 
 	@Test
@@ -105,8 +108,9 @@ public class ChwWorkTraceReconstructionAnalysisTest {
 		TraceEventRecords trace1 = analysis.getElementCollection().get(1);
 		assertEquals(8974347286117089281l, trace1.getTraceMetadata().getTraceId());
 
+		this.removeFirstZeroThroughputs(analysis);
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
-		System.out.println("Median throughput: " + quintiles.get(0.5) + " time units/element");
+		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
 
 		assertThat(quintiles.get(0.5), is(both(greaterThan(1100l)).and(lessThan(1400l))));
 	}
@@ -134,8 +138,21 @@ public class ChwWorkTraceReconstructionAnalysisTest {
 		TraceEventRecords trace1 = analysis.getElementCollection().get(1);
 		assertEquals(1, trace1.getTraceMetadata().getTraceId());
 
+		this.removeFirstZeroThroughputs(analysis);
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
-		System.out.println("Median throughput: " + quintiles.get(0.5) + " time units/element");
+		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
+	}
+
+	private void removeFirstZeroThroughputs(final TraceReconstructionAnalysis analysis) {
+		List<Long> throughputs = analysis.getThroughputs();
+		Iterator<Long> iterator = throughputs.iterator();
+		while (iterator.hasNext()) {
+			if (iterator.next() == 0) {
+				iterator.remove();
+			} else {
+				break;
+			}
+		}
 	}
 
 }

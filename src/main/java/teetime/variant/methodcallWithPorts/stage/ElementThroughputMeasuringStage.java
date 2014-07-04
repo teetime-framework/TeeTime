@@ -35,13 +35,24 @@ public class ElementThroughputMeasuringStage<T> extends ConsumerStage<T, T> {
 
 	private void computeElementThroughput(final Long timestampInNs) {
 		long diffInNs = timestampInNs - this.lastTimestampInNs;
-		long diffInSec = TimeUnit.NANOSECONDS.toSeconds(diffInNs);
-		if (diffInSec > 0) {
-			long throughputPerSec = this.numPassedElements / diffInSec;
+
+		// BETTER use the TimeUnit of the clock
+		long diffInMs = TimeUnit.NANOSECONDS.toMillis(diffInNs);
+		if (diffInMs > 0) {
+			long throughputPerSec = this.numPassedElements / diffInMs;
 			this.throughputs.add(throughputPerSec);
-			this.logger.info("Throughput: " + throughputPerSec + " elements/s" + " -> numPassedElements=" + this.numPassedElements);
+			this.logger.info("Throughput: " + throughputPerSec + " elements/ms" + " -> numPassedElements=" + this.numPassedElements);
 
 			this.resetTimestamp(timestampInNs);
+		} else {
+			long diffInSec = TimeUnit.NANOSECONDS.toSeconds(diffInNs);
+			if (diffInSec > 0) {
+				long throughputPerSec = this.numPassedElements / diffInSec;
+				this.throughputs.add(throughputPerSec);
+				this.logger.info("Throughput: " + throughputPerSec + " elements/s" + " -> numPassedElements=" + this.numPassedElements);
+
+				this.resetTimestamp(timestampInNs);
+			}
 		}
 	}
 

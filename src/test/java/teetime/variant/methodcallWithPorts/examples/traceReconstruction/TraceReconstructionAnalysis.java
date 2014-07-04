@@ -50,10 +50,10 @@ public class TraceReconstructionAnalysis extends Analysis {
 	public void init() {
 		super.init();
 		StageWithPort<Void, Long> clockStage = this.buildClockPipeline();
-		this.clockThread = new Thread(new RunnableStage(clockStage));
+		this.clockThread = new Thread(new RunnableStage<Void>(clockStage));
 
-		Pipeline<?, ?> pipeline = this.buildPipeline(clockStage);
-		this.workerThread = new Thread(new RunnableStage(pipeline));
+		Pipeline<File, ?> pipeline = this.buildPipeline(clockStage);
+		this.workerThread = new Thread(new RunnableStage<File>(pipeline));
 	}
 
 	private StageWithPort<Void, Long> buildClockPipeline() {
@@ -84,7 +84,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 		stringBufferFilter.getDataTypeHandlers().add(new StringHandler());
 
 		// connect stages
-		SpScPipe.connect(null, dir2RecordsFilter.getInputPort(), 1);
+		dir2RecordsFilter.getInputPort().setPipe(new SingleElementPipe<File>());
 		SingleElementPipe.connect(dir2RecordsFilter.getOutputPort(), this.recordCounter.getInputPort());
 		SingleElementPipe.connect(this.recordCounter.getOutputPort(), cache.getInputPort());
 		SingleElementPipe.connect(cache.getOutputPort(), stringBufferFilter.getInputPort());
@@ -126,7 +126,13 @@ public class TraceReconstructionAnalysis extends Analysis {
 		} catch (InterruptedException e) {
 			throw new IllegalStateException(e);
 		}
+
 		this.clockThread.interrupt();
+		try {
+			this.clockThread.join();
+		} catch (InterruptedException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	public List<TraceEventRecords> getElementCollection() {

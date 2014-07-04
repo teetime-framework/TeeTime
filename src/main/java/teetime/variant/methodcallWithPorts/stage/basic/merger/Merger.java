@@ -21,6 +21,7 @@ import java.util.List;
 
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
+import teetime.variant.methodcallWithPorts.framework.core.Signal;
 
 /**
  * 
@@ -39,6 +40,8 @@ public class Merger<T> extends ConsumerStage<T, T> {
 
 	// BETTER use an array since a list always creates a new iterator when looping
 	private final List<InputPort<T>> inputPortList = new ArrayList<InputPort<T>>();
+
+	private int finishedInputPorts;
 
 	private IMergerStrategy<T> strategy = new RoundRobinStrategy<T>();
 
@@ -63,6 +66,29 @@ public class Merger<T> extends ConsumerStage<T, T> {
 			isReschedulable = isReschedulable || !inputPort.getPipe().isEmpty();
 		}
 		this.setReschedulable(isReschedulable);
+	}
+
+	@Override
+	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
+		this.logger.debug("Got signal: " + signal + " from input port: " + inputPort);
+
+		switch (signal) {
+		case FINISHED:
+			this.onFinished();
+			break;
+		default:
+			this.logger.warn("Aborted sending signal " + signal + ". Reason: Unknown signal.");
+			break;
+		}
+
+		if (this.finishedInputPorts == this.inputPortList.size()) {
+			this.getOutputPort().sendSignal(signal);
+		}
+	}
+
+	@Override
+	protected void onFinished() {
+		this.finishedInputPorts++;
 	}
 
 	@Override

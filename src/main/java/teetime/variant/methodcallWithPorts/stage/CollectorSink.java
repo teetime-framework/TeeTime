@@ -27,12 +27,16 @@ import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
  */
 public class CollectorSink<T> extends ConsumerStage<T, Void> {
 
-	private static final int THRESHOLD = 10000; // TODO make configurable or use an sysout stage instead
-
 	private final List<T> elements;
+	private final int threshold;
+
+	public CollectorSink(final List<T> list, final int threshold) {
+		this.elements = list;
+		this.threshold = threshold;
+	}
 
 	public CollectorSink(final List<T> list) {
-		this.elements = list;
+		this(list, 100000);
 	}
 
 	@Override
@@ -50,7 +54,7 @@ public class CollectorSink<T> extends ConsumerStage<T, Void> {
 	protected void execute5(final T element) {
 		this.elements.add(element);
 
-		if ((this.elements.size() % THRESHOLD) == 0) {
+		if ((this.elements.size() % this.threshold) == 0) {
 			System.out.println("size: " + this.elements.size());
 		}
 
