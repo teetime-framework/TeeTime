@@ -25,7 +25,7 @@ public class TcpTraceLogging extends Analysis {
 	public void init() {
 		super.init();
 		StageWithPort<Void, IMonitoringRecord> tcpPipeline = this.buildTcpPipeline();
-		this.tcpThread = new Thread(new RunnableStage(tcpPipeline));
+		this.tcpThread = new Thread(new RunnableStage<Void>(tcpPipeline));
 	}
 
 	private StageWithPort<Void, IMonitoringRecord> buildTcpPipeline() {

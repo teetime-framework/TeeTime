@@ -51,7 +51,8 @@ public class SpScPipe<T> extends AbstractPipe<T> {
 		return this.queue.peek();
 	}
 
-	public int getMaxSize() {
+	// BETTER find a solution w/o any thread-safe code in this stage
+	public synchronized int getMaxSize() {
 		return this.maxSize;
 	}
 

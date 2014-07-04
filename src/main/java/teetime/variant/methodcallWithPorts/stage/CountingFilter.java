@@ -13,7 +13,8 @@ public class CountingFilter<T> extends ConsumerStage<T, T> {
 		this.send(element);
 	}
 
-	public int getNumElementsPassed() {
+	// BETTER find a solution w/o any thread-safe code in this stage
+	public synchronized int getNumElementsPassed() {
 		return this.numElementsPassed;
 	}
 

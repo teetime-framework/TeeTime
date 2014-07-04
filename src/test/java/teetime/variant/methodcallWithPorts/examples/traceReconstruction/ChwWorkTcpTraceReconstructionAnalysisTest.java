@@ -74,6 +74,12 @@ public class ChwWorkTcpTraceReconstructionAnalysisTest {
 
 		// assertEquals(21001, analysis.getNumRecords());
 		assertEquals(21000001, analysis.getNumRecords());
+
+		// until 04.07.2014 (inkl.)
+		// Median throughput: 74 elements/time unit
+		// Duration: 17445 ms
+		// Median throughput: 78 elements/time unit
+		// Duration: 16608 ms
 	}
 
 }

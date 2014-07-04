@@ -48,17 +48,22 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 
 	@Override
 	protected void execute5(final IFlowRecord element) {
+		// synchronized (this.traceId2trace) {// TODO remove if everything works
 		final Long traceId = this.reconstructTrace(element);
 		if (traceId != null) {
 			this.putIfFinished(traceId);
 		}
+		// }
 	}
 
 	private void putIfFinished(final Long traceId) {
 		final TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
 		if (traceBuffer.isFinished()) {
-			this.traceId2trace.remove(traceId);
-			this.put(traceBuffer);
+			synchronized (this.traceId2trace) {
+				if (null != this.traceId2trace.remove(traceId)) {
+					this.put(traceBuffer);
+				}
+			}
 		}
 	}
 
@@ -66,12 +71,12 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 		Long traceId = null;
 		if (record instanceof TraceMetadata) {
 			traceId = ((TraceMetadata) record).getTraceId();
-			final TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
+			TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
 
 			traceBuffer.setTrace((TraceMetadata) record);
 		} else if (record instanceof AbstractTraceEvent) {
 			traceId = ((AbstractTraceEvent) record).getTraceId();
-			final TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
+			TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
 
 			traceBuffer.insertEvent((AbstractTraceEvent) record);
 		}
@@ -81,11 +86,15 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 
 	@Override
 	public void onIsPipelineHead() {
-		Iterator<TraceBuffer> iterator = this.traceId2trace.values().iterator();
-		while (iterator.hasNext()) {
-			TraceBuffer traceBuffer = iterator.next();
-			this.put(traceBuffer);
-			iterator.remove();
+		synchronized (this.traceId2trace) {
+			Iterator<TraceBuffer> iterator = this.traceId2trace.values().iterator();
+			while (iterator.hasNext()) {
+				TraceBuffer traceBuffer = iterator.next();
+				if (traceBuffer.isFinished()) { // FIXME remove isFinished
+					this.put(traceBuffer);
+					iterator.remove();
+				}
+			}
 		}
 
 		super.onIsPipelineHead();

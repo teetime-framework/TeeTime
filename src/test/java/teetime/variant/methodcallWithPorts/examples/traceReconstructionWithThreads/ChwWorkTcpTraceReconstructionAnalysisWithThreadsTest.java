@@ -28,6 +28,9 @@ import org.junit.runners.MethodSorters;
 
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
+
+import kieker.common.record.IMonitoringRecord;
 
 /**
  * @author Christian Wulf
@@ -65,6 +68,20 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 		this.performAnalysis(4);
 	}
 
+	// until 04.07.2014 (incl.)
+	// Max size of tcp-relay pipe: 143560
+	// Median trace throughput: 115 traces/time unit
+	// Duration: 12907 ms
+
+	// Max size of tcp-relay pipe: 51948
+	// Median trace throughput: 42 traces/time unit
+	// Duration: 21614 ms
+
+	// [2014-07-04 01:06:10 PM] WARNUNG: Reader interrupted (teetime.variant.methodcallWithPorts.stage.io.TCPReader$TCPStringReader run)
+	// Max size of tcp-relay pipe: 167758
+	// Median trace throughput: 6 traces/time unit
+	// Duration: 22373 ms
+
 	void performAnalysis(final int numWorkerThreads) {
 		final TcpTraceReconstructionAnalysisWithThreads analysis = new TcpTraceReconstructionAnalysisWithThreads();
 		analysis.setNumWorkerThreads(numWorkerThreads);
@@ -78,7 +95,11 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 			analysis.onTerminate();
 		}
 
-		System.out.println("Max size of tcp-relay pipe: " + analysis.getTcpRelayPipe().getMaxSize());
+		int maxSize = 0;
+		for (SpScPipe<IMonitoringRecord> pipe : analysis.getTcpRelayPipes()) {
+			maxSize = Math.max(maxSize, pipe.getMaxSize());
+		}
+		System.out.println("Max size of tcp-relay pipe: " + maxSize);
 
 		// Map<Double, Long> recordQuintiles = StatisticsUtil.calculateQuintiles(analysis.getRecordDelays());
 		// System.out.println("Median record delay: " + recordQuintiles.get(0.5) + " time units/record");
@@ -88,9 +109,6 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 		Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceThroughputs());
 		System.out.println("Median trace throughput: " + traceQuintiles.get(0.5) + " traces/time unit");
 
-		// assertEquals(1000, analysis.getNumTraces());
-		assertEquals(1000000, analysis.getNumTraces());
-
 		// TraceEventRecords trace6884 = analysis.getElementCollection().get(0);
 		// assertEquals(6884, trace6884.getTraceMetadata().getTraceId());
 		//
@@ -98,7 +116,10 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 		// assertEquals(6886, trace6886.getTraceMetadata().getTraceId());
 
 		// assertEquals(21001, analysis.getNumRecords());
-		assertEquals(21000001, analysis.getNumRecords());
+		assertEquals("#records", 21000001, analysis.getNumRecords());
+
+		// assertEquals(1000, analysis.getNumTraces());
+		assertEquals("#traces", 1000000, analysis.getNumTraces());
 	}
 
 	public static void main(final String[] args) {
