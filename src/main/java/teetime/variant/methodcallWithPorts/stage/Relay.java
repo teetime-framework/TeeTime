@@ -7,7 +7,7 @@ import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 
 public class Relay<T> extends AbstractStage<T, T> {
 
-	private SpScPipe<T> inputPipe;
+	private SpScPipe<T> cachedCastedInputPipe;
 
 	public Relay() {
 		this.setReschedulable(true);
@@ -18,7 +18,7 @@ public class Relay<T> extends AbstractStage<T, T> {
 		T element = this.getInputPort().receive();
 		if (null == element) {
 			// if (this.getInputPort().getPipe().isClosed()) {
-			if (this.inputPipe.getSignal() == Signal.FINISHED) {
+			if (this.cachedCastedInputPipe.getSignal() == Signal.FINISHED) {
 				this.setReschedulable(false);
 				assert 0 == this.getInputPort().getPipe().size();
 			}
@@ -30,7 +30,7 @@ public class Relay<T> extends AbstractStage<T, T> {
 
 	@Override
 	public void onStart() {
-		this.inputPipe = (SpScPipe<T>) this.getInputPort().getPipe();
+		this.cachedCastedInputPipe = (SpScPipe<T>) this.getInputPort().getPipe();
 		super.onStart();
 	}
 

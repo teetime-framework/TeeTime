@@ -45,8 +45,8 @@ public class MethodCallThroughputAnalysis11 extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		Pipeline<?, ?> pipeline = this.buildPipeline(this.numInputObjects, this.inputObjectCreator);
-		this.runnable = new RunnableStage(pipeline);
+		Pipeline<Void, ?> pipeline = this.buildPipeline(this.numInputObjects, this.inputObjectCreator);
+		this.runnable = new RunnableStage<Void>(pipeline);
 	}
 
 	/**

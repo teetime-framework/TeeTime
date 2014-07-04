@@ -6,7 +6,9 @@ import java.util.List;
 import teetime.util.concurrent.spsc.Pow2;
 import teetime.util.list.CommittableQueue;
 import teetime.variant.methodcallWithPorts.framework.core.AbstractStage;
+import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
+import teetime.variant.methodcallWithPorts.framework.core.Signal;
 
 public final class Distributor<T> extends AbstractStage<T, T> {
 
@@ -48,6 +50,25 @@ public final class Distributor<T> extends AbstractStage<T, T> {
 		// }
 		// this.outputPorts = null;
 		// this.outputPortList.clear();
+	}
+
+	@Override
+	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
+		this.logger.debug("Got signal: " + signal + " from input port: " + inputPort);
+		// System.out.println("Got signal: " + signal + " from input port: " + this.getClass().getSimpleName() + "." + inputPort);
+
+		switch (signal) {
+		case FINISHED:
+			this.onFinished();
+			break;
+		default:
+			this.logger.warn("Aborted sending signal " + signal + ". Reason: Unknown signal.");
+			break;
+		}
+
+		for (OutputPort<?> op : this.outputPorts) {
+			op.sendSignal(signal);
+		}
 	}
 
 	@SuppressWarnings("unchecked")

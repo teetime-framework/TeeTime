@@ -15,6 +15,8 @@ public class RunnableStage<I> implements Runnable {
 
 	@Override
 	public void run() {
+		this.logger.debug("Executing runnable stage...");
+
 		try {
 			this.stage.onStart();
 

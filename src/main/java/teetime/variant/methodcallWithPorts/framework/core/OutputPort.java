@@ -35,7 +35,9 @@ public class OutputPort<T> {
 	}
 
 	public void sendSignal(final Signal signal) {
-		this.pipe.setSignal(signal);
+		if (this.pipe != null) { // if the output port is connected with a pipe
+			this.pipe.setSignal(signal);
+		}
 	}
 
 }

@@ -53,23 +53,6 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 		this.inputObjectCreator = inputObjectCreator;
 	}
 
-	// @Override
-	// protected void execute3() {
-	// if (this.numInputObjects == 0) {
-	// // this.getOutputPort().send((T) END_SIGNAL);
-	// return;
-	// }
-	//
-	// try {
-	// final T newObject = this.inputObjectCreator.call();
-	// this.numInputObjects--;
-	//
-	// // this.getOutputPort().send(newObject);
-	// } catch (final Exception e) {
-	// throw new IllegalStateException(e);
-	// }
-	// }
-
 	@Override
 	protected void execute4(final CommittableQueue<Void> elements) {
 		this.execute5(null);
@@ -77,6 +60,8 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 
 	@Override
 	protected void execute5(final Void element) {
+		// this.logger.debug("Executing object producer...");
+
 		T newObject = null;
 		newObject = this.inputObjectCreator.create();
 		this.numInputObjects--;
@@ -89,11 +74,5 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 		// System.out.println(this.getClass().getSimpleName() + ": sending " + this.numInputObjects);
 		this.send(newObject);
 	}
-
-	// @Override
-	// public void onIsPipelineHead() {
-	// // this.getOutputPort().pipe = null; // no performance increase
-	// super.onIsPipelineHead();
-	// }
 
 }

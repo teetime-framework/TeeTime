@@ -68,25 +68,27 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 		// headStage.sendFinishedSignalToAllSuccessorStages();
 
 		// this.updateRescheduable(headStage);
+
+		// this.setReschedulable(headStage.isReschedulable());
 	}
 
-	private final void updateRescheduable(final StageWithPort<?, ?> stage) {
-		StageWithPort<?, ?> currentStage = stage;
-		do {
-			this.firstStageIndex++;
-			// currentStage = currentStage.getOutputPort().getPipe().getTargetStage(); // FIXME what to do with a stage with more than one output port?
-			// if (currentStage == null) { // loop reaches the last stage
-			if (this.firstStageIndex == this.stages.length) { // loop reaches the last stage
-				this.setReschedulable(false);
-				this.cleanUp();
-				return;
-			}
-			currentStage = this.stages[this.firstStageIndex];
-			currentStage.onIsPipelineHead();
-		} while (!currentStage.isReschedulable());
-
-		this.setReschedulable(true);
-	}
+	// private final void updateRescheduable(final StageWithPort<?, ?> stage) {
+	// StageWithPort<?, ?> currentStage = stage;
+	// do {
+	// this.firstStageIndex++;
+	// // currentStage = currentStage.getOutputPort().getPipe().getTargetStage(); // FIXME what to do with a stage with more than one output port?
+	// // if (currentStage == null) { // loop reaches the last stage
+	// if (this.firstStageIndex == this.stages.length) { // loop reaches the last stage
+	// this.setReschedulable(false);
+	// this.cleanUp();
+	// return;
+	// }
+	// currentStage = this.stages[this.firstStageIndex];
+	// currentStage.onIsPipelineHead();
+	// } while (!currentStage.isReschedulable());
+	//
+	// this.setReschedulable(true);
+	// }
 
 	@Override
 	public void onIsPipelineHead() {
@@ -133,12 +135,13 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	@Override
 	public boolean isReschedulable() {
-		return this.reschedulable;
+		// return this.reschedulable;
+		return this.firstStage.isReschedulable();
 	}
 
-	public void setReschedulable(final boolean reschedulable) {
-		this.reschedulable = reschedulable;
-	}
+	// public void setReschedulable(final boolean reschedulable) {
+	// this.reschedulable = reschedulable;
+	// }
 
 	@Override
 	public InputPort<I> getInputPort() {
@@ -166,7 +169,7 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 
 	@Override
 	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
-		throw new IllegalStateException("Should not be used since the signal is directly passed via the first stage's input port.");
+		this.firstStage.onSignal(signal, inputPort);
 	}
 
 }

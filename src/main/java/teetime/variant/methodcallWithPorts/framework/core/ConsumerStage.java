@@ -1,6 +1,5 @@
 package teetime.variant.methodcallWithPorts.framework.core;
 
-
 public abstract class ConsumerStage<I, O> extends AbstractStage<I, O> {
 
 	@Override

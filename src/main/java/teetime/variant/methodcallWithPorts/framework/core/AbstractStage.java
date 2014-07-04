@@ -107,6 +107,9 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	 */
 	@Override
 	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
+		this.logger.debug("Got signal: " + signal + " from input port: " + inputPort);
+		// System.out.println("Got signal: " + signal + " from input port: " + this.getClass().getSimpleName() + "." + inputPort);
+
 		switch (signal) {
 		case FINISHED:
 			this.onFinished();
@@ -116,11 +119,12 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 			break;
 		}
 
-		this.getOutputPort().sendSignal(signal);
+		this.outputPort.sendSignal(signal);
 	}
 
 	protected void onFinished() {
 		// empty default implementation
+		this.onIsPipelineHead();
 	}
 
 	@Override
