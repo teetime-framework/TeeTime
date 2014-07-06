@@ -30,7 +30,6 @@ import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.UnorderedGrowablePipe;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
-import teetime.variant.methodcallWithPorts.stage.Distributor;
 import teetime.variant.methodcallWithPorts.stage.EndStage;
 import teetime.variant.methodcallWithPorts.stage.NoopFilter;
 import teetime.variant.methodcallWithPorts.stage.ObjectProducer;
@@ -38,6 +37,7 @@ import teetime.variant.methodcallWithPorts.stage.Relay;
 import teetime.variant.methodcallWithPorts.stage.Sink;
 import teetime.variant.methodcallWithPorts.stage.StartTimestampFilter;
 import teetime.variant.methodcallWithPorts.stage.StopTimestampFilter;
+import teetime.variant.methodcallWithPorts.stage.basic.distributor.Distributor;
 
 /**
  * @author Christian Wulf

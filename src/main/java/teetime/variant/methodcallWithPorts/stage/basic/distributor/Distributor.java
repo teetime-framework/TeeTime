@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import teetime.variant.methodcallWithPorts.framework.core.AbstractStage;
+import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
+import teetime.variant.methodcallWithPorts.framework.core.Signal;
 
 /**
  * @author Christian Wulf
@@ -39,12 +41,13 @@ public class Distributor<T> extends AbstractStage<T, T> {
 
 	private IDistributorStrategy<T> strategy = new RoundRobinStrategy<T>();
 
-	public IDistributorStrategy<T> getStrategy() {
-		return this.strategy;
-	}
+	@Override
+	public void executeWithPorts() {
+		T element = this.getInputPort().receive();
 
-	public void setStrategy(final IDistributorStrategy<T> strategy) {
-		this.strategy = strategy;
+		this.setReschedulable(this.getInputPort().getPipe().size() > 0);
+
+		this.execute5(element);
 	}
 
 	@Override
@@ -58,6 +61,24 @@ public class Distributor<T> extends AbstractStage<T, T> {
 		// op.getPipe().close();
 		// System.out.println("End signal sent, size: " + op.getPipe().size());
 		// }
+	}
+
+	@Override
+	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
+		this.logger.info("Got signal: " + signal + " from input port: " + inputPort);
+
+		switch (signal) {
+		case FINISHED:
+			this.onFinished();
+			break;
+		default:
+			this.logger.warn("Aborted sending signal " + signal + ". Reason: Unknown signal.");
+			break;
+		}
+
+		for (OutputPort<T> op : this.outputPortList) {
+			op.sendSignal(signal);
+		}
 	}
 
 	@Override
@@ -75,13 +96,12 @@ public class Distributor<T> extends AbstractStage<T, T> {
 		return this.outputPortList;
 	}
 
-	@Override
-	public void executeWithPorts() {
-		T element = this.getInputPort().receive();
+	public IDistributorStrategy<T> getStrategy() {
+		return this.strategy;
+	}
 
-		this.setReschedulable(this.getInputPort().getPipe().size() > 0);
-
-		this.execute5(element);
+	public void setStrategy(final IDistributorStrategy<T> strategy) {
+		this.strategy = strategy;
 	}
 
 }

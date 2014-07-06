@@ -37,23 +37,23 @@ public class ElementThroughputMeasuringStage<T> extends ConsumerStage<T, T> {
 		long diffInNs = timestampInNs - this.lastTimestampInNs;
 
 		// BETTER use the TimeUnit of the clock
-		long diffInMs = TimeUnit.NANOSECONDS.toMillis(diffInNs);
-		if (diffInMs > 0) {
-			long throughputPerSec = this.numPassedElements / diffInMs;
-			this.throughputs.add(throughputPerSec);
-			this.logger.info("Throughput: " + throughputPerSec + " elements/ms" + " -> numPassedElements=" + this.numPassedElements);
+		long throughputPerTimeUnit = -1;
 
-			this.resetTimestamp(timestampInNs);
+		long diffInSec = TimeUnit.NANOSECONDS.toSeconds(diffInNs);
+		if (diffInSec > 0) {
+			throughputPerTimeUnit = this.numPassedElements / diffInSec;
+			this.logger.info("Throughput: " + throughputPerTimeUnit + " elements/s" + " -> numPassedElements=" + this.numPassedElements);
 		} else {
-			long diffInSec = TimeUnit.NANOSECONDS.toSeconds(diffInNs);
-			if (diffInSec > 0) {
-				long throughputPerSec = this.numPassedElements / diffInSec;
-				this.throughputs.add(throughputPerSec);
-				this.logger.info("Throughput: " + throughputPerSec + " elements/s" + " -> numPassedElements=" + this.numPassedElements);
+			long diffInMs = TimeUnit.NANOSECONDS.toMillis(diffInNs);
+			if (diffInMs > 0) {
+				throughputPerTimeUnit = this.numPassedElements / diffInMs;
+				this.logger.info("Throughput: " + throughputPerTimeUnit + " elements/ms" + " -> numPassedElements=" + this.numPassedElements);
 
-				this.resetTimestamp(timestampInNs);
 			}
 		}
+
+		this.throughputs.add(throughputPerTimeUnit);
+		this.resetTimestamp(timestampInNs);
 	}
 
 	private void resetTimestamp(final Long timestampInNs) {

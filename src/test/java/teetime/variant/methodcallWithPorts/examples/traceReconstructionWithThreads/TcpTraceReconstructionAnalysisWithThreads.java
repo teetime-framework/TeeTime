@@ -17,12 +17,12 @@ import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.Clock;
 import teetime.variant.methodcallWithPorts.stage.CountingFilter;
-import teetime.variant.methodcallWithPorts.stage.Distributor;
 import teetime.variant.methodcallWithPorts.stage.ElementDelayMeasuringStage;
 import teetime.variant.methodcallWithPorts.stage.ElementThroughputMeasuringStage;
 import teetime.variant.methodcallWithPorts.stage.EndStage;
 import teetime.variant.methodcallWithPorts.stage.InstanceOfFilter;
 import teetime.variant.methodcallWithPorts.stage.Relay;
+import teetime.variant.methodcallWithPorts.stage.basic.distributor.Distributor;
 import teetime.variant.methodcallWithPorts.stage.io.TCPReader;
 import teetime.variant.methodcallWithPorts.stage.kieker.traceReconstruction.TraceReconstructionFilter;
 

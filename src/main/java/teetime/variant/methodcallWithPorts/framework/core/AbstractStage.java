@@ -107,8 +107,7 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	 */
 	@Override
 	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
-		this.logger.debug("Got signal: " + signal + " from input port: " + inputPort);
-		// System.out.println("Got signal: " + signal + " from input port: " + this.getClass().getSimpleName() + "." + inputPort);
+		this.logger.info("Got signal: " + signal + " from input port: " + inputPort);
 
 		switch (signal) {
 		case FINISHED:
