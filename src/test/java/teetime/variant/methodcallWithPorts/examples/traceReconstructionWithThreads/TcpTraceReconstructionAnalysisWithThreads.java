@@ -132,6 +132,7 @@ public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
 
 	private final List<SpScPipe<IMonitoringRecord>> tcpRelayPipes = new LinkedList<SpScPipe<IMonitoringRecord>>();
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public TcpTraceReconstructionAnalysisWithThreads() {
 		try {
 			this.recordCounterFactory = new StageFactory(CountingFilter.class.getConstructor());
@@ -152,7 +153,7 @@ public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
 		CountingFilter<IMonitoringRecord> recordCounter = this.recordCounterFactory.create();
 		final InstanceOfFilter<IMonitoringRecord, IFlowRecord> instanceOfFilter = new InstanceOfFilter<IMonitoringRecord, IFlowRecord>(
 				IFlowRecord.class);
-		ElementDelayMeasuringStage<IMonitoringRecord> recordThroughputFilter = this.recordThroughputFilterFactory.create();
+		// ElementDelayMeasuringStage<IMonitoringRecord> recordThroughputFilter = this.recordThroughputFilterFactory.create();
 		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter(this.traceId2trace);
 		CountingFilter<TraceEventRecords> traceCounter = this.traceCounterFactory.create();
 		ElementThroughputMeasuringStage<TraceEventRecords> traceThroughputFilter = this.traceThroughputFilterFactory.create();
