@@ -60,17 +60,14 @@ public class TraceReductionFilter extends ConsumerStage<TraceEventRecords, Trace
 	}
 
 	private void countSameTraces(final TraceEventRecords traceEventRecords, final long timestamp) {
-		TraceAggregationBuffer traceBuffer = this.trace2buffer.get(traceEventRecords);
-		if (traceBuffer == null) {
-			synchronized (this.trace2buffer) {
-				traceBuffer = this.trace2buffer.get(traceEventRecords);
-				if (traceBuffer == null) { // NOCS (DCL)
-					traceBuffer = new TraceAggregationBuffer(timestamp, traceEventRecords);
-					this.trace2buffer.put(traceEventRecords, traceBuffer);
-				}
+		synchronized (this.trace2buffer) {
+			TraceAggregationBuffer traceBuffer = this.trace2buffer.get(traceEventRecords);
+			if (traceBuffer == null) {
+				traceBuffer = new TraceAggregationBuffer(timestamp, traceEventRecords);
+				this.trace2buffer.put(traceEventRecords, traceBuffer);
 			}
+			traceBuffer.count();
 		}
-		traceBuffer.count();
 	}
 
 	@Override
