@@ -17,6 +17,7 @@ package teetime.variant.methodcallWithPorts.examples.traceReconstructionWithThre
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +27,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import teetime.util.ListUtil;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
@@ -103,7 +105,7 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 		}
 		System.out.println("Max size of tcp-relay pipe: " + maxSize);
 
-		// System.out.println("#trace meta data read: " + analysis.getNumTraceMetadatas());
+		// System.out.println("#traceMetadata read: " + analysis.getNumTraceMetadatas());
 		// System.out.println("Max #trace created: " + analysis.getMaxElementsCreated());
 
 		// Map<Double, Long> recordQuintiles = StatisticsUtil.calculateQuintiles(analysis.getRecordDelays());
@@ -111,7 +113,9 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 
 		// Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceDelays());
 		// System.out.println("Median trace delay: " + traceQuintiles.get(0.5) + " time units/trace");
-		Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceThroughputs());
+
+		List<Long> traceThroughputs = ListUtil.removeFirstHalfElements(analysis.getTraceThroughputs());
+		Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(traceThroughputs);
 		System.out.println("Median trace throughput: " + traceQuintiles.get(0.5) + " traces/time unit");
 
 		// TraceEventRecords trace6884 = analysis.getElementCollection().get(0);

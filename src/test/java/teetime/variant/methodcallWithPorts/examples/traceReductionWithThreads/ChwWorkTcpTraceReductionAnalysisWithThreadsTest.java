@@ -17,6 +17,7 @@ package teetime.variant.methodcallWithPorts.examples.traceReductionWithThreads;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +27,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import teetime.util.ListUtil;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
 
@@ -36,6 +38,9 @@ import teetime.util.StopWatch;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ChwWorkTcpTraceReductionAnalysisWithThreadsTest {
+
+	private static final int EXPECTED_NUM_TRACES = 1000000;
+	private static final int EXPECTED_NUM_SAME_TRACES = 1;
 
 	private StopWatch stopWatch;
 
@@ -79,26 +84,27 @@ public class ChwWorkTcpTraceReductionAnalysisWithThreadsTest {
 		}
 
 		System.out.println("Max size of tcp-relay pipe: " + analysis.getTcpRelayPipe().getMaxSize());
+		// System.out.println("#traceMetadata read: " + analysis.getNumTraceMetadatas());
+		// System.out.println("Max #trace created: " + analysis.getMaxElementsCreated());
+		System.out.println("TraceThroughputs: " + analysis.getTraceThroughputs());
 
 		// Map<Double, Long> recordQuintiles = StatisticsUtil.calculateQuintiles(analysis.getRecordDelays());
 		// System.out.println("Median record delay: " + recordQuintiles.get(0.5) + " time units/record");
 
 		// Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceDelays());
 		// System.out.println("Median trace delay: " + traceQuintiles.get(0.5) + " time units/trace");
-		Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceThroughputs());
+
+		List<Long> traceThroughputs = ListUtil.removeFirstHalfElements(analysis.getTraceThroughputs());
+		Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(traceThroughputs);
 		System.out.println("Median trace throughput: " + traceQuintiles.get(0.5) + " traces/time unit");
 
-		// assertEquals(1000, analysis.getNumTraces());
-		assertEquals(1000000, analysis.getNumTraces());
+		assertEquals("#records", 21000001, analysis.getNumRecords());
 
-		// TraceEventRecords trace6884 = analysis.getElementCollection().get(0);
-		// assertEquals(6884, trace6884.getTraceMetadata().getTraceId());
-		//
-		// TraceEventRecords trace6886 = analysis.getElementCollection().get(1);
-		// assertEquals(6886, trace6886.getTraceMetadata().getTraceId());
+		for (Integer count : analysis.getNumTraceMetadatas()) {
+			assertEquals("#traceMetadata per worker thread", EXPECTED_NUM_TRACES / numWorkerThreads, count.intValue()); // even distribution
+		}
 
-		// assertEquals(21001, analysis.getNumRecords());
-		assertEquals(21000001, analysis.getNumRecords());
+		assertEquals("#traces", EXPECTED_NUM_SAME_TRACES, analysis.getNumTraces());
 	}
 
 	public static void main(final String[] args) {

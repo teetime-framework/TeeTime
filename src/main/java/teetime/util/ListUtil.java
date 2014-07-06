@@ -17,4 +17,11 @@ public class ListUtil {
 		}
 		return resultList;
 	}
+
+	public static <T> List<T> removeFirstHalfElements(final List<T> list) {
+		if (list.size() < 2) {
+			return list;
+		}
+		return list.subList(list.size() / 2 - 1, list.size());
+	}
 }

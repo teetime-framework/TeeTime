@@ -52,25 +52,30 @@ public class TraceReductionFilter extends ConsumerStage<TraceEventRecords, Trace
 	protected void execute5(final TraceEventRecords traceEventRecords) {
 		Long timestampInNs = this.triggerInputPort.receive();
 		if (timestampInNs != null) {
-			synchronized (this) {
-				this.processTimeoutQueue(timestampInNs);
-			}
+			this.processTimeoutQueue(timestampInNs);
 		}
 
 		final long timestamp = System.nanoTime();
-		synchronized (this) {
-			TraceAggregationBuffer traceBuffer = this.trace2buffer.get(traceEventRecords);
-			if (traceBuffer == null) { // NOCS (DCL)
-				traceBuffer = new TraceAggregationBuffer(timestamp, traceEventRecords);
-				this.trace2buffer.put(traceEventRecords, traceBuffer);
+		this.countSameTraces(traceEventRecords, timestamp);
+	}
+
+	private void countSameTraces(final TraceEventRecords traceEventRecords, final long timestamp) {
+		TraceAggregationBuffer traceBuffer = this.trace2buffer.get(traceEventRecords);
+		if (traceBuffer == null) {
+			synchronized (this.trace2buffer) {
+				traceBuffer = this.trace2buffer.get(traceEventRecords);
+				if (traceBuffer == null) { // NOCS (DCL)
+					traceBuffer = new TraceAggregationBuffer(timestamp, traceEventRecords);
+					this.trace2buffer.put(traceEventRecords, traceBuffer);
+				}
 			}
-			traceBuffer.count();
 		}
+		traceBuffer.count();
 	}
 
 	@Override
 	public void onIsPipelineHead() {
-		synchronized (this) {
+		synchronized (this.trace2buffer) { // BETTER hide and improve synchronization in the buffer
 			for (final Entry<TraceEventRecords, TraceAggregationBuffer> entry : this.trace2buffer.entrySet()) {
 				final TraceAggregationBuffer buffer = entry.getValue();
 				final TraceEventRecords record = buffer.getTraceEventRecords();
@@ -85,16 +90,18 @@ public class TraceReductionFilter extends ConsumerStage<TraceEventRecords, Trace
 
 	private void processTimeoutQueue(final long timestampInNs) {
 		final long bufferTimeoutInNs = timestampInNs - this.maxCollectionDurationInNs;
-		for (final Iterator<Entry<TraceEventRecords, TraceAggregationBuffer>> iterator = this.trace2buffer.entrySet().iterator(); iterator.hasNext();) {
-			final TraceAggregationBuffer traceBuffer = iterator.next().getValue();
-			// this.logger.debug("traceBuffer.getBufferCreatedTimestamp(): " + traceBuffer.getBufferCreatedTimestamp() + " vs. " + bufferTimeoutInNs
-			// + " (bufferTimeoutInNs)");
-			if (traceBuffer.getBufferCreatedTimestamp() <= bufferTimeoutInNs) {
-				final TraceEventRecords record = traceBuffer.getTraceEventRecords();
-				record.setCount(traceBuffer.getCount());
-				this.send(record);
+		synchronized (this.trace2buffer) {
+			for (final Iterator<Entry<TraceEventRecords, TraceAggregationBuffer>> iterator = this.trace2buffer.entrySet().iterator(); iterator.hasNext();) {
+				final TraceAggregationBuffer traceBuffer = iterator.next().getValue();
+				// this.logger.debug("traceBuffer.getBufferCreatedTimestamp(): " + traceBuffer.getBufferCreatedTimestamp() + " vs. " + bufferTimeoutInNs
+				// + " (bufferTimeoutInNs)");
+				if (traceBuffer.getBufferCreatedTimestamp() <= bufferTimeoutInNs) {
+					final TraceEventRecords record = traceBuffer.getTraceEventRecords();
+					record.setCount(traceBuffer.getCount());
+					this.send(record);
+				}
+				iterator.remove();
 			}
-			iterator.remove();
 		}
 	}
 
