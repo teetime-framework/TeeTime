@@ -5,15 +5,11 @@ import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 /**
  * @author Jan Waller, Nils Christian Ehmke, Christian Wulf
  * 
- * @since 1.10
  */
 public class InstanceOfFilter<I, O> extends ConsumerStage<I, O> {
 
 	private Class<O> type;
 
-	/**
-	 * @since 1.10
-	 */
 	public InstanceOfFilter(final Class<O> type) {
 		this.type = type;
 	}

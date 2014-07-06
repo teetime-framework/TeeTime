@@ -33,10 +33,15 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 	// private final Set<StageWithPort<?, ?>> currentHeads = new HashSet<StageWithPort<?, ?>>();
 
 	public Pipeline() {
-		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
+		this(UUID.randomUUID().toString());
+	}
+
+	public Pipeline(final String id) {
+		this.id = id; // the id should only be represented by a UUID, not additionally by the class name
 		this.logger = LogFactory.getLog(this.id);
 	}
 
+	@Override
 	public String getId() {
 		return this.id;
 	}

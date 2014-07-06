@@ -17,7 +17,7 @@ import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.Clock;
-import teetime.variant.methodcallWithPorts.stage.CountingFilter;
+import teetime.variant.methodcallWithPorts.stage.Counter;
 import teetime.variant.methodcallWithPorts.stage.ElementDelayMeasuringStage;
 import teetime.variant.methodcallWithPorts.stage.ElementThroughputMeasuringStage;
 import teetime.variant.methodcallWithPorts.stage.EndStage;
@@ -53,20 +53,20 @@ public class TcpTraceReductionAnalysisWithThreads extends Analysis {
 	public void init() {
 		super.init();
 		StageWithPort<Void, IMonitoringRecord> tcpPipeline = this.buildTcpPipeline();
-		this.tcpThread = new Thread(new RunnableStage(tcpPipeline));
+		this.tcpThread = new Thread(new RunnableStage<Void>(tcpPipeline));
 
 		StageWithPort<Void, Long> clockStage = this.buildClockPipeline(1000);
-		this.clockThread = new Thread(new RunnableStage(clockStage));
+		this.clockThread = new Thread(new RunnableStage<Void>(clockStage));
 
 		StageWithPort<Void, Long> clock2Stage = this.buildClockPipeline(5000);
-		this.clock2Thread = new Thread(new RunnableStage(clock2Stage));
+		this.clock2Thread = new Thread(new RunnableStage<Void>(clock2Stage));
 
 		this.numWorkerThreads = Math.min(NUM_VIRTUAL_CORES, this.numWorkerThreads);
 		this.workerThreads = new Thread[this.numWorkerThreads];
 
 		for (int i = 0; i < this.workerThreads.length; i++) {
-			StageWithPort<?, ?> pipeline = this.buildPipeline(tcpPipeline, clockStage, clock2Stage);
-			this.workerThreads[i] = new Thread(new RunnableStage(pipeline));
+			StageWithPort<IMonitoringRecord, ?> pipeline = this.buildPipeline(tcpPipeline, clockStage, clock2Stage);
+			this.workerThreads[i] = new Thread(new RunnableStage<IMonitoringRecord>(pipeline));
 		}
 	}
 
@@ -128,19 +128,20 @@ public class TcpTraceReductionAnalysisWithThreads extends Analysis {
 		}
 	}
 
-	private final Map<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
+	private final ConcurrentHashMapWithDefault<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
 	private final Map<TraceEventRecords, TraceAggregationBuffer> trace2buffer = new TreeMap<TraceEventRecords, TraceAggregationBuffer>(new TraceComperator());
 
-	private final StageFactory<CountingFilter<IMonitoringRecord>> recordCounterFactory;
+	private final StageFactory<Counter<IMonitoringRecord>> recordCounterFactory;
 	private final StageFactory<ElementDelayMeasuringStage<IMonitoringRecord>> recordThroughputFilterFactory;
-	private final StageFactory<CountingFilter<TraceEventRecords>> traceCounterFactory;
+	private final StageFactory<Counter<TraceEventRecords>> traceCounterFactory;
 	private final StageFactory<ElementThroughputMeasuringStage<TraceEventRecords>> traceThroughputFilterFactory;
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public TcpTraceReductionAnalysisWithThreads() {
 		try {
-			this.recordCounterFactory = new StageFactory(CountingFilter.class.getConstructor());
+			this.recordCounterFactory = new StageFactory(Counter.class.getConstructor());
 			this.recordThroughputFilterFactory = new StageFactory(ElementDelayMeasuringStage.class.getConstructor());
-			this.traceCounterFactory = new StageFactory(CountingFilter.class.getConstructor());
+			this.traceCounterFactory = new StageFactory(Counter.class.getConstructor());
 			this.traceThroughputFilterFactory = new StageFactory(ElementThroughputMeasuringStage.class.getConstructor());
 		} catch (NoSuchMethodException e) {
 			throw new IllegalArgumentException(e);
@@ -154,13 +155,13 @@ public class TcpTraceReductionAnalysisWithThreads extends Analysis {
 			final StageWithPort<Void, Long> clock2Stage) {
 		// create stages
 		Relay<IMonitoringRecord> relay = new Relay<IMonitoringRecord>();
-		CountingFilter<IMonitoringRecord> recordCounter = this.recordCounterFactory.create();
+		// Counter<IMonitoringRecord> recordCounter = this.recordCounterFactory.create();
 		final InstanceOfFilter<IMonitoringRecord, IFlowRecord> instanceOfFilter = new InstanceOfFilter<IMonitoringRecord, IFlowRecord>(
 				IFlowRecord.class);
-		ElementDelayMeasuringStage<IMonitoringRecord> recordThroughputFilter = this.recordThroughputFilterFactory.create();
+		// ElementDelayMeasuringStage<IMonitoringRecord> recordThroughputFilter = this.recordThroughputFilterFactory.create();
 		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter(this.traceId2trace);
 		TraceReductionFilter traceReductionFilter = new TraceReductionFilter(this.trace2buffer);
-		CountingFilter<TraceEventRecords> traceCounter = this.traceCounterFactory.create();
+		// Counter<TraceEventRecords> traceCounter = this.traceCounterFactory.create();
 		ElementThroughputMeasuringStage<TraceEventRecords> traceThroughputFilter = this.traceThroughputFilterFactory.create();
 		EndStage<TraceEventRecords> endStage = new EndStage<TraceEventRecords>();
 
@@ -222,7 +223,7 @@ public class TcpTraceReductionAnalysisWithThreads extends Analysis {
 
 	public int getNumRecords() {
 		int sum = 0;
-		for (CountingFilter<IMonitoringRecord> stage : this.recordCounterFactory.getStages()) {
+		for (Counter<IMonitoringRecord> stage : this.recordCounterFactory.getStages()) {
 			sum += stage.getNumElementsPassed();
 		}
 		return sum;
@@ -230,7 +231,7 @@ public class TcpTraceReductionAnalysisWithThreads extends Analysis {
 
 	public int getNumTraces() {
 		int sum = 0;
-		for (CountingFilter<TraceEventRecords> stage : this.traceCounterFactory.getStages()) {
+		for (Counter<TraceEventRecords> stage : this.traceCounterFactory.getStages()) {
 			sum += stage.getNumElementsPassed();
 		}
 		return sum;

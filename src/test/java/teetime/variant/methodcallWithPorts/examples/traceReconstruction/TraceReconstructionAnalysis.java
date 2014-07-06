@@ -3,7 +3,6 @@ package teetime.variant.methodcallWithPorts.examples.traceReconstruction;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
@@ -16,7 +15,7 @@ import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.Cache;
 import teetime.variant.methodcallWithPorts.stage.Clock;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
-import teetime.variant.methodcallWithPorts.stage.CountingFilter;
+import teetime.variant.methodcallWithPorts.stage.Counter;
 import teetime.variant.methodcallWithPorts.stage.ElementThroughputMeasuringStage;
 import teetime.variant.methodcallWithPorts.stage.InstanceOfFilter;
 import teetime.variant.methodcallWithPorts.stage.kieker.Dir2RecordsFilter;
@@ -38,10 +37,10 @@ public class TraceReconstructionAnalysis extends Analysis {
 	private Thread workerThread;
 
 	private ClassNameRegistryRepository classNameRegistryRepository;
-	private final Map<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
+	private final ConcurrentHashMapWithDefault<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
 
-	private CountingFilter<IMonitoringRecord> recordCounter;
-	private CountingFilter<TraceEventRecords> traceCounter;
+	private Counter<IMonitoringRecord> recordCounter;
+	private Counter<TraceEventRecords> traceCounter;
 	private ElementThroughputMeasuringStage<IFlowRecord> throughputFilter;
 
 	private File inputDir;
@@ -68,7 +67,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 
 		// create stages
 		final Dir2RecordsFilter dir2RecordsFilter = new Dir2RecordsFilter(this.classNameRegistryRepository);
-		this.recordCounter = new CountingFilter<IMonitoringRecord>();
+		this.recordCounter = new Counter<IMonitoringRecord>();
 		final Cache<IMonitoringRecord> cache = new Cache<IMonitoringRecord>();
 
 		final StringBufferFilter<IMonitoringRecord> stringBufferFilter = new StringBufferFilter<IMonitoringRecord>();
@@ -76,7 +75,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 				IFlowRecord.class);
 		this.throughputFilter = new ElementThroughputMeasuringStage<IFlowRecord>();
 		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter(this.traceId2trace);
-		this.traceCounter = new CountingFilter<TraceEventRecords>();
+		this.traceCounter = new Counter<TraceEventRecords>();
 		final CollectorSink<TraceEventRecords> collector = new CollectorSink<TraceEventRecords>(this.elementCollection);
 
 		// configure stages

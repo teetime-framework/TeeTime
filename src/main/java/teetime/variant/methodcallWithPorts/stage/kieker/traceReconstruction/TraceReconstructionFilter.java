@@ -16,9 +16,9 @@
 package teetime.variant.methodcallWithPorts.stage.kieker.traceReconstruction;
 
 import java.util.Iterator;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
@@ -39,30 +39,27 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 	private long maxTraceTimeout = Long.MAX_VALUE;
 	private long maxEncounteredLoggingTimestamp = -1;
 
-	private final Map<Long, TraceBuffer> traceId2trace;
+	private final ConcurrentHashMapWithDefault<Long, TraceBuffer> traceId2trace;
 
-	public TraceReconstructionFilter(final Map<Long, TraceBuffer> traceId2trace) {
+	public TraceReconstructionFilter(final ConcurrentHashMapWithDefault<Long, TraceBuffer> traceId2trace) {
 		super();
 		this.traceId2trace = traceId2trace;
 	}
 
 	@Override
 	protected void execute5(final IFlowRecord element) {
-		// synchronized (this.traceId2trace) {// TODO remove if everything works
 		final Long traceId = this.reconstructTrace(element);
 		if (traceId != null) {
 			this.putIfFinished(traceId);
 		}
-		// }
 	}
 
 	private void putIfFinished(final Long traceId) {
 		final TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
-		if (traceBuffer.isFinished()) {
-			synchronized (this.traceId2trace) {
-				if (null != this.traceId2trace.remove(traceId)) {
-					this.put(traceBuffer);
-				}
+		if (traceBuffer != null && traceBuffer.isFinished()) { // null-check to check whether the trace has already been sent and removed
+			boolean removed = null != this.traceId2trace.remove(traceId);
+			if (removed) {
+				this.put(traceBuffer);
 			}
 		}
 	}
@@ -71,12 +68,12 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 		Long traceId = null;
 		if (record instanceof TraceMetadata) {
 			traceId = ((TraceMetadata) record).getTraceId();
-			TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
+			TraceBuffer traceBuffer = this.traceId2trace.getOrCreate(traceId);
 
 			traceBuffer.setTrace((TraceMetadata) record);
 		} else if (record instanceof AbstractTraceEvent) {
 			traceId = ((AbstractTraceEvent) record).getTraceId();
-			TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
+			TraceBuffer traceBuffer = this.traceId2trace.getOrCreate(traceId);
 
 			traceBuffer.insertEvent((AbstractTraceEvent) record);
 		}
@@ -91,7 +88,7 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 			while (iterator.hasNext()) {
 				TraceBuffer traceBuffer = iterator.next();
 				if (traceBuffer.isFinished()) { // FIXME remove isFinished
-					this.put(traceBuffer);
+					this.put(traceBuffer); // BETTER put outside of synchronized
 					iterator.remove();
 				}
 			}

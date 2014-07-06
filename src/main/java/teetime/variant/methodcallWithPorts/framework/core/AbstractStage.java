@@ -98,6 +98,7 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 		this.reschedulable = reschedulable;
 	}
 
+	@Override
 	public String getId() {
 		return this.id;
 	}
@@ -107,7 +108,7 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	 */
 	@Override
 	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
-		this.logger.info("Got signal: " + signal + " from input port: " + inputPort);
+		this.logger.debug("Got signal: " + signal + " from input port: " + inputPort);
 
 		switch (signal) {
 		case FINISHED:

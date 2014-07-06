@@ -2,7 +2,6 @@ package teetime.variant.methodcallWithPorts.examples.kiekerdays;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
@@ -39,14 +38,14 @@ public class TcpTraceReconstruction extends Analysis {
 	public void init() {
 		super.init();
 		StageWithPort<Void, IMonitoringRecord> tcpPipeline = this.buildTcpPipeline();
-		this.tcpThread = new Thread(new RunnableStage(tcpPipeline));
+		this.tcpThread = new Thread(new RunnableStage<Void>(tcpPipeline));
 
 		this.numWorkerThreads = Math.min(NUM_VIRTUAL_CORES, this.numWorkerThreads);
 		this.workerThreads = new Thread[this.numWorkerThreads];
 
 		for (int i = 0; i < this.workerThreads.length; i++) {
-			StageWithPort<?, ?> pipeline = this.buildPipeline(tcpPipeline);
-			this.workerThreads[i] = new Thread(new RunnableStage(pipeline));
+			StageWithPort<IMonitoringRecord, ?> pipeline = this.buildPipeline(tcpPipeline);
+			this.workerThreads[i] = new Thread(new RunnableStage<IMonitoringRecord>(pipeline));
 		}
 	}
 
@@ -63,7 +62,7 @@ public class TcpTraceReconstruction extends Analysis {
 		return pipeline;
 	}
 
-	private final Map<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
+	private final ConcurrentHashMapWithDefault<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
 
 	private Pipeline<IMonitoringRecord, ?> buildPipeline(final StageWithPort<Void, IMonitoringRecord> tcpReaderPipeline) {
 		// create stages

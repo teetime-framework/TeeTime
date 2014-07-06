@@ -30,5 +30,7 @@ public class RunnableStage<I> implements Runnable {
 			this.logger.error("Terminating thread due to the following exception: ", e);
 			throw e;
 		}
+
+		this.logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
 	}
 }

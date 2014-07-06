@@ -2,7 +2,6 @@ package teetime.variant.methodcallWithPorts.examples.traceReconstruction;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
@@ -13,7 +12,7 @@ import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.Clock;
-import teetime.variant.methodcallWithPorts.stage.CountingFilter;
+import teetime.variant.methodcallWithPorts.stage.Counter;
 import teetime.variant.methodcallWithPorts.stage.ElementThroughputMeasuringStage;
 import teetime.variant.methodcallWithPorts.stage.EndStage;
 import teetime.variant.methodcallWithPorts.stage.InstanceOfFilter;
@@ -33,10 +32,10 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 	private Thread clock2Thread;
 	private Thread workerThread;
 
-	private final Map<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
+	private final ConcurrentHashMapWithDefault<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
 
-	private CountingFilter<IMonitoringRecord> recordCounter;
-	private CountingFilter<TraceEventRecords> traceCounter;
+	private Counter<IMonitoringRecord> recordCounter;
+	private Counter<TraceEventRecords> traceCounter;
 	private ElementThroughputMeasuringStage<IFlowRecord> recordThroughputFilter;
 	private ElementThroughputMeasuringStage<TraceEventRecords> traceThroughputFilter;
 
@@ -44,13 +43,13 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 	public void init() {
 		super.init();
 		StageWithPort<Void, Long> clockStage = this.buildClockPipeline(1000);
-		this.clockThread = new Thread(new RunnableStage(clockStage));
+		this.clockThread = new Thread(new RunnableStage<Void>(clockStage));
 
 		StageWithPort<Void, Long> clock2Stage = this.buildClockPipeline(2000);
-		this.clock2Thread = new Thread(new RunnableStage(clock2Stage));
+		this.clock2Thread = new Thread(new RunnableStage<Void>(clock2Stage));
 
-		Pipeline<?, ?> pipeline = this.buildPipeline(clockStage, clock2Stage);
-		this.workerThread = new Thread(new RunnableStage(pipeline));
+		Pipeline<Void, ?> pipeline = this.buildPipeline(clockStage, clock2Stage);
+		this.workerThread = new Thread(new RunnableStage<Void>(pipeline));
 	}
 
 	private StageWithPort<Void, Long> buildClockPipeline(final long intervalDelayInMs) {
@@ -70,13 +69,13 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 	private Pipeline<Void, TraceEventRecords> buildPipeline(final StageWithPort<Void, Long> clockStage, final StageWithPort<Void, Long> clock2Stage) {
 		// create stages
 		TCPReader tcpReader = new TCPReader();
-		this.recordCounter = new CountingFilter<IMonitoringRecord>();
+		this.recordCounter = new Counter<IMonitoringRecord>();
 		final InstanceOfFilter<IMonitoringRecord, IFlowRecord> instanceOfFilter = new InstanceOfFilter<IMonitoringRecord, IFlowRecord>(
 				IFlowRecord.class);
 		this.recordThroughputFilter = new ElementThroughputMeasuringStage<IFlowRecord>();
 		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter(this.traceId2trace);
 		this.traceThroughputFilter = new ElementThroughputMeasuringStage<TraceEventRecords>();
-		this.traceCounter = new CountingFilter<TraceEventRecords>();
+		this.traceCounter = new Counter<TraceEventRecords>();
 		EndStage<TraceEventRecords> endStage = new EndStage<TraceEventRecords>();
 
 		// connect stages

@@ -2,7 +2,7 @@ package teetime.variant.methodcallWithPorts.stage;
 
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
-public class CountingFilter<T> extends ConsumerStage<T, T> {
+public class Counter<T> extends ConsumerStage<T, T> {
 
 	private int numElementsPassed;
 

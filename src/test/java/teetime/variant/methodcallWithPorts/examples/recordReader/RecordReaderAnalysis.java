@@ -46,8 +46,8 @@ public class RecordReaderAnalysis extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		Pipeline<?, ?> producerPipeline = this.buildProducerPipeline();
-		this.producerThread = new Thread(new RunnableStage(producerPipeline));
+		Pipeline<File, ?> producerPipeline = this.buildProducerPipeline();
+		this.producerThread = new Thread(new RunnableStage<File>(producerPipeline));
 	}
 
 	private Pipeline<File, Void> buildProducerPipeline() {

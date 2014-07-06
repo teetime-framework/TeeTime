@@ -40,6 +40,8 @@ import kieker.common.record.IMonitoringRecord;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 
+	private static final int EXPECTED_NUM_TRACES = 1000000;
+
 	private StopWatch stopWatch;
 
 	@Before
@@ -101,6 +103,9 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 		}
 		System.out.println("Max size of tcp-relay pipe: " + maxSize);
 
+		// System.out.println("#trace meta data read: " + analysis.getNumTraceMetadatas());
+		// System.out.println("Max #trace created: " + analysis.getMaxElementsCreated());
+
 		// Map<Double, Long> recordQuintiles = StatisticsUtil.calculateQuintiles(analysis.getRecordDelays());
 		// System.out.println("Median record delay: " + recordQuintiles.get(0.5) + " time units/record");
 
@@ -115,11 +120,13 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 		// TraceEventRecords trace6886 = analysis.getElementCollection().get(1);
 		// assertEquals(6886, trace6886.getTraceMetadata().getTraceId());
 
-		// assertEquals(21001, analysis.getNumRecords());
 		assertEquals("#records", 21000001, analysis.getNumRecords());
 
-		// assertEquals(1000, analysis.getNumTraces());
-		assertEquals("#traces", 1000000, analysis.getNumTraces());
+		for (Integer count : analysis.getNumTraceMetadatas()) {
+			assertEquals("#traceMetadata per worker thread", EXPECTED_NUM_TRACES / numWorkerThreads, count.intValue()); // even distribution
+		}
+
+		assertEquals("#traces", EXPECTED_NUM_TRACES, analysis.getNumTraces());
 	}
 
 	public static void main(final String[] args) {

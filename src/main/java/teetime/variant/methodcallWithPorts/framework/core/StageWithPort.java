@@ -2,6 +2,8 @@ package teetime.variant.methodcallWithPorts.framework.core;
 
 public interface StageWithPort<I, O> {
 
+	String getId();
+
 	InputPort<I> getInputPort();
 
 	OutputPort<O> getOutputPort();

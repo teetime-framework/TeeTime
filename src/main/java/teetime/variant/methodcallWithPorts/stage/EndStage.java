@@ -2,6 +2,7 @@ package teetime.variant.methodcallWithPorts.stage;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import teetime.util.ConstructorClosure;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
@@ -16,6 +17,12 @@ public class EndStage<T> implements StageWithPort<T, T> {
 	public int count;
 	public ConstructorClosure<?> closure;
 	public List<Object> list = new LinkedList<Object>();
+
+	private final String id;
+
+	public EndStage() {
+		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
+	}
 
 	@Override
 	public void onIsPipelineHead() {
@@ -68,6 +75,11 @@ public class EndStage<T> implements StageWithPort<T, T> {
 	@Override
 	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
 		// do nothing
+	}
+
+	@Override
+	public String getId() {
+		return this.id;
 	}
 
 }

@@ -45,17 +45,17 @@ public class TcpTraceReduction extends Analysis {
 	public void init() {
 		super.init();
 		StageWithPort<Void, IMonitoringRecord> tcpPipeline = this.buildTcpPipeline();
-		this.tcpThread = new Thread(new RunnableStage(tcpPipeline));
+		this.tcpThread = new Thread(new RunnableStage<Void>(tcpPipeline));
 
 		StageWithPort<Void, Long> clockStage = this.buildClockPipeline(5000);
-		this.clockThread = new Thread(new RunnableStage(clockStage));
+		this.clockThread = new Thread(new RunnableStage<Void>(clockStage));
 
 		this.numWorkerThreads = Math.min(NUM_VIRTUAL_CORES, this.numWorkerThreads);
 		this.workerThreads = new Thread[this.numWorkerThreads];
 
 		for (int i = 0; i < this.workerThreads.length; i++) {
-			StageWithPort<?, ?> pipeline = this.buildPipeline(tcpPipeline, clockStage);
-			this.workerThreads[i] = new Thread(new RunnableStage(pipeline));
+			StageWithPort<IMonitoringRecord, ?> pipeline = this.buildPipeline(tcpPipeline, clockStage);
+			this.workerThreads[i] = new Thread(new RunnableStage<IMonitoringRecord>(pipeline));
 		}
 	}
 
@@ -87,7 +87,7 @@ public class TcpTraceReduction extends Analysis {
 		return pipeline;
 	}
 
-	private final Map<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
+	private final ConcurrentHashMapWithDefault<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
 	private final Map<TraceEventRecords, TraceAggregationBuffer> trace2buffer = new TreeMap<TraceEventRecords, TraceAggregationBuffer>(new TraceComperator());
 
 	private Pipeline<IMonitoringRecord, ?> buildPipeline(final StageWithPort<Void, IMonitoringRecord> tcpReaderPipeline,
