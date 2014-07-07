@@ -1,5 +1,6 @@
 package teetime.variant.methodcallWithPorts.examples.kiekerdays;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +32,12 @@ import kieker.common.record.flow.IFlowRecord;
 public class TcpTraceReduction extends Analysis {
 
 	private static final int NUM_VIRTUAL_CORES = Runtime.getRuntime().availableProcessors();
-	private static final int TCP_RELAY_MAX_SIZE = 500000;
+	private static final int TCP_RELAY_MAX_SIZE = 100000;
 
 	private final List<TraceEventRecords> elementCollection = new LinkedList<TraceEventRecords>();
+	private final ConcurrentHashMapWithDefault<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
+	private final Map<TraceEventRecords, TraceAggregationBuffer> trace2buffer = new TreeMap<TraceEventRecords, TraceAggregationBuffer>(new TraceComperator());
+	private final List<SpScPipe<IMonitoringRecord>> tcpRelayPipes = new ArrayList<SpScPipe<IMonitoringRecord>>();
 
 	private Thread tcpThread;
 	private Thread clockThread;
@@ -87,9 +91,6 @@ public class TcpTraceReduction extends Analysis {
 		return pipeline;
 	}
 
-	private final ConcurrentHashMapWithDefault<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
-	private final Map<TraceEventRecords, TraceAggregationBuffer> trace2buffer = new TreeMap<TraceEventRecords, TraceAggregationBuffer>(new TraceComperator());
-
 	private Pipeline<IMonitoringRecord, ?> buildPipeline(final StageWithPort<Void, IMonitoringRecord> tcpReaderPipeline,
 			final StageWithPort<Void, Long> clockStage) {
 		// create stages
@@ -101,7 +102,8 @@ public class TcpTraceReduction extends Analysis {
 		EndStage<TraceEventRecords> endStage = new EndStage<TraceEventRecords>();
 
 		// connect stages
-		SpScPipe.connect(tcpReaderPipeline.getOutputPort(), relay.getInputPort(), TCP_RELAY_MAX_SIZE);
+		SpScPipe<IMonitoringRecord> tcpRelayPipe = SpScPipe.connect(tcpReaderPipeline.getOutputPort(), relay.getInputPort(), TCP_RELAY_MAX_SIZE);
+		this.tcpRelayPipes.add(tcpRelayPipe);
 
 		SingleElementPipe.connect(relay.getOutputPort(), instanceOfFilter.getInputPort());
 		SingleElementPipe.connect(instanceOfFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
@@ -141,6 +143,16 @@ public class TcpTraceReduction extends Analysis {
 			throw new IllegalStateException(e);
 		}
 		this.clockThread.interrupt();
+	}
+
+	@Override
+	public void onTerminate() {
+		int maxSize = 0;
+		for (SpScPipe<IMonitoringRecord> pipe : this.tcpRelayPipes) {
+			maxSize = Math.max(maxSize, pipe.getMaxSize());
+		}
+		System.out.println("max size of TcpRelayPipes: " + maxSize);
+		super.onTerminate();
 	}
 
 	public List<TraceEventRecords> getElementCollection() {
