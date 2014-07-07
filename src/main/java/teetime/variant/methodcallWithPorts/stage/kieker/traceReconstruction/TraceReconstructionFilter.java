@@ -15,7 +15,6 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.stage.kieker.traceReconstruction;
 
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
@@ -57,7 +56,7 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 	private void putIfFinished(final Long traceId) {
 		final TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
 		if (traceBuffer != null && traceBuffer.isFinished()) { // null-check to check whether the trace has already been sent and removed
-			boolean removed = null != this.traceId2trace.remove(traceId);
+			boolean removed = (null != this.traceId2trace.remove(traceId));
 			if (removed) {
 				this.put(traceBuffer);
 			}
@@ -83,15 +82,8 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 
 	@Override
 	public void onIsPipelineHead() {
-		synchronized (this.traceId2trace) {
-			Iterator<TraceBuffer> iterator = this.traceId2trace.values().iterator();
-			while (iterator.hasNext()) {
-				TraceBuffer traceBuffer = iterator.next();
-				if (traceBuffer.isFinished()) { // FIXME remove isFinished
-					this.put(traceBuffer); // BETTER put outside of synchronized
-					iterator.remove();
-				}
-			}
+		for (Long traceId : this.traceId2trace.keySet()) {
+			this.putIfFinished(traceId); // FIXME also put invalid traces at the end
 		}
 
 		super.onIsPipelineHead();

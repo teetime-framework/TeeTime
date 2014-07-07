@@ -18,13 +18,13 @@ public class ElementThroughputMeasuringStage<T> extends ConsumerStage<T, T> {
 
 	@Override
 	protected void execute5(final T element) {
-		this.numPassedElements++;
-		this.send(element);
-
 		Long timestampInNs = this.triggerInputPort.receive();
 		if (timestampInNs != null) {
 			this.computeElementThroughput(System.nanoTime());
 		}
+		this.numPassedElements++;
+
+		this.send(element);
 	}
 
 	@Override
