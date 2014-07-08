@@ -1,7 +1,5 @@
 package teetime.variant.methodcallWithPorts.stage;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
 
 import teetime.util.ConstructorClosure;
@@ -14,9 +12,9 @@ public class EndStage<T> implements StageWithPort<T, T> {
 
 	private final InputPort<T> inputPort = new InputPort<T>(this);
 
-	public int count;
+	// public int count;
 	public ConstructorClosure<?> closure;
-	public List<Object> list = new LinkedList<Object>();
+	// public List<Object> list = new LinkedList<Object>();
 
 	private final String id;
 
@@ -31,13 +29,12 @@ public class EndStage<T> implements StageWithPort<T, T> {
 
 	@Override
 	public StageWithPort<?, ?> getParentStage() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setParentStage(final StageWithPort<?, ?> parentStage, final int index) {
-		// TODO Auto-generated method stub
+		// do nothing
 
 	}
 
@@ -53,7 +50,6 @@ public class EndStage<T> implements StageWithPort<T, T> {
 
 	@Override
 	public OutputPort<T> getOutputPort() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -68,8 +64,7 @@ public class EndStage<T> implements StageWithPort<T, T> {
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 
 	@Override

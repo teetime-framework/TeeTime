@@ -1,11 +1,8 @@
 package teetime.variant.methodcallWithPorts.examples.kiekerdays;
 
 import teetime.variant.explicitScheduling.framework.core.Analysis;
-import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
-import teetime.variant.methodcallWithPorts.stage.EndStage;
 
 import kieker.common.record.IMonitoringRecord;
 
@@ -35,15 +32,15 @@ public class TcpTraceLogging extends Analysis {
 
 	private StageWithPort<Void, IMonitoringRecord> buildTcpPipeline() {
 		TCPReaderSink tcpReader = new TCPReaderSink();
-		EndStage<IMonitoringRecord> endStage = new EndStage<IMonitoringRecord>();
-
-		SingleElementPipe.connect(tcpReader.getOutputPort(), endStage.getInputPort());
-
-		// create and configure pipeline
-		Pipeline<Void, IMonitoringRecord> pipeline = new Pipeline<Void, IMonitoringRecord>();
-		pipeline.setFirstStage(tcpReader);
-		pipeline.setLastStage(endStage);
-		return pipeline;
+		// EndStage<IMonitoringRecord> endStage = new EndStage<IMonitoringRecord>();
+		//
+		// SingleElementPipe.connect(tcpReader.getOutputPort(), endStage.getInputPort());
+		//
+		// // create and configure pipeline
+		// Pipeline<Void, IMonitoringRecord> pipeline = new Pipeline<Void, IMonitoringRecord>();
+		// pipeline.setFirstStage(tcpReader);
+		// pipeline.setLastStage(endStage);
+		return tcpReader;
 	}
 
 	public static void main(final String[] args) {

@@ -45,7 +45,6 @@ public class TCPReaderSink extends ProducerStage<Void, IMonitoringRecord> {
 
 	private static final int MESSAGE_BUFFER_SIZE = 65535;
 
-	// BETTER use a non thread-safe implementation to increase performance. A thread-safe version is not necessary.
 	private final ILookup<String> stringRegistry = new Lookup<String>();
 	private int port1 = 10133;
 	private int port2 = 10134;
