@@ -19,9 +19,6 @@ import kieker.common.record.IMonitoringRecord;
 
 public class TcpTraceLoggingExtAnalysis extends Analysis {
 
-	private static final int MIO = 1000000;
-	private static final int TCP_RELAY_MAX_SIZE = 2 * MIO;
-
 	private Thread clockThread;
 	private Thread tcpThread;
 
@@ -53,7 +50,7 @@ public class TcpTraceLoggingExtAnalysis extends Analysis {
 		SingleElementPipe.connect(this.recordCounter.getOutputPort(), this.recordThroughputStage.getInputPort());
 		SingleElementPipe.connect(this.recordThroughputStage.getOutputPort(), endStage.getInputPort());
 
-		SpScPipe.connect(clockPipeline.getOutputPort(), this.recordThroughputStage.getTriggerInputPort(), TCP_RELAY_MAX_SIZE);
+		SpScPipe.connect(clockPipeline.getOutputPort(), this.recordThroughputStage.getTriggerInputPort(), 10);
 
 		// create and configure pipeline
 		Pipeline<Void, IMonitoringRecord> pipeline = new Pipeline<Void, IMonitoringRecord>();

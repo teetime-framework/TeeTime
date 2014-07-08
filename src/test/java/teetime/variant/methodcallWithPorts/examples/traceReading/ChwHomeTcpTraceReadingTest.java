@@ -81,7 +81,7 @@ public class ChwHomeTcpTraceReadingTest {
 		assertEquals("#records", EXPECTED_NUM_RECORDS, analysis.getNumRecords());
 
 		// 08.07.2014 (incl.)
-		assertThat(recordQuintiles.get(0.5), is(both(greaterThan(3000L)).and(lessThan(3200L))));
+		assertThat(recordQuintiles.get(0.5), is(both(greaterThan(3000L)).and(lessThan(3500L))));
 	}
 
 }
