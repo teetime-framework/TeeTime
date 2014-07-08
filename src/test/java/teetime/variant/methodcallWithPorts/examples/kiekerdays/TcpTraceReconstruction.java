@@ -114,11 +114,11 @@ public class TcpTraceReconstruction extends Analysis {
 
 	@Override
 	public void onTerminate() {
-		int maxSize = 0;
+		int maxNumWaits = 0;
 		for (SpScPipe<IMonitoringRecord> pipe : this.tcpRelayPipes) {
-			maxSize = Math.max(maxSize, pipe.getMaxSize());
+			maxNumWaits = Math.max(maxNumWaits, pipe.getNumWaits());
 		}
-		System.out.println("max size of TcpRelayPipes: " + maxSize);
+		System.out.println("max #waits of TcpRelayPipes: " + maxNumWaits);
 		super.onTerminate();
 	}
 

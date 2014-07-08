@@ -25,13 +25,14 @@ public class UnorderedGrowablePipe<T> extends IntraThreadPipe<T> {
 	}
 
 	@Override
-	public void add(final T element) {
+	public boolean add(final T element) {
 		if (this.lastFreeIndex == this.elements.length) {
 			// if (this.lastFreeIndex == this.elements.getCapacity()) {
 			this.elements = this.grow();
 		}
 		this.elements[this.lastFreeIndex++] = element;
 		// this.elements.put(this.lastFreeIndex++, element);
+		return true;
 	}
 
 	@Override

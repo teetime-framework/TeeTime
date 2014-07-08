@@ -31,6 +31,7 @@ public final class RoundRobinStrategy<T> implements IDistributorStrategy<T> {
 	@Override
 	public boolean distribute(final List<OutputPort<T>> outputPorts, final T element) {
 		final OutputPort<T> outputPort = this.getNextPortInRoundRobinOrder(outputPorts);
+
 		outputPort.send(element);
 
 		return true;

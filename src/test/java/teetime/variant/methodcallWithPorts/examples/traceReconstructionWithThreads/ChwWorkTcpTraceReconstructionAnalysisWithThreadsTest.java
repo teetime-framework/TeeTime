@@ -99,11 +99,11 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 			analysis.onTerminate();
 		}
 
-		int maxSize = 0;
+		int maxNumWaits = 0;
 		for (SpScPipe<IMonitoringRecord> pipe : analysis.getTcpRelayPipes()) {
-			maxSize = Math.max(maxSize, pipe.getMaxSize());
+			maxNumWaits = Math.max(maxNumWaits, pipe.getNumWaits());
 		}
-		System.out.println("Max size of tcp-relay pipe: " + maxSize);
+		System.out.println("max #waits of TcpRelayPipes: " + maxNumWaits);
 
 		// System.out.println("#traceMetadata read: " + analysis.getNumTraceMetadatas());
 		// System.out.println("Max #trace created: " + analysis.getMaxElementsCreated());

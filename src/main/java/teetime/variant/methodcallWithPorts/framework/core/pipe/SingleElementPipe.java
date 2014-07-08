@@ -15,8 +15,9 @@ public class SingleElementPipe<T> extends IntraThreadPipe<T> {
 	}
 
 	@Override
-	public void add(final T element) {
+	public boolean add(final T element) {
 		this.element = element;
+		return true;
 	}
 
 	@Override

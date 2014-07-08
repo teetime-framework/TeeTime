@@ -21,9 +21,10 @@ public class Pipe<T> extends IntraThreadPipe<T> {
 	 * @see teetime.examples.throughput.methodcall.IPipe#add(T)
 	 */
 	@Override
-	public void add(final T element) {
+	public boolean add(final T element) {
 		this.elements.addToTailUncommitted(element);
 		this.elements.commit();
+		return true;
 	}
 
 	/*

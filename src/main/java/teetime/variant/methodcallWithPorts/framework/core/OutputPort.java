@@ -14,8 +14,13 @@ public class OutputPort<T> {
 	 */
 	private StageWithPort<?, ?> cachedTargetStage;
 
-	public void send(final T element) {
-		this.pipe.add(element);
+	/**
+	 * 
+	 * @param element
+	 * @return <code>true</code> iff the given <code>element</code> could be sent, <code>false</code> otherwise (then use a re-try strategy)
+	 */
+	public boolean send(final T element) {
+		return this.pipe.add(element);
 	}
 
 	public IPipe<T> getPipe() {

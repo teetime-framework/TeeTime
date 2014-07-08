@@ -83,7 +83,7 @@ public class ChwWorkTcpTraceReductionAnalysisWithThreadsTest {
 			analysis.onTerminate();
 		}
 
-		System.out.println("Max size of tcp-relay pipe: " + analysis.getTcpRelayPipe().getMaxSize());
+		System.out.println("#waits of tcp-relay pipe: " + analysis.getTcpRelayPipe().getNumWaits());
 		// System.out.println("#traceMetadata read: " + analysis.getNumTraceMetadatas());
 		// System.out.println("Max #trace created: " + analysis.getMaxElementsCreated());
 		System.out.println("TraceThroughputs: " + analysis.getTraceThroughputs());

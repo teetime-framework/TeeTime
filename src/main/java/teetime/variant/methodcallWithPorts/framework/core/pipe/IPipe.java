@@ -5,7 +5,7 @@ import teetime.variant.methodcallWithPorts.framework.core.Signal;
 
 public interface IPipe<T> {
 
-	void add(T element);
+	boolean add(T element);
 
 	T removeLast();
 

@@ -151,7 +151,7 @@ public class TCPReader extends ProducerStage<Void, IMonitoringRecord> {
 						final long loggingTimestamp = buffer.getLong();
 						final IMonitoringRecord record;
 						try { // NOCS (Nested try-catch)
-						// record = this.recordFactory.create(clazzid, buffer, this.stringRegistry);
+								// record = this.recordFactory.create(clazzid, buffer, this.stringRegistry);
 							record = AbstractMonitoringRecord.createFromByteBuffer(clazzid, buffer, this.stringRegistry);
 							record.setLoggingTimestamp(loggingTimestamp);
 							this.send(record);

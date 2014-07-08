@@ -15,8 +15,9 @@ import teetime.variant.methodcallWithPorts.framework.core.Signal;
 public class SpScPipe<T> extends AbstractPipe<T> {
 
 	private final Queue<T> queue;
-	private int maxSize;
 	private final AtomicReference<Signal> signal = new AtomicReference<Signal>();
+	// statistics
+	private int numWaits;
 
 	public SpScPipe(final int capacity) {
 		ConcurrentQueueSpec concurrentQueueSpec = new ConcurrentQueueSpec(1, 1, capacity, Ordering.FIFO, Preference.THROUGHPUT);
@@ -32,9 +33,16 @@ public class SpScPipe<T> extends AbstractPipe<T> {
 	}
 
 	@Override
-	public void add(final T element) {
-		this.queue.offer(element);
-		this.maxSize = Math.max(this.queue.size(), this.maxSize);
+	public boolean add(final T element) {
+		// this.maxSize = Math.max(this.queue.size(), this.maxSize);
+
+		// BETTER introduce a QueueIsFullStrategy
+		while (!this.queue.offer(element)) {
+			this.numWaits++;
+			Thread.yield();
+		}
+
+		return true;
 	}
 
 	@Override
@@ -58,8 +66,8 @@ public class SpScPipe<T> extends AbstractPipe<T> {
 	}
 
 	// BETTER find a solution w/o any thread-safe code in this stage
-	public synchronized int getMaxSize() {
-		return this.maxSize;
+	public synchronized int getNumWaits() {
+		return this.numWaits;
 	}
 
 	@Override

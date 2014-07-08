@@ -26,8 +26,9 @@ public class OrderedGrowableArrayPipe<T> extends IntraThreadPipe<T> {
 	}
 
 	@Override
-	public void add(final T element) {
+	public boolean add(final T element) {
 		this.elements.put(this.tail++, element);
+		return true;
 	}
 
 	@Override

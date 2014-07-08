@@ -44,16 +44,19 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	protected abstract void execute5(I element);
 
 	/**
-	 * Sends the <code>element</code> using the default output port
+	 * Sends the given <code>element</code> using the default output port
 	 * 
 	 * @param element
+	 * @return <code>true</code> iff the given element could be sent, <code>false</code> otherwise (then use a re-try strategy)
 	 */
-	protected final void send(final O element) {
-		this.send(this.getOutputPort(), element);
+	protected final boolean send(final O element) {
+		return this.send(this.getOutputPort(), element);
 	}
 
-	protected final void send(final OutputPort<O> outputPort, final O element) {
-		outputPort.send(element);
+	protected final boolean send(final OutputPort<O> outputPort, final O element) {
+		if (!outputPort.send(element)) {
+			return false;
+		}
 
 		// StageWithPort<?, ?> next = outputPort.getPipe().getTargetPort().getOwningStage();
 		StageWithPort<?, ?> next = outputPort.getCachedTargetStage();
@@ -61,6 +64,8 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 		do {
 			next.executeWithPorts(); // PERFORMANCE use the return value as indicator for re-schedulability instead
 		} while (next.isReschedulable());
+
+		return true;
 	}
 
 	// public void disable() {
