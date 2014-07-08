@@ -1,20 +1,26 @@
 package teetime.variant.methodcallWithPorts.framework.core.pipe;
 
+import java.util.Queue;
 import java.util.concurrent.atomic.AtomicReference;
 
-import teetime.util.concurrent.spsc.FFBufferOrdered3;
+import org.jctools.queues.QueueFactory;
+import org.jctools.queues.spec.ConcurrentQueueSpec;
+import org.jctools.queues.spec.Ordering;
+import org.jctools.queues.spec.Preference;
+
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.Signal;
 
 public class SpScPipe<T> extends AbstractPipe<T> {
 
-	private final FFBufferOrdered3<T> queue;
+	private final Queue<T> queue;
 	private int maxSize;
 	private final AtomicReference<Signal> signal = new AtomicReference<Signal>();
 
 	public SpScPipe(final int capacity) {
-		this.queue = new FFBufferOrdered3<T>(capacity);
+		ConcurrentQueueSpec concurrentQueueSpec = new ConcurrentQueueSpec(1, 1, capacity, Ordering.FIFO, Preference.THROUGHPUT);
+		this.queue = QueueFactory.newQueue(concurrentQueueSpec);
 	}
 
 	public static <T> SpScPipe<T> connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort, final int capacity) {
