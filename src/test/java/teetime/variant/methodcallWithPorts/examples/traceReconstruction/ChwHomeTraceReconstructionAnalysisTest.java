@@ -69,6 +69,9 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 			analysis.onTerminate();
 		}
 
+		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
+		System.out.println("Median throughput: " + quintiles.get(0.5) + " time units/element");
+
 		assertEquals(50002, analysis.getNumRecords());
 		assertEquals(2, analysis.getNumTraces());
 
@@ -77,9 +80,6 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 
 		TraceEventRecords trace6886 = analysis.getElementCollection().get(1);
 		assertEquals(6886, trace6886.getTraceMetadata().getTraceId());
-
-		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
-		System.out.println("Median throughput: " + quintiles.get(0.5) + " time units/element");
 	}
 
 	@Test

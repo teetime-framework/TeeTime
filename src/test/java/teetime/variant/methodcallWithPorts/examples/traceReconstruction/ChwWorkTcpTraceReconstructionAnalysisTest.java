@@ -34,6 +34,10 @@ import teetime.util.StopWatch;
  */
 public class ChwWorkTcpTraceReconstructionAnalysisTest {
 
+	private static final int MIO = 1000000;
+	private static final int EXPECTED_NUM_TRACES = 10 * MIO;
+	private static final int EXPECTED_NUM_RECORDS = 21 * EXPECTED_NUM_TRACES + 1;
+
 	private StopWatch stopWatch;
 
 	@Before
@@ -63,17 +67,14 @@ public class ChwWorkTcpTraceReconstructionAnalysisTest {
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceThroughputs());
 		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
 
-		// assertEquals(1000, analysis.getNumTraces());
-		assertEquals(1000000, analysis.getNumTraces());
+		assertEquals(EXPECTED_NUM_RECORDS, analysis.getNumRecords());
+		assertEquals(EXPECTED_NUM_TRACES, analysis.getNumTraces());
 
 		// TraceEventRecords trace6884 = analysis.getElementCollection().get(0);
 		// assertEquals(6884, trace6884.getTraceMetadata().getTraceId());
 		//
 		// TraceEventRecords trace6886 = analysis.getElementCollection().get(1);
 		// assertEquals(6886, trace6886.getTraceMetadata().getTraceId());
-
-		// assertEquals(21001, analysis.getNumRecords());
-		assertEquals(21000001, analysis.getNumRecords());
 
 		// until 04.07.2014 (inkl.)
 		// Median throughput: 74 elements/time unit

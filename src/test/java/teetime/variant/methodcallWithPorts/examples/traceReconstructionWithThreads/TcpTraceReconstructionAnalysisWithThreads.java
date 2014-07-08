@@ -62,7 +62,7 @@ public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
 		this.workerThreads = new Thread[this.numWorkerThreads];
 
 		for (int i = 0; i < this.workerThreads.length; i++) {
-			StageWithPort<IMonitoringRecord, ?> pipeline = this.buildPipeline(tcpPipeline, clockStage);
+			StageWithPort<IMonitoringRecord, ?> pipeline = this.buildPipeline(tcpPipeline, clockStage, clock2Stage);
 			this.workerThreads[i] = new Thread(new RunnableStage<IMonitoringRecord>(pipeline));
 		}
 	}
@@ -128,7 +128,8 @@ public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
 	private final ConcurrentHashMapWithDefault<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
 
 	private final StageFactory<Counter<IMonitoringRecord>> recordCounterFactory;
-	private final StageFactory<ElementDelayMeasuringStage<IMonitoringRecord>> recordThroughputFilterFactory;
+	private final StageFactory<ElementDelayMeasuringStage<IMonitoringRecord>> recordDelayFilterFactory;
+	private final StageFactory<ElementThroughputMeasuringStage<IMonitoringRecord>> recordThroughputFilterFactory;
 	private final StageFactory<InstanceCounter<IMonitoringRecord, TraceMetadata>> traceMetadataCounterFactory;
 	private final StageFactory<TraceReconstructionFilter> traceReconstructionFilterFactory;
 	private final StageFactory<Counter<TraceEventRecords>> traceCounterFactory;
@@ -140,7 +141,8 @@ public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
 	public TcpTraceReconstructionAnalysisWithThreads() {
 		try {
 			this.recordCounterFactory = new StageFactory(Counter.class.getConstructor());
-			this.recordThroughputFilterFactory = new StageFactory(ElementDelayMeasuringStage.class.getConstructor());
+			this.recordDelayFilterFactory = new StageFactory(ElementDelayMeasuringStage.class.getConstructor());
+			this.recordThroughputFilterFactory = new StageFactory(ElementThroughputMeasuringStage.class.getConstructor());
 			this.traceMetadataCounterFactory = new StageFactory(InstanceCounter.class.getConstructor(Class.class));
 			this.traceReconstructionFilterFactory = new StageFactory(TraceReconstructionFilter.class.getConstructor(ConcurrentHashMapWithDefault.class));
 			this.traceCounterFactory = new StageFactory(Counter.class.getConstructor());
@@ -153,11 +155,12 @@ public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
 	}
 
 	private Pipeline<IMonitoringRecord, ?> buildPipeline(final StageWithPort<Void, IMonitoringRecord> tcpReaderPipeline,
-			final StageWithPort<Void, Long> clockStage) {
+			final StageWithPort<Void, Long> clockStage, final StageWithPort<Void, Long> clock2Stage) {
 		// create stages
 		Relay<IMonitoringRecord> relay = new Relay<IMonitoringRecord>();
 		Counter<IMonitoringRecord> recordCounter = this.recordCounterFactory.create();
-		// ElementDelayMeasuringStage<IMonitoringRecord> recordThroughputFilter = this.recordThroughputFilterFactory.create();
+		ElementThroughputMeasuringStage<IMonitoringRecord> recordThroughputFilter = this.recordThroughputFilterFactory.create();
+		// ElementDelayMeasuringStage<IMonitoringRecord> recordThroughputFilter = this.recordDelayFilterFactory.create();
 		InstanceCounter<IMonitoringRecord, TraceMetadata> traceMetadataCounter = this.traceMetadataCounterFactory.create(TraceMetadata.class);
 		new InstanceCounter<IMonitoringRecord, TraceMetadata>(TraceMetadata.class);
 		final InstanceOfFilter<IMonitoringRecord, IFlowRecord> instanceOfFilter = new InstanceOfFilter<IMonitoringRecord, IFlowRecord>(
@@ -173,40 +176,29 @@ public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
 		this.tcpRelayPipes.add(tcpRelayPipe);
 		// SysOutFilter<TraceEventRecords> sysout = new SysOutFilter<TraceEventRecords>(tcpRelayPipe);
 
+		SpScPipe.connect(clockStage.getOutputPort(), recordThroughputFilter.getTriggerInputPort(), 10);
+		SpScPipe.connect(clock2Stage.getOutputPort(), traceThroughputFilter.getTriggerInputPort(), 10);
+
 		SingleElementPipe.connect(relay.getOutputPort(), recordCounter.getInputPort());
-		SingleElementPipe.connect(recordCounter.getOutputPort(), traceMetadataCounter.getInputPort());
+		SingleElementPipe.connect(recordCounter.getOutputPort(), recordThroughputFilter.getInputPort());
+		SingleElementPipe.connect(recordThroughputFilter.getOutputPort(), traceMetadataCounter.getInputPort());
 		SingleElementPipe.connect(traceMetadataCounter.getOutputPort(), instanceOfFilter.getInputPort());
-		// SingleElementPipe.connect(relay.getOutputPort(), instanceOfFilter.getInputPort());
-		// SingleElementPipe.connect(relay.getOutputPort(), sysout.getInputPort());
-		// SingleElementPipe.connect(sysout.getOutputPort(), endStage.getInputPort());
-		// SingleElementPipe.connect(relay.getOutputPort(), recordThroughputFilter.getInputPort());
-		// SingleElementPipe.connect(recordThroughputFilter.getOutputPort(), endStage.getInputPort());
-
-		// // SingleElementPipe.connect(instanceOfFilter.getOutputPort(), this.recordThroughputFilter.getInputPort());
-		// // SingleElementPipe.connect(this.recordThroughputFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
 		SingleElementPipe.connect(instanceOfFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
-		SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), traceThroughputFilter.getInputPort());
-		// SingleElementPipe.connect(traceThroughputFilter.getOutputPort(), endStage.getInputPort());
-		SingleElementPipe.connect(traceThroughputFilter.getOutputPort(), traceCounter.getInputPort());
-		// SingleElementPipe.connect(traceCounter.getOutputPort(), sysout.getInputPort());
-		// SingleElementPipe.connect(sysout.getOutputPort(), endStage.getInputPort());
+		SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), traceCounter.getInputPort());
+		// SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), traceThroughputFilter.getInputPort());
+		// SingleElementPipe.connect(traceThroughputFilter.getOutputPort(), traceCounter.getInputPort());
 		SingleElementPipe.connect(traceCounter.getOutputPort(), endStage.getInputPort());
-		// SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), endStage.getInputPort());
-
-		// SpScPipe.connect(clockStage.getOutputPort(), sysout.getTriggerInputPort(), 10);
-		// SpScPipe.connect(clockStage.getOutputPort(), recordThroughputFilter.getTriggerInputPort(), 10);
-		SpScPipe.connect(clockStage.getOutputPort(), traceThroughputFilter.getTriggerInputPort(), 10);
 
 		// create and configure pipeline
 		Pipeline<IMonitoringRecord, TraceEventRecords> pipeline = new Pipeline<IMonitoringRecord, TraceEventRecords>("Worker pipeline");
 		pipeline.setFirstStage(relay);
 		pipeline.addIntermediateStage(recordCounter);
-		// pipeline.addIntermediateStage(recordThroughputFilter);
+		pipeline.addIntermediateStage(recordThroughputFilter);
 		pipeline.addIntermediateStage(traceMetadataCounter);
 		pipeline.addIntermediateStage(instanceOfFilter);
 		// pipeline.addIntermediateStage(this.recordThroughputFilter);
 		pipeline.addIntermediateStage(traceReconstructionFilter);
-		pipeline.addIntermediateStage(traceThroughputFilter);
+		// pipeline.addIntermediateStage(traceThroughputFilter);
 		pipeline.addIntermediateStage(traceCounter);
 		// pipeline.addIntermediateStage(sysout);
 		pipeline.setLastStage(endStage);
@@ -218,9 +210,9 @@ public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
 	public void start() {
 		super.start();
 
-		this.tcpThread.start();
 		this.clockThread.start();
-		// this.clock2Thread.start();
+		this.clock2Thread.start();
+		this.tcpThread.start();
 
 		for (Thread workerThread : this.workerThreads) {
 			workerThread.start();
@@ -261,8 +253,16 @@ public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
 
 	public List<Long> getRecordDelays() {
 		List<Long> throughputs = new LinkedList<Long>();
-		for (ElementDelayMeasuringStage<IMonitoringRecord> stage : this.recordThroughputFilterFactory.getStages()) {
+		for (ElementDelayMeasuringStage<IMonitoringRecord> stage : this.recordDelayFilterFactory.getStages()) {
 			throughputs.addAll(stage.getDelays());
+		}
+		return throughputs;
+	}
+
+	public List<Long> getRecordThroughputs() {
+		List<Long> throughputs = new LinkedList<Long>();
+		for (ElementThroughputMeasuringStage<IMonitoringRecord> stage : this.recordThroughputFilterFactory.getStages()) {
+			throughputs.addAll(stage.getThroughputs());
 		}
 		return throughputs;
 	}

@@ -26,6 +26,9 @@ import kieker.common.record.flow.IFlowRecord;
 
 public class TcpTraceReconstructionAnalysis extends Analysis {
 
+	private static final int MIO = 1000000;
+	private static final int TCP_RELAY_MAX_SIZE = 2 * MIO;
+
 	private final List<TraceEventRecords> elementCollection = new LinkedList<TraceEventRecords>();
 
 	private Thread clockThread;
@@ -79,13 +82,14 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 		EndStage<TraceEventRecords> endStage = new EndStage<TraceEventRecords>();
 
 		// connect stages
-		SpScPipe.connect(tcpReader.getOutputPort(), this.recordCounter.getInputPort(), 1024);
+		SpScPipe.connect(tcpReader.getOutputPort(), this.recordCounter.getInputPort(), TCP_RELAY_MAX_SIZE);
 		SingleElementPipe.connect(this.recordCounter.getOutputPort(), instanceOfFilter.getInputPort());
-		// SingleElementPipe.connect(instanceOfFilter.getOutputPort(), this.recordThroughputFilter.getInputPort());
-		// SingleElementPipe.connect(this.recordThroughputFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
-		SingleElementPipe.connect(instanceOfFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
-		SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), this.traceThroughputFilter.getInputPort());
-		SingleElementPipe.connect(this.traceThroughputFilter.getOutputPort(), this.traceCounter.getInputPort());
+		SingleElementPipe.connect(instanceOfFilter.getOutputPort(), this.recordThroughputFilter.getInputPort());
+		SingleElementPipe.connect(this.recordThroughputFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
+		// SingleElementPipe.connect(instanceOfFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
+		// SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), this.traceThroughputFilter.getInputPort());
+		// SingleElementPipe.connect(this.traceThroughputFilter.getOutputPort(), this.traceCounter.getInputPort());
+		SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), this.traceCounter.getInputPort());
 		SingleElementPipe.connect(this.traceCounter.getOutputPort(), endStage.getInputPort());
 
 		SpScPipe.connect(clockStage.getOutputPort(), this.recordThroughputFilter.getTriggerInputPort(), 1);
@@ -96,9 +100,9 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 		pipeline.setFirstStage(tcpReader);
 		pipeline.addIntermediateStage(this.recordCounter);
 		pipeline.addIntermediateStage(instanceOfFilter);
-		// pipeline.addIntermediateStage(this.recordThroughputFilter);
+		pipeline.addIntermediateStage(this.recordThroughputFilter);
 		pipeline.addIntermediateStage(traceReconstructionFilter);
-		pipeline.addIntermediateStage(this.traceThroughputFilter);
+		// pipeline.addIntermediateStage(this.traceThroughputFilter);
 		pipeline.addIntermediateStage(this.traceCounter);
 		pipeline.setLastStage(endStage);
 		return pipeline;
@@ -108,9 +112,9 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 	public void start() {
 		super.start();
 
-		this.clockThread.start();
-		this.clock2Thread.start();
 		this.workerThread.start();
+		this.clockThread.start();
+		// this.clock2Thread.start();
 
 		try {
 			this.workerThread.join();
@@ -118,7 +122,7 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 			throw new IllegalStateException(e);
 		}
 		this.clockThread.interrupt();
-		this.clock2Thread.interrupt();
+		// this.clock2Thread.interrupt();
 	}
 
 	public List<TraceEventRecords> getElementCollection() {

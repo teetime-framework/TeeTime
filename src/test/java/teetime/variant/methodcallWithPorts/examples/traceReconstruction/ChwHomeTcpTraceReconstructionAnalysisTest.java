@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcallWithPorts.examples.traceReading;
+package teetime.variant.methodcallWithPorts.examples.traceReconstruction;
 
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.greaterThan;
@@ -28,9 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import teetime.util.ListUtil;
 import teetime.util.StatisticsUtil;
@@ -41,8 +39,7 @@ import teetime.util.StopWatch;
  * 
  * @since 1.10
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ChwHomeTcpTraceReadingTest {
+public class ChwHomeTcpTraceReconstructionAnalysisTest {
 
 	private static final int MIO = 1000000;
 	private static final int EXPECTED_NUM_TRACES = 10 * MIO;
@@ -63,7 +60,7 @@ public class ChwHomeTcpTraceReadingTest {
 
 	@Test
 	public void performAnalysis() {
-		final TcpTraceLoggingExtAnalysis analysis = new TcpTraceLoggingExtAnalysis();
+		final TcpTraceReconstructionAnalysis analysis = new TcpTraceReconstructionAnalysis();
 		analysis.init();
 
 		this.stopWatch.start();
@@ -76,12 +73,28 @@ public class ChwHomeTcpTraceReadingTest {
 
 		List<Long> recordThroughputs = ListUtil.removeFirstHalfElements(analysis.getRecordThroughputs());
 		Map<Double, Long> recordQuintiles = StatisticsUtil.calculateQuintiles(recordThroughputs);
-		System.out.println("Median record throughput: " + recordQuintiles.get(0.5) + " records/time unit");
+		System.out.println("Median record throughput: " + recordQuintiles.get(0.5) + " elements/time unit");
+
+		// List<Long> traceThroughputs = ListUtil.removeFirstHalfElements(analysis.getTraceThroughputs());
+		// Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(traceThroughputs);
+		// System.out.println("Median trace throughput: " + traceQuintiles.get(0.5) + " traces/time unit");
 
 		assertEquals("#records", EXPECTED_NUM_RECORDS, analysis.getNumRecords());
+		assertEquals("#traces", EXPECTED_NUM_TRACES, analysis.getNumTraces());
+
+		// TraceEventRecords trace6884 = analysis.getElementCollection().get(0);
+		// assertEquals(6884, trace6884.getTraceMetadata().getTraceId());
+		//
+		// TraceEventRecords trace6886 = analysis.getElementCollection().get(1);
+		// assertEquals(6886, trace6886.getTraceMetadata().getTraceId());
+
+		// until 04.07.2014 (incl.)
+		// Median throughput: 74 elements/time unit
+		// Duration: 17445 ms
+		// Median throughput: 78 elements/time unit
+		// Duration: 16608 ms
 
 		// 08.07.2014 (incl.)
 		assertThat(recordQuintiles.get(0.5), is(both(greaterThan(3000L)).and(lessThan(3200L))));
 	}
-
 }
