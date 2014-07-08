@@ -34,7 +34,8 @@ import kieker.common.record.flow.trace.TraceMetadata;
 public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
 
 	private static final int NUM_VIRTUAL_CORES = Runtime.getRuntime().availableProcessors();
-	private static final int TCP_RELAY_MAX_SIZE = 2000000;
+	private static final int MIO = 1000000;
+	private static final int TCP_RELAY_MAX_SIZE = 2 * MIO;
 
 	private final List<TraceEventRecords> elementCollection = new LinkedList<TraceEventRecords>();
 

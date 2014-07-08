@@ -42,7 +42,8 @@ import kieker.common.record.IMonitoringRecord;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 
-	private static final int EXPECTED_NUM_TRACES = 1000000;
+	private static final int MIO = 1000000;
+	private static final int EXPECTED_NUM_TRACES = 1 * MIO;
 
 	private StopWatch stopWatch;
 
