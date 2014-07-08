@@ -34,8 +34,6 @@ public class SpScPipe<T> extends AbstractPipe<T> {
 
 	@Override
 	public boolean add(final T element) {
-		// this.maxSize = Math.max(this.queue.size(), this.maxSize);
-
 		// BETTER introduce a QueueIsFullStrategy
 		while (!this.queue.offer(element)) {
 			this.numWaits++;
