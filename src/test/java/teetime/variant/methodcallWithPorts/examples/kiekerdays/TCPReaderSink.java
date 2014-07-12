@@ -22,6 +22,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import teetime.variant.methodcallWithPorts.framework.core.ProducerStage;
 
@@ -51,6 +54,13 @@ public class TCPReaderSink extends ProducerStage<Void, IMonitoringRecord> {
 
 	private TCPStringReader tcpStringReader;
 
+	private final AtomicInteger counter = new AtomicInteger(0);
+	private final ScheduledThreadPoolExecutor executorService;
+
+	public TCPReaderSink() {
+		this.executorService = new ScheduledThreadPoolExecutor(1);
+	}
+
 	public final int getPort1() {
 		return this.port1;
 	}
@@ -69,6 +79,13 @@ public class TCPReaderSink extends ProducerStage<Void, IMonitoringRecord> {
 
 	@Override
 	public void onStart() {
+		this.executorService.scheduleAtFixedRate(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("Records/s: " + TCPReaderSink.this.counter.getAndSet(0));
+			}
+		}, 0, 1, TimeUnit.SECONDS);
+
 		this.tcpStringReader = new TCPStringReader(this.port2, this.stringRegistry);
 		this.tcpStringReader.start();
 		super.onStart();
@@ -99,6 +116,7 @@ public class TCPReaderSink extends ProducerStage<Void, IMonitoringRecord> {
 							record = AbstractMonitoringRecord.createFromByteBuffer(clazzid, buffer, this.stringRegistry);
 							record.setLoggingTimestamp(loggingTimestamp);
 							// this.send(record);
+							this.counter.incrementAndGet();
 						} catch (final MonitoringRecordException ex) {
 							super.logger.error("Failed to create record.", ex);
 						}
@@ -127,8 +145,14 @@ public class TCPReaderSink extends ProducerStage<Void, IMonitoringRecord> {
 			}
 
 			this.setReschedulable(false);
-			this.tcpStringReader.terminate();
 		}
+	}
+
+	@Override
+	public void onIsPipelineHead() {
+		this.executorService.shutdown();
+		this.tcpStringReader.interrupt();
+		super.onIsPipelineHead();
 	}
 
 	/**
@@ -145,22 +169,14 @@ public class TCPReaderSink extends ProducerStage<Void, IMonitoringRecord> {
 
 		private final int port;
 		private final ILookup<String> stringRegistry;
-		private volatile boolean terminated = false; // NOPMD
-		private volatile Thread readerThread;
 
 		public TCPStringReader(final int port, final ILookup<String> stringRegistry) {
 			this.port = port;
 			this.stringRegistry = stringRegistry;
 		}
 
-		public void terminate() {
-			this.terminated = true;
-			this.readerThread.interrupt();
-		}
-
 		@Override
 		public void run() {
-			this.readerThread = Thread.currentThread();
 			ServerSocketChannel serversocket = null;
 			try {
 				serversocket = ServerSocketChannel.open();
@@ -171,7 +187,7 @@ public class TCPReaderSink extends ProducerStage<Void, IMonitoringRecord> {
 				// BEGIN also loop this one?
 				final SocketChannel socketChannel = serversocket.accept();
 				final ByteBuffer buffer = ByteBuffer.allocateDirect(MESSAGE_BUFFER_SIZE);
-				while ((socketChannel.read(buffer) != -1) && (!this.terminated)) {
+				while ((socketChannel.read(buffer) != -1)) {
 					buffer.flip();
 					try {
 						while (buffer.hasRemaining()) {
@@ -201,6 +217,8 @@ public class TCPReaderSink extends ProducerStage<Void, IMonitoringRecord> {
 					}
 				}
 			}
+
+			LOG.debug("StringRegistryReader thread has finished.");
 		}
 	}
 }
