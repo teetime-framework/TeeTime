@@ -18,7 +18,6 @@ package teetime.variant.methodcallWithPorts.stage.kieker.fileToRecord.textLine;
 
 import java.util.Map;
 
-import teetime.util.list.CommittableQueue;
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
 import kieker.common.util.filesystem.FSUtil;
@@ -28,7 +27,7 @@ import kieker.common.util.filesystem.FSUtil;
  * 
  * @since 1.10
  */
-public class TextLine2MappingRegistryFilter extends ConsumerStage<String, Void> {
+public class TextLine2MappingRegistryFilter extends ConsumerStage<String> {
 
 	private final Map<Integer, String> stringRegistry;
 
@@ -37,12 +36,7 @@ public class TextLine2MappingRegistryFilter extends ConsumerStage<String, Void> 
 	}
 
 	@Override
-	protected void execute4(final CommittableQueue<String> elements) {
-		throw new IllegalStateException();
-	}
-
-	@Override
-	protected void execute5(final String textLine) {
+	protected void execute(final String textLine) {
 		final int split = textLine.indexOf('=');
 		if (split == -1) {
 			this.logger.error("Failed to find character '=' in line: {" + textLine + "}. It must consist of a ID=VALUE pair.");

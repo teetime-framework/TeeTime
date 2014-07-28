@@ -1,16 +1,19 @@
 package teetime.variant.methodcallWithPorts.stage;
 
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public class Counter<T> extends ConsumerStage<T, T> {
+public class Counter<T> extends ConsumerStage<T> {
+
+	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	private int numElementsPassed;
 
 	@Override
-	protected void execute5(final T element) {
+	protected void execute(final T element) {
 		this.numElementsPassed++;
 		// this.logger.debug("count: " + this.numElementsPassed);
-		this.send(element);
+		this.send(this.outputPort, element);
 	}
 
 	// BETTER find a solution w/o any thread-safe code in this stage
@@ -18,4 +21,7 @@ public class Counter<T> extends ConsumerStage<T, T> {
 		return this.numElementsPassed;
 	}
 
+	public OutputPort<T> getOutputPort() {
+		return this.outputPort;
+	}
 }

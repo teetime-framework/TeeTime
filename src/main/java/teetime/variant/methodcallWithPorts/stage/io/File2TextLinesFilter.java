@@ -25,18 +25,21 @@ import java.io.InputStreamReader;
 
 import teetime.variant.explicitScheduling.stage.util.TextLine;
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class File2TextLinesFilter extends ConsumerStage<File, TextLine> {
+public class File2TextLinesFilter extends ConsumerStage<File> {
+
+	private final OutputPort<TextLine> outputPort = this.createOutputPort();
 
 	private String charset = "UTF-8";
 
 	@Override
-	protected void execute5(final File textFile) {
+	protected void execute(final File textFile) {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(textFile), this.charset));
@@ -44,7 +47,7 @@ public class File2TextLinesFilter extends ConsumerStage<File, TextLine> {
 			while ((line = reader.readLine()) != null) {
 				line = line.trim();
 				if (line.length() != 0) {
-					this.send(new TextLine(textFile, line));
+					this.send(this.outputPort, new TextLine(textFile, line));
 				} // else: ignore empty line
 			}
 		} catch (final FileNotFoundException e) {
@@ -68,6 +71,10 @@ public class File2TextLinesFilter extends ConsumerStage<File, TextLine> {
 
 	public void setCharset(final String charset) {
 		this.charset = charset;
+	}
+
+	public OutputPort<TextLine> getOutputPort() {
+		return outputPort;
 	}
 
 }

@@ -46,7 +46,7 @@ import kieker.common.util.registry.Lookup;
  * 
  * @since 1.10
  */
-public class TCPReader extends ProducerStage<Void, IMonitoringRecord> {
+public class TCPReader extends ProducerStage<IMonitoringRecord> {
 
 	private static final int MESSAGE_BUFFER_SIZE = 65535;
 
@@ -58,13 +58,6 @@ public class TCPReader extends ProducerStage<Void, IMonitoringRecord> {
 	private TCPStringReader tcpStringReader;
 
 	private RecordFactory recordFactory;
-
-	// @Override // implement onStop
-	// public void onPipelineStops() {
-	// super.logger.info("Shutdown of TCPReader requested.");
-	// // TODO actually implement terminate!
-	// super.onPipelineStops();
-	// }
 
 	public final int getPort1() {
 		return this.port1;
@@ -130,7 +123,7 @@ public class TCPReader extends ProducerStage<Void, IMonitoringRecord> {
 	}
 
 	@Override
-	protected void execute5(final Void element) {
+	protected void execute() {
 		ServerSocketChannel serversocket = null;
 		try {
 			serversocket = ServerSocketChannel.open();
@@ -154,7 +147,7 @@ public class TCPReader extends ProducerStage<Void, IMonitoringRecord> {
 								// record = this.recordFactory.create(clazzid, buffer, this.stringRegistry);
 							record = AbstractMonitoringRecord.createFromByteBuffer(clazzid, buffer, this.stringRegistry);
 							record.setLoggingTimestamp(loggingTimestamp);
-							this.send(record);
+							this.send(this.outputPort, record);
 						} catch (final MonitoringRecordException ex) {
 							super.logger.error("Failed to create record.", ex);
 						}

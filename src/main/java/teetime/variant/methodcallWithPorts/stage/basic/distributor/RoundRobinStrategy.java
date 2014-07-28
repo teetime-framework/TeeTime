@@ -15,8 +15,6 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.stage.basic.distributor;
 
-import java.util.List;
-
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 /**
@@ -29,7 +27,7 @@ public final class RoundRobinStrategy<T> implements IDistributorStrategy<T> {
 	private int index = 0;
 
 	@Override
-	public boolean distribute(final List<OutputPort<T>> outputPorts, final T element) {
+	public boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
 		final OutputPort<T> outputPort = this.getNextPortInRoundRobinOrder(outputPorts);
 
 		outputPort.send(element);
@@ -37,10 +35,10 @@ public final class RoundRobinStrategy<T> implements IDistributorStrategy<T> {
 		return true;
 	}
 
-	private OutputPort<T> getNextPortInRoundRobinOrder(final List<OutputPort<T>> outputPorts) {
-		final OutputPort<T> outputPort = outputPorts.get(this.index);
+	private OutputPort<T> getNextPortInRoundRobinOrder(final OutputPort<T>[] outputPorts) {
+		final OutputPort<T> outputPort = outputPorts[this.index];
 
-		this.index = (this.index + 1) % outputPorts.size();
+		this.index = (this.index + 1) % outputPorts.length;
 
 		return outputPort;
 	}

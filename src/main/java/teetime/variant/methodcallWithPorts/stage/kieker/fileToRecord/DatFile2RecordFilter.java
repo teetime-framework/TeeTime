@@ -36,8 +36,8 @@ public class DatFile2RecordFilter extends Pipeline<File, IMonitoringRecord> {
 		final File2TextLinesFilter file2TextLinesFilter = new File2TextLinesFilter();
 		final TextLine2RecordFilter textLine2RecordFilter = new TextLine2RecordFilter(classNameRegistryRepository);
 
-		this.setFirstStage(file2TextLinesFilter);
-		this.setLastStage(textLine2RecordFilter);
+		this.setFirstStage(file2TextLinesFilter, file2TextLinesFilter.getInputPort());
+		this.setLastStage(textLine2RecordFilter, textLine2RecordFilter.getOutputPort());
 
 		// BETTER let the framework choose the optimal pipe implementation
 		SingleElementPipe.connect(file2TextLinesFilter.getOutputPort(), textLine2RecordFilter.getInputPort());

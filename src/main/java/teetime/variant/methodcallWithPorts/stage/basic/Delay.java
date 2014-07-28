@@ -1,16 +1,14 @@
-package teetime.variant.methodcallWithPorts.stage;
+package teetime.variant.methodcallWithPorts.stage.basic;
 
-import teetime.util.list.CommittableQueue;
 import teetime.variant.methodcallWithPorts.framework.core.AbstractStage;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public class Delay<T> extends AbstractStage<T, T> {
+public class Delay<T> extends AbstractStage {
 
-	private final InputPort<Long> timestampTriggerInputPort = new InputPort<Long>(this);
-
-	public Delay() {
-		// this.setReschedulable(true);
-	}
+	private final InputPort<T> inputPort = this.createInputPort();
+	private final InputPort<Long> timestampTriggerInputPort = this.createInputPort();
+	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	@Override
 	public void executeWithPorts() {
@@ -22,9 +20,9 @@ public class Delay<T> extends AbstractStage<T, T> {
 
 		// System.out.println("#elements: " + this.getInputPort().pipe.size());
 		// TODO implement receiveAll() and sendMultiple()
-		while (!this.getInputPort().getPipe().isEmpty()) {
-			T element = this.getInputPort().receive();
-			this.send(element);
+		while (!this.inputPort.getPipe().isEmpty()) {
+			T element = this.inputPort.receive();
+			this.send(this.outputPort, element);
 		}
 
 		// this.setReschedulable(this.getInputPort().pipe.size() > 0);
@@ -37,20 +35,16 @@ public class Delay<T> extends AbstractStage<T, T> {
 		this.setReschedulable(true);
 	}
 
-	@Override
-	protected void execute4(final CommittableQueue<T> elements) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void execute5(final T element) {
-		// TODO Auto-generated method stub
-
+	public InputPort<T> getInputPort() {
+		return this.inputPort;
 	}
 
 	public InputPort<Long> getTimestampTriggerInputPort() {
 		return this.timestampTriggerInputPort;
+	}
+
+	public OutputPort<T> getOutputPort() {
+		return this.outputPort;
 	}
 
 }

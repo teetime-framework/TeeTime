@@ -1,13 +1,13 @@
 package teetime.variant.methodcallWithPorts.framework.core;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
-
-import teetime.util.list.CommittableQueue;
 
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
 
-public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
+public abstract class AbstractStage implements StageWithPort {
 
 	private final String id;
 	/**
@@ -15,33 +15,22 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	 */
 	protected final Log logger; // BETTER use SLF4J as interface and logback as impl
 
-	private final InputPort<I> inputPort = new InputPort<I>(this);
-	private final OutputPort<O> outputPort = new OutputPort<O>();
-
-	private StageWithPort<?, ?> parentStage;
+	private StageWithPort parentStage;
 
 	private boolean reschedulable;
+
+	private final List<InputPort<?>> inputPortList = new ArrayList<InputPort<?>>();
+	private final List<OutputPort<?>> outputPortList = new ArrayList<OutputPort<?>>();
+
+	/** A cached instance of <code>inputPortList</code> to avoid creating an iterator each time iterating it */
+	protected InputPort<?>[] cachedInputPorts;
+	/** A cached instance of <code>outputPortList</code> to avoid creating an iterator each time iterating it */
+	protected OutputPort<?>[] cachedOutputPorts;
 
 	public AbstractStage() {
 		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
 		this.logger = LogFactory.getLog(this.getClass().getName() + "(" + this.id + ")");
 	}
-
-	@Override
-	public InputPort<I> getInputPort() {
-		return this.inputPort;
-	}
-
-	@Override
-	public OutputPort<O> getOutputPort() {
-		return this.outputPort;
-	}
-
-	protected void execute4(final CommittableQueue<I> elements) {
-		throw new IllegalStateException(); // default implementation
-	}
-
-	protected abstract void execute5(I element);
 
 	/**
 	 * Sends the given <code>element</code> using the default output port
@@ -49,17 +38,12 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 	 * @param element
 	 * @return <code>true</code> iff the given element could be sent, <code>false</code> otherwise (then use a re-try strategy)
 	 */
-	protected final boolean send(final O element) {
-		return this.send(this.getOutputPort(), element);
-	}
-
-	protected final boolean send(final OutputPort<O> outputPort, final O element) {
+	protected final <O> boolean send(final OutputPort<O> outputPort, final O element) {
 		if (!outputPort.send(element)) {
 			return false;
 		}
 
-		// StageWithPort<?, ?> next = outputPort.getPipe().getTargetPort().getOwningStage();
-		StageWithPort<?, ?> next = outputPort.getCachedTargetStage();
+		StageWithPort next = outputPort.getCachedTargetStage();
 
 		do {
 			next.executeWithPorts(); // PERFORMANCE use the return value as indicator for re-schedulability instead
@@ -68,29 +52,32 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 		return true;
 	}
 
-	// public void disable() {
-	// this.schedulingInformation.setActive(false);
-	// this.fireOnDisable();
-	// }
-
-	// private void fireOnDisable() {
-	// if (this.listener != null) {
-	// this.listener.onDisable(this, this.index);
-	// }
-	// }
-
 	@Override
 	public void onStart() {
+		this.cachedInputPorts = this.inputPortList.toArray(new InputPort<?>[0]);
+		this.cachedOutputPorts = this.outputPortList.toArray(new OutputPort<?>[0]);
+	}
+
+	protected void onFinished() {
 		// empty default implementation
+		this.onIsPipelineHead();
+	}
+
+	protected InputPort<?>[] getInputPorts() {
+		return this.cachedInputPorts;
+	}
+
+	protected OutputPort<?>[] getOutputPorts() {
+		return this.cachedOutputPorts;
 	}
 
 	@Override
-	public StageWithPort<?, ?> getParentStage() {
+	public StageWithPort getParentStage() {
 		return this.parentStage;
 	}
 
 	@Override
-	public void setParentStage(final StageWithPort<?, ?> parentStage, final int index) {
+	public void setParentStage(final StageWithPort parentStage, final int index) {
 		this.parentStage = parentStage;
 	}
 
@@ -124,12 +111,21 @@ public abstract class AbstractStage<I, O> implements StageWithPort<I, O> {
 			break;
 		}
 
-		this.outputPort.sendSignal(signal);
+		for (OutputPort<?> outputPort : this.outputPortList) {
+			outputPort.sendSignal(signal);
+		}
 	}
 
-	protected void onFinished() {
-		// empty default implementation
-		this.onIsPipelineHead();
+	protected <T> InputPort<T> createInputPort() {
+		InputPort<T> inputPort = new InputPort<T>(this);
+		this.inputPortList.add(inputPort);
+		return inputPort;
+	}
+
+	protected <T> OutputPort<T> createOutputPort() {
+		OutputPort<T> outputPort = new OutputPort<T>();
+		this.outputPortList.add(outputPort);
+		return outputPort;
 	}
 
 	@Override

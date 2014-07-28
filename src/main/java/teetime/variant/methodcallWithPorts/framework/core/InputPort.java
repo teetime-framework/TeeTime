@@ -4,10 +4,10 @@ import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 
 public class InputPort<T> {
 
-	private final StageWithPort<?, ?> owningStage;
+	private final StageWithPort owningStage;
 	private IPipe<T> pipe;
 
-	public InputPort(final StageWithPort<?, ?> owningStage) {
+	InputPort(final StageWithPort owningStage) {
 		super();
 		this.owningStage = owningStage;
 	}
@@ -36,7 +36,7 @@ public class InputPort<T> {
 		pipe.setTargetPort(this);
 	}
 
-	public StageWithPort<?, ?> getOwningStage() {
+	public StageWithPort getOwningStage() {
 		return this.owningStage;
 	}
 

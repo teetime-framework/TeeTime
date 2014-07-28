@@ -15,8 +15,6 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.stage.basic.distributor;
 
-import java.util.List;
-
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 /**
@@ -26,6 +24,6 @@ import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
  */
 public interface IDistributorStrategy<T> {
 
-	public boolean distribute(final List<OutputPort<T>> allOutputPorts, final T element);
+	public boolean distribute(final OutputPort<T>[] allOutputPorts, final T element);
 
 }

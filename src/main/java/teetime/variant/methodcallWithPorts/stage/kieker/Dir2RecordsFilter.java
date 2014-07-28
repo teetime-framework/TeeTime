@@ -74,18 +74,18 @@ public class Dir2RecordsFilter extends Pipeline<File, IMonitoringRecord> {
 		SingleElementPipe.connect(binFileOutputPort, binaryFile2RecordFilter.getInputPort());
 		SingleElementPipe.connect(zipFileOutputPort, zipFile2RecordFilter.getInputPort());
 
-		SingleElementPipe.connect(datFile2RecordFilter.getOutputPort(), recordMerger.getInputPort());
-		SingleElementPipe.connect(binaryFile2RecordFilter.getOutputPort(), recordMerger.getInputPort());
-		SingleElementPipe.connect(zipFile2RecordFilter.getOutputPort(), recordMerger.getInputPort());
+		SingleElementPipe.connect(datFile2RecordFilter.getOutputPort(), recordMerger.getNewInputPort());
+		SingleElementPipe.connect(binaryFile2RecordFilter.getOutputPort(), recordMerger.getNewInputPort());
+		SingleElementPipe.connect(zipFile2RecordFilter.getOutputPort(), recordMerger.getNewInputPort());
 
 		// prepare pipeline
-		this.setFirstStage(classNameRegistryCreationFilter);
+		this.setFirstStage(classNameRegistryCreationFilter, classNameRegistryCreationFilter.getInputPort());
 		this.addIntermediateStage(directory2FilesFilter);
 		this.addIntermediateStage(fileExtensionSwitch);
 		this.addIntermediateStage(datFile2RecordFilter);
 		this.addIntermediateStage(binaryFile2RecordFilter);
 		this.addIntermediateStage(zipFile2RecordFilter);
-		this.setLastStage(recordMerger);
+		this.setLastStage(recordMerger, recordMerger.getOutputPort());
 	}
 
 	/**

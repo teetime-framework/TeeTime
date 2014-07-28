@@ -1,18 +1,14 @@
 package teetime.variant.methodcallWithPorts.framework.core;
 
-public interface StageWithPort<I, O> {
+public interface StageWithPort {
 
 	String getId();
 
-	InputPort<I> getInputPort();
-
-	OutputPort<O> getOutputPort();
-
 	void executeWithPorts();
 
-	StageWithPort<?, ?> getParentStage();
+	StageWithPort getParentStage();
 
-	void setParentStage(StageWithPort<?, ?> parentStage, int index);
+	void setParentStage(StageWithPort parentStage, int index);
 
 	// void setListener(OnDisableListener listener);
 

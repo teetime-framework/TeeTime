@@ -16,7 +16,6 @@
 package teetime.variant.methodcallWithPorts.stage;
 
 import teetime.util.ConstructorClosure;
-import teetime.util.list.CommittableQueue;
 import teetime.variant.methodcallWithPorts.framework.core.ProducerStage;
 
 /**
@@ -24,7 +23,7 @@ import teetime.variant.methodcallWithPorts.framework.core.ProducerStage;
  * 
  * @since 1.10
  */
-public class ObjectProducer<T> extends ProducerStage<Void, T> {
+public class ObjectProducer<T> extends ProducerStage<T> {
 
 	private long numInputObjects;
 	private ConstructorClosure<T> inputObjectCreator;
@@ -54,12 +53,7 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 	}
 
 	@Override
-	protected void execute4(final CommittableQueue<Void> elements) {
-		this.execute5(null);
-	}
-
-	@Override
-	protected void execute5(final Void element) {
+	protected void execute() {
 		// this.logger.debug("Executing object producer...");
 
 		T newObject = null;
@@ -72,7 +66,7 @@ public class ObjectProducer<T> extends ProducerStage<Void, T> {
 		}
 
 		// System.out.println(this.getClass().getSimpleName() + ": sending " + this.numInputObjects);
-		this.send(newObject);
+		this.send(this.outputPort, newObject);
 	}
 
 }

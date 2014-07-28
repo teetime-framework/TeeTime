@@ -21,9 +21,9 @@ public class DirWithDat2RecordFilter extends Pipeline<File, IMonitoringRecord> {
 		final Directory2FilesFilter directory2FilesFilter = new Directory2FilesFilter();
 		final DatFile2RecordFilter datFile2RecordFilter = new DatFile2RecordFilter(classNameRegistryRepository);
 
-		this.setFirstStage(classNameRegistryCreationFilter);
+		this.setFirstStage(classNameRegistryCreationFilter, classNameRegistryCreationFilter.getInputPort());
 		this.addIntermediateStage(directory2FilesFilter);
-		this.setLastStage(datFile2RecordFilter);
+		this.setLastStage(datFile2RecordFilter, datFile2RecordFilter.getOutputPort());
 	}
 
 	public DirWithDat2RecordFilter() {

@@ -29,6 +29,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistry;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.MappingFileParser;
 
@@ -40,7 +41,9 @@ import kieker.common.util.filesystem.FSUtil;
  * 
  * @since 1.10
  */
-public class ZipFile2RecordFilter extends ConsumerStage<File, IMonitoringRecord> {
+public class ZipFile2RecordFilter extends ConsumerStage<File> {
+
+	private final OutputPort<IMonitoringRecord> outputPort = this.createOutputPort();
 
 	private final MappingFileParser mappingFileParser;
 
@@ -52,7 +55,7 @@ public class ZipFile2RecordFilter extends ConsumerStage<File, IMonitoringRecord>
 	}
 
 	@Override
-	protected void execute5(final File zipFile) {
+	protected void execute(final File zipFile) {
 		final InputStream mappingFileInputStream = this.findMappingFileInputStream(zipFile);
 		if (mappingFileInputStream == null) {
 			return;
@@ -83,7 +86,7 @@ public class ZipFile2RecordFilter extends ConsumerStage<File, IMonitoringRecord>
 		try {
 			while (null != (zipEntry = zipInputStream.getNextEntry())) { // NOCS NOPMD
 				final String filename = zipEntry.getName();
-				// TODO
+				// TODO implement the zip filter
 			}
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block
@@ -117,6 +120,10 @@ public class ZipFile2RecordFilter extends ConsumerStage<File, IMonitoringRecord>
 		}
 
 		return null;
+	}
+
+	public OutputPort<IMonitoringRecord> getOutputPort() {
+		return outputPort;
 	}
 
 }

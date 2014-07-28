@@ -9,7 +9,7 @@ import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
 
 // BETTER remove the pipeline since it does not add any new functionality
-public class Pipeline<I, O> implements StageWithPort<I, O> {
+public class Pipeline<I, O> implements StageWithPort {
 
 	private final String id;
 	/**
@@ -17,17 +17,18 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 	 */
 	protected Log logger;
 
-	private StageWithPort<I, ?> firstStage;
-	private final List<StageWithPort<?, ?>> intermediateStages = new LinkedList<StageWithPort<?, ?>>();
-	private StageWithPort<?, O> lastStage;
+	private StageWithPort firstStage;
+	private InputPort<I> firstStageInputPort;
+	private final List<StageWithPort> intermediateStages = new LinkedList<StageWithPort>();
+	private StageWithPort lastStage;
+	private OutputPort<O> lastStageOutputPort;
 
 	// BETTER remove the stage array and use the output ports instead for passing a signal to all stages in the same thread; what about multiple same signals due to
 	// multiple input ports?
-	private StageWithPort<?, ?>[] stages;
-	private StageWithPort<?, ?> parentStage;
+	private StageWithPort[] stages;
+	private StageWithPort parentStage;
 	// private int startIndex;
 
-	private boolean reschedulable;
 	private int firstStageIndex;
 
 	// private final Set<StageWithPort<?, ?>> currentHeads = new HashSet<StageWithPort<?, ?>>();
@@ -46,25 +47,27 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 		return this.id;
 	}
 
-	public void setFirstStage(final StageWithPort<I, ?> stage) {
+	public void setFirstStage(final StageWithPort stage, final InputPort<I> firstStageInputPort) {
 		this.firstStage = stage;
+		this.firstStageInputPort = firstStageInputPort;
 	}
 
-	public void addIntermediateStages(final StageWithPort<?, ?>... stages) {
+	public void addIntermediateStages(final StageWithPort... stages) {
 		this.intermediateStages.addAll(Arrays.asList(stages));
 	}
 
-	public void addIntermediateStage(final StageWithPort<?, ?> stage) {
+	public void addIntermediateStage(final StageWithPort stage) {
 		this.intermediateStages.add(stage);
 	}
 
-	public void setLastStage(final StageWithPort<?, O> stage) {
+	public void setLastStage(final StageWithPort stage, final OutputPort<O> lastStageOutputPort) {
 		this.lastStage = stage;
+		this.lastStageOutputPort = lastStageOutputPort;
 	}
 
 	@Override
 	public void executeWithPorts() {
-		StageWithPort<?, ?> headStage = this.stages[this.firstStageIndex];
+		StageWithPort headStage = this.stages[this.firstStageIndex];
 
 		// do {
 		headStage.executeWithPorts();
@@ -106,7 +109,7 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 		this.stages = new StageWithPort[size];
 		this.stages[0] = this.firstStage;
 		for (int i = 0; i < this.intermediateStages.size(); i++) {
-			StageWithPort<?, ?> stage = this.intermediateStages.get(i);
+			StageWithPort stage = this.intermediateStages.get(i);
 			this.stages[1 + i] = stage;
 		}
 		this.stages[this.stages.length - 1] = this.lastStage;
@@ -123,18 +126,18 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 		// }
 		// this.stages[this.stages.length - 1].setSuccessor(new EndStage<Object>());
 
-		for (StageWithPort<?, ?> stage : this.stages) {
+		for (StageWithPort stage : this.stages) {
 			stage.onStart();
 		}
 	}
 
 	@Override
-	public StageWithPort<?, ?> getParentStage() {
+	public StageWithPort getParentStage() {
 		return this.parentStage;
 	}
 
 	@Override
-	public void setParentStage(final StageWithPort<?, ?> parentStage, final int index) {
+	public void setParentStage(final StageWithPort parentStage, final int index) {
 		this.parentStage = parentStage;
 	}
 
@@ -148,28 +151,12 @@ public class Pipeline<I, O> implements StageWithPort<I, O> {
 	// this.reschedulable = reschedulable;
 	// }
 
-	@Override
 	public InputPort<I> getInputPort() {
-		return this.firstStage.getInputPort(); // CACHE pipeline's input port
+		return this.firstStageInputPort;
 	}
 
-	@Override
 	public OutputPort<O> getOutputPort() {
-		return this.lastStage.getOutputPort(); // CACHE pipeline's output port
-	}
-
-	// TODO remove since it does not increase performances
-	private void cleanUp() {
-		// for (int i = 0; i < this.stages.length; i++) {
-		// StageWithPort<?, ?> stage = this.stages[i];
-		// // stage.setParentStage(null, i);
-		// // stage.setListener(null);
-		// // stage.setSuccessor(null);
-		// }
-
-		this.firstStage = null;
-		this.intermediateStages.clear();
-		this.lastStage = null;
+		return this.lastStageOutputPort;
 	}
 
 	@Override

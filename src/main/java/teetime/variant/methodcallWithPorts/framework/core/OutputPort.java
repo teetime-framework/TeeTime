@@ -12,7 +12,11 @@ public class OutputPort<T> {
 	 * this.getPipe().getTargetPort().getOwningStage()
 	 * </pre>
 	 */
-	private StageWithPort<?, ?> cachedTargetStage;
+	private StageWithPort cachedTargetStage;
+
+	OutputPort() {
+		super();
+	}
 
 	/**
 	 * 
@@ -31,11 +35,11 @@ public class OutputPort<T> {
 		this.pipe = pipe;
 	}
 
-	public StageWithPort<?, ?> getCachedTargetStage() {
+	public StageWithPort getCachedTargetStage() {
 		return this.cachedTargetStage;
 	}
 
-	public void setCachedTargetStage(final StageWithPort<?, ?> cachedTargetStage) {
+	public void setCachedTargetStage(final StageWithPort cachedTargetStage) {
 		this.cachedTargetStage = cachedTargetStage;
 	}
 

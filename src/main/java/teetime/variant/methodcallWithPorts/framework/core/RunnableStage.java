@@ -5,10 +5,10 @@ import kieker.common.logging.LogFactory;
 
 public class RunnableStage<I> implements Runnable {
 
-	private final StageWithPort<I, ?> stage;
+	private final ConsumerStage<I> stage;
 	private final Log logger;
 
-	public RunnableStage(final StageWithPort<I, ?> stage) {
+	public RunnableStage(final ConsumerStage<I> stage) {
 		this.stage = stage;
 		this.logger = LogFactory.getLog(stage.getClass());
 	}

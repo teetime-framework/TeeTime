@@ -22,13 +22,16 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class Directory2FilesFilter extends ConsumerStage<File, File> {
+public class Directory2FilesFilter extends ConsumerStage<File> {
+
+	private final OutputPort<File> outputPort = this.createOutputPort();
 
 	private FileFilter filter;
 	private Comparator<File> fileComparator;
@@ -63,7 +66,7 @@ public class Directory2FilesFilter extends ConsumerStage<File, File> {
 	}
 
 	@Override
-	protected void execute5(final File inputDir) {
+	protected void execute(final File inputDir) {
 		final File[] inputFiles = inputDir.listFiles(this.filter);
 
 		if (inputFiles == null) {
@@ -76,7 +79,7 @@ public class Directory2FilesFilter extends ConsumerStage<File, File> {
 		}
 
 		for (final File file : inputFiles) {
-			this.send(file);
+			this.send(this.outputPort, file);
 		}
 	}
 
@@ -94,6 +97,10 @@ public class Directory2FilesFilter extends ConsumerStage<File, File> {
 
 	public void setFileComparator(final Comparator<File> fileComparator) {
 		this.fileComparator = fileComparator;
+	}
+
+	public OutputPort<File> getOutputPort() {
+		return outputPort;
 	}
 
 }

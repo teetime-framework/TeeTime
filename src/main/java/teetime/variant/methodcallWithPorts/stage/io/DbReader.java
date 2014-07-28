@@ -37,7 +37,7 @@ import kieker.common.record.IMonitoringRecord;
  * @since 1.10
  */
 @Description("A reader which reads records from a database")
-public class DbReader extends ProducerStage<Void, IMonitoringRecord> {
+public class DbReader extends ProducerStage<IMonitoringRecord> {
 
 	@Description("The classname of the driver used for the connection.")
 	private String driverClassname = "org.apache.derby.jdbc.EmbeddedDrive";
@@ -65,7 +65,7 @@ public class DbReader extends ProducerStage<Void, IMonitoringRecord> {
 	// }
 
 	@Override
-	protected void execute5(final Void element) {
+	protected void execute() {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(this.connectionString);
@@ -163,7 +163,7 @@ public class DbReader extends ProducerStage<Void, IMonitoringRecord> {
 					}
 					final IMonitoringRecord record = AbstractMonitoringRecord.createFromArray(clazz, recordValues);
 					record.setLoggingTimestamp(records.getLong(2));
-					this.send(record);
+					this.send(this.outputPort, record);
 				}
 			} finally {
 				if (records != null) {

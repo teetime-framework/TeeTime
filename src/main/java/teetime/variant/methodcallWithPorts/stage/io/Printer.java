@@ -29,7 +29,7 @@ import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
  * @since 1.10
  */
 @Description("A filter to print objects to a configured stream")
-public class Printer<T> extends ConsumerStage<T, Void> {
+public class Printer<T> extends ConsumerStage<T> {
 
 	public static final String STREAM_STDOUT = "STDOUT";
 	public static final String STREAM_STDERR = "STDERR";
@@ -45,7 +45,7 @@ public class Printer<T> extends ConsumerStage<T, Void> {
 	private boolean append = true;
 
 	@Override
-	protected void execute5(final T object) {
+	protected void execute(final T object) {
 		if (this.active) {
 			final StringBuilder sb = new StringBuilder(128);
 
@@ -90,11 +90,11 @@ public class Printer<T> extends ConsumerStage<T, Void> {
 		this.initializeStream();
 	}
 
-	// @Override // TODO implement onStop
-	// public void onPipelineStops() {
-	// this.closeStream();
-	// super.onPipelineStops();
-	// }
+	@Override
+	protected void onFinished() {
+		this.closeStream();
+		super.onFinished();
+	}
 
 	private void initializeStream() {
 		if (STREAM_STDOUT.equals(this.streamName)) {

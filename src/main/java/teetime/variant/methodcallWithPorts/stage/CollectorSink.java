@@ -17,7 +17,6 @@ package teetime.variant.methodcallWithPorts.stage;
 
 import java.util.List;
 
-import teetime.util.list.CommittableQueue;
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
 /**
@@ -25,7 +24,7 @@ import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
  * 
  * @since 1.10
  */
-public class CollectorSink<T> extends ConsumerStage<T, Void> {
+public class CollectorSink<T> extends ConsumerStage<T> {
 
 	private final List<T> elements;
 	private final int threshold;
@@ -45,13 +44,7 @@ public class CollectorSink<T> extends ConsumerStage<T, Void> {
 	}
 
 	@Override
-	protected void execute4(final CommittableQueue<T> elements) {
-		T element = elements.removeFromHead();
-		this.execute5(element);
-	}
-
-	@Override
-	protected void execute5(final T element) {
+	protected void execute(final T element) {
 		this.elements.add(element);
 
 		if ((this.elements.size() % this.threshold) == 0) {

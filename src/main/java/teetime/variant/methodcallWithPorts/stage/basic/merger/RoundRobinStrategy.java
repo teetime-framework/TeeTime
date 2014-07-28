@@ -15,8 +15,6 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.stage.basic.merger;
 
-import java.util.List;
-
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 
 /**
@@ -30,8 +28,9 @@ public final class RoundRobinStrategy<T> implements IMergerStrategy<T> {
 
 	@Override
 	public T getNextInput(final Merger<T> merger) {
-		List<InputPort<T>> inputPorts = merger.getInputPortList();
-		int size = inputPorts.size();
+		@SuppressWarnings("unchecked")
+		InputPort<T>[] inputPorts = (InputPort<T>[]) merger.getInputPorts();
+		int size = inputPorts.length;
 		// check each port at most once to avoid a potentially infinite loop
 		while (size-- > 0) {
 			InputPort<T> inputPort = this.getNextPortInRoundRobinOrder(inputPorts);
@@ -43,10 +42,10 @@ public final class RoundRobinStrategy<T> implements IMergerStrategy<T> {
 		return null;
 	}
 
-	private InputPort<T> getNextPortInRoundRobinOrder(final List<InputPort<T>> inputPorts) {
-		InputPort<T> inputPort = inputPorts.get(this.index);
+	private InputPort<T> getNextPortInRoundRobinOrder(final InputPort<T>[] inputPorts) {
+		InputPort<T> inputPort = inputPorts[this.index];
 
-		this.index = (this.index + 1) % inputPorts.size();
+		this.index = (this.index + 1) % inputPorts.length;
 
 		return inputPort;
 	}

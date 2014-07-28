@@ -6,10 +6,12 @@ import java.util.concurrent.TimeUnit;
 
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public class ElementThroughputMeasuringStage<T> extends ConsumerStage<T, T> {
+public class ElementThroughputMeasuringStage<T> extends ConsumerStage<T> {
 
-	private final InputPort<Long> triggerInputPort = new InputPort<Long>(this);
+	private final InputPort<Long> triggerInputPort = this.createInputPort();
+	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	private long numPassedElements;
 	private long lastTimestampInNs;
@@ -17,14 +19,14 @@ public class ElementThroughputMeasuringStage<T> extends ConsumerStage<T, T> {
 	private final List<Long> throughputs = new LinkedList<Long>();
 
 	@Override
-	protected void execute5(final T element) {
+	protected void execute(final T element) {
 		Long timestampInNs = this.triggerInputPort.receive();
 		if (timestampInNs != null) {
 			this.computeElementThroughput(System.nanoTime());
 		}
 		this.numPassedElements++;
 
-		this.send(element);
+		this.send(this.outputPort, element);
 	}
 
 	@Override
@@ -70,6 +72,10 @@ public class ElementThroughputMeasuringStage<T> extends ConsumerStage<T, T> {
 
 	public InputPort<Long> getTriggerInputPort() {
 		return this.triggerInputPort;
+	}
+
+	public OutputPort<T> getOutputPort() {
+		return outputPort;
 	}
 
 }

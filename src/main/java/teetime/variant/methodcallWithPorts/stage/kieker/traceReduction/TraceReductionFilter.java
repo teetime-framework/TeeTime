@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 import kieker.analysis.plugin.filter.flow.TraceEventRecords;
 
@@ -36,9 +37,10 @@ import kieker.analysis.plugin.filter.flow.TraceEventRecords;
  * 
  * @since
  */
-public class TraceReductionFilter extends ConsumerStage<TraceEventRecords, TraceEventRecords> {
+public class TraceReductionFilter extends ConsumerStage<TraceEventRecords> {
 
-	private final InputPort<Long> triggerInputPort = new InputPort<Long>(this);
+	private final InputPort<Long> triggerInputPort = this.createInputPort();
+	private final OutputPort<TraceEventRecords> outputPort = this.createOutputPort();
 
 	private final Map<TraceEventRecords, TraceAggregationBuffer> trace2buffer;
 
@@ -49,7 +51,7 @@ public class TraceReductionFilter extends ConsumerStage<TraceEventRecords, Trace
 	}
 
 	@Override
-	protected void execute5(final TraceEventRecords traceEventRecords) {
+	protected void execute(final TraceEventRecords traceEventRecords) {
 		Long timestampInNs = this.triggerInputPort.receive();
 		if (timestampInNs != null) {
 			this.processTimeoutQueue(timestampInNs);
@@ -77,7 +79,7 @@ public class TraceReductionFilter extends ConsumerStage<TraceEventRecords, Trace
 				final TraceAggregationBuffer buffer = entry.getValue();
 				final TraceEventRecords record = buffer.getTraceEventRecords();
 				record.setCount(buffer.getCount());
-				this.send(record);
+				this.send(this.outputPort, record);
 			}
 			this.trace2buffer.clear();
 		}
@@ -95,7 +97,7 @@ public class TraceReductionFilter extends ConsumerStage<TraceEventRecords, Trace
 				if (traceBuffer.getBufferCreatedTimestamp() <= bufferTimeoutInNs) {
 					final TraceEventRecords record = traceBuffer.getTraceEventRecords();
 					record.setCount(traceBuffer.getCount());
-					this.send(record);
+					this.send(this.outputPort, record);
 				}
 				iterator.remove();
 			}
@@ -112,5 +114,9 @@ public class TraceReductionFilter extends ConsumerStage<TraceEventRecords, Trace
 
 	public InputPort<Long> getTriggerInputPort() {
 		return this.triggerInputPort;
+	}
+
+	public OutputPort<TraceEventRecords> getOutputPort() {
+		return this.outputPort;
 	}
 }

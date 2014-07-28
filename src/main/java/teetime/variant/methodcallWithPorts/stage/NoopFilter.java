@@ -15,31 +15,25 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.stage;
 
-import teetime.util.list.CommittableQueue;
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class NoopFilter<T> extends ConsumerStage<T, T> {
+public class NoopFilter<T> extends ConsumerStage<T> {
 
-	// @Override
-	// public void execute3() {
-	// T element = this.getInputPort().receive();
-	// // this.getOutputPort().send(element);
-	// }
+	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	@Override
-	protected void execute4(final CommittableQueue<T> elements) {
-		T element = elements.removeFromHead();
-		this.execute5(element);
+	protected void execute(final T element) {
+		this.send(this.outputPort, element);
 	}
 
-	@Override
-	protected void execute5(final T element) {
-		this.send(element); // "send" calls the next stage and so on
+	public OutputPort<T> getOutputPort() {
+		return this.outputPort;
 	}
 
 }

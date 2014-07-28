@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
 
 import kieker.common.exception.MonitoringRecordException;
@@ -31,7 +32,9 @@ import kieker.common.util.filesystem.BinaryCompressionMethod;
  * 
  * @since 1.10
  */
-public class BinaryFile2RecordFilter extends ConsumerStage<File, IMonitoringRecord> {
+public class BinaryFile2RecordFilter extends ConsumerStage<File> {
+
+	private final OutputPort<IMonitoringRecord> outputPort = this.createOutputPort();
 
 	private static final int MB = 1024 * 1024;
 
@@ -69,14 +72,14 @@ public class BinaryFile2RecordFilter extends ConsumerStage<File, IMonitoringReco
 	}
 
 	@Override
-	protected void execute5(final File binaryFile) {
+	protected void execute(final File binaryFile) {
 		try {
 			final BinaryCompressionMethod method = BinaryCompressionMethod.getByFileExtension(binaryFile.getName());
 			final DataInputStream in = method.getDataInputStream(binaryFile, 1 * MB);
 			try {
 				IMonitoringRecord record = this.recordFromBinaryFileCreator.createRecordFromBinaryFile(binaryFile, in);
 				while (record != null) {
-					this.send(record);
+					this.send(this.outputPort, record);
 					record = this.recordFromBinaryFileCreator.createRecordFromBinaryFile(binaryFile, in);
 				}
 			} catch (final MonitoringRecordException e) {
@@ -95,6 +98,10 @@ public class BinaryFile2RecordFilter extends ConsumerStage<File, IMonitoringReco
 		} catch (final IllegalArgumentException e) {
 			this.logger.warn("Unknown file extension for file: " + binaryFile);
 		}
+	}
+
+	public OutputPort<IMonitoringRecord> getOutputPort() {
+		return outputPort;
 	}
 
 }

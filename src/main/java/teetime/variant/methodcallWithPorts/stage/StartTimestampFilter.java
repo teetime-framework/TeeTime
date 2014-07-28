@@ -15,33 +15,26 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.stage;
 
-import teetime.util.list.CommittableQueue;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class StartTimestampFilter extends ConsumerStage<TimestampObject, TimestampObject> {
+public class StartTimestampFilter extends ConsumerStage<TimestampObject> {
 
-	// @Override
-	// public void execute3() {
-	// TimestampObject element = this.getInputPort().receive();
-	// element.setStartTimestamp(System.nanoTime());
-	// // this.getOutputPort().send(element);
-	// }
+	private final OutputPort<TimestampObject> outputPort = this.createOutputPort();
 
 	@Override
-	protected void execute4(final CommittableQueue<TimestampObject> elements) {
-		TimestampObject element = elements.removeFromHead();
-		this.execute5(element);
+	protected void execute(final TimestampObject element) {
+		element.setStartTimestamp(System.nanoTime());
+		this.send(this.outputPort, element);
 	}
 
-	@Override
-	protected void execute5(final TimestampObject element) {
-		element.setStartTimestamp(System.nanoTime());
-		this.send(element);
+	public OutputPort<TimestampObject> getOutputPort() {
+		return outputPort;
 	}
 }

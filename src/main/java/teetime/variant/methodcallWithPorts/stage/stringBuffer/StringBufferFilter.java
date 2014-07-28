@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.stage.stringBuffer.handler.AbstractDataTypeHandler;
 import teetime.variant.methodcallWithPorts.stage.stringBuffer.util.KiekerHashMap;
 
@@ -27,7 +28,9 @@ import teetime.variant.methodcallWithPorts.stage.stringBuffer.util.KiekerHashMap
  * 
  * @since 1.10
  */
-public class StringBufferFilter<T> extends ConsumerStage<T, T> {
+public class StringBufferFilter<T> extends ConsumerStage<T> {
+
+	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	// BETTER use a non shared data structure to avoid synchronization between threads
 	private KiekerHashMap kiekerHashMap = new KiekerHashMap();
@@ -35,9 +38,9 @@ public class StringBufferFilter<T> extends ConsumerStage<T, T> {
 	private Collection<AbstractDataTypeHandler<?>> dataTypeHandlers = new LinkedList<AbstractDataTypeHandler<?>>();
 
 	@Override
-	protected void execute5(final T element) {
+	protected void execute(final T element) {
 		final T returnedElement = this.handle(element);
-		this.send(returnedElement);
+		this.send(this.outputPort, returnedElement);
 	}
 
 	@Override
@@ -74,6 +77,10 @@ public class StringBufferFilter<T> extends ConsumerStage<T, T> {
 
 	public void setDataTypeHandlers(final Collection<AbstractDataTypeHandler<?>> dataTypeHandlers) {
 		this.dataTypeHandlers = dataTypeHandlers;
+	}
+
+	public OutputPort<T> getOutputPort() {
+		return outputPort;
 	}
 
 }

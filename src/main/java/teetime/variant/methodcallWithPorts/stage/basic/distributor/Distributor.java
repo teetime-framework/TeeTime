@@ -16,13 +16,8 @@
 
 package teetime.variant.methodcallWithPorts.stage.basic.distributor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import teetime.variant.methodcallWithPorts.framework.core.AbstractStage;
-import teetime.variant.methodcallWithPorts.framework.core.InputPort;
+import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
-import teetime.variant.methodcallWithPorts.framework.core.Signal;
 
 /**
  * @author Christian Wulf
@@ -32,27 +27,14 @@ import teetime.variant.methodcallWithPorts.framework.core.Signal;
  * @param T
  *            the type of the input port and the output ports
  */
-public class Distributor<T> extends AbstractStage<T, T> {
-
-	// TODO do not inherit from AbstractStage since it provides the default output port that is unnecessary for the distributor ConsumerStage<T, T> {
-
-	// BETTER use an array since a list always creates a new iterator when looping
-	private final List<OutputPort<T>> outputPortList = new ArrayList<OutputPort<T>>();
+public class Distributor<T> extends ConsumerStage<T> {
 
 	private IDistributorStrategy<T> strategy = new RoundRobinStrategy<T>();
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void executeWithPorts() {
-		T element = this.getInputPort().receive();
-
-		this.setReschedulable(this.getInputPort().getPipe().size() > 0);
-
-		this.execute5(element);
-	}
-
-	@Override
-	protected void execute5(final T element) {
-		this.strategy.distribute(this.outputPortList, element);
+	protected void execute(final T element) {
+		this.strategy.distribute((OutputPort<T>[]) this.getOutputPorts(), element);
 	}
 
 	@Override
@@ -63,37 +45,8 @@ public class Distributor<T> extends AbstractStage<T, T> {
 		// }
 	}
 
-	@Override
-	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
-		this.logger.info("Got signal: " + signal + " from input port: " + inputPort);
-
-		switch (signal) {
-		case FINISHED:
-			this.onFinished();
-			break;
-		default:
-			this.logger.warn("Aborted sending signal " + signal + ". Reason: Unknown signal.");
-			break;
-		}
-
-		for (OutputPort<T> op : this.outputPortList) {
-			op.sendSignal(signal);
-		}
-	}
-
-	@Override
-	public OutputPort<T> getOutputPort() {
-		return this.getNewOutputPort();
-	}
-
 	public OutputPort<T> getNewOutputPort() {
-		final OutputPort<T> newOutputPort = new OutputPort<T>();
-		this.outputPortList.add(newOutputPort);
-		return newOutputPort;
-	}
-
-	public List<OutputPort<T>> getOutputPortList() {
-		return this.outputPortList;
+		return this.createOutputPort();
 	}
 
 	public IDistributorStrategy<T> getStrategy() {

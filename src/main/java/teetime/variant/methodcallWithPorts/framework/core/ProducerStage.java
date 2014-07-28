@@ -1,6 +1,12 @@
 package teetime.variant.methodcallWithPorts.framework.core;
 
-public abstract class ProducerStage<I, O> extends AbstractStage<I, O> {
+public abstract class ProducerStage<O> extends AbstractStage {
+
+	protected final OutputPort<O> outputPort = this.createOutputPort();
+
+	public final OutputPort<O> getOutputPort() {
+		return this.outputPort;
+	}
 
 	public ProducerStage() {
 		this.setReschedulable(true);
@@ -8,20 +14,14 @@ public abstract class ProducerStage<I, O> extends AbstractStage<I, O> {
 
 	@Override
 	public void executeWithPorts() {
-		// if (this.logger.isDebugEnabled()) {
-		// this.logger.debug("Executing stage...");
-		// }
-
-		this.execute5(null);
-
-		// if (!this.getOutputPort().pipe.isEmpty()) {
-		// super.executeWithPorts();
-		// }
+		this.execute();
 	}
 
 	@Override
 	public void onIsPipelineHead() {
 		// do nothing
 	}
+
+	protected abstract void execute();
 
 }

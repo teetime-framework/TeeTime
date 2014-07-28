@@ -6,13 +6,16 @@ import java.util.concurrent.TimeUnit;
 
 import teetime.util.StopWatch;
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public class Cache<T> extends ConsumerStage<T, T> {
+public class Cache<T> extends ConsumerStage<T> {
+
+	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	private final List<T> cachedObjects = new LinkedList<T>();
 
 	@Override
-	protected void execute5(final T element) {
+	protected void execute(final T element) {
 		this.cachedObjects.add(element);
 	}
 
@@ -22,11 +25,15 @@ public class Cache<T> extends ConsumerStage<T, T> {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		for (T cachedElement : this.cachedObjects) {
-			this.send(cachedElement);
+			this.send(this.outputPort, cachedElement);
 		}
 		stopWatch.end();
 		this.logger.debug("Emitting took " + TimeUnit.NANOSECONDS.toMillis(stopWatch.getDurationInNs()) + " ms");
 		super.onIsPipelineHead();
+	}
+
+	public OutputPort<T> getOutputPort() {
+		return this.outputPort;
 	}
 
 }

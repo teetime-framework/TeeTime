@@ -19,15 +19,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import teetime.util.list.CommittableQueue;
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 /**
  * @author Christian Wulf
  * 
  * @since 1.10
  */
-public class ClassNameRegistryCreationFilter extends ConsumerStage<File, File> {
+public class ClassNameRegistryCreationFilter extends ConsumerStage<File> {
+
+	private final OutputPort<File> outputPort = this.createOutputPort();
 
 	private ClassNameRegistryRepository classNameRegistryRepository;
 
@@ -50,7 +52,7 @@ public class ClassNameRegistryCreationFilter extends ConsumerStage<File, File> {
 	}
 
 	@Override
-	protected void execute5(final File inputDir) {
+	protected void execute(final File inputDir) {
 		final File mappingFile = this.mappingFileParser.findMappingFile(inputDir);
 		if (mappingFile == null) {
 			return;
@@ -59,7 +61,7 @@ public class ClassNameRegistryCreationFilter extends ConsumerStage<File, File> {
 		try {
 			final ClassNameRegistry classNameRegistry = this.mappingFileParser.parseFromStream(new FileInputStream(mappingFile));
 			this.classNameRegistryRepository.put(inputDir, classNameRegistry);
-			this.send(inputDir);
+			this.send(this.outputPort, inputDir);
 
 			// final String filePrefix = this.mappingFileParser.getFilePrefixFromMappingFile(mappingFile);
 			// context.put(this.filePrefixOutputPort, filePrefix); // TODO pass prefix
@@ -76,9 +78,8 @@ public class ClassNameRegistryCreationFilter extends ConsumerStage<File, File> {
 		this.classNameRegistryRepository = classNameRegistryRepository;
 	}
 
-	@Override
-	protected void execute4(final CommittableQueue<File> elements) {
-		throw new IllegalStateException();
+	public OutputPort<File> getOutputPort() {
+		return this.outputPort;
 	}
 
 }

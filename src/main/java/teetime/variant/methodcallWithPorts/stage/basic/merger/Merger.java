@@ -16,12 +16,12 @@
 
 package teetime.variant.methodcallWithPorts.stage.basic.merger;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.AbstractStage;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.Signal;
+
+import kieker.common.record.IMonitoringRecord;
 
 /**
  * 
@@ -34,36 +34,29 @@ import teetime.variant.methodcallWithPorts.framework.core.Signal;
  * @param <T>
  *            the type of the input ports and the output port
  */
-public class Merger<T> extends ConsumerStage<T, T> {
+public class Merger<T> extends AbstractStage {
 
-	// TODO do not inherit from AbstractStage since it provides the default input port that is unnecessary for the merger
-
-	// BETTER use an array since a list always creates a new iterator when looping
-	private final List<InputPort<T>> inputPortList = new ArrayList<InputPort<T>>();
+	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	private int finishedInputPorts;
 
 	private IMergerStrategy<T> strategy = new RoundRobinStrategy<T>();
 
-	public IMergerStrategy<T> getStrategy() {
-		return this.strategy;
-	}
-
-	public void setStrategy(final IMergerStrategy<T> strategy) {
-		this.strategy = strategy;
-	}
-
 	@Override
 	public void executeWithPorts() {
-		// if (this.logger.isDebugEnabled()) {
-		// this.logger.debug("Executing stage...");
-		// }
+		final T token = this.strategy.getNextInput(this);
+		if (token == null) {
+			return;
+		}
 
-		this.execute5(null);
+		this.send(this.outputPort, token);
 
 		boolean isReschedulable = false;
-		for (InputPort<T> inputPort : this.inputPortList) {
-			isReschedulable = isReschedulable || !inputPort.getPipe().isEmpty();
+		for (InputPort<?> inputPort : this.getInputPorts()) {
+			if (!inputPort.getPipe().isEmpty()) {
+				isReschedulable = true;
+				break;
+			}
 		}
 		this.setReschedulable(isReschedulable);
 	}
@@ -81,39 +74,35 @@ public class Merger<T> extends ConsumerStage<T, T> {
 			break;
 		}
 
-		if (this.finishedInputPorts == this.inputPortList.size()) {
-			this.getOutputPort().sendSignal(signal);
+		if (this.finishedInputPorts == this.getInputPorts().length) {
+			this.outputPort.sendSignal(signal);
 		}
 	}
 
 	@Override
-	protected void onFinished() {
+	public void onIsPipelineHead() {
 		this.finishedInputPorts++;
 	}
 
-	@Override
-	protected void execute5(final T element) {
-		final T token = this.strategy.getNextInput(this);
-		if (token == null) {
-			return;
-		}
+	public IMergerStrategy<T> getStrategy() {
+		return this.strategy;
+	}
 
-		this.send(token);
+	public void setStrategy(final IMergerStrategy<T> strategy) {
+		this.strategy = strategy;
 	}
 
 	@Override
-	public InputPort<T> getInputPort() {
-		return this.getNewInputPort();
+	public InputPort<?>[] getInputPorts() {
+		return super.getInputPorts();
 	}
 
-	private InputPort<T> getNewInputPort() {
-		InputPort<T> inputPort = new InputPort<T>(this);
-		this.inputPortList.add(inputPort);
-		return inputPort;
+	public InputPort<IMonitoringRecord> getNewInputPort() {
+		return this.createInputPort();
 	}
 
-	public List<InputPort<T>> getInputPortList() {
-		return this.inputPortList;
+	public OutputPort<T> getOutputPort() {
+		return this.outputPort;
 	}
 
 }

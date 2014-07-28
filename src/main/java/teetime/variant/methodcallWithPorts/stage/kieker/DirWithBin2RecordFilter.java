@@ -21,9 +21,9 @@ public class DirWithBin2RecordFilter extends Pipeline<File, IMonitoringRecord> {
 		final Directory2FilesFilter directory2FilesFilter = new Directory2FilesFilter();
 		final BinaryFile2RecordFilter binaryFile2RecordFilter = new BinaryFile2RecordFilter(classNameRegistryRepository);
 
-		this.setFirstStage(classNameRegistryCreationFilter);
+		this.setFirstStage(classNameRegistryCreationFilter, classNameRegistryCreationFilter.getInputPort());
 		this.addIntermediateStage(directory2FilesFilter);
-		this.setLastStage(binaryFile2RecordFilter);
+		this.setLastStage(binaryFile2RecordFilter, binaryFile2RecordFilter.getOutputPort());
 	}
 
 	public DirWithBin2RecordFilter() {

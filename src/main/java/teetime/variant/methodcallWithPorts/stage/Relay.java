@@ -1,11 +1,15 @@
 package teetime.variant.methodcallWithPorts.stage;
 
-import teetime.util.list.CommittableQueue;
 import teetime.variant.methodcallWithPorts.framework.core.AbstractStage;
+import teetime.variant.methodcallWithPorts.framework.core.InputPort;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.Signal;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 
-public class Relay<T> extends AbstractStage<T, T> {
+public class Relay<T> extends AbstractStage {
+
+	private final InputPort<T> inputPort = this.createInputPort();
+	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	private SpScPipe<T> cachedCastedInputPipe;
 
@@ -15,22 +19,22 @@ public class Relay<T> extends AbstractStage<T, T> {
 
 	@Override
 	public void executeWithPorts() {
-		T element = this.getInputPort().receive();
+		T element = this.inputPort.receive();
 		if (null == element) {
 			// if (this.getInputPort().getPipe().isClosed()) {
 			if (this.cachedCastedInputPipe.getSignal() == Signal.FINISHED) {
 				this.setReschedulable(false);
-				assert 0 == this.getInputPort().getPipe().size();
+				assert 0 == this.inputPort.getPipe().size();
 			}
 			Thread.yield();
 			return;
 		}
-		this.send(element);
+		this.send(this.outputPort, element);
 	}
 
 	@Override
 	public void onStart() {
-		this.cachedCastedInputPipe = (SpScPipe<T>) this.getInputPort().getPipe();
+		this.cachedCastedInputPipe = (SpScPipe<T>) this.inputPort.getPipe();
 		super.onStart();
 	}
 
@@ -41,16 +45,11 @@ public class Relay<T> extends AbstractStage<T, T> {
 		// }
 	}
 
-	@Override
-	protected void execute4(final CommittableQueue<T> elements) {
-		// TODO Auto-generated method stub
-
+	public InputPort<T> getInputPort() {
+		return this.inputPort;
 	}
 
-	@Override
-	protected void execute5(final T element) {
-		// TODO Auto-generated method stub
-
+	public OutputPort<T> getOutputPort() {
+		return this.outputPort;
 	}
-
 }

@@ -19,10 +19,10 @@ package teetime.variant.methodcallWithPorts.stage.kieker.fileToRecord.textLine;
 import java.util.HashSet;
 import java.util.Set;
 
-import teetime.util.list.CommittableQueue;
 import teetime.variant.explicitScheduling.stage.MappingException;
 import teetime.variant.explicitScheduling.stage.util.TextLine;
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
 import teetime.variant.methodcallWithPorts.stage.kieker.fileToRecord.RecordFromTextLineCreator;
 
@@ -36,7 +36,9 @@ import kieker.common.record.IMonitoringRecord;
  * 
  * @since 1.10
  */
-public class TextLine2RecordFilter extends ConsumerStage<TextLine, IMonitoringRecord> {
+public class TextLine2RecordFilter extends ConsumerStage<TextLine> {
+
+	private final OutputPort<IMonitoringRecord> outputPort = this.createOutputPort();
 
 	private final Set<String> unknownTypesObserved = new HashSet<String>();
 
@@ -77,15 +79,10 @@ public class TextLine2RecordFilter extends ConsumerStage<TextLine, IMonitoringRe
 	}
 
 	@Override
-	protected void execute4(final CommittableQueue<TextLine> elements) {
-		throw new IllegalStateException();
-	}
-
-	@Override
-	protected void execute5(final TextLine textLine) {
+	protected void execute(final TextLine textLine) {
 		try {
 			final IMonitoringRecord record = this.recordFromTextLineCreator.createRecordFromLine(textLine.getTextFile(), textLine.getTextLine());
-			this.send(record);
+			this.send(this.outputPort, record);
 		} catch (final MonitoringRecordException e) {
 			this.logger.error("Could not create record from text line: '" + textLine + "'", e);
 		} catch (final IllegalRecordFormatException e) {
@@ -102,6 +99,10 @@ public class TextLine2RecordFilter extends ConsumerStage<TextLine, IMonitoringRe
 				this.logger.error("Failed to load record type " + classname, e); // log once for this type
 			}
 		}
+	}
+
+	public OutputPort<IMonitoringRecord> getOutputPort() {
+		return this.outputPort;
 	}
 
 }

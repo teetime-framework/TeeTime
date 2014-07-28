@@ -1,9 +1,8 @@
 package teetime.variant.methodcallWithPorts.stage;
 
-import teetime.util.list.CommittableQueue;
 import teetime.variant.methodcallWithPorts.framework.core.ProducerStage;
 
-public class Clock extends ProducerStage<Void, Long> {
+public class Clock extends ProducerStage<Long> {
 
 	private boolean initialDelayExceeded = false;
 
@@ -11,13 +10,7 @@ public class Clock extends ProducerStage<Void, Long> {
 	private long intervalDelayInMs;
 
 	@Override
-	protected void execute4(final CommittableQueue<Void> elements) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void execute5(final Void element) {
+	protected void execute() {
 		if (!this.initialDelayExceeded) {
 			this.initialDelayExceeded = true;
 			this.sleep(this.initialDelayInMs);
@@ -26,7 +19,7 @@ public class Clock extends ProducerStage<Void, Long> {
 		}
 
 		// this.logger.debug("Emitting timestamp");
-		this.send(this.getCurrentTimeInNs());
+		this.send(this.outputPort, this.getCurrentTimeInNs());
 	}
 
 	private void sleep(final long delayInMs) {

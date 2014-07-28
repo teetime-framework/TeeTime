@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
 import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 import kieker.analysis.plugin.filter.flow.TraceEventRecords;
 import kieker.common.record.flow.IFlowRecord;
@@ -31,7 +32,9 @@ import kieker.common.record.flow.trace.TraceMetadata;
  * 
  * @since 1.10
  */
-public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceEventRecords> {
+public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord> {
+
+	private final OutputPort<TraceEventRecords> outputPort = this.createOutputPort();
 
 	private TimeUnit timeunit;
 	private long maxTraceDuration = Long.MAX_VALUE;
@@ -46,7 +49,7 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 	}
 
 	@Override
-	protected void execute5(final IFlowRecord element) {
+	protected void execute(final IFlowRecord element) {
 		final Long traceId = this.reconstructTrace(element);
 		if (traceId != null) {
 			this.putIfFinished(traceId);
@@ -93,7 +96,7 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 		// final IOutputPort<TraceReconstructionFilter, TraceEventRecords> outputPort =
 		// (traceBuffer.isInvalid()) ? this.traceInvalidOutputPort : this.traceValidOutputPort;
 		// context.put(outputPort, traceBuffer.toTraceEvents());
-		this.send(traceBuffer.toTraceEvents());
+		this.send(this.outputPort, traceBuffer.toTraceEvents());
 	}
 
 	public TimeUnit getTimeunit() {
@@ -126,6 +129,10 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord, TraceE
 
 	public void setMaxEncounteredLoggingTimestamp(final long maxEncounteredLoggingTimestamp) {
 		this.maxEncounteredLoggingTimestamp = maxEncounteredLoggingTimestamp;
+	}
+
+	public OutputPort<TraceEventRecords> getOutputPort() {
+		return this.outputPort;
 	}
 
 	// public Map<Long, TraceBuffer> getTraceId2trace() {

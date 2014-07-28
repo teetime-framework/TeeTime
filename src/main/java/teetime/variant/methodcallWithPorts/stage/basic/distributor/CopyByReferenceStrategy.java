@@ -15,8 +15,6 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.stage.basic.distributor;
 
-import java.util.List;
-
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 /**
@@ -27,7 +25,7 @@ import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 public final class CopyByReferenceStrategy<T> implements IDistributorStrategy<T> {
 
 	@Override
-	public boolean distribute(final List<OutputPort<T>> outputPorts, final T element) {
+	public boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
 		for (final OutputPort<T> port : outputPorts) {
 			port.send(element);
 		}
