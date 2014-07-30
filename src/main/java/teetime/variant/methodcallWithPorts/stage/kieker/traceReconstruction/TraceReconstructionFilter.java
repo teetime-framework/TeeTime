@@ -34,7 +34,8 @@ import kieker.common.record.flow.trace.TraceMetadata;
  */
 public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord> {
 
-	private final OutputPort<TraceEventRecords> outputPort = this.createOutputPort();
+	private final OutputPort<TraceEventRecords> traceValidOutputPort = this.createOutputPort();
+	private final OutputPort<TraceEventRecords> traceInvalidOutputPort = this.createOutputPort(); // TODO send output to this port
 
 	private TimeUnit timeunit;
 	private long maxTraceDuration = Long.MAX_VALUE;
@@ -52,16 +53,25 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord> {
 	protected void execute(final IFlowRecord element) {
 		final Long traceId = this.reconstructTrace(element);
 		if (traceId != null) {
-			this.putIfFinished(traceId);
+			this.put(traceId, true);
 		}
 	}
 
-	private void putIfFinished(final Long traceId) {
+	private void put(final Long traceId, final boolean onlyIfFinished) {
 		final TraceBuffer traceBuffer = this.traceId2trace.get(traceId);
-		if (traceBuffer != null && traceBuffer.isFinished()) { // null-check to check whether the trace has already been sent and removed
-			boolean removed = (null != this.traceId2trace.remove(traceId));
-			if (removed) {
-				this.put(traceBuffer);
+		if (traceBuffer != null) { // null-check to check whether the trace has already been sent and removed
+			boolean shouldSend;
+			if (onlyIfFinished) {
+				shouldSend = traceBuffer.isFinished();
+			} else {
+				shouldSend = true;
+			}
+
+			if (shouldSend) {
+				boolean removed = (null != this.traceId2trace.remove(traceId));
+				if (removed) {
+					this.sendTraceBuffer(traceBuffer);
+				}
 			}
 		}
 	}
@@ -86,17 +96,16 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord> {
 	@Override
 	public void onIsPipelineHead() {
 		for (Long traceId : this.traceId2trace.keySet()) {
-			this.putIfFinished(traceId); // FIXME also put invalid traces at the end
+			this.put(traceId, false);
 		}
 
 		super.onIsPipelineHead();
 	}
 
-	private void put(final TraceBuffer traceBuffer) {
-		// final IOutputPort<TraceReconstructionFilter, TraceEventRecords> outputPort =
-		// (traceBuffer.isInvalid()) ? this.traceInvalidOutputPort : this.traceValidOutputPort;
-		// context.put(outputPort, traceBuffer.toTraceEvents());
-		this.send(this.outputPort, traceBuffer.toTraceEvents());
+	private void sendTraceBuffer(final TraceBuffer traceBuffer) {
+		OutputPort<TraceEventRecords> outputPort = (traceBuffer.isInvalid()) ? this.traceInvalidOutputPort
+				: this.traceValidOutputPort;
+		this.send(outputPort, traceBuffer.toTraceEvents());
 	}
 
 	public TimeUnit getTimeunit() {
@@ -131,8 +140,12 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord> {
 		this.maxEncounteredLoggingTimestamp = maxEncounteredLoggingTimestamp;
 	}
 
-	public OutputPort<TraceEventRecords> getOutputPort() {
-		return this.outputPort;
+	public OutputPort<TraceEventRecords> getTraceValidOutputPort() {
+		return this.traceValidOutputPort;
+	}
+
+	public OutputPort<TraceEventRecords> getTraceInvalidOutputPort() {
+		return this.traceInvalidOutputPort;
 	}
 
 	// public Map<Long, TraceBuffer> getTraceId2trace() {

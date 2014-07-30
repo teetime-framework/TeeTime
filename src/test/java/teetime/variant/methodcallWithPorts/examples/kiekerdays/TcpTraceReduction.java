@@ -107,7 +107,7 @@ public class TcpTraceReduction extends Analysis {
 
 		SingleElementPipe.connect(relay.getOutputPort(), instanceOfFilter.getInputPort());
 		SingleElementPipe.connect(instanceOfFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
-		SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), traceReductionFilter.getInputPort());
+		SingleElementPipe.connect(traceReconstructionFilter.getTraceValidOutputPort(), traceReductionFilter.getInputPort());
 		SingleElementPipe.connect(traceReductionFilter.getOutputPort(), endStage.getInputPort());
 
 		SpScPipe.connect(clockStage.getNewOutputPort(), traceReductionFilter.getTriggerInputPort(), 10);

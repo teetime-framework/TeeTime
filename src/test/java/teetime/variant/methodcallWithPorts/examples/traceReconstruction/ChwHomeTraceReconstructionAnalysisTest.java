@@ -69,8 +69,9 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 			analysis.onTerminate();
 		}
 
+		StatisticsUtil.removeFirstZeroThroughputs(analysis.getThroughputs());
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
-		System.out.println("Median throughput: " + quintiles.get(0.5) + " time units/element");
+		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
 
 		assertEquals(50002, analysis.getNumRecords());
 		assertEquals(2, analysis.getNumTraces());
@@ -80,6 +81,8 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 
 		TraceEventRecords trace6886 = analysis.getElementCollection().get(1);
 		assertEquals(6886, trace6886.getTraceMetadata().getTraceId());
+
+		assertThat(quintiles.get(0.5), is(both(greaterThan(34l)).and(lessThan(320l))));
 	}
 
 	@Test
@@ -96,6 +99,10 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 			analysis.onTerminate();
 		}
 
+		StatisticsUtil.removeFirstZeroThroughputs(analysis.getThroughputs());
+		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
+		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
+
 		assertEquals(1489902, analysis.getNumRecords());
 		assertEquals(24013, analysis.getNumTraces());
 
@@ -104,9 +111,6 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 
 		TraceEventRecords trace1 = analysis.getElementCollection().get(1);
 		assertEquals(8974347286117089281l, trace1.getTraceMetadata().getTraceId());
-
-		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
-		System.out.println("Median throughput: " + quintiles.get(0.5) + " time units/element");
 
 		assertThat(quintiles.get(0.5), is(both(greaterThan(1700l)).and(lessThan(1900l))));
 	}
@@ -125,6 +129,10 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 			analysis.onTerminate();
 		}
 
+		StatisticsUtil.removeFirstZeroThroughputs(analysis.getThroughputs());
+		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
+		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
+
 		assertEquals(17371, analysis.getNumRecords());
 		assertEquals(22, analysis.getNumTraces());
 
@@ -134,8 +142,7 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 		TraceEventRecords trace1 = analysis.getElementCollection().get(1);
 		assertEquals(1, trace1.getTraceMetadata().getTraceId());
 
-		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
-		System.out.println("Median throughput: " + quintiles.get(0.5) + " time units/element");
+		assertThat(quintiles.get(0.5), is(both(greaterThan(200l)).and(lessThan(250l))));
 	}
 
 }

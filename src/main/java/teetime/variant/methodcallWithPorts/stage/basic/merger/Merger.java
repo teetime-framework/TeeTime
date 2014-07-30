@@ -21,8 +21,6 @@ import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.Signal;
 
-import kieker.common.record.IMonitoringRecord;
-
 /**
  * 
  * This stage merges data from the input ports, by taking elements according to the chosen merge strategy and by putting them to the output port.
@@ -97,7 +95,7 @@ public class Merger<T> extends AbstractStage {
 		return super.getInputPorts();
 	}
 
-	public InputPort<IMonitoringRecord> getNewInputPort() {
+	public InputPort<T> getNewInputPort() {
 		return this.createInputPort();
 	}
 

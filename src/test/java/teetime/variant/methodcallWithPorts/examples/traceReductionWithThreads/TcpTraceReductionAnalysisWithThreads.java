@@ -178,7 +178,7 @@ public class TcpTraceReductionAnalysisWithThreads extends Analysis {
 		SingleElementPipe.connect(recordCounter.getOutputPort(), traceMetadataCounter.getInputPort());
 		SingleElementPipe.connect(traceMetadataCounter.getOutputPort(), instanceOfFilter.getInputPort());
 		SingleElementPipe.connect(instanceOfFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
-		SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), traceReductionFilter.getInputPort());
+		SingleElementPipe.connect(traceReconstructionFilter.getTraceValidOutputPort(), traceReductionFilter.getInputPort());
 		SingleElementPipe.connect(traceReductionFilter.getOutputPort(), traceCounter.getInputPort());
 		SingleElementPipe.connect(traceCounter.getOutputPort(), traceThroughputFilter.getInputPort());
 		SingleElementPipe.connect(traceThroughputFilter.getOutputPort(), endStage.getInputPort());

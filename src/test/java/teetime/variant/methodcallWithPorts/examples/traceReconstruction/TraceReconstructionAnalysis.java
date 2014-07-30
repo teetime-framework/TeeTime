@@ -18,6 +18,7 @@ import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.Counter;
 import teetime.variant.methodcallWithPorts.stage.ElementThroughputMeasuringStage;
 import teetime.variant.methodcallWithPorts.stage.InstanceOfFilter;
+import teetime.variant.methodcallWithPorts.stage.basic.merger.Merger;
 import teetime.variant.methodcallWithPorts.stage.kieker.Dir2RecordsFilter;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
 import teetime.variant.methodcallWithPorts.stage.kieker.traceReconstruction.TraceReconstructionFilter;
@@ -75,6 +76,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 				IFlowRecord.class);
 		this.throughputFilter = new ElementThroughputMeasuringStage<IFlowRecord>();
 		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter(this.traceId2trace);
+		Merger<TraceEventRecords> merger = new Merger<TraceEventRecords>();
 		this.traceCounter = new Counter<TraceEventRecords>();
 		final CollectorSink<TraceEventRecords> collector = new CollectorSink<TraceEventRecords>(this.elementCollection);
 
@@ -91,7 +93,9 @@ public class TraceReconstructionAnalysis extends Analysis {
 		SingleElementPipe.connect(instanceOfFilter.getOutputPort(), this.throughputFilter.getInputPort());
 		SingleElementPipe.connect(this.throughputFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
 		// SingleElementPipe.connect(instanceOfFilter.getOutputPort(), traceReconstructionFilter.getInputPort());
-		SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), this.traceCounter.getInputPort());
+		SingleElementPipe.connect(traceReconstructionFilter.getTraceValidOutputPort(), merger.getNewInputPort());
+		SingleElementPipe.connect(traceReconstructionFilter.getTraceInvalidOutputPort(), merger.getNewInputPort());
+		SingleElementPipe.connect(merger.getOutputPort(), this.traceCounter.getInputPort());
 		SingleElementPipe.connect(this.traceCounter.getOutputPort(), collector.getInputPort());
 
 		SpScPipe.connect(clockStage.getOutputPort(), this.throughputFilter.getTriggerInputPort(), 1);
@@ -108,6 +112,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 		pipeline.addIntermediateStage(instanceOfFilter);
 		pipeline.addIntermediateStage(this.throughputFilter);
 		pipeline.addIntermediateStage(traceReconstructionFilter);
+		pipeline.addIntermediateStage(merger);
 		pipeline.addIntermediateStage(this.traceCounter);
 		pipeline.setLastStage(collector);
 		return pipeline;

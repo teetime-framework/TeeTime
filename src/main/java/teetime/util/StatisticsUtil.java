@@ -17,6 +17,7 @@ package teetime.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,6 +110,17 @@ public class StatisticsUtil {
 			quintileValues.put(quintile, durationsInNs.get(index));
 		}
 		return quintileValues;
+	}
+
+	public static void removeFirstZeroThroughputs(final List<Long> throughputs) {
+		Iterator<Long> iterator = throughputs.iterator();
+		while (iterator.hasNext()) {
+			if (iterator.next() == 0) {
+				iterator.remove();
+			} else {
+				break;
+			}
+		}
 	}
 
 }
