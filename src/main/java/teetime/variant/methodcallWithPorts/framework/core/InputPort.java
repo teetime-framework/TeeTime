@@ -2,10 +2,9 @@ package teetime.variant.methodcallWithPorts.framework.core;
 
 import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 
-public class InputPort<T> {
+public class InputPort<T> extends AbstractPort<T> {
 
 	private final StageWithPort owningStage;
-	private IPipe<T> pipe;
 
 	InputPort(final StageWithPort owningStage) {
 		super();
@@ -22,15 +21,12 @@ public class InputPort<T> {
 		return element;
 	}
 
-	public IPipe<T> getPipe() {
-		return this.pipe;
-	}
-
 	/**
 	 * Connects this input port with the given <code>pipe</code> bi-directionally
 	 * 
 	 * @param pipe
 	 */
+	@Override
 	public void setPipe(final IPipe<T> pipe) {
 		this.pipe = pipe;
 		pipe.setTargetPort(this);

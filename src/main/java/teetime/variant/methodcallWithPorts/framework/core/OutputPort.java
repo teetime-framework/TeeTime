@@ -1,10 +1,7 @@
 package teetime.variant.methodcallWithPorts.framework.core;
 
-import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
+public class OutputPort<T> extends AbstractPort<T> {
 
-public class OutputPort<T> {
-
-	private IPipe<T> pipe;
 	/**
 	 * Performance cache: Avoids the following method chain
 	 * 
@@ -25,14 +22,6 @@ public class OutputPort<T> {
 	 */
 	public boolean send(final T element) {
 		return this.pipe.add(element);
-	}
-
-	public IPipe<T> getPipe() {
-		return this.pipe;
-	}
-
-	public void setPipe(final IPipe<T> pipe) {
-		this.pipe = pipe;
 	}
 
 	public StageWithPort getCachedTargetStage() {

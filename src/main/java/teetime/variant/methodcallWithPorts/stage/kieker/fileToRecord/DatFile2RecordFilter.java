@@ -17,6 +17,8 @@ package teetime.variant.methodcallWithPorts.stage.kieker.fileToRecord;
 
 import java.io.File;
 
+import teetime.variant.methodcallWithPorts.framework.core.InputPort;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.stage.io.File2TextLinesFilter;
@@ -30,16 +32,24 @@ import kieker.common.record.IMonitoringRecord;
  * 
  * @since 1.10
  */
-public class DatFile2RecordFilter extends Pipeline<File, IMonitoringRecord> {
+public class DatFile2RecordFilter extends Pipeline<File2TextLinesFilter, TextLine2RecordFilter> {
 
 	public DatFile2RecordFilter(final ClassNameRegistryRepository classNameRegistryRepository) {
-		final File2TextLinesFilter file2TextLinesFilter = new File2TextLinesFilter();
-		final TextLine2RecordFilter textLine2RecordFilter = new TextLine2RecordFilter(classNameRegistryRepository);
+		File2TextLinesFilter file2TextLinesFilter = new File2TextLinesFilter();
+		TextLine2RecordFilter textLine2RecordFilter = new TextLine2RecordFilter(classNameRegistryRepository);
 
-		this.setFirstStage(file2TextLinesFilter, file2TextLinesFilter.getInputPort());
-		this.setLastStage(textLine2RecordFilter, textLine2RecordFilter.getOutputPort());
+		this.setFirstStage(file2TextLinesFilter);
+		this.setLastStage(textLine2RecordFilter);
 
 		// BETTER let the framework choose the optimal pipe implementation
 		SingleElementPipe.connect(file2TextLinesFilter.getOutputPort(), textLine2RecordFilter.getInputPort());
+	}
+
+	public InputPort<File> getInputPort() {
+		return this.getFirstStage().getInputPort();
+	}
+
+	public OutputPort<IMonitoringRecord> getOutputPort() {
+		return this.getLastStage().getOutputPort();
 	}
 }

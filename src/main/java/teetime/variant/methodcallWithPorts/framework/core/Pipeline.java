@@ -8,8 +8,15 @@ import java.util.UUID;
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
 
+/**
+ * 
+ * @author Christian Wulf
+ * 
+ * @param <FirstStage>
+ * @param <LastStage>
+ */
 // BETTER remove the pipeline since it does not add any new functionality
-public class Pipeline<I, O> implements StageWithPort {
+public class Pipeline<FirstStage extends StageWithPort, LastStage extends StageWithPort> implements StageWithPort {
 
 	private final String id;
 	/**
@@ -17,11 +24,9 @@ public class Pipeline<I, O> implements StageWithPort {
 	 */
 	protected Log logger;
 
-	private StageWithPort firstStage;
-	private InputPort<I> firstStageInputPort;
+	private FirstStage firstStage;
 	private final List<StageWithPort> intermediateStages = new LinkedList<StageWithPort>();
-	private StageWithPort lastStage;
-	private OutputPort<O> lastStageOutputPort;
+	private LastStage lastStage;
 
 	// BETTER remove the stage array and use the output ports instead for passing a signal to all stages in the same thread; what about multiple same signals due to
 	// multiple input ports?
@@ -47,9 +52,8 @@ public class Pipeline<I, O> implements StageWithPort {
 		return this.id;
 	}
 
-	public void setFirstStage(final StageWithPort stage, final InputPort<I> firstStageInputPort) {
+	public void setFirstStage(final FirstStage stage) {
 		this.firstStage = stage;
-		this.firstStageInputPort = firstStageInputPort;
 	}
 
 	public void addIntermediateStages(final StageWithPort... stages) {
@@ -60,9 +64,8 @@ public class Pipeline<I, O> implements StageWithPort {
 		this.intermediateStages.add(stage);
 	}
 
-	public void setLastStage(final StageWithPort stage, final OutputPort<O> lastStageOutputPort) {
+	public void setLastStage(final LastStage stage) {
 		this.lastStage = stage;
-		this.lastStageOutputPort = lastStageOutputPort;
 	}
 
 	@Override
@@ -151,17 +154,17 @@ public class Pipeline<I, O> implements StageWithPort {
 	// this.reschedulable = reschedulable;
 	// }
 
-	public InputPort<I> getInputPort() {
-		return this.firstStageInputPort;
-	}
-
-	public OutputPort<O> getOutputPort() {
-		return this.lastStageOutputPort;
-	}
-
 	@Override
 	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
 		this.firstStage.onSignal(signal, inputPort);
+	}
+
+	public FirstStage getFirstStage() {
+		return this.firstStage;
+	}
+
+	public LastStage getLastStage() {
+		return this.lastStage;
 	}
 
 }

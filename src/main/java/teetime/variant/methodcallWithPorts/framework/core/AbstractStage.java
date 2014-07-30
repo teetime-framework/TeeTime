@@ -1,8 +1,11 @@
 package teetime.variant.methodcallWithPorts.framework.core;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+
+import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
@@ -118,14 +121,34 @@ public abstract class AbstractStage implements StageWithPort {
 
 	protected <T> InputPort<T> createInputPort() {
 		InputPort<T> inputPort = new InputPort<T>(this);
+		// inputPort.setType(type); // TODO set type for input port
 		this.inputPortList.add(inputPort);
 		return inputPort;
 	}
 
 	protected <T> OutputPort<T> createOutputPort() {
 		OutputPort<T> outputPort = new OutputPort<T>();
+		// outputPort.setType(type); // TODO set type for output port
 		this.outputPortList.add(outputPort);
 		return outputPort;
+	}
+
+	public List<InvalidPortConnection> validateOutputPorts() {
+		List<InvalidPortConnection> invalidOutputPortMessages = new LinkedList<InvalidPortConnection>();
+
+		for (OutputPort<?> outputPort : this.getOutputPorts()) {
+			IPipe<?> pipe = outputPort.getPipe();
+			if (null != pipe) { // if output port is connected with another one
+				Class<?> sourcePortType = outputPort.getType();
+				Class<?> targetPortType = pipe.getTargetPort().getType();
+				if (null == sourcePortType || !sourcePortType.equals(targetPortType)) {
+					InvalidPortConnection invalidPortConnection = new InvalidPortConnection(outputPort, pipe.getTargetPort());
+					invalidOutputPortMessages.add(invalidPortConnection);
+				}
+			}
+		}
+
+		return invalidOutputPortMessages;
 	}
 
 	@Override
