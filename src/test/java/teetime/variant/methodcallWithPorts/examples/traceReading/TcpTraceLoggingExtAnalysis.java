@@ -11,7 +11,7 @@ import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.Clock;
 import teetime.variant.methodcallWithPorts.stage.Counter;
 import teetime.variant.methodcallWithPorts.stage.ElementThroughputMeasuringStage;
-import teetime.variant.methodcallWithPorts.stage.EndStage;
+import teetime.variant.methodcallWithPorts.stage.basic.Sink;
 import teetime.variant.methodcallWithPorts.stage.basic.distributor.Distributor;
 import teetime.variant.methodcallWithPorts.stage.io.TCPReader;
 
@@ -25,7 +25,7 @@ public class TcpTraceLoggingExtAnalysis extends Analysis {
 	private Counter<IMonitoringRecord> recordCounter;
 	private ElementThroughputMeasuringStage<IMonitoringRecord> recordThroughputStage;
 
-	private StageWithPort<Void, Long> buildClockPipeline(final long intervalDelayInMs) {
+	private Pipeline<Clock, Distributor<Long>> buildClockPipeline(final long intervalDelayInMs) {
 		Clock clockStage = new Clock();
 		clockStage.setInitialDelayInMs(intervalDelayInMs);
 		clockStage.setIntervalDelayInMs(intervalDelayInMs);
@@ -34,26 +34,26 @@ public class TcpTraceLoggingExtAnalysis extends Analysis {
 		SingleElementPipe.connect(clockStage.getOutputPort(), distributor.getInputPort());
 
 		// create and configure pipeline
-		Pipeline<Void, Long> pipeline = new Pipeline<Void, Long>();
+		Pipeline<Clock, Distributor<Long>> pipeline = new Pipeline<Clock, Distributor<Long>>();
 		pipeline.setFirstStage(clockStage);
 		pipeline.setLastStage(distributor);
 		return pipeline;
 	}
 
-	private StageWithPort<Void, IMonitoringRecord> buildTcpPipeline(final StageWithPort<Void, Long> clockPipeline) {
+	private StageWithPort buildTcpPipeline(final Distributor<Long> previousClockStage) {
 		TCPReader tcpReader = new TCPReader();
 		this.recordCounter = new Counter<IMonitoringRecord>();
 		this.recordThroughputStage = new ElementThroughputMeasuringStage<IMonitoringRecord>();
-		EndStage<IMonitoringRecord> endStage = new EndStage<IMonitoringRecord>();
+		Sink<IMonitoringRecord> endStage = new Sink<IMonitoringRecord>();
 
 		SingleElementPipe.connect(tcpReader.getOutputPort(), this.recordCounter.getInputPort());
 		SingleElementPipe.connect(this.recordCounter.getOutputPort(), this.recordThroughputStage.getInputPort());
 		SingleElementPipe.connect(this.recordThroughputStage.getOutputPort(), endStage.getInputPort());
 
-		SpScPipe.connect(clockPipeline.getOutputPort(), this.recordThroughputStage.getTriggerInputPort(), 10);
+		SpScPipe.connect(previousClockStage.getNewOutputPort(), this.recordThroughputStage.getTriggerInputPort(), 10);
 
 		// create and configure pipeline
-		Pipeline<Void, IMonitoringRecord> pipeline = new Pipeline<Void, IMonitoringRecord>();
+		Pipeline<TCPReader, Sink<IMonitoringRecord>> pipeline = new Pipeline<TCPReader, Sink<IMonitoringRecord>>();
 		pipeline.setFirstStage(tcpReader);
 		pipeline.addIntermediateStage(this.recordCounter);
 		pipeline.addIntermediateStage(this.recordThroughputStage);
@@ -65,11 +65,11 @@ public class TcpTraceLoggingExtAnalysis extends Analysis {
 	public void init() {
 		super.init();
 
-		StageWithPort<Void, Long> clockPipeline = this.buildClockPipeline(1000);
-		this.clockThread = new Thread(new RunnableStage<Void>(clockPipeline));
+		Pipeline<Clock, Distributor<Long>> clockPipeline = this.buildClockPipeline(1000);
+		this.clockThread = new Thread(new RunnableStage(clockPipeline));
 
-		StageWithPort<Void, IMonitoringRecord> tcpPipeline = this.buildTcpPipeline(clockPipeline);
-		this.tcpThread = new Thread(new RunnableStage<Void>(tcpPipeline));
+		StageWithPort tcpPipeline = this.buildTcpPipeline(clockPipeline.getLastStage());
+		this.tcpThread = new Thread(new RunnableStage(tcpPipeline));
 	}
 
 	@Override

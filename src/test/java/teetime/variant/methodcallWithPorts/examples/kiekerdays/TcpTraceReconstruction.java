@@ -12,9 +12,9 @@ import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
-import teetime.variant.methodcallWithPorts.stage.EndStage;
 import teetime.variant.methodcallWithPorts.stage.InstanceOfFilter;
 import teetime.variant.methodcallWithPorts.stage.Relay;
+import teetime.variant.methodcallWithPorts.stage.basic.Sink;
 import teetime.variant.methodcallWithPorts.stage.basic.distributor.Distributor;
 import teetime.variant.methodcallWithPorts.stage.io.TCPReader;
 import teetime.variant.methodcallWithPorts.stage.kieker.traceReconstruction.TraceReconstructionFilter;
@@ -41,41 +41,41 @@ public class TcpTraceReconstruction extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		StageWithPort<Void, IMonitoringRecord> tcpPipeline = this.buildTcpPipeline();
-		this.tcpThread = new Thread(new RunnableStage<Void>(tcpPipeline));
+		Pipeline<TCPReader, Distributor<IMonitoringRecord>> tcpPipeline = this.buildTcpPipeline();
+		this.tcpThread = new Thread(new RunnableStage(tcpPipeline));
 
 		this.numWorkerThreads = Math.min(NUM_VIRTUAL_CORES, this.numWorkerThreads);
 		this.workerThreads = new Thread[this.numWorkerThreads];
 
 		for (int i = 0; i < this.workerThreads.length; i++) {
-			StageWithPort<IMonitoringRecord, ?> pipeline = this.buildPipeline(tcpPipeline);
-			this.workerThreads[i] = new Thread(new RunnableStage<IMonitoringRecord>(pipeline));
+			StageWithPort pipeline = this.buildPipeline(tcpPipeline.getLastStage());
+			this.workerThreads[i] = new Thread(new RunnableStage(pipeline));
 		}
 	}
 
-	private StageWithPort<Void, IMonitoringRecord> buildTcpPipeline() {
+	private Pipeline<TCPReader, Distributor<IMonitoringRecord>> buildTcpPipeline() {
 		TCPReader tcpReader = new TCPReader();
 		Distributor<IMonitoringRecord> distributor = new Distributor<IMonitoringRecord>();
 
 		SingleElementPipe.connect(tcpReader.getOutputPort(), distributor.getInputPort());
 
 		// create and configure pipeline
-		Pipeline<Void, IMonitoringRecord> pipeline = new Pipeline<Void, IMonitoringRecord>();
+		Pipeline<TCPReader, Distributor<IMonitoringRecord>> pipeline = new Pipeline<TCPReader, Distributor<IMonitoringRecord>>();
 		pipeline.setFirstStage(tcpReader);
 		pipeline.setLastStage(distributor);
 		return pipeline;
 	}
 
-	private Pipeline<IMonitoringRecord, ?> buildPipeline(final StageWithPort<Void, IMonitoringRecord> tcpReaderPipeline) {
+	private StageWithPort buildPipeline(final Distributor<IMonitoringRecord> tcpReaderPipeline) {
 		// create stages
 		Relay<IMonitoringRecord> relay = new Relay<IMonitoringRecord>();
 		final InstanceOfFilter<IMonitoringRecord, IFlowRecord> instanceOfFilter = new InstanceOfFilter<IMonitoringRecord, IFlowRecord>(
 				IFlowRecord.class);
 		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter(this.traceId2trace);
-		EndStage<TraceEventRecords> endStage = new EndStage<TraceEventRecords>();
+		Sink<TraceEventRecords> endStage = new Sink<TraceEventRecords>();
 
 		// connect stages
-		SpScPipe<IMonitoringRecord> tcpRelayPipe = SpScPipe.connect(tcpReaderPipeline.getOutputPort(), relay.getInputPort(), TCP_RELAY_MAX_SIZE);
+		SpScPipe<IMonitoringRecord> tcpRelayPipe = SpScPipe.connect(tcpReaderPipeline.getNewOutputPort(), relay.getInputPort(), TCP_RELAY_MAX_SIZE);
 		this.tcpRelayPipes.add(tcpRelayPipe);
 
 		SingleElementPipe.connect(relay.getOutputPort(), instanceOfFilter.getInputPort());
@@ -83,7 +83,7 @@ public class TcpTraceReconstruction extends Analysis {
 		SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), endStage.getInputPort());
 
 		// create and configure pipeline
-		Pipeline<IMonitoringRecord, TraceEventRecords> pipeline = new Pipeline<IMonitoringRecord, TraceEventRecords>();
+		Pipeline<Relay<IMonitoringRecord>, Sink<TraceEventRecords>> pipeline = new Pipeline<Relay<IMonitoringRecord>, Sink<TraceEventRecords>>();
 		pipeline.setFirstStage(relay);
 		pipeline.addIntermediateStage(instanceOfFilter);
 		pipeline.addIntermediateStage(traceReconstructionFilter);

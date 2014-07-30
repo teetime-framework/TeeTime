@@ -4,8 +4,6 @@ import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 
-import kieker.common.record.IMonitoringRecord;
-
 public class TcpTraceLogging extends Analysis {
 
 	private Thread tcpThread;
@@ -13,8 +11,8 @@ public class TcpTraceLogging extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		StageWithPort<Void, IMonitoringRecord> tcpPipeline = this.buildTcpPipeline();
-		this.tcpThread = new Thread(new RunnableStage<Void>(tcpPipeline));
+		StageWithPort tcpPipeline = this.buildTcpPipeline();
+		this.tcpThread = new Thread(new RunnableStage(tcpPipeline));
 	}
 
 	@Override
@@ -30,7 +28,7 @@ public class TcpTraceLogging extends Analysis {
 		}
 	}
 
-	private StageWithPort<Void, IMonitoringRecord> buildTcpPipeline() {
+	private StageWithPort buildTcpPipeline() {
 		TCPReaderSink tcpReader = new TCPReaderSink();
 		// EndStage<IMonitoringRecord> endStage = new EndStage<IMonitoringRecord>();
 		//

@@ -14,8 +14,8 @@ import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.Clock;
 import teetime.variant.methodcallWithPorts.stage.Counter;
 import teetime.variant.methodcallWithPorts.stage.ElementThroughputMeasuringStage;
-import teetime.variant.methodcallWithPorts.stage.EndStage;
 import teetime.variant.methodcallWithPorts.stage.InstanceOfFilter;
+import teetime.variant.methodcallWithPorts.stage.basic.Sink;
 import teetime.variant.methodcallWithPorts.stage.basic.distributor.Distributor;
 import teetime.variant.methodcallWithPorts.stage.io.TCPReader;
 import teetime.variant.methodcallWithPorts.stage.kieker.traceReconstruction.TraceReconstructionFilter;
@@ -45,17 +45,17 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		StageWithPort<Void, Long> clockStage = this.buildClockPipeline(1000);
-		this.clockThread = new Thread(new RunnableStage<Void>(clockStage));
+		Pipeline<Clock, Distributor<Long>> clockStage = this.buildClockPipeline(1000);
+		this.clockThread = new Thread(new RunnableStage(clockStage));
 
-		StageWithPort<Void, Long> clock2Stage = this.buildClockPipeline(2000);
-		this.clock2Thread = new Thread(new RunnableStage<Void>(clock2Stage));
+		Pipeline<Clock, Distributor<Long>> clock2Stage = this.buildClockPipeline(2000);
+		this.clock2Thread = new Thread(new RunnableStage(clock2Stage));
 
-		Pipeline<Void, ?> pipeline = this.buildPipeline(clockStage, clock2Stage);
-		this.workerThread = new Thread(new RunnableStage<Void>(pipeline));
+		StageWithPort pipeline = this.buildPipeline(clockStage.getLastStage(), clock2Stage.getLastStage());
+		this.workerThread = new Thread(new RunnableStage(pipeline));
 	}
 
-	private StageWithPort<Void, Long> buildClockPipeline(final long intervalDelayInMs) {
+	private Pipeline<Clock, Distributor<Long>> buildClockPipeline(final long intervalDelayInMs) {
 		Clock clock = new Clock();
 		clock.setIntervalDelayInMs(intervalDelayInMs);
 		Distributor<Long> distributor = new Distributor<Long>();
@@ -63,13 +63,13 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 		SingleElementPipe.connect(clock.getOutputPort(), distributor.getInputPort());
 
 		// create and configure pipeline
-		Pipeline<Void, Long> pipeline = new Pipeline<Void, Long>();
+		Pipeline<Clock, Distributor<Long>> pipeline = new Pipeline<Clock, Distributor<Long>>();
 		pipeline.setFirstStage(clock);
 		pipeline.setLastStage(distributor);
 		return pipeline;
 	}
 
-	private Pipeline<Void, TraceEventRecords> buildPipeline(final StageWithPort<Void, Long> clockStage, final StageWithPort<Void, Long> clock2Stage) {
+	private StageWithPort buildPipeline(final Distributor<Long> clockStage, final Distributor<Long> clock2Stage) {
 		// create stages
 		TCPReader tcpReader = new TCPReader();
 		this.recordCounter = new Counter<IMonitoringRecord>();
@@ -79,7 +79,7 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 		final TraceReconstructionFilter traceReconstructionFilter = new TraceReconstructionFilter(this.traceId2trace);
 		this.traceThroughputFilter = new ElementThroughputMeasuringStage<TraceEventRecords>();
 		this.traceCounter = new Counter<TraceEventRecords>();
-		EndStage<TraceEventRecords> endStage = new EndStage<TraceEventRecords>();
+		Sink<TraceEventRecords> endStage = new Sink<TraceEventRecords>();
 
 		// connect stages
 		SpScPipe.connect(tcpReader.getOutputPort(), this.recordCounter.getInputPort(), TCP_RELAY_MAX_SIZE);
@@ -92,11 +92,11 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 		SingleElementPipe.connect(traceReconstructionFilter.getOutputPort(), this.traceCounter.getInputPort());
 		SingleElementPipe.connect(this.traceCounter.getOutputPort(), endStage.getInputPort());
 
-		SpScPipe.connect(clockStage.getOutputPort(), this.recordThroughputFilter.getTriggerInputPort(), 10);
-		SpScPipe.connect(clock2Stage.getOutputPort(), this.traceThroughputFilter.getTriggerInputPort(), 10);
+		SpScPipe.connect(clockStage.getNewOutputPort(), this.recordThroughputFilter.getTriggerInputPort(), 10);
+		SpScPipe.connect(clock2Stage.getNewOutputPort(), this.traceThroughputFilter.getTriggerInputPort(), 10);
 
 		// create and configure pipeline
-		Pipeline<Void, TraceEventRecords> pipeline = new Pipeline<Void, TraceEventRecords>();
+		Pipeline<TCPReader, Sink<TraceEventRecords>> pipeline = new Pipeline<TCPReader, Sink<TraceEventRecords>>();
 		pipeline.setFirstStage(tcpReader);
 		pipeline.addIntermediateStage(this.recordCounter);
 		pipeline.addIntermediateStage(instanceOfFilter);

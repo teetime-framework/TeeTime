@@ -48,21 +48,21 @@ public class TraceReconstructionAnalysis extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		StageWithPort<Void, Long> clockStage = this.buildClockPipeline();
-		this.clockThread = new Thread(new RunnableStage<Void>(clockStage));
+		Clock clockStage = this.buildClockPipeline();
+		this.clockThread = new Thread(new RunnableStage(clockStage));
 
-		Pipeline<File, ?> pipeline = this.buildPipeline(clockStage);
-		this.workerThread = new Thread(new RunnableStage<File>(pipeline));
+		StageWithPort pipeline = this.buildPipeline(clockStage);
+		this.workerThread = new Thread(new RunnableStage(pipeline));
 	}
 
-	private StageWithPort<Void, Long> buildClockPipeline() {
+	private Clock buildClockPipeline() {
 		Clock clock = new Clock();
 		clock.setIntervalDelayInMs(100);
 
 		return clock;
 	}
 
-	private Pipeline<File, Void> buildPipeline(final StageWithPort<Void, Long> clockStage) {
+	private StageWithPort buildPipeline(final Clock clockStage) {
 		this.classNameRegistryRepository = new ClassNameRegistryRepository();
 
 		// create stages
@@ -100,7 +100,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 		dir2RecordsFilter.getInputPort().getPipe().add(this.inputDir);
 
 		// create and configure pipeline
-		Pipeline<File, Void> pipeline = new Pipeline<File, Void>();
+		Pipeline<Dir2RecordsFilter, CollectorSink<TraceEventRecords>> pipeline = new Pipeline<Dir2RecordsFilter, CollectorSink<TraceEventRecords>>();
 		pipeline.setFirstStage(dir2RecordsFilter);
 		pipeline.addIntermediateStage(this.recordCounter);
 		pipeline.addIntermediateStage(cache);

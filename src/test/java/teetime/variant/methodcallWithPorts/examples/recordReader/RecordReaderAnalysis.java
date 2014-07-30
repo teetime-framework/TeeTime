@@ -22,6 +22,7 @@ import java.util.List;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
+import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
@@ -46,21 +47,21 @@ public class RecordReaderAnalysis extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		Pipeline<File, ?> producerPipeline = this.buildProducerPipeline();
-		this.producerThread = new Thread(new RunnableStage<File>(producerPipeline));
+		StageWithPort producerPipeline = this.buildProducerPipeline();
+		this.producerThread = new Thread(new RunnableStage(producerPipeline));
 	}
 
-	private Pipeline<File, Void> buildProducerPipeline() {
+	private StageWithPort buildProducerPipeline() {
 		this.classNameRegistryRepository = new ClassNameRegistryRepository();
 		// create stages
 		Dir2RecordsFilter dir2RecordsFilter = new Dir2RecordsFilter(this.classNameRegistryRepository);
 		CollectorSink<IMonitoringRecord> collector = new CollectorSink<IMonitoringRecord>(this.elementCollection);
 
-		final Pipeline<File, Void> pipeline = new Pipeline<File, Void>();
+		final Pipeline<Dir2RecordsFilter, CollectorSink<IMonitoringRecord>> pipeline = new Pipeline<Dir2RecordsFilter, CollectorSink<IMonitoringRecord>>();
 		pipeline.setFirstStage(dir2RecordsFilter);
 		pipeline.setLastStage(collector);
 
-		SpScPipe.connect(null, dir2RecordsFilter.getInputPort(), 1);
+		dir2RecordsFilter.getInputPort().setPipe(new SpScPipe<File>(1));
 		SingleElementPipe.connect(dir2RecordsFilter.getOutputPort(), collector.getInputPort());
 
 		dir2RecordsFilter.getInputPort().getPipe().add(new File("src/test/data/bookstore-logs"));

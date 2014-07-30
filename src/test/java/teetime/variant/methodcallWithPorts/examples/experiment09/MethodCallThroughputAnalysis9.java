@@ -22,6 +22,7 @@ import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
+import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.Pipe;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.NoopFilter;
@@ -45,14 +46,15 @@ public class MethodCallThroughputAnalysis9 extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		this.runnable = this.buildPipeline();
+		StageWithPort pipeline = this.buildPipeline();
+		this.runnable = new RunnableStage(pipeline);
 	}
 
 	/**
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
-	private Runnable buildPipeline() {
+	private StageWithPort buildPipeline() {
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
 		// create stages
@@ -64,12 +66,12 @@ public class MethodCallThroughputAnalysis9 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final Pipeline<Void, Void> pipeline = new Pipeline<Void, Void>();
-		pipeline.setFirstStage(objectProducer, null);
+		final Pipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new Pipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>>();
+		pipeline.setFirstStage(objectProducer);
 		pipeline.addIntermediateStage(startTimestampFilter);
 		pipeline.addIntermediateStages(noopFilters);
 		pipeline.addIntermediateStage(stopTimestampFilter);
-		pipeline.setLastStage(collectorSink, null);
+		pipeline.setLastStage(collectorSink);
 
 		Pipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
 		Pipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
@@ -79,7 +81,7 @@ public class MethodCallThroughputAnalysis9 extends Analysis {
 		Pipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
 		Pipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
-		return new RunnableStage(pipeline);
+		return pipeline;
 	}
 
 	@Override

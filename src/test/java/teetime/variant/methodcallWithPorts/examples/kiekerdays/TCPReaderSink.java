@@ -44,7 +44,7 @@ import kieker.common.util.registry.Lookup;
  * 
  * @since 1.10
  */
-public class TCPReaderSink extends ProducerStage<Void, IMonitoringRecord> {
+public class TCPReaderSink extends ProducerStage<IMonitoringRecord> {
 
 	private static final int MESSAGE_BUFFER_SIZE = 65535;
 
@@ -92,7 +92,7 @@ public class TCPReaderSink extends ProducerStage<Void, IMonitoringRecord> {
 	}
 
 	@Override
-	protected void execute5(final Void element) {
+	protected void execute() {
 		ServerSocketChannel serversocket = null;
 		try {
 			serversocket = ServerSocketChannel.open();

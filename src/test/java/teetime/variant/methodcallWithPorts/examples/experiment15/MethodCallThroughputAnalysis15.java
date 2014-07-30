@@ -22,17 +22,18 @@ import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
+import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.OrderedGrowableArrayPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.Clock;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
-import teetime.variant.methodcallWithPorts.stage.EndStage;
 import teetime.variant.methodcallWithPorts.stage.NoopFilter;
 import teetime.variant.methodcallWithPorts.stage.ObjectProducer;
 import teetime.variant.methodcallWithPorts.stage.StartTimestampFilter;
 import teetime.variant.methodcallWithPorts.stage.StopTimestampFilter;
 import teetime.variant.methodcallWithPorts.stage.basic.Delay;
+import teetime.variant.methodcallWithPorts.stage.basic.Sink;
 
 /**
  * @author Christian Wulf
@@ -57,28 +58,31 @@ public class MethodCallThroughputAnalysis15 extends Analysis {
 	public void init() {
 		super.init();
 
-		this.clockRunnable = this.buildClockPipeline();
-		this.runnable = this.buildPipeline(this.clock);
+		StageWithPort clockPipeline = this.buildClockPipeline();
+		this.clockRunnable = new RunnableStage(clockPipeline);
+
+		StageWithPort pipeline = this.buildPipeline(this.clock);
+		this.runnable = new RunnableStage(pipeline);
 	}
 
-	private Runnable buildClockPipeline() {
+	private StageWithPort buildClockPipeline() {
 		this.clock = new Clock();
 
 		this.clock.setInitialDelayInMs(100);
 		this.clock.setIntervalDelayInMs(100);
 
-		final Pipeline<Void, Long> pipeline = new Pipeline<Void, Long>();
+		final Pipeline<Clock, Sink<Long>> pipeline = new Pipeline<Clock, Sink<Long>>();
 		pipeline.setFirstStage(this.clock);
-		pipeline.setLastStage(new EndStage<Long>());
+		pipeline.setLastStage(new Sink<Long>());
 
-		return new RunnableStage(pipeline);
+		return pipeline;
 	}
 
 	/**
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
-	private Runnable buildPipeline(final Clock clock) {
+	private StageWithPort buildPipeline(final Clock clock) {
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
 		// create stages
@@ -91,7 +95,7 @@ public class MethodCallThroughputAnalysis15 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final Pipeline<Void, Void> pipeline = new Pipeline<Void, Void>();
+		final Pipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new Pipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>>();
 		pipeline.setFirstStage(objectProducer);
 		pipeline.addIntermediateStage(startTimestampFilter);
 		pipeline.addIntermediateStages(noopFilters);
@@ -111,7 +115,7 @@ public class MethodCallThroughputAnalysis15 extends Analysis {
 
 		SingleElementPipe.connect(delay.getOutputPort(), collectorSink.getInputPort());
 
-		return new RunnableStage(pipeline);
+		return pipeline;
 	}
 
 	@Override

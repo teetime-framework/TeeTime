@@ -30,7 +30,6 @@ import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.UnorderedGrowablePipe;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
-import teetime.variant.methodcallWithPorts.stage.EndStage;
 import teetime.variant.methodcallWithPorts.stage.NoopFilter;
 import teetime.variant.methodcallWithPorts.stage.ObjectProducer;
 import teetime.variant.methodcallWithPorts.stage.Relay;
@@ -60,8 +59,8 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 
 	@Override
 	public void init() {
-		final Pipeline<Void, TimestampObject> producerPipeline = this.buildProducerPipeline(this.numInputObjects, this.inputObjectCreator);
-		this.producerThread = new Thread(new RunnableStage<Void>(producerPipeline));
+		final StageWithPort producerPipeline = this.buildProducerPipeline(this.numInputObjects, this.inputObjectCreator);
+		this.producerThread = new Thread(new RunnableStage(producerPipeline));
 
 		int numWorkerThreads = Math.min(NUM_WORKER_THREADS, 1); // only for testing purpose
 
@@ -95,7 +94,7 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 
 		// this.producerThread.start();
 		// this.producerThread.run();
-		new RunnableStage<Void>(producerPipeline).run();
+		new RunnableStage(producerPipeline).run();
 
 		// try {
 		// this.producerThread.join();
@@ -107,14 +106,14 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		super.init();
 	}
 
-	private Pipeline<Void, TimestampObject> buildProducerPipeline(final int numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
+	private StageWithPort buildProducerPipeline(final int numInputObjects,
+			final ConstructorClosure<TimestampObject> inputObjectCreator) {
 		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(numInputObjects, inputObjectCreator);
 		Distributor<TimestampObject> distributor = new Distributor<TimestampObject>();
 		Sink<TimestampObject> sink = new Sink<TimestampObject>();
-		EndStage<Void> endStage = new EndStage<Void>();
-		endStage.closure = inputObjectCreator;
+		Sink<Void> endStage = new Sink<Void>();
 
-		final Pipeline<Void, TimestampObject> pipeline = new Pipeline<Void, TimestampObject>();
+		final Pipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> pipeline = new Pipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>>();
 		pipeline.setFirstStage(objectProducer);
 		// pipeline.setFirstStage(sink);
 		// pipeline.setFirstStage(endStage);
@@ -127,7 +126,7 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		// objectProducer.getOutputPort().pipe = new UnorderedGrowablePipe<TimestampObject>();
 
 		UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), distributor.getInputPort());
-		distributor.getOutputPort().setPipe(new UnorderedGrowablePipe<TimestampObject>());
+		distributor.getNewOutputPort().setPipe(new UnorderedGrowablePipe<TimestampObject>());
 
 		return pipeline;
 	}
@@ -136,7 +135,7 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
-	private Runnable buildPipeline(final StageWithPort<Void, TimestampObject> previousStage, final List<TimestampObject> timestampObjects) {
+	private Runnable buildPipeline(final StageWithPort previousStage, final List<TimestampObject> timestampObjects) {
 		Relay<TimestampObject> relay = new Relay<TimestampObject>();
 		// create stages
 		final StartTimestampFilter startTimestampFilter = new StartTimestampFilter();
@@ -148,7 +147,7 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(timestampObjects);
 
-		final Pipeline<TimestampObject, Void> pipeline = new Pipeline<TimestampObject, Void>();
+		final Pipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new Pipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>>();
 		pipeline.setFirstStage(relay);
 		pipeline.addIntermediateStage(startTimestampFilter);
 		pipeline.addIntermediateStages(noopFilters);

@@ -22,6 +22,7 @@ import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
+import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.UnorderedGrowablePipe;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.NoopFilter;
@@ -45,15 +46,11 @@ public class MethodCallThroughputAnalysis11 extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		Pipeline<Void, ?> pipeline = this.buildPipeline(this.numInputObjects, this.inputObjectCreator);
-		this.runnable = new RunnableStage<Void>(pipeline);
+		StageWithPort pipeline = this.buildPipeline(this.numInputObjects, this.inputObjectCreator);
+		this.runnable = new RunnableStage(pipeline);
 	}
 
-	/**
-	 * @param numNoopFilters
-	 * @since 1.10
-	 */
-	private Pipeline<Void, Void> buildPipeline(final long numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
+	private StageWithPort buildPipeline(final long numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
 		// create stages
@@ -67,7 +64,7 @@ public class MethodCallThroughputAnalysis11 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final Pipeline<Void, Void> pipeline = new Pipeline<Void, Void>();
+		final Pipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new Pipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>>();
 		pipeline.setFirstStage(objectProducer);
 		// pipeline.addIntermediateStage(relayFake);
 		pipeline.addIntermediateStage(startTimestampFilter);
