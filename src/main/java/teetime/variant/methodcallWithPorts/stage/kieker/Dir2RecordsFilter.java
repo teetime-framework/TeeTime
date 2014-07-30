@@ -17,6 +17,7 @@ package teetime.variant.methodcallWithPorts.stage.kieker;
 
 import java.io.File;
 
+import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
@@ -38,7 +39,7 @@ import kieker.common.util.filesystem.FSUtil;
  * 
  * @since 1.10
  */
-public class Dir2RecordsFilter extends Pipeline<File, IMonitoringRecord> {
+public class Dir2RecordsFilter extends Pipeline<ClassNameRegistryCreationFilter, Merger<IMonitoringRecord>> {
 
 	private ClassNameRegistryRepository classNameRegistryRepository;
 
@@ -79,13 +80,13 @@ public class Dir2RecordsFilter extends Pipeline<File, IMonitoringRecord> {
 		SingleElementPipe.connect(zipFile2RecordFilter.getOutputPort(), recordMerger.getNewInputPort());
 
 		// prepare pipeline
-		this.setFirstStage(classNameRegistryCreationFilter, classNameRegistryCreationFilter.getInputPort());
+		this.setFirstStage(classNameRegistryCreationFilter);
 		this.addIntermediateStage(directory2FilesFilter);
 		this.addIntermediateStage(fileExtensionSwitch);
 		this.addIntermediateStage(datFile2RecordFilter);
 		this.addIntermediateStage(binaryFile2RecordFilter);
 		this.addIntermediateStage(zipFile2RecordFilter);
-		this.setLastStage(recordMerger, recordMerger.getOutputPort());
+		this.setLastStage(recordMerger);
 	}
 
 	/**
@@ -101,6 +102,14 @@ public class Dir2RecordsFilter extends Pipeline<File, IMonitoringRecord> {
 
 	public void setClassNameRegistryRepository(final ClassNameRegistryRepository classNameRegistryRepository) {
 		this.classNameRegistryRepository = classNameRegistryRepository;
+	}
+
+	public InputPort<File> getInputPort() {
+		return this.getFirstStage().getInputPort();
+	}
+
+	public OutputPort<IMonitoringRecord> getOutputPort() {
+		return this.getLastStage().getOutputPort();
 	}
 
 }

@@ -2,6 +2,8 @@ package teetime.variant.methodcallWithPorts.stage.kieker;
 
 import java.io.File;
 
+import teetime.variant.methodcallWithPorts.framework.core.InputPort;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.stage.io.Directory2FilesFilter;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryCreationFilter;
@@ -10,7 +12,7 @@ import teetime.variant.methodcallWithPorts.stage.kieker.fileToRecord.BinaryFile2
 
 import kieker.common.record.IMonitoringRecord;
 
-public class DirWithBin2RecordFilter extends Pipeline<File, IMonitoringRecord> {
+public class DirWithBin2RecordFilter extends Pipeline<ClassNameRegistryCreationFilter, BinaryFile2RecordFilter> {
 
 	private ClassNameRegistryRepository classNameRegistryRepository;
 
@@ -21,9 +23,9 @@ public class DirWithBin2RecordFilter extends Pipeline<File, IMonitoringRecord> {
 		final Directory2FilesFilter directory2FilesFilter = new Directory2FilesFilter();
 		final BinaryFile2RecordFilter binaryFile2RecordFilter = new BinaryFile2RecordFilter(classNameRegistryRepository);
 
-		this.setFirstStage(classNameRegistryCreationFilter, classNameRegistryCreationFilter.getInputPort());
+		this.setFirstStage(classNameRegistryCreationFilter);
 		this.addIntermediateStage(directory2FilesFilter);
-		this.setLastStage(binaryFile2RecordFilter, binaryFile2RecordFilter.getOutputPort());
+		this.setLastStage(binaryFile2RecordFilter);
 	}
 
 	public DirWithBin2RecordFilter() {
@@ -36,5 +38,13 @@ public class DirWithBin2RecordFilter extends Pipeline<File, IMonitoringRecord> {
 
 	public void setClassNameRegistryRepository(final ClassNameRegistryRepository classNameRegistryRepository) {
 		this.classNameRegistryRepository = classNameRegistryRepository;
+	}
+
+	public InputPort<File> getInputPort() {
+		return this.getFirstStage().getInputPort();
+	}
+
+	public OutputPort<IMonitoringRecord> getOutputPort() {
+		return this.getLastStage().getOutputPort();
 	}
 }
