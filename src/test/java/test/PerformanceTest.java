@@ -2,6 +2,7 @@ package test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +24,7 @@ public abstract class PerformanceTest {
 
 	public static final MeasurementRepository measurementRepository = new MeasurementRepository();
 
-	private Description description;
+	protected Description description;
 
 	protected StopWatch stopWatch;
 	protected List<TimestampObject> timestampObjects;
@@ -46,7 +47,14 @@ public abstract class PerformanceTest {
 
 	@After
 	public void after() {
-		PerformanceResult performanceResult = StatisticsUtil.printStatistics(this.stopWatch.getDurationInNs(), this.timestampObjects);
+		PerformanceResult performanceResult = StatisticsUtil.computeStatistics(this.stopWatch.getDurationInNs(), this.timestampObjects);
 		measurementRepository.performanceResults.put(this.description.getDisplayName(), performanceResult);
+
+		System.out.println("Duration: " + TimeUnit.NANOSECONDS.toMillis(performanceResult.overallDurationInNs) + " ms");
+		System.out.println("avg duration: " + TimeUnit.NANOSECONDS.toMicros(performanceResult.avgDurInNs) + " µs");
+		System.out.println(StatisticsUtil.getQuantilesString(performanceResult.quantiles));
+		System.out.println("confidenceWidth: " + performanceResult.confidenceWidthInNs + " ns");
+		System.out.println("[" + TimeUnit.NANOSECONDS.toMicros(performanceResult.avgDurInNs - performanceResult.confidenceWidthInNs) + " µs, "
+				+ TimeUnit.NANOSECONDS.toMicros(performanceResult.avgDurInNs + performanceResult.confidenceWidthInNs) + " µs]");
 	}
 }

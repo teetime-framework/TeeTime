@@ -40,11 +40,10 @@ public class StatisticsUtil {
 		// utility class
 	}
 
-	public static PerformanceResult printStatistics(final long overallDurationInNs, final List<TimestampObject> timestampObjects) {
+	public static PerformanceResult computeStatistics(final long overallDurationInNs, final List<TimestampObject> timestampObjects) {
 		PerformanceResult performanceResult = new PerformanceResult();
 
 		performanceResult.overallDurationInNs = overallDurationInNs;
-		System.out.println("Duration: " + TimeUnit.NANOSECONDS.toMillis(overallDurationInNs) + " ms");
 
 		final List<Long> sortedDurationsInNs = new ArrayList<Long>(timestampObjects.size() / 2);
 		long sumInNs = 0;
@@ -59,23 +58,13 @@ public class StatisticsUtil {
 		performanceResult.sumInNs = sumInNs;
 
 		final Map<Double, Long> quintileValues = StatisticsUtil.calculateQuintiles(sortedDurationsInNs);
-
 		performanceResult.quantiles = quintileValues;
 
 		final long avgDurInNs = sumInNs / (timestampObjects.size() / 2);
-		System.out.println("avg duration: " + TimeUnit.NANOSECONDS.toMicros(avgDurInNs) + " µs");
-
 		performanceResult.avgDurInNs = avgDurInNs;
 
-		System.out.println(getQuantilesString(quintileValues));
-
 		final long confidenceWidthInNs = StatisticsUtil.calculateConfidenceWidth(sortedDurationsInNs, avgDurInNs);
-
 		performanceResult.confidenceWidthInNs = confidenceWidthInNs;
-
-		System.out.println("confidenceWidth: " + confidenceWidthInNs + " ns");
-		System.out.println("[" + TimeUnit.NANOSECONDS.toMicros(avgDurInNs - confidenceWidthInNs) + " µs, "
-				+ TimeUnit.NANOSECONDS.toMicros(avgDurInNs + confidenceWidthInNs) + " µs]");
 
 		return performanceResult;
 	}

@@ -15,10 +15,14 @@
  ***************************************************************************/
 package teetime.variant.methodcall.examples.experiment01;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import teetime.util.ConstructorClosure;
+import teetime.util.StatisticsUtil;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
+import test.PerformanceResult;
 import test.PerformanceTest;
 
 /**
@@ -28,8 +32,7 @@ import test.PerformanceTest;
  */
 public class MethodCallThoughputTimestampAnalysis1Test extends PerformanceTest {
 
-	// 500 times faster than our new framework
-	// TODO check why
+	// TODO check why the optimal, but inflexible impl is 500 times faster than our new framework
 
 	@Test
 	public void testWithManyObjects() {
@@ -54,6 +57,8 @@ public class MethodCallThoughputTimestampAnalysis1Test extends PerformanceTest {
 			this.stopWatch.end();
 		}
 
+		PerformanceResult performanceResult = StatisticsUtil.computeStatistics(this.stopWatch.getDurationInNs(), this.timestampObjects);
+		assertEquals(292, performanceResult.quantiles.get(0.5), 1); // chw home
 	}
 
 }
