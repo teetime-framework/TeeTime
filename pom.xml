@@ -16,6 +16,7 @@
 
 	<repositories>
 		<repository>
+			<!-- kieker:1.10-SNAPSHOT -->
 			<id>sonatype.oss.snapshots</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 		</repository>
