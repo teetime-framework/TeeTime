@@ -1,0 +1,3 @@
+[submodule "submodules/JCTools"]
+	path = submodules/JCTools
+	url = https://github.com/JCTools/JCTools
