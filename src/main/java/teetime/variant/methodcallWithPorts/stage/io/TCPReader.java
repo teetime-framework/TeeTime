@@ -41,9 +41,9 @@ import kieker.common.util.registry.Lookup;
 
 /**
  * This is a reader which reads the records from a TCP port.
- * 
+ *
  * @author Jan Waller, Nils Christian Ehmke
- * 
+ *
  * @since 1.10
  */
 public class TCPReader extends ProducerStage<IMonitoringRecord> {
@@ -140,17 +140,7 @@ public class TCPReader extends ProducerStage<IMonitoringRecord> {
 				try {
 					while (buffer.hasRemaining()) {
 						buffer.mark();
-						final int clazzid = buffer.getInt();
-						final long loggingTimestamp = buffer.getLong();
-						final IMonitoringRecord record;
-						try { // NOCS (Nested try-catch)
-								// record = this.recordFactory.create(clazzid, buffer, this.stringRegistry);
-							record = AbstractMonitoringRecord.createFromByteBuffer(clazzid, buffer, this.stringRegistry);
-							record.setLoggingTimestamp(loggingTimestamp);
-							this.send(this.outputPort, record);
-						} catch (final MonitoringRecordException ex) {
-							super.logger.error("Failed to create record.", ex);
-						}
+						this.createAndSendRecord(buffer);
 					}
 					buffer.clear();
 				} catch (final BufferUnderflowException ex) {
@@ -180,10 +170,24 @@ public class TCPReader extends ProducerStage<IMonitoringRecord> {
 		}
 	}
 
+	private void createAndSendRecord(final ByteBuffer buffer) {
+		final int clazzid = buffer.getInt();
+		final long loggingTimestamp = buffer.getLong();
+		final IMonitoringRecord record;
+		try { // NOCS (Nested try-catch)
+			// record = this.recordFactory.create(clazzid, buffer, this.stringRegistry);
+			record = AbstractMonitoringRecord.createFromByteBuffer(clazzid, buffer, this.stringRegistry);
+			record.setLoggingTimestamp(loggingTimestamp);
+			this.send(this.outputPort, record);
+		} catch (final MonitoringRecordException ex) {
+			super.logger.error("Failed to create record.", ex);
+		}
+	}
+
 	/**
-	 * 
+	 *
 	 * @author Jan Waller
-	 * 
+	 *
 	 * @since 1.8
 	 */
 	private static class TCPStringReader extends Thread {

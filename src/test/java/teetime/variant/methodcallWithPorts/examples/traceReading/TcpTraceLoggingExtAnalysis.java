@@ -49,6 +49,7 @@ public class TcpTraceLoggingExtAnalysis extends Analysis {
 		SingleElementPipe.connect(tcpReader.getOutputPort(), this.recordCounter.getInputPort());
 		SingleElementPipe.connect(this.recordCounter.getOutputPort(), this.recordThroughputStage.getInputPort());
 		SingleElementPipe.connect(this.recordThroughputStage.getOutputPort(), endStage.getInputPort());
+		// SingleElementPipe.connect(this.recordCounter.getOutputPort(), endStage.getInputPort());
 
 		SpScPipe.connect(previousClockStage.getNewOutputPort(), this.recordThroughputStage.getTriggerInputPort(), 10);
 
@@ -56,7 +57,7 @@ public class TcpTraceLoggingExtAnalysis extends Analysis {
 		Pipeline<TCPReader, Sink<IMonitoringRecord>> pipeline = new Pipeline<TCPReader, Sink<IMonitoringRecord>>();
 		pipeline.setFirstStage(tcpReader);
 		pipeline.addIntermediateStage(this.recordCounter);
-		pipeline.addIntermediateStage(this.recordThroughputStage);
+		// pipeline.addIntermediateStage(this.recordThroughputStage);
 		pipeline.setLastStage(endStage);
 		return pipeline;
 	}

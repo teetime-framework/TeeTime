@@ -18,7 +18,7 @@ package teetime.variant.explicitScheduling.framework.core;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class Analysis {
@@ -32,6 +32,6 @@ public class Analysis {
 	}
 
 	public void onTerminate() {
-		// System.out.println("Analysis stopped.");
+		System.out.println("Analysis stopped.");
 	}
 }

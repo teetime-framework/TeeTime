@@ -39,9 +39,9 @@ import kieker.common.util.registry.Lookup;
 
 /**
  * This is a reader which reads the records from a TCP port.
- * 
+ *
  * @author Jan Waller, Nils Christian Ehmke
- * 
+ *
  * @since 1.10
  */
 public class TCPReaderSink extends ProducerStage<IMonitoringRecord> {
@@ -156,9 +156,9 @@ public class TCPReaderSink extends ProducerStage<IMonitoringRecord> {
 	}
 
 	/**
-	 * 
+	 *
 	 * @author Jan Waller
-	 * 
+	 *
 	 * @since 1.8
 	 */
 	private static class TCPStringReader extends Thread {
