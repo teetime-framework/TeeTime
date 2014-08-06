@@ -16,15 +16,12 @@
 package teetime.variant.explicitScheduling.stage.kieker.fileToRecord;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -40,7 +37,7 @@ import kieker.common.util.filesystem.FSUtil;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ZipFile2RecordFilter extends AbstractFilter<ZipFile2RecordFilter> {
@@ -84,13 +81,21 @@ public class ZipFile2RecordFilter extends AbstractFilter<ZipFile2RecordFilter> {
 	private void createAndSendRecordsFromZipFile(final Context<ZipFile2RecordFilter> context, final File zipFile, final ClassNameRegistry classNameRegistry)
 			throws FileNotFoundException {
 		final ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFile));
-		final BufferedReader reader;
-		try {
-			reader = new BufferedReader(new InputStreamReader(zipInputStream, FSUtil.ENCODING));
-		} catch (final UnsupportedEncodingException e) {
-			this.logger.error("This exception should never occur.", e);
-			return;
-		}
+		// BufferedReader reader;
+		// try {
+		// reader = new BufferedReader(new InputStreamReader(zipInputStream, FSUtil.ENCODING));
+		// } catch (final UnsupportedEncodingException e) {
+		// this.logger.error("This exception should never occur.", e);
+		// return;
+		// } finally {
+		// if (null != reader) {
+		// try {
+		// reader.close();
+		// } catch (IOException e) {
+		// throw new IllegalStateException(e);
+		// }
+		// }
+		// }
 		final DataInputStream input = new DataInputStream(new BufferedInputStream(zipInputStream, 1024 * 1024));
 
 		ZipEntry zipEntry;

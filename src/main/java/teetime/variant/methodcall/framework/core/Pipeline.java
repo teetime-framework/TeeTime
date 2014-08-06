@@ -35,6 +35,7 @@ public class Pipeline<I, O> implements Stage<I, O> {
 		this.lastStage = stage;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public CommittableQueue<O> execute2(final CommittableQueue<I> elements) {
 		// CommittableQueue queue = this.firstStage.execute2(elements);
@@ -44,6 +45,7 @@ public class Pipeline<I, O> implements Stage<I, O> {
 		// return this.lastStage.execute2(queue);
 
 		// below is faster than above (probably because of the instantiation of a list iterator in each (!) execution)
+		@SuppressWarnings("rawtypes")
 		CommittableQueue queue = elements;
 
 		for (int i = 0; i < this.stages.length; i++) {

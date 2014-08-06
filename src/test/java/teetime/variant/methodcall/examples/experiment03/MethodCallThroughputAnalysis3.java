@@ -31,7 +31,7 @@ import teetime.variant.methodcall.stage.StopTimestampFilter;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class MethodCallThroughputAnalysis3 extends Analysis {
@@ -70,7 +70,7 @@ public class MethodCallThroughputAnalysis3 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final List<Stage> stageList = new ArrayList<Stage>();
+		final List<Stage<?, ?>> stageList = new ArrayList<Stage<?, ?>>();
 		stageList.add(objectProducer);
 		stageList.add(startTimestampFilter);
 		stageList.addAll(Arrays.asList(noopFilters));
@@ -78,7 +78,7 @@ public class MethodCallThroughputAnalysis3 extends Analysis {
 		stageList.add(collectorSink);
 
 		// using an array decreases the performance from 60ms to 200ms (by 3x)
-		final Stage[] stages = stageList.toArray(new Stage[0]);
+		final Stage<?, ?>[] stages = stageList.toArray(new Stage[0]);
 
 		final WrappingPipeline pipeline = new WrappingPipeline() {
 			@Override
@@ -93,7 +93,7 @@ public class MethodCallThroughputAnalysis3 extends Analysis {
 				Object element = null;
 
 				for (int i = 0; i < stages.length; i++) {
-					Stage stage = stages[i];
+					Stage<?, ?> stage = stages[i];
 					element = stage.execute(element);
 					if (element == null) {
 						return false;

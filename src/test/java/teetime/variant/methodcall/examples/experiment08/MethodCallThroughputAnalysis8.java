@@ -32,7 +32,7 @@ import teetime.variant.methodcall.stage.StopTimestampFilter;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class MethodCallThroughputAnalysis8 extends Analysis {
@@ -71,7 +71,7 @@ public class MethodCallThroughputAnalysis8 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final List<AbstractStage> stageList = new ArrayList<AbstractStage>();
+		final List<AbstractStage<?, ?>> stageList = new ArrayList<AbstractStage<?, ?>>();
 		stageList.add(objectProducer);
 		stageList.add(startTimestampFilter);
 		stageList.addAll(Arrays.asList(noopFilters));
@@ -79,7 +79,7 @@ public class MethodCallThroughputAnalysis8 extends Analysis {
 		stageList.add(collectorSink);
 
 		// using an array decreases the performance from 60ms to 200ms (by 3x)
-		final AbstractStage[] stages = stageList.toArray(new AbstractStage[0]);
+		final AbstractStage<?, ?>[] stages = stageList.toArray(new AbstractStage[0]);
 
 		final WrappingPipeline pipeline = new WrappingPipeline() {
 			private int startIndex;
@@ -89,7 +89,7 @@ public class MethodCallThroughputAnalysis8 extends Analysis {
 				// using the foreach for arrays (i.e., w/o using an iterator variable) increases the performance from 200ms to 130ms
 				Object element = null;
 				for (int i = this.startIndex; i < stages.length; i++) {
-					Stage stage = stages[i];
+					Stage<?, ?> stage = stages[i];
 					element = stage.execute(element);
 					if (element == null) {
 						return false;
