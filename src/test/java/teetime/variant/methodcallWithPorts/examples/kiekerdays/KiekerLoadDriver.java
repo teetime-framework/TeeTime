@@ -170,7 +170,7 @@ public class KiekerLoadDriver {
 		PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(outputFile, true), 8192 * 8), false, "UTF-8");
 		try {
 			for (long timing : kiekerLoadDriver.timings) {
-				ps.println("KiekerLoadDriver;" + timing);
+				ps.println("0;" + timing);
 			}
 		} finally {
 			ps.close();
