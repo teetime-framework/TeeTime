@@ -132,13 +132,6 @@ public class KiekerLoadDriver {
 		try {
 			recordReceiver.connect();
 
-			for (IMonitoringRecord record : records) {
-				int clazzId = stringRegistry.get(record.getClass().getName());
-				recordBuffer.putInt(clazzId);
-				recordBuffer.putLong(record.getLoggingTimestamp());
-				record.writeBytes(recordBuffer, stringRegistry);
-			}
-
 			String hostname = "localhost";
 			int port = 10133;
 			System.out.println("Connecting to " + hostname + ":" + port);
@@ -147,6 +140,13 @@ public class KiekerLoadDriver {
 			try {
 				socketChannel.connect(new InetSocketAddress(hostname, port));
 				for (int i = 0; i < runs; i++) {
+					for (IMonitoringRecord record : records) {
+						// TODO increase trace id
+						int clazzId = stringRegistry.get(record.getClass().getName());
+						recordBuffer.putInt(clazzId);
+						recordBuffer.putLong(record.getLoggingTimestamp());
+						record.writeBytes(recordBuffer, stringRegistry);
+					}
 					recordBuffer.flip();
 					// System.out.println("position: " + recordBuffer.position());
 					// System.out.println("limit: " + recordBuffer.limit());
@@ -158,6 +158,7 @@ public class KiekerLoadDriver {
 						System.out.println(i); // NOPMD (System.out)
 					}
 					// System.out.println("writtenBytes (record): " + writtenBytes);
+					recordBuffer.clear();
 				}
 			} finally {
 				socketChannel.close();
