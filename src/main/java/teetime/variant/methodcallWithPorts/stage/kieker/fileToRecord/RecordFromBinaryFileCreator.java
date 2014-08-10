@@ -20,25 +20,26 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistry;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
 
 import kieker.common.exception.MonitoringRecordException;
-import kieker.common.logging.Log;
 import kieker.common.record.AbstractMonitoringRecord;
 import kieker.common.record.IMonitoringRecord;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class RecordFromBinaryFileCreator {
 
-	private final Log logger;
+	private final Logger logger;
 	private final ClassNameRegistryRepository classNameRegistryRepository;
 
-	public RecordFromBinaryFileCreator(final Log logger, final ClassNameRegistryRepository classNameRegistryRepository) {
+	public RecordFromBinaryFileCreator(final Logger logger, final ClassNameRegistryRepository classNameRegistryRepository) {
 		this.logger = logger;
 		this.classNameRegistryRepository = classNameRegistryRepository;
 	}

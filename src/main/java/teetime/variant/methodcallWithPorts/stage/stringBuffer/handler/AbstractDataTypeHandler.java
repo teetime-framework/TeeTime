@@ -15,18 +15,18 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.stage.stringBuffer.handler;
 
-import teetime.variant.methodcallWithPorts.stage.stringBuffer.util.KiekerHashMap;
+import org.slf4j.Logger;
 
-import kieker.common.logging.Log;
+import teetime.variant.methodcallWithPorts.stage.stringBuffer.util.KiekerHashMap;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public abstract class AbstractDataTypeHandler<T> {
 
-	protected Log logger;
+	protected Logger logger;
 	protected KiekerHashMap stringRepository;
 
 	/**
@@ -42,7 +42,7 @@ public abstract class AbstractDataTypeHandler<T> {
 	/**
 	 * @since 1.10
 	 */
-	public void setLogger(final Log logger) {
+	public void setLogger(final Logger logger) {
 		this.logger = logger;
 	}
 

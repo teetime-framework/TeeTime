@@ -5,10 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import kieker.common.logging.Log;
-import kieker.common.logging.LogFactory;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 
 public abstract class AbstractStage implements StageWithPort {
 
@@ -16,7 +16,7 @@ public abstract class AbstractStage implements StageWithPort {
 	/**
 	 * A unique logger instance per stage instance
 	 */
-	protected final Log logger; // BETTER use SLF4J as interface and logback as impl
+	protected final Logger logger; // BETTER use SLF4J as interface and logback as impl
 
 	private StageWithPort parentStage;
 
@@ -32,12 +32,12 @@ public abstract class AbstractStage implements StageWithPort {
 
 	public AbstractStage() {
 		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
-		this.logger = LogFactory.getLog(this.getClass().getName() + "(" + this.id + ")");
+		this.logger = LoggerFactory.getLogger(this.getClass().getName() + "(" + this.id + ")");
 	}
 
 	/**
 	 * Sends the given <code>element</code> using the default output port
-	 * 
+	 *
 	 * @param element
 	 * @return <code>true</code> iff the given element could be sent, <code>false</code> otherwise (then use a re-try strategy)
 	 */

@@ -23,17 +23,18 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import kieker.common.logging.Log;
+import org.slf4j.Logger;
+
 import kieker.common.util.filesystem.FSUtil;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class MappingFileParser {
 
-	protected Log logger;
+	protected Logger logger;
 
 	private static final Map<String, String> filePrefixRegistry = new HashMap<String, String>();
 
@@ -42,7 +43,7 @@ public class MappingFileParser {
 		filePrefixRegistry.put(FSUtil.LEGACY_MAP_FILENAME, FSUtil.LEGACY_FILE_PREFIX);
 	}
 
-	public MappingFileParser(final Log logger) {
+	public MappingFileParser(final Logger logger) {
 		this.logger = logger;
 	}
 
