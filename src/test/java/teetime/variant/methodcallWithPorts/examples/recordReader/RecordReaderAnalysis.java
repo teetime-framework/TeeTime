@@ -19,9 +19,9 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.variant.explicitScheduling.framework.core.Analysis;
+import teetime.variant.methodcallWithPorts.framework.core.Analysis;
+import teetime.variant.methodcallWithPorts.framework.core.Configuration;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
-import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
@@ -33,22 +33,30 @@ import kieker.common.record.IMonitoringRecord;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class RecordReaderAnalysis extends Analysis {
 
 	private final List<IMonitoringRecord> elementCollection = new LinkedList<IMonitoringRecord>();
 
-	private Thread producerThread;
-
 	private ClassNameRegistryRepository classNameRegistryRepository;
 
 	@Override
 	public void init() {
+		Configuration configuration = this.buildConfiguration();
+		this.setConfiguration(configuration);
+
 		super.init();
+	}
+
+	private Configuration buildConfiguration() {
+		Configuration localConfiguration = new Configuration();
+
 		StageWithPort producerPipeline = this.buildProducerPipeline();
-		this.producerThread = new Thread(new RunnableStage(producerPipeline));
+		localConfiguration.getFiniteProducerStages().add(producerPipeline);
+
+		return localConfiguration;
 	}
 
 	private StageWithPort buildProducerPipeline() {
@@ -67,19 +75,6 @@ public class RecordReaderAnalysis extends Analysis {
 		dir2RecordsFilter.getInputPort().getPipe().add(new File("src/test/data/bookstore-logs"));
 
 		return pipeline;
-	}
-
-	@Override
-	public void start() {
-		super.start();
-
-		this.producerThread.start();
-
-		try {
-			this.producerThread.join();
-		} catch (InterruptedException e) {
-			throw new IllegalStateException(e);
-		}
 	}
 
 	public List<IMonitoringRecord> getElementCollection() {

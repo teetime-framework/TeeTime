@@ -1,7 +1,5 @@
 statusListener(OnConsoleStatusListener)
 
-root(WARN)
-
 /*appender("FILE", FileAppender) {
   file = "testFile.log"
   append = true
@@ -17,5 +15,7 @@ appender("CONSOLE", ConsoleAppender) {
     pattern = "%d{HH:mm:ss.SSS} %level %logger - %msg%n"
   }
 }
+
+root WARN, ["CONSOLE"]
 
 //logger "teetime.variant.methodcallWithPorts.stage", DEBUG, ["CONSOLE"]

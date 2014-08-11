@@ -41,7 +41,7 @@ import kieker.common.record.IMonitoringRecord;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -89,7 +89,6 @@ public class ChwHomeTcpTraceReconstructionAnalysisWithThreadsTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		int maxNumWaits = 0;

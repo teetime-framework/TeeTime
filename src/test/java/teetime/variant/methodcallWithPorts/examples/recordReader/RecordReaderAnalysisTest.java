@@ -31,7 +31,7 @@ import kieker.common.record.misc.KiekerMetadataRecord;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class RecordReaderAnalysisTest {
@@ -59,7 +59,6 @@ public class RecordReaderAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		assertEquals(6541, analysis.getElementCollection().size());
