@@ -1,16 +1,16 @@
 package teetime.variant.methodcallWithPorts.framework.core;
 
-import kieker.common.logging.Log;
-import kieker.common.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RunnableStage implements Runnable {
 
 	private final StageWithPort stage;
-	private final Log logger;
+	private final Logger logger;
 
 	public RunnableStage(final StageWithPort stage) {
 		this.stage = stage;
-		this.logger = LogFactory.getLog(stage.getClass());
+		this.logger = LoggerFactory.getLogger(stage.getClass());
 	}
 
 	@Override
