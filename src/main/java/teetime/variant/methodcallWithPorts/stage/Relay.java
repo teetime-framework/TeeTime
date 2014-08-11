@@ -1,24 +1,18 @@
 package teetime.variant.methodcallWithPorts.stage;
 
-import teetime.variant.methodcallWithPorts.framework.core.AbstractStage;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
-import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
+import teetime.variant.methodcallWithPorts.framework.core.ProducerStage;
 import teetime.variant.methodcallWithPorts.framework.core.Signal;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 
-public class Relay<T> extends AbstractStage {
+public class Relay<T> extends ProducerStage<T> {
 
 	private final InputPort<T> inputPort = this.createInputPort();
-	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	private SpScPipe<T> cachedCastedInputPipe;
 
-	public Relay() {
-		this.setReschedulable(true);
-	}
-
 	@Override
-	public void executeWithPorts() {
+	public void execute() {
 		T element = this.inputPort.receive();
 		if (null == element) {
 			// if (this.getInputPort().getPipe().isClosed()) {
@@ -47,9 +41,5 @@ public class Relay<T> extends AbstractStage {
 
 	public InputPort<T> getInputPort() {
 		return this.inputPort;
-	}
-
-	public OutputPort<T> getOutputPort() {
-		return this.outputPort;
 	}
 }

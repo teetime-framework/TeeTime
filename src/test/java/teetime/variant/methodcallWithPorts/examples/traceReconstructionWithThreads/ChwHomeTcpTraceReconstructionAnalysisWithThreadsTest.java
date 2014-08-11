@@ -35,6 +35,7 @@ import org.junit.runners.MethodSorters;
 import teetime.util.ListUtil;
 import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
+import teetime.variant.methodcallWithPorts.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 
 import kieker.common.record.IMonitoringRecord;
@@ -80,8 +81,11 @@ public class ChwHomeTcpTraceReconstructionAnalysisWithThreadsTest {
 	}
 
 	void performAnalysis(final int numWorkerThreads) {
-		final TcpTraceReconstructionAnalysisWithThreads analysis = new TcpTraceReconstructionAnalysisWithThreads();
-		analysis.setNumWorkerThreads(numWorkerThreads);
+		final TcpTraceReconstructionAnalysisWithThreadsConfiguration configuration = new TcpTraceReconstructionAnalysisWithThreadsConfiguration();
+		configuration.setNumWorkerThreads(numWorkerThreads);
+		configuration.buildConfiguration();
+
+		Analysis analysis = new Analysis(configuration);
 		analysis.init();
 
 		this.stopWatch.start();
@@ -92,7 +96,7 @@ public class ChwHomeTcpTraceReconstructionAnalysisWithThreadsTest {
 		}
 
 		int maxNumWaits = 0;
-		for (SpScPipe<IMonitoringRecord> pipe : analysis.getTcpRelayPipes()) {
+		for (SpScPipe<IMonitoringRecord> pipe : configuration.getTcpRelayPipes()) {
 			maxNumWaits = Math.max(maxNumWaits, pipe.getNumWaits());
 		}
 		System.out.println("max #waits of TcpRelayPipes: " + maxNumWaits);
@@ -106,7 +110,7 @@ public class ChwHomeTcpTraceReconstructionAnalysisWithThreadsTest {
 		// Map<Double, Long> traceQuintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceDelays());
 		// System.out.println("Median trace delay: " + traceQuintiles.get(0.5) + " time units/trace");
 
-		List<Long> recordThroughputs = ListUtil.removeFirstHalfElements(analysis.getRecordThroughputs());
+		List<Long> recordThroughputs = ListUtil.removeFirstHalfElements(configuration.getRecordThroughputs());
 		Map<Double, Long> recordQuintiles = StatisticsUtil.calculateQuintiles(recordThroughputs);
 		System.out.println("Median record throughput: " + recordQuintiles.get(0.5) + " elements/time unit");
 
@@ -120,10 +124,10 @@ public class ChwHomeTcpTraceReconstructionAnalysisWithThreadsTest {
 		// TraceEventRecords trace6886 = analysis.getElementCollection().get(1);
 		// assertEquals(6886, trace6886.getTraceMetadata().getTraceId());
 
-		assertEquals("#records", EXPECTED_NUM_RECORDS, analysis.getNumRecords());
-		assertEquals("#traces", EXPECTED_NUM_TRACES, analysis.getNumTraces());
+		assertEquals("#records", EXPECTED_NUM_RECORDS, configuration.getNumRecords());
+		assertEquals("#traces", EXPECTED_NUM_TRACES, configuration.getNumTraces());
 
-		for (Integer count : analysis.getNumTraceMetadatas()) {
+		for (Integer count : configuration.getNumTraceMetadatas()) {
 			assertEquals("#traceMetadata per worker thread", EXPECTED_NUM_TRACES / numWorkerThreads, count.intValue()); // even distribution
 		}
 

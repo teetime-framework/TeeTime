@@ -10,11 +10,15 @@ public class Analysis {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Analysis.class);
 
-	private Configuration configuration;
+	private final Configuration configuration;
 
 	private final List<Thread> consumerThreads = new LinkedList<Thread>();
 	private final List<Thread> finiteProducerThreads = new LinkedList<Thread>();
 	private final List<Thread> infiniteProducerThreads = new LinkedList<Thread>();
+
+	public Analysis(final Configuration configuration) {
+		this.configuration = configuration;
+	}
 
 	public void init() {
 		for (StageWithPort stage : this.configuration.getConsumerStages()) {
@@ -75,9 +79,5 @@ public class Analysis {
 
 	public Configuration getConfiguration() {
 		return this.configuration;
-	}
-
-	public void setConfiguration(final Configuration configuration) {
-		this.configuration = configuration;
 	}
 }

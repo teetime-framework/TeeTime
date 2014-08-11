@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.variant.methodcallWithPorts.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Configuration;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
@@ -36,42 +35,28 @@ import kieker.common.record.IMonitoringRecord;
  *
  * @since 1.10
  */
-public class RecordReaderAnalysis extends Analysis {
+public class RecordReaderConfiguration extends Configuration {
 
 	private final List<IMonitoringRecord> elementCollection = new LinkedList<IMonitoringRecord>();
 
-	private ClassNameRegistryRepository classNameRegistryRepository;
-
-	@Override
-	public void init() {
-		Configuration configuration = this.buildConfiguration();
-		this.setConfiguration(configuration);
-
-		super.init();
-	}
-
-	private Configuration buildConfiguration() {
-		Configuration localConfiguration = new Configuration();
-
+	public void buildConfiguration() {
 		StageWithPort producerPipeline = this.buildProducerPipeline();
-		localConfiguration.getFiniteProducerStages().add(producerPipeline);
-
-		return localConfiguration;
+		this.getFiniteProducerStages().add(producerPipeline);
 	}
 
 	private StageWithPort buildProducerPipeline() {
-		this.classNameRegistryRepository = new ClassNameRegistryRepository();
+		ClassNameRegistryRepository classNameRegistryRepository = new ClassNameRegistryRepository();
 		// create stages
-		Dir2RecordsFilter dir2RecordsFilter = new Dir2RecordsFilter(this.classNameRegistryRepository);
+		Dir2RecordsFilter dir2RecordsFilter = new Dir2RecordsFilter(classNameRegistryRepository);
 		CollectorSink<IMonitoringRecord> collector = new CollectorSink<IMonitoringRecord>(this.elementCollection);
 
 		final Pipeline<Dir2RecordsFilter, CollectorSink<IMonitoringRecord>> pipeline = new Pipeline<Dir2RecordsFilter, CollectorSink<IMonitoringRecord>>();
 		pipeline.setFirstStage(dir2RecordsFilter);
 		pipeline.setLastStage(collector);
 
-		dir2RecordsFilter.getInputPort().setPipe(new SpScPipe<File>(1));
 		SingleElementPipe.connect(dir2RecordsFilter.getOutputPort(), collector.getInputPort());
 
+		dir2RecordsFilter.getInputPort().setPipe(new SpScPipe<File>(1));
 		dir2RecordsFilter.getInputPort().getPipe().add(new File("src/test/data/bookstore-logs"));
 
 		return pipeline;

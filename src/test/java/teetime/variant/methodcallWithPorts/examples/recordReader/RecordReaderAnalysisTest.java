@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import teetime.util.StopWatch;
+import teetime.variant.methodcallWithPorts.framework.core.Analysis;
 
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.controlflow.OperationExecutionRecord;
@@ -51,7 +52,10 @@ public class RecordReaderAnalysisTest {
 
 	@Test
 	public void performAnalysis() {
-		final RecordReaderAnalysis analysis = new RecordReaderAnalysis();
+		final RecordReaderConfiguration configuration = new RecordReaderConfiguration();
+		configuration.buildConfiguration();
+
+		Analysis analysis = new Analysis(configuration);
 		analysis.init();
 
 		this.stopWatch.start();
@@ -61,19 +65,19 @@ public class RecordReaderAnalysisTest {
 			this.stopWatch.end();
 		}
 
-		assertEquals(6541, analysis.getElementCollection().size());
+		assertEquals(6541, configuration.getElementCollection().size());
 
-		KiekerMetadataRecord metadataRecord = (KiekerMetadataRecord) analysis.getElementCollection().get(0);
+		KiekerMetadataRecord metadataRecord = (KiekerMetadataRecord) configuration.getElementCollection().get(0);
 		assertEquals("1.9-SNAPSHOT", metadataRecord.getVersion());
 		assertEquals("NANOSECONDS", metadataRecord.getTimeUnit());
 
-		IMonitoringRecord monitoringRecord = analysis.getElementCollection().get(1);
+		IMonitoringRecord monitoringRecord = configuration.getElementCollection().get(1);
 		OperationExecutionRecord oer = (OperationExecutionRecord) monitoringRecord;
 		assertEquals("bookstoreTracing.Catalog.getBook(boolean)", oer.getOperationSignature());
 		assertEquals(1283156498771185344l, oer.getTin());
 		assertEquals(1283156498773323582l, oer.getTout());
 
-		monitoringRecord = analysis.getElementCollection().get(analysis.getElementCollection().size() - 1);
+		monitoringRecord = configuration.getElementCollection().get(configuration.getElementCollection().size() - 1);
 		oer = (OperationExecutionRecord) monitoringRecord;
 		assertEquals("bookstoreTracing.Bookstore.searchBook()", oer.getOperationSignature());
 		assertEquals(1283156499331233504l, oer.getTin());

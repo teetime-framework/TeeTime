@@ -8,7 +8,6 @@ import java.util.List;
 
 import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
-import teetime.variant.methodcallWithPorts.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Configuration;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
@@ -31,7 +30,7 @@ import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.flow.IFlowRecord;
 import kieker.common.record.flow.trace.TraceMetadata;
 
-public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
+public class TcpTraceReconstructionAnalysisWithThreadsConfiguration extends Configuration {
 
 	private static final int NUM_VIRTUAL_CORES = Runtime.getRuntime().availableProcessors();
 	private static final int MIO = 1000000;
@@ -54,7 +53,7 @@ public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
 	private final List<SpScPipe<IMonitoringRecord>> tcpRelayPipes = new LinkedList<SpScPipe<IMonitoringRecord>>();
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public TcpTraceReconstructionAnalysisWithThreads() {
+	public TcpTraceReconstructionAnalysisWithThreadsConfiguration() {
 		super();
 
 		try {
@@ -72,33 +71,21 @@ public class TcpTraceReconstructionAnalysisWithThreads extends Analysis {
 		}
 	}
 
-	@Override
-	public void init() {
-		Configuration configuration = this.buildConfiguration();
-		this.setConfiguration(configuration);
-
-		super.init();
-	}
-
-	private Configuration buildConfiguration() {
-		Configuration localConfiguration = new Configuration();
-
+	public void buildConfiguration() {
 		final Pipeline<TCPReader, Distributor<IMonitoringRecord>> tcpPipeline = this.buildTcpPipeline();
-		localConfiguration.getFiniteProducerStages().add(tcpPipeline);
+		this.getFiniteProducerStages().add(tcpPipeline);
 
 		final Pipeline<Clock, Distributor<Long>> clockStage = this.buildClockPipeline(1000);
-		localConfiguration.getInfiniteProducerStages().add(clockStage);
+		this.getInfiniteProducerStages().add(clockStage);
 
 		final Pipeline<Clock, Distributor<Long>> clock2Stage = this.buildClockPipeline(2000);
-		localConfiguration.getInfiniteProducerStages().add(clock2Stage);
+		this.getInfiniteProducerStages().add(clock2Stage);
 
 		this.numWorkerThreads = Math.min(NUM_VIRTUAL_CORES, this.numWorkerThreads);
 		for (int i = 0; i < this.numWorkerThreads; i++) {
 			StageWithPort pipeline = this.buildPipeline(tcpPipeline.getLastStage(), clockStage.getLastStage(), clock2Stage.getLastStage());
-			localConfiguration.getConsumerStages().add(pipeline);
+			this.getConsumerStages().add(pipeline);
 		}
-
-		return localConfiguration;
 	}
 
 	private Pipeline<TCPReader, Distributor<IMonitoringRecord>> buildTcpPipeline() {
