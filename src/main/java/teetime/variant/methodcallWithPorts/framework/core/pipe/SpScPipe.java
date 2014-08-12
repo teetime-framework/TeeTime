@@ -26,10 +26,14 @@ public class SpScPipe<T> extends AbstractPipe<T> {
 
 	public static <T> SpScPipe<T> connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		SpScPipe<T> pipe = new SpScPipe<T>(capacity);
-		targetPort.setPipe(pipe);
-		sourcePort.setPipe(pipe);
+		return pipe.connect(sourcePort, targetPort);
+	}
+
+	public SpScPipe<T> connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
+		targetPort.setPipe(this);
+		sourcePort.setPipe(this);
 		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
-		return pipe;
+		return this;
 	}
 
 	@Override
