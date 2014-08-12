@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import teetime.util.StatisticsUtil;
+import util.StatisticsUtil;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;

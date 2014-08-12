@@ -21,9 +21,9 @@ import java.util.concurrent.Callable;
 
 import org.junit.Test;
 
-import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
-import test.PerformanceTest;
+import util.PerformanceTest;
+import util.StatisticsUtil;
 
 /**
  * @author Christian Wulf

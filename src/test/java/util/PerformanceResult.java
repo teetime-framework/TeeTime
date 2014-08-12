@@ -1,8 +1,6 @@
-package test;
+package util;
 
 import java.util.Map;
-
-import teetime.util.StatisticsUtil;
 
 public class PerformanceResult {
 

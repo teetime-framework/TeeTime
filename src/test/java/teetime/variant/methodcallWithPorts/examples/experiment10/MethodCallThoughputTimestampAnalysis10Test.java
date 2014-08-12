@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import teetime.util.ConstructorClosure;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-import test.PerformanceTest;
+import util.PerformanceTest;
 
 /**
  * @author Christian Wulf

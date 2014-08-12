@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.util;
+package util;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
+import teetime.util.MathUtil;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-import test.PerformanceResult;
 
 /**
  * @author Christian Wulf

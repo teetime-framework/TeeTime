@@ -20,8 +20,8 @@ import teetime.variant.methodcall.examples.experiment07.MethodCallThoughputTimes
 import teetime.variant.methodcall.examples.experiment08.MethodCallThoughputTimestampAnalysis8Test;
 import teetime.variant.methodcall.examples.experiment12.MethodCallThoughputTimestampAnalysis12Test;
 import teetime.variant.methodcall.examples.experiment13.MethodCallThoughputTimestampAnalysis13Test;
-import test.PerformanceResult;
-import test.PerformanceTest;
+import util.PerformanceResult;
+import util.PerformanceTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({

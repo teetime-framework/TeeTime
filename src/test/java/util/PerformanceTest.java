@@ -1,4 +1,4 @@
-package test;
+package util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,6 @@ import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
-import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 

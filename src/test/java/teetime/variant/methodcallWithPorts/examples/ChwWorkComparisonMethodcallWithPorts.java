@@ -5,42 +5,19 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.junit.AfterClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import util.PerformanceCheckProfile;
+import util.PerformanceResult;
+import util.PerformanceTest;
 
-import teetime.variant.methodcall.examples.experiment01.MethodCallThoughputTimestampAnalysis1Test;
-import teetime.variant.methodcallWithPorts.examples.experiment09.MethodCallThoughputTimestampAnalysis9Test;
-import teetime.variant.methodcallWithPorts.examples.experiment10.MethodCallThoughputTimestampAnalysis10Test;
-import teetime.variant.methodcallWithPorts.examples.experiment11.MethodCallThoughputTimestampAnalysis11Test;
-import teetime.variant.methodcallWithPorts.examples.experiment14.MethodCallThoughputTimestampAnalysis14Test;
-import teetime.variant.methodcallWithPorts.examples.experiment15.MethodCallThoughputTimestampAnalysis15Test;
-import teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test;
-import teetime.variant.methodcallWithPorts.examples.experiment17.MethodCallThoughputTimestampAnalysis17Test;
-import teetime.variant.methodcallWithPorts.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test;
-import test.PerformanceResult;
-import test.PerformanceTest;
+public class ChwWorkComparisonMethodcallWithPorts implements PerformanceCheckProfile {
 
-@RunWith(Suite.class)
-@SuiteClasses({
-	MethodCallThoughputTimestampAnalysis1Test.class,
-	MethodCallThoughputTimestampAnalysis9Test.class,
-	MethodCallThoughputTimestampAnalysis10Test.class,
-	MethodCallThoughputTimestampAnalysis11Test.class,
-	MethodCallThoughputTimestampAnalysis14Test.class,
-	MethodCallThoughputTimestampAnalysis15Test.class,
-	MethodCallThoughputTimestampAnalysis16Test.class,
-	MethodCallThoughputTimestampAnalysis17Test.class,
-	MethodCallThoughputTimestampAnalysis19Test.class,
-})
-public class ChwComparisonMethodcallWithPorts {
+	@Override
+	public String getCorrespondingPerformanceProfile() {
+		return "ChwWork";
+	}
 
-	private static final double RESULT_TESTS_16 = 30;
-	private static final double RESULT_TESTS_19 = 70;
-
-	@AfterClass
-	public static void compareResults() {
+	@Override
+	public void check() {
 		Map<String, PerformanceResult> performanceResults = PerformanceTest.measurementRepository.performanceResults;
 		for (Entry<String, PerformanceResult> entry : performanceResults.entrySet()) {
 			System.out.println("---> " + entry.getKey() + "\n" + entry.getValue());

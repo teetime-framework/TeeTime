@@ -20,10 +20,10 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import teetime.util.ConstructorClosure;
-import teetime.util.StatisticsUtil;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-import test.PerformanceResult;
-import test.PerformanceTest;
+import util.PerformanceResult;
+import util.PerformanceTest;
+import util.StatisticsUtil;
 
 /**
  * @author Christian Wulf

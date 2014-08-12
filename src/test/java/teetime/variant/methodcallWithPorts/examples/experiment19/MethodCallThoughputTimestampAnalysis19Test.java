@@ -22,7 +22,7 @@ import org.junit.runners.MethodSorters;
 import teetime.util.ConstructorClosure;
 import teetime.util.ListUtil;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-import test.PerformanceTest;
+import util.PerformanceTest;
 
 /**
  * @author Christian Wulf

@@ -34,7 +34,6 @@ import kieker.analysis.stage.StartTimestampFilter;
 import kieker.analysis.stage.StopTimestampFilter;
 import kieker.common.configuration.Configuration;
 
-import teetime.util.StatisticsUtil;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.concurrent.WorkerThread;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
@@ -43,6 +42,7 @@ import teetime.variant.explicitScheduling.framework.core.Pipeline;
 import teetime.variant.explicitScheduling.framework.sequential.MethodCallPipe;
 import teetime.variant.explicitScheduling.framework.sequential.QueuePipe;
 import teetime.variant.explicitScheduling.stage.NoopFilter;
+import util.StatisticsUtil;
 
 /**
  * @author Nils Christian Ehmke

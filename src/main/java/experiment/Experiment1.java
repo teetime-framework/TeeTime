@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import teetime.util.StatisticsUtil;
 import teetime.variant.explicitScheduling.framework.concurrent.StageTerminationPolicy;
 import teetime.variant.explicitScheduling.framework.concurrent.WorkerThread;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
@@ -33,6 +32,7 @@ import teetime.variant.explicitScheduling.framework.core.Pipeline;
 import teetime.variant.explicitScheduling.framework.sequential.MethodCallPipe;
 import teetime.variant.explicitScheduling.framework.sequential.QueuePipe;
 import teetime.variant.explicitScheduling.stage.NoopFilter;
+import util.StatisticsUtil;
 
 import kieker.analysis.AnalysisController;
 import kieker.analysis.IAnalysisController;

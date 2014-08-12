@@ -21,10 +21,10 @@ import java.util.concurrent.Callable;
 
 import org.junit.Test;
 
-import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-import test.PerformanceTest;
+import util.PerformanceTest;
+import util.StatisticsUtil;
 
 import kieker.analysis.examples.ThroughputTimestampAnalysis;
 import kieker.analysis.exception.AnalysisConfigurationException;

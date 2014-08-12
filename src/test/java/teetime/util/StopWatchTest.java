@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import util.StatisticsUtil;
+
 public class StopWatchTest {
 
 	private static final int NUM_ITERATIONS = 1000000;

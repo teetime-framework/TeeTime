@@ -15,9 +15,8 @@
  ***************************************************************************/
 package teetime.variant.methodcallWithPorts.examples.experiment16;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -25,18 +24,25 @@ import org.junit.runners.MethodSorters;
 import teetime.util.ConstructorClosure;
 import teetime.util.ListUtil;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-import test.PerformanceResult;
-import test.PerformanceTest;
+import util.PerformanceCheckProfile;
+import util.PerformanceCheckProfileRepository;
+import util.PerformanceTest;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest {
 
 	// TODO use @Parameter for the number of threads
+
+	@BeforeClass
+	public static void beforeClass() {
+		PerformanceCheckProfileRepository.INSTANCE.register(MethodCallThoughputTimestampAnalysis16Test.class, new ChwWorkPerformanceCheck());
+		PerformanceCheckProfileRepository.INSTANCE.register(MethodCallThoughputTimestampAnalysis16Test.class, new ChwHomePerformanceCheck());
+	};
 
 	@Test
 	public void testWithManyObjectsAnd1Thread() {
@@ -55,21 +61,8 @@ public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest 
 
 	@AfterClass
 	public static void afterClass() {
-		PerformanceResult test16a = PerformanceTest.measurementRepository.performanceResults
-				.get("testWithManyObjectsAnd1Thread(teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
-		PerformanceResult test16b = PerformanceTest.measurementRepository.performanceResults
-				.get("testWithManyObjectsAnd2Threads(teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
-		PerformanceResult test16c = PerformanceTest.measurementRepository.performanceResults
-				.get("testWithManyObjectsAnd4Threads(teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
-		// check speedup
-		double speedupB = (double) test16a.overallDurationInNs / test16b.overallDurationInNs;
-		double speedupC = (double) test16a.overallDurationInNs / test16c.overallDurationInNs;
-
-		System.out.println("speedupB: " + speedupB);
-		System.out.println("speedupC: " + speedupC);
-
-		assertEquals(2, speedupB, 0.3);
-		assertEquals(2.5, speedupC, 0.3);
+		PerformanceCheckProfile pcp = PerformanceCheckProfileRepository.INSTANCE.get(MethodCallThoughputTimestampAnalysis16Test.class);
+		pcp.check();
 	}
 
 	private void performAnalysis(final int numThreads) {

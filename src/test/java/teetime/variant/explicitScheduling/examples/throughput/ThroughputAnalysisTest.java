@@ -20,7 +20,7 @@ import java.util.concurrent.Callable;
 import org.junit.Test;
 
 import teetime.util.StopWatch;
-import test.PerformanceTest;
+import util.PerformanceTest;
 
 /**
  * @author Christian Wulf

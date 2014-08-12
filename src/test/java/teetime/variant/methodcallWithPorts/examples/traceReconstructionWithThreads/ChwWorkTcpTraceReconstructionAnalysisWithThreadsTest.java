@@ -28,10 +28,10 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import teetime.util.ListUtil;
-import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
 import teetime.variant.methodcallWithPorts.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
+import util.StatisticsUtil;
 
 import kieker.common.record.IMonitoringRecord;
 

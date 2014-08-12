@@ -33,8 +33,8 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import teetime.util.ListUtil;
-import teetime.util.StatisticsUtil;
 import teetime.util.StopWatch;
+import util.StatisticsUtil;
 
 /**
  * @author Christian Wulf
