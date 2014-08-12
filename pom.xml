@@ -108,7 +108,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<finalName>${project.artifactId}-${project.version}</finalName>
+					<finalName>${project.artifactId}-${project.version}-with-dependencies</finalName>
 				</configuration>
 			</plugin>
 		</plugins>
