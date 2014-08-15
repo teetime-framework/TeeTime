@@ -3,25 +3,29 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.PipeOrdering;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.ThreadCommunication;
 
-public class SpScPipeFactory implements IPipeFactory {
+public class UnorderedGrowablePipeFactory implements IPipeFactory {
 
+	/**
+	 * Hint: The capacity for this pipe implementation is ignored
+	 */
 	@Override
 	public <T> IPipe<T> create(final int capacity) {
-		return new SpScPipe<T>(capacity);
+		return new UnorderedGrowablePipe<T>();
 	}
 
 	@Override
 	public ThreadCommunication getThreadCommunication() {
-		return ThreadCommunication.INTER;
+		return ThreadCommunication.INTRA;
 	}
 
 	@Override
 	public PipeOrdering getOrdering() {
-		return PipeOrdering.QUEUE_BASED;
+		return PipeOrdering.STACK_BASED;
 	}
 
 	@Override
 	public boolean isGrowable() {
-		return false;
+		return true;
 	}
+
 }

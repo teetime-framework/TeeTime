@@ -9,7 +9,7 @@ public class PipeFactory {
 		INTER, INTRA
 	}
 
-	public enum Ordering {
+	public enum PipeOrdering {
 		/**
 		 * FIFO
 		 */
@@ -25,27 +25,28 @@ public class PipeFactory {
 
 	/**
 	 * Creates a new FIFO-ordered, growable pipe with an initial capacity of 1. <br>
-	 * <i>This method is suitable for most programmers.</i>
+	 * <i>This method is suitable for most situations.</i>
 	 *
 	 * @param tc
 	 * @return
 	 */
 	public <T> IPipe<T> create(final ThreadCommunication tc) {
-		return this.create(tc, Ordering.QUEUE_BASED, true, 1);
+		return this.create(tc, PipeOrdering.QUEUE_BASED, true, 1);
 	}
 
-	public <T> IPipe<T> create(final ThreadCommunication tc, final Ordering ordering, final boolean growable, final int capacity) {
+	public <T> IPipe<T> create(final ThreadCommunication tc, final PipeOrdering ordering, final boolean growable, final int capacity) {
 		String key = this.buildKey(tc, ordering, growable);
 		IPipeFactory pipeClass = this.pipeFactories.get(key);
 		return pipeClass.create(capacity);
 	}
 
-	private String buildKey(final ThreadCommunication tc, final Ordering ordering, final boolean growable) {
+	private String buildKey(final ThreadCommunication tc, final PipeOrdering ordering, final boolean growable) {
 		return tc.toString() + ordering.toString() + growable;
 	}
 
-	public void register(final IPipeFactory pipeFactory, final ThreadCommunication tc, final Ordering ordering, final boolean growable) {
-		String key = this.buildKey(tc, ordering, growable);
+	public void register(final IPipeFactory pipeFactory) {
+		String key = this.buildKey(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
 		this.pipeFactories.put(key, pipeFactory);
 	}
+
 }

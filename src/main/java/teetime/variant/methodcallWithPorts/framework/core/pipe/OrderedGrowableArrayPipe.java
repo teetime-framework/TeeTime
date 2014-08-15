@@ -18,10 +18,16 @@ public class OrderedGrowableArrayPipe<T> extends IntraThreadPipe<T> {
 		this.elements = new CircularArray<T>(initialCapacity);
 	}
 
+	@Deprecated
 	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
 		IPipe<T> pipe = new OrderedGrowableArrayPipe<T>();
-		sourcePort.setPipe(pipe);
-		targetPort.setPipe(pipe);
+		pipe.connectPorts(sourcePort, targetPort);
+	}
+
+	@Override
+	public void connectPorts(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
+		sourcePort.setPipe(this);
+		targetPort.setPipe(this);
 		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
 	}
 

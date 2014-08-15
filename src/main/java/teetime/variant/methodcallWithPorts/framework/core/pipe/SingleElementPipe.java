@@ -7,10 +7,16 @@ public class SingleElementPipe<T> extends IntraThreadPipe<T> {
 
 	private T element;
 
+	@Deprecated
 	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
 		IPipe<T> pipe = new SingleElementPipe<T>();
-		sourcePort.setPipe(pipe);
-		targetPort.setPipe(pipe);
+		pipe.connectPorts(sourcePort, targetPort);
+	}
+
+	@Override
+	public void connectPorts(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
+		sourcePort.setPipe(this);
+		targetPort.setPipe(this);
 		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
 	}
 

@@ -8,16 +8,22 @@ public class Pipe<T> extends IntraThreadPipe<T> {
 
 	private final CommittableResizableArrayQueue<T> elements = new CommittableResizableArrayQueue<T>(null, 4);
 
+	@Deprecated
 	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
 		IPipe<T> pipe = new Pipe<T>();
-		sourcePort.setPipe(pipe);
-		targetPort.setPipe(pipe);
+		pipe.connectPorts(sourcePort, targetPort);
+	}
+
+	@Override
+	public void connectPorts(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
+		sourcePort.setPipe(this);
+		targetPort.setPipe(this);
 		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see teetime.examples.throughput.methodcall.IPipe#add(T)
 	 */
 	@Override
@@ -29,7 +35,7 @@ public class Pipe<T> extends IntraThreadPipe<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see teetime.examples.throughput.methodcall.IPipe#removeLast()
 	 */
 	@Override
@@ -41,7 +47,7 @@ public class Pipe<T> extends IntraThreadPipe<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see teetime.examples.throughput.methodcall.IPipe#isEmpty()
 	 */
 	@Override
@@ -51,7 +57,7 @@ public class Pipe<T> extends IntraThreadPipe<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see teetime.examples.throughput.methodcall.IPipe#readLast()
 	 */
 	@Override
@@ -67,4 +73,5 @@ public class Pipe<T> extends IntraThreadPipe<T> {
 	public int size() {
 		return this.elements.size();
 	}
+
 }

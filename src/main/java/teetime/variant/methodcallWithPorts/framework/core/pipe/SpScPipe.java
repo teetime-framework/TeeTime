@@ -24,16 +24,18 @@ public class SpScPipe<T> extends AbstractPipe<T> {
 		this.queue = QueueFactory.newQueue(concurrentQueueSpec);
 	}
 
+	@Deprecated
 	public static <T> SpScPipe<T> connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		SpScPipe<T> pipe = new SpScPipe<T>(capacity);
-		return pipe.connect(sourcePort, targetPort);
+		pipe.connectPorts(sourcePort, targetPort);
+		return pipe;
 	}
 
-	public SpScPipe<T> connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
+	@Override
+	public void connectPorts(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
 		targetPort.setPipe(this);
 		sourcePort.setPipe(this);
 		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
-		return this;
 	}
 
 	@Override
