@@ -22,6 +22,8 @@ import teetime.variant.methodcallWithPorts.stage.kieker.Dir2RecordsFilter;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
 
 import kieker.common.record.IMonitoringRecord;
+import kieker.common.record.flow.trace.TraceMetadata;
+import kieker.common.record.flow.trace.operation.AbstractOperationEvent;
 import kieker.common.util.registry.IMonitoringRecordReceiver;
 import kieker.common.util.registry.Registry;
 
@@ -126,6 +128,7 @@ public class KiekerLoadDriver {
 
 		final Registry<String> stringRegistry = new Registry<String>();
 		ByteBuffer recordBuffer = ByteBuffer.allocateDirect(Short.MAX_VALUE);
+		ByteBuffer duplicateBuffer = recordBuffer.duplicate();
 
 		RecordReceiver recordReceiver = new RecordReceiver(stringRegistry);
 		stringRegistry.setRecordReceiver(recordReceiver);
@@ -135,17 +138,26 @@ public class KiekerLoadDriver {
 			String hostname = "localhost";
 			int port = 10133;
 			System.out.println("Connecting to " + hostname + ":" + port);
+			long traceId = 0;
 
 			SocketChannel socketChannel = SocketChannel.open();
 			try {
 				socketChannel.connect(new InetSocketAddress(hostname, port));
 				for (int i = 0; i < runs; i++) {
 					for (IMonitoringRecord record : records) {
-						// TODO increase trace id
 						int clazzId = stringRegistry.get(record.getClass().getName());
 						recordBuffer.putInt(clazzId);
 						recordBuffer.putLong(record.getLoggingTimestamp());
+						duplicateBuffer.position(recordBuffer.position());
+						// AbstractOperationEvent writes (Long, Long traceId, ...)
 						record.writeBytes(recordBuffer, stringRegistry);
+
+						if (record instanceof AbstractOperationEvent) {
+							duplicateBuffer.getLong();
+							duplicateBuffer.putLong(traceId);
+						} else if (record instanceof TraceMetadata) {
+							duplicateBuffer.putLong(traceId);
+						}
 					}
 					recordBuffer.flip();
 					// System.out.println("position: " + recordBuffer.position());
@@ -159,6 +171,8 @@ public class KiekerLoadDriver {
 					}
 					// System.out.println("writtenBytes (record): " + writtenBytes);
 					recordBuffer.clear();
+					duplicateBuffer.clear();
+					traceId++;
 				}
 			} finally {
 				socketChannel.close();
