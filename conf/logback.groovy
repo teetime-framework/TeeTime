@@ -19,3 +19,4 @@ appender("CONSOLE", ConsoleAppender) {
 root WARN, ["CONSOLE"]
 
 //logger "teetime.variant.methodcallWithPorts.stage", DEBUG, ["CONSOLE"]
+logger "teetime.variant.methodcallWithPorts.stage", INFO
