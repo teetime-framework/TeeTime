@@ -69,7 +69,7 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 			analysis.onTerminate();
 		}
 
-		StatisticsUtil.removeFirstZeroThroughputs(analysis.getThroughputs());
+		StatisticsUtil.removeLeadingZeroThroughputs(analysis.getThroughputs());
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
 		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
 
@@ -99,7 +99,7 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 			analysis.onTerminate();
 		}
 
-		StatisticsUtil.removeFirstZeroThroughputs(analysis.getThroughputs());
+		StatisticsUtil.removeLeadingZeroThroughputs(analysis.getThroughputs());
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
 		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
 
@@ -129,7 +129,7 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 			analysis.onTerminate();
 		}
 
-		StatisticsUtil.removeFirstZeroThroughputs(analysis.getThroughputs());
+		StatisticsUtil.removeLeadingZeroThroughputs(analysis.getThroughputs());
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
 		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
 

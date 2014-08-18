@@ -112,7 +112,7 @@ public class StatisticsUtil {
 		return quintileValues;
 	}
 
-	public static void removeFirstZeroThroughputs(final List<Long> throughputs) {
+	public static void removeLeadingZeroThroughputs(final List<Long> throughputs) {
 		Iterator<Long> iterator = throughputs.iterator();
 		while (iterator.hasNext()) {
 			if (iterator.next() == 0) {

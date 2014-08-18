@@ -78,7 +78,7 @@ public class ChwWorkTraceReconstructionAnalysisTest {
 		TraceEventRecords trace6886 = analysis.getElementCollection().get(1);
 		assertEquals(6886, trace6886.getTraceMetadata().getTraceId());
 
-		StatisticsUtil.removeFirstZeroThroughputs(analysis.getThroughputs());
+		StatisticsUtil.removeLeadingZeroThroughputs(analysis.getThroughputs());
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
 		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
 	}
@@ -106,7 +106,7 @@ public class ChwWorkTraceReconstructionAnalysisTest {
 		TraceEventRecords trace1 = analysis.getElementCollection().get(1);
 		assertEquals(8974347286117089281l, trace1.getTraceMetadata().getTraceId());
 
-		StatisticsUtil.removeFirstZeroThroughputs(analysis.getThroughputs());
+		StatisticsUtil.removeLeadingZeroThroughputs(analysis.getThroughputs());
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
 		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
 
@@ -136,7 +136,7 @@ public class ChwWorkTraceReconstructionAnalysisTest {
 		TraceEventRecords trace1 = analysis.getElementCollection().get(1);
 		assertEquals(1, trace1.getTraceMetadata().getTraceId());
 
-		StatisticsUtil.removeFirstZeroThroughputs(analysis.getThroughputs());
+		StatisticsUtil.removeLeadingZeroThroughputs(analysis.getThroughputs());
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getThroughputs());
 		System.out.println("Median throughput: " + quintiles.get(0.5) + " elements/time unit");
 	}
