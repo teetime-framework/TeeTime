@@ -87,10 +87,18 @@
 				</configuration>
 			</plugin>
 
+			<!-- goals to check for plugin updates: versions:display-plugin-updates -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>versions-maven-plugin</artifactId>
 				<version>2.1</version>
+			</plugin>
+
+			<!-- goals to build a jar with binaries: jar:jar, jar:test-jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.5</version>
 			</plugin>
 
 			<plugin>
