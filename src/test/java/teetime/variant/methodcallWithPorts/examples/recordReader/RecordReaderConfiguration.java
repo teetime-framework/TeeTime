@@ -23,14 +23,10 @@ import teetime.variant.methodcallWithPorts.framework.core.Configuration;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.OrderedGrowableArrayPipeFactory;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.PipeOrdering;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.ThreadCommunication;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipeFactory;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipeFactory;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.UnorderedGrowablePipeFactory;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.kieker.Dir2RecordsFilter;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
@@ -48,12 +44,7 @@ public class RecordReaderConfiguration extends Configuration {
 	private final PipeFactory pipeFactory;
 
 	public RecordReaderConfiguration() {
-		// BETTER instantiate one single pipe factory for all analyzes and register all available pipe implementations once
 		this.pipeFactory = new PipeFactory();
-		this.pipeFactory.register(new SingleElementPipeFactory());
-		this.pipeFactory.register(new OrderedGrowableArrayPipeFactory());
-		this.pipeFactory.register(new UnorderedGrowablePipeFactory());
-		this.pipeFactory.register(new SpScPipeFactory());
 	}
 
 	public void buildConfiguration() {

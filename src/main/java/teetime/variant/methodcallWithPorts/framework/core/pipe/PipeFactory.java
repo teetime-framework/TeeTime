@@ -1,9 +1,16 @@
 package teetime.variant.methodcallWithPorts.framework.core.pipe;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class PipeFactory {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(PipeFactory.class);
 
 	public enum ThreadCommunication {
 		INTER, INTRA
@@ -22,6 +29,17 @@ public class PipeFactory {
 	}
 
 	private final Map<String, IPipeFactory> pipeFactories = new HashMap<String, IPipeFactory>();
+
+	public PipeFactory() {
+		try {
+			List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadFromFile("conf/pipe-factories.conf");
+			for (IPipeFactory pipeFactory : pipeFactories) {
+				this.register(pipeFactory);
+			}
+		} catch (IOException e) {
+			LOGGER.warn("Could not load pipe factories from file", e);
+		}
+	}
 
 	/**
 	 * Creates a new FIFO-ordered, growable pipe with an initial capacity of 1. <br>
@@ -47,6 +65,7 @@ public class PipeFactory {
 	public void register(final IPipeFactory pipeFactory) {
 		String key = this.buildKey(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
 		this.pipeFactories.put(key, pipeFactory);
+		LOGGER.info("Registered pipe factory: " + pipeFactory.getClass().getCanonicalName());
 	}
 
 }
