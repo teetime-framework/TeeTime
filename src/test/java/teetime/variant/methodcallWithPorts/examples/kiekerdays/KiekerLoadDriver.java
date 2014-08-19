@@ -2,9 +2,11 @@ package teetime.variant.methodcallWithPorts.examples.kiekerdays;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
@@ -123,8 +125,13 @@ public class KiekerLoadDriver {
 		final int runs = Integer.parseInt(args[2]);
 
 		KiekerLoadDriver kiekerLoadDriver = new KiekerLoadDriver(directory);
-		kiekerLoadDriver.timings = new long[runs];
-		Collection<IMonitoringRecord> records = kiekerLoadDriver.load();
+		kiekerLoadDriver.start(runs);
+		kiekerLoadDriver.writeTimingsToFile(outputFile);
+	}
+
+	public void start(final int runs) throws IOException {
+		this.timings = new long[runs];
+		Collection<IMonitoringRecord> records = this.load();
 
 		final Registry<String> stringRegistry = new Registry<String>();
 		ByteBuffer recordBuffer = ByteBuffer.allocateDirect(Short.MAX_VALUE);
@@ -165,7 +172,7 @@ public class KiekerLoadDriver {
 					long start_ns = System.nanoTime();
 					int writtenBytes = socketChannel.write(recordBuffer);
 					long stop_ns = System.nanoTime();
-					kiekerLoadDriver.timings[i] = stop_ns - start_ns;
+					this.timings[i] = stop_ns - start_ns;
 					if ((i % 100000) == 0) {
 						System.out.println(i); // NOPMD (System.out)
 					}
@@ -181,10 +188,12 @@ public class KiekerLoadDriver {
 		} finally {
 			recordReceiver.close();
 		}
+	}
 
+	public void writeTimingsToFile(final File outputFile) throws UnsupportedEncodingException, FileNotFoundException {
 		PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(outputFile), 8192 * 8), false, "UTF-8");
 		try {
-			for (long timing : kiekerLoadDriver.timings) {
+			for (long timing : this.timings) {
 				ps.println("0;" + timing);
 			}
 		} finally {

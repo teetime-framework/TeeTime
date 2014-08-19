@@ -17,23 +17,26 @@ package teetime.variant.methodcallWithPorts.examples.traceReductionWithThreads;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import teetime.util.ListUtil;
 import teetime.util.StopWatch;
+import util.MooBenchStarter;
 import util.StatisticsUtil;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -42,7 +45,14 @@ public class ChwWorkTcpTraceReductionAnalysisWithThreadsTest {
 	private static final int EXPECTED_NUM_TRACES = 1000000;
 	private static final int EXPECTED_NUM_SAME_TRACES = 1;
 
+	private static MooBenchStarter mooBenchStarter;
+
 	private StopWatch stopWatch;
+
+	@BeforeClass
+	public static void beforeClass() {
+		mooBenchStarter = new MooBenchStarter();
+	}
 
 	@Before
 	public void before() {
@@ -56,18 +66,36 @@ public class ChwWorkTcpTraceReductionAnalysisWithThreadsTest {
 	}
 
 	@Test
-	public void performAnalysisWith1Thread() {
-		this.performAnalysis(1);
+	public void performAnalysisWith1Thread() throws InterruptedException, IOException {
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				ChwWorkTcpTraceReductionAnalysisWithThreadsTest.this.performAnalysis(1);
+			}
+		};
+		this.startTest(runnable);
 	}
 
 	@Test
-	public void performAnalysisWith2Threads() {
-		this.performAnalysis(2);
+	public void performAnalysisWith2Threads() throws InterruptedException, IOException {
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				ChwWorkTcpTraceReductionAnalysisWithThreadsTest.this.performAnalysis(2);
+			}
+		};
+		this.startTest(runnable);
 	}
 
 	@Test
-	public void performAnalysisWith4Threads() {
-		this.performAnalysis(4);
+	public void performAnalysisWith4Threads() throws InterruptedException, IOException {
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				ChwWorkTcpTraceReductionAnalysisWithThreadsTest.this.performAnalysis(4);
+			}
+		};
+		this.startTest(runnable);
 	}
 
 	void performAnalysis(final int numWorkerThreads) {
@@ -105,6 +133,17 @@ public class ChwWorkTcpTraceReductionAnalysisWithThreadsTest {
 		}
 
 		assertEquals("#traces", EXPECTED_NUM_SAME_TRACES, analysis.getNumTraces());
+	}
+
+	private void startTest(final Runnable runnable) throws InterruptedException, IOException {
+		Thread thread = new Thread(runnable);
+		thread.start();
+
+		Thread.sleep(1000);
+
+		mooBenchStarter.start(1, EXPECTED_NUM_TRACES);
+
+		thread.join();
 	}
 
 	public static void main(final String[] args) {
