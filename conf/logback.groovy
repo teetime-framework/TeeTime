@@ -26,4 +26,4 @@ logger "teetime.variant.methodcallWithPorts.stage", INFO
 
 logger "teetime.variant.methodcallWithPorts.framework.core.pipe", INFO
 
-logger "teetime.variant.methodcallWithPorts.examples.kiekerdays.TimingsReader", TRACE, ["FILE"]
+logger "util.TimingsReader", TRACE, ["FILE"]

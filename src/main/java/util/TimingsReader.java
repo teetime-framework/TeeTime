@@ -1,4 +1,4 @@
-package teetime.variant.methodcallWithPorts.examples.kiekerdays;
+package util;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,8 +8,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import util.StatisticsUtil;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
@@ -39,9 +37,6 @@ public class TimingsReader {
 			Long timing = new Long(strings[1]);
 			durationsInNs.add(timing);
 		}
-
-		LOGGER.trace("Removing leading zeros...");
-		StatisticsUtil.removeLeadingZeroThroughputs(durationsInNs);
 
 		LOGGER.trace("Calculating quantiles...");
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(durationsInNs);

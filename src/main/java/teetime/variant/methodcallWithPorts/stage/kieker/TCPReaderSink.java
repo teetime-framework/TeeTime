@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.variant.methodcallWithPorts.examples.kiekerdays;
+package teetime.variant.methodcallWithPorts.stage.kieker;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

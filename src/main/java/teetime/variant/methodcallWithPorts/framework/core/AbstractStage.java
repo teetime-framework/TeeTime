@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import teetime.variant.methodcallWithPorts.framework.core.pipe.DummyPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 
 public abstract class AbstractStage implements StageWithPort {
@@ -59,6 +60,18 @@ public abstract class AbstractStage implements StageWithPort {
 	public void onStart() {
 		this.cachedInputPorts = this.inputPortList.toArray(new InputPort<?>[0]);
 		this.cachedOutputPorts = this.outputPortList.toArray(new OutputPort<?>[0]);
+
+		this.connectUnconnectedOutputPorts();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void connectUnconnectedOutputPorts() {
+		for (OutputPort<?> outputPort : this.cachedOutputPorts) {
+			if (null == outputPort.getPipe()) { // if port is unconnected
+				this.logger.warn("Unconnected output port: " + outputPort + ". Connecting with a dummy output port.");
+				outputPort.setPipe(new DummyPipe());
+			}
+		}
 	}
 
 	protected void onFinished() {

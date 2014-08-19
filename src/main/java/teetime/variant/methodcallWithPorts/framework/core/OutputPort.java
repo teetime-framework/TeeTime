@@ -4,7 +4,7 @@ public class OutputPort<T> extends AbstractPort<T> {
 
 	/**
 	 * Performance cache: Avoids the following method chain
-	 * 
+	 *
 	 * <pre>
 	 * this.getPipe().getTargetPort().getOwningStage()
 	 * </pre>
@@ -16,7 +16,7 @@ public class OutputPort<T> extends AbstractPort<T> {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param element
 	 * @return <code>true</code> iff the given <code>element</code> could be sent, <code>false</code> otherwise (then use a re-try strategy)
 	 */
@@ -33,9 +33,7 @@ public class OutputPort<T> extends AbstractPort<T> {
 	}
 
 	public void sendSignal(final Signal signal) {
-		if (this.pipe != null) { // if the output port is connected with a pipe
-			this.pipe.setSignal(signal);
-		}
+		this.pipe.setSignal(signal);
 	}
 
 }
