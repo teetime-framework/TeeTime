@@ -36,6 +36,7 @@ public class BucketTimingsReader {
 			currentTimings[processedLines] = timing;
 			processedLines++;
 			if (currentTimings.length == processedLines) {
+				// Long aggregatedTimings = StatisticsUtil.calculateQuintiles(Arrays.asList(currentTimings)).get(0.5);
 				Long aggregatedTimings = StatisticsUtil.calculateAverage(Arrays.asList(currentTimings));
 				buckets.add(aggregatedTimings);
 				processedLines = 0;
