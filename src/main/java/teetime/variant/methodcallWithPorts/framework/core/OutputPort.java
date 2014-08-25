@@ -1,5 +1,7 @@
 package teetime.variant.methodcallWithPorts.framework.core;
 
+import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
+
 public class OutputPort<T> extends AbstractPort<T> {
 
 	/**

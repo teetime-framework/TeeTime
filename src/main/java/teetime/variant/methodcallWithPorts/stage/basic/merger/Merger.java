@@ -19,16 +19,16 @@ package teetime.variant.methodcallWithPorts.stage.basic.merger;
 import teetime.variant.methodcallWithPorts.framework.core.AbstractStage;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
-import teetime.variant.methodcallWithPorts.framework.core.Signal;
+import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
 
 /**
- * 
+ *
  * This stage merges data from the input ports, by taking elements according to the chosen merge strategy and by putting them to the output port.
- * 
+ *
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
- * 
+ *
  * @param <T>
  *            the type of the input ports and the output port
  */
@@ -61,16 +61,9 @@ public class Merger<T> extends AbstractStage {
 
 	@Override
 	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
-		this.logger.debug("Got signal: " + signal + " from input port: " + inputPort);
+		this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
 
-		switch (signal) {
-		case FINISHED:
-			this.onFinished();
-			break;
-		default:
-			this.logger.warn("Aborted sending signal " + signal + ". Reason: Unknown signal.");
-			break;
-		}
+		signal.trigger(this);
 
 		if (this.finishedInputPorts == this.getInputPorts().length) {
 			this.outputPort.sendSignal(signal);

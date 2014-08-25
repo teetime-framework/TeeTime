@@ -76,13 +76,13 @@ public class TCPReader extends ProducerStage<IMonitoringRecord> {
 	}
 
 	@Override
-	public void onStart() {
+	public void onStarting() {
 		this.recordFactory = new RecordFactory();
 		this.register();
 
 		this.tcpStringReader = new TCPStringReader(this.port2, this.stringRegistry);
 		this.tcpStringReader.start();
-		super.onStart();
+		super.onStarting();
 	}
 
 	private void register() {

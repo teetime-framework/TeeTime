@@ -2,7 +2,7 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
-import teetime.variant.methodcallWithPorts.framework.core.Signal;
+import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
 
 /**
  * A pipe implementation used to connect unconnected output ports.

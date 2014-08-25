@@ -49,7 +49,7 @@ public class DbReader extends ProducerStage<IMonitoringRecord> {
 	private volatile boolean running = true;
 
 	@Override
-	public void onStart() {
+	public void onStarting() {
 		try {
 			Class.forName(this.driverClassname).newInstance();
 		} catch (final Exception ex) { // NOPMD NOCS (IllegalCatchCheck)

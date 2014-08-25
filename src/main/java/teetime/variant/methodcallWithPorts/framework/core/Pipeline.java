@@ -5,13 +5,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
+import teetime.variant.methodcallWithPorts.framework.core.signal.StartingSignal;
+import teetime.variant.methodcallWithPorts.framework.core.validation.InvalidPortConnection;
+
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
 
 /**
- * 
+ *
  * @author Christian Wulf
- * 
+ *
  * @param <FirstStage>
  * @param <LastStage>
  */
@@ -28,13 +32,7 @@ public class Pipeline<FirstStage extends StageWithPort, LastStage extends StageW
 	private final List<StageWithPort> intermediateStages = new LinkedList<StageWithPort>();
 	private LastStage lastStage;
 
-	// BETTER remove the stage array and use the output ports instead for passing a signal to all stages in the same thread; what about multiple same signals due to
-	// multiple input ports?
-	private StageWithPort[] stages;
 	private StageWithPort parentStage;
-	// private int startIndex;
-
-	private int firstStageIndex;
 
 	// private final Set<StageWithPort<?, ?>> currentHeads = new HashSet<StageWithPort<?, ?>>();
 
@@ -70,7 +68,7 @@ public class Pipeline<FirstStage extends StageWithPort, LastStage extends StageW
 
 	@Override
 	public void executeWithPorts() {
-		StageWithPort headStage = this.stages[this.firstStageIndex];
+		StageWithPort headStage = this.firstStage;
 
 		// do {
 		headStage.executeWithPorts();
@@ -106,16 +104,16 @@ public class Pipeline<FirstStage extends StageWithPort, LastStage extends StageW
 		// do nothing
 	}
 
-	@Override
-	public void onStart() {
+	@Deprecated
+	public void onStarting() {
 		int size = 1 + this.intermediateStages.size() + 1;
-		this.stages = new StageWithPort[size];
-		this.stages[0] = this.firstStage;
+		StageWithPort[] stages = new StageWithPort[size];
+		stages[0] = this.firstStage;
 		for (int i = 0; i < this.intermediateStages.size(); i++) {
 			StageWithPort stage = this.intermediateStages.get(i);
-			this.stages[1 + i] = stage;
+			stages[1 + i] = stage;
 		}
-		this.stages[this.stages.length - 1] = this.lastStage;
+		stages[stages.length - 1] = this.lastStage;
 
 		// for (int i = 0; i < this.stages.length; i++) {
 		// StageWithPort<?, ?> stage = this.stages[i];
@@ -129,8 +127,8 @@ public class Pipeline<FirstStage extends StageWithPort, LastStage extends StageW
 		// }
 		// this.stages[this.stages.length - 1].setSuccessor(new EndStage<Object>());
 
-		for (StageWithPort stage : this.stages) {
-			stage.onStart();
+		for (StageWithPort stage : stages) {
+			stage.onSignal(new StartingSignal(), null);
 		}
 	}
 
@@ -146,13 +144,8 @@ public class Pipeline<FirstStage extends StageWithPort, LastStage extends StageW
 
 	@Override
 	public boolean isReschedulable() {
-		// return this.reschedulable;
 		return this.firstStage.isReschedulable();
 	}
-
-	// public void setReschedulable(final boolean reschedulable) {
-	// this.reschedulable = reschedulable;
-	// }
 
 	@Override
 	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
@@ -165,6 +158,11 @@ public class Pipeline<FirstStage extends StageWithPort, LastStage extends StageW
 
 	public LastStage getLastStage() {
 		return this.lastStage;
+	}
+
+	@Override
+	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
+		// do nothing
 	}
 
 }

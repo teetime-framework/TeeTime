@@ -25,7 +25,7 @@ import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
 /**
  * @author Matthias Rohr, Jan Waller, Nils Christian Ehmke
- * 
+ *
  * @since 1.10
  */
 @Description("A filter to print objects to a configured stream")
@@ -86,14 +86,15 @@ public class Printer<T> extends ConsumerStage<T> {
 	}
 
 	@Override
-	public void onStart() {
+	public void onStarting() {
+		super.onStarting();
 		this.initializeStream();
 	}
 
 	@Override
-	protected void onFinished() {
+	public void onTerminating() {
 		this.closeStream();
-		super.onFinished();
+		super.onTerminating();
 	}
 
 	private void initializeStream() {

@@ -58,9 +58,9 @@ public class BinaryFile2RecordFilter extends ConsumerStage<File> {
 	}
 
 	@Override
-	public void onStart() {
+	public void onStarting() {
 		this.recordFromBinaryFileCreator = new RecordFromBinaryFileCreator(this.logger, this.classNameRegistryRepository);
-		super.onStart();
+		super.onStarting();
 	}
 
 	public ClassNameRegistryRepository getClassNameRegistryRepository() {

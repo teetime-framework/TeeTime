@@ -78,7 +78,7 @@ public class TCPReaderSink extends ProducerStage<IMonitoringRecord> {
 	}
 
 	@Override
-	public void onStart() {
+	public void onStarting() {
 		this.executorService.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
@@ -88,7 +88,7 @@ public class TCPReaderSink extends ProducerStage<IMonitoringRecord> {
 
 		this.tcpStringReader = new TCPStringReader(this.port2, this.stringRegistry);
 		this.tcpStringReader.start();
-		super.onStart();
+		super.onStarting();
 	}
 
 	@Override

@@ -1,4 +1,7 @@
-package teetime.variant.methodcallWithPorts.framework.core;
+package teetime.variant.methodcallWithPorts.framework.core.validation;
+
+import teetime.variant.methodcallWithPorts.framework.core.InputPort;
+import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 public class InvalidPortConnection {
 

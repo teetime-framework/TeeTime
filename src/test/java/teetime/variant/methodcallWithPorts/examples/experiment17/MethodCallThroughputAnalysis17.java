@@ -24,11 +24,11 @@ import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
-import teetime.variant.methodcallWithPorts.framework.core.Signal;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.UnorderedGrowablePipe;
+import teetime.variant.methodcallWithPorts.framework.core.signal.TerminatingSignal;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.NoopFilter;
 import teetime.variant.methodcallWithPorts.stage.ObjectProducer;
@@ -40,7 +40,7 @@ import teetime.variant.methodcallWithPorts.stage.basic.distributor.Distributor;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class MethodCallThroughputAnalysis17 extends Analysis {
@@ -160,7 +160,7 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 			startPipe.add(this.inputObjectCreator.create());
 		}
 		// startPipe.close();
-		startPipe.setSignal(Signal.FINISHED);
+		startPipe.setSignal(new TerminatingSignal());
 
 		UnorderedGrowablePipe.connect(relay.getOutputPort(), startTimestampFilter.getInputPort());
 

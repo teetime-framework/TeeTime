@@ -29,9 +29,9 @@ public class ElementDelayMeasuringStage<T> extends ConsumerStage<T> {
 	}
 
 	@Override
-	public void onStart() {
+	public void onStarting() {
 		this.resetTimestamp(System.nanoTime());
-		super.onStart();
+		super.onStarting();
 	}
 
 	private void computeElementDelay(final Long timestampInNs) {

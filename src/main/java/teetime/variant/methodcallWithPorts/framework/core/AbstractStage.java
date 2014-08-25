@@ -1,7 +1,6 @@
 package teetime.variant.methodcallWithPorts.framework.core;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,6 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import teetime.variant.methodcallWithPorts.framework.core.pipe.DummyPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
+import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
+import teetime.variant.methodcallWithPorts.framework.core.validation.InvalidPortConnection;
 
 public abstract class AbstractStage implements StageWithPort {
 
@@ -56,14 +57,6 @@ public abstract class AbstractStage implements StageWithPort {
 		return true;
 	}
 
-	@Override
-	public void onStart() {
-		this.cachedInputPorts = this.inputPortList.toArray(new InputPort<?>[0]);
-		this.cachedOutputPorts = this.outputPortList.toArray(new OutputPort<?>[0]);
-
-		this.connectUnconnectedOutputPorts();
-	}
-
 	@SuppressWarnings("unchecked")
 	private void connectUnconnectedOutputPorts() {
 		for (OutputPort<?> outputPort : this.cachedOutputPorts) {
@@ -72,11 +65,6 @@ public abstract class AbstractStage implements StageWithPort {
 				outputPort.setPipe(new DummyPipe());
 			}
 		}
-	}
-
-	protected void onFinished() {
-		// empty default implementation
-		this.onIsPipelineHead();
 	}
 
 	protected InputPort<?>[] getInputPorts() {
@@ -116,20 +104,29 @@ public abstract class AbstractStage implements StageWithPort {
 	 */
 	@Override
 	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
-		this.logger.debug("Got signal: " + signal + " from input port: " + inputPort);
+		this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
 
-		switch (signal) {
-		case FINISHED:
-			this.onFinished();
-			break;
-		default:
-			this.logger.warn("Aborted sending signal " + signal + ". Reason: Unknown signal.");
-			break;
-		}
+		signal.trigger(this);
 
 		for (OutputPort<?> outputPort : this.outputPortList) {
 			outputPort.sendSignal(signal);
 		}
+	}
+
+	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
+		this.validateOutputPorts(invalidPortConnections);
+	}
+
+	public void onStarting() {
+		this.cachedInputPorts = this.inputPortList.toArray(new InputPort<?>[0]);
+		this.cachedOutputPorts = this.outputPortList.toArray(new OutputPort<?>[0]);
+
+		this.connectUnconnectedOutputPorts();
+	}
+
+	public void onTerminating() {
+		// empty default implementation
+		this.onIsPipelineHead();
 	}
 
 	protected <T> InputPort<T> createInputPort() {
@@ -146,9 +143,8 @@ public abstract class AbstractStage implements StageWithPort {
 		return outputPort;
 	}
 
-	public List<InvalidPortConnection> validateOutputPorts() {
-		List<InvalidPortConnection> invalidOutputPortMessages = new LinkedList<InvalidPortConnection>();
-
+	@Override
+	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
 		for (OutputPort<?> outputPort : this.getOutputPorts()) {
 			IPipe<?> pipe = outputPort.getPipe();
 			if (null != pipe) { // if output port is connected with another one
@@ -156,12 +152,10 @@ public abstract class AbstractStage implements StageWithPort {
 				Class<?> targetPortType = pipe.getTargetPort().getType();
 				if (null == sourcePortType || !sourcePortType.equals(targetPortType)) {
 					InvalidPortConnection invalidPortConnection = new InvalidPortConnection(outputPort, pipe.getTargetPort());
-					invalidOutputPortMessages.add(invalidPortConnection);
+					invalidPortConnections.add(invalidPortConnection);
 				}
 			}
 		}
-
-		return invalidOutputPortMessages;
 	}
 
 	@Override
