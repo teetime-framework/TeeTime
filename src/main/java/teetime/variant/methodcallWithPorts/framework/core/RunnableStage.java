@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import teetime.variant.methodcallWithPorts.framework.core.signal.StartingSignal;
 import teetime.variant.methodcallWithPorts.framework.core.signal.TerminatingSignal;
 import teetime.variant.methodcallWithPorts.framework.core.signal.ValidatingSignal;
+import teetime.variant.methodcallWithPorts.framework.core.validation.AnalysisNotValidException;
 
 public class RunnableStage implements Runnable {
 
@@ -26,8 +27,7 @@ public class RunnableStage implements Runnable {
 			ValidatingSignal validatingSignal = new ValidatingSignal();
 			this.stage.onSignal(validatingSignal, null);
 			if (validatingSignal.getInvalidPortConnections().size() > 0) {
-				// throw new RuntimeException(message);
-				// TODO implement what to do on validation messages
+				throw new AnalysisNotValidException(validatingSignal.getInvalidPortConnections());
 			}
 		}
 

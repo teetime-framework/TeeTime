@@ -1,15 +1,15 @@
 package teetime.variant.methodcallWithPorts.runtime.typeCheck;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.TypeVariable;
 
 import org.junit.Test;
 
 import teetime.util.ConstructorClosure;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.ThreadCommunication;
@@ -21,10 +21,12 @@ import teetime.variant.methodcallWithPorts.stage.basic.Sink;
 
 public class ConnectionTypeTest {
 
+	// tests for load-time validation
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void testDynamicPortConnection() throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
+	IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
 		ConstructorClosure<TimestampObject> constructorClosure = new ConstructorClosure<TimestampObject>() {
 			@Override
 			public TimestampObject create() {
@@ -36,6 +38,8 @@ public class ConnectionTypeTest {
 		Constructor<ObjectProducer> constructor = ObjectProducer.class.getConstructor(long.class, ConstructorClosure.class);
 
 		ObjectProducer objectProducer = constructor.newInstance(1, constructorClosure);
+		// PortTypeConfiguration.setPortTypes(objectProducer, Class.forName("teetime.variant.explicitScheduling.examples.throughput.TimestampObject"));
+
 		StartTimestampFilter startTimestampFilter = StartTimestampFilter.class.newInstance();
 		StopTimestampFilter stopTimestampFilter = StopTimestampFilter.class.newInstance();
 		Sink sink = Sink.class.newInstance();
@@ -49,61 +53,38 @@ public class ConnectionTypeTest {
 		pipe = pipeFactory.create(ThreadCommunication.INTRA);
 		pipe.connectPorts(stopTimestampFilter.getOutputPort(), sink.getInputPort());
 
-		/*
-		 * requirements:
-		 * <ul>
-		 * <li>when selecting a stage class to create one instance, the user is prompted to declare each type argument
-		 * <li>
-		 * </ul>
-		 */
-
-		TypeVariable<Class<ObjectProducer>>[] objectProducerTypeParameters = ObjectProducer.class.getTypeParameters();
-		for (TypeVariable<Class<ObjectProducer>> typeVariable : objectProducerTypeParameters) {
-			System.out.println(typeVariable.getBounds()); // ->[Ljava.lang.reflect.Type;@13a65d1f
-			System.out.println(typeVariable.getBounds().length); // ->1
-			System.out.println(typeVariable.getBounds()[0]); // ->class java.lang.Object
-			System.out.println(typeVariable.getName()); // ->T
-			System.out.println(typeVariable.getClass()); // ->class sun.reflect.generics.reflectiveObjects.TypeVariableImpl
-			System.out.println(typeVariable.getGenericDeclaration()); // ->class teetime.variant.methodcallWithPorts.stage.ObjectProducer
-		}
-
-		// TypeVariable<?>[] objectProducerOutputPortTypeParameters = objectProducer.getOutputPort().getClass().getTypeParameters();
-		// for (TypeVariable<?> typeVariable : objectProducerOutputPortTypeParameters) {
-		// System.out.println(typeVariable.getBounds()); // ->[Ljava.lang.reflect.Type;@20a12d8f
+		// TypeVariable<Class<ObjectProducer>>[] objectProducerTypeParameters = ObjectProducer.class.getTypeParameters();
+		// for (TypeVariable<Class<ObjectProducer>> typeVariable : objectProducerTypeParameters) {
+		// System.out.println(typeVariable.getBounds()); // ->[Ljava.lang.reflect.Type;@13a65d1f
 		// System.out.println(typeVariable.getBounds().length); // ->1
 		// System.out.println(typeVariable.getBounds()[0]); // ->class java.lang.Object
 		// System.out.println(typeVariable.getName()); // ->T
 		// System.out.println(typeVariable.getClass()); // ->class sun.reflect.generics.reflectiveObjects.TypeVariableImpl
-		// System.out.println(typeVariable.getGenericDeclaration()); // ->class teetime.variant.methodcallWithPorts.framework.core.OutputPort
+		// System.out.println(typeVariable.getGenericDeclaration()); // ->class teetime.variant.methodcallWithPorts.stage.ObjectProducer
 		// }
 		//
-		// TypeVariable<?>[] startTimestampFilterOutputPortTypeParameters = startTimestampFilter.getOutputPort().getClass().getTypeParameters();
-		// for (TypeVariable<?> typeVariable : startTimestampFilterOutputPortTypeParameters) {
-		// System.out.println(typeVariable.getBounds()); // ->[Ljava.lang.reflect.Type;@7b365f02
-		// System.out.println(typeVariable.getBounds().length); // ->1
-		// System.out.println(typeVariable.getBounds()[0]); // ->class java.lang.Object
-		// System.out.println(typeVariable.getName()); // ->T
-		// System.out.println(typeVariable.getClass()); // ->class sun.reflect.generics.reflectiveObjects.TypeVariableImpl
-		// System.out.println(typeVariable.getGenericDeclaration()); // ->class teetime.variant.methodcallWithPorts.framework.core.OutputPort
+		// Class<?> currentClass = objectProducer.getClass();
+		// while (currentClass.getSuperclass() != null) { // we don't want to process Object.class
+		// Field[] fields = currentClass.getDeclaredFields();
+		// for (Field field : fields) {
+		// // System.out.println("Field: " + field.getType());
+		// if (OutputPort.class.equals(field.getType())) {
+		// System.out.println("Field.name: " + field.getName());
+		// System.out.println("Field.type: " + field.getType());
+		// // field.getType()
+		// }
+		// }
+		//
+		// currentClass = currentClass.getSuperclass();
 		// }
 
-		Class<?> currentClass = objectProducer.getClass();
-		while (currentClass.getSuperclass() != null) { // we don't want to process Object.class
-			Field[] fields = currentClass.getDeclaredFields();
-			for (Field field : fields) {
-				// System.out.println("Field: " + field.getType());
-				if (OutputPort.class.equals(field.getType())) {
-					System.out.println("Field.name: " + field.getName());
-					System.out.println("Field.type: " + field.getType());
-					// field.getType()
-				}
-			}
+		assertNull(objectProducer.getOutputPort().getType());
+		PortTypeConfiguration.setPortTypes(objectProducer, Class.forName(TimestampObject.class.getName()));
+		assertEquals(TimestampObject.class, objectProducer.getOutputPort().getType());
 
-			currentClass = currentClass.getSuperclass();
-		}
-
-		System.out.println(objectProducer.getOutputPort().getType());
-		PortTypeConfiguration.setPortTypes(objectProducer, Class.forName("teetime.variant.explicitScheduling.examples.throughput.TimestampObject"));
-		System.out.println(objectProducer.getOutputPort().getType());
+		assertNull(startTimestampFilter.getOutputPort().getType());
+		PortTypeConfiguration.setPortTypes(startTimestampFilter);
+		assertEquals(TimestampObject.class, startTimestampFilter.getInputPort().getType());
+		assertEquals(TimestampObject.class, startTimestampFilter.getOutputPort().getType());
 	}
 }
