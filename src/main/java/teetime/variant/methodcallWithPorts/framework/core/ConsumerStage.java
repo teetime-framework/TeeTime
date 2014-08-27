@@ -10,7 +10,7 @@ public abstract class ConsumerStage<I> extends AbstractStage {
 
 	@Override
 	public void executeWithPorts() {
-		I element = this.inputPort.receive();
+		I element = this.getInputPort().receive();
 
 		boolean isReschedulable = this.determineReschedulability();
 		this.setReschedulable(isReschedulable);
@@ -24,7 +24,7 @@ public abstract class ConsumerStage<I> extends AbstractStage {
 	}
 
 	protected boolean determineReschedulability() {
-		return this.inputPort.getPipe().size() > 0;
+		return this.getInputPort().getPipe().size() > 0;
 	}
 
 	protected abstract void execute(I element);

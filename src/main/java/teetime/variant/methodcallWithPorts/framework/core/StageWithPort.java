@@ -23,6 +23,7 @@ public interface StageWithPort {
 	 */
 	boolean isReschedulable();
 
+	// BETTER remove this method since it will be replaced by onTerminating()
 	void onIsPipelineHead();
 
 	void onSignal(Signal signal, InputPort<?> inputPort);

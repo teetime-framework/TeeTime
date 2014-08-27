@@ -18,7 +18,7 @@ public abstract class AbstractStage implements StageWithPort {
 	/**
 	 * A unique logger instance per stage instance
 	 */
-	protected final Logger logger; // BETTER use SLF4J as interface and logback as impl
+	protected final Logger logger;
 
 	private StageWithPort parentStage;
 
@@ -131,14 +131,14 @@ public abstract class AbstractStage implements StageWithPort {
 
 	protected <T> InputPort<T> createInputPort() {
 		InputPort<T> inputPort = new InputPort<T>(this);
-		// inputPort.setType(type); // TODO set type for input port
+		// inputPort.setType(portType);
 		this.inputPortList.add(inputPort);
 		return inputPort;
 	}
 
 	protected <T> OutputPort<T> createOutputPort() {
 		OutputPort<T> outputPort = new OutputPort<T>();
-		// outputPort.setType(type); // TODO set type for output port
+		// outputPort.setType(portType);
 		this.outputPortList.add(outputPort);
 		return outputPort;
 	}

@@ -21,10 +21,16 @@ import teetime.variant.methodcallWithPorts.framework.core.ConsumerStage;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class CollectorSink<T> extends ConsumerStage<T> {
+
+	// private final InputPort<T> inputPort = this.createInputPort();
+	//
+	// public final InputPort<T> getInputPort() {
+	// return this.inputPort;
+	// }
 
 	private final List<T> elements;
 	private final int threshold;

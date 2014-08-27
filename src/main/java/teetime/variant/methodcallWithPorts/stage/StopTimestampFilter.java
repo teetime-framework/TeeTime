@@ -21,7 +21,7 @@ import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class StopTimestampFilter extends ConsumerStage<TimestampObject> {

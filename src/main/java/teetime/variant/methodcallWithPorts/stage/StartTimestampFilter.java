@@ -21,7 +21,7 @@ import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class StartTimestampFilter extends ConsumerStage<TimestampObject> {
@@ -35,6 +35,6 @@ public class StartTimestampFilter extends ConsumerStage<TimestampObject> {
 	}
 
 	public OutputPort<TimestampObject> getOutputPort() {
-		return outputPort;
+		return this.outputPort;
 	}
 }
