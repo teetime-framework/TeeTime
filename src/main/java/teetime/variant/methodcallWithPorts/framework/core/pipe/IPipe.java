@@ -29,4 +29,6 @@ public interface IPipe<T> {
 	// BETTER change signature to allow {OutputPort<T>, OutputPort<A0 extends T>, OutputPort<A1 extends T>, ...}
 	void connectPorts(OutputPort<T> sourcePort, InputPort<T> targetPort);
 
+	void reportNewElement();
+
 }

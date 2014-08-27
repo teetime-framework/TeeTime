@@ -89,10 +89,10 @@ public class ChwWorkComparisonMethodcallWithPorts implements PerformanceCheckPro
 		// assertEquals(53, value17, 4.1); // +0
 
 		// since 27.08.2014 (incl.)
-		assertEquals(112, value14, 5.1); // +16
-		assertEquals(42, value10, 2.1); // +16
-		assertEquals(41, value11, 4.1); // -3
-		assertEquals(42, value9, 2.1); // +6
+		assertEquals(102, value14, 5.1); // +16
+		assertEquals(56, value10, 2.1); // +30
+		assertEquals(64, value11, 4.1); // +15
+		assertEquals(77, value9, 2.1); // +35
 		assertEquals(44, value15, 4.1); // +0
 		assertEquals(53, value17, 4.1); // +0
 

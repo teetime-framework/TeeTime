@@ -23,7 +23,9 @@ import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.ThreadCommunication;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.NoopFilter;
 import teetime.variant.methodcallWithPorts.stage.ObjectProducer;
@@ -32,12 +34,10 @@ import teetime.variant.methodcallWithPorts.stage.StopTimestampFilter;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class MethodCallThroughputAnalysis14 extends Analysis {
-
-	private static final int SPSC_INITIAL_CAPACITY = 4;
 
 	private long numInputObjects;
 	private ConstructorClosure<TimestampObject> inputObjectCreator;
@@ -75,13 +75,19 @@ public class MethodCallThroughputAnalysis14 extends Analysis {
 		pipeline.addIntermediateStage(stopTimestampFilter);
 		pipeline.setLastStage(collectorSink);
 
-		SpScPipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort(), SPSC_INITIAL_CAPACITY);
-		SpScPipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort(), SPSC_INITIAL_CAPACITY);
+		PipeFactory pipeFactory = new PipeFactory();
+		IPipe<TimestampObject> pipe = pipeFactory.create(ThreadCommunication.INTRA);
+		pipe.connectPorts(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
+		pipe = pipeFactory.create(ThreadCommunication.INTRA);
+		pipe.connectPorts(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
 		for (int i = 0; i < noopFilters.length - 1; i++) {
-			SpScPipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort(), SPSC_INITIAL_CAPACITY);
+			pipe = pipeFactory.create(ThreadCommunication.INTRA);
+			pipe.connectPorts(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
 		}
-		SpScPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort(), SPSC_INITIAL_CAPACITY);
-		SpScPipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort(), SPSC_INITIAL_CAPACITY);
+		pipe = pipeFactory.create(ThreadCommunication.INTRA);
+		pipe.connectPorts(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
+		pipe = pipeFactory.create(ThreadCommunication.INTRA);
+		pipe.connectPorts(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
 		return pipeline;
 	}

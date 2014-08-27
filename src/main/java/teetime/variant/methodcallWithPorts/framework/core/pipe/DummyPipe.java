@@ -52,4 +52,9 @@ public final class DummyPipe implements IPipe {
 	@Override
 	public void connectPorts(final OutputPort sourcePort, final InputPort targetPort) {}
 
+	@Override
+	public void reportNewElement() {
+		// do nothing
+	}
+
 }

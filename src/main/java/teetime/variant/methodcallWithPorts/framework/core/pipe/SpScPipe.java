@@ -83,4 +83,9 @@ public class SpScPipe<T> extends AbstractPipe<T> {
 		return this.signal.get();
 	}
 
+	@Override
+	public void reportNewElement() {
+		// do nothing
+	}
+
 }

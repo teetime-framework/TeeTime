@@ -7,8 +7,13 @@ public abstract class IntraThreadPipe<T> extends AbstractPipe<T> {
 	@Override
 	public void setSignal(final Signal signal) {
 		if (this.getTargetPort() != null) {
-			this.getTargetPort().getOwningStage().onSignal(signal, this.getTargetPort());
+			this.cachedTargetStage.onSignal(signal, this.getTargetPort());
 		}
+	}
+
+	@Override
+	public final void reportNewElement() {
+		this.cachedTargetStage.executeWithPorts();
 	}
 
 }

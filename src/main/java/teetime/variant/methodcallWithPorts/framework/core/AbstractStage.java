@@ -48,11 +48,13 @@ public abstract class AbstractStage implements StageWithPort {
 			return false;
 		}
 
-		StageWithPort next = outputPort.getCachedTargetStage();
+		outputPort.reportNewElement();
 
-		do {
-			next.executeWithPorts(); // PERFORMANCE use the return value as indicator for re-schedulability instead
-		} while (next.isReschedulable());
+		// StageWithPort next = outputPort.getCachedTargetStage();
+		//
+		// do {
+		// next.executeWithPorts(); // PERFORMANCE use the return value as indicator for re-schedulability instead
+		// } while (next.isReschedulable());
 
 		return true;
 	}
