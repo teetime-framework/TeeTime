@@ -8,6 +8,11 @@ import util.PerformanceTest;
 public class ChwHomePerformanceCheck implements PerformanceCheckProfile {
 
 	@Override
+	public String getCorrespondingPerformanceProfile() {
+		return "ChwHome";
+	}
+
+	@Override
 	public void check() {
 		PerformanceResult test16a = PerformanceTest.measurementRepository.performanceResults
 				.get("testWithManyObjectsAnd1Thread(teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
@@ -24,10 +29,5 @@ public class ChwHomePerformanceCheck implements PerformanceCheckProfile {
 
 		assertEquals(2, speedupB, 0.3);
 		assertEquals(3, speedupC, 0.3);
-	}
-
-	@Override
-	public String getCorrespondingPerformanceProfile() {
-		return "ChwHome";
 	}
 }

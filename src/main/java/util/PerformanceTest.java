@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
@@ -13,8 +14,6 @@ import org.junit.runner.Description;
 
 import teetime.util.StopWatch;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-
-import kieker.common.logging.LogFactory;
 
 public abstract class PerformanceTest {
 
@@ -28,6 +27,11 @@ public abstract class PerformanceTest {
 	protected StopWatch stopWatch;
 	protected List<TimestampObject> timestampObjects;
 
+	@BeforeClass
+	public static void beforeClass() {
+		System.setProperty("logback.configurationFile", "src/test/resources/logback-test.groovy");
+	}
+
 	@Rule
 	public final TestRule watcher = new TestWatcher() {
 		@Override
@@ -39,7 +43,6 @@ public abstract class PerformanceTest {
 
 	@Before
 	public void before() {
-		System.setProperty(LogFactory.CUSTOM_LOGGER_JVM, "NONE");
 		this.stopWatch = new StopWatch();
 		this.timestampObjects = new ArrayList<TimestampObject>(NUM_OBJECTS_TO_CREATE);
 	}
@@ -56,4 +59,5 @@ public abstract class PerformanceTest {
 		System.out.println("[" + TimeUnit.NANOSECONDS.toMicros(performanceResult.avgDurInNs - performanceResult.confidenceWidthInNs) + " µs, "
 				+ TimeUnit.NANOSECONDS.toMicros(performanceResult.avgDurInNs + performanceResult.confidenceWidthInNs) + " µs]");
 	}
+
 }

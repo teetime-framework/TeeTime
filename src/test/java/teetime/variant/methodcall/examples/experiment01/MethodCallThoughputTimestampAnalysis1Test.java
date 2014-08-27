@@ -15,22 +15,34 @@
  ***************************************************************************/
 package teetime.variant.methodcall.examples.experiment01;
 
-import static org.junit.Assert.assertEquals;
-
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import teetime.util.ConstructorClosure;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-import util.PerformanceResult;
+import util.PerformanceCheckProfile;
+import util.PerformanceCheckProfileRepository;
 import util.PerformanceTest;
-import util.StatisticsUtil;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class MethodCallThoughputTimestampAnalysis1Test extends PerformanceTest {
+
+	@BeforeClass
+	public static void beforeClass() {
+		PerformanceCheckProfileRepository.INSTANCE.register(MethodCallThoughputTimestampAnalysis1Test.class, new ChwWorkPerformanceCheck());
+		PerformanceCheckProfileRepository.INSTANCE.register(MethodCallThoughputTimestampAnalysis1Test.class, new ChwHomePerformanceCheck());
+	};
+
+	@AfterClass
+	public static void afterClass() {
+		PerformanceCheckProfile performanceCheckProfile = PerformanceCheckProfileRepository.INSTANCE.get(MethodCallThoughputTimestampAnalysis1Test.class);
+		performanceCheckProfile.check();
+	};
 
 	// TODO check why the optimal, but inflexible impl is 500 times faster than our new framework
 
@@ -56,9 +68,6 @@ public class MethodCallThoughputTimestampAnalysis1Test extends PerformanceTest {
 		} finally {
 			this.stopWatch.end();
 		}
-
-		PerformanceResult performanceResult = StatisticsUtil.computeStatistics(this.stopWatch.getDurationInNs(), this.timestampObjects);
-		assertEquals(292, performanceResult.quantiles.get(0.5), 1); // chw home
 	}
 
 }
