@@ -2,8 +2,8 @@ package teetime.variant.methodcallWithPorts.examples.kiekerdays;
 
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
+import teetime.variant.methodcallWithPorts.framework.core.HeadStage;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
-import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.stage.basic.Sink;
 import teetime.variant.methodcallWithPorts.stage.explorviz.KiekerRecordTcpReader;
@@ -17,7 +17,7 @@ public class TcpTraceLoggingExplorviz extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		StageWithPort tcpPipeline = this.buildTcpPipeline();
+		HeadStage tcpPipeline = this.buildTcpPipeline();
 		this.tcpThread = new Thread(new RunnableStage(tcpPipeline));
 	}
 
@@ -34,7 +34,7 @@ public class TcpTraceLoggingExplorviz extends Analysis {
 		}
 	}
 
-	private StageWithPort buildTcpPipeline() {
+	private HeadStage buildTcpPipeline() {
 		KiekerRecordTcpReader tcpReader = new KiekerRecordTcpReader();
 		Sink<IMonitoringRecord> endStage = new Sink<IMonitoringRecord>();
 

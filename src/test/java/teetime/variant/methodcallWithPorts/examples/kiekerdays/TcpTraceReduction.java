@@ -10,8 +10,8 @@ import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
+import teetime.variant.methodcallWithPorts.framework.core.HeadStage;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
-import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.Clock;
@@ -59,7 +59,7 @@ public class TcpTraceReduction extends Analysis {
 		this.workerThreads = new Thread[this.numWorkerThreads];
 
 		for (int i = 0; i < this.workerThreads.length; i++) {
-			StageWithPort pipeline = this.buildPipeline(tcpPipeline.getLastStage(), clockStage.getLastStage());
+			HeadStage pipeline = this.buildPipeline(tcpPipeline.getLastStage(), clockStage.getLastStage());
 			this.workerThreads[i] = new Thread(new RunnableStage(pipeline));
 		}
 	}
@@ -92,7 +92,7 @@ public class TcpTraceReduction extends Analysis {
 		return pipeline;
 	}
 
-	private StageWithPort buildPipeline(final Distributor<IMonitoringRecord> tcpReaderPipeline, final Distributor<Long> clockStage) {
+	private HeadStage buildPipeline(final Distributor<IMonitoringRecord> tcpReaderPipeline, final Distributor<Long> clockStage) {
 		// create stages
 		Relay<IMonitoringRecord> relay = new Relay<IMonitoringRecord>();
 		final InstanceOfFilter<IMonitoringRecord, IFlowRecord> instanceOfFilter = new InstanceOfFilter<IMonitoringRecord, IFlowRecord>(
@@ -115,9 +115,6 @@ public class TcpTraceReduction extends Analysis {
 		// create and configure pipeline
 		HeadPipeline<Relay<IMonitoringRecord>, Sink<TraceEventRecords>> pipeline = new HeadPipeline<Relay<IMonitoringRecord>, Sink<TraceEventRecords>>();
 		pipeline.setFirstStage(relay);
-		pipeline.addIntermediateStage(instanceOfFilter);
-		pipeline.addIntermediateStage(traceReconstructionFilter);
-		pipeline.addIntermediateStage(traceReductionFilter);
 		pipeline.setLastStage(endStage);
 		return pipeline;
 	}
