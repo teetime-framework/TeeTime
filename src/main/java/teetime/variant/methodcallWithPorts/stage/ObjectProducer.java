@@ -54,13 +54,9 @@ public class ObjectProducer<T> extends ProducerStage<T> {
 
 	@Override
 	protected void execute() {
-		// this.logger.debug("Executing object producer...");
-
-		T newObject = null;
-		newObject = this.inputObjectCreator.create();
+		T newObject = this.inputObjectCreator.create();
 		this.numInputObjects--;
 
-		// System.out.println(this.getClass().getSimpleName() + ": sending " + this.numInputObjects);
 		this.send(this.outputPort, newObject);
 
 		if (this.numInputObjects == 0) {
