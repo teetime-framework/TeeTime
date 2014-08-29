@@ -20,7 +20,7 @@ import java.util.List;
 import teetime.util.ConstructorClosure;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
-import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
+import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.OrderedGrowableArrayPipe;
@@ -71,7 +71,7 @@ public class MethodCallThroughputAnalysis15 extends Analysis {
 		this.clock.setInitialDelayInMs(100);
 		this.clock.setIntervalDelayInMs(100);
 
-		final Pipeline<Clock, Sink<Long>> pipeline = new Pipeline<Clock, Sink<Long>>();
+		final HeadPipeline<Clock, Sink<Long>> pipeline = new HeadPipeline<Clock, Sink<Long>>();
 		pipeline.setFirstStage(this.clock);
 		pipeline.setLastStage(new Sink<Long>());
 
@@ -95,7 +95,7 @@ public class MethodCallThroughputAnalysis15 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final Pipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new Pipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>>();
+		final HeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new HeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>>();
 		pipeline.setFirstStage(objectProducer);
 		pipeline.addIntermediateStage(startTimestampFilter);
 		pipeline.addIntermediateStages(noopFilters);

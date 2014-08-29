@@ -24,7 +24,6 @@ public class DirWithDat2RecordFilter extends Pipeline<ClassNameRegistryCreationF
 		final DatFile2RecordFilter datFile2RecordFilter = new DatFile2RecordFilter(classNameRegistryRepository);
 
 		this.setFirstStage(classNameRegistryCreationFilter);
-		this.addIntermediateStage(directory2FilesFilter);
 		this.setLastStage(datFile2RecordFilter);
 	}
 

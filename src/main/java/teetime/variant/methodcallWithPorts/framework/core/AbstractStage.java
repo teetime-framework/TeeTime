@@ -88,15 +88,6 @@ public abstract class AbstractStage implements StageWithPort {
 	}
 
 	@Override
-	public boolean isReschedulable() {
-		return this.reschedulable;
-	}
-
-	public void setReschedulable(final boolean reschedulable) {
-		this.reschedulable = reschedulable;
-	}
-
-	@Override
 	public String getId() {
 		return this.id;
 	}

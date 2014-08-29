@@ -7,7 +7,7 @@ import java.util.List;
 import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
-import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
+import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
@@ -104,7 +104,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 		dir2RecordsFilter.getInputPort().getPipe().add(this.inputDir);
 
 		// create and configure pipeline
-		Pipeline<Dir2RecordsFilter, CollectorSink<TraceEventRecords>> pipeline = new Pipeline<Dir2RecordsFilter, CollectorSink<TraceEventRecords>>();
+		HeadPipeline<Dir2RecordsFilter, CollectorSink<TraceEventRecords>> pipeline = new HeadPipeline<Dir2RecordsFilter, CollectorSink<TraceEventRecords>>();
 		pipeline.setFirstStage(dir2RecordsFilter);
 		pipeline.addIntermediateStage(this.recordCounter);
 		pipeline.addIntermediateStage(cache);

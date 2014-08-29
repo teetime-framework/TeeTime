@@ -20,6 +20,10 @@ import java.io.File;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.PipeOrdering;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.ThreadCommunication;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.stage.FileExtensionSwitch;
 import teetime.variant.methodcallWithPorts.stage.basic.merger.Merger;
@@ -36,11 +40,12 @@ import kieker.common.util.filesystem.FSUtil;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class Dir2RecordsFilter extends Pipeline<ClassNameRegistryCreationFilter, Merger<IMonitoringRecord>> {
 
+	private final PipeFactory pipeFactory = new PipeFactory();
 	private ClassNameRegistryRepository classNameRegistryRepository;
 
 	/**
@@ -68,8 +73,11 @@ public class Dir2RecordsFilter extends Pipeline<ClassNameRegistryCreationFilter,
 		final OutputPort<File> zipFileOutputPort = fileExtensionSwitch.addFileExtension(FSUtil.ZIP_FILE_EXTENSION);
 
 		// connect ports by pipes
-		SingleElementPipe.connect(classNameRegistryCreationFilter.getOutputPort(), directory2FilesFilter.getInputPort());
-		SingleElementPipe.connect(directory2FilesFilter.getOutputPort(), fileExtensionSwitch.getInputPort());
+		IPipe<File> pipe = this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1);
+		pipe.connectPorts(classNameRegistryCreationFilter.getOutputPort(), directory2FilesFilter.getInputPort());
+
+		pipe = this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1);
+		pipe.connectPorts(directory2FilesFilter.getOutputPort(), fileExtensionSwitch.getInputPort());
 
 		SingleElementPipe.connect(normalFileOutputPort, datFile2RecordFilter.getInputPort());
 		SingleElementPipe.connect(binFileOutputPort, binaryFile2RecordFilter.getInputPort());
@@ -81,11 +89,6 @@ public class Dir2RecordsFilter extends Pipeline<ClassNameRegistryCreationFilter,
 
 		// prepare pipeline
 		this.setFirstStage(classNameRegistryCreationFilter);
-		this.addIntermediateStage(directory2FilesFilter);
-		this.addIntermediateStage(fileExtensionSwitch);
-		this.addIntermediateStage(datFile2RecordFilter);
-		this.addIntermediateStage(binaryFile2RecordFilter);
-		this.addIntermediateStage(zipFile2RecordFilter);
 		this.setLastStage(recordMerger);
 	}
 

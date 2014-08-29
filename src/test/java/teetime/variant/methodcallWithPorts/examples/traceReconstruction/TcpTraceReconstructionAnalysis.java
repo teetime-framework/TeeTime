@@ -6,9 +6,8 @@ import java.util.List;
 import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
-import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
+import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
-import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.Clock;
@@ -45,17 +44,17 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		Pipeline<Clock, Distributor<Long>> clockStage = this.buildClockPipeline(1000);
+		HeadPipeline<Clock, Distributor<Long>> clockStage = this.buildClockPipeline(1000);
 		this.clockThread = new Thread(new RunnableStage(clockStage));
 
-		Pipeline<Clock, Distributor<Long>> clock2Stage = this.buildClockPipeline(2000);
+		HeadPipeline<Clock, Distributor<Long>> clock2Stage = this.buildClockPipeline(2000);
 		this.clock2Thread = new Thread(new RunnableStage(clock2Stage));
 
-		StageWithPort pipeline = this.buildPipeline(clockStage.getLastStage(), clock2Stage.getLastStage());
+		HeadPipeline<?, ?> pipeline = this.buildPipeline(clockStage.getLastStage(), clock2Stage.getLastStage());
 		this.workerThread = new Thread(new RunnableStage(pipeline));
 	}
 
-	private Pipeline<Clock, Distributor<Long>> buildClockPipeline(final long intervalDelayInMs) {
+	private HeadPipeline<Clock, Distributor<Long>> buildClockPipeline(final long intervalDelayInMs) {
 		Clock clock = new Clock();
 		clock.setIntervalDelayInMs(intervalDelayInMs);
 		Distributor<Long> distributor = new Distributor<Long>();
@@ -63,13 +62,13 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 		SingleElementPipe.connect(clock.getOutputPort(), distributor.getInputPort());
 
 		// create and configure pipeline
-		Pipeline<Clock, Distributor<Long>> pipeline = new Pipeline<Clock, Distributor<Long>>();
+		HeadPipeline<Clock, Distributor<Long>> pipeline = new HeadPipeline<Clock, Distributor<Long>>();
 		pipeline.setFirstStage(clock);
 		pipeline.setLastStage(distributor);
 		return pipeline;
 	}
 
-	private StageWithPort buildPipeline(final Distributor<Long> clockStage, final Distributor<Long> clock2Stage) {
+	private HeadPipeline<TCPReader, Sink<TraceEventRecords>> buildPipeline(final Distributor<Long> clockStage, final Distributor<Long> clock2Stage) {
 		// create stages
 		TCPReader tcpReader = new TCPReader();
 		this.recordCounter = new Counter<IMonitoringRecord>();
@@ -96,14 +95,8 @@ public class TcpTraceReconstructionAnalysis extends Analysis {
 		SpScPipe.connect(clock2Stage.getNewOutputPort(), this.traceThroughputFilter.getTriggerInputPort(), 10);
 
 		// create and configure pipeline
-		Pipeline<TCPReader, Sink<TraceEventRecords>> pipeline = new Pipeline<TCPReader, Sink<TraceEventRecords>>();
+		HeadPipeline<TCPReader, Sink<TraceEventRecords>> pipeline = new HeadPipeline<TCPReader, Sink<TraceEventRecords>>();
 		pipeline.setFirstStage(tcpReader);
-		pipeline.addIntermediateStage(this.recordCounter);
-		pipeline.addIntermediateStage(instanceOfFilter);
-		// pipeline.addIntermediateStage(this.recordThroughputFilter);
-		pipeline.addIntermediateStage(traceReconstructionFilter);
-		pipeline.addIntermediateStage(this.traceThroughputFilter);
-		pipeline.addIntermediateStage(this.traceCounter);
 		pipeline.setLastStage(endStage);
 		return pipeline;
 	}

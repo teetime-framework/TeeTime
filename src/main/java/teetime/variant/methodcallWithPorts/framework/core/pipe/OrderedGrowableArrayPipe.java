@@ -25,13 +25,6 @@ public class OrderedGrowableArrayPipe<T> extends IntraThreadPipe<T> {
 	}
 
 	@Override
-	public void connectPorts(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
-		sourcePort.setPipe(this);
-		targetPort.setPipe(this);
-		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
-	}
-
-	@Override
 	public boolean add(final T element) {
 		this.elements.put(this.tail++, element);
 		return true;

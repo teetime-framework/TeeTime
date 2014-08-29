@@ -48,15 +48,6 @@ public class Merger<T> extends AbstractStage {
 		}
 
 		this.send(this.outputPort, token);
-
-		boolean isReschedulable = false;
-		for (InputPort<?> inputPort : this.getInputPorts()) {
-			if (!inputPort.getPipe().isEmpty()) {
-				isReschedulable = true;
-				break;
-			}
-		}
-		this.setReschedulable(isReschedulable);
 	}
 
 	@Override

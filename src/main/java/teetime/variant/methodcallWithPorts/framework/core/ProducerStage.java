@@ -13,16 +13,13 @@ package teetime.variant.methodcallWithPorts.framework.core;
  *            the type of the default output port
  *
  */
-public abstract class ProducerStage<O> extends AbstractStage {
+public abstract class ProducerStage<O> extends AbstractStage implements HeadStage {
 
 	protected final OutputPort<O> outputPort = this.createOutputPort();
+	private boolean shouldTerminate;
 
 	public final OutputPort<O> getOutputPort() {
 		return this.outputPort;
-	}
-
-	public ProducerStage() {
-		this.setReschedulable(true);
 	}
 
 	@Override
@@ -33,6 +30,16 @@ public abstract class ProducerStage<O> extends AbstractStage {
 	@Override
 	public void onIsPipelineHead() {
 		// do nothing
+	}
+
+	@Override
+	public void terminate() {
+		this.shouldTerminate = true;
+	}
+
+	@Override
+	public boolean shouldBeTerminated() {
+		return this.shouldTerminate;
 	}
 
 	protected abstract void execute();

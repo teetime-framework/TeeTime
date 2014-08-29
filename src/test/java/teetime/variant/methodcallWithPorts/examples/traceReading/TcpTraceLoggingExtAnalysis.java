@@ -3,7 +3,7 @@ package teetime.variant.methodcallWithPorts.examples.traceReading;
 import java.util.List;
 
 import teetime.variant.explicitScheduling.framework.core.Analysis;
-import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
+import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
@@ -25,7 +25,7 @@ public class TcpTraceLoggingExtAnalysis extends Analysis {
 	private Counter<IMonitoringRecord> recordCounter;
 	private ElementThroughputMeasuringStage<IMonitoringRecord> recordThroughputStage;
 
-	private Pipeline<Clock, Distributor<Long>> buildClockPipeline(final long intervalDelayInMs) {
+	private HeadPipeline<Clock, Distributor<Long>> buildClockPipeline(final long intervalDelayInMs) {
 		Clock clockStage = new Clock();
 		clockStage.setInitialDelayInMs(intervalDelayInMs);
 		clockStage.setIntervalDelayInMs(intervalDelayInMs);
@@ -34,7 +34,7 @@ public class TcpTraceLoggingExtAnalysis extends Analysis {
 		SingleElementPipe.connect(clockStage.getOutputPort(), distributor.getInputPort());
 
 		// create and configure pipeline
-		Pipeline<Clock, Distributor<Long>> pipeline = new Pipeline<Clock, Distributor<Long>>();
+		HeadPipeline<Clock, Distributor<Long>> pipeline = new HeadPipeline<Clock, Distributor<Long>>();
 		pipeline.setFirstStage(clockStage);
 		pipeline.setLastStage(distributor);
 		return pipeline;
@@ -54,7 +54,7 @@ public class TcpTraceLoggingExtAnalysis extends Analysis {
 		SpScPipe.connect(previousClockStage.getNewOutputPort(), this.recordThroughputStage.getTriggerInputPort(), 10);
 
 		// create and configure pipeline
-		Pipeline<TCPReader, Sink<IMonitoringRecord>> pipeline = new Pipeline<TCPReader, Sink<IMonitoringRecord>>();
+		HeadPipeline<TCPReader, Sink<IMonitoringRecord>> pipeline = new HeadPipeline<TCPReader, Sink<IMonitoringRecord>>();
 		pipeline.setFirstStage(tcpReader);
 		pipeline.addIntermediateStage(this.recordCounter);
 		// pipeline.addIntermediateStage(this.recordThroughputStage);
@@ -66,7 +66,7 @@ public class TcpTraceLoggingExtAnalysis extends Analysis {
 	public void init() {
 		super.init();
 
-		Pipeline<Clock, Distributor<Long>> clockPipeline = this.buildClockPipeline(1000);
+		HeadPipeline<Clock, Distributor<Long>> clockPipeline = this.buildClockPipeline(1000);
 		this.clockThread = new Thread(new RunnableStage(clockPipeline));
 
 		StageWithPort tcpPipeline = this.buildTcpPipeline(clockPipeline.getLastStage());

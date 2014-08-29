@@ -21,17 +21,17 @@ public class Analysis {
 	}
 
 	public void init() {
-		for (StageWithPort stage : this.configuration.getConsumerStages()) {
+		for (HeadStage stage : this.configuration.getConsumerStages()) {
 			Thread thread = new Thread(new RunnableStage(stage));
 			this.consumerThreads.add(thread);
 		}
 
-		for (StageWithPort stage : this.configuration.getFiniteProducerStages()) {
+		for (HeadStage stage : this.configuration.getFiniteProducerStages()) {
 			Thread thread = new Thread(new RunnableStage(stage));
 			this.finiteProducerThreads.add(thread);
 		}
 
-		for (StageWithPort stage : this.configuration.getInfiniteProducerStages()) {
+		for (HeadStage stage : this.configuration.getInfiniteProducerStages()) {
 			Thread thread = new Thread(new RunnableStage(stage));
 			this.infiniteProducerThreads.add(thread);
 		}

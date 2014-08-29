@@ -16,8 +16,7 @@ public class Relay<T> extends ProducerStage<T> {
 		T element = this.inputPort.receive();
 		if (null == element) {
 			if (this.cachedCastedInputPipe.getSignal() instanceof TerminatingSignal) {
-				this.setReschedulable(false);
-				assert 0 == this.inputPort.getPipe().size();
+				this.terminate();
 			}
 			Thread.yield();
 			return;

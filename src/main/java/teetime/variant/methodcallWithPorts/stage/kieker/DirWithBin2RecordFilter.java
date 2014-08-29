@@ -24,7 +24,6 @@ public class DirWithBin2RecordFilter extends Pipeline<ClassNameRegistryCreationF
 		final BinaryFile2RecordFilter binaryFile2RecordFilter = new BinaryFile2RecordFilter(classNameRegistryRepository);
 
 		this.setFirstStage(classNameRegistryCreationFilter);
-		this.addIntermediateStage(directory2FilesFilter);
 		this.setLastStage(binaryFile2RecordFilter);
 	}
 

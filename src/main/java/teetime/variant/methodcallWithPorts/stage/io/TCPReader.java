@@ -165,7 +165,7 @@ public class TCPReader extends ProducerStage<IMonitoringRecord> {
 				}
 			}
 
-			this.setReschedulable(false);
+			this.terminate();
 			this.tcpStringReader.terminate();
 		}
 	}

@@ -87,7 +87,7 @@ public class KiekerRecordTcpReader extends ProducerStage<IMonitoringRecord> {
 				}
 			}
 
-			this.setReschedulable(false);
+			this.terminate();
 		}
 	}
 

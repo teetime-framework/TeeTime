@@ -10,11 +10,11 @@ import teetime.variant.methodcallWithPorts.framework.core.validation.AnalysisNot
 
 public class RunnableStage implements Runnable {
 
-	private final StageWithPort stage;
+	private final HeadStage stage;
 	private final Logger logger;
 	private boolean validationEnabled;
 
-	public RunnableStage(final StageWithPort stage) {
+	public RunnableStage(final HeadStage stage) {
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
 	}
@@ -37,7 +37,7 @@ public class RunnableStage implements Runnable {
 
 			do {
 				this.stage.executeWithPorts();
-			} while (this.stage.isReschedulable());
+			} while (!this.stage.shouldBeTerminated());
 
 			TerminatingSignal terminatingSignal = new TerminatingSignal();
 			this.stage.onSignal(terminatingSignal, null);

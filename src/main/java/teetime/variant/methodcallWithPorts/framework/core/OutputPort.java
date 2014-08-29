@@ -4,15 +4,6 @@ import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
 
 public final class OutputPort<T> extends AbstractPort<T> {
 
-	/**
-	 * Performance cache: Avoids the following method chain
-	 *
-	 * <pre>
-	 * this.getPipe().getTargetPort().getOwningStage()
-	 * </pre>
-	 */
-	// private StageWithPort cachedTargetStage;
-
 	OutputPort() {
 		super();
 	}
@@ -24,15 +15,6 @@ public final class OutputPort<T> extends AbstractPort<T> {
 	 */
 	public boolean send(final T element) {
 		return this.pipe.add(element);
-	}
-
-	// public StageWithPort getCachedTargetStage() {
-	// return this.cachedTargetStage;
-	// }
-
-	@Deprecated
-	public void setCachedTargetStage(final StageWithPort cachedTargetStage) {
-		// this.cachedTargetStage = cachedTargetStage;
 	}
 
 	public void sendSignal(final Signal signal) {

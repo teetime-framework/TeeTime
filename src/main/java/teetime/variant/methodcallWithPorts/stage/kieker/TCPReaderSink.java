@@ -144,7 +144,7 @@ public class TCPReaderSink extends ProducerStage<IMonitoringRecord> {
 				}
 			}
 
-			this.setReschedulable(false);
+			this.terminate();
 		}
 	}
 

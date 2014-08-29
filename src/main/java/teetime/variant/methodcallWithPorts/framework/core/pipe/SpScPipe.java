@@ -32,13 +32,6 @@ public class SpScPipe<T> extends AbstractPipe<T> {
 	}
 
 	@Override
-	public void connectPorts(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
-		targetPort.setPipe(this);
-		sourcePort.setPipe(this);
-		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
-	}
-
-	@Override
 	public boolean add(final T element) {
 		// BETTER introduce a QueueIsFullStrategy
 		while (!this.queue.offer(element)) {

@@ -27,7 +27,6 @@ public class UnorderedGrowablePipe<T> extends IntraThreadPipe<T> {
 	public void connectPorts(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
 		sourcePort.setPipe(this);
 		targetPort.setPipe(this);
-		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
 	}
 
 	@Override

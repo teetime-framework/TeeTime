@@ -14,13 +14,6 @@ public class Pipe<T> extends IntraThreadPipe<T> {
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 
-	@Override
-	public void connectPorts(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
-		sourcePort.setPipe(this);
-		targetPort.setPipe(this);
-		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
-	}
-
 	/*
 	 * (non-Javadoc)
 	 *

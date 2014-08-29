@@ -9,7 +9,7 @@ import java.util.List;
 import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
 import teetime.variant.methodcallWithPorts.framework.core.Configuration;
-import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
+import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
@@ -72,36 +72,37 @@ public class TcpTraceReconstructionAnalysisWithThreadsConfiguration extends Conf
 	}
 
 	public void buildConfiguration() {
-		final Pipeline<TCPReader, Distributor<IMonitoringRecord>> tcpPipeline = this.buildTcpPipeline();
+		final HeadPipeline<TCPReader, Distributor<IMonitoringRecord>> tcpPipeline = this.buildTcpPipeline();
 		this.getFiniteProducerStages().add(tcpPipeline);
 
-		final Pipeline<Clock, Distributor<Long>> clockStage = this.buildClockPipeline(1000);
+		final HeadPipeline<Clock, Distributor<Long>> clockStage = this.buildClockPipeline(1000);
 		this.getInfiniteProducerStages().add(clockStage);
 
-		final Pipeline<Clock, Distributor<Long>> clock2Stage = this.buildClockPipeline(2000);
+		final HeadPipeline<Clock, Distributor<Long>> clock2Stage = this.buildClockPipeline(2000);
 		this.getInfiniteProducerStages().add(clock2Stage);
 
 		this.numWorkerThreads = Math.min(NUM_VIRTUAL_CORES, this.numWorkerThreads);
 		for (int i = 0; i < this.numWorkerThreads; i++) {
-			StageWithPort pipeline = this.buildPipeline(tcpPipeline.getLastStage(), clockStage.getLastStage(), clock2Stage.getLastStage());
+			HeadPipeline<Relay<IMonitoringRecord>, Sink<TraceEventRecords>> pipeline = this.buildPipeline(tcpPipeline.getLastStage(), clockStage.getLastStage(),
+					clock2Stage.getLastStage());
 			this.getConsumerStages().add(pipeline);
 		}
 	}
 
-	private Pipeline<TCPReader, Distributor<IMonitoringRecord>> buildTcpPipeline() {
+	private HeadPipeline<TCPReader, Distributor<IMonitoringRecord>> buildTcpPipeline() {
 		TCPReader tcpReader = new TCPReader();
 		Distributor<IMonitoringRecord> distributor = new Distributor<IMonitoringRecord>();
 
 		SingleElementPipe.connect(tcpReader.getOutputPort(), distributor.getInputPort());
 
 		// create and configure pipeline
-		Pipeline<TCPReader, Distributor<IMonitoringRecord>> pipeline = new Pipeline<TCPReader, Distributor<IMonitoringRecord>>("TCP reader pipeline");
+		HeadPipeline<TCPReader, Distributor<IMonitoringRecord>> pipeline = new HeadPipeline<TCPReader, Distributor<IMonitoringRecord>>("TCP reader pipeline");
 		pipeline.setFirstStage(tcpReader);
 		pipeline.setLastStage(distributor);
 		return pipeline;
 	}
 
-	private Pipeline<Clock, Distributor<Long>> buildClockPipeline(final long intervalDelayInMs) {
+	private HeadPipeline<Clock, Distributor<Long>> buildClockPipeline(final long intervalDelayInMs) {
 		Clock clock = new Clock();
 		clock.setInitialDelayInMs(intervalDelayInMs);
 		clock.setIntervalDelayInMs(intervalDelayInMs);
@@ -110,7 +111,7 @@ public class TcpTraceReconstructionAnalysisWithThreadsConfiguration extends Conf
 		SingleElementPipe.connect(clock.getOutputPort(), distributor.getInputPort());
 
 		// create and configure pipeline
-		Pipeline<Clock, Distributor<Long>> pipeline = new Pipeline<Clock, Distributor<Long>>();
+		HeadPipeline<Clock, Distributor<Long>> pipeline = new HeadPipeline<Clock, Distributor<Long>>();
 		pipeline.setFirstStage(clock);
 		pipeline.setLastStage(distributor);
 		return pipeline;
@@ -146,7 +147,7 @@ public class TcpTraceReconstructionAnalysisWithThreadsConfiguration extends Conf
 		}
 	}
 
-	private StageWithPort buildPipeline(final Distributor<IMonitoringRecord> tcpReaderPipeline,
+	private HeadPipeline<Relay<IMonitoringRecord>, Sink<TraceEventRecords>> buildPipeline(final Distributor<IMonitoringRecord> tcpReaderPipeline,
 			final Distributor<Long> clockStage, final Distributor<Long> clock2Stage) {
 		// create stages
 		Relay<IMonitoringRecord> relay = new Relay<IMonitoringRecord>();
@@ -182,16 +183,9 @@ public class TcpTraceReconstructionAnalysisWithThreadsConfiguration extends Conf
 		SingleElementPipe.connect(traceCounter.getOutputPort(), endStage.getInputPort());
 
 		// create and configure pipeline
-		Pipeline<Relay<IMonitoringRecord>, Sink<TraceEventRecords>> pipeline = new Pipeline<Relay<IMonitoringRecord>, Sink<TraceEventRecords>>("Worker pipeline");
+		HeadPipeline<Relay<IMonitoringRecord>, Sink<TraceEventRecords>> pipeline = new HeadPipeline<Relay<IMonitoringRecord>, Sink<TraceEventRecords>>(
+				"Worker pipeline");
 		pipeline.setFirstStage(relay);
-		pipeline.addIntermediateStage(recordCounter);
-		pipeline.addIntermediateStage(recordThroughputFilter);
-		pipeline.addIntermediateStage(traceMetadataCounter);
-		pipeline.addIntermediateStage(instanceOfFilter);
-		// pipeline.addIntermediateStage(this.recordThroughputFilter);
-		pipeline.addIntermediateStage(traceReconstructionFilter);
-		// pipeline.addIntermediateStage(traceThroughputFilter);
-		pipeline.addIntermediateStage(traceCounter);
 		// pipeline.addIntermediateStage(sysout);
 		pipeline.setLastStage(endStage);
 

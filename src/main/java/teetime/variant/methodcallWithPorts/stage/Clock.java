@@ -26,7 +26,7 @@ public class Clock extends ProducerStage<Long> {
 		try {
 			Thread.sleep(delayInMs);
 		} catch (InterruptedException e) {
-			this.setReschedulable(false);
+			this.terminate();
 		}
 	}
 

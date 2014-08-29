@@ -14,13 +14,6 @@ public class SingleElementPipe<T> extends IntraThreadPipe<T> {
 	}
 
 	@Override
-	public void connectPorts(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
-		sourcePort.setPipe(this);
-		targetPort.setPipe(this);
-		sourcePort.setCachedTargetStage(targetPort.getOwningStage());
-	}
-
-	@Override
 	public boolean add(final T element) {
 		this.element = element;
 		return true;

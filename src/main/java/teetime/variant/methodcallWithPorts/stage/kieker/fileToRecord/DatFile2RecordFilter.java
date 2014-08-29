@@ -29,7 +29,7 @@ import kieker.common.record.IMonitoringRecord;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class DatFile2RecordFilter extends Pipeline<File2TextLinesFilter, TextLine2RecordFilter> {

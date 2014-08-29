@@ -24,15 +24,13 @@ public class Delay<T> extends AbstractStage {
 			T element = this.inputPort.receive();
 			this.send(this.outputPort, element);
 		}
-
-		// this.setReschedulable(this.getInputPort().pipe.size() > 0);
-		this.setReschedulable(false);
-		// System.out.println("delay: " + this.getInputPort().pipe.size());
 	}
 
 	@Override
 	public void onIsPipelineHead() {
-		this.setReschedulable(true);
+		while (!this.inputPort.getPipe().isEmpty()) {
+			this.executeWithPorts();
+		}
 	}
 
 	public InputPort<T> getInputPort() {

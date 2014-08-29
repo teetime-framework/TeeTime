@@ -20,7 +20,7 @@ import teetime.variant.methodcallWithPorts.framework.core.ProducerStage;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ObjectProducer<T> extends ProducerStage<T> {
@@ -60,13 +60,12 @@ public class ObjectProducer<T> extends ProducerStage<T> {
 		newObject = this.inputObjectCreator.create();
 		this.numInputObjects--;
 
-		if (this.numInputObjects == 0) {
-			this.setReschedulable(false);
-			// this.getOutputPort().pipe.close();
-		}
-
 		// System.out.println(this.getClass().getSimpleName() + ": sending " + this.numInputObjects);
 		this.send(this.outputPort, newObject);
+
+		if (this.numInputObjects == 0) {
+			this.terminate();
+		}
 	}
 
 }
