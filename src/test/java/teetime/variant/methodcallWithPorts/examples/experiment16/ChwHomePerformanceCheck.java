@@ -28,6 +28,6 @@ public class ChwHomePerformanceCheck implements PerformanceCheckProfile {
 		System.out.println("speedupC: " + speedupC);
 
 		assertEquals(2, speedupB, 0.3);
-		assertEquals(4, speedupC, 0.3);
+		assertEquals(3.5, speedupC, 0.3);
 	}
 }

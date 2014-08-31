@@ -89,12 +89,20 @@ public class ChwHomeComparisonMethodcallWithPorts implements PerformanceCheckPro
 		// assertEquals(53, value17, 4.1); // +0
 
 		// since 11.08.2014 (incl.)
-		assertEquals(103, value14, 5.1); // +17
-		assertEquals(47, value10, 2.1); // +21
-		assertEquals(41, value11, 4.1); // -3
-		assertEquals(42, value9, 2.1); // +6
-		assertEquals(44, value15, 4.1); // +0
-		assertEquals(53, value17, 4.1); // +0
+		// assertEquals(103, value14, 5.1); // +17
+		// assertEquals(47, value10, 2.1); // +21
+		// assertEquals(41, value11, 4.1); // -3
+		// assertEquals(42, value9, 2.1); // +6
+		// assertEquals(44, value15, 4.1); // +0
+		// assertEquals(53, value17, 4.1); // +0
+
+		// since 31.08.2014 (incl.)
+		assertEquals(78, value14, 5.1); // -25
+		assertEquals(59, value10, 2.1); // +12
+		assertEquals(63, value11, 4.1); // +22
+		assertEquals(52, value9, 2.1); // +??
+		assertEquals(72, value15, 4.1); // +??
+		assertEquals(79, value17, 4.1); // +26
 
 		// below results vary too much, possibly due to the OS' scheduler
 		// assertEquals(RESULT_TESTS_16, (double) test16a.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
