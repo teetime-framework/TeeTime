@@ -1,7 +1,6 @@
 package teetime.variant.methodcallWithPorts.framework.core.pipe;
 
 import java.util.Queue;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.jctools.queues.QueueFactory;
 import org.jctools.queues.spec.ConcurrentQueueSpec;
@@ -10,12 +9,10 @@ import org.jctools.queues.spec.Preference;
 
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
-import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
 
-public class SpScPipe<T> extends AbstractPipe<T> {
+public final class SpScPipe<T> extends InterThreadPipe<T> {
 
 	private final Queue<T> queue;
-	private final AtomicReference<Signal> signal = new AtomicReference<Signal>();
 	// statistics
 	private int numWaits;
 
@@ -65,20 +62,6 @@ public class SpScPipe<T> extends AbstractPipe<T> {
 	// BETTER find a solution w/o any thread-safe code in this stage
 	public synchronized int getNumWaits() {
 		return this.numWaits;
-	}
-
-	@Override
-	public void setSignal(final Signal signal) {
-		this.signal.lazySet(signal); // lazySet is legal due to our single-writer requirement
-	}
-
-	public Signal getSignal() {
-		return this.signal.get();
-	}
-
-	@Override
-	public void reportNewElement() {
-		// do nothing
 	}
 
 }

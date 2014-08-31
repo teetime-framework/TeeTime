@@ -53,6 +53,7 @@ public abstract class AbstractStage implements StageWithPort {
 		outputPort.reportNewElement();
 
 		return true;
+		// return outputPort.send(element);
 	}
 
 	@SuppressWarnings("unchecked")

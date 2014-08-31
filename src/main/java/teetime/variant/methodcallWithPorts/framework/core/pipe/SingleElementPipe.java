@@ -3,9 +3,13 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public class SingleElementPipe<T> extends IntraThreadPipe<T> {
+public final class SingleElementPipe<T> extends IntraThreadPipe<T> {
 
 	private T element;
+
+	SingleElementPipe() {
+		super();
+	}
 
 	@Deprecated
 	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {

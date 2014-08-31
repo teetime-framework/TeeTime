@@ -2,14 +2,14 @@ package teetime.variant.methodcallWithPorts.stage;
 
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.ProducerStage;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.InterThreadPipe;
 import teetime.variant.methodcallWithPorts.framework.core.signal.TerminatingSignal;
 
 public class Relay<T> extends ProducerStage<T> {
 
 	private final InputPort<T> inputPort = this.createInputPort();
 
-	private SpScPipe<T> cachedCastedInputPipe;
+	private InterThreadPipe<T> cachedCastedInputPipe;
 
 	@Override
 	public void execute() {
@@ -26,7 +26,7 @@ public class Relay<T> extends ProducerStage<T> {
 
 	@Override
 	public void onStarting() {
-		this.cachedCastedInputPipe = (SpScPipe<T>) this.inputPort.getPipe();
+		this.cachedCastedInputPipe = (InterThreadPipe<T>) this.inputPort.getPipe();
 		super.onStarting();
 	}
 

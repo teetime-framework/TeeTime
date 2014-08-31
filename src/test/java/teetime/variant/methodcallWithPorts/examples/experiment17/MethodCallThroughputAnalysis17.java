@@ -25,10 +25,10 @@ import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.DummyPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.PipeOrdering;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.ThreadCommunication;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.RelayTestPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.UnorderedGrowablePipe;
 import teetime.variant.methodcallWithPorts.framework.core.signal.TerminatingSignal;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
@@ -110,6 +110,7 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		super.init();
 	}
 
+	@SuppressWarnings("unchecked")
 	private HeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> buildProducerPipeline(final int numInputObjects,
 			final ConstructorClosure<TimestampObject> inputObjectCreator) {
 		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(numInputObjects, inputObjectCreator);
@@ -117,21 +118,19 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		Sink<TimestampObject> sink = new Sink<TimestampObject>();
 		Sink<Void> endStage = new Sink<Void>();
 
-		final HeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> pipeline = new HeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>>();
-		pipeline.setFirstStage(objectProducer);
-		// pipeline.setFirstStage(sink);
-		// pipeline.setFirstStage(endStage);
-
-		pipeline.setLastStage(distributor);
-		// pipeline.setLastStage(sink);
-		// pipeline.setLastStage(new EndStage<TimestampObject>());
-
 		// UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), sink.getInputPort());
 		// objectProducer.getOutputPort().pipe = new UnorderedGrowablePipe<TimestampObject>();
 
 		UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), distributor.getInputPort());
-		distributor.getNewOutputPort().setPipe(new UnorderedGrowablePipe<TimestampObject>());
+		distributor.getNewOutputPort().setPipe(new DummyPipe());
 
+		final HeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> pipeline = new HeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>>();
+		pipeline.setFirstStage(objectProducer);
+		// pipeline.setFirstStage(sink);
+		// pipeline.setFirstStage(endStage);
+		pipeline.setLastStage(distributor);
+		// pipeline.setLastStage(sink);
+		// pipeline.setLastStage(new EndStage<TimestampObject>());
 		return pipeline;
 	}
 
@@ -152,21 +151,11 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(timestampObjects);
 
-		final HeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new HeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>>();
-		pipeline.setFirstStage(relay);
-		pipeline.setLastStage(collectorSink);
-
-		IPipe<TimestampObject> pipe = this.pipeFactory.create(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false, SPSC_INITIAL_CAPACITY);
-		relay.getInputPort().setPipe(pipe);
-		IPipe<TimestampObject> startPipe = relay.getInputPort().getPipe();
-		for (int i = 0; i < this.numInputObjects; i++) {
-			startPipe.add(this.inputObjectCreator.create());
-		}
-		// startPipe.close();
+		IPipe<TimestampObject> startPipe = new RelayTestPipe<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
 		startPipe.setSignal(new TerminatingSignal());
 
+		relay.getInputPort().setPipe(startPipe);
 		UnorderedGrowablePipe.connect(relay.getOutputPort(), startTimestampFilter.getInputPort());
-
 		UnorderedGrowablePipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
 		for (int i = 0; i < noopFilters.length - 1; i++) {
 			UnorderedGrowablePipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
@@ -174,6 +163,9 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		UnorderedGrowablePipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
 		UnorderedGrowablePipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
+		final HeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new HeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>>();
+		pipeline.setFirstStage(relay);
+		pipeline.setLastStage(collectorSink);
 		return pipeline;
 	}
 

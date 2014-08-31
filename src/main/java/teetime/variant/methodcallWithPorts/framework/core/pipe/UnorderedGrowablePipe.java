@@ -3,7 +3,7 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public class UnorderedGrowablePipe<T> extends IntraThreadPipe<T> {
+public final class UnorderedGrowablePipe<T> extends IntraThreadPipe<T> {
 
 	private final int MIN_CAPACITY;
 
@@ -12,7 +12,7 @@ public class UnorderedGrowablePipe<T> extends IntraThreadPipe<T> {
 	private int lastFreeIndex;
 
 	@SuppressWarnings("unchecked")
-	public UnorderedGrowablePipe() {
+	UnorderedGrowablePipe() {
 		this.MIN_CAPACITY = 4;
 		this.elements = (T[]) new Object[this.MIN_CAPACITY];
 	}
@@ -21,12 +21,6 @@ public class UnorderedGrowablePipe<T> extends IntraThreadPipe<T> {
 	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
 		IPipe<T> pipe = new UnorderedGrowablePipe<T>();
 		pipe.connectPorts(sourcePort, targetPort);
-	}
-
-	@Override
-	public void connectPorts(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
-		sourcePort.setPipe(this);
-		targetPort.setPipe(this);
 	}
 
 	@Override

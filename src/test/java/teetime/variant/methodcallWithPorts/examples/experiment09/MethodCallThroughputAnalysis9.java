@@ -23,7 +23,7 @@ import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
 import teetime.variant.methodcallWithPorts.framework.core.HeadStage;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.Pipe;
+import teetime.variant.methodcallWithPorts.framework.core.pipe.CommittablePipe;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.NoopFilter;
 import teetime.variant.methodcallWithPorts.stage.ObjectProducer;
@@ -71,13 +71,13 @@ public class MethodCallThroughputAnalysis9 extends Analysis {
 		pipeline.setFirstStage(objectProducer);
 		pipeline.setLastStage(collectorSink);
 
-		Pipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
-		Pipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
+		CommittablePipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
+		CommittablePipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
 		for (int i = 0; i < noopFilters.length - 1; i++) {
-			Pipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
+			CommittablePipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
 		}
-		Pipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
-		Pipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
+		CommittablePipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
+		CommittablePipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
 		return pipeline;
 	}

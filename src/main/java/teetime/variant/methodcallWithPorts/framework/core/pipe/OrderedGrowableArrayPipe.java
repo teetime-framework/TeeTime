@@ -4,7 +4,7 @@ import teetime.util.concurrent.workstealing.CircularArray;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public class OrderedGrowableArrayPipe<T> extends IntraThreadPipe<T> {
+public final class OrderedGrowableArrayPipe<T> extends IntraThreadPipe<T> {
 
 	private CircularArray<T> elements;
 	private int head;
