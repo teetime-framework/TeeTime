@@ -45,7 +45,7 @@ import kieker.common.util.filesystem.FSUtil;
  */
 public class Dir2RecordsFilter extends Pipeline<ClassNameRegistryCreationFilter, Merger<IMonitoringRecord>> {
 
-	private final PipeFactory pipeFactory = new PipeFactory();
+	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
 	private ClassNameRegistryRepository classNameRegistryRepository;
 
 	/**

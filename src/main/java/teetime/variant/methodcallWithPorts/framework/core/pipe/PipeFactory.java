@@ -30,7 +30,9 @@ public class PipeFactory {
 
 	private final Map<String, IPipeFactory> pipeFactories = new HashMap<String, IPipeFactory>();
 
-	public PipeFactory() {
+	public static PipeFactory INSTANCE = new PipeFactory();
+
+	private PipeFactory() {
 		try {
 			List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadFromFile("conf/pipe-factories.conf");
 			for (IPipeFactory pipeFactory : pipeFactories) {

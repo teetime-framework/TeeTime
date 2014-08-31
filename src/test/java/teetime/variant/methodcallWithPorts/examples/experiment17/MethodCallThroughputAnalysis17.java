@@ -54,7 +54,7 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 	private ConstructorClosure<TimestampObject> inputObjectCreator;
 	private int numNoopFilters;
 
-	private final PipeFactory pipeFactory = new PipeFactory();
+	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
 	private final List<List<TimestampObject>> timestampObjectsList = new LinkedList<List<TimestampObject>>();
 
 	private Thread producerThread;

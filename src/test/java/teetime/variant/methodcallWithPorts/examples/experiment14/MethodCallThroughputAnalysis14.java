@@ -44,6 +44,7 @@ public class MethodCallThroughputAnalysis14 extends Analysis {
 	private int numNoopFilters;
 	private List<TimestampObject> timestampObjects;
 	private Runnable runnable;
+	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
 
 	@Override
 	public void init() {
@@ -73,18 +74,17 @@ public class MethodCallThroughputAnalysis14 extends Analysis {
 		pipeline.setFirstStage(objectProducer);
 		pipeline.setLastStage(collectorSink);
 
-		PipeFactory pipeFactory = new PipeFactory();
-		IPipe<TimestampObject> pipe = pipeFactory.create(ThreadCommunication.INTRA);
+		IPipe<TimestampObject> pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
 		pipe.connectPorts(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
-		pipe = pipeFactory.create(ThreadCommunication.INTRA);
+		pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
 		pipe.connectPorts(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
 		for (int i = 0; i < noopFilters.length - 1; i++) {
-			pipe = pipeFactory.create(ThreadCommunication.INTRA);
+			pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
 			pipe.connectPorts(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
 		}
-		pipe = pipeFactory.create(ThreadCommunication.INTRA);
+		pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
 		pipe.connectPorts(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
-		pipe = pipeFactory.create(ThreadCommunication.INTRA);
+		pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
 		pipe.connectPorts(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
 		return pipeline;

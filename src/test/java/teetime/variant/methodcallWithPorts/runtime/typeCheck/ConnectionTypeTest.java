@@ -21,6 +21,8 @@ import teetime.variant.methodcallWithPorts.stage.basic.Sink;
 
 public class ConnectionTypeTest {
 
+	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
+
 	// tests for load-time validation
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -44,13 +46,11 @@ public class ConnectionTypeTest {
 		StopTimestampFilter stopTimestampFilter = StopTimestampFilter.class.newInstance();
 		Sink sink = Sink.class.newInstance();
 
-		PipeFactory pipeFactory = new PipeFactory();
-
-		IPipe pipe = pipeFactory.create(ThreadCommunication.INTRA);
+		IPipe pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
 		pipe.connectPorts(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
-		pipe = pipeFactory.create(ThreadCommunication.INTRA);
+		pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
 		pipe.connectPorts(startTimestampFilter.getOutputPort(), stopTimestampFilter.getInputPort());
-		pipe = pipeFactory.create(ThreadCommunication.INTRA);
+		pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
 		pipe.connectPorts(stopTimestampFilter.getOutputPort(), sink.getInputPort());
 
 		// TypeVariable<Class<ObjectProducer>>[] objectProducerTypeParameters = ObjectProducer.class.getTypeParameters();

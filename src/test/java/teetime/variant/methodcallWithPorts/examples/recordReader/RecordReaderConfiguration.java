@@ -40,11 +40,7 @@ import kieker.common.record.IMonitoringRecord;
 public class RecordReaderConfiguration extends Configuration {
 
 	private final List<IMonitoringRecord> elementCollection = new LinkedList<IMonitoringRecord>();
-	private final PipeFactory pipeFactory;
-
-	public RecordReaderConfiguration() {
-		this.pipeFactory = new PipeFactory();
-	}
+	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
 
 	public void buildConfiguration() {
 		HeadPipeline<?, ?> producerPipeline = this.buildProducerPipeline();
