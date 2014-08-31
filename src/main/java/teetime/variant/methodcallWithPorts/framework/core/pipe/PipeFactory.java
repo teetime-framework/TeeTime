@@ -55,6 +55,9 @@ public class PipeFactory {
 	public <T> IPipe<T> create(final ThreadCommunication tc, final PipeOrdering ordering, final boolean growable, final int capacity) {
 		String key = this.buildKey(tc, ordering, growable);
 		IPipeFactory pipeClass = this.pipeFactories.get(key);
+		if (null == pipeClass) {
+			throw new CouldNotFindPipeImplException(key);
+		}
 		return pipeClass.create(capacity);
 	}
 

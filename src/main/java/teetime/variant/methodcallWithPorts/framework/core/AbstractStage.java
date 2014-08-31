@@ -1,7 +1,9 @@
 package teetime.variant.methodcallWithPorts.framework.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -22,8 +24,6 @@ public abstract class AbstractStage implements StageWithPort {
 
 	private StageWithPort parentStage;
 
-	private boolean reschedulable;
-
 	private final List<InputPort<?>> inputPortList = new ArrayList<InputPort<?>>();
 	private final List<OutputPort<?>> outputPortList = new ArrayList<OutputPort<?>>();
 
@@ -31,6 +31,8 @@ public abstract class AbstractStage implements StageWithPort {
 	protected InputPort<?>[] cachedInputPorts;
 	/** A cached instance of <code>outputPortList</code> to avoid creating an iterator each time iterating it */
 	protected OutputPort<?>[] cachedOutputPorts;
+
+	private final Map<Signal, Void> visited = new HashMap<Signal, Void>();
 
 	public AbstractStage() {
 		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
@@ -49,12 +51,6 @@ public abstract class AbstractStage implements StageWithPort {
 		}
 
 		outputPort.reportNewElement();
-
-		// StageWithPort next = outputPort.getCachedTargetStage();
-		//
-		// do {
-		// next.executeWithPorts(); // PERFORMANCE use the return value as indicator for re-schedulability instead
-		// } while (next.isReschedulable());
 
 		return true;
 	}
@@ -97,12 +93,23 @@ public abstract class AbstractStage implements StageWithPort {
 	 */
 	@Override
 	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
-		this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
+		if (!this.alreadyVisited(signal, inputPort)) {
+			signal.trigger(this);
 
-		signal.trigger(this);
+			for (OutputPort<?> outputPort : this.outputPortList) {
+				outputPort.sendSignal(signal);
+			}
+		}
+	}
 
-		for (OutputPort<?> outputPort : this.outputPortList) {
-			outputPort.sendSignal(signal);
+	protected boolean alreadyVisited(final Signal signal, final InputPort<?> inputPort) {
+		if (this.visited.containsKey(signal)) {
+			this.logger.trace("Got signal: " + signal + " again from input port: " + inputPort);
+			return true;
+		} else {
+			this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
+			this.visited.put(signal, null);
+			return false;
 		}
 	}
 

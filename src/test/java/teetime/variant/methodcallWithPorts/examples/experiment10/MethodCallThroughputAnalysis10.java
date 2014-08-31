@@ -31,7 +31,7 @@ import teetime.variant.methodcallWithPorts.stage.StopTimestampFilter;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class MethodCallThroughputAnalysis10 extends Analysis {
@@ -66,9 +66,6 @@ public class MethodCallThroughputAnalysis10 extends Analysis {
 
 		final HeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new HeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>>();
 		pipeline.setFirstStage(objectProducer);
-		pipeline.addIntermediateStage(startTimestampFilter);
-		pipeline.addIntermediateStages(noopFilters);
-		pipeline.addIntermediateStage(stopTimestampFilter);
 		pipeline.setLastStage(collectorSink);
 
 		SingleElementPipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());

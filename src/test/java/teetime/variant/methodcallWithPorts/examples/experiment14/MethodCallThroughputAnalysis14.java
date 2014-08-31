@@ -21,8 +21,8 @@ import teetime.util.ConstructorClosure;
 import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
+import teetime.variant.methodcallWithPorts.framework.core.HeadStage;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
-import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.ThreadCommunication;
@@ -48,15 +48,16 @@ public class MethodCallThroughputAnalysis14 extends Analysis {
 	@Override
 	public void init() {
 		super.init();
-		StageWithPort pipeline = this.buildPipeline();
+		HeadStage pipeline = this.buildPipeline();
 		this.runnable = new RunnableStage(pipeline);
 	}
 
 	/**
 	 * @param numNoopFilters
+	 * @return
 	 * @since 1.10
 	 */
-	private StageWithPort buildPipeline() {
+	private HeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> buildPipeline() {
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
 		// create stages
@@ -70,9 +71,6 @@ public class MethodCallThroughputAnalysis14 extends Analysis {
 
 		final HeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new HeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>>();
 		pipeline.setFirstStage(objectProducer);
-		pipeline.addIntermediateStage(startTimestampFilter);
-		pipeline.addIntermediateStages(noopFilters);
-		pipeline.addIntermediateStage(stopTimestampFilter);
 		pipeline.setLastStage(collectorSink);
 
 		PipeFactory pipeFactory = new PipeFactory();

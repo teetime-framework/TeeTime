@@ -9,7 +9,6 @@ import teetime.util.concurrent.hashmap.TraceBuffer;
 import teetime.variant.explicitScheduling.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
 import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
-import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.Cache;
@@ -17,6 +16,7 @@ import teetime.variant.methodcallWithPorts.stage.Clock;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
 import teetime.variant.methodcallWithPorts.stage.Counter;
 import teetime.variant.methodcallWithPorts.stage.ElementThroughputMeasuringStage;
+import teetime.variant.methodcallWithPorts.stage.InitialElementProducer;
 import teetime.variant.methodcallWithPorts.stage.InstanceOfFilter;
 import teetime.variant.methodcallWithPorts.stage.basic.merger.Merger;
 import teetime.variant.methodcallWithPorts.stage.kieker.Dir2RecordsFilter;
@@ -52,7 +52,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 		Clock clockStage = this.buildClockPipeline();
 		this.clockThread = new Thread(new RunnableStage(clockStage));
 
-		StageWithPort pipeline = this.buildPipeline(clockStage);
+		HeadPipeline<?, ?> pipeline = this.buildPipeline(clockStage);
 		this.workerThread = new Thread(new RunnableStage(pipeline));
 	}
 
@@ -63,10 +63,11 @@ public class TraceReconstructionAnalysis extends Analysis {
 		return clock;
 	}
 
-	private StageWithPort buildPipeline(final Clock clockStage) {
+	private HeadPipeline<?, ?> buildPipeline(final Clock clockStage) {
 		this.classNameRegistryRepository = new ClassNameRegistryRepository();
 
 		// create stages
+		InitialElementProducer<File> initialElementProducer = new InitialElementProducer<File>(this.inputDir);
 		final Dir2RecordsFilter dir2RecordsFilter = new Dir2RecordsFilter(this.classNameRegistryRepository);
 		this.recordCounter = new Counter<IMonitoringRecord>();
 		final Cache<IMonitoringRecord> cache = new Cache<IMonitoringRecord>();
@@ -85,7 +86,7 @@ public class TraceReconstructionAnalysis extends Analysis {
 		stringBufferFilter.getDataTypeHandlers().add(new StringHandler());
 
 		// connect stages
-		dir2RecordsFilter.getInputPort().setPipe(new SingleElementPipe<File>());
+		SingleElementPipe.connect(initialElementProducer.getOutputPort(), dir2RecordsFilter.getInputPort());
 		SingleElementPipe.connect(dir2RecordsFilter.getOutputPort(), this.recordCounter.getInputPort());
 		SingleElementPipe.connect(this.recordCounter.getOutputPort(), cache.getInputPort());
 		SingleElementPipe.connect(cache.getOutputPort(), stringBufferFilter.getInputPort());
@@ -100,20 +101,9 @@ public class TraceReconstructionAnalysis extends Analysis {
 
 		SpScPipe.connect(clockStage.getOutputPort(), this.throughputFilter.getTriggerInputPort(), 1);
 
-		// fill input ports
-		dir2RecordsFilter.getInputPort().getPipe().add(this.inputDir);
-
 		// create and configure pipeline
-		HeadPipeline<Dir2RecordsFilter, CollectorSink<TraceEventRecords>> pipeline = new HeadPipeline<Dir2RecordsFilter, CollectorSink<TraceEventRecords>>();
-		pipeline.setFirstStage(dir2RecordsFilter);
-		pipeline.addIntermediateStage(this.recordCounter);
-		pipeline.addIntermediateStage(cache);
-		pipeline.addIntermediateStage(stringBufferFilter);
-		pipeline.addIntermediateStage(instanceOfFilter);
-		pipeline.addIntermediateStage(this.throughputFilter);
-		pipeline.addIntermediateStage(traceReconstructionFilter);
-		pipeline.addIntermediateStage(merger);
-		pipeline.addIntermediateStage(this.traceCounter);
+		HeadPipeline<InitialElementProducer<File>, CollectorSink<TraceEventRecords>> pipeline = new HeadPipeline<InitialElementProducer<File>, CollectorSink<TraceEventRecords>>();
+		pipeline.setFirstStage(initialElementProducer);
 		pipeline.setLastStage(collector);
 		return pipeline;
 	}

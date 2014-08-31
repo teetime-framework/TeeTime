@@ -21,13 +21,12 @@ import java.util.List;
 
 import teetime.variant.methodcallWithPorts.framework.core.Configuration;
 import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
-import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.PipeOrdering;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.ThreadCommunication;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import teetime.variant.methodcallWithPorts.stage.CollectorSink;
+import teetime.variant.methodcallWithPorts.stage.InitialElementProducer;
 import teetime.variant.methodcallWithPorts.stage.kieker.Dir2RecordsFilter;
 import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
 
@@ -48,25 +47,27 @@ public class RecordReaderConfiguration extends Configuration {
 	}
 
 	public void buildConfiguration() {
-		StageWithPort producerPipeline = this.buildProducerPipeline();
+		HeadPipeline<?, ?> producerPipeline = this.buildProducerPipeline();
 		this.getFiniteProducerStages().add(producerPipeline);
 	}
 
-	private StageWithPort buildProducerPipeline() {
+	private HeadPipeline<?, ?> buildProducerPipeline() {
 		ClassNameRegistryRepository classNameRegistryRepository = new ClassNameRegistryRepository();
+		File logDir = new File("src/test/data/bookstore-logs");
 		// create stages
+		InitialElementProducer<File> initialElementProducer = new InitialElementProducer<File>(logDir);
 		Dir2RecordsFilter dir2RecordsFilter = new Dir2RecordsFilter(classNameRegistryRepository);
 		CollectorSink<IMonitoringRecord> collector = new CollectorSink<IMonitoringRecord>(this.elementCollection);
 
-		final HeadPipeline<Dir2RecordsFilter, CollectorSink<IMonitoringRecord>> pipeline = new HeadPipeline<Dir2RecordsFilter, CollectorSink<IMonitoringRecord>>();
-		pipeline.setFirstStage(dir2RecordsFilter);
+		final HeadPipeline<InitialElementProducer<File>, CollectorSink<IMonitoringRecord>> pipeline = new HeadPipeline<InitialElementProducer<File>, CollectorSink<IMonitoringRecord>>();
+		pipeline.setFirstStage(initialElementProducer);
 		pipeline.setLastStage(collector);
 
-		IPipe<IMonitoringRecord> pipe = this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1);
-		pipe.connectPorts(dir2RecordsFilter.getOutputPort(), collector.getInputPort());
+		IPipe<File> pipe = this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1);
+		pipe.connectPorts(initialElementProducer.getOutputPort(), dir2RecordsFilter.getInputPort());
 
-		dir2RecordsFilter.getInputPort().setPipe(new SpScPipe<File>(1));
-		dir2RecordsFilter.getInputPort().getPipe().add(new File("src/test/data/bookstore-logs"));
+		IPipe<IMonitoringRecord> pipe1 = this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1);
+		pipe1.connectPorts(dir2RecordsFilter.getOutputPort(), collector.getInputPort());
 
 		return pipeline;
 	}

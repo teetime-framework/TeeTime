@@ -19,7 +19,7 @@ public class SpScPipe<T> extends AbstractPipe<T> {
 	// statistics
 	private int numWaits;
 
-	public SpScPipe(final int capacity) {
+	SpScPipe(final int capacity) {
 		ConcurrentQueueSpec concurrentQueueSpec = new ConcurrentQueueSpec(1, 1, capacity, Ordering.FIFO, Preference.THROUGHPUT);
 		this.queue = QueueFactory.newQueue(concurrentQueueSpec);
 	}

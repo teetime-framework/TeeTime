@@ -36,7 +36,7 @@ import teetime.variant.methodcallWithPorts.stage.basic.distributor.Distributor;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class MethodCallThroughputAnalysis19 extends Analysis {
@@ -70,8 +70,8 @@ public class MethodCallThroughputAnalysis19 extends Analysis {
 			List<TimestampObject> resultList = new ArrayList<TimestampObject>(this.numInputObjects);
 			this.timestampObjectsList.add(resultList);
 
-			Runnable workerRunnable = this.buildPipeline(producerPipeline.getLastStage(), resultList);
-			this.workerThreads[i] = new Thread(workerRunnable);
+			HeadPipeline<?, ?> pipeline = this.buildPipeline(producerPipeline.getLastStage(), resultList);
+			this.workerThreads[i] = new Thread(new RunnableStage(pipeline));
 		}
 
 	}
@@ -90,7 +90,7 @@ public class MethodCallThroughputAnalysis19 extends Analysis {
 		return pipeline;
 	}
 
-	private Runnable buildPipeline(final Distributor<TimestampObject> previousStage, final List<TimestampObject> timestampObjects) {
+	private HeadPipeline<?, ?> buildPipeline(final Distributor<TimestampObject> previousStage, final List<TimestampObject> timestampObjects) {
 		Relay<TimestampObject> relay = new Relay<TimestampObject>();
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
@@ -104,9 +104,6 @@ public class MethodCallThroughputAnalysis19 extends Analysis {
 
 		final HeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new HeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>>();
 		pipeline.setFirstStage(relay);
-		pipeline.addIntermediateStage(startTimestampFilter);
-		pipeline.addIntermediateStages(noopFilters);
-		pipeline.addIntermediateStage(stopTimestampFilter);
 		pipeline.setLastStage(collectorSink);
 
 		SpScPipe.connect(previousStage.getNewOutputPort(), relay.getInputPort(), SPSC_INITIAL_CAPACITY);
@@ -120,7 +117,7 @@ public class MethodCallThroughputAnalysis19 extends Analysis {
 		OrderedGrowableArrayPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
 		OrderedGrowableArrayPipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
-		return new RunnableStage(pipeline);
+		return pipeline;
 	}
 
 	@Override

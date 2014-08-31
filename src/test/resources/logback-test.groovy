@@ -20,3 +20,5 @@ appender("CONSOLE", ConsoleAppender) {
 }
 
 root ERROR, ["CONSOLE"]
+
+logger "util", INFO
