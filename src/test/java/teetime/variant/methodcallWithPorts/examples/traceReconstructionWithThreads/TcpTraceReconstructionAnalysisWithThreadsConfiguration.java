@@ -50,7 +50,7 @@ public class TcpTraceReconstructionAnalysisWithThreadsConfiguration extends Conf
 	private final StageFactory<Counter<TraceEventRecords>> traceCounterFactory;
 	private final StageFactory<ElementThroughputMeasuringStage<TraceEventRecords>> traceThroughputFilterFactory;
 
-	private final List<SpScPipe<IMonitoringRecord>> tcpRelayPipes = new LinkedList<SpScPipe<IMonitoringRecord>>();
+	private final List<SpScPipe> tcpRelayPipes = new LinkedList<SpScPipe>();
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public TcpTraceReconstructionAnalysisWithThreadsConfiguration() {
@@ -165,7 +165,7 @@ public class TcpTraceReconstructionAnalysisWithThreadsConfiguration extends Conf
 		// EndStage<IMonitoringRecord> endStage = new EndStage<IMonitoringRecord>();
 
 		// connect stages
-		SpScPipe<IMonitoringRecord> tcpRelayPipe = SpScPipe.connect(tcpReaderPipeline.getNewOutputPort(), relay.getInputPort(), TCP_RELAY_MAX_SIZE);
+		SpScPipe tcpRelayPipe = SpScPipe.connect(tcpReaderPipeline.getNewOutputPort(), relay.getInputPort(), TCP_RELAY_MAX_SIZE);
 		this.tcpRelayPipes.add(tcpRelayPipe);
 		// SysOutFilter<TraceEventRecords> sysout = new SysOutFilter<TraceEventRecords>(tcpRelayPipe);
 
@@ -244,7 +244,7 @@ public class TcpTraceReconstructionAnalysisWithThreadsConfiguration extends Conf
 		return numTraceMetadatas;
 	}
 
-	public List<SpScPipe<IMonitoringRecord>> getTcpRelayPipes() {
+	public List<SpScPipe> getTcpRelayPipes() {
 		return this.tcpRelayPipes;
 	}
 

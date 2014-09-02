@@ -74,7 +74,7 @@ public class MethodCallThroughputAnalysis14 extends Analysis {
 		pipeline.setFirstStage(objectProducer);
 		pipeline.setLastStage(collectorSink);
 
-		IPipe<TimestampObject> pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
+		IPipe pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
 		pipe.connectPorts(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
 		pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
 		pipe.connectPorts(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());

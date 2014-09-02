@@ -12,22 +12,24 @@ public class InputPort<T> extends AbstractPort<T> {
 	}
 
 	public T receive() {
-		T element = this.pipe.removeLast();
+		@SuppressWarnings("unchecked")
+		T element = (T) this.pipe.removeLast();
 		return element;
 	}
 
 	public T read() {
-		T element = this.pipe.readLast();
+		@SuppressWarnings("unchecked")
+		T element = (T) this.pipe.readLast();
 		return element;
 	}
 
 	/**
 	 * Connects this input port with the given <code>pipe</code> bi-directionally
-	 * 
+	 *
 	 * @param pipe
 	 */
 	@Override
-	public void setPipe(final IPipe<T> pipe) {
+	public void setPipe(final IPipe pipe) {
 		this.pipe = pipe;
 		pipe.setTargetPort(this);
 	}

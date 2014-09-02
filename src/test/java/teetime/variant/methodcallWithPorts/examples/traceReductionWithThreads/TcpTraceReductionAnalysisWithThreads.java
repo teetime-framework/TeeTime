@@ -49,7 +49,7 @@ public class TcpTraceReductionAnalysisWithThreads extends Analysis {
 	private Thread clock2Thread;
 	private Thread[] workerThreads;
 
-	private SpScPipe<IMonitoringRecord> tcpRelayPipe;
+	private SpScPipe tcpRelayPipe;
 	private int numWorkerThreads;
 
 	@Override
@@ -155,7 +155,8 @@ public class TcpTraceReductionAnalysisWithThreads extends Analysis {
 		}
 	}
 
-	private HeadPipeline<Relay<IMonitoringRecord>, Sink<TraceEventRecords>> buildPipeline(final HeadPipeline<TCPReader, Distributor<IMonitoringRecord>> tcpReaderPipeline,
+	private HeadPipeline<Relay<IMonitoringRecord>, Sink<TraceEventRecords>> buildPipeline(
+			final HeadPipeline<TCPReader, Distributor<IMonitoringRecord>> tcpReaderPipeline,
 			final HeadPipeline<Clock, Distributor<Long>> clockStage,
 			final HeadPipeline<Clock, Distributor<Long>> clock2Stage) {
 		// create stages
@@ -257,7 +258,7 @@ public class TcpTraceReductionAnalysisWithThreads extends Analysis {
 		return throughputs;
 	}
 
-	public SpScPipe<IMonitoringRecord> getTcpRelayPipe() {
+	public SpScPipe getTcpRelayPipe() {
 		return this.tcpRelayPipe;
 	}
 

@@ -50,11 +50,11 @@ public class PipeFactory {
 	 * @param tc
 	 * @return
 	 */
-	public <T> IPipe<T> create(final ThreadCommunication tc) {
+	public IPipe create(final ThreadCommunication tc) {
 		return this.create(tc, PipeOrdering.QUEUE_BASED, true, 1);
 	}
 
-	public <T> IPipe<T> create(final ThreadCommunication tc, final PipeOrdering ordering, final boolean growable, final int capacity) {
+	public IPipe create(final ThreadCommunication tc, final PipeOrdering ordering, final boolean growable, final int capacity) {
 		String key = this.buildKey(tc, ordering, growable);
 		IPipeFactory pipeClass = this.pipeFactories.get(key);
 		if (null == pipeClass) {

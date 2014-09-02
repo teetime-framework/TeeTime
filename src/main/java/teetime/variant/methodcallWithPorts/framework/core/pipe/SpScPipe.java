@@ -10,9 +10,9 @@ import org.jctools.queues.spec.Preference;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public final class SpScPipe<T> extends InterThreadPipe<T> {
+public final class SpScPipe extends InterThreadPipe {
 
-	private final Queue<T> queue;
+	private final Queue<Object> queue;
 	// statistics
 	private int numWaits;
 
@@ -22,14 +22,14 @@ public final class SpScPipe<T> extends InterThreadPipe<T> {
 	}
 
 	@Deprecated
-	public static <T> SpScPipe<T> connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		SpScPipe<T> pipe = new SpScPipe<T>(capacity);
+	public static <T> SpScPipe connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		SpScPipe pipe = new SpScPipe(capacity);
 		pipe.connectPorts(sourcePort, targetPort);
 		return pipe;
 	}
 
 	@Override
-	public boolean add(final T element) {
+	public boolean add(final Object element) {
 		// BETTER introduce a QueueIsFullStrategy
 		while (!this.queue.offer(element)) {
 			this.numWaits++;
@@ -40,7 +40,7 @@ public final class SpScPipe<T> extends InterThreadPipe<T> {
 	}
 
 	@Override
-	public T removeLast() {
+	public Object removeLast() {
 		return this.queue.poll();
 	}
 
@@ -55,7 +55,7 @@ public final class SpScPipe<T> extends InterThreadPipe<T> {
 	}
 
 	@Override
-	public T readLast() {
+	public Object readLast() {
 		return this.queue.peek();
 	}
 

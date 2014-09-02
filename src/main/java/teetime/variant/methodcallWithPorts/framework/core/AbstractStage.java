@@ -147,7 +147,7 @@ public abstract class AbstractStage implements StageWithPort {
 	@Override
 	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
 		for (OutputPort<?> outputPort : this.getOutputPorts()) {
-			IPipe<?> pipe = outputPort.getPipe();
+			IPipe pipe = outputPort.getPipe();
 			if (null != pipe) { // if output port is connected with another one
 				Class<?> sourcePortType = outputPort.getType();
 				Class<?> targetPortType = pipe.getTargetPort().getType();

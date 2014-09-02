@@ -38,7 +38,7 @@ public class TcpTraceReduction extends Analysis {
 	private final List<TraceEventRecords> elementCollection = new LinkedList<TraceEventRecords>();
 	private final ConcurrentHashMapWithDefault<Long, TraceBuffer> traceId2trace = new ConcurrentHashMapWithDefault<Long, TraceBuffer>(new TraceBuffer());
 	private final Map<TraceEventRecords, TraceAggregationBuffer> trace2buffer = new TreeMap<TraceEventRecords, TraceAggregationBuffer>(new TraceComperator());
-	private final List<SpScPipe<IMonitoringRecord>> tcpRelayPipes = new ArrayList<SpScPipe<IMonitoringRecord>>();
+	private final List<SpScPipe> tcpRelayPipes = new ArrayList<SpScPipe>();
 
 	private Thread tcpThread;
 	private Thread clockThread;
@@ -102,7 +102,7 @@ public class TcpTraceReduction extends Analysis {
 		Sink<TraceEventRecords> endStage = new Sink<TraceEventRecords>();
 
 		// connect stages
-		SpScPipe<IMonitoringRecord> tcpRelayPipe = SpScPipe.connect(tcpReaderPipeline.getNewOutputPort(), relay.getInputPort(), TCP_RELAY_MAX_SIZE);
+		SpScPipe tcpRelayPipe = SpScPipe.connect(tcpReaderPipeline.getNewOutputPort(), relay.getInputPort(), TCP_RELAY_MAX_SIZE);
 		this.tcpRelayPipes.add(tcpRelayPipe);
 
 		SingleElementPipe.connect(relay.getOutputPort(), instanceOfFilter.getInputPort());
@@ -145,7 +145,7 @@ public class TcpTraceReduction extends Analysis {
 	@Override
 	public void onTerminate() {
 		int maxNumWaits = 0;
-		for (SpScPipe<IMonitoringRecord> pipe : this.tcpRelayPipes) {
+		for (SpScPipe pipe : this.tcpRelayPipes) {
 			maxNumWaits = Math.max(maxNumWaits, pipe.getNumWaits());
 		}
 		System.out.println("max #waits of TcpRelayPipes: " + maxNumWaits);

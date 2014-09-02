@@ -2,7 +2,7 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 
 import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
 
-public abstract class IntraThreadPipe<T> extends AbstractPipe<T> {
+public abstract class IntraThreadPipe extends AbstractPipe {
 
 	@Override
 	public void setSignal(final Signal signal) {

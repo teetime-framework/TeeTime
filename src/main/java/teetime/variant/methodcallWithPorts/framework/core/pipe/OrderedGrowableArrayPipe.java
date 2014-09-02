@@ -4,9 +4,9 @@ import teetime.util.concurrent.workstealing.CircularArray;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public final class OrderedGrowableArrayPipe<T> extends IntraThreadPipe<T> {
+public final class OrderedGrowableArrayPipe extends IntraThreadPipe {
 
-	private CircularArray<T> elements;
+	private final CircularArray<Object> elements;
 	private int head;
 	private int tail;
 
@@ -15,23 +15,23 @@ public final class OrderedGrowableArrayPipe<T> extends IntraThreadPipe<T> {
 	}
 
 	public OrderedGrowableArrayPipe(final int initialCapacity) {
-		this.elements = new CircularArray<T>(initialCapacity);
+		this.elements = new CircularArray<Object>(initialCapacity);
 	}
 
 	@Deprecated
-	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
-		IPipe<T> pipe = new OrderedGrowableArrayPipe<T>();
+	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		IPipe pipe = new OrderedGrowableArrayPipe();
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 
 	@Override
-	public boolean add(final T element) {
+	public boolean add(final Object element) {
 		this.elements.put(this.tail++, element);
 		return true;
 	}
 
 	@Override
-	public T removeLast() {
+	public Object removeLast() {
 		if (this.head < this.tail) {
 			return this.elements.get(this.head++);
 		} else {
@@ -45,7 +45,7 @@ public final class OrderedGrowableArrayPipe<T> extends IntraThreadPipe<T> {
 	}
 
 	@Override
-	public T readLast() {
+	public Object readLast() {
 		return this.elements.get(this.head);
 	}
 

@@ -4,7 +4,7 @@ import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 
 public abstract class AbstractPort<T> {
 
-	protected IPipe<T> pipe;
+	protected IPipe pipe;
 	/**
 	 * The type of this port.
 	 * <p>
@@ -13,11 +13,11 @@ public abstract class AbstractPort<T> {
 	 */
 	protected Class<T> type;
 
-	public IPipe<T> getPipe() {
+	public IPipe getPipe() {
 		return this.pipe;
 	}
 
-	public void setPipe(final IPipe<T> pipe) {
+	public void setPipe(final IPipe pipe) {
 		this.pipe = pipe;
 	}
 

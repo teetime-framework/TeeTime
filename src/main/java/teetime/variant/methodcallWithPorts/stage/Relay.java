@@ -9,7 +9,7 @@ public class Relay<T> extends ProducerStage<T> {
 
 	private final InputPort<T> inputPort = this.createInputPort();
 
-	private InterThreadPipe<T> cachedCastedInputPipe;
+	private InterThreadPipe cachedCastedInputPipe;
 
 	@Override
 	public void execute() {
@@ -26,7 +26,7 @@ public class Relay<T> extends ProducerStage<T> {
 
 	@Override
 	public void onStarting() {
-		this.cachedCastedInputPipe = (InterThreadPipe<T>) this.inputPort.getPipe();
+		this.cachedCastedInputPipe = (InterThreadPipe) this.inputPort.getPipe();
 		super.onStarting();
 	}
 

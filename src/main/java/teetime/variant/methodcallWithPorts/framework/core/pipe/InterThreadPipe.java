@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
 
-public abstract class InterThreadPipe<T> extends AbstractPipe<T> {
+public abstract class InterThreadPipe extends AbstractPipe {
 
 	private final AtomicReference<Signal> signal = new AtomicReference<Signal>();
 

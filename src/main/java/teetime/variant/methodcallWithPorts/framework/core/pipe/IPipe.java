@@ -4,30 +4,25 @@ import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
 
-public interface IPipe<T> {
+public interface IPipe {
 
-	boolean add(T element);
-
-	T removeLast();
+	boolean add(Object element);
 
 	boolean isEmpty();
 
 	int size();
 
-	T readLast();
+	Object removeLast();
 
-	// void close();
-	//
-	// boolean isClosed();
+	Object readLast();
 
-	InputPort<T> getTargetPort();
+	InputPort<?> getTargetPort();
 
-	void setTargetPort(InputPort<T> targetPort);
+	void setTargetPort(InputPort<?> targetPort);
 
 	void setSignal(Signal signal);
 
-	// BETTER change signature to allow {OutputPort<T>, OutputPort<A0 extends T>, OutputPort<A1 extends T>, ...}
-	void connectPorts(OutputPort<T> sourcePort, InputPort<T> targetPort);
+	<T> void connectPorts(OutputPort<? extends T> sourcePort, InputPort<T> targetPort);
 
 	void reportNewElement();
 

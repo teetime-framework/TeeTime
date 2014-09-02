@@ -9,8 +9,8 @@ public class OrderedGrowableArrayPipeFactory implements IPipeFactory {
 	 * Hint: The capacity for this pipe implementation is ignored
 	 */
 	@Override
-	public <T> IPipe<T> create(final int capacity) {
-		return new OrderedGrowableArrayPipe<T>();
+	public IPipe create(final int capacity) {
+		return new OrderedGrowableArrayPipe();
 	}
 
 	@Override

@@ -4,9 +4,9 @@ import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 
-public abstract class AbstractPipe<T> implements IPipe<T> {
+public abstract class AbstractPipe implements IPipe {
 
-	private InputPort<T> targetPort;
+	private InputPort<?> targetPort;
 
 	/**
 	 * Performance cache: Avoids the following method chain
@@ -18,18 +18,18 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	protected StageWithPort cachedTargetStage;
 
 	@Override
-	public InputPort<T> getTargetPort() {
+	public InputPort<?> getTargetPort() {
 		return this.targetPort;
 	}
 
 	@Override
-	public void setTargetPort(final InputPort<T> targetPort) {
+	public void setTargetPort(final InputPort<?> targetPort) {
 		this.targetPort = targetPort;
 		this.cachedTargetStage = targetPort.getOwningStage();
 	}
 
 	@Override
-	public void connectPorts(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
+	public <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		sourcePort.setPipe(this);
 		targetPort.setPipe(this);
 	}

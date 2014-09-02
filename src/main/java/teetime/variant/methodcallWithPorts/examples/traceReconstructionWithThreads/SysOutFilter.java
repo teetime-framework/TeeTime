@@ -5,16 +5,14 @@ import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 
-import kieker.common.record.IMonitoringRecord;
-
 public class SysOutFilter<T> extends ConsumerStage<T> {
 
 	private final InputPort<Long> triggerInputPort = this.createInputPort();
 	private final OutputPort<T> outputPort = this.createOutputPort();
 
-	private final IPipe<IMonitoringRecord> pipe;
+	private final IPipe pipe;
 
-	public SysOutFilter(final IPipe<IMonitoringRecord> pipe) {
+	public SysOutFilter(final IPipe pipe) {
 		this.pipe = pipe;
 	}
 

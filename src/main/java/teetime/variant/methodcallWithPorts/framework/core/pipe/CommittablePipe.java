@@ -4,13 +4,13 @@ import teetime.util.list.CommittableResizableArrayQueue;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public final class CommittablePipe<T> extends IntraThreadPipe<T> {
+public final class CommittablePipe extends IntraThreadPipe {
 
-	private final CommittableResizableArrayQueue<T> elements = new CommittableResizableArrayQueue<T>(null, 4);
+	private final CommittableResizableArrayQueue<Object> elements = new CommittableResizableArrayQueue<Object>(null, 4);
 
 	@Deprecated
-	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
-		IPipe<T> pipe = new CommittablePipe<T>();
+	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		IPipe pipe = new CommittablePipe();
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 
@@ -20,7 +20,7 @@ public final class CommittablePipe<T> extends IntraThreadPipe<T> {
 	 * @see teetime.examples.throughput.methodcall.IPipe#add(T)
 	 */
 	@Override
-	public boolean add(final T element) {
+	public boolean add(final Object element) {
 		this.elements.addToTailUncommitted(element);
 		this.elements.commit();
 		return true;
@@ -32,8 +32,8 @@ public final class CommittablePipe<T> extends IntraThreadPipe<T> {
 	 * @see teetime.examples.throughput.methodcall.IPipe#removeLast()
 	 */
 	@Override
-	public T removeLast() {
-		T element = this.elements.removeFromHeadUncommitted();
+	public Object removeLast() {
+		Object element = this.elements.removeFromHeadUncommitted();
 		this.elements.commit();
 		return element;
 	}
@@ -54,11 +54,11 @@ public final class CommittablePipe<T> extends IntraThreadPipe<T> {
 	 * @see teetime.examples.throughput.methodcall.IPipe#readLast()
 	 */
 	@Override
-	public T readLast() {
+	public Object readLast() {
 		return this.elements.getTail();
 	}
 
-	public CommittableResizableArrayQueue<T> getElements() {
+	public CommittableResizableArrayQueue<?> getElements() {
 		return this.elements;
 	}
 

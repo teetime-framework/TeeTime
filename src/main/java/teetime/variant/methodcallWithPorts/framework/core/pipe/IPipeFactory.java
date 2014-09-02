@@ -5,7 +5,7 @@ import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.Threa
 
 public interface IPipeFactory {
 
-	<T> IPipe<T> create(int capacity);
+	IPipe create(int capacity);
 
 	ThreadCommunication getThreadCommunication();
 

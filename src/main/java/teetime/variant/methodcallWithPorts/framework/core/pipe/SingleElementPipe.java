@@ -3,29 +3,29 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public final class SingleElementPipe<T> extends IntraThreadPipe<T> {
+public final class SingleElementPipe extends IntraThreadPipe {
 
-	private T element;
+	private Object element;
 
 	SingleElementPipe() {
 		super();
 	}
 
 	@Deprecated
-	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
-		IPipe<T> pipe = new SingleElementPipe<T>();
+	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		IPipe pipe = new SingleElementPipe();
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 
 	@Override
-	public boolean add(final T element) {
+	public boolean add(final Object element) {
 		this.element = element;
 		return true;
 	}
 
 	@Override
-	public T removeLast() {
-		T temp = this.element;
+	public Object removeLast() {
+		Object temp = this.element;
 		this.element = null;
 		return temp;
 	}
@@ -36,7 +36,7 @@ public final class SingleElementPipe<T> extends IntraThreadPipe<T> {
 	}
 
 	@Override
-	public T readLast() {
+	public Object readLast() {
 		return this.element;
 	}
 

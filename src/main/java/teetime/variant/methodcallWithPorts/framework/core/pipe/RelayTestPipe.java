@@ -2,7 +2,7 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 
 import teetime.util.ConstructorClosure;
 
-public final class RelayTestPipe<T> extends InterThreadPipe<T> {
+public final class RelayTestPipe<T> extends InterThreadPipe {
 
 	private int numInputObjects;
 	private final ConstructorClosure<T> inputObjectCreator;
@@ -14,7 +14,7 @@ public final class RelayTestPipe<T> extends InterThreadPipe<T> {
 	}
 
 	@Override
-	public boolean add(final T element) {
+	public boolean add(final Object element) {
 		return false;
 	}
 

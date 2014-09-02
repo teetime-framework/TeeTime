@@ -20,7 +20,6 @@ import java.io.File;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 import teetime.variant.methodcallWithPorts.framework.core.Pipeline;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.PipeOrdering;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.ThreadCommunication;
@@ -73,11 +72,11 @@ public class Dir2RecordsFilter extends Pipeline<ClassNameRegistryCreationFilter,
 		final OutputPort<File> zipFileOutputPort = fileExtensionSwitch.addFileExtension(FSUtil.ZIP_FILE_EXTENSION);
 
 		// connect ports by pipes
-		IPipe<File> pipe = this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1);
-		pipe.connectPorts(classNameRegistryCreationFilter.getOutputPort(), directory2FilesFilter.getInputPort());
+		this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1)
+		.connectPorts(classNameRegistryCreationFilter.getOutputPort(), directory2FilesFilter.getInputPort());
 
-		pipe = this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1);
-		pipe.connectPorts(directory2FilesFilter.getOutputPort(), fileExtensionSwitch.getInputPort());
+		this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1)
+		.connectPorts(directory2FilesFilter.getOutputPort(), fileExtensionSwitch.getInputPort());
 
 		SingleElementPipe.connect(normalFileOutputPort, datFile2RecordFilter.getInputPort());
 		SingleElementPipe.connect(binFileOutputPort, binaryFile2RecordFilter.getInputPort());

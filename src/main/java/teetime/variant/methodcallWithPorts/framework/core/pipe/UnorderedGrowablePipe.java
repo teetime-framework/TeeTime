@@ -3,28 +3,27 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public final class UnorderedGrowablePipe<T> extends IntraThreadPipe<T> {
+public final class UnorderedGrowablePipe extends IntraThreadPipe {
 
 	private final int MIN_CAPACITY;
 
-	private T[] elements;
+	private Object[] elements;
 	// private final ArrayWrapper2<T> elements = new ArrayWrapper2<T>(2);
 	private int lastFreeIndex;
 
-	@SuppressWarnings("unchecked")
 	UnorderedGrowablePipe() {
 		this.MIN_CAPACITY = 4;
-		this.elements = (T[]) new Object[this.MIN_CAPACITY];
+		this.elements = new Object[this.MIN_CAPACITY];
 	}
 
 	@Deprecated
-	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
-		IPipe<T> pipe = new UnorderedGrowablePipe<T>();
+	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		IPipe pipe = new UnorderedGrowablePipe();
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 
 	@Override
-	public boolean add(final T element) {
+	public boolean add(final Object element) {
 		if (this.lastFreeIndex == this.elements.length) {
 			// if (this.lastFreeIndex == this.elements.getCapacity()) {
 			this.elements = this.grow();
@@ -35,11 +34,11 @@ public final class UnorderedGrowablePipe<T> extends IntraThreadPipe<T> {
 	}
 
 	@Override
-	public T removeLast() {
+	public Object removeLast() {
 		// if (this.lastFreeIndex == 0) {
 		// return null;
 		// }
-		T element = this.elements[--this.lastFreeIndex];
+		Object element = this.elements[--this.lastFreeIndex];
 		this.elements[this.lastFreeIndex] = null;
 		// T element = this.elements.get(--this.lastFreeIndex);
 		return element;
@@ -51,7 +50,7 @@ public final class UnorderedGrowablePipe<T> extends IntraThreadPipe<T> {
 	}
 
 	@Override
-	public T readLast() {
+	public Object readLast() {
 		return this.elements[this.lastFreeIndex - 1];
 		// return this.elements.get(this.lastFreeIndex - 1);
 	}
@@ -61,7 +60,7 @@ public final class UnorderedGrowablePipe<T> extends IntraThreadPipe<T> {
 		return this.lastFreeIndex;
 	}
 
-	private T[] grow() {
+	private Object[] grow() {
 		int newSize = this.elements.length * 2;
 		// System.out.println("growing to " + newSize);
 		return this.newArray(newSize);
@@ -73,9 +72,8 @@ public final class UnorderedGrowablePipe<T> extends IntraThreadPipe<T> {
 	// return this.newArray(newSize);
 	// }
 
-	private T[] newArray(final int newSize) {
-		@SuppressWarnings("unchecked")
-		T[] newElements = (T[]) new Object[newSize];
+	private Object[] newArray(final int newSize) {
+		Object[] newElements = new Object[newSize];
 
 		System.arraycopy(this.elements, 0, newElements, 0, this.elements.length);
 

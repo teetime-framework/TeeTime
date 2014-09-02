@@ -5,31 +5,31 @@ import java.util.LinkedList;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
-public class OrderedGrowablePipe<T> extends IntraThreadPipe<T> {
+public class OrderedGrowablePipe extends IntraThreadPipe {
 
-	private LinkedList<T> elements;
+	private final LinkedList<Object> elements;
 
 	public OrderedGrowablePipe() {
 		this(100000);
 	}
 
 	public OrderedGrowablePipe(final int initialCapacity) {
-		this.elements = new LinkedList<T>();
+		this.elements = new LinkedList<Object>();
 	}
 
 	@Deprecated
-	public static <T> void connect(final OutputPort<T> sourcePort, final InputPort<T> targetPort) {
-		IPipe<T> pipe = new OrderedGrowablePipe<T>();
+	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		IPipe pipe = new OrderedGrowablePipe();
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 
 	@Override
-	public boolean add(final T element) {
+	public boolean add(final Object element) {
 		return this.elements.offer(element);
 	}
 
 	@Override
-	public T removeLast() {
+	public Object removeLast() {
 		return this.elements.poll();
 	}
 
@@ -39,7 +39,7 @@ public class OrderedGrowablePipe<T> extends IntraThreadPipe<T> {
 	}
 
 	@Override
-	public T readLast() {
+	public Object readLast() {
 		return this.elements.peek();
 	}
 

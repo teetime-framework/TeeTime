@@ -21,7 +21,6 @@ import java.util.List;
 
 import teetime.variant.methodcallWithPorts.framework.core.Configuration;
 import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.PipeOrdering;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.ThreadCommunication;
@@ -59,11 +58,11 @@ public class RecordReaderConfiguration extends Configuration {
 		pipeline.setFirstStage(initialElementProducer);
 		pipeline.setLastStage(collector);
 
-		IPipe<File> pipe = this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1);
-		pipe.connectPorts(initialElementProducer.getOutputPort(), dir2RecordsFilter.getInputPort());
+		this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1)
+		.connectPorts(initialElementProducer.getOutputPort(), dir2RecordsFilter.getInputPort());
 
-		IPipe<IMonitoringRecord> pipe1 = this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1);
-		pipe1.connectPorts(dir2RecordsFilter.getOutputPort(), collector.getInputPort());
+		this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1)
+		.connectPorts(dir2RecordsFilter.getOutputPort(), collector.getInputPort());
 
 		return pipeline;
 	}

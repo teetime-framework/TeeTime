@@ -6,8 +6,8 @@ import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.Threa
 public class SpScPipeFactory implements IPipeFactory {
 
 	@Override
-	public <T> IPipe<T> create(final int capacity) {
-		return new SpScPipe<T>(capacity);
+	public IPipe create(final int capacity) {
+		return new SpScPipe(capacity);
 	}
 
 	@Override

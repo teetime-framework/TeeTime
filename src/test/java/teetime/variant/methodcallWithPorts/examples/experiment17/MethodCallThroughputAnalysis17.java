@@ -151,7 +151,7 @@ public class MethodCallThroughputAnalysis17 extends Analysis {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(timestampObjects);
 
-		IPipe<TimestampObject> startPipe = new RelayTestPipe<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
+		IPipe startPipe = new RelayTestPipe<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
 		startPipe.setSignal(new TerminatingSignal());
 
 		relay.getInputPort().setPipe(startPipe);

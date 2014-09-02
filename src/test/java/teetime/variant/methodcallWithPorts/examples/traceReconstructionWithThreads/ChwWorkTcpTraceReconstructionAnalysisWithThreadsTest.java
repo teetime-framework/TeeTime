@@ -33,8 +33,6 @@ import teetime.variant.methodcallWithPorts.framework.core.Analysis;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SpScPipe;
 import util.StatisticsUtil;
 
-import kieker.common.record.IMonitoringRecord;
-
 /**
  * @author Christian Wulf
  *
@@ -104,7 +102,7 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 		}
 
 		int maxNumWaits = 0;
-		for (SpScPipe<IMonitoringRecord> pipe : configuration.getTcpRelayPipes()) {
+		for (SpScPipe pipe : configuration.getTcpRelayPipes()) {
 			maxNumWaits = Math.max(maxNumWaits, pipe.getNumWaits());
 		}
 		System.out.println("max #waits of TcpRelayPipes: " + maxNumWaits);
