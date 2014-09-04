@@ -42,6 +42,9 @@ public class RunnableStage implements Runnable {
 			TerminatingSignal terminatingSignal = new TerminatingSignal();
 			this.stage.onSignal(terminatingSignal, null);
 
+		} catch (Error e) {
+			this.logger.error("Terminating thread due to the following exception: ", e);
+			throw e;
 		} catch (RuntimeException e) {
 			this.logger.error("Terminating thread due to the following exception: ", e);
 			throw e;

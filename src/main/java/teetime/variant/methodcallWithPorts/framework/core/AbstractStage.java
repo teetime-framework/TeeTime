@@ -56,7 +56,6 @@ public abstract class AbstractStage implements StageWithPort {
 		// return outputPort.send(element);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void connectUnconnectedOutputPorts() {
 		for (OutputPort<?> outputPort : this.cachedOutputPorts) {
 			if (null == outputPort.getPipe()) { // if port is unconnected
