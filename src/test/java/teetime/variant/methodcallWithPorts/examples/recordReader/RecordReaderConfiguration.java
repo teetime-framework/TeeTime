@@ -59,10 +59,10 @@ public class RecordReaderConfiguration extends Configuration {
 		pipeline.setLastStage(collector);
 
 		this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1)
-		.connectPorts(initialElementProducer.getOutputPort(), dir2RecordsFilter.getInputPort());
+				.connectPorts(initialElementProducer.getOutputPort(), dir2RecordsFilter.getInputPort());
 
 		this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1)
-		.connectPorts(dir2RecordsFilter.getOutputPort(), collector.getInputPort());
+				.connectPorts(dir2RecordsFilter.getOutputPort(), collector.getInputPort());
 
 		return pipeline;
 	}
