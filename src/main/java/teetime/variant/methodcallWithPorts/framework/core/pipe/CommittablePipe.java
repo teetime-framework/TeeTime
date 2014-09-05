@@ -8,9 +8,13 @@ public final class CommittablePipe extends IntraThreadPipe {
 
 	private final CommittableResizableArrayQueue<Object> elements = new CommittableResizableArrayQueue<Object>(null, 4);
 
+	<T> CommittablePipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		super(sourcePort, targetPort);
+	}
+
 	@Deprecated
 	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		IPipe pipe = new CommittablePipe();
+		IPipe pipe = new CommittablePipe(null, null);
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 

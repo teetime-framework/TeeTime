@@ -18,10 +18,9 @@ public interface IPipe {
 
 	InputPort<?> getTargetPort();
 
-	void setTargetPort(InputPort<?> targetPort);
-
 	void setSignal(Signal signal);
 
+	@Deprecated
 	<T> void connectPorts(OutputPort<? extends T> sourcePort, InputPort<T> targetPort);
 
 	void reportNewElement();

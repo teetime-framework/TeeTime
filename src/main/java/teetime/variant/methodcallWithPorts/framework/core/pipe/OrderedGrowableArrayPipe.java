@@ -10,17 +10,14 @@ public final class OrderedGrowableArrayPipe extends IntraThreadPipe {
 	private int head;
 	private int tail;
 
-	public OrderedGrowableArrayPipe() {
-		this(1);
-	}
-
-	public OrderedGrowableArrayPipe(final int initialCapacity) {
-		this.elements = new CircularArray<Object>(initialCapacity);
+	<T> OrderedGrowableArrayPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		super(sourcePort, targetPort);
+		this.elements = new CircularArray<Object>(capacity);
 	}
 
 	@Deprecated
 	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		IPipe pipe = new OrderedGrowableArrayPipe();
+		IPipe pipe = new OrderedGrowableArrayPipe(sourcePort, targetPort, 4);
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 

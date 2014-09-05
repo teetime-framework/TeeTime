@@ -16,14 +16,14 @@ public final class SpScPipe extends InterThreadPipe {
 	// statistics
 	private int numWaits;
 
-	SpScPipe(final int capacity) {
-		ConcurrentQueueSpec concurrentQueueSpec = new ConcurrentQueueSpec(1, 1, capacity, Ordering.FIFO, Preference.THROUGHPUT);
-		this.queue = QueueFactory.newQueue(concurrentQueueSpec);
+	<T> SpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		super(sourcePort, targetPort);
+		this.queue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, capacity, Ordering.FIFO, Preference.THROUGHPUT));
 	}
 
 	@Deprecated
 	public static <T> SpScPipe connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		SpScPipe pipe = new SpScPipe(capacity);
+		SpScPipe pipe = new SpScPipe(sourcePort, targetPort, capacity);
 		pipe.connectPorts(sourcePort, targetPort);
 		return pipe;
 	}

@@ -7,13 +7,13 @@ public final class SingleElementPipe extends IntraThreadPipe {
 
 	private Object element;
 
-	SingleElementPipe() {
-		super();
+	<T> SingleElementPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		super(sourcePort, targetPort);
 	}
 
 	@Deprecated
 	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		IPipe pipe = new SingleElementPipe();
+		IPipe pipe = new SingleElementPipe(null, null);
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 

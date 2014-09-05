@@ -55,16 +55,17 @@ public class PipeFactory {
 	}
 
 	public IPipe create(final ThreadCommunication tc, final PipeOrdering ordering, final boolean growable, final int capacity) {
-		String key = this.buildKey(tc, ordering, growable);
-		IPipeFactory pipeClass = this.pipeFactories.get(key);
-		if (null == pipeClass) {
-			throw new CouldNotFindPipeImplException(key);
-		}
-		return pipeClass.create(capacity);
+		IPipeFactory pipeFactory = getPipeFactory(tc, ordering, growable);
+		return pipeFactory.create(capacity);
 	}
 
-	private String buildKey(final ThreadCommunication tc, final PipeOrdering ordering, final boolean growable) {
-		return tc.toString() + ordering.toString() + growable;
+	public IPipeFactory getPipeFactory(final ThreadCommunication tc, final PipeOrdering ordering, final boolean growable) {
+		String key = this.buildKey(tc, ordering, growable);
+		IPipeFactory pipeFactory = this.pipeFactories.get(key);
+		if (null == pipeFactory) {
+			throw new CouldNotFindPipeImplException(key);
+		}
+		return pipeFactory;
 	}
 
 	public void register(final IPipeFactory pipeFactory) {
@@ -73,4 +74,7 @@ public class PipeFactory {
 		LOGGER.info("Registered pipe factory: " + pipeFactory.getClass().getCanonicalName());
 	}
 
+	private String buildKey(final ThreadCommunication tc, final PipeOrdering ordering, final boolean growable) {
+		return tc.toString() + ordering.toString() + growable;
+	}
 }

@@ -5,20 +5,18 @@ import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
 
 public final class UnorderedGrowablePipe extends IntraThreadPipe {
 
-	private final int MIN_CAPACITY;
-
 	private Object[] elements;
 	// private final ArrayWrapper2<T> elements = new ArrayWrapper2<T>(2);
 	private int lastFreeIndex;
 
-	UnorderedGrowablePipe() {
-		this.MIN_CAPACITY = 4;
-		this.elements = new Object[this.MIN_CAPACITY];
+	<T> UnorderedGrowablePipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		super(sourcePort, targetPort);
+		this.elements = new Object[capacity];
 	}
 
 	@Deprecated
 	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		IPipe pipe = new UnorderedGrowablePipe();
+		IPipe pipe = new UnorderedGrowablePipe(null, null, 4);
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 

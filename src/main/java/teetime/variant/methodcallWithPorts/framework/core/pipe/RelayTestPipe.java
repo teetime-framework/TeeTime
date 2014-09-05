@@ -7,8 +7,8 @@ public final class RelayTestPipe<T> extends InterThreadPipe {
 	private int numInputObjects;
 	private final ConstructorClosure<T> inputObjectCreator;
 
-	public RelayTestPipe(final int numInputObjects,
-			final ConstructorClosure<T> inputObjectCreator) {
+	public RelayTestPipe(final int numInputObjects, final ConstructorClosure<T> inputObjectCreator) {
+		super(null, null);
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;
 	}

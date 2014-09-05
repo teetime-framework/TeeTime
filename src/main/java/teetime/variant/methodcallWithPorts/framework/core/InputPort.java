@@ -31,7 +31,6 @@ public class InputPort<T> extends AbstractPort<T> {
 	@Override
 	public void setPipe(final IPipe pipe) {
 		this.pipe = pipe;
-		pipe.setTargetPort(this);
 	}
 
 	public StageWithPort getOwningStage() {

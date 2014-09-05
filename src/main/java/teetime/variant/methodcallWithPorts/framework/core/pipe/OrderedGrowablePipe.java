@@ -9,17 +9,14 @@ public class OrderedGrowablePipe extends IntraThreadPipe {
 
 	private final LinkedList<Object> elements;
 
-	public OrderedGrowablePipe() {
-		this(100000);
-	}
-
-	public OrderedGrowablePipe(final int initialCapacity) {
+	<T> OrderedGrowablePipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		super(sourcePort, targetPort);
 		this.elements = new LinkedList<Object>();
 	}
 
 	@Deprecated
 	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		IPipe pipe = new OrderedGrowablePipe();
+		IPipe pipe = new OrderedGrowablePipe(null, null, 100000);
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 
