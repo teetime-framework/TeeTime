@@ -19,7 +19,7 @@ package teetime.variant.methodcallWithPorts.stage.basic.merger;
 import teetime.variant.methodcallWithPorts.framework.core.AbstractStage;
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
-import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
+import teetime.variant.methodcallWithPorts.framework.core.signal.ISignal;
 
 /**
  *
@@ -51,7 +51,7 @@ public class Merger<T> extends AbstractStage {
 	}
 
 	@Override
-	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
+	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
 
 		signal.trigger(this);

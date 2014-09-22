@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import teetime.variant.methodcallWithPorts.framework.core.pipe.DummyPipe;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.IPipe;
-import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
+import teetime.variant.methodcallWithPorts.framework.core.signal.ISignal;
 import teetime.variant.methodcallWithPorts.framework.core.validation.InvalidPortConnection;
 
 public abstract class AbstractStage implements StageWithPort {
@@ -32,7 +32,7 @@ public abstract class AbstractStage implements StageWithPort {
 	/** A cached instance of <code>outputPortList</code> to avoid creating an iterator each time iterating it */
 	protected OutputPort<?>[] cachedOutputPorts;
 
-	private final Map<Signal, Void> visited = new HashMap<Signal, Void>();
+	private final Map<ISignal, Void> visited = new HashMap<ISignal, Void>();
 
 	public AbstractStage() {
 		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
@@ -92,7 +92,7 @@ public abstract class AbstractStage implements StageWithPort {
 	 * May not be invoked outside of IPipe implementations
 	 */
 	@Override
-	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
+	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (!this.alreadyVisited(signal, inputPort)) {
 			signal.trigger(this);
 
@@ -102,7 +102,7 @@ public abstract class AbstractStage implements StageWithPort {
 		}
 	}
 
-	protected boolean alreadyVisited(final Signal signal, final InputPort<?> inputPort) {
+	protected boolean alreadyVisited(final ISignal signal, final InputPort<?> inputPort) {
 		if (this.visited.containsKey(signal)) {
 			this.logger.trace("Got signal: " + signal + " again from input port: " + inputPort);
 			return true;

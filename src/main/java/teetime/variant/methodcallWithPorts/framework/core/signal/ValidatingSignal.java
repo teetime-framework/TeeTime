@@ -6,7 +6,7 @@ import java.util.List;
 import teetime.variant.methodcallWithPorts.framework.core.AbstractStage;
 import teetime.variant.methodcallWithPorts.framework.core.validation.InvalidPortConnection;
 
-public class ValidatingSignal implements Signal {
+public class ValidatingSignal implements ISignal {
 
 	private final List<InvalidPortConnection> invalidPortConnections = new LinkedList<InvalidPortConnection>();
 

@@ -2,7 +2,7 @@ package teetime.variant.methodcallWithPorts.framework.core;
 
 import java.util.List;
 
-import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
+import teetime.variant.methodcallWithPorts.framework.core.signal.ISignal;
 import teetime.variant.methodcallWithPorts.framework.core.validation.InvalidPortConnection;
 
 public interface StageWithPort {
@@ -18,7 +18,7 @@ public interface StageWithPort {
 	// BETTER remove this method since it will be replaced by onTerminating()
 	void onIsPipelineHead();
 
-	void onSignal(Signal signal, InputPort<?> inputPort);
+	void onSignal(ISignal signal, InputPort<?> inputPort);
 
 	/**
 	 *

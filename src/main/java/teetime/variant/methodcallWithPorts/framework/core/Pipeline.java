@@ -2,7 +2,7 @@ package teetime.variant.methodcallWithPorts.framework.core;
 
 import java.util.List;
 
-import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
+import teetime.variant.methodcallWithPorts.framework.core.signal.ISignal;
 import teetime.variant.methodcallWithPorts.framework.core.validation.InvalidPortConnection;
 
 public class Pipeline<FirstStage extends StageWithPort, LastStage extends StageWithPort> implements StageWithPort {
@@ -52,7 +52,7 @@ public class Pipeline<FirstStage extends StageWithPort, LastStage extends StageW
 	}
 
 	@Override
-	public void onSignal(final Signal signal, final InputPort<?> inputPort) {
+	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		this.firstStage.onSignal(signal, inputPort);
 	}
 

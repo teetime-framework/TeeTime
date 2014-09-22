@@ -1,6 +1,6 @@
 package teetime.variant.methodcallWithPorts.framework.core;
 
-import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
+import teetime.variant.methodcallWithPorts.framework.core.signal.ISignal;
 
 public final class OutputPort<T> extends AbstractPort<T> {
 
@@ -17,7 +17,7 @@ public final class OutputPort<T> extends AbstractPort<T> {
 		return this.pipe.add(element);
 	}
 
-	public void sendSignal(final Signal signal) {
+	public void sendSignal(final ISignal signal) {
 		this.pipe.setSignal(signal);
 	}
 

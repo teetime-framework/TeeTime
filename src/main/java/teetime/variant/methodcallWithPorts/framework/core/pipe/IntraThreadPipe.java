@@ -2,7 +2,7 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
-import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
+import teetime.variant.methodcallWithPorts.framework.core.signal.ISignal;
 
 public abstract class IntraThreadPipe extends AbstractPipe {
 
@@ -11,7 +11,7 @@ public abstract class IntraThreadPipe extends AbstractPipe {
 	}
 
 	@Override
-	public void setSignal(final Signal signal) {
+	public void setSignal(final ISignal signal) {
 		if (this.getTargetPort() != null) { // BETTER remove this check since there are DummyPorts
 			this.cachedTargetStage.onSignal(signal, this.getTargetPort());
 		}

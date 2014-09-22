@@ -2,7 +2,7 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
-import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
+import teetime.variant.methodcallWithPorts.framework.core.signal.ISignal;
 
 /**
  * A pipe implementation used to connect unconnected output ports.
@@ -44,7 +44,7 @@ public final class DummyPipe implements IPipe {
 	}
 
 	@Override
-	public void setSignal(final Signal signal) {}
+	public void setSignal(final ISignal signal) {}
 
 	@Override
 	public void connectPorts(final OutputPort sourcePort, final InputPort targetPort) {}

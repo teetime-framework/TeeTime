@@ -2,7 +2,7 @@ package teetime.variant.methodcallWithPorts.framework.core.pipe;
 
 import teetime.variant.methodcallWithPorts.framework.core.InputPort;
 import teetime.variant.methodcallWithPorts.framework.core.OutputPort;
-import teetime.variant.methodcallWithPorts.framework.core.signal.Signal;
+import teetime.variant.methodcallWithPorts.framework.core.signal.ISignal;
 
 public interface IPipe {
 
@@ -18,7 +18,7 @@ public interface IPipe {
 
 	InputPort<?> getTargetPort();
 
-	void setSignal(Signal signal);
+	void setSignal(ISignal signal);
 
 	@Deprecated
 	<T> void connectPorts(OutputPort<? extends T> sourcePort, InputPort<T> targetPort);
