@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import teetime.variant.methodcallWithPorts.framework.core.Configuration;
-import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
+import teetime.variant.methodcallWithPorts.framework.core.HeadStage;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.PipeOrdering;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.ThreadCommunication;
@@ -41,12 +41,16 @@ public class RecordReaderConfiguration extends Configuration {
 	private final List<IMonitoringRecord> elementCollection = new LinkedList<IMonitoringRecord>();
 	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
 
-	public void buildConfiguration() {
-		HeadPipeline<?, ?> producerPipeline = this.buildProducerPipeline();
+	public RecordReaderConfiguration() {
+		this.buildConfiguration();
+	}
+
+	private void buildConfiguration() {
+		HeadStage producerPipeline = this.buildProducerPipeline();
 		this.getFiniteProducerStages().add(producerPipeline);
 	}
 
-	private HeadPipeline<?, ?> buildProducerPipeline() {
+	private HeadStage buildProducerPipeline() {
 		ClassNameRegistryRepository classNameRegistryRepository = new ClassNameRegistryRepository();
 		File logDir = new File("src/test/data/bookstore-logs");
 		// create stages
@@ -54,17 +58,14 @@ public class RecordReaderConfiguration extends Configuration {
 		Dir2RecordsFilter dir2RecordsFilter = new Dir2RecordsFilter(classNameRegistryRepository);
 		CollectorSink<IMonitoringRecord> collector = new CollectorSink<IMonitoringRecord>(this.elementCollection);
 
-		final HeadPipeline<InitialElementProducer<File>, CollectorSink<IMonitoringRecord>> pipeline = new HeadPipeline<InitialElementProducer<File>, CollectorSink<IMonitoringRecord>>();
-		pipeline.setFirstStage(initialElementProducer);
-		pipeline.setLastStage(collector);
+		// connect stages
+		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
+				.create(initialElementProducer.getOutputPort(), dir2RecordsFilter.getInputPort(), 1);
 
-		this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1)
-				.connectPorts(initialElementProducer.getOutputPort(), dir2RecordsFilter.getInputPort());
+		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
+				.create(dir2RecordsFilter.getOutputPort(), collector.getInputPort(), 1);
 
-		this.pipeFactory.create(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false, 1)
-				.connectPorts(dir2RecordsFilter.getOutputPort(), collector.getInputPort());
-
-		return pipeline;
+		return initialElementProducer;
 	}
 
 	public List<IMonitoringRecord> getElementCollection() {

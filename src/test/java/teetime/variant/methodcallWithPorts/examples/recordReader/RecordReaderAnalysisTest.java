@@ -53,7 +53,6 @@ public class RecordReaderAnalysisTest {
 	@Test
 	public void performAnalysis() {
 		final RecordReaderConfiguration configuration = new RecordReaderConfiguration();
-		configuration.buildConfiguration();
 
 		Analysis analysis = new Analysis(configuration);
 		analysis.init();
