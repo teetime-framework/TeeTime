@@ -60,10 +60,10 @@ public class RecordReaderConfiguration extends Configuration {
 
 		// connect stages
 		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(initialElementProducer.getOutputPort(), dir2RecordsFilter.getInputPort(), 1);
+				.create(initialElementProducer.getOutputPort(), dir2RecordsFilter.getInputPort());
 
 		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(dir2RecordsFilter.getOutputPort(), collector.getInputPort(), 1);
+				.create(dir2RecordsFilter.getOutputPort(), collector.getInputPort());
 
 		return initialElementProducer;
 	}
