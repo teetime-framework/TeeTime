@@ -8,7 +8,7 @@ import java.util.List;
 
 import teetime.util.concurrent.hashmap.ConcurrentHashMapWithDefault;
 import teetime.util.concurrent.hashmap.TraceBuffer;
-import teetime.variant.methodcallWithPorts.framework.core.Configuration;
+import teetime.variant.methodcallWithPorts.framework.core.AnalysisConfiguration;
 import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
 import teetime.variant.methodcallWithPorts.framework.core.StageWithPort;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
@@ -30,7 +30,7 @@ import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.flow.IFlowRecord;
 import kieker.common.record.flow.trace.TraceMetadata;
 
-public class TcpTraceReconstructionAnalysisWithThreadsConfiguration extends Configuration {
+public class TcpTraceReconstructionAnalysisWithThreadsConfiguration extends AnalysisConfiguration {
 
 	private static final int NUM_VIRTUAL_CORES = Runtime.getRuntime().availableProcessors();
 	private static final int MIO = 1000000;

@@ -3,7 +3,7 @@ package teetime.variant.methodcallWithPorts.framework.core;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Configuration {
+public class AnalysisConfiguration {
 
 	private final List<HeadStage> consumerStages = new LinkedList<HeadStage>();
 	private final List<HeadStage> finiteProducerStages = new LinkedList<HeadStage>();

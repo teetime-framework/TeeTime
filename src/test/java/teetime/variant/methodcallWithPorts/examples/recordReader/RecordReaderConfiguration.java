@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.variant.methodcallWithPorts.framework.core.Configuration;
+import teetime.variant.methodcallWithPorts.framework.core.AnalysisConfiguration;
 import teetime.variant.methodcallWithPorts.framework.core.HeadStage;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory;
 import teetime.variant.methodcallWithPorts.framework.core.pipe.PipeFactory.PipeOrdering;
@@ -36,7 +36,7 @@ import kieker.common.record.IMonitoringRecord;
  *
  * @since 1.10
  */
-public class RecordReaderConfiguration extends Configuration {
+public class RecordReaderConfiguration extends AnalysisConfiguration {
 
 	private final List<IMonitoringRecord> elementCollection = new LinkedList<IMonitoringRecord>();
 	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;

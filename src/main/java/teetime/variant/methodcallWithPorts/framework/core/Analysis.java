@@ -15,7 +15,7 @@ public class Analysis implements UncaughtExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Analysis.class);
 
-	private final Configuration configuration;
+	private final AnalysisConfiguration configuration;
 
 	private final List<Thread> consumerThreads = new LinkedList<Thread>();
 	private final List<Thread> finiteProducerThreads = new LinkedList<Thread>();
@@ -23,7 +23,7 @@ public class Analysis implements UncaughtExceptionHandler {
 
 	private final Collection<Pair<Thread, Throwable>> exceptions = new ConcurrentLinkedQueue<Pair<Thread, Throwable>>();
 
-	public Analysis(final Configuration configuration) {
+	public Analysis(final AnalysisConfiguration configuration) {
 		this.configuration = configuration;
 	}
 
@@ -93,7 +93,7 @@ public class Analysis implements UncaughtExceptionHandler {
 		return this.exceptions;
 	}
 
-	public Configuration getConfiguration() {
+	public AnalysisConfiguration getConfiguration() {
 		return this.configuration;
 	}
 
