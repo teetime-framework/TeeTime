@@ -13,7 +13,7 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
 import teetime.util.StopWatch;
-import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
+import teetime.util.TimestampObject;
 
 public abstract class PerformanceTest {
 

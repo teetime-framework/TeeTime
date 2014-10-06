@@ -15,14 +15,14 @@
  ***************************************************************************/
 package kieker.analysis.stage;
 
+import teetime.util.TimestampObject;
+
 import kieker.analysis.IProjectContext;
 import kieker.analysis.plugin.annotation.InputPort;
 import kieker.analysis.plugin.annotation.OutputPort;
 import kieker.analysis.plugin.annotation.Plugin;
 import kieker.analysis.plugin.filter.AbstractFilterPlugin;
 import kieker.common.configuration.Configuration;
-
-import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
 
 @Plugin(outputPorts = @OutputPort(name = StartTimestampFilter.OUTPUT_PORT_NAME))
 public class StartTimestampFilter extends AbstractFilterPlugin {

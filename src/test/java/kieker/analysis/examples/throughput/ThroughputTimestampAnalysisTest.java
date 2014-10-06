@@ -22,7 +22,7 @@ import java.util.concurrent.Callable;
 import org.junit.Test;
 
 import teetime.util.StopWatch;
-import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
+import teetime.util.TimestampObject;
 import util.PerformanceTest;
 import util.StatisticsUtil;
 
@@ -31,7 +31,7 @@ import kieker.analysis.exception.AnalysisConfigurationException;
 
 /**
  * @author Nils Christian Ehmke
- * 
+ *
  * @since 1.10
  */
 public class ThroughputTimestampAnalysisTest extends PerformanceTest {

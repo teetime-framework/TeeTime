@@ -25,11 +25,11 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import teetime.util.MathUtil;
-import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
+import teetime.util.TimestampObject;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class StatisticsUtil {

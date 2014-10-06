@@ -18,6 +18,8 @@ package kieker.analysis.examples;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
+import teetime.util.TimestampObject;
+
 import kieker.analysis.AnalysisController;
 import kieker.analysis.IAnalysisController;
 import kieker.analysis.exception.AnalysisConfigurationException;
@@ -28,11 +30,9 @@ import kieker.analysis.stage.StartTimestampFilter;
 import kieker.analysis.stage.StopTimestampFilter;
 import kieker.common.configuration.Configuration;
 
-import teetime.variant.explicitScheduling.examples.throughput.TimestampObject;
-
 /**
  * @author Nils Christian Ehmke
- * 
+ *
  * @since 1.10
  */
 public class ThroughputTimestampAnalysis {

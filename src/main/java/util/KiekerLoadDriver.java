@@ -14,14 +14,14 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.variant.methodcallWithPorts.framework.core.HeadPipeline;
-import teetime.variant.methodcallWithPorts.framework.core.HeadStage;
-import teetime.variant.methodcallWithPorts.framework.core.RunnableStage;
-import teetime.variant.methodcallWithPorts.framework.core.pipe.SingleElementPipe;
-import teetime.variant.methodcallWithPorts.stage.CollectorSink;
-import teetime.variant.methodcallWithPorts.stage.InitialElementProducer;
-import teetime.variant.methodcallWithPorts.stage.kieker.Dir2RecordsFilter;
-import teetime.variant.methodcallWithPorts.stage.kieker.className.ClassNameRegistryRepository;
+import teetime.framework.HeadPipeline;
+import teetime.framework.HeadStage;
+import teetime.framework.RunnableStage;
+import teetime.framework.pipe.SingleElementPipe;
+import teetime.stage.CollectorSink;
+import teetime.stage.InitialElementProducer;
+import teetime.stage.kieker.Dir2RecordsFilter;
+import teetime.stage.kieker.className.ClassNameRegistryRepository;
 
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.flow.trace.TraceMetadata;
