@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.junit.launchconfig">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/teetime/src/test/java/teetime/variant/methodcallWithPorts/examples/ComparisonMethodcallWithPorts.java"/>
+<listEntry value="/teetime/src/performancetest/java/teetime/examples/ComparisonMethodcallWithPorts.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -12,7 +12,7 @@
 <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="teetime.variant.methodcallWithPorts.examples.ComparisonMethodcallWithPorts"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="teetime.examples.ComparisonMethodcallWithPorts"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="teetime"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>

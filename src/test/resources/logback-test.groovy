@@ -21,4 +21,5 @@ appender("CONSOLE", ConsoleAppender) {
 
 root ERROR, ["CONSOLE"]
 
+logger "teetime.variant.methodcallWithPorts.stage", INFO
 logger "util", INFO
