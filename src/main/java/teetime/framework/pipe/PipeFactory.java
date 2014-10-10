@@ -43,17 +43,7 @@ public class PipeFactory {
 		}
 	}
 
-	/**
-	 * Creates a new FIFO-ordered, growable pipe with an initial capacity of 1. <br>
-	 * <i>This method is suitable for most situations.</i>
-	 *
-	 * @param tc
-	 * @return
-	 */
-	public IPipe create(final ThreadCommunication tc) {
-		return this.create(tc, PipeOrdering.QUEUE_BASED, true, 1);
-	}
-
+	@Deprecated
 	public IPipe create(final ThreadCommunication tc, final PipeOrdering ordering, final boolean growable, final int capacity) {
 		IPipeFactory pipeFactory = getPipeFactory(tc, ordering, growable);
 		return pipeFactory.create(capacity);

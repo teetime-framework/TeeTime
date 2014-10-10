@@ -10,6 +10,13 @@ public interface IPipeFactory {
 	@Deprecated
 	IPipe create(int capacity);
 
+	/**
+	 * with the default capacity
+	 *
+	 * @param sourcePort
+	 * @param targetPort
+	 * @return
+	 */
 	<T> IPipe create(OutputPort<? extends T> sourcePort, InputPort<T> targetPort);
 
 	<T> IPipe create(OutputPort<? extends T> sourcePort, InputPort<T> targetPort, int capacity);
