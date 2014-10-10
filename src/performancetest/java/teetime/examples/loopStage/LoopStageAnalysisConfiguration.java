@@ -4,6 +4,8 @@ import teetime.framework.AnalysisConfiguration;
 import teetime.framework.pipe.PipeFactory;
 import teetime.framework.pipe.PipeFactory.ThreadCommunication;
 
+import teetime.examples.loopStage.Countdown;
+
 public class LoopStageAnalysisConfiguration extends AnalysisConfiguration {
 
 	public LoopStageAnalysisConfiguration() {
