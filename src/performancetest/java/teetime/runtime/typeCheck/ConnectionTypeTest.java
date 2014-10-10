@@ -60,7 +60,7 @@ public class ConnectionTypeTest {
 		// System.out.println(typeVariable.getBounds()[0]); // ->class java.lang.Object
 		// System.out.println(typeVariable.getName()); // ->T
 		// System.out.println(typeVariable.getClass()); // ->class sun.reflect.generics.reflectiveObjects.TypeVariableImpl
-		// System.out.println(typeVariable.getGenericDeclaration()); // ->class teetime.variant.methodcallWithPorts.stage.ObjectProducer
+		// System.out.println(typeVariable.getGenericDeclaration()); // ->class teetime.stage.ObjectProducer
 		// }
 		//
 		// Class<?> currentClass = objectProducer.getClass();

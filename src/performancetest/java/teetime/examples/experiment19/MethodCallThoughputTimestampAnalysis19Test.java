@@ -52,11 +52,11 @@ public class MethodCallThoughputTimestampAnalysis19Test extends PerformanceTest 
 	// @AfterClass
 	// public static void afterClass() {
 	// PerformanceResult test16a = PerformanceTest.measurementRepository.performanceResults
-	// .get("testWithManyObjectsAnd1Thread(teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
+	// .get("testWithManyObjectsAnd1Thread(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
 	// PerformanceResult test16b = PerformanceTest.measurementRepository.performanceResults
-	// .get("testWithManyObjectsAnd2Threads(teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
+	// .get("testWithManyObjectsAnd2Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
 	// PerformanceResult test16c = PerformanceTest.measurementRepository.performanceResults
-	// .get("testWithManyObjectsAnd4Threads(teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
+	// .get("testWithManyObjectsAnd4Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
 	// // check speedup
 	// assertEquals(2, (double) test16a.overallDurationInNs / test16b.overallDurationInNs, 0.2);
 	// assertEquals(2.5, (double) test16a.overallDurationInNs / test16c.overallDurationInNs, 0.2);

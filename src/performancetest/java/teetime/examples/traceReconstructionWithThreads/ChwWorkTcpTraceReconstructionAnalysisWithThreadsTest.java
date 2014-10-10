@@ -81,7 +81,7 @@ public class ChwWorkTcpTraceReconstructionAnalysisWithThreadsTest {
 	// Median trace throughput: 42 traces/time unit
 	// Duration: 21614 ms
 
-	// [2014-07-04 01:06:10 PM] WARNUNG: Reader interrupted (teetime.variant.methodcallWithPorts.stage.io.TCPReader$TCPStringReader run)
+	// [2014-07-04 01:06:10 PM] WARNUNG: Reader interrupted (teetime.stage.io.TCPReader$TCPStringReader run)
 	// Max size of tcp-relay pipe: 167758
 	// Median trace throughput: 6 traces/time unit
 	// Duration: 22373 ms

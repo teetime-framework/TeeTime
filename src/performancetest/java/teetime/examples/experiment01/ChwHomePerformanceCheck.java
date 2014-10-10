@@ -15,7 +15,7 @@ public class ChwHomePerformanceCheck implements PerformanceCheckProfile {
 	@Override
 	public void check() {
 		PerformanceResult test01 = PerformanceTest.measurementRepository.performanceResults
-				.get("testWithManyObjects(teetime.variant.methodcall.examples.experiment01.MethodCallThoughputTimestampAnalysis1Test)");
+				.get("testWithManyObjects(teetime.examples.experiment01.MethodCallThoughputTimestampAnalysis1Test)");
 
 		assertEquals(292, test01.quantiles.get(0.5), 1);
 	}
