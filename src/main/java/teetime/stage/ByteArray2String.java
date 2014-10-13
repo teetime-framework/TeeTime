@@ -1,4 +1,4 @@
-package teetime.stage.io;
+package teetime.stage;
 
 import teetime.framework.ConsumerStage;
 import teetime.framework.OutputPort;

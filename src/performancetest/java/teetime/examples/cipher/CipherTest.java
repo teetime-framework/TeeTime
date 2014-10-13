@@ -3,9 +3,7 @@ package teetime.examples.cipher;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import teetime.framework.Analysis;
@@ -15,8 +13,8 @@ import com.google.common.io.Files;
 
 public class CipherTest {
 
-	static String inputFile = "testdata/dependencies.html";
-	static String outputFile = "testdata/dependencies.html";
+	static String inputFile = "src/test/resources/data/input.txt";
+	static String outputFile = "src/test/resources/data/output.txt";
 	static String password = "Password";
 	static long start;
 	long stop;
@@ -25,26 +23,12 @@ public class CipherTest {
 
 	final static Analysis analysis = new Analysis(configuration);
 
-	@BeforeClass
-	public static void beforeClass() {
+	@Test
+	public void executeTest() throws IOException {
 		analysis.init();
 		start = System.currentTimeMillis();
-	}
-
-	@Test
-	public void executeTest() {
 		analysis.start();
+		Assert.assertTrue(Files.equal(new File(inputFile), new File(outputFile)));
 	}
 
-	@AfterClass
-	public static void afterClass() {
-		System.out.println("It took " + (System.currentTimeMillis() - start) + " Milliseconds");
-		boolean bool = false;
-		try {
-			bool = Files.equal(new File(inputFile), new File(outputFile));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Assert.assertTrue(bool);
-	}
 }

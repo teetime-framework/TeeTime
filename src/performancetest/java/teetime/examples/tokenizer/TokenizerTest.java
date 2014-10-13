@@ -1,43 +1,25 @@
 package teetime.examples.tokenizer;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Assert;
 import org.junit.Test;
 
 import teetime.framework.Analysis;
-import teetime.framework.AnalysisConfiguration;
 
 public class TokenizerTest {
 
-	static String inputFile = "testdata/dependencies.html";
-	static String password = "Password";
-	static long start;
-	long stop;
+	// Encrypted lorem ipsum
+	private static String inputFile = "src/test/resources/data/cipherInput.txt";
+	private static String password = "Password";
 
-	static AnalysisConfiguration configuration = new TokenizerConfiguration(inputFile, password);
+	private static TokenizerConfiguration configuration = new TokenizerConfiguration(inputFile, password);
 
-	final static Analysis analysis = new Analysis(configuration);
-
-	@BeforeClass
-	public static void beforeClass() {
-		analysis.init();
-		start = System.currentTimeMillis();
-	}
+	private final static Analysis analysis = new Analysis(configuration);
 
 	@Test
 	public void executeTest() {
+		analysis.init();
 		analysis.start();
+		Assert.assertEquals(970, configuration.getTokenCount());
 	}
 
-	@AfterClass
-	public static void afterClass() {
-		System.out.println("It took " + (System.currentTimeMillis() - start) + " Milliseconds");
-		// boolean bool = false;
-		// try {
-		// bool = Files.equal(new File(inputFile), new File(outputFile));
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
-		// Assert.assertTrue(bool);
-	}
 }

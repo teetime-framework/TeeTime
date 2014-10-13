@@ -6,13 +6,13 @@ import teetime.framework.AnalysisConfiguration;
 import teetime.framework.pipe.PipeFactory;
 import teetime.framework.pipe.PipeFactory.PipeOrdering;
 import teetime.framework.pipe.PipeFactory.ThreadCommunication;
+import teetime.stage.CipherByteArray;
 import teetime.stage.InitialElementProducer;
+import teetime.stage.ZipByteArray;
+import teetime.stage.CipherByteArray.CipherMode;
+import teetime.stage.ZipByteArray.ZipMode;
 import teetime.stage.io.ByteArrayFileWriter;
-import teetime.stage.io.CipherByteArray;
-import teetime.stage.io.CipherByteArray.CipherMode;
 import teetime.stage.io.File2ByteArray;
-import teetime.stage.io.ZipByteArray;
-import teetime.stage.io.ZipByteArray.ZipMode;
 
 public class CipherConfiguration extends AnalysisConfiguration {
 
