@@ -52,6 +52,10 @@ public class LegacyObjectProducer<T> {
 	}
 
 	protected T execute() {
+		if (this.numInputObjects == 0) {
+			return null;
+		}
+
 		T newObject = this.inputObjectCreator.create();
 		this.numInputObjects--;
 

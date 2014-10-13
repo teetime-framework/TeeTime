@@ -46,13 +46,14 @@ public class LegacyCollectorSink<T> {
 		System.out.println("size: " + this.elements.size());
 	}
 
-	protected void execute(final T element) {
+	protected Object execute(final T element) {
 		this.elements.add(element);
 
 		if ((this.elements.size() % this.threshold) == 0) {
 			System.out.println("size: " + this.elements.size());
 		}
 
+		return new Object();
 		// if (this.elements.size() > 90000) {
 		// // System.out.println("size > 90000: " + this.elements.size());
 		// }
