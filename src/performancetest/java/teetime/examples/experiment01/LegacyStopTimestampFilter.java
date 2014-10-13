@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.stage;
+package teetime.examples.experiment01;
 
-import teetime.framework.ConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.util.TimestampObject;
 
 /**
  * @author Christian Wulf
  *
  * @since 1.10
  */
-public class NoopFilter<T> extends ConsumerStage<T> {
+public class LegacyStopTimestampFilter {
 
-	private final OutputPort<T> outputPort = this.createOutputPort();
-
-	@Override
-	protected void execute(final T element) {
-		this.send(this.outputPort, element);
-	}
-
-	public OutputPort<T> getOutputPort() {
-		return this.outputPort;
+	protected TimestampObject execute(final TimestampObject element) {
+		element.setStopTimestamp(System.nanoTime());
+		return element;
 	}
 
 }

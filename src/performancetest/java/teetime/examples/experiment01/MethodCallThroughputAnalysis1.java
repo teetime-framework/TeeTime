@@ -37,45 +37,45 @@ public class MethodCallThroughputAnalysis1 extends OldAnalysis {
 	@Override
 	public void init() {
 		super.init();
-		// this.runnable = this.buildPipeline();
+		this.runnable = this.buildPipeline();
 	}
 
 	/**
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
-	// private Runnable buildPipeline() {
-	// @SuppressWarnings("unchecked")
-	// final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
-	// // create stages
-	// final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
-	// final StartTimestampFilter startTimestampFilter = new StartTimestampFilter();
-	// for (int i = 0; i < noopFilters.length; i++) {
-	// noopFilters[i] = new NoopFilter<TimestampObject>();
-	// }
-	// final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
-	// final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
-	//
-	// final Runnable runnable = new Runnable() {
-	// @Override
-	// public void run() {
-	// while (true) {
-	// TimestampObject object = objectProducer.execute(null);
-	// if (object == null) {
-	// return;
-	// }
-	//
-	// object = startTimestampFilter.execute(object);
-	// for (final NoopFilter<TimestampObject> noopFilter : noopFilters) {
-	// object = noopFilter.execute(object);
-	// }
-	// object = stopTimestampFilter.execute(object);
-	// collectorSink.execute(object);
-	// }
-	// }
-	// };
-	// return runnable;
-	// }
+	private Runnable buildPipeline() {
+		@SuppressWarnings("unchecked")
+		final LegacyNoopFilter<TimestampObject>[] noopFilters = new LegacyNoopFilter[this.numNoopFilters];
+		// create stages
+		final LegacyObjectProducer<TimestampObject> objectProducer = new LegacyObjectProducer<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
+		final LegacyStartTimestampFilter startTimestampFilter = new LegacyStartTimestampFilter();
+		for (int i = 0; i < noopFilters.length; i++) {
+			noopFilters[i] = new LegacyNoopFilter<TimestampObject>();
+		}
+		final LegacyStopTimestampFilter stopTimestampFilter = new LegacyStopTimestampFilter();
+		final LegacyCollectorSink<TimestampObject> collectorSink = new LegacyCollectorSink<TimestampObject>(this.timestampObjects);
+
+		final Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					TimestampObject object = objectProducer.execute();
+					if (object == null) {
+						return;
+					}
+
+					object = startTimestampFilter.execute(object);
+					for (final LegacyNoopFilter<TimestampObject> noopFilter : noopFilters) {
+						object = noopFilter.execute(object);
+					}
+					object = stopTimestampFilter.execute(object);
+					collectorSink.execute(object);
+				}
+			}
+		};
+		return runnable;
+	}
 
 	@Override
 	public void start() {
