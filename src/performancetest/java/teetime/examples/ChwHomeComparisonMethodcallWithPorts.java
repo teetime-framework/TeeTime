@@ -24,31 +24,31 @@ public class ChwHomeComparisonMethodcallWithPorts implements PerformanceCheckPro
 		}
 
 		PerformanceResult test1 = performanceResults
-				.get("testWithManyObjects(teetime.variant.methodcall.examples.experiment01.MethodCallThoughputTimestampAnalysis1Test)");
+				.get("testWithManyObjects(teetime.examples.experiment01.MethodCallThoughputTimestampAnalysis1Test)");
 		PerformanceResult test9 = performanceResults
-				.get("testWithManyObjects(teetime.variant.methodcallWithPorts.examples.experiment09.MethodCallThoughputTimestampAnalysis9Test)");
+				.get("testWithManyObjects(teetime.examples.experiment09.MethodCallThoughputTimestampAnalysis9Test)");
 		PerformanceResult test10 = performanceResults
-				.get("testWithManyObjects(teetime.variant.methodcallWithPorts.examples.experiment10.MethodCallThoughputTimestampAnalysis10Test)");
+				.get("testWithManyObjects(teetime.examples.experiment10.MethodCallThoughputTimestampAnalysis10Test)");
 		PerformanceResult test11 = performanceResults
-				.get("testWithManyObjects(teetime.variant.methodcallWithPorts.examples.experiment11.MethodCallThoughputTimestampAnalysis11Test)");
+				.get("testWithManyObjects(teetime.examples.experiment11.MethodCallThoughputTimestampAnalysis11Test)");
 		PerformanceResult test14 = performanceResults
-				.get("testWithManyObjects(teetime.variant.methodcallWithPorts.examples.experiment14.MethodCallThoughputTimestampAnalysis14Test)");
+				.get("testWithManyObjects(teetime.examples.experiment14.MethodCallThoughputTimestampAnalysis14Test)");
 		PerformanceResult test15 = performanceResults
-				.get("testWithManyObjects(teetime.variant.methodcallWithPorts.examples.experiment15.MethodCallThoughputTimestampAnalysis15Test)");
+				.get("testWithManyObjects(teetime.examples.experiment15.MethodCallThoughputTimestampAnalysis15Test)");
 		PerformanceResult test16a = performanceResults
-				.get("testWithManyObjectsAnd1Thread(teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
+				.get("testWithManyObjectsAnd1Thread(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
 		PerformanceResult test16b = performanceResults
-				.get("testWithManyObjectsAnd2Threads(teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
+				.get("testWithManyObjectsAnd2Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
 		PerformanceResult test16c = performanceResults
-				.get("testWithManyObjectsAnd4Threads(teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
+				.get("testWithManyObjectsAnd4Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
 		PerformanceResult test17 = performanceResults
-				.get("testWithManyObjects(teetime.variant.methodcallWithPorts.examples.experiment17.MethodCallThoughputTimestampAnalysis17Test)");
+				.get("testWithManyObjects(teetime.examples.experiment17.MethodCallThoughputTimestampAnalysis17Test)");
 		PerformanceResult test19a = performanceResults
-				.get("testWithManyObjectsAnd1Thread(teetime.variant.methodcallWithPorts.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
+				.get("testWithManyObjectsAnd1Thread(teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
 		PerformanceResult test19b = performanceResults
-				.get("testWithManyObjectsAnd2Threads(teetime.variant.methodcallWithPorts.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
+				.get("testWithManyObjectsAnd2Threads(teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
 		PerformanceResult test19c = performanceResults
-				.get("testWithManyObjectsAnd4Threads(teetime.variant.methodcallWithPorts.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
+				.get("testWithManyObjectsAnd4Threads(teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
 
 		double value14 = (double) test14.quantiles.get(0.5) / test1.quantiles.get(0.5);
 		double value10 = (double) test10.quantiles.get(0.5) / test1.quantiles.get(0.5);

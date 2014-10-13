@@ -10,11 +10,11 @@ public class ChwWorkPerformanceCheck implements PerformanceCheckProfile {
 	@Override
 	public void check() {
 		PerformanceResult test16a = PerformanceTest.measurementRepository.performanceResults
-				.get("testWithManyObjectsAnd1Thread(teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
+				.get("testWithManyObjectsAnd1Thread(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
 		PerformanceResult test16b = PerformanceTest.measurementRepository.performanceResults
-				.get("testWithManyObjectsAnd2Threads(teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
+				.get("testWithManyObjectsAnd2Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
 		PerformanceResult test16c = PerformanceTest.measurementRepository.performanceResults
-				.get("testWithManyObjectsAnd4Threads(teetime.variant.methodcallWithPorts.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
+				.get("testWithManyObjectsAnd4Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
 		// check speedup
 		double speedupB = (double) test16a.overallDurationInNs / test16b.overallDurationInNs;
 		double speedupC = (double) test16a.overallDurationInNs / test16c.overallDurationInNs;

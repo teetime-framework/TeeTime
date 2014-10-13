@@ -8,8 +8,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 
-import teetime.framework.pipe.IPipe;
+import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactory;
+import teetime.framework.pipe.PipeFactory.PipeOrdering;
 import teetime.framework.pipe.PipeFactory.ThreadCommunication;
 import teetime.stage.ObjectProducer;
 import teetime.stage.PortTypeConfiguration;
@@ -46,12 +47,10 @@ public class ConnectionTypeTest {
 		StopTimestampFilter stopTimestampFilter = StopTimestampFilter.class.newInstance();
 		Sink sink = Sink.class.newInstance();
 
-		IPipe pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
-		pipe.connectPorts(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
-		pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
-		pipe.connectPorts(startTimestampFilter.getOutputPort(), stopTimestampFilter.getInputPort());
-		pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
-		pipe.connectPorts(stopTimestampFilter.getOutputPort(), sink.getInputPort());
+		IPipeFactory factory = this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.QUEUE_BASED, true);
+		factory.create(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
+		factory.create(startTimestampFilter.getOutputPort(), stopTimestampFilter.getInputPort());
+		factory.create(stopTimestampFilter.getOutputPort(), sink.getInputPort());
 
 		// TypeVariable<Class<ObjectProducer>>[] objectProducerTypeParameters = ObjectProducer.class.getTypeParameters();
 		// for (TypeVariable<Class<ObjectProducer>> typeVariable : objectProducerTypeParameters) {
@@ -60,7 +59,7 @@ public class ConnectionTypeTest {
 		// System.out.println(typeVariable.getBounds()[0]); // ->class java.lang.Object
 		// System.out.println(typeVariable.getName()); // ->T
 		// System.out.println(typeVariable.getClass()); // ->class sun.reflect.generics.reflectiveObjects.TypeVariableImpl
-		// System.out.println(typeVariable.getGenericDeclaration()); // ->class teetime.variant.methodcallWithPorts.stage.ObjectProducer
+		// System.out.println(typeVariable.getGenericDeclaration()); // ->class teetime.stage.ObjectProducer
 		// }
 		//
 		// Class<?> currentClass = objectProducer.getClass();

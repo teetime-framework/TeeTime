@@ -21,8 +21,9 @@ import teetime.framework.HeadPipeline;
 import teetime.framework.HeadStage;
 import teetime.framework.OldAnalysis;
 import teetime.framework.RunnableStage;
-import teetime.framework.pipe.IPipe;
+import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactory;
+import teetime.framework.pipe.PipeFactory.PipeOrdering;
 import teetime.framework.pipe.PipeFactory.ThreadCommunication;
 import teetime.stage.CollectorSink;
 import teetime.stage.NoopFilter;
@@ -74,18 +75,15 @@ public class MethodCallThroughputAnalysis14 extends OldAnalysis {
 		pipeline.setFirstStage(objectProducer);
 		pipeline.setLastStage(collectorSink);
 
-		IPipe pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
-		pipe.connectPorts(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
-		pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
-		pipe.connectPorts(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
+		IPipeFactory factory = this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.QUEUE_BASED, true);
+
+		factory.create(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
+		factory.create(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
 		for (int i = 0; i < noopFilters.length - 1; i++) {
-			pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
-			pipe.connectPorts(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
+			factory.create(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
 		}
-		pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
-		pipe.connectPorts(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
-		pipe = this.pipeFactory.create(ThreadCommunication.INTRA);
-		pipe.connectPorts(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
+		factory.create(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
+		factory.create(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
 		return pipeline;
 	}
