@@ -19,8 +19,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import teetime.examples.experiment16.ChwHomePerformanceCheck;
-import teetime.examples.experiment16.ChwWorkPerformanceCheck;
 import teetime.util.ConstructorClosure;
 import teetime.util.TimestampObject;
 import util.PerformanceCheckProfile;
