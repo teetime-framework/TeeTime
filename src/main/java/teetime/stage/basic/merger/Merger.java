@@ -63,6 +63,7 @@ public class Merger<T> extends AbstractStage {
 
 	@Override
 	public void onTerminating() {
+		super.onTerminating();
 		this.finishedInputPorts++;
 	}
 

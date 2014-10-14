@@ -46,6 +46,7 @@ public class CollectorSink<T> extends ConsumerStage<T> {
 
 	@Override
 	public void onTerminating() {
+		super.onTerminating();
 		System.out.println("size: " + this.elements.size());
 	}
 

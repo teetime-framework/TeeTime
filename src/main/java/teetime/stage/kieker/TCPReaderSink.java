@@ -150,6 +150,7 @@ public class TCPReaderSink extends ProducerStage<IMonitoringRecord> {
 
 	@Override
 	public void onTerminating() {
+		super.onTerminating();
 		this.executorService.shutdown();
 		this.tcpStringReader.interrupt();
 		super.onTerminating();

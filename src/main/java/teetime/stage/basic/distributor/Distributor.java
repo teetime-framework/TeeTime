@@ -21,9 +21,9 @@ import teetime.framework.OutputPort;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
- * 
+ *
  * @param T
  *            the type of the input port and the output ports
  */
@@ -39,6 +39,7 @@ public class Distributor<T> extends ConsumerStage<T> {
 
 	@Override
 	public void onTerminating() {
+		super.onTerminating();
 		// for (OutputPort<T> op : this.outputPortList) {
 		// op.getPipe().close();
 		// System.out.println("End signal sent, size: " + op.getPipe().size());

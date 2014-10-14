@@ -1,6 +1,6 @@
 package teetime.framework;
 
-public class HeadPipeline<FirstStage extends HeadStage, LastStage extends StageWithPort> extends Pipeline<FirstStage, LastStage> implements HeadStage {
+public class HeadPipeline<FirstStage extends HeadStage, LastStage extends StageWithPort> extends OldPipeline<FirstStage, LastStage> implements HeadStage {
 
 	public HeadPipeline() {}
 

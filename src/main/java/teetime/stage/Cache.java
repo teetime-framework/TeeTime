@@ -21,6 +21,7 @@ public class Cache<T> extends ConsumerStage<T> {
 
 	@Override
 	public void onTerminating() {
+		super.onTerminating();
 		this.logger.debug("Emitting " + this.cachedObjects.size() + " cached elements...");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();

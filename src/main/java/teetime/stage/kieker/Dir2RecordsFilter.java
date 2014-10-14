@@ -19,7 +19,7 @@ import java.io.File;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.Pipeline;
+import teetime.framework.OldPipeline;
 import teetime.framework.pipe.PipeFactory;
 import teetime.framework.pipe.SingleElementPipe;
 import teetime.framework.pipe.PipeFactory.PipeOrdering;
@@ -42,7 +42,7 @@ import kieker.common.util.filesystem.FSUtil;
  *
  * @since 1.10
  */
-public class Dir2RecordsFilter extends Pipeline<ClassNameRegistryCreationFilter, Merger<IMonitoringRecord>> {
+public class Dir2RecordsFilter extends OldPipeline<ClassNameRegistryCreationFilter, Merger<IMonitoringRecord>> {
 
 	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
 	private ClassNameRegistryRepository classNameRegistryRepository;

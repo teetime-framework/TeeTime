@@ -28,6 +28,7 @@ public class Delay<T> extends AbstractStage {
 
 	@Override
 	public void onTerminating() {
+		super.onTerminating();
 		while (!this.inputPort.getPipe().isEmpty()) {
 			this.executeWithPorts();
 		}
