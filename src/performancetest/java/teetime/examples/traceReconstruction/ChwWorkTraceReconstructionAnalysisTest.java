@@ -37,7 +37,7 @@ import kieker.analysis.plugin.filter.flow.TraceEventRecords;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ChwWorkTraceReconstructionAnalysisTest {
@@ -66,7 +66,6 @@ public class ChwWorkTraceReconstructionAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		assertEquals(50002, analysis.getNumRecords());
@@ -94,7 +93,6 @@ public class ChwWorkTraceReconstructionAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		assertEquals(1489902, analysis.getNumRecords());
@@ -124,7 +122,6 @@ public class ChwWorkTraceReconstructionAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		assertEquals(17371, analysis.getNumRecords());

@@ -19,7 +19,6 @@ import java.util.List;
 
 import teetime.framework.HeadPipeline;
 import teetime.framework.HeadStage;
-import teetime.framework.OldAnalysis;
 import teetime.framework.RunnableStage;
 import teetime.framework.pipe.OrderedGrowableArrayPipe;
 import teetime.framework.pipe.SingleElementPipe;
@@ -40,7 +39,7 @@ import teetime.util.TimestampObject;
  *
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis15 extends OldAnalysis {
+public class MethodCallThroughputAnalysis15 {
 	// FIXME this analysis sometimes runs infinitely
 
 	private static final int SPSC_INITIAL_CAPACITY = 4;
@@ -54,9 +53,7 @@ public class MethodCallThroughputAnalysis15 extends OldAnalysis {
 	private Runnable runnable;
 	private Clock clock;
 
-	@Override
 	public void init() {
-		super.init();
 
 		HeadPipeline<Clock, Sink<Long>> clockPipeline = this.buildClockPipeline();
 		this.clockRunnable = new RunnableStage(clockPipeline);
@@ -115,9 +112,7 @@ public class MethodCallThroughputAnalysis15 extends OldAnalysis {
 		return pipeline;
 	}
 
-	@Override
 	public void start() {
-		super.start();
 		Thread clockThread = new Thread(this.clockRunnable);
 		clockThread.start();
 		this.runnable.run();

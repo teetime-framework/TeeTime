@@ -26,7 +26,7 @@ import util.PerformanceTest;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -82,7 +82,6 @@ public class MethodCallThoughputTimestampAnalysis19Test extends PerformanceTest 
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		this.timestampObjects = ListUtil.merge(analysis.getTimestampObjectsList());

@@ -108,7 +108,6 @@ public class ChwWorkTcpTraceReductionAnalysisWithThreadsTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		System.out.println("#waits of tcp-relay pipe: " + analysis.getTcpRelayPipe().getNumWaits());

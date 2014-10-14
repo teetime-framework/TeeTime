@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import teetime.framework.HeadPipeline;
-import teetime.framework.OldAnalysis;
 import teetime.framework.RunnableStage;
 import teetime.framework.StageWithPort;
 import teetime.framework.pipe.SingleElementPipe;
@@ -36,7 +35,7 @@ import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.flow.IFlowRecord;
 import kieker.common.record.flow.trace.TraceMetadata;
 
-public class TcpTraceReductionAnalysisWithThreads extends OldAnalysis {
+public class TcpTraceReductionAnalysisWithThreads {
 
 	private static final int NUM_VIRTUAL_CORES = Runtime.getRuntime().availableProcessors();
 	private static final int MIO = 1000000;
@@ -52,9 +51,7 @@ public class TcpTraceReductionAnalysisWithThreads extends OldAnalysis {
 	private SpScPipe tcpRelayPipe;
 	private int numWorkerThreads;
 
-	@Override
 	public void init() {
-		super.init();
 		HeadPipeline<TCPReader, Distributor<IMonitoringRecord>> tcpPipeline = this.buildTcpPipeline();
 		this.tcpThread = new Thread(new RunnableStage(tcpPipeline));
 
@@ -197,9 +194,7 @@ public class TcpTraceReductionAnalysisWithThreads extends OldAnalysis {
 		return pipeline;
 	}
 
-	@Override
 	public void start() {
-		super.start();
 
 		this.tcpThread.start();
 		this.clockThread.start();

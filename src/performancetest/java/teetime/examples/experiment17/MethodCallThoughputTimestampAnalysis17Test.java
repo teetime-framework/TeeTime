@@ -24,7 +24,7 @@ import util.PerformanceTest;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class MethodCallThoughputTimestampAnalysis17Test extends PerformanceTest {
@@ -52,7 +52,6 @@ public class MethodCallThoughputTimestampAnalysis17Test extends PerformanceTest 
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		this.timestampObjects = ListUtil.merge(analysis.getTimestampObjectsList());

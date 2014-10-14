@@ -85,7 +85,6 @@ public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest 
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		this.timestampObjects = ListUtil.merge(analysis.getTimestampObjectsList());

@@ -36,7 +36,7 @@ import util.StatisticsUtil;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ChwHomeTcpTraceReconstructionAnalysisTest {
@@ -68,7 +68,6 @@ public class ChwHomeTcpTraceReconstructionAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		List<Long> recordThroughputs = ListUtil.removeFirstHalfElements(analysis.getRecordThroughputs());

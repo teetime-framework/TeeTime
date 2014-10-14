@@ -29,7 +29,7 @@ import util.StatisticsUtil;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ChwWorkTcpTraceReconstructionAnalysisTest {
@@ -61,7 +61,6 @@ public class ChwWorkTcpTraceReconstructionAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceThroughputs());
