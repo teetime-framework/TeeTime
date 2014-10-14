@@ -3,20 +3,21 @@ package teetime.examples.cipher;
 import java.io.File;
 
 import teetime.framework.AnalysisConfiguration;
-import teetime.framework.pipe.PipeFactory;
-import teetime.framework.pipe.PipeFactory.PipeOrdering;
-import teetime.framework.pipe.PipeFactory.ThreadCommunication;
+import teetime.framework.pipe.PipeFactoryRegistry;
+import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
+import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.CipherByteArray;
+import teetime.stage.CipherByteArray.CipherMode;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.ZipByteArray;
-import teetime.stage.CipherByteArray.CipherMode;
 import teetime.stage.ZipByteArray.ZipMode;
 import teetime.stage.io.ByteArrayFileWriter;
 import teetime.stage.io.File2ByteArray;
 
 public class CipherConfiguration extends AnalysisConfiguration {
 
-	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
+	private static final PipeFactoryRegistry pipeFactoryRegistry = PipeFactoryRegistry.INSTANCE;
+
 	private final File input, output;
 	private final String password;
 
@@ -33,17 +34,17 @@ public class CipherConfiguration extends AnalysisConfiguration {
 		CipherByteArray decrypt = new CipherByteArray(this.password, CipherMode.DECRYPT);
 		ByteArrayFileWriter writer = new ByteArrayFileWriter(output);
 
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
+		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
 				.create(init.getOutputPort(), f2b.getInputPort());
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
+		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
 				.create(f2b.getOutputPort(), enc.getInputPort());
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
+		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
 				.create(enc.getOutputPort(), comp.getInputPort());
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
+		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
 				.create(comp.getOutputPort(), decomp.getInputPort());
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
+		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
 				.create(decomp.getOutputPort(), decrypt.getInputPort());
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
+		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
 				.create(decrypt.getOutputPort(), writer.getInputPort());
 
 		this.getFiniteProducerStages().add(init);

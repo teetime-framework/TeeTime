@@ -3,9 +3,9 @@ package teetime.examples.tokenizer;
 import java.io.File;
 
 import teetime.framework.AnalysisConfiguration;
-import teetime.framework.pipe.PipeFactory;
-import teetime.framework.pipe.PipeFactory.PipeOrdering;
-import teetime.framework.pipe.PipeFactory.ThreadCommunication;
+import teetime.framework.pipe.PipeFactoryRegistry;
+import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
+import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.ByteArray2String;
 import teetime.stage.CipherByteArray;
 import teetime.stage.CipherByteArray.CipherMode;
@@ -18,7 +18,7 @@ import teetime.stage.io.File2ByteArray;
 
 public class TokenizerConfiguration extends AnalysisConfiguration {
 
-	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
+	private final PipeFactoryRegistry pipeFactory = PipeFactoryRegistry.INSTANCE;
 	private final File input;
 	private final String password;
 	private final TokenCounter counter;

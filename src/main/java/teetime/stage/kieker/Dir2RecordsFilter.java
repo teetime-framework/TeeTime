@@ -20,10 +20,10 @@ import java.io.File;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.Pipeline;
-import teetime.framework.pipe.PipeFactory;
+import teetime.framework.pipe.PipeFactoryRegistry;
 import teetime.framework.pipe.SingleElementPipe;
-import teetime.framework.pipe.PipeFactory.PipeOrdering;
-import teetime.framework.pipe.PipeFactory.ThreadCommunication;
+import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
+import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.FileExtensionSwitch;
 import teetime.stage.basic.merger.Merger;
 import teetime.stage.io.Directory2FilesFilter;
@@ -44,7 +44,7 @@ import kieker.common.util.filesystem.FSUtil;
  */
 public class Dir2RecordsFilter extends Pipeline<ClassNameRegistryCreationFilter, Merger<IMonitoringRecord>> {
 
-	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
+	private final PipeFactoryRegistry pipeFactory = PipeFactoryRegistry.INSTANCE;
 	private ClassNameRegistryRepository classNameRegistryRepository;
 
 	/**

@@ -21,9 +21,9 @@ import java.util.List;
 
 import teetime.framework.AnalysisConfiguration;
 import teetime.framework.HeadStage;
-import teetime.framework.pipe.PipeFactory;
-import teetime.framework.pipe.PipeFactory.PipeOrdering;
-import teetime.framework.pipe.PipeFactory.ThreadCommunication;
+import teetime.framework.pipe.PipeFactoryRegistry;
+import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
+import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.kieker.Dir2RecordsFilter;
@@ -39,7 +39,7 @@ import kieker.common.record.IMonitoringRecord;
 public class RecordReaderConfiguration extends AnalysisConfiguration {
 
 	private final List<IMonitoringRecord> elementCollection = new LinkedList<IMonitoringRecord>();
-	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
+	private final PipeFactoryRegistry pipeFactory = PipeFactoryRegistry.INSTANCE;
 
 	public RecordReaderConfiguration() {
 		this.buildConfiguration();

@@ -22,9 +22,9 @@ import teetime.framework.HeadStage;
 import teetime.framework.OldAnalysis;
 import teetime.framework.RunnableStage;
 import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactory;
-import teetime.framework.pipe.PipeFactory.PipeOrdering;
-import teetime.framework.pipe.PipeFactory.ThreadCommunication;
+import teetime.framework.pipe.PipeFactoryRegistry;
+import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
+import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.CollectorSink;
 import teetime.stage.NoopFilter;
 import teetime.stage.ObjectProducer;
@@ -45,7 +45,7 @@ public class MethodCallThroughputAnalysis14 extends OldAnalysis {
 	private int numNoopFilters;
 	private List<TimestampObject> timestampObjects;
 	private Runnable runnable;
-	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
+	private final PipeFactoryRegistry pipeFactory = PipeFactoryRegistry.INSTANCE;
 
 	@Override
 	public void init() {

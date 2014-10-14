@@ -9,9 +9,9 @@ import java.lang.reflect.InvocationTargetException;
 import org.junit.Test;
 
 import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactory;
-import teetime.framework.pipe.PipeFactory.PipeOrdering;
-import teetime.framework.pipe.PipeFactory.ThreadCommunication;
+import teetime.framework.pipe.PipeFactoryRegistry;
+import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
+import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.ObjectProducer;
 import teetime.stage.PortTypeConfiguration;
 import teetime.stage.StartTimestampFilter;
@@ -22,7 +22,7 @@ import teetime.util.TimestampObject;
 
 public class ConnectionTypeTest {
 
-	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
+	private final PipeFactoryRegistry pipeFactory = PipeFactoryRegistry.INSTANCE;
 
 	// tests for load-time validation
 

@@ -13,21 +13,17 @@ import com.google.common.io.Files;
 
 public class CipherTest {
 
-	static String inputFile = "src/test/resources/data/input.txt";
-	static String outputFile = "src/test/resources/data/output.txt";
-	static String password = "Password";
-	static long start;
-	long stop;
-
-	static AnalysisConfiguration configuration = new CipherConfiguration(inputFile, outputFile, password);
-
-	final static Analysis analysis = new Analysis(configuration);
-
 	@Test
 	public void executeTest() throws IOException {
+		final String inputFile = "src/test/resources/data/input.txt";
+		final String outputFile = "src/test/resources/data/output.txt";
+		final String password = "Password";
+
+		AnalysisConfiguration configuration = new CipherConfiguration(inputFile, outputFile, password);
+		Analysis analysis = new Analysis(configuration);
 		analysis.init();
-		start = System.currentTimeMillis();
 		analysis.start();
+
 		Assert.assertTrue(Files.equal(new File(inputFile), new File(outputFile)));
 	}
 

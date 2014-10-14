@@ -8,9 +8,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PipeFactory {
+public class PipeFactoryRegistry {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PipeFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PipeFactoryRegistry.class);
 
 	public enum ThreadCommunication {
 		INTER, INTRA
@@ -30,9 +30,9 @@ public class PipeFactory {
 
 	private final Map<String, IPipeFactory> pipeFactories = new HashMap<String, IPipeFactory>();
 
-	public static PipeFactory INSTANCE = new PipeFactory();
+	public static PipeFactoryRegistry INSTANCE = new PipeFactoryRegistry();
 
-	private PipeFactory() {
+	private PipeFactoryRegistry() {
 		try {
 			List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadFromFile("conf/pipe-factories.conf");
 			for (IPipeFactory pipeFactory : pipeFactories) {
