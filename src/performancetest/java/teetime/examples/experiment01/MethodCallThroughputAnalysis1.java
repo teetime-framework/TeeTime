@@ -17,7 +17,6 @@ package teetime.examples.experiment01;
 
 import java.util.List;
 
-import teetime.framework.OldAnalysis;
 import teetime.util.ConstructorClosure;
 import teetime.util.TimestampObject;
 
@@ -26,7 +25,7 @@ import teetime.util.TimestampObject;
  *
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis1 extends OldAnalysis {
+public class MethodCallThroughputAnalysis1 {
 
 	private long numInputObjects;
 	private ConstructorClosure<TimestampObject> inputObjectCreator;
@@ -34,9 +33,7 @@ public class MethodCallThroughputAnalysis1 extends OldAnalysis {
 	private List<TimestampObject> timestampObjects;
 	private Runnable runnable;
 
-	@Override
 	public void init() {
-		super.init();
 		this.runnable = this.buildPipeline();
 	}
 
@@ -77,9 +74,7 @@ public class MethodCallThroughputAnalysis1 extends OldAnalysis {
 		return runnable;
 	}
 
-	@Override
 	public void start() {
-		super.start();
 		this.runnable.run();
 	}
 
