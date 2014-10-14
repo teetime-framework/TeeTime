@@ -24,11 +24,6 @@ public abstract class ProducerStage<O> extends AbstractStage implements HeadStag
 	}
 
 	@Override
-	public void onIsPipelineHead() {
-		// do nothing
-	}
-
-	@Override
 	public void terminate() {
 		this.shouldTerminate = true;
 	}

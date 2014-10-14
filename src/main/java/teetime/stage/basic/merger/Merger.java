@@ -62,7 +62,7 @@ public class Merger<T> extends AbstractStage {
 	}
 
 	@Override
-	public void onIsPipelineHead() {
+	public void onTerminating() {
 		this.finishedInputPorts++;
 	}
 

@@ -38,7 +38,7 @@ public class Distributor<T> extends ConsumerStage<T> {
 	}
 
 	@Override
-	public void onIsPipelineHead() {
+	public void onTerminating() {
 		// for (OutputPort<T> op : this.outputPortList) {
 		// op.getPipe().close();
 		// System.out.println("End signal sent, size: " + op.getPipe().size());

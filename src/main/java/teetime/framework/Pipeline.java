@@ -47,11 +47,6 @@ public class Pipeline<FirstStage extends StageWithPort, LastStage extends StageW
 	}
 
 	@Override
-	public void onIsPipelineHead() {
-		this.firstStage.onIsPipelineHead();
-	}
-
-	@Override
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		this.firstStage.onSignal(signal, inputPort);
 	}

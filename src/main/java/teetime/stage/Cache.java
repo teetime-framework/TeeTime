@@ -20,7 +20,7 @@ public class Cache<T> extends ConsumerStage<T> {
 	}
 
 	@Override
-	public void onIsPipelineHead() {
+	public void onTerminating() {
 		this.logger.debug("Emitting " + this.cachedObjects.size() + " cached elements...");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
@@ -29,7 +29,7 @@ public class Cache<T> extends ConsumerStage<T> {
 		}
 		stopWatch.end();
 		this.logger.debug("Emitting took " + TimeUnit.NANOSECONDS.toMillis(stopWatch.getDurationInNs()) + " ms");
-		super.onIsPipelineHead();
+		super.onTerminating();
 	}
 
 	public OutputPort<T> getOutputPort() {

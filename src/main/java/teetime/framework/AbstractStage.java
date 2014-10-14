@@ -126,7 +126,6 @@ public abstract class AbstractStage implements StageWithPort {
 
 	public void onTerminating() {
 		// empty default implementation
-		this.onIsPipelineHead();
 	}
 
 	protected <T> InputPort<T> createInputPort() {

@@ -73,7 +73,7 @@ public class TraceReductionFilter extends ConsumerStage<TraceEventRecords> {
 	}
 
 	@Override
-	public void onIsPipelineHead() {
+	public void onTerminating() {
 		synchronized (this.trace2buffer) { // BETTER hide and improve synchronization in the buffer
 			for (final Entry<TraceEventRecords, TraceAggregationBuffer> entry : this.trace2buffer.entrySet()) {
 				final TraceAggregationBuffer buffer = entry.getValue();
@@ -84,7 +84,7 @@ public class TraceReductionFilter extends ConsumerStage<TraceEventRecords> {
 			this.trace2buffer.clear();
 		}
 
-		super.onIsPipelineHead();
+		super.onTerminating();
 	}
 
 	private void processTimeoutQueue(final long timestampInNs) {

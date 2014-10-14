@@ -94,12 +94,12 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord> {
 	}
 
 	@Override
-	public void onIsPipelineHead() {
+	public void onTerminating() {
 		for (Long traceId : this.traceId2trace.keySet()) {
 			this.put(traceId, false);
 		}
 
-		super.onIsPipelineHead();
+		super.onTerminating();
 	}
 
 	private void sendTraceBuffer(final TraceBuffer traceBuffer) {

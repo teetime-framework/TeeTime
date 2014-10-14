@@ -15,9 +15,6 @@ public interface StageWithPort {
 
 	void setParentStage(StageWithPort parentStage, int index);
 
-	// BETTER remove this method since it will be replaced by onTerminating()
-	void onIsPipelineHead();
-
 	void onSignal(ISignal signal, InputPort<?> inputPort);
 
 	/**

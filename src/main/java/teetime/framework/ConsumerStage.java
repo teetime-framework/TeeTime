@@ -15,11 +15,6 @@ public abstract class ConsumerStage<I> extends AbstractStage {
 		this.execute(element);
 	}
 
-	@Override
-	public void onIsPipelineHead() {
-		// do nothing
-	}
-
 	protected abstract void execute(I element);
 
 }
