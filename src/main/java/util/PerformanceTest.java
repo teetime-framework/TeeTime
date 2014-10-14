@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
@@ -17,6 +16,7 @@ import teetime.util.TimestampObject;
 
 public abstract class PerformanceTest {
 
+	protected static final PerformanceCheckProfileRepository PERFORMANCE_CHECK_PROFILE_REPOSITORY = PerformanceCheckProfileRepository.INSTANCE;
 	protected static final int NUM_OBJECTS_TO_CREATE = 1000000;
 	protected static final int NUM_NOOP_FILTERS = 800;
 
@@ -27,8 +27,7 @@ public abstract class PerformanceTest {
 	protected StopWatch stopWatch;
 	protected List<TimestampObject> timestampObjects;
 
-	@BeforeClass
-	public static void beforeClass() {
+	static {
 		System.setProperty("logback.configurationFile", "src/test/resources/logback-test.groovy");
 	}
 

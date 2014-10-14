@@ -15,18 +15,33 @@
  ***************************************************************************/
 package teetime.examples.experiment14;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import teetime.util.ConstructorClosure;
 import teetime.util.TimestampObject;
+import util.PerformanceCheckProfile;
 import util.PerformanceTest;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class MethodCallThoughputTimestampAnalysis14Test extends PerformanceTest {
+
+	@BeforeClass
+	public static void beforeClass() {
+		PERFORMANCE_CHECK_PROFILE_REPOSITORY.register(MethodCallThoughputTimestampAnalysis14Test.class, new ChwWorkPerformanceCheck());
+		PERFORMANCE_CHECK_PROFILE_REPOSITORY.register(MethodCallThoughputTimestampAnalysis14Test.class, new ChwHomePerformanceCheck());
+	};
+
+	@AfterClass
+	public static void afterClass() {
+		PerformanceCheckProfile performanceCheckProfile = PERFORMANCE_CHECK_PROFILE_REPOSITORY.get(MethodCallThoughputTimestampAnalysis14Test.class);
+		performanceCheckProfile.check();
+	};
 
 	@Test
 	public void testWithManyObjects() {

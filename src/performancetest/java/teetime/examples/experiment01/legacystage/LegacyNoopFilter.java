@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.examples.experiment01;
-
-import teetime.util.TimestampObject;
+package teetime.examples.experiment01.legacystage;
 
 /**
  * @author Christian Wulf
  *
  * @since 1.10
  */
-public class LegacyStopTimestampFilter {
+public class LegacyNoopFilter<T> {
 
-	protected TimestampObject execute(final TimestampObject element) {
-		element.setStopTimestamp(System.nanoTime());
+	public T execute(final T element) {
 		return element;
 	}
 

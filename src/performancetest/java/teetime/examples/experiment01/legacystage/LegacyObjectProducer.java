@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.examples.experiment01;
+package teetime.examples.experiment01.legacystage;
 
 import teetime.util.ConstructorClosure;
 
@@ -51,7 +51,7 @@ public class LegacyObjectProducer<T> {
 		this.inputObjectCreator = inputObjectCreator;
 	}
 
-	protected T execute() {
+	public T execute() {
 		if (this.numInputObjects == 0) {
 			return null;
 		}

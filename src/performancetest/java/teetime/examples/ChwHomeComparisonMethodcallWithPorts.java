@@ -27,12 +27,12 @@ public class ChwHomeComparisonMethodcallWithPorts implements PerformanceCheckPro
 				.get("testWithManyObjects(teetime.examples.experiment01.MethodCallThoughputTimestampAnalysis1Test)");
 		PerformanceResult test9 = performanceResults
 				.get("testWithManyObjects(teetime.examples.experiment09.MethodCallThoughputTimestampAnalysis9Test)");
-		PerformanceResult test10 = performanceResults
-				.get("testWithManyObjects(teetime.examples.experiment10.MethodCallThoughputTimestampAnalysis10Test)");
+		// PerformanceResult test10 = performanceResults
+		// .get("testWithManyObjects(teetime.examples.experiment10.MethodCallThoughputTimestampAnalysis10Test)");
 		PerformanceResult test11 = performanceResults
 				.get("testWithManyObjects(teetime.examples.experiment11.MethodCallThoughputTimestampAnalysis11Test)");
-		PerformanceResult test14 = performanceResults
-				.get("testWithManyObjects(teetime.examples.experiment14.MethodCallThoughputTimestampAnalysis14Test)");
+		// PerformanceResult test14 = performanceResults
+		// .get("testWithManyObjects(teetime.examples.experiment14.MethodCallThoughputTimestampAnalysis14Test)");
 		PerformanceResult test15 = performanceResults
 				.get("testWithManyObjects(teetime.examples.experiment15.MethodCallThoughputTimestampAnalysis15Test)");
 		PerformanceResult test16a = performanceResults
@@ -50,8 +50,8 @@ public class ChwHomeComparisonMethodcallWithPorts implements PerformanceCheckPro
 		PerformanceResult test19c = performanceResults
 				.get("testWithManyObjectsAnd4Threads(teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
 
-		double value14 = (double) test14.quantiles.get(0.5) / test1.quantiles.get(0.5);
-		double value10 = (double) test10.quantiles.get(0.5) / test1.quantiles.get(0.5);
+		// double value14 = (double) test14.quantiles.get(0.5) / test1.quantiles.get(0.5);
+		// double value10 = (double) test10.quantiles.get(0.5) / test1.quantiles.get(0.5);
 		double value11 = (double) test11.quantiles.get(0.5) / test1.quantiles.get(0.5);
 		double value9 = (double) test9.quantiles.get(0.5) / test1.quantiles.get(0.5);
 		double value15 = (double) test15.quantiles.get(0.5) / test1.quantiles.get(0.5);
@@ -59,8 +59,8 @@ public class ChwHomeComparisonMethodcallWithPorts implements PerformanceCheckPro
 
 		System.out.println("value9: " + value9);
 		System.out.println("value11: " + value11);
-		System.out.println("value10: " + value10);
-		System.out.println("value14: " + value14);
+		// System.out.println("value10: " + value10);
+		// System.out.println("value14: " + value14);
 		System.out.println("value15: " + value15);
 		System.out.println("value17: " + value17);
 
@@ -99,8 +99,8 @@ public class ChwHomeComparisonMethodcallWithPorts implements PerformanceCheckPro
 		// since 31.08.2014 (incl.)
 		assertEquals(44, value9, 2.1); // ??
 		assertEquals(43, value11, 4.1); // ??
-		assertEquals(51, value10, 2.1); // ??
-		assertEquals(62, value14, 5.1); // ??
+		// assertEquals(51, value10, 2.1); // ??
+		// assertEquals(62, value14, 5.1); // ??
 		assertEquals(68, value15, 4.1); // ??
 		assertEquals(75, value17, 4.1); // ??
 

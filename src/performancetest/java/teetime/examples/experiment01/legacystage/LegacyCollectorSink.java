@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.examples.experiment01;
+package teetime.examples.experiment01.legacystage;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class LegacyCollectorSink<T> {
 		System.out.println("size: " + this.elements.size());
 	}
 
-	protected Object execute(final T element) {
+	public Object execute(final T element) {
 		this.elements.add(element);
 
 		if ((this.elements.size() % this.threshold) == 0) {

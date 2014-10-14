@@ -17,6 +17,11 @@ package teetime.examples.experiment01;
 
 import java.util.List;
 
+import teetime.examples.experiment01.legacystage.LegacyCollectorSink;
+import teetime.examples.experiment01.legacystage.LegacyNoopFilter;
+import teetime.examples.experiment01.legacystage.LegacyObjectProducer;
+import teetime.examples.experiment01.legacystage.LegacyStartTimestampFilter;
+import teetime.examples.experiment01.legacystage.LegacyStopTimestampFilter;
 import teetime.util.ConstructorClosure;
 import teetime.util.TimestampObject;
 

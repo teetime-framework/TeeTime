@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.examples.experiment01;
+package teetime.examples.experiment01.legacystage;
 
 import teetime.util.TimestampObject;
 
@@ -22,10 +22,10 @@ import teetime.util.TimestampObject;
  *
  * @since 1.10
  */
-public class LegacyStartTimestampFilter {
+public class LegacyStopTimestampFilter {
 
-	protected TimestampObject execute(final TimestampObject element) {
-		element.setStartTimestamp(System.nanoTime());
+	public TimestampObject execute(final TimestampObject element) {
+		element.setStopTimestamp(System.nanoTime());
 		return element;
 	}
 

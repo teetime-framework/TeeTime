@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import teetime.examples.experiment01.MethodCallThoughputTimestampAnalysis1Test;
 import teetime.examples.experiment09.MethodCallThoughputTimestampAnalysis9Test;
 import teetime.examples.experiment10.MethodCallThoughputTimestampAnalysis10Test;
 import teetime.examples.experiment11.MethodCallThoughputTimestampAnalysis11Test;
@@ -19,7 +20,7 @@ import util.PerformanceCheckProfileRepository;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	// MethodCallThoughputTimestampAnalysis1Test.class,
+	MethodCallThoughputTimestampAnalysis1Test.class,
 	MethodCallThoughputTimestampAnalysis9Test.class,
 	MethodCallThoughputTimestampAnalysis10Test.class,
 	MethodCallThoughputTimestampAnalysis11Test.class,
