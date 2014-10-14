@@ -11,6 +11,12 @@ import teetime.framework.Analysis;
 
 import com.google.common.io.Files;
 
+/**
+ * Reads a compress and encrypted file and counts the words of the original content
+ *
+ * @author Nelson Tavares de Sousa
+ *
+ */
 public class TokenizerTest {
 
 	@Test

@@ -11,6 +11,13 @@ import teetime.framework.AnalysisConfiguration;
 
 import com.google.common.io.Files;
 
+/**
+ * Executes stages which modify the given file and compares the results
+ * Procedure: read > compress > encrypt > decrypt > decompress > write
+ *
+ * @author Nelson Tavares de Sousa
+ *
+ */
 public class CipherTest {
 
 	@Test
