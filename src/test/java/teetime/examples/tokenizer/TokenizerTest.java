@@ -7,18 +7,17 @@ import teetime.framework.Analysis;
 
 public class TokenizerTest {
 
-	// Encrypted lorem ipsum
-	private static String inputFile = "src/test/resources/data/cipherInput.txt";
-	private static String password = "Password";
-
-	private static TokenizerConfiguration configuration = new TokenizerConfiguration(inputFile, password);
-
-	private final static Analysis analysis = new Analysis(configuration);
-
 	@Test
 	public void executeTest() {
+		// Encrypted lorem ipsum
+		String inputFile = "src/test/resources/data/cipherInput.txt";
+		String password = "Password";
+
+		TokenizerConfiguration configuration = new TokenizerConfiguration(inputFile, password);
+		Analysis analysis = new Analysis(configuration);
 		analysis.init();
 		analysis.start();
+
 		Assert.assertEquals(970, configuration.getTokenCount());
 	}
 

@@ -9,8 +9,8 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.ByteArray2String;
 import teetime.stage.CipherByteArray;
 import teetime.stage.CipherByteArray.CipherMode;
+import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
-import teetime.stage.TokenCounter;
 import teetime.stage.Tokenizer;
 import teetime.stage.ZipByteArray;
 import teetime.stage.ZipByteArray.ZipMode;
@@ -18,10 +18,10 @@ import teetime.stage.io.File2ByteArray;
 
 public class TokenizerConfiguration extends AnalysisConfiguration {
 
-	private final PipeFactoryRegistry pipeFactory = PipeFactoryRegistry.INSTANCE;
+	private static final PipeFactoryRegistry pipeFactoryRegistry = PipeFactoryRegistry.INSTANCE;
 	private final File input;
 	private final String password;
-	private final TokenCounter counter;
+	private final Counter<String> counter;
 
 	public TokenizerConfiguration(final String inputFile, final String password) {
 		this.input = new File(inputFile);
@@ -33,28 +33,26 @@ public class TokenizerConfiguration extends AnalysisConfiguration {
 		CipherByteArray decrypt = new CipherByteArray(this.password, CipherMode.DECRYPT);
 		ByteArray2String b2s = new ByteArray2String();
 		Tokenizer tokenizer = new Tokenizer(" ");
-		TokenCounter counter = new TokenCounter();
+		counter = new Counter<String>();
 
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(init.getOutputPort(), f2b.getInputPort());
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(f2b.getOutputPort(), decomp.getInputPort());
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(decomp.getOutputPort(), decrypt.getInputPort());
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(decrypt.getOutputPort(), b2s.getInputPort());
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(b2s.getOutputPort(), tokenizer.getInputPort());
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(tokenizer.getOutputPort(), counter.getInputPort());
+		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+				init.getOutputPort(), f2b.getInputPort());
+		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+				f2b.getOutputPort(), decomp.getInputPort());
+		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+				decomp.getOutputPort(), decrypt.getInputPort());
+		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+				decrypt.getOutputPort(), b2s.getInputPort());
+		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+				b2s.getOutputPort(), tokenizer.getInputPort());
+		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+				tokenizer.getOutputPort(), counter.getInputPort());
 
 		this.getFiniteProducerStages().add(init);
-
-		this.counter = counter;
 	}
 
-	public long getTokenCount() {
-		return this.counter.getI();
+	public int getTokenCount() {
+		return this.counter.getNumElementsPassed();
 	}
 
 }
