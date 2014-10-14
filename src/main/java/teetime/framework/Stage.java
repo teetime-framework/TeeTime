@@ -5,15 +5,15 @@ import java.util.List;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public interface StageWithPort {
+public interface Stage {
 
 	String getId();
 
 	void executeWithPorts();
 
-	StageWithPort getParentStage();
+	Stage getParentStage();
 
-	void setParentStage(StageWithPort parentStage, int index);
+	void setParentStage(Stage parentStage, int index);
 
 	// BETTER remove this method since it will be replaced by onTerminating()
 	void onIsPipelineHead();

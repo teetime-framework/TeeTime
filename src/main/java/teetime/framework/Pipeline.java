@@ -5,7 +5,7 @@ import java.util.List;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public class Pipeline<FirstStage extends StageWithPort, LastStage extends StageWithPort> implements StageWithPort {
+public class Pipeline<FirstStage extends Stage, LastStage extends Stage> implements Stage {
 
 	protected FirstStage firstStage;
 	protected LastStage lastStage;
@@ -37,12 +37,12 @@ public class Pipeline<FirstStage extends StageWithPort, LastStage extends StageW
 	}
 
 	@Override
-	public StageWithPort getParentStage() {
+	public Stage getParentStage() {
 		return this.firstStage.getParentStage();
 	}
 
 	@Override
-	public void setParentStage(final StageWithPort parentStage, final int index) {
+	public void setParentStage(final Stage parentStage, final int index) {
 		this.firstStage.setParentStage(parentStage, index);
 	}
 

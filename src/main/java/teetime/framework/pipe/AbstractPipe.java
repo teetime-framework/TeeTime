@@ -2,7 +2,7 @@ package teetime.framework.pipe;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.StageWithPort;
+import teetime.framework.Stage;
 
 public abstract class AbstractPipe implements IPipe {
 
@@ -15,7 +15,7 @@ public abstract class AbstractPipe implements IPipe {
 	 * this.getPipe().getTargetPort().getOwningStage()
 	 * </pre>
 	 */
-	protected StageWithPort cachedTargetStage;
+	protected Stage cachedTargetStage;
 
 	protected <T> AbstractPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		this.targetPort = targetPort;
