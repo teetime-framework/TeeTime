@@ -3,7 +3,11 @@ package teetime.framework;
 import java.util.LinkedList;
 import java.util.List;
 
+import teetime.framework.pipe.PipeFactoryRegistry;
+
 public class AnalysisConfiguration {
+
+	protected static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
 
 	private final List<HeadStage> consumerStages = new LinkedList<HeadStage>();
 	private final List<HeadStage> finiteProducerStages = new LinkedList<HeadStage>();

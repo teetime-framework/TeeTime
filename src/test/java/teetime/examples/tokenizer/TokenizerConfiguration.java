@@ -3,7 +3,6 @@ package teetime.examples.tokenizer;
 import java.io.File;
 
 import teetime.framework.AnalysisConfiguration;
-import teetime.framework.pipe.PipeFactoryRegistry;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.ByteArray2String;
@@ -18,7 +17,6 @@ import teetime.stage.io.File2ByteArray;
 
 public class TokenizerConfiguration extends AnalysisConfiguration {
 
-	private static final PipeFactoryRegistry pipeFactoryRegistry = PipeFactoryRegistry.INSTANCE;
 	private final File input;
 	private final String password;
 	private final Counter<String> counter;
@@ -35,17 +33,17 @@ public class TokenizerConfiguration extends AnalysisConfiguration {
 		Tokenizer tokenizer = new Tokenizer(" ");
 		counter = new Counter<String>();
 
-		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
 				init.getOutputPort(), f2b.getInputPort());
-		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
 				f2b.getOutputPort(), decomp.getInputPort());
-		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
 				decomp.getOutputPort(), decrypt.getInputPort());
-		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
 				decrypt.getOutputPort(), b2s.getInputPort());
-		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
 				b2s.getOutputPort(), tokenizer.getInputPort());
-		pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
 				tokenizer.getOutputPort(), counter.getInputPort());
 
 		this.getFiniteProducerStages().add(init);

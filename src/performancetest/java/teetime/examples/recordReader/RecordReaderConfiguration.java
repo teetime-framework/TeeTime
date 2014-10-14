@@ -21,7 +21,6 @@ import java.util.List;
 
 import teetime.framework.AnalysisConfiguration;
 import teetime.framework.HeadStage;
-import teetime.framework.pipe.PipeFactoryRegistry;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.CollectorSink;
@@ -39,7 +38,6 @@ import kieker.common.record.IMonitoringRecord;
 public class RecordReaderConfiguration extends AnalysisConfiguration {
 
 	private final List<IMonitoringRecord> elementCollection = new LinkedList<IMonitoringRecord>();
-	private final PipeFactoryRegistry pipeFactory = PipeFactoryRegistry.INSTANCE;
 
 	public RecordReaderConfiguration() {
 		this.buildConfiguration();
@@ -59,10 +57,10 @@ public class RecordReaderConfiguration extends AnalysisConfiguration {
 		CollectorSink<IMonitoringRecord> collector = new CollectorSink<IMonitoringRecord>(this.elementCollection);
 
 		// connect stages
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
+		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
 				.create(initialElementProducer.getOutputPort(), dir2RecordsFilter.getInputPort());
 
-		this.pipeFactory.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
+		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
 				.create(dir2RecordsFilter.getOutputPort(), collector.getInputPort());
 
 		return initialElementProducer;
