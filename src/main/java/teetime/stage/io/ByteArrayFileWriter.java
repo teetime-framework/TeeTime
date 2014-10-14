@@ -24,7 +24,6 @@ public class ByteArrayFileWriter extends ConsumerStage<byte[]> {
 	@Override
 	protected void execute(final byte[] element) {
 		FileOutputStream fo;
-		// TODO check if file exists, otherwise create file
 		try {
 			fo = new FileOutputStream(this.file);
 			fo.write(element);
