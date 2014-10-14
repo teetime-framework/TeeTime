@@ -40,7 +40,7 @@ public class ZipByteArray extends ConsumerStage<byte[]> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		this.send(outputPort, cache);
+		this.send(this.outputPort, cache);
 	}
 
 	private byte[] compress(final byte[] data) throws IOException {
@@ -82,7 +82,7 @@ public class ZipByteArray extends ConsumerStage<byte[]> {
 	}
 
 	public OutputPort<? extends byte[]> getOutputPort() {
-		return outputPort;
+		return this.outputPort;
 	}
 
 }

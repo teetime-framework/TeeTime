@@ -9,10 +9,10 @@ public class ByteArray2String extends ConsumerStage<byte[]> {
 
 	@Override
 	protected void execute(final byte[] element) {
-		this.send(outputPort, new String(element));
+		this.send(this.outputPort, new String(element));
 	}
 
 	public OutputPort<? extends String> getOutputPort() {
-		return outputPort;
+		return this.outputPort;
 	}
 }

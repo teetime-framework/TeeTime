@@ -16,14 +16,14 @@ public class Tokenizer extends ConsumerStage<String> {
 
 	@Override
 	protected void execute(final String element) {
-		StringTokenizer st = new StringTokenizer(element, regex);
+		StringTokenizer st = new StringTokenizer(element, this.regex);
 		while (st.hasMoreTokens()) {
-			this.send(outputPort, st.nextToken());
+			this.send(this.outputPort, st.nextToken());
 		}
 	}
 
 	public OutputPort<? extends String> getOutputPort() {
-		return outputPort;
+		return this.outputPort;
 	}
 
 }

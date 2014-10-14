@@ -17,14 +17,14 @@ public class File2ByteArray extends ConsumerStage<File> implements HeadStage {
 	protected void execute(final File element) {
 		try {
 			byte[] cache = Files.toByteArray(element);
-			this.send(outputPort, cache);
+			this.send(this.outputPort, cache);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
 	}
 
 	public OutputPort<? extends byte[]> getOutputPort() {
-		return outputPort;
+		return this.outputPort;
 	}
 
 	@Override

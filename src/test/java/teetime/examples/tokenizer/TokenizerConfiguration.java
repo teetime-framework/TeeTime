@@ -17,18 +17,15 @@ import teetime.stage.io.File2ByteArray;
 
 public class TokenizerConfiguration extends AnalysisConfiguration {
 
-	private final File input;
-	private final String password;
 	private final Counter<String> counter;
 
 	public TokenizerConfiguration(final String inputFile, final String password) {
-		this.input = new File(inputFile);
-		this.password = password;
+		final File input = new File(inputFile);
 
-		InitialElementProducer<File> init = new InitialElementProducer<File>(this.input);
+		InitialElementProducer<File> init = new InitialElementProducer<File>(input);
 		File2ByteArray f2b = new File2ByteArray();
 		ZipByteArray decomp = new ZipByteArray(ZipMode.DECOMP);
-		CipherByteArray decrypt = new CipherByteArray(this.password, CipherMode.DECRYPT);
+		CipherByteArray decrypt = new CipherByteArray(password, CipherMode.DECRYPT);
 		ByteArray2String b2s = new ByteArray2String();
 		Tokenizer tokenizer = new Tokenizer(" ");
 		counter = new Counter<String>();
