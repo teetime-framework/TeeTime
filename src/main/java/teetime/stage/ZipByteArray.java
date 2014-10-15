@@ -1,4 +1,4 @@
-package teetime.stage.io;
+package teetime.stage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,10 +40,10 @@ public class ZipByteArray extends ConsumerStage<byte[]> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		this.send(outputPort, cache);
+		this.send(this.outputPort, cache);
 	}
 
-	public static byte[] compress(final byte[] data) throws IOException {
+	private byte[] compress(final byte[] data) throws IOException {
 		Deflater deflater = new Deflater();
 		deflater.setInput(data);
 
@@ -63,7 +63,7 @@ public class ZipByteArray extends ConsumerStage<byte[]> {
 		return output;
 	}
 
-	public static byte[] decompress(final byte[] data) throws IOException, DataFormatException {
+	private byte[] decompress(final byte[] data) throws IOException, DataFormatException {
 		Inflater inflater = new Inflater();
 		inflater.setInput(data);
 
@@ -82,7 +82,7 @@ public class ZipByteArray extends ConsumerStage<byte[]> {
 	}
 
 	public OutputPort<? extends byte[]> getOutputPort() {
-		return outputPort;
+		return this.outputPort;
 	}
 
 }

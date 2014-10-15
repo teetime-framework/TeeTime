@@ -2,8 +2,8 @@ package teetime.framework.pipe;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.pipe.PipeFactory.PipeOrdering;
-import teetime.framework.pipe.PipeFactory.ThreadCommunication;
+import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
+import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 
 public interface IPipeFactory {
 

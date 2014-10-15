@@ -24,7 +24,7 @@ import teetime.framework.RunnableStage;
 import teetime.framework.Stage;
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
-import teetime.framework.pipe.PipeFactory;
+import teetime.framework.pipe.PipeFactoryRegistry;
 import teetime.framework.pipe.RelayTestPipe;
 import teetime.framework.pipe.UnorderedGrowablePipe;
 import teetime.framework.signal.TerminatingSignal;
@@ -53,7 +53,7 @@ public class MethodCallThroughputAnalysis17 {
 	private ConstructorClosure<TimestampObject> inputObjectCreator;
 	private int numNoopFilters;
 
-	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
+	private final PipeFactoryRegistry pipeFactory = PipeFactoryRegistry.INSTANCE;
 	private final List<List<TimestampObject>> timestampObjectsList = new LinkedList<List<TimestampObject>>();
 
 	private Thread producerThread;

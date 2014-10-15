@@ -1,4 +1,4 @@
-package teetime.stage.io;
+package teetime.stage;
 
 import java.security.spec.KeySpec;
 
@@ -15,14 +15,14 @@ public class CipherByteArray extends ConsumerStage<byte[]> {
 
 	private final OutputPort<byte[]> outputPort = this.createOutputPort();
 	private Cipher cipher = null;
-	private final byte[] salt = { 't', 'e', 's', 't' };
-	private SecretKeySpec skeyspec = null;
 
 	public enum CipherMode {
 		ENCRYPT, DECRYPT
 	}
 
 	public CipherByteArray(final String password, final CipherMode mode) {
+		final byte[] salt = { 't', 'e', 's', 't' };
+		SecretKeySpec skeyspec = null;
 
 		KeySpec keySpec = new PBEKeySpec(password.toCharArray(),
 				salt,
@@ -40,11 +40,11 @@ public class CipherByteArray extends ConsumerStage<byte[]> {
 		skeyspec = new SecretKeySpec(secretKey.getEncoded(), "AES");
 
 		try {
-			cipher = Cipher.getInstance(skeyspec.getAlgorithm());
+			this.cipher = Cipher.getInstance(skeyspec.getAlgorithm());
 			if (mode == CipherMode.ENCRYPT) {
-				cipher.init(Cipher.ENCRYPT_MODE, skeyspec);
+				this.cipher.init(Cipher.ENCRYPT_MODE, skeyspec);
 			} else {
-				cipher.init(Cipher.DECRYPT_MODE, skeyspec);
+				this.cipher.init(Cipher.DECRYPT_MODE, skeyspec);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -57,16 +57,16 @@ public class CipherByteArray extends ConsumerStage<byte[]> {
 		byte[] output = null;
 
 		try {
-			output = cipher.doFinal(element);
+			output = this.cipher.doFinal(element);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		this.send(outputPort, output);
+		this.send(this.outputPort, output);
 	}
 
 	public OutputPort<? extends byte[]> getOutputPort() {
-		return outputPort;
+		return this.outputPort;
 	}
 
 }
