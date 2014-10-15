@@ -48,8 +48,11 @@ public abstract class PerformanceTest {
 
 	@After
 	public void after() {
+		String testMethodIdentifier = MeasurementRepository.buildTestMethodIdentifier(description.getTestClass(), description.getMethodName());
 		PerformanceResult performanceResult = StatisticsUtil.computeStatistics(this.stopWatch.getDurationInNs(), this.timestampObjects);
-		measurementRepository.performanceResults.put(this.description.getDisplayName(), performanceResult);
+		measurementRepository.performanceResults.put(testMethodIdentifier, performanceResult);
+
+		addToRepository(performanceResult);
 
 		System.out.println("Duration: " + TimeUnit.NANOSECONDS.toMillis(performanceResult.overallDurationInNs) + " ms");
 		System.out.println("avg duration: " + TimeUnit.NANOSECONDS.toMicros(performanceResult.avgDurInNs) + " µs");
@@ -57,6 +60,11 @@ public abstract class PerformanceTest {
 		System.out.println("confidenceWidth: " + performanceResult.confidenceWidthInNs + " ns");
 		System.out.println("[" + TimeUnit.NANOSECONDS.toMicros(performanceResult.avgDurInNs - performanceResult.confidenceWidthInNs) + " µs, "
 				+ TimeUnit.NANOSECONDS.toMicros(performanceResult.avgDurInNs + performanceResult.confidenceWidthInNs) + " µs]");
+	}
+
+	@Deprecated
+	private void addToRepository(final PerformanceResult performanceResult) {
+		measurementRepository.performanceResults.put(this.description.getDisplayName(), performanceResult);
 	}
 
 }
