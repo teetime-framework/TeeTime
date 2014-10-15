@@ -73,7 +73,7 @@ public class ChwWorkComparisonMethodcallWithPorts extends ProfiledPerformanceAss
 		// assertEquals(53, value17, 4.1); // +0
 
 		// since 14.10.2014 (incl.)
-		assertEquals(69, value9, 2.1); // -8
+		assertEquals(67, value9, 3.1); // -10
 		assertEquals(36, value15, 4.1); // -8
 		assertEquals(46, value17, 4.1); // -7
 
