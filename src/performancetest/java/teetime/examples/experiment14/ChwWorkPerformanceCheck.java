@@ -1,13 +1,8 @@
 package teetime.examples.experiment14;
 
 import static org.junit.Assert.assertEquals;
-import teetime.examples.experiment01.MethodCallThoughputTimestampAnalysis1Test;
-import util.test.MeasurementRepository;
-import util.test.PerformanceResult;
-import util.test.PerformanceTest;
-import util.test.ProfiledPerformanceAssertion;
 
-public class ChwWorkPerformanceCheck extends ProfiledPerformanceAssertion {
+public class ChwWorkPerformanceCheck extends AbstractPerformanceCheck {
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {
@@ -16,10 +11,7 @@ public class ChwWorkPerformanceCheck extends ProfiledPerformanceAssertion {
 
 	@Override
 	public void check() {
-		String testMethodIdentifier = MeasurementRepository.buildTestMethodIdentifier(MethodCallThoughputTimestampAnalysis1Test.class, "testWithManyObjects");
-		PerformanceResult test01 = PerformanceTest.measurementRepository.performanceResults.get(testMethodIdentifier);
-		testMethodIdentifier = MeasurementRepository.buildTestMethodIdentifier(MethodCallThoughputTimestampAnalysis14Test.class, "testWithManyObjects");
-		PerformanceResult test14 = PerformanceTest.measurementRepository.performanceResults.get(testMethodIdentifier);
+		super.check();
 
 		double medianSpeedup = (double) test14.quantiles.get(0.5) / test01.quantiles.get(0.5);
 
@@ -34,6 +26,6 @@ public class ChwWorkPerformanceCheck extends ProfiledPerformanceAssertion {
 		// since 27.08.2014 (incl.)
 		// assertEquals(102, medianSpeedup, 5.1); // +16
 		// since 14.10.2014 (incl.)
-		assertEquals(53, medianSpeedup, 5.1); // -49
+		assertEquals(81, medianSpeedup, 5.1); // -21
 	}
 }
