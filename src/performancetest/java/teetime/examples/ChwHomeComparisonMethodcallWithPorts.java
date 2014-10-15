@@ -5,11 +5,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import util.PerformanceCheckProfile;
-import util.PerformanceResult;
-import util.PerformanceTest;
+import util.test.PerformanceResult;
+import util.test.PerformanceTest;
+import util.test.ProfiledPerformanceAssertion;
 
-public class ChwHomeComparisonMethodcallWithPorts implements PerformanceCheckProfile {
+public class ChwHomeComparisonMethodcallWithPorts extends ProfiledPerformanceAssertion {
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {

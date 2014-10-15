@@ -15,8 +15,8 @@ import teetime.examples.experiment15.MethodCallThoughputTimestampAnalysis15Test;
 import teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test;
 import teetime.examples.experiment17.MethodCallThoughputTimestampAnalysis17Test;
 import teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test;
-import util.PerformanceCheckProfile;
-import util.PerformanceCheckProfileRepository;
+import util.test.PerformanceCheckProfileRepository;
+import util.test.ProfiledPerformanceAssertion;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -42,7 +42,7 @@ public class ComparisonMethodcallWithPorts {
 
 	@AfterClass
 	public static void compareResults() {
-		PerformanceCheckProfile pcp = PerformanceCheckProfileRepository.INSTANCE.get(ComparisonMethodcallWithPorts.class);
+		ProfiledPerformanceAssertion pcp = PerformanceCheckProfileRepository.INSTANCE.get(ComparisonMethodcallWithPorts.class);
 		pcp.check();
 	}
 

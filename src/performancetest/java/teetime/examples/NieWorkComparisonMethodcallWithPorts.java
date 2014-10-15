@@ -5,11 +5,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import util.PerformanceCheckProfile;
-import util.PerformanceResult;
-import util.PerformanceTest;
+import util.test.PerformanceResult;
+import util.test.PerformanceTest;
+import util.test.ProfiledPerformanceAssertion;
 
-public class NieWorkComparisonMethodcallWithPorts implements PerformanceCheckProfile {
+public class NieWorkComparisonMethodcallWithPorts extends ProfiledPerformanceAssertion {
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {

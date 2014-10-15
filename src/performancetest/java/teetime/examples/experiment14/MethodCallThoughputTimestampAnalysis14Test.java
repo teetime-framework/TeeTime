@@ -21,8 +21,8 @@ import org.junit.Test;
 
 import teetime.util.ConstructorClosure;
 import teetime.util.TimestampObject;
-import util.PerformanceCheckProfile;
-import util.PerformanceTest;
+import util.test.PerformanceTest;
+import util.test.ProfiledPerformanceAssertion;
 
 /**
  * @author Christian Wulf
@@ -39,7 +39,7 @@ public class MethodCallThoughputTimestampAnalysis14Test extends PerformanceTest 
 
 	@AfterClass
 	public static void afterClass() {
-		PerformanceCheckProfile performanceCheckProfile = PERFORMANCE_CHECK_PROFILE_REPOSITORY.get(MethodCallThoughputTimestampAnalysis14Test.class);
+		ProfiledPerformanceAssertion performanceCheckProfile = PERFORMANCE_CHECK_PROFILE_REPOSITORY.get(MethodCallThoughputTimestampAnalysis14Test.class);
 		performanceCheckProfile.check();
 	};
 

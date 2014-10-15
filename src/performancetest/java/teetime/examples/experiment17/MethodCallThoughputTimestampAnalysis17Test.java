@@ -20,7 +20,7 @@ import org.junit.Test;
 import teetime.util.ConstructorClosure;
 import teetime.util.ListUtil;
 import teetime.util.TimestampObject;
-import util.PerformanceTest;
+import util.test.PerformanceTest;
 
 /**
  * @author Christian Wulf

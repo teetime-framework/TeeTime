@@ -24,9 +24,9 @@ import org.junit.runners.MethodSorters;
 import teetime.util.ConstructorClosure;
 import teetime.util.ListUtil;
 import teetime.util.TimestampObject;
-import util.PerformanceCheckProfile;
-import util.PerformanceCheckProfileRepository;
-import util.PerformanceTest;
+import util.test.PerformanceCheckProfileRepository;
+import util.test.PerformanceTest;
+import util.test.ProfiledPerformanceAssertion;
 
 /**
  * @author Christian Wulf
@@ -42,7 +42,13 @@ public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest 
 	public static void beforeClass() {
 		PerformanceCheckProfileRepository.INSTANCE.register(MethodCallThoughputTimestampAnalysis16Test.class, new ChwWorkPerformanceCheck());
 		PerformanceCheckProfileRepository.INSTANCE.register(MethodCallThoughputTimestampAnalysis16Test.class, new ChwHomePerformanceCheck());
-	};
+	}
+
+	@AfterClass
+	public static void afterClass() {
+		ProfiledPerformanceAssertion pcp = PerformanceCheckProfileRepository.INSTANCE.get(MethodCallThoughputTimestampAnalysis16Test.class);
+		pcp.check();
+	}
 
 	@Test
 	public void testWithManyObjectsAnd1Thread() {
@@ -57,12 +63,6 @@ public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest 
 	@Test
 	public void testWithManyObjectsAnd4Threads() {
 		this.performAnalysis(4);
-	}
-
-	@AfterClass
-	public static void afterClass() {
-		PerformanceCheckProfile pcp = PerformanceCheckProfileRepository.INSTANCE.get(MethodCallThoughputTimestampAnalysis16Test.class);
-		pcp.check();
 	}
 
 	private void performAnalysis(final int numThreads) {

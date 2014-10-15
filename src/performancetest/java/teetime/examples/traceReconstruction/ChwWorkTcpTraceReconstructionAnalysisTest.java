@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import teetime.util.StopWatch;
-import util.StatisticsUtil;
+import util.test.StatisticsUtil;
 
 /**
  * @author Christian Wulf
