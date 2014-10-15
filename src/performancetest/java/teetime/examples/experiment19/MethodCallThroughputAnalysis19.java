@@ -20,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import teetime.framework.HeadPipeline;
-import teetime.framework.OldAnalysis;
 import teetime.framework.RunnableStage;
 import teetime.framework.pipe.OrderedGrowableArrayPipe;
 import teetime.framework.pipe.SpScPipe;
@@ -39,7 +38,7 @@ import teetime.util.TimestampObject;
  *
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis19 extends OldAnalysis {
+public class MethodCallThroughputAnalysis19 {
 
 	private static final int SPSC_INITIAL_CAPACITY = 100100;
 	private static final int NUM_WORKER_THREADS = Runtime.getRuntime().availableProcessors();
@@ -56,9 +55,7 @@ public class MethodCallThroughputAnalysis19 extends OldAnalysis {
 
 	private int numWorkerThreads;
 
-	@Override
 	public void init() {
-		super.init();
 		HeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> producerPipeline = this.buildProducerPipeline(this.numInputObjects,
 				this.inputObjectCreator);
 		this.producerThread = new Thread(new RunnableStage(producerPipeline));
@@ -120,9 +117,7 @@ public class MethodCallThroughputAnalysis19 extends OldAnalysis {
 		return pipeline;
 	}
 
-	@Override
 	public void start() {
-		super.start();
 
 		this.producerThread.start();
 

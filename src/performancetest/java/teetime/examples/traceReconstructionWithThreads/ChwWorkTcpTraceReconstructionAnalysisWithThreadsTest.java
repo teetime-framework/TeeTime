@@ -31,7 +31,7 @@ import teetime.framework.Analysis;
 import teetime.framework.pipe.SpScPipe;
 import teetime.util.ListUtil;
 import teetime.util.StopWatch;
-import util.StatisticsUtil;
+import util.test.StatisticsUtil;
 
 /**
  * @author Christian Wulf

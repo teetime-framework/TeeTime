@@ -32,11 +32,11 @@ import org.junit.Test;
 
 import teetime.util.ListUtil;
 import teetime.util.StopWatch;
-import util.StatisticsUtil;
+import util.test.StatisticsUtil;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ChwHomeTcpTraceReconstructionAnalysisTest {
@@ -68,7 +68,6 @@ public class ChwHomeTcpTraceReconstructionAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		List<Long> recordThroughputs = ListUtil.removeFirstHalfElements(analysis.getRecordThroughputs());

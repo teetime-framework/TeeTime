@@ -32,7 +32,7 @@ import org.junit.runners.MethodSorters;
 import teetime.util.ListUtil;
 import teetime.util.StopWatch;
 import util.MooBenchStarter;
-import util.StatisticsUtil;
+import util.test.StatisticsUtil;
 
 /**
  * @author Christian Wulf
@@ -108,7 +108,6 @@ public class ChwWorkTcpTraceReductionAnalysisWithThreadsTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		System.out.println("#waits of tcp-relay pipe: " + analysis.getTcpRelayPipe().getNumWaits());

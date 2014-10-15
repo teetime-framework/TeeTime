@@ -1,24 +1,19 @@
 package teetime.examples.kiekerdays;
 
 import teetime.framework.HeadStage;
-import teetime.framework.OldAnalysis;
 import teetime.framework.RunnableStage;
 import teetime.stage.io.TCPReader;
 
-public class TcpTraceLogging extends OldAnalysis {
+public class TcpTraceLogging {
 
 	private Thread tcpThread;
 
-	@Override
 	public void init() {
-		super.init();
 		HeadStage tcpPipeline = this.buildTcpPipeline();
 		this.tcpThread = new Thread(new RunnableStage(tcpPipeline));
 	}
 
-	@Override
 	public void start() {
-		super.start();
 
 		this.tcpThread.start();
 
@@ -43,7 +38,6 @@ public class TcpTraceLogging extends OldAnalysis {
 		try {
 			analysis.start();
 		} finally {
-			analysis.onTerminate();
 		}
 	}
 

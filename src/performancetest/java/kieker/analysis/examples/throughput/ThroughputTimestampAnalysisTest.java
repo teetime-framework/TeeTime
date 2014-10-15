@@ -23,8 +23,8 @@ import org.junit.Test;
 
 import teetime.util.StopWatch;
 import teetime.util.TimestampObject;
-import util.PerformanceTest;
-import util.StatisticsUtil;
+import util.test.PerformanceTest;
+import util.test.StatisticsUtil;
 
 import kieker.analysis.examples.ThroughputTimestampAnalysis;
 import kieker.analysis.exception.AnalysisConfigurationException;

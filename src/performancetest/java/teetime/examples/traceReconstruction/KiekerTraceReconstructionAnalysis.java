@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.framework.OldAnalysis;
-
 import kieker.analysis.AnalysisController;
 import kieker.analysis.IAnalysisController;
 import kieker.analysis.IProjectContext;
@@ -25,7 +23,7 @@ import kieker.analysis.stage.TimeReader;
 import kieker.common.configuration.Configuration;
 import kieker.common.record.flow.IFlowRecord;
 
-public class KiekerTraceReconstructionAnalysis extends OldAnalysis {
+public class KiekerTraceReconstructionAnalysis {
 
 	private final IAnalysisController analysisController = new AnalysisController();
 
@@ -42,9 +40,7 @@ public class KiekerTraceReconstructionAnalysis extends OldAnalysis {
 		this.inputDir = inputDir;
 	}
 
-	@Override
 	public void init() {
-		super.init();
 
 		final Configuration clockConfiguration = new Configuration();
 		clockConfiguration.setProperty(TimeReader.CONFIG_PROPERTY_VALUE_UPDATE_INTERVAL_NS, Integer.toString(50 * 1000 * 1000));
@@ -99,9 +95,7 @@ public class KiekerTraceReconstructionAnalysis extends OldAnalysis {
 
 	}
 
-	@Override
 	public void start() {
-		super.start();
 
 		try {
 			this.analysisController.run();

@@ -2,7 +2,6 @@ package teetime.examples.kiekerdays;
 
 import teetime.framework.HeadPipeline;
 import teetime.framework.HeadStage;
-import teetime.framework.OldAnalysis;
 import teetime.framework.RunnableStage;
 import teetime.framework.pipe.SingleElementPipe;
 import teetime.stage.basic.Sink;
@@ -10,20 +9,16 @@ import teetime.stage.explorviz.KiekerRecordTcpReader;
 
 import kieker.common.record.IMonitoringRecord;
 
-public class TcpTraceLoggingExplorviz extends OldAnalysis {
+public class TcpTraceLoggingExplorviz {
 
 	private Thread tcpThread;
 
-	@Override
 	public void init() {
-		super.init();
 		HeadStage tcpPipeline = this.buildTcpPipeline();
 		this.tcpThread = new Thread(new RunnableStage(tcpPipeline));
 	}
 
-	@Override
 	public void start() {
-		super.start();
 
 		this.tcpThread.start();
 
@@ -54,7 +49,6 @@ public class TcpTraceLoggingExplorviz extends OldAnalysis {
 		try {
 			analysis.start();
 		} finally {
-			analysis.onTerminate();
 		}
 	}
 

@@ -1,11 +1,11 @@
 package teetime.examples.experiment01;
 
 import static org.junit.Assert.assertEquals;
-import util.PerformanceCheckProfile;
-import util.PerformanceResult;
-import util.PerformanceTest;
+import util.test.PerformanceResult;
+import util.test.PerformanceTest;
+import util.test.ProfiledPerformanceAssertion;
 
-public class ChwWorkPerformanceCheck implements PerformanceCheckProfile {
+public class ChwWorkPerformanceCheck extends ProfiledPerformanceAssertion {
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {

@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import teetime.framework.HeadPipeline;
-import teetime.framework.OldAnalysis;
 import teetime.framework.RunnableStage;
 import teetime.framework.pipe.SingleElementPipe;
 import teetime.framework.pipe.SpScPipe;
@@ -30,7 +29,7 @@ import kieker.analysis.plugin.filter.flow.TraceEventRecords;
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.flow.IFlowRecord;
 
-public class TraceReconstructionAnalysis extends OldAnalysis {
+public class TraceReconstructionAnalysis {
 
 	private final List<TraceEventRecords> elementCollection = new LinkedList<TraceEventRecords>();
 
@@ -46,9 +45,7 @@ public class TraceReconstructionAnalysis extends OldAnalysis {
 
 	private File inputDir;
 
-	@Override
 	public void init() {
-		super.init();
 		Clock clockStage = this.buildClockPipeline();
 		this.clockThread = new Thread(new RunnableStage(clockStage));
 
@@ -108,9 +105,7 @@ public class TraceReconstructionAnalysis extends OldAnalysis {
 		return pipeline;
 	}
 
-	@Override
 	public void start() {
-		super.start();
 
 		this.clockThread.start();
 		this.workerThread.start();

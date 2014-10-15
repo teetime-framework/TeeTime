@@ -31,13 +31,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import teetime.util.StopWatch;
-import util.StatisticsUtil;
+import util.test.StatisticsUtil;
 
 import kieker.analysis.plugin.filter.flow.TraceEventRecords;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ChwHomeTraceReconstructionAnalysisTest {
@@ -66,7 +66,6 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		StatisticsUtil.removeLeadingZeroThroughputs(analysis.getThroughputs());
@@ -96,7 +95,6 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		StatisticsUtil.removeLeadingZeroThroughputs(analysis.getThroughputs());
@@ -126,7 +124,6 @@ public class ChwHomeTraceReconstructionAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		StatisticsUtil.removeLeadingZeroThroughputs(analysis.getThroughputs());

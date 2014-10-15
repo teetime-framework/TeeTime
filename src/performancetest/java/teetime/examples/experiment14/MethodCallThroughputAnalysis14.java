@@ -19,7 +19,6 @@ import java.util.List;
 
 import teetime.framework.HeadPipeline;
 import teetime.framework.HeadStage;
-import teetime.framework.OldAnalysis;
 import teetime.framework.RunnableStage;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactory;
@@ -38,7 +37,7 @@ import teetime.util.TimestampObject;
  *
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis14 extends OldAnalysis {
+public class MethodCallThroughputAnalysis14 {
 
 	private long numInputObjects;
 	private ConstructorClosure<TimestampObject> inputObjectCreator;
@@ -47,9 +46,7 @@ public class MethodCallThroughputAnalysis14 extends OldAnalysis {
 	private Runnable runnable;
 	private final PipeFactory pipeFactory = PipeFactory.INSTANCE;
 
-	@Override
 	public void init() {
-		super.init();
 		HeadStage pipeline = this.buildPipeline();
 		this.runnable = new RunnableStage(pipeline);
 	}
@@ -88,9 +85,7 @@ public class MethodCallThroughputAnalysis14 extends OldAnalysis {
 		return pipeline;
 	}
 
-	@Override
 	public void start() {
-		super.start();
 		this.runnable.run();
 	}
 

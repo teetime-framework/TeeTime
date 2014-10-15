@@ -13,27 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.stage;
-
-import teetime.framework.ConsumerStage;
-import teetime.framework.OutputPort;
+package teetime.examples.experiment01.legacystage;
 
 /**
  * @author Christian Wulf
  *
  * @since 1.10
  */
-public class NoopFilter<T> extends ConsumerStage<T> {
+public class LegacyNoopFilter<T> {
 
-	private final OutputPort<T> outputPort = this.createOutputPort();
-
-	@Override
-	protected void execute(final T element) {
-		this.send(this.outputPort, element);
-	}
-
-	public OutputPort<T> getOutputPort() {
-		return this.outputPort;
+	public T execute(final T element) {
+		return element;
 	}
 
 }

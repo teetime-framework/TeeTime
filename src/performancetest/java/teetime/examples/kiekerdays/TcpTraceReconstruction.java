@@ -6,7 +6,6 @@ import java.util.List;
 
 import teetime.framework.HeadPipeline;
 import teetime.framework.HeadStage;
-import teetime.framework.OldAnalysis;
 import teetime.framework.RunnableStage;
 import teetime.framework.pipe.SingleElementPipe;
 import teetime.framework.pipe.SpScPipe;
@@ -23,7 +22,7 @@ import kieker.analysis.plugin.filter.flow.TraceEventRecords;
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.flow.IFlowRecord;
 
-public class TcpTraceReconstruction extends OldAnalysis {
+public class TcpTraceReconstruction {
 
 	private static final int NUM_VIRTUAL_CORES = Runtime.getRuntime().availableProcessors();
 	private static final int MIO = 1000000;
@@ -38,9 +37,7 @@ public class TcpTraceReconstruction extends OldAnalysis {
 
 	private int numWorkerThreads;
 
-	@Override
 	public void init() {
-		super.init();
 		HeadPipeline<TCPReader, Distributor<IMonitoringRecord>> tcpPipeline = this.buildTcpPipeline();
 		this.tcpThread = new Thread(new RunnableStage(tcpPipeline));
 
@@ -89,9 +86,7 @@ public class TcpTraceReconstruction extends OldAnalysis {
 		return pipeline;
 	}
 
-	@Override
 	public void start() {
-		super.start();
 
 		this.tcpThread.start();
 
@@ -110,14 +105,12 @@ public class TcpTraceReconstruction extends OldAnalysis {
 		}
 	}
 
-	@Override
 	public void onTerminate() {
 		int maxNumWaits = 0;
 		for (SpScPipe pipe : this.tcpRelayPipes) {
 			maxNumWaits = Math.max(maxNumWaits, pipe.getNumWaits());
 		}
 		System.out.println("max #waits of TcpRelayPipes: " + maxNumWaits);
-		super.onTerminate();
 	}
 
 	public List<TraceEventRecords> getElementCollection() {

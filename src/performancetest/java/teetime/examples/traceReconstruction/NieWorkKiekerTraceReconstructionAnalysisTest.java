@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import teetime.util.StopWatch;
-import util.StatisticsUtil;
+import util.test.StatisticsUtil;
 
 import kieker.analysis.plugin.filter.flow.TraceEventRecords;
 
@@ -63,7 +63,6 @@ public class NieWorkKiekerTraceReconstructionAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		assertEquals(50002, analysis.getNumRecords());
@@ -89,7 +88,6 @@ public class NieWorkKiekerTraceReconstructionAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		assertEquals(1489901, analysis.getNumRecords());
@@ -117,7 +115,6 @@ public class NieWorkKiekerTraceReconstructionAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		assertEquals(17371, analysis.getNumRecords());

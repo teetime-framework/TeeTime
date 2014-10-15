@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
+package teetime.examples.experiment01.legacystage;
 
-package teetime.framework;
+import teetime.util.TimestampObject;
 
 /**
  * @author Christian Wulf
  *
  * @since 1.10
  */
-@Deprecated
-public class OldAnalysis {
+public class LegacyStopTimestampFilter {
 
-	public void init() {
-		System.out.println("Analysis initialized.");
+	public TimestampObject execute(final TimestampObject element) {
+		element.setStopTimestamp(System.nanoTime());
+		return element;
 	}
 
-	public void start() {
-		// System.out.println("Analysis started.");
-	}
-
-	public void onTerminate() {
-		System.out.println("Analysis stopped.");
-	}
 }

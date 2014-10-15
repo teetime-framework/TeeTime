@@ -3,7 +3,6 @@ package teetime.examples.traceReading;
 import java.util.List;
 
 import teetime.framework.HeadPipeline;
-import teetime.framework.OldAnalysis;
 import teetime.framework.RunnableStage;
 import teetime.framework.pipe.SingleElementPipe;
 import teetime.framework.pipe.SpScPipe;
@@ -16,7 +15,7 @@ import teetime.stage.io.TCPReader;
 
 import kieker.common.record.IMonitoringRecord;
 
-public class TcpTraceLoggingExtAnalysis extends OldAnalysis {
+public class TcpTraceLoggingExtAnalysis {
 
 	private Thread clockThread;
 	private Thread tcpThread;
@@ -59,9 +58,7 @@ public class TcpTraceLoggingExtAnalysis extends OldAnalysis {
 		return pipeline;
 	}
 
-	@Override
 	public void init() {
-		super.init();
 
 		HeadPipeline<Clock, Distributor<Long>> clockPipeline = this.buildClockPipeline(1000);
 		this.clockThread = new Thread(new RunnableStage(clockPipeline));
@@ -70,9 +67,7 @@ public class TcpTraceLoggingExtAnalysis extends OldAnalysis {
 		this.tcpThread = new Thread(new RunnableStage(tcpPipeline));
 	}
 
-	@Override
 	public void start() {
-		super.start();
 
 		this.tcpThread.start();
 		this.clockThread.start();

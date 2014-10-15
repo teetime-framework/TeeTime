@@ -25,11 +25,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import teetime.util.StopWatch;
-import util.StatisticsUtil;
+import util.test.StatisticsUtil;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class ChwWorkTcpTraceReconstructionAnalysisTest {
@@ -61,7 +61,6 @@ public class ChwWorkTcpTraceReconstructionAnalysisTest {
 			analysis.start();
 		} finally {
 			this.stopWatch.end();
-			analysis.onTerminate();
 		}
 
 		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(analysis.getTraceThroughputs());

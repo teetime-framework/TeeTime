@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import teetime.framework.HeadPipeline;
-import teetime.framework.OldAnalysis;
 import teetime.framework.RunnableStage;
 import teetime.framework.pipe.SingleElementPipe;
 import teetime.framework.pipe.SpScPipe;
@@ -23,7 +22,7 @@ import kieker.analysis.plugin.filter.flow.TraceEventRecords;
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.flow.IFlowRecord;
 
-public class TcpTraceReconstructionAnalysis extends OldAnalysis {
+public class TcpTraceReconstructionAnalysis {
 
 	private static final int MIO = 1000000;
 	private static final int TCP_RELAY_MAX_SIZE = 2 * MIO;
@@ -41,9 +40,7 @@ public class TcpTraceReconstructionAnalysis extends OldAnalysis {
 	private ElementThroughputMeasuringStage<IFlowRecord> recordThroughputFilter;
 	private ElementThroughputMeasuringStage<TraceEventRecords> traceThroughputFilter;
 
-	@Override
 	public void init() {
-		super.init();
 		HeadPipeline<Clock, Distributor<Long>> clockStage = this.buildClockPipeline(1000);
 		this.clockThread = new Thread(new RunnableStage(clockStage));
 
@@ -101,9 +98,7 @@ public class TcpTraceReconstructionAnalysis extends OldAnalysis {
 		return pipeline;
 	}
 
-	@Override
 	public void start() {
-		super.start();
 
 		this.workerThread.start();
 		// this.clockThread.start();
