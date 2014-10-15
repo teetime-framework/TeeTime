@@ -5,7 +5,7 @@ import java.util.List;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public class Pipeline<FirstStage extends Stage, LastStage extends Stage> implements Stage {
+public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> implements Stage {
 
 	protected FirstStage firstStage;
 	protected LastStage lastStage;
@@ -44,11 +44,6 @@ public class Pipeline<FirstStage extends Stage, LastStage extends Stage> impleme
 	@Override
 	public void setParentStage(final Stage parentStage, final int index) {
 		this.firstStage.setParentStage(parentStage, index);
-	}
-
-	@Override
-	public void onIsPipelineHead() {
-		this.firstStage.onIsPipelineHead();
 	}
 
 	@Override

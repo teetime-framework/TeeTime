@@ -19,7 +19,7 @@ import java.io.File;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.Pipeline;
+import teetime.framework.OldPipeline;
 import teetime.framework.pipe.SingleElementPipe;
 import teetime.stage.io.File2TextLinesFilter;
 import teetime.stage.kieker.className.ClassNameRegistryRepository;
@@ -32,7 +32,7 @@ import kieker.common.record.IMonitoringRecord;
  *
  * @since 1.10
  */
-public class DatFile2RecordFilter extends Pipeline<File2TextLinesFilter, TextLine2RecordFilter> {
+public class DatFile2RecordFilter extends OldPipeline<File2TextLinesFilter, TextLine2RecordFilter> {
 
 	public DatFile2RecordFilter(final ClassNameRegistryRepository classNameRegistryRepository) {
 		File2TextLinesFilter file2TextLinesFilter = new File2TextLinesFilter();

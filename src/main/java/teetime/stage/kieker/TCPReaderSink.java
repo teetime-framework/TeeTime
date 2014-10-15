@@ -149,10 +149,11 @@ public class TCPReaderSink extends ProducerStage<IMonitoringRecord> {
 	}
 
 	@Override
-	public void onIsPipelineHead() {
+	public void onTerminating() {
+		super.onTerminating();
 		this.executorService.shutdown();
 		this.tcpStringReader.interrupt();
-		super.onIsPipelineHead();
+		super.onTerminating();
 	}
 
 	/**

@@ -29,7 +29,7 @@ import kieker.common.record.flow.trace.TraceMetadata;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord> {
@@ -94,12 +94,13 @@ public class TraceReconstructionFilter extends ConsumerStage<IFlowRecord> {
 	}
 
 	@Override
-	public void onIsPipelineHead() {
+	public void onTerminating() {
+		super.onTerminating();
 		for (Long traceId : this.traceId2trace.keySet()) {
 			this.put(traceId, false);
 		}
 
-		super.onIsPipelineHead();
+		super.onTerminating();
 	}
 
 	private void sendTraceBuffer(final TraceBuffer traceBuffer) {

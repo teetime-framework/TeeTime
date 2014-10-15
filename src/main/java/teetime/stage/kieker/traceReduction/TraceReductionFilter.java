@@ -30,11 +30,11 @@ import kieker.analysis.plugin.filter.flow.TraceEventRecords;
  * This filter collects incoming traces for a specified amount of time.
  * Any traces representing the same series of events will be used to calculate statistical informations like the average runtime of this kind of trace.
  * Only one specimen of these traces containing this information will be forwarded from this filter.
- * 
+ *
  * Statistical outliers regarding the runtime of the trace will be treated special and therefore send out as they are and will not be mixed with others.
- * 
+ *
  * @author Jan Waller, Florian Biss
- * 
+ *
  * @since
  */
 public class TraceReductionFilter extends ConsumerStage<TraceEventRecords> {
@@ -73,7 +73,8 @@ public class TraceReductionFilter extends ConsumerStage<TraceEventRecords> {
 	}
 
 	@Override
-	public void onIsPipelineHead() {
+	public void onTerminating() {
+		super.onTerminating();
 		synchronized (this.trace2buffer) { // BETTER hide and improve synchronization in the buffer
 			for (final Entry<TraceEventRecords, TraceAggregationBuffer> entry : this.trace2buffer.entrySet()) {
 				final TraceAggregationBuffer buffer = entry.getValue();
@@ -84,7 +85,7 @@ public class TraceReductionFilter extends ConsumerStage<TraceEventRecords> {
 			this.trace2buffer.clear();
 		}
 
-		super.onIsPipelineHead();
+		super.onTerminating();
 	}
 
 	private void processTimeoutQueue(final long timestampInNs) {

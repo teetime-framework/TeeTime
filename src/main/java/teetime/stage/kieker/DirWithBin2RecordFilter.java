@@ -4,7 +4,7 @@ import java.io.File;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.Pipeline;
+import teetime.framework.OldPipeline;
 import teetime.stage.io.Directory2FilesFilter;
 import teetime.stage.kieker.className.ClassNameRegistryCreationFilter;
 import teetime.stage.kieker.className.ClassNameRegistryRepository;
@@ -12,7 +12,7 @@ import teetime.stage.kieker.fileToRecord.BinaryFile2RecordFilter;
 
 import kieker.common.record.IMonitoringRecord;
 
-public class DirWithBin2RecordFilter extends Pipeline<ClassNameRegistryCreationFilter, BinaryFile2RecordFilter> {
+public class DirWithBin2RecordFilter extends OldPipeline<ClassNameRegistryCreationFilter, BinaryFile2RecordFilter> {
 
 	private ClassNameRegistryRepository classNameRegistryRepository;
 
