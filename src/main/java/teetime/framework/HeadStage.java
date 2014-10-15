@@ -1,6 +1,6 @@
 package teetime.framework;
 
-public interface HeadStage extends StageWithPort {
+public interface HeadStage extends Stage {
 
 	boolean shouldBeTerminated();
 

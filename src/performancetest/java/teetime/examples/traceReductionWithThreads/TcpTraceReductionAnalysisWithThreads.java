@@ -10,7 +10,7 @@ import java.util.TreeMap;
 
 import teetime.framework.HeadPipeline;
 import teetime.framework.RunnableStage;
-import teetime.framework.StageWithPort;
+import teetime.framework.Stage;
 import teetime.framework.pipe.SingleElementPipe;
 import teetime.framework.pipe.SpScPipe;
 import teetime.stage.Clock;
@@ -98,7 +98,7 @@ public class TcpTraceReductionAnalysisWithThreads {
 		return pipeline;
 	}
 
-	private static class StageFactory<T extends StageWithPort> {
+	private static class StageFactory<T extends Stage> {
 
 		private final Constructor<T> constructor;
 		private final List<T> stages = new ArrayList<T>();

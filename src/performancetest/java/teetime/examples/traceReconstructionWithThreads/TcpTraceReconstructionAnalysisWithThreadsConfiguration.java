@@ -8,7 +8,7 @@ import java.util.List;
 
 import teetime.framework.AnalysisConfiguration;
 import teetime.framework.HeadPipeline;
-import teetime.framework.StageWithPort;
+import teetime.framework.Stage;
 import teetime.framework.pipe.SingleElementPipe;
 import teetime.framework.pipe.SpScPipe;
 import teetime.stage.Clock;
@@ -117,7 +117,7 @@ public class TcpTraceReconstructionAnalysisWithThreadsConfiguration extends Anal
 		return pipeline;
 	}
 
-	private static class StageFactory<T extends StageWithPort> {
+	private static class StageFactory<T extends Stage> {
 
 		private final Constructor<T> constructor;
 		private final List<T> stages = new ArrayList<T>();
