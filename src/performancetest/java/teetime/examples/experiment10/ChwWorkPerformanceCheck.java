@@ -26,6 +26,6 @@ public class ChwWorkPerformanceCheck extends AbstractPerformanceCheck {
 		// since 27.08.2014 (incl.)
 		// assertEquals(56, meanSpeedup, 2.1); // +30
 		// since 14.10.2014 (incl.)
-		assertEquals(27, medianSpeedup, 2.1); // -29
+		assertEquals(25, medianSpeedup, 3.1); // -31
 	}
 }

@@ -73,9 +73,9 @@ public class ChwWorkComparisonMethodcallWithPorts extends ProfiledPerformanceAss
 		// assertEquals(53, value17, 4.1); // +0
 
 		// since 14.10.2014 (incl.)
-		assertEquals(77, value9, 2.1); // +35
-		assertEquals(44, value15, 4.1); // +0
-		assertEquals(53, value17, 4.1); // +0
+		assertEquals(69, value9, 2.1); // -8
+		assertEquals(36, value15, 4.1); // -8
+		assertEquals(46, value17, 4.1); // -7
 
 		// below results vary too much, possibly due to the OS' scheduler
 		// assertEquals(RESULT_TESTS_16, (double) test16a.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
