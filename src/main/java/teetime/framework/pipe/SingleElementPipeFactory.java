@@ -7,14 +7,6 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 
 public class SingleElementPipeFactory implements IPipeFactory {
 
-	/**
-	 * Hint: The capacity for this pipe implementation is ignored
-	 */
-	@Override
-	public IPipe create(final int capacity) {
-		return create(null, null);
-	}
-
 	@Override
 	public <T> IPipe create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return create(sourcePort, targetPort, 1);

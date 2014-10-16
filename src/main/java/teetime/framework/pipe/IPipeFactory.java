@@ -11,16 +11,6 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 public interface IPipeFactory {
 
 	/**
-	 * @deprecated Use {@link #create(OutputPort, InputPort)} or {@link #create(OutputPort, InputPort, int)} instead
-	 *
-	 * @param capacity
-	 *            Number of elements the pipe can carry
-	 * @return instance of the created pipe
-	 */
-	@Deprecated
-	IPipe create(int capacity);
-
-	/**
 	 * Connects two stages with a pipe of default capacity.
 	 *
 	 * @param sourcePort

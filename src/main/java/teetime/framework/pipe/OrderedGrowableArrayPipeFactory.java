@@ -8,11 +8,6 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 public class OrderedGrowableArrayPipeFactory implements IPipeFactory {
 
 	@Override
-	public IPipe create(final int capacity) {
-		return create(null, null, capacity);
-	}
-
-	@Override
 	public <T> IPipe create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return create(sourcePort, targetPort, 4);
 	}
