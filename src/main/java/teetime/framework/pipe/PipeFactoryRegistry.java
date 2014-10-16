@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides PipeFactories, which are used to connect stages.
- * The instance of this singleton class is saved in <code>PipeFactoryRegistry.INSTANCE</code>.
+ * Represents a Registry which provides PipeFactories that are used to create pipes.
+ * The instance of this singleton class is saved in {@link PipeFactoryRegistry#INSTANCE}.
  * <p>
  * To get a PipeFactory instance, call {@link #getPipeFactory(ThreadCommunication, PipeOrdering, boolean)}.
  *
@@ -43,6 +43,9 @@ public class PipeFactoryRegistry {
 
 	private final Map<String, IPipeFactory> pipeFactories = new HashMap<String, IPipeFactory>();
 
+	/**
+	 * The singleton instance of PipeFactoryRegistry
+	 */
 	public static PipeFactoryRegistry INSTANCE = new PipeFactoryRegistry();
 
 	private PipeFactoryRegistry() {
@@ -78,7 +81,7 @@ public class PipeFactoryRegistry {
 	}
 
 	/**
-	 * Registers a new PipeFactory to the registry.<br />
+	 * Adds a new PipeFactory to the registry.<br />
 	 * The new PipeFactory will be automatically selected by the Registry, if it is the most suitable Factory
 	 * corresponding to the requirements.
 	 *
