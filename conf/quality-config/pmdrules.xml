@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<ruleset name="Kieker PMD ruleset"
+    xmlns="http://pmd.sf.net/ruleset/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+  <description>
+    This ruleset is checked for TeeTime automatically.
+  </description>
+  
+  <rule ref="rulesets/java/basic.xml">
+    <exclude name="UnnecessaryFinalModifier"/>
+  </rule>
+
+  <rule ref="rulesets/java/braces.xml"/>
+
+  <rule ref="rulesets/java/clone.xml"/>
+  
+  <!--<rule ref="rulesets/codesize.xml">-->
+
+  <rule ref="rulesets/java/controversial.xml">
+    <exclude name="AvoidFinalLocalVariable"/>
+    <exclude name="AvoidLiteralsInIfCondition"/>
+    <exclude name="AvoidUsingVolatile"/>
+    <exclude name="CallSuperInConstructor"/>
+    <exclude name="DataflowAnomalyAnalysis"/>
+    <exclude name="OnlyOneReturn"/>
+    <exclude name="UnusedModifier"/>
+    <exclude name="UnnecessaryConstructor"/>
+	<exclude name="UseConcurrentHashMap"/>
+	<exclude name="AssignmentInOperand"/>
+	<exclude name="NullAssignment"/>
+	<exclude name="BooleanInversion"/>
+  </rule>
+  
+  <!--<rule ref="rulesets/coupling.xml">-->
+
+  <rule ref="rulesets/java/design.xml">
+    <exclude name="ConfusingTernary"/>
+	<exclude name="AvoidSynchronizedAtMethodLevel"/>
+	<exclude name="AbstractClassWithoutAbstractMethod"/>
+	<exclude name="GodClass"/>
+  </rule>
+  
+  <rule ref="rulesets/java/finalizers.xml"/>
+
+  <rule ref="rulesets/java/imports.xml"/>
+  
+  <rule ref="rulesets/java/j2ee.xml"/>
+
+  <rule ref="rulesets/java/junit.xml"/>
+  
+  <rule ref="rulesets/java/logging-jakarta-commons.xml">
+	<exclude name="GuardLogStatement" />
+  </rule>
+
+  <rule ref="rulesets/java/migrating_to_13.xml"/>
+  <rule ref="rulesets/java/migrating_to_14.xml"/>
+  <rule ref="rulesets/java/migrating_to_15.xml"/>
+  <rule ref="rulesets/java/migrating_to_junit4.xml"/>
+
+  <rule ref="rulesets/java/naming.xml">
+    <exclude name="LongVariable"/>
+    <exclude name="PackageCase"/>
+    <exclude name="ShortVariable"/>
+	<exclude name="ShortClassName"/>
+  </rule>
+
+  <rule ref="rulesets/java/optimizations.xml">
+    <exclude name="AvoidInstantiatingObjectsInLoops"/>
+  </rule>
+  
+  <rule ref="rulesets/java/strictexception.xml">
+    <exclude name="AvoidCatchingNPE"/>
+    <exclude name="AvoidThrowingNullPointerException"/>
+    <exclude name="SignatureDeclareThrowsException"/>
+	<exclude name="AvoidCatchingGenericException"/>
+  </rule>
+
+  <rule ref="rulesets/java/strings.xml">
+    <exclude name="AvoidDuplicateLiterals"/>
+	<exclude name="ConsecutiveAppendsShouldReuse"/>
+  </rule>
+
+  <rule ref="rulesets/java/sunsecure.xml"/>
+  
+  <rule ref="rulesets/java/typeresolution.xml">
+    <exclude name="SignatureDeclareThrowsException"/>
+  </rule>
+
+  <rule ref="rulesets/java/unusedcode.xml">
+     <exclude name="UnusedModifier"/>
+  </rule> 
+  
+</ruleset>
