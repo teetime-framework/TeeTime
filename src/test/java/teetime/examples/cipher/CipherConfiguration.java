@@ -3,6 +3,7 @@ package teetime.examples.cipher;
 import java.io.File;
 
 import teetime.framework.AnalysisConfiguration;
+import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.CipherByteArray;
@@ -27,18 +28,14 @@ public class CipherConfiguration extends AnalysisConfiguration {
 		CipherByteArray decrypt = new CipherByteArray(password, CipherMode.DECRYPT);
 		ByteArrayFileWriter writer = new ByteArrayFileWriter(output);
 
-		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(init.getOutputPort(), f2b.getInputPort());
-		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(f2b.getOutputPort(), enc.getInputPort());
-		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(enc.getOutputPort(), comp.getInputPort());
-		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(comp.getOutputPort(), decomp.getInputPort());
-		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(decomp.getOutputPort(), decrypt.getInputPort());
-		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false)
-				.create(decrypt.getOutputPort(), writer.getInputPort());
+		IPipeFactory factory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+
+		factory.create(init.getOutputPort(), f2b.getInputPort());
+		factory.create(f2b.getOutputPort(), enc.getInputPort());
+		factory.create(enc.getOutputPort(), comp.getInputPort());
+		factory.create(comp.getOutputPort(), decomp.getInputPort());
+		factory.create(decomp.getOutputPort(), decrypt.getInputPort());
+		factory.create(decrypt.getOutputPort(), writer.getInputPort());
 
 		this.getFiniteProducerStages().add(init);
 

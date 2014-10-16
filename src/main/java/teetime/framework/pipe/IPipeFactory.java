@@ -5,6 +5,9 @@ import teetime.framework.OutputPort;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 
+/**
+ * Represents the interface, which is must be defined in every PipeFactory
+ */
 public interface IPipeFactory {
 
 	/**

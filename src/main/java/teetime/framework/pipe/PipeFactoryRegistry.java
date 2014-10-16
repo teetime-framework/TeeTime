@@ -20,14 +20,14 @@ public class PipeFactoryRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PipeFactoryRegistry.class);
 
 	/**
-	 * Communication type between two connected stages
+	 * Represent a communication type between two connected stages
 	 */
 	public enum ThreadCommunication {
 		INTER, INTRA
 	}
 
 	/**
-	 * Specifies the ordering behavior of the pipe
+	 * Represents the ordering behavior of a pipe
 	 */
 	public enum PipeOrdering {
 		/**
@@ -54,22 +54,6 @@ public class PipeFactoryRegistry {
 		} catch (IOException e) {
 			LOGGER.warn("Could not load pipe factories from file", e);
 		}
-	}
-
-	/**
-	 * @deprecated Use {@link IPipeFactory#create(OutputPort, InputPort, int)} instead,
-	 *             after obtaining a PipeFactory with {@link #getPipeFactory(ThreadCommunication, PipeOrdering, boolean)}.
-	 *
-	 * @param tc
-	 * @param ordering
-	 * @param growable
-	 * @param capacity
-	 * @return
-	 */
-	@Deprecated
-	public IPipe create(final ThreadCommunication tc, final PipeOrdering ordering, final boolean growable, final int capacity) {
-		IPipeFactory pipeFactory = getPipeFactory(tc, ordering, growable);
-		return pipeFactory.create(capacity);
 	}
 
 	/**
