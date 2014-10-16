@@ -24,6 +24,11 @@ public abstract class InterThreadPipe extends AbstractPipe {
 		this.signalQueue.offer(signal);
 	}
 
+	/**
+	 * Retrieves and removes the head of the signal queue
+	 *
+	 * @return Head of signal queue, <code>null</code> if signal queue is empty.
+	 */
 	public ISignal getSignal() {
 		return this.signalQueue.poll();
 	}
