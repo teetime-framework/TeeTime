@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<ruleset name="TeeTime ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+	<description>
+  This ruleset checks my code for bad stuff
+  </description>
+
+	<rule ref="rulesets/internal/all-java.xml"></rule>
+
+	<rule ref="rulesets/ecmascript/basic.xml" />
+	<rule ref="rulesets/ecmascript/braces.xml" />
+
+	<rule ref="rulesets/jsp/basic-jsf.xml" />
+	<rule ref="rulesets/jsp/basic.xml" />
+
+	<rule ref="rulesets/vm/basic.xml" />
+
+	<rule ref="rulesets/xml/basic.xml" />
+
+	<rule ref="rulesets/xsl/xpath.xml" />
+
+	<!-- custom adaptations -->
+
+	<rule ref="rulesets/java/basic.xml/EmptyCatchBlock" message="Throw at least an IllegalStateException(e)">
+		<priority>1</priority>
+	</rule>
+
+	<rule ref="rulesets/java/optimizations.xml">
+		<exclude name="LocalVariableCouldBeFinal" />
+	</rule>
+
+	<rule ref="rulesets/java/comments.xml">
+		<exclude name="CommentRequired" />
+	</rule>
+
+	<rule ref="rulesets/java/naming.xml" name="VariableNamingConventions">
+		<priority>5</priority>
+	</rule>
+
+</ruleset>
