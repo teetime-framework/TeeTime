@@ -28,7 +28,7 @@ public class SignalQueueTest {
 
 		SpScPipe pipe = new SignalQueueConfiguration().pipe;
 		for (ISignal s : list) {
-			pipe.setSignal(s);
+			pipe.sendSignal(s);
 		}
 
 		ArrayList<ISignal> secondList = new ArrayList<ISignal>();

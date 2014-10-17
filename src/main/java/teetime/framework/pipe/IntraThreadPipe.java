@@ -11,7 +11,7 @@ public abstract class IntraThreadPipe extends AbstractPipe {
 	}
 
 	@Override
-	public void setSignal(final ISignal signal) {
+	public void sendSignal(final ISignal signal) {
 		if (this.getTargetPort() != null) { // BETTER remove this check since there are DummyPorts
 			this.cachedTargetStage.onSignal(signal, this.getTargetPort());
 		}

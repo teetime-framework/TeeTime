@@ -13,14 +13,14 @@ import teetime.framework.signal.ISignal;
 
 public abstract class InterThreadPipe extends AbstractPipe {
 
-	private final Queue<ISignal> signalQueue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT));;
+	private final Queue<ISignal> signalQueue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT));
 
 	<T> InterThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
 	}
 
 	@Override
-	public void setSignal(final ISignal signal) {
+	public void sendSignal(final ISignal signal) {
 		this.signalQueue.offer(signal);
 	}
 

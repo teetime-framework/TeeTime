@@ -44,7 +44,7 @@ public final class DummyPipe implements IPipe {
 	}
 
 	@Override
-	public void setSignal(final ISignal signal) {}
+	public void sendSignal(final ISignal signal) {}
 
 	@Override
 	public void connectPorts(final OutputPort sourcePort, final InputPort targetPort) {}
