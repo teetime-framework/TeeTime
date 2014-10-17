@@ -38,18 +38,22 @@
 			<id>chw</id>
 			<name>Christian Wulf</name>
 			<email>chw@informatik.uni-kiel.de</email>
+			<organization>Christian-Albrechts-Universitaet zu Kiel</organization>
+			<organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/christian-wulf</organizationUrl>
 		</developer>
 		<developer>
 			<id>ntd</id>
 			<name>Nelson Tavares de Sousa</name>
 			<email>ntd@informatik.uni-kiel.de</email>
+			<organization>Christian-Albrechts-Universitaet zu Kiel</organization>
+			<organizationUrl>http://www.se.uni-kiel.de/en</organizationUrl>
 		</developer>
 	</developers>
 
 	<scm>
 		<connection>scm:git:https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime.git</connection>
 		<developerConnection>scm:git:ssh://gitlab@build.se.informatik.uni-kiel.de:chw/teetime.git</developerConnection>
-		<url>http://teetime.sourceforge.net</url>
+		<url>https://build.se.informatik.uni-kiel.de/gitlab/</url>
 	</scm>
 
 	<repositories>
