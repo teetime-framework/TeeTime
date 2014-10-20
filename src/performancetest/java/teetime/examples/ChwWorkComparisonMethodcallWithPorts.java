@@ -29,12 +29,6 @@ public class ChwWorkComparisonMethodcallWithPorts extends ProfiledPerformanceAss
 				.get("testWithManyObjects(teetime.examples.experiment09.MethodCallThoughputTimestampAnalysis9Test)");
 		PerformanceResult test15 = performanceResults
 				.get("testWithManyObjects(teetime.examples.experiment15.MethodCallThoughputTimestampAnalysis15Test)");
-		PerformanceResult test16a = performanceResults
-				.get("testWithManyObjectsAnd1Thread(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
-		PerformanceResult test16b = performanceResults
-				.get("testWithManyObjectsAnd2Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
-		PerformanceResult test16c = performanceResults
-				.get("testWithManyObjectsAnd4Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
 		PerformanceResult test17 = performanceResults
 				.get("testWithManyObjects(teetime.examples.experiment17.MethodCallThoughputTimestampAnalysis17Test)");
 		PerformanceResult test19a = performanceResults
@@ -87,9 +81,6 @@ public class ChwWorkComparisonMethodcallWithPorts extends ProfiledPerformanceAss
 		// assertEquals(RESULT_TESTS_19, (double) test19c.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
 
 		// check speedup
-		assertEquals(2, (double) test16a.overallDurationInNs / test16b.overallDurationInNs, 0.3);
-		assertEquals(2.5, (double) test16a.overallDurationInNs / test16c.overallDurationInNs, 0.2);
-
 		assertEquals(2, (double) test19a.overallDurationInNs / test19b.overallDurationInNs, 0.3);
 		assertEquals(2.5, (double) test19a.overallDurationInNs / test19c.overallDurationInNs, 0.3);
 	}
