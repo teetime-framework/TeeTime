@@ -149,7 +149,7 @@ public class MethodCallThroughputAnalysis17 {
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(timestampObjects);
 
 		IPipe startPipe = new RelayTestPipe<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
-		startPipe.setSignal(new TerminatingSignal());
+		startPipe.sendSignal(new TerminatingSignal());
 
 		relay.getInputPort().setPipe(startPipe);
 		UnorderedGrowablePipe.connect(relay.getOutputPort(), startTimestampFilter.getInputPort());

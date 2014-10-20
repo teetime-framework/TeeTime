@@ -18,7 +18,7 @@ public final class OutputPort<T> extends AbstractPort<T> {
 	}
 
 	public void sendSignal(final ISignal signal) {
-		this.pipe.setSignal(signal);
+		this.pipe.sendSignal(signal);
 	}
 
 	public void reportNewElement() {
