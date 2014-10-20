@@ -53,7 +53,7 @@
 	<scm>
 		<connection>scm:git:https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime.git</connection>
 		<developerConnection>scm:git:ssh://gitlab@build.se.informatik.uni-kiel.de:chw/teetime.git</developerConnection>
-		<url>https://build.se.informatik.uni-kiel.de/gitlab/</url>
+		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/</url>
 	</scm>
 
 	<repositories>
