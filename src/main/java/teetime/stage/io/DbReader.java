@@ -78,7 +78,7 @@ public class DbReader extends ProducerStage<IMonitoringRecord> {
 			connection = DriverManager.getConnection(this.connectionString);
 			PreparedStatement getIndexTable = null;
 			try {
-				getIndexTable = connection.prepareStatement("SELECT * from ?1");
+				getIndexTable = connection.prepareStatement("SELECT * from ?");
 				getIndexTable.setString(1, this.tablePrefix);
 				ResultSet indexTable = null;
 				try { // NOCS (nested try)
@@ -159,7 +159,7 @@ public class DbReader extends ProducerStage<IMonitoringRecord> {
 			throws SQLException, MonitoringRecordException {
 		PreparedStatement selectRecord = null;
 		try {
-			selectRecord = connection.prepareStatement("SELECT * from ?1");
+			selectRecord = connection.prepareStatement("SELECT * from ?");
 			selectRecord.setString(1, tablename);
 			ResultSet records = null;
 			try {
