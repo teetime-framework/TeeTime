@@ -1,8 +1,12 @@
 package teetime.stage;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
 import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -33,21 +37,30 @@ public class CipherByteArray extends ConsumerStage<byte[]> {
 		try {
 			secretKey = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").
 					generateSecret(keySpec);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (InvalidKeySpecException e1) {
+			throw new IllegalStateException(e1);
+		} catch (NoSuchAlgorithmException e1) {
+			throw new IllegalStateException(e1);
 		}
 
 		skeyspec = new SecretKeySpec(secretKey.getEncoded(), "AES");
 
 		try {
 			this.cipher = Cipher.getInstance(skeyspec.getAlgorithm());
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalStateException(e);
+		} catch (NoSuchPaddingException e) {
+			throw new IllegalStateException(e);
+		}
+
+		try {
 			if (mode == CipherMode.ENCRYPT) {
 				this.cipher.init(Cipher.ENCRYPT_MODE, skeyspec);
 			} else {
 				this.cipher.init(Cipher.DECRYPT_MODE, skeyspec);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			throw new IllegalStateException(e);
 		}
 	}
 

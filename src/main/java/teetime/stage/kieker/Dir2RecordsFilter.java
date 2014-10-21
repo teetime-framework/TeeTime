@@ -31,7 +31,6 @@ import teetime.stage.kieker.className.ClassNameRegistryCreationFilter;
 import teetime.stage.kieker.className.ClassNameRegistryRepository;
 import teetime.stage.kieker.fileToRecord.BinaryFile2RecordFilter;
 import teetime.stage.kieker.fileToRecord.DatFile2RecordFilter;
-import teetime.stage.kieker.fileToRecord.ZipFile2RecordFilter;
 
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.util.filesystem.BinaryCompressionMethod;
@@ -62,14 +61,12 @@ public class Dir2RecordsFilter extends OldPipeline<ClassNameRegistryCreationFilt
 
 		final DatFile2RecordFilter datFile2RecordFilter = new DatFile2RecordFilter(this.classNameRegistryRepository);
 		final BinaryFile2RecordFilter binaryFile2RecordFilter = new BinaryFile2RecordFilter(this.classNameRegistryRepository);
-		final ZipFile2RecordFilter zipFile2RecordFilter = new ZipFile2RecordFilter();
 
 		final Merger<IMonitoringRecord> recordMerger = new Merger<IMonitoringRecord>();
 
 		// store ports due to readability reasons
 		final OutputPort<File> normalFileOutputPort = fileExtensionSwitch.addFileExtension(FSUtil.NORMAL_FILE_EXTENSION);
 		final OutputPort<File> binFileOutputPort = fileExtensionSwitch.addFileExtension(BinaryCompressionMethod.NONE.getFileExtension());
-		final OutputPort<File> zipFileOutputPort = fileExtensionSwitch.addFileExtension(FSUtil.ZIP_FILE_EXTENSION);
 
 		// connect ports by pipes
 		IPipeFactory pipeFactory = pipeFactoryRegistry.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
@@ -78,11 +75,9 @@ public class Dir2RecordsFilter extends OldPipeline<ClassNameRegistryCreationFilt
 
 		pipeFactory.create(normalFileOutputPort, datFile2RecordFilter.getInputPort());
 		pipeFactory.create(binFileOutputPort, binaryFile2RecordFilter.getInputPort());
-		pipeFactory.create(zipFileOutputPort, zipFile2RecordFilter.getInputPort());
 
 		pipeFactory.create(datFile2RecordFilter.getOutputPort(), recordMerger.getNewInputPort());
 		pipeFactory.create(binaryFile2RecordFilter.getOutputPort(), recordMerger.getNewInputPort());
-		pipeFactory.create(zipFile2RecordFilter.getOutputPort(), recordMerger.getNewInputPort());
 
 		// prepare pipeline
 		this.setFirstStage(classNameRegistryCreationFilter);

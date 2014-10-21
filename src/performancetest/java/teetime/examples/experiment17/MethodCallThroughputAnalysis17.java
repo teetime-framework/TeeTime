@@ -112,8 +112,6 @@ public class MethodCallThroughputAnalysis17 {
 			final ConstructorClosure<TimestampObject> inputObjectCreator) {
 		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(numInputObjects, inputObjectCreator);
 		Distributor<TimestampObject> distributor = new Distributor<TimestampObject>();
-		Sink<TimestampObject> sink = new Sink<TimestampObject>();
-		Sink<Void> endStage = new Sink<Void>();
 
 		// UnorderedGrowablePipe.connect(objectProducer.getOutputPort(), sink.getInputPort());
 		// objectProducer.getOutputPort().pipe = new UnorderedGrowablePipe<TimestampObject>();
