@@ -18,9 +18,9 @@ package teetime.stage.io;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import teetime.framework.ProducerStage;
 
@@ -76,12 +76,13 @@ public class DbReader extends ProducerStage<IMonitoringRecord> {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(this.connectionString);
-			Statement getIndexTable = null;
+			PreparedStatement getIndexTable = null;
 			try {
-				getIndexTable = connection.createStatement();
+				getIndexTable = connection.prepareStatement("SELECT * from $1", new String[] { this.tablePrefix });
+				;// connection.createStatement();
 				ResultSet indexTable = null;
 				try { // NOCS (nested try)
-					indexTable = getIndexTable.executeQuery("SELECT * from " + this.tablePrefix);
+					indexTable = getIndexTable.executeQuery();
 					while (this.running && indexTable.next()) {
 						final String tablename = indexTable.getString(1);
 						final String classname = indexTable.getString(2);
@@ -156,12 +157,12 @@ public class DbReader extends ProducerStage<IMonitoringRecord> {
 	 */
 	private void table2record(final Connection connection, final String tablename, final Class<? extends IMonitoringRecord> clazz)
 			throws SQLException, MonitoringRecordException {
-		Statement selectRecord = null;
+		PreparedStatement selectRecord = null;
 		try {
-			selectRecord = connection.createStatement();
+			selectRecord = connection.prepareStatement("SELECT * from ", new String[] { tablename });
 			ResultSet records = null;
 			try {
-				records = selectRecord.executeQuery("SELECT * from " + tablename);
+				records = selectRecord.executeQuery();
 				final int size = records.getMetaData().getColumnCount() - 2; // remove index column
 				while (this.running && records.next()) {
 					final Object[] recordValues = new Object[size];
