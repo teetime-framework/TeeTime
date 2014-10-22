@@ -3,9 +3,8 @@ package teetime.stage.kieker;
 import java.io.File;
 
 import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
 import teetime.framework.OldPipeline;
-import teetime.stage.io.Directory2FilesFilter;
+import teetime.framework.OutputPort;
 import teetime.stage.kieker.className.ClassNameRegistryCreationFilter;
 import teetime.stage.kieker.className.ClassNameRegistryRepository;
 import teetime.stage.kieker.fileToRecord.DatFile2RecordFilter;
@@ -20,7 +19,6 @@ public class DirWithDat2RecordFilter extends OldPipeline<ClassNameRegistryCreati
 		this.classNameRegistryRepository = classNameRegistryRepository;
 
 		final ClassNameRegistryCreationFilter classNameRegistryCreationFilter = new ClassNameRegistryCreationFilter(classNameRegistryRepository);
-		final Directory2FilesFilter directory2FilesFilter = new Directory2FilesFilter();
 		final DatFile2RecordFilter datFile2RecordFilter = new DatFile2RecordFilter(classNameRegistryRepository);
 
 		this.setFirstStage(classNameRegistryCreationFilter);
