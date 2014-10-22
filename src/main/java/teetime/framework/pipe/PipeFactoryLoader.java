@@ -1,12 +1,9 @@
 package teetime.framework.pipe;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,9 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.FileSearcher;
 
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Files;
-
 public class PipeFactoryLoader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PipeFactoryLoader.class);
@@ -27,10 +21,10 @@ public class PipeFactoryLoader {
 		// utility class
 	}
 
-	public static List<IPipeFactory> loadFromFile(final String fileName) throws IOException {
+	public static List<IPipeFactory> loadFromStream(final InputStream stream) throws IOException {
 		List<IPipeFactory> pipeFactories = new LinkedList<IPipeFactory>();
 
-		BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
 		try {
 			String line;
 			while (null != (line = bufferedReader.readLine())) {
@@ -57,20 +51,9 @@ public class PipeFactoryLoader {
 		return pipeFactories;
 	}
 
-	public static void mergeConfigFiles(final String configFileName, final String mergedFileName) {
-		File output = new File(mergedFileName);
-		FileOutputStream os;
-		try {
-			os = new FileOutputStream(output);
-		} catch (FileNotFoundException e1) {
-			throw new IllegalStateException(e1);
-		}
-		try {
-			Files.touch(output);
-		} catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
+	public static List<IPipeFactory> mergeConfigFiles(final String configFileName) {
 
+		List<IPipeFactory> pipeFactories = new LinkedList<IPipeFactory>();
 		List<URL> files = null;
 
 		try {
@@ -81,12 +64,13 @@ public class PipeFactoryLoader {
 		for (URL url : files) {
 			try {
 				InputStream is = url.openStream();
-				ByteStreams.copy(is, os);
+				pipeFactories.addAll(loadFromStream(is));
 				is.close();
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
 			}
 
 		}
+		return pipeFactories;
 	}
 }

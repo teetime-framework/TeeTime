@@ -1,6 +1,5 @@
 package teetime.framework.pipe;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,13 +48,9 @@ public class PipeFactoryRegistry {
 	public static PipeFactoryRegistry INSTANCE = new PipeFactoryRegistry();
 
 	private PipeFactoryRegistry() {
-		try {
-			List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadFromFile("conf/pipe-factories.conf");
-			for (IPipeFactory pipeFactory : pipeFactories) {
-				this.register(pipeFactory);
-			}
-		} catch (IOException e) {
-			LOGGER.warn("Could not load pipe factories from file", e);
+		List<IPipeFactory> pipeFactories = PipeFactoryLoader.mergeConfigFiles("pipe-factories.conf");
+		for (IPipeFactory pipeFactory : pipeFactories) {
+			this.register(pipeFactory);
 		}
 	}
 
