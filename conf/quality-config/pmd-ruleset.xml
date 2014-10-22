@@ -4,15 +4,17 @@
 	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 	<description>This ruleset checks my code for bad stuff</description>
 
-<!-- warning: if you reference a pmd rulesets xml file more than once, only the first rule is applied; so check for duplicates  -->
+	<!-- warning: if you reference a pmd rulesets xml file more than once, only 
+		the first rule is applied; so check for duplicates -->
 
-<!-- all java rules; on each new pmd release, check whether there were added new rulesets that need to be added here -->
+	<!-- all java rules; on each new pmd release, check whether there were added 
+		new rulesets that need to be added here -->
 	<rule ref="rulesets/java/android.xml" />
 	<rule ref="rulesets/java/basic.xml" />
 	<rule ref="rulesets/java/braces.xml" />
 	<rule ref="rulesets/java/clone.xml" />
 	<rule ref="rulesets/java/codesize.xml" />
-<!-- 	<rule ref="rulesets/java/comments.xml" /> -->
+	<!-- <rule ref="rulesets/java/comments.xml" /> -->
 	<!-- <rule ref="rulesets/java/controversial.xml" /> -->
 	<rule ref="rulesets/java/coupling.xml" />
 	<rule ref="rulesets/java/design.xml" />
@@ -26,7 +28,7 @@
 	<rule ref="rulesets/java/logging-java.xml" />
 	<rule ref="rulesets/java/migrating.xml" />
 	<rule ref="rulesets/java/naming.xml" />
-	<rule ref="rulesets/java/optimizations.xml" />
+	<!-- <rule ref="rulesets/java/optimizations.xml" /> -->
 	<rule ref="rulesets/java/strictexception.xml" />
 	<rule ref="rulesets/java/strings.xml" />
 	<rule ref="rulesets/java/sunsecure.xml" />
