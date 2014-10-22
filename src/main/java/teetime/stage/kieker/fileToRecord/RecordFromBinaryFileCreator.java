@@ -63,7 +63,7 @@ public class RecordFromBinaryFileCreator {
 		final Class<?>[] typeArray = AbstractMonitoringRecord.typesForClass(clazz);
 
 		// read record
-		final long loggingTimestamp = inputStream.readLong(); // NOPMD (must be read here!)
+		final long loggingTimestamp = inputStream.readLong(); 
 		final Object[] objectArray = new Object[typeArray.length];
 		int idx = -1;
 		for (final Class<?> type : typeArray) {
@@ -100,7 +100,7 @@ public class RecordFromBinaryFileCreator {
 			objectArray[idx] = inputStream.readDouble();
 		} else if ((type == byte.class) || (type == Byte.class)) {
 			objectArray[idx] = inputStream.readByte();
-		} else if ((type == short.class) || (type == Short.class)) { // NOPMD (short)
+		} else if ((type == short.class) || (type == Short.class)) { 
 			objectArray[idx] = inputStream.readShort();
 		} else if ((type == boolean.class) || (type == Boolean.class)) {
 			objectArray[idx] = inputStream.readBoolean();

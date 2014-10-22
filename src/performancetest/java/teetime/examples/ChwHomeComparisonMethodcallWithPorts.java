@@ -25,8 +25,6 @@ public class ChwHomeComparisonMethodcallWithPorts extends ProfiledPerformanceAss
 
 		PerformanceResult test1 = performanceResults
 				.get("testWithManyObjects(teetime.examples.experiment01.MethodCallThoughputTimestampAnalysis1Test)");
-		PerformanceResult test9 = performanceResults
-				.get("testWithManyObjects(teetime.examples.experiment09.MethodCallThoughputTimestampAnalysis9Test)");
 		PerformanceResult test15 = performanceResults
 				.get("testWithManyObjects(teetime.examples.experiment15.MethodCallThoughputTimestampAnalysis15Test)");
 		PerformanceResult test16a = performanceResults
@@ -44,36 +42,29 @@ public class ChwHomeComparisonMethodcallWithPorts extends ProfiledPerformanceAss
 		PerformanceResult test19c = performanceResults
 				.get("testWithManyObjectsAnd4Threads(teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
 
-		double value9 = (double) test9.quantiles.get(0.5) / test1.quantiles.get(0.5);
 		double value15 = (double) test15.quantiles.get(0.5) / test1.quantiles.get(0.5);
 		double value17 = (double) test17.quantiles.get(0.5) / test1.quantiles.get(0.5);
 
-		System.out.println("value9: " + value9);
 		System.out.println("value15: " + value15);
 		System.out.println("value17: " + value17);
 
 		// until 25.06.2014 (incl.)
-		// assertEquals(22, (double) test9.quantiles.get(0.5) / test1.quantiles.get(0.5), 2.1);
 		// assertEquals(44, (double) test15.quantiles.get(0.5) / test1.quantiles.get(0.5), 4.1);
 		// assertEquals(39, (double) test17.quantiles.get(0.5) / test1.quantiles.get(0.5), 4.1);
 
 		// since 26.06.2014 (incl.)
-		// assertEquals(36, value9, 2.1); // +14
 		// assertEquals(44, value15, 4.1); // +0
 		// assertEquals(53, value17, 4.1); // +14
 
 		// // since 04.07.2014 (incl.)
-		// assertEquals(42, value9, 2.1); // +6
 		// assertEquals(44, value15, 4.1); // +0
 		// assertEquals(53, value17, 4.1); // +0
 
 		// since 11.08.2014 (incl.)
-		// assertEquals(42, value9, 2.1); // +6
 		// assertEquals(44, value15, 4.1); // +0
 		// assertEquals(53, value17, 4.1); // +0
 
 		// since 31.08.2014 (incl.)
-		assertEquals(44, value9, 2.1); // ??
 		assertEquals(68, value15, 4.1); // ??
 		assertEquals(75, value17, 4.1); // ??
 

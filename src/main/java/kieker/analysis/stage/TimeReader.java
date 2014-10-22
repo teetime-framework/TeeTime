@@ -176,7 +176,7 @@ public final class TimeReader extends AbstractReaderPlugin {
 		public void run() {
 			if (this.infinite || (this.numberImpulses > 0)) {
 				TimeReader.this.sendTimestampEvent();
-				if (!this.infinite && (0 == --this.numberImpulses)) { // NOPMD
+				if (!this.infinite && (0 == --this.numberImpulses)) { 
 					TimeReader.this.impulseEmitLatch.countDown();
 				}
 			}

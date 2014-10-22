@@ -99,8 +99,8 @@ public class KiekerHashMap {
 	 * StringBuffer entry.
 	 */
 	private static final class HashEntry extends SoftReference<String> {
-		final int hash; // NOPMD NOCS (package visible for inner class)
-		final HashEntry next; // NOPMD NOCS (package visible for inner class)
+		final int hash; 
+		final HashEntry next; 
 
 		protected HashEntry(final String value, final int hash, final HashEntry next) {
 			super(value);
@@ -277,7 +277,7 @@ public class KiekerHashMap {
 						newTable[lastIdx] = lastRun;
 
 						// Clone all remaining nodes
-						for (HashEntry p = e; p != lastRun; p = p.next) { // NOPMD (no equals meant here)
+						for (HashEntry p = e; p != lastRun; p = p.next) { 
 							final int k = p.hash & sizeMask;
 							final HashEntry n = newTable[k];
 							newTable[k] = new HashEntry(p.get(), p.hash, n);

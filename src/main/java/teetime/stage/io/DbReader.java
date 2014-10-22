@@ -59,7 +59,7 @@ public class DbReader extends ProducerStage<IMonitoringRecord> {
 	public void onStarting() {
 		try {
 			Class.forName(this.driverClassname).newInstance();
-		} catch (final Exception ex) { // NOPMD NOCS (IllegalCatchCheck)
+		} catch (final Exception ex) { 
 			throw new RuntimeException("DB driver registration failed. Perhaps the driver jar is missing?", ex);
 		}
 	}

@@ -54,7 +54,7 @@ public class MappingFileParser {
 		try {
 			in = new BufferedReader(new InputStreamReader(inputStream, FSUtil.ENCODING));
 			String line;
-			while ((line = in.readLine()) != null) { // NOPMD (assign)
+			while ((line = in.readLine()) != null) { 
 				this.parseTextLine(line, classNameRegistry);
 			}
 		} catch (final IOException ex) {

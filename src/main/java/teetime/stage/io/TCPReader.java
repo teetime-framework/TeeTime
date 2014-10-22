@@ -197,7 +197,7 @@ public class TCPReader extends ProducerStage<IMonitoringRecord> {
 
 		private final int port;
 		private final ILookup<String> stringRegistry;
-		private volatile boolean terminated = false; // NOPMD
+		private volatile boolean terminated = false; 
 		private volatile Thread readerThread;
 
 		public TCPStringReader(final int port, final ILookup<String> stringRegistry) {

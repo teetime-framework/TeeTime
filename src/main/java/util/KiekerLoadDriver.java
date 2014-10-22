@@ -173,7 +173,7 @@ public class KiekerLoadDriver {
 					long stop_ns = System.nanoTime();
 					this.timings[i] = stop_ns - start_ns;
 					if ((i % 100000) == 0) {
-						System.out.println(i); // NOPMD (System.out)
+						System.out.println(i); 
 					}
 					// System.out.println("writtenBytes (record): " + writtenBytes);
 					recordBuffer.clear();

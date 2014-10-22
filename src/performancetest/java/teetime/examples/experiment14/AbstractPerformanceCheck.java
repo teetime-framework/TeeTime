@@ -6,7 +6,7 @@ import util.test.PerformanceResult;
 import util.test.PerformanceTest;
 import util.test.ProfiledPerformanceAssertion;
 
-public abstract class AbstractPerformanceCheck extends ProfiledPerformanceAssertion {
+abstract class AbstractPerformanceCheck extends ProfiledPerformanceAssertion {
 
 	protected PerformanceResult test01;
 	protected PerformanceResult test14;
