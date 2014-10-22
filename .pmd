@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pmd>
     <useProjectRuleSet>true</useProjectRuleSet>
-    <ruleSetFile>conf\quality-config\pmd-ruleset.xml</ruleSetFile>
+    <ruleSetFile>conf/quality-config/pmd-ruleset.xml</ruleSetFile>
     <includeDerivedFiles>false</includeDerivedFiles>
     <violationsAsErrors>true</violationsAsErrors>
     <fullBuildEnabled>true</fullBuildEnabled>

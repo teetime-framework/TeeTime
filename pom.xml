@@ -59,6 +59,7 @@
 
 	<repositories>
 		<repository>
+			<!-- kieker:1.10-SNAPSHOT -->
 			<id>sonatype.oss.snapshots</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 		</repository>
@@ -79,6 +80,11 @@
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-library</artifactId>
 			<version>1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>net.kieker-monitoring</groupId>
+			<artifactId>kieker</artifactId>
+			<version>1.10-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -262,7 +268,7 @@
 
 				<configuration>
 					<rulesets>
-						<ruleset>${project.basedir}/conf/quality-config/pmdrules.xml</ruleset>
+						<ruleset>${project.basedir}/conf/quality-config/pmd-ruleset.xml</ruleset>
 					</rulesets>
 					<includeTests>true</includeTests>
 					<targetJdk>${java.version}</targetJdk>
