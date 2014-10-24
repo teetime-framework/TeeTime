@@ -30,7 +30,6 @@ import teetime.stage.util.TextLine;
 /**
  * @author Christian Wulf
  *
- * @since 1.10
  */
 public class File2TextLinesFilter extends ConsumerStage<File> {
 
