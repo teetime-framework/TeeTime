@@ -10,11 +10,14 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import teetime.framework.pipe.IPipeFactory;
+import teetime.framework.pipe.PipeFactoryLoader;
+
 public class FileSearcherTest {
 
 	@Test
 	public void fileInClasspath() throws IOException {
-		List<URL> list = FileSearcher.loadResources("data/input.txt");
+		List<URL> list = FileSearcher.loadResources("pipe-factories.conf");
 		Assert.assertEquals(false, list.isEmpty());
 	}
 
@@ -32,7 +35,15 @@ public class FileSearcherTest {
 
 	@Test
 	public void emptyConfig() throws IOException {
-		// List<IPipeFactory> list = PipeFactoryLoader.mergeConfigFiles();
+		List<IPipeFactory> list = PipeFactoryLoader.mergeConfigFiles("data/empty-test.conf");
+		Assert.assertEquals(true, list.isEmpty());
+	}
+
+	@Test
+	public void singleConfig() throws IOException {
+		List<IPipeFactory> list = PipeFactoryLoader.mergeConfigFiles("pipe-factories.conf");
+		int lines = this.countLines(new File("conf/pipe-factories.conf"));
+		Assert.assertEquals(lines, list.size());
 	}
 
 	private int countLines(final File fileName) throws IOException {
