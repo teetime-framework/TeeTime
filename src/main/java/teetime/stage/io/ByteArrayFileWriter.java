@@ -19,7 +19,7 @@ public class ByteArrayFileWriter extends ConsumerStage<byte[]> {
 			Files.touch(file);
 			fo = new FileOutputStream(this.file);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new IllegalStateException(e);
 		}
 	}
 
