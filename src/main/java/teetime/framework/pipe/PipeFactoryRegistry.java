@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * To get a PipeFactory instance, call {@link #getPipeFactory(ThreadCommunication, PipeOrdering, boolean)}.
  *
  */
-public class PipeFactoryRegistry {
+public final class PipeFactoryRegistry {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PipeFactoryRegistry.class);
 
@@ -45,10 +45,10 @@ public class PipeFactoryRegistry {
 	/**
 	 * The singleton instance of PipeFactoryRegistry
 	 */
-	public static PipeFactoryRegistry INSTANCE = new PipeFactoryRegistry();
+	public static PipeFactoryRegistry INSTANCE = new PipeFactoryRegistry("pipe-factories.conf");
 
-	private PipeFactoryRegistry() {
-		List<IPipeFactory> pipeFactories = PipeFactoryLoader.mergeConfigFiles("pipe-factories.conf");
+	private PipeFactoryRegistry(final String configFileName) {
+		List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadPipefactoriesFromClasspath(configFileName);
 		for (IPipeFactory pipeFactory : pipeFactories) {
 			this.register(pipeFactory);
 		}

@@ -6,8 +6,14 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-public class FileSearcher {
+public final class FileSearcher {
 
+	private FileSearcher() {
+
+	};
+
+	@SuppressWarnings("PMD.LawOfDemeter")
+	// LawOfDemeter not solvable in this case
 	public static List<URL> loadResources(final String name) throws IOException {
 
 		final List<URL> list = new ArrayList<URL>();

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -51,9 +52,8 @@ public class PipeFactoryLoader {
 		return pipeFactories;
 	}
 
-	public static List<IPipeFactory> mergeConfigFiles(final String configFileName) {
+	public static List<IPipeFactory> loadPipefactoriesFromClasspath(final String configFileName) {
 
-		List<IPipeFactory> pipeFactories = new LinkedList<IPipeFactory>();
 		List<URL> files = null;
 
 		try {
@@ -61,16 +61,21 @@ public class PipeFactoryLoader {
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
+		return mergeFiles(files);
+	}
+
+	public static List<IPipeFactory> mergeFiles(final List<URL> files) {
+		ArrayList<IPipeFactory> list = new ArrayList<IPipeFactory>();
 		for (URL url : files) {
 			try {
 				InputStream is = url.openStream();
-				pipeFactories.addAll(loadFromStream(is));
+				list.addAll(loadFromStream(is));
 				is.close();
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
 			}
 
 		}
-		return pipeFactories;
+		return list;
 	}
 }
