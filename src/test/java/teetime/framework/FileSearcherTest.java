@@ -49,7 +49,7 @@ public class FileSearcherTest {
 	}
 
 	@Test
-	public void multipleConfigs() throws IOException {
+	public void multipleConfigs() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		List<URL> files = new ArrayList<URL>();
 		File pipeConfig = new File("conf/pipe-factories.conf");
 		File testConfig = new File("src/test/resources/data/normal-test.conf");
@@ -65,7 +65,32 @@ public class FileSearcherTest {
 			Assert.assertTrue(contents.indexOf(iPipeFactory.getClass().getCanonicalName()) != -1);
 		}
 
+		// Second part of the test: PipeFactoryRegistry
 		PipeFactoryRegistry pipeRegistry = PipeFactoryRegistry.INSTANCE;
+
+		// Look for the "normal" pipes
+		for (String string : readConf(pipeConfig)) {
+			IPipeFactory pipeFactory = getClassByString(string);
+			IPipeFactory returnedFactory = pipeRegistry.getPipeFactory(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
+			Assert.assertEquals(pipeFactory.getClass().getCanonicalName(), returnedFactory.getClass().getCanonicalName());
+		}
+		// Second "and a half" part
+		for (String string : readConf(testConfig)) {
+			IPipeFactory pipeFactory = getClassByString(string);
+			// Still old factory
+			IPipeFactory returnedFactory = pipeRegistry.getPipeFactory(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
+			Assert.assertNotEquals(pipeFactory.getClass().getCanonicalName(), returnedFactory.getClass().getCanonicalName());
+			// Overload factory and check for the new one
+			pipeRegistry.register(pipeFactory);
+			returnedFactory = pipeRegistry.getPipeFactory(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
+			Assert.assertEquals(pipeFactory.getClass().getCanonicalName(), returnedFactory.getClass().getCanonicalName());
+		}
+	}
+
+	private IPipeFactory getClassByString(final String string) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		Class<?> clazz = Class.forName(string); // TODO: try-catch
+		Class<? extends IPipeFactory> pipeFactoryClass = clazz.asSubclass(IPipeFactory.class);
+		return pipeFactoryClass.newInstance();
 	}
 
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
