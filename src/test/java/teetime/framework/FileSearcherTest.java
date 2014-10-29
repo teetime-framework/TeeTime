@@ -88,7 +88,7 @@ public class FileSearcherTest {
 	}
 
 	private IPipeFactory getClassByString(final String string) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		Class<?> clazz = Class.forName(string); // TODO: try-catch
+		Class<?> clazz = Class.forName(string);
 		Class<? extends IPipeFactory> pipeFactoryClass = clazz.asSubclass(IPipeFactory.class);
 		return pipeFactoryClass.newInstance();
 	}
@@ -97,10 +97,13 @@ public class FileSearcherTest {
 	private int countLines(final File fileName) throws IOException {
 		BufferedReader fileReader = new BufferedReader(new FileReader(fileName));
 		int lines = 0;
-		while (fileReader.readLine() != null) { // TODO: Finally
-			lines = lines + 1;
+		try {
+			while (fileReader.readLine() != null) { // TODO: Finally
+				lines = lines + 1;
+			}
+		} finally {
+			fileReader.close();
 		}
-		fileReader.close();
 		return lines;
 	}
 
