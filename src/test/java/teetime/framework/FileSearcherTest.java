@@ -98,7 +98,7 @@ public class FileSearcherTest {
 		BufferedReader fileReader = new BufferedReader(new FileReader(fileName));
 		int lines = 0;
 		try {
-			while (fileReader.readLine() != null) { // TODO: Finally
+			while (fileReader.readLine() != null) {
 				lines = lines + 1;
 			}
 		} finally {
