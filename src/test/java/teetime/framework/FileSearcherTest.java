@@ -37,13 +37,13 @@ public class FileSearcherTest {
 
 	@Test
 	public void emptyConfig() throws IOException {
-		List<IPipeFactory> list = PipeFactoryLoader.loadPipefactoriesFromClasspath("data/empty-test.conf");
+		List<IPipeFactory> list = PipeFactoryLoader.loadPipeFactoriesFromClasspath("data/empty-test.conf");
 		Assert.assertEquals(true, list.isEmpty());
 	}
 
 	@Test
 	public void singleConfig() throws IOException {
-		List<IPipeFactory> list = PipeFactoryLoader.loadPipefactoriesFromClasspath("pipe-factories.conf");
+		List<IPipeFactory> list = PipeFactoryLoader.loadPipeFactoriesFromClasspath("pipe-factories.conf");
 		int lines = this.countLines(new File("conf/pipe-factories.conf"));
 		Assert.assertEquals(lines, list.size());
 	}

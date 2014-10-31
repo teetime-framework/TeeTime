@@ -52,7 +52,7 @@ public class PipeFactoryLoader {
 		return pipeFactories;
 	}
 
-	public static List<IPipeFactory> loadPipefactoriesFromClasspath(final String configFileName) {
+	public static List<IPipeFactory> loadPipeFactoriesFromClasspath(final String configFileName) {
 
 		List<URL> files = null;
 

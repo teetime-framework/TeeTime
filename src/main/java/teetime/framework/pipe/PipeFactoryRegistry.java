@@ -48,7 +48,7 @@ public final class PipeFactoryRegistry {
 	public static PipeFactoryRegistry INSTANCE = new PipeFactoryRegistry("pipe-factories.conf");
 
 	private PipeFactoryRegistry(final String configFileName) {
-		List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadPipefactoriesFromClasspath(configFileName);
+		List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadPipeFactoriesFromClasspath(configFileName);
 		for (IPipeFactory pipeFactory : pipeFactories) {
 			this.register(pipeFactory);
 		}
