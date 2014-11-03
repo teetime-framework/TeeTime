@@ -6,6 +6,7 @@ import java.util.List;
 import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.signal.OnTerminatingException;
 
 public class Delay<T> extends AbstractStage {
 
@@ -34,7 +35,7 @@ public class Delay<T> extends AbstractStage {
 	}
 
 	@Override
-	public void onTerminating() {
+	public void onTerminating() throws OnTerminatingException {
 		super.onTerminating();
 		while (!this.inputPort.getPipe().isEmpty()) {
 			this.executeWithPorts();

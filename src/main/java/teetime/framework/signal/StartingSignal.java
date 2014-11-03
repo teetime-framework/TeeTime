@@ -6,7 +6,11 @@ public class StartingSignal implements ISignal {
 
 	@Override
 	public void trigger(final AbstractStage stage) {
-		stage.onStarting();
+		try {
+			stage.onStarting();
+		} catch (OnStartingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
+import teetime.framework.signal.OnStartingException;
+import teetime.framework.signal.OnTerminatingException;
 import teetime.framework.validation.InvalidPortConnection;
 
 public abstract class AbstractStage implements Stage {
@@ -117,14 +119,14 @@ public abstract class AbstractStage implements Stage {
 		this.validateOutputPorts(invalidPortConnections);
 	}
 
-	public void onStarting() {
+	public void onStarting() throws OnStartingException { // NOPMD
 		this.cachedInputPorts = this.inputPortList.toArray(new InputPort<?>[0]);
 		this.cachedOutputPorts = this.outputPortList.toArray(new OutputPort<?>[0]);
 
 		this.connectUnconnectedOutputPorts();
 	}
 
-	public void onTerminating() {
+	public void onTerminating() throws OnTerminatingException { // NOPMD
 		// empty default implementation
 	}
 

@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import teetime.framework.ConsumerStage;
 import teetime.framework.OutputPort;
+import teetime.framework.signal.OnTerminatingException;
 import teetime.util.StopWatch;
 
 public class Cache<T> extends ConsumerStage<T> {
@@ -20,8 +21,7 @@ public class Cache<T> extends ConsumerStage<T> {
 	}
 
 	@Override
-	public void onTerminating() {
-		super.onTerminating();
+	public void onTerminating() throws OnTerminatingException {
 		this.logger.debug("Emitting " + this.cachedObjects.size() + " cached elements...");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();

@@ -18,6 +18,7 @@ package teetime.stage;
 import java.util.List;
 
 import teetime.framework.ConsumerStage;
+import teetime.framework.signal.OnTerminatingException;
 
 /**
  * @author Christian Wulf
@@ -45,7 +46,7 @@ public class CollectorSink<T> extends ConsumerStage<T> {
 	}
 
 	@Override
-	public void onTerminating() {
+	public void onTerminating() throws OnTerminatingException {
 		super.onTerminating();
 		System.out.println("size: " + this.elements.size());
 	}

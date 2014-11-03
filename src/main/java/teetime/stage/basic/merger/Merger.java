@@ -20,6 +20,7 @@ import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
+import teetime.framework.signal.OnTerminatingException;
 
 /**
  *
@@ -62,9 +63,9 @@ public class Merger<T> extends AbstractStage {
 	}
 
 	@Override
-	public void onTerminating() {
-		super.onTerminating();
+	public void onTerminating() throws OnTerminatingException {
 		this.finishedInputPorts++;
+		super.onTerminating();
 	}
 
 	public IMergerStrategy<T> getStrategy() {

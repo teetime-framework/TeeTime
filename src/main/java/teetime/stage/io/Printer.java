@@ -21,6 +21,8 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
 import teetime.framework.ConsumerStage;
+import teetime.framework.signal.OnStartingException;
+import teetime.framework.signal.OnTerminatingException;
 
 /**
  * A filter to print objects to a configured stream
@@ -86,13 +88,13 @@ public class Printer<T> extends ConsumerStage<T> {
 	}
 
 	@Override
-	public void onStarting() {
+	public void onStarting() throws OnStartingException {
 		super.onStarting();
 		this.initializeStream();
 	}
 
 	@Override
-	public void onTerminating() {
+	public void onTerminating() throws OnTerminatingException {
 		this.closeStream();
 		super.onTerminating();
 	}

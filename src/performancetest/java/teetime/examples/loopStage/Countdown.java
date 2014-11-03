@@ -3,6 +3,7 @@ package teetime.examples.loopStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.ProducerStage;
+import teetime.framework.signal.OnStartingException;
 
 public class Countdown extends ProducerStage<Void> {
 
@@ -17,9 +18,9 @@ public class Countdown extends ProducerStage<Void> {
 	}
 
 	@Override
-	public void onStarting() {
-		this.countdownInputPort.getPipe().add(this.initialCountdown);
+	public void onStarting() throws OnStartingException {
 		super.onStarting();
+		this.countdownInputPort.getPipe().add(this.initialCountdown);
 	}
 
 	@Override
