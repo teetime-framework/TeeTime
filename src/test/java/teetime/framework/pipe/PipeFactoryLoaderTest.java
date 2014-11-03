@@ -11,7 +11,10 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import teetime.util.classpath.ClassForNameResolver;
+
 public class PipeFactoryLoaderTest {
+
 	@Test
 	public void emptyConfig() throws IOException {
 		List<IPipeFactory> list = PipeFactoryLoader.loadPipeFactoriesFromClasspath("data/empty-test.conf");
@@ -44,16 +47,17 @@ public class PipeFactoryLoaderTest {
 
 		// Second part of the test: PipeFactoryRegistry
 		PipeFactoryRegistry pipeRegistry = PipeFactoryRegistry.INSTANCE;
+		ClassForNameResolver<IPipeFactory> classResolver = new ClassForNameResolver<IPipeFactory>(IPipeFactory.class);
 
 		// Look for the "normal" pipes
-		for (String string : readConf(pipeConfig)) {
-			IPipeFactory pipeFactory = getClassByString(string);
+		for (String className : readConf(pipeConfig)) {
+			IPipeFactory pipeFactory = classResolver.classForName(className).newInstance();
 			IPipeFactory returnedFactory = pipeRegistry.getPipeFactory(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
 			Assert.assertEquals(pipeFactory.getClass().getCanonicalName(), returnedFactory.getClass().getCanonicalName());
 		}
 		// Second "and a half" part
-		for (String string : readConf(testConfig)) {
-			IPipeFactory pipeFactory = getClassByString(string);
+		for (String className : readConf(testConfig)) {
+			IPipeFactory pipeFactory = classResolver.classForName(className).newInstance();
 			// Still old factory
 			IPipeFactory returnedFactory = pipeRegistry.getPipeFactory(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
 			Assert.assertNotEquals(pipeFactory.getClass().getCanonicalName(), returnedFactory.getClass().getCanonicalName());
@@ -62,12 +66,6 @@ public class PipeFactoryLoaderTest {
 			returnedFactory = pipeRegistry.getPipeFactory(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
 			Assert.assertEquals(pipeFactory.getClass().getCanonicalName(), returnedFactory.getClass().getCanonicalName());
 		}
-	}
-
-	private IPipeFactory getClassByString(final String string) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		Class<?> clazz = Class.forName(string);
-		Class<? extends IPipeFactory> pipeFactoryClass = clazz.asSubclass(IPipeFactory.class);
-		return pipeFactoryClass.newInstance();
 	}
 
 	private int countLines(final File fileName) throws IOException {
