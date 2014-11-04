@@ -1,8 +1,6 @@
 package teetime.framework.pipe;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,7 +25,7 @@ public class PipeFactoryLoaderTest {
 	@Test
 	public void singleConfig() throws IOException {
 		List<IPipeFactory> list = PipeFactoryLoader.loadPipeFactoriesFromClasspath("pipe-factories.conf");
-		int lines = this.countLines(new File("conf/pipe-factories.conf"));
+		int lines = Files.readLines(new File("conf/pipe-factories.conf"), Charsets.UTF_8).size();
 		Assert.assertEquals(lines, list.size());
 	}
 
@@ -69,19 +67,6 @@ public class PipeFactoryLoaderTest {
 			returnedFactory = pipeRegistry.getPipeFactory(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
 			Assert.assertEquals(pipeFactory.getClass().getCanonicalName(), returnedFactory.getClass().getCanonicalName());
 		}
-	}
-
-	private int countLines(final File fileName) throws IOException {
-		BufferedReader fileReader = new BufferedReader(new FileReader(fileName));
-		int lines = 0;// NOPMD
-		try {
-			while (fileReader.readLine() != null) {// NOPMD
-				lines = lines + 1;
-			}
-		} finally {
-			fileReader.close();// NOPMD
-		}
-		return lines;
 	}
 
 }
