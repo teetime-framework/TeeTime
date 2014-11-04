@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.framework.HeadPipeline;
+import teetime.framework.OldHeadPipeline;
 import teetime.framework.RunnableStage;
 import teetime.framework.pipe.SingleElementPipe;
 import teetime.framework.pipe.SpScPipe;
@@ -56,7 +56,7 @@ public class MethodCallThroughputAnalysis16 {
 	private int numWorkerThreads;
 
 	public void init() {
-		HeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> producerPipeline = this.buildProducerPipeline(this.numInputObjects,
+		OldHeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> producerPipeline = this.buildProducerPipeline(this.numInputObjects,
 				this.inputObjectCreator);
 		this.producerThread = new Thread(new RunnableStage(producerPipeline));
 
@@ -67,17 +67,17 @@ public class MethodCallThroughputAnalysis16 {
 			List<TimestampObject> resultList = new ArrayList<TimestampObject>(this.numInputObjects);
 			this.timestampObjectsList.add(resultList);
 
-			HeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> workerPipeline = this.buildPipeline(producerPipeline, resultList);
+			OldHeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> workerPipeline = this.buildPipeline(producerPipeline, resultList);
 			this.workerThreads[i] = new Thread(new RunnableStage(workerPipeline));
 		}
 	}
 
-	private HeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> buildProducerPipeline(final int numInputObjects,
+	private OldHeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> buildProducerPipeline(final int numInputObjects,
 			final ConstructorClosure<TimestampObject> inputObjectCreator) {
 		final ObjectProducer<TimestampObject> objectProducer = new ObjectProducer<TimestampObject>(numInputObjects, inputObjectCreator);
 		Distributor<TimestampObject> distributor = new Distributor<TimestampObject>();
 
-		final HeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> pipeline = new HeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>>();
+		final OldHeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> pipeline = new OldHeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>>();
 		pipeline.setFirstStage(objectProducer);
 		pipeline.setLastStage(distributor);
 
@@ -90,8 +90,8 @@ public class MethodCallThroughputAnalysis16 {
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
-	private HeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> buildPipeline(
-			final HeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> previousStage,
+	private OldHeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> buildPipeline(
+			final OldHeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> previousStage,
 			final List<TimestampObject> timestampObjects) {
 		Relay<TimestampObject> relay = new Relay<TimestampObject>();
 		@SuppressWarnings("unchecked")
@@ -104,7 +104,7 @@ public class MethodCallThroughputAnalysis16 {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(timestampObjects);
 
-		final HeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new HeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>>();
+		final OldHeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new OldHeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>>();
 		pipeline.setFirstStage(relay);
 		pipeline.setLastStage(collectorSink);
 

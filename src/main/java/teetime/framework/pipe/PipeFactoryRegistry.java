@@ -1,6 +1,5 @@
 package teetime.framework.pipe;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * To get a PipeFactory instance, call {@link #getPipeFactory(ThreadCommunication, PipeOrdering, boolean)}.
  *
  */
-public class PipeFactoryRegistry {
+public final class PipeFactoryRegistry {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PipeFactoryRegistry.class);
 
@@ -46,16 +45,12 @@ public class PipeFactoryRegistry {
 	/**
 	 * The singleton instance of PipeFactoryRegistry
 	 */
-	public static PipeFactoryRegistry INSTANCE = new PipeFactoryRegistry();
+	public static PipeFactoryRegistry INSTANCE = new PipeFactoryRegistry("pipe-factories.conf");
 
-	private PipeFactoryRegistry() {
-		try {
-			List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadFromFile("conf/pipe-factories.conf");
-			for (IPipeFactory pipeFactory : pipeFactories) {
-				this.register(pipeFactory);
-			}
-		} catch (IOException e) {
-			LOGGER.warn("Could not load pipe factories from file", e);
+	private PipeFactoryRegistry(final String configFileName) {
+		List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadPipeFactoriesFromClasspath(configFileName);
+		for (IPipeFactory pipeFactory : pipeFactories) {
+			this.register(pipeFactory);
 		}
 	}
 

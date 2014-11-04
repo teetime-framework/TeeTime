@@ -17,7 +17,7 @@ package teetime.examples.experiment14;
 
 import java.util.List;
 
-import teetime.framework.HeadPipeline;
+import teetime.framework.OldHeadPipeline;
 import teetime.framework.HeadStage;
 import teetime.framework.RunnableStage;
 import teetime.framework.pipe.IPipeFactory;
@@ -56,7 +56,7 @@ public class MethodCallThroughputAnalysis14 {
 	 * @return
 	 * @since 1.10
 	 */
-	private HeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> buildPipeline() {
+	private OldHeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> buildPipeline() {
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
 		// create stages
@@ -68,7 +68,7 @@ public class MethodCallThroughputAnalysis14 {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final HeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new HeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>>();
+		final OldHeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new OldHeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>>();
 		pipeline.setFirstStage(objectProducer);
 		pipeline.setLastStage(collectorSink);
 

@@ -11,24 +11,33 @@ import com.google.common.io.Files;
 public class ByteArrayFileWriter extends ConsumerStage<byte[]> {
 
 	private final File file;
+	private FileOutputStream fo;
 
 	public ByteArrayFileWriter(final File file) {
 		this.file = file;
 		try {
 			Files.touch(file);
+			fo = new FileOutputStream(this.file);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new IllegalStateException(e);
 		}
 	}
 
 	@Override
 	protected void execute(final byte[] element) {
-		FileOutputStream fo;
+
 		try {
-			fo = new FileOutputStream(this.file);
 			fo.write(element);
-			fo.close();
 		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	@Override
+	public void onTerminating() {
+		try {
+			fo.close();
+		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
 	}

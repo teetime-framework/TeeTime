@@ -17,7 +17,7 @@ package teetime.examples.experiment15;
 
 import java.util.List;
 
-import teetime.framework.HeadPipeline;
+import teetime.framework.OldHeadPipeline;
 import teetime.framework.HeadStage;
 import teetime.framework.RunnableStage;
 import teetime.framework.pipe.OrderedGrowableArrayPipe;
@@ -55,20 +55,20 @@ public class MethodCallThroughputAnalysis15 {
 
 	public void init() {
 
-		HeadPipeline<Clock, Sink<Long>> clockPipeline = this.buildClockPipeline();
+		OldHeadPipeline<Clock, Sink<Long>> clockPipeline = this.buildClockPipeline();
 		this.clockRunnable = new RunnableStage(clockPipeline);
 
 		HeadStage pipeline = this.buildPipeline(this.clock);
 		this.runnable = new RunnableStage(pipeline);
 	}
 
-	private HeadPipeline<Clock, Sink<Long>> buildClockPipeline() {
+	private OldHeadPipeline<Clock, Sink<Long>> buildClockPipeline() {
 		this.clock = new Clock();
 
 		this.clock.setInitialDelayInMs(100);
 		this.clock.setIntervalDelayInMs(100);
 
-		final HeadPipeline<Clock, Sink<Long>> pipeline = new HeadPipeline<Clock, Sink<Long>>();
+		final OldHeadPipeline<Clock, Sink<Long>> pipeline = new OldHeadPipeline<Clock, Sink<Long>>();
 		pipeline.setFirstStage(this.clock);
 		pipeline.setLastStage(new Sink<Long>());
 
@@ -80,7 +80,7 @@ public class MethodCallThroughputAnalysis15 {
 	 * @return
 	 * @since 1.10
 	 */
-	private HeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> buildPipeline(final Clock clock) {
+	private OldHeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> buildPipeline(final Clock clock) {
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
 		// create stages
@@ -93,7 +93,7 @@ public class MethodCallThroughputAnalysis15 {
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(this.timestampObjects);
 
-		final HeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new HeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>>();
+		final OldHeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new OldHeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>>();
 		pipeline.setFirstStage(objectProducer);
 		pipeline.setLastStage(collectorSink);
 

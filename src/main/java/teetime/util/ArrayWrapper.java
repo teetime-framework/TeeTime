@@ -12,15 +12,15 @@ public final class ArrayWrapper<T> {
 		this.elements = (T[]) new Object[initialCapacity];
 	}
 
-	public final T get(final int index) {
+	public T get(final int index) {
 		return this.elements[index];
 	}
 
-	public final void put(final int index, final T element) {
+	public void put(final int index, final T element) {
 		this.elements[index] = element;
 	}
 
-	public final int getCapacity() {
+	public int getCapacity() {
 		return this.elements.length;
 	}
 

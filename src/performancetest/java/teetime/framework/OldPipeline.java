@@ -5,6 +5,7 @@ import java.util.List;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
+@Deprecated
 public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> implements Stage {
 
 	protected FirstStage firstStage;

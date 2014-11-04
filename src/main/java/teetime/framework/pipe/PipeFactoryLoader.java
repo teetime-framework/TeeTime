@@ -1,13 +1,18 @@
 package teetime.framework.pipe;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import teetime.framework.FileSearcher;
 
 public class PipeFactoryLoader {
 
@@ -17,10 +22,10 @@ public class PipeFactoryLoader {
 		// utility class
 	}
 
-	public static List<IPipeFactory> loadFromFile(final String fileName) throws IOException {
+	public static List<IPipeFactory> loadFromStream(final InputStream stream) throws IOException {
 		List<IPipeFactory> pipeFactories = new LinkedList<IPipeFactory>();
 
-		BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
 		try {
 			String line;
 			while (null != (line = bufferedReader.readLine())) {
@@ -45,5 +50,32 @@ public class PipeFactoryLoader {
 		}
 
 		return pipeFactories;
+	}
+
+	public static List<IPipeFactory> loadPipeFactoriesFromClasspath(final String configFileName) {
+
+		List<URL> files = null;
+
+		try {
+			files = FileSearcher.loadResources(configFileName);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+		return mergeFiles(files);
+	}
+
+	public static List<IPipeFactory> mergeFiles(final List<URL> files) {
+		ArrayList<IPipeFactory> list = new ArrayList<IPipeFactory>();
+		for (URL url : files) {
+			try {
+				InputStream is = url.openStream();
+				list.addAll(loadFromStream(is));
+				is.close();
+			} catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
+
+		}
+		return list;
 	}
 }
