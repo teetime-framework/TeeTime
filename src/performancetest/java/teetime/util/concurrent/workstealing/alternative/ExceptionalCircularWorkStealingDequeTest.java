@@ -30,6 +30,7 @@ public class ExceptionalCircularWorkStealingDequeTest {
 				deque.popBottom();
 			} catch (final DequeIsEmptyException e) {
 				// do not handle; we just want to compare the performance of throwing a preallocated exception vs. returning special values
+				throw new IllegalStateException(e);
 			}
 		}
 		this.stopWatch.end();
