@@ -54,17 +54,15 @@ public class Merger<T> extends AbstractStage {
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
 
-		signal.trigger(this);
+		if (0 == finishedInputPorts) {
+			signal.trigger(this);
+		}
+		this.finishedInputPorts++;
 
 		if (this.finishedInputPorts == this.getInputPorts().length) {
 			this.outputPort.sendSignal(signal);
+			this.finishedInputPorts = 0;
 		}
-	}
-
-	@Override
-	public void onTerminating() throws Exception {
-		this.finishedInputPorts++;
-		super.onTerminating();
 	}
 
 	public IMergerStrategy<T> getStrategy() {
