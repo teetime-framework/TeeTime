@@ -5,7 +5,7 @@ import util.test.PerformanceResult;
 import util.test.PerformanceTest;
 import util.test.ProfiledPerformanceAssertion;
 
-public class ChwHomePerformanceCheck extends ProfiledPerformanceAssertion {
+class ChwHomePerformanceCheck extends ProfiledPerformanceAssertion {
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {
@@ -28,6 +28,9 @@ public class ChwHomePerformanceCheck extends ProfiledPerformanceAssertion {
 		System.out.println("speedupC: " + speedupC);
 
 		assertEquals(2, speedupB, 0.3);
-		assertEquals(3.6, speedupC, 0.3);
+		// since 31.08.2014 (incl.)
+		// assertEquals(3.6, speedupC, 0.3);
+		// since 04.11.2014 (incl.)
+		assertEquals(5, speedupC, 0.3);
 	}
 }

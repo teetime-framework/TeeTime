@@ -30,9 +30,9 @@ public class ElementThroughputMeasuringStage<T> extends ConsumerStage<T> {
 	}
 
 	@Override
-	public void onStarting() {
-		this.resetTimestamp(System.nanoTime());
+	public void onStarting() throws Exception {
 		super.onStarting();
+		this.resetTimestamp(System.nanoTime());
 	}
 
 	private void computeElementThroughput(final Long timestampInNs) {

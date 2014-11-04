@@ -34,11 +34,11 @@ public class Delay<T> extends AbstractStage {
 	}
 
 	@Override
-	public void onTerminating() {
-		super.onTerminating();
+	public void onTerminating() throws Exception {
 		while (!this.inputPort.getPipe().isEmpty()) {
 			this.executeWithPorts();
 		}
+		super.onTerminating();
 	}
 
 	public InputPort<T> getInputPort() {

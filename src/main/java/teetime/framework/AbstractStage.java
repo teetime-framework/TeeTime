@@ -117,14 +117,14 @@ public abstract class AbstractStage implements Stage {
 		this.validateOutputPorts(invalidPortConnections);
 	}
 
-	public void onStarting() {
+	public void onStarting() throws Exception {
 		this.cachedInputPorts = this.inputPortList.toArray(new InputPort<?>[0]);
 		this.cachedOutputPorts = this.outputPortList.toArray(new OutputPort<?>[0]);
 
 		this.connectUnconnectedOutputPorts();
 	}
 
-	public void onTerminating() {
+	public void onTerminating() throws Exception {
 		// empty default implementation
 	}
 

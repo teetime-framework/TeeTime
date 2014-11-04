@@ -2,7 +2,7 @@ package teetime.examples.experiment09;
 
 import static org.junit.Assert.assertEquals;
 
-public class ChwHomePerformanceCheck extends AbstractPerformanceCheck {
+class ChwHomePerformanceCheck extends AbstractPerformanceCheck {
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {
@@ -21,11 +21,13 @@ public class ChwHomePerformanceCheck extends AbstractPerformanceCheck {
 		// assertEquals(22, (double) test9.quantiles.get(0.5) / test1.quantiles.get(0.5), 2.1);
 		// since 26.06.2014 (incl.)
 		// assertEquals(36, value9, 2.1); // +14
-		// // since 04.07.2014 (incl.)
+		// since 04.07.2014 (incl.)
 		// assertEquals(42, value9, 2.1); // +6
 		// since 11.08.2014 (incl.)
 		// assertEquals(42, value9, 2.1); // +6
 		// since 31.08.2014 (incl.)
-		assertEquals(44, medianSpeedup, 2.1); // ??
+		// assertEquals(44, medianSpeedup, 2.1); // +2
+		// since 04.11.2014 (incl.)
+		assertEquals(71, medianSpeedup, 2.1); // +33
 	}
 }

@@ -86,13 +86,13 @@ public class Printer<T> extends ConsumerStage<T> {
 	}
 
 	@Override
-	public void onStarting() {
+	public void onStarting() throws Exception {
 		super.onStarting();
 		this.initializeStream();
 	}
 
 	@Override
-	public void onTerminating() {
+	public void onTerminating() throws Exception {
 		this.closeStream();
 		super.onTerminating();
 	}

@@ -62,9 +62,9 @@ public class Merger<T> extends AbstractStage {
 	}
 
 	@Override
-	public void onTerminating() {
-		super.onTerminating();
+	public void onTerminating() throws Exception {
 		this.finishedInputPorts++;
+		super.onTerminating();
 	}
 
 	public IMergerStrategy<T> getStrategy() {
