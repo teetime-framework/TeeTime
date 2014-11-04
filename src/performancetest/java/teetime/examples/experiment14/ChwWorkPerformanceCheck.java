@@ -2,7 +2,7 @@ package teetime.examples.experiment14;
 
 import static org.junit.Assert.assertEquals;
 
-public class ChwWorkPerformanceCheck extends AbstractPerformanceCheck {
+class ChwWorkPerformanceCheck extends AbstractPerformanceCheck {
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {

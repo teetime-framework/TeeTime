@@ -5,7 +5,7 @@ import util.test.PerformanceResult;
 import util.test.PerformanceTest;
 import util.test.ProfiledPerformanceAssertion;
 
-public class ChwHomePerformanceCheck extends ProfiledPerformanceAssertion {
+class ChwHomePerformanceCheck extends ProfiledPerformanceAssertion {
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {

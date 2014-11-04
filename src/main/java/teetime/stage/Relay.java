@@ -25,9 +25,9 @@ public class Relay<T> extends ProducerStage<T> {
 	}
 
 	@Override
-	public void onStarting() {
-		this.cachedCastedInputPipe = (InterThreadPipe) this.inputPort.getPipe();
+	public void onStarting() throws Exception {
 		super.onStarting();
+		this.cachedCastedInputPipe = (InterThreadPipe) this.inputPort.getPipe();
 	}
 
 	public InputPort<T> getInputPort() {

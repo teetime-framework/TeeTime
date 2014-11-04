@@ -17,9 +17,9 @@ public class Countdown extends ProducerStage<Void> {
 	}
 
 	@Override
-	public void onStarting() {
-		this.countdownInputPort.getPipe().add(this.initialCountdown);
+	public void onStarting() throws Exception {
 		super.onStarting();
+		this.countdownInputPort.getPipe().add(this.initialCountdown);
 	}
 
 	@Override

@@ -65,8 +65,12 @@ public class ChwHomeComparisonMethodcallWithPorts extends ProfiledPerformanceAss
 		// assertEquals(53, value17, 4.1); // +0
 
 		// since 31.08.2014 (incl.)
-		assertEquals(68, value15, 4.1); // ??
-		assertEquals(75, value17, 4.1); // ??
+		// assertEquals(68, value15, 4.1); // +24
+		// assertEquals(75, value17, 4.1); // +22
+
+		// since 04.11.2014 (incl.)
+		assertEquals(38, value15, 4.1); // -30
+		assertEquals(78, value17, 4.1); // +3
 
 		// below results vary too much, possibly due to the OS' scheduler
 		// assertEquals(RESULT_TESTS_16, (double) test16a.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
