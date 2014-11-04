@@ -13,6 +13,9 @@ import org.junit.Test;
 
 import teetime.util.classpath.ClassForNameResolver;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
+
 public class PipeFactoryLoaderTest {
 
 	@Test
@@ -37,8 +40,8 @@ public class PipeFactoryLoaderTest {
 		files.add(pipeConfig.toURI().toURL());
 		List<IPipeFactory> pipeFactories = PipeFactoryLoader.mergeFiles(files);
 
-		ArrayList<String> contents = readConf(pipeConfig);
-		contents.addAll(readConf(testConfig));
+		List<String> contents = Files.readLines(pipeConfig, Charsets.UTF_8);
+		contents.addAll(Files.readLines(testConfig, Charsets.UTF_8));
 
 		// Check if all read factories are contained in one of the files
 		for (IPipeFactory iPipeFactory : pipeFactories) {
@@ -50,13 +53,13 @@ public class PipeFactoryLoaderTest {
 		ClassForNameResolver<IPipeFactory> classResolver = new ClassForNameResolver<IPipeFactory>(IPipeFactory.class);
 
 		// Look for the "normal" pipes
-		for (String className : readConf(pipeConfig)) {
+		for (String className : Files.readLines(pipeConfig, Charsets.UTF_8)) {
 			IPipeFactory pipeFactory = classResolver.classForName(className).newInstance();
 			IPipeFactory returnedFactory = pipeRegistry.getPipeFactory(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
 			Assert.assertEquals(pipeFactory.getClass().getCanonicalName(), returnedFactory.getClass().getCanonicalName());
 		}
 		// Second "and a half" part
-		for (String className : readConf(testConfig)) {
+		for (String className : Files.readLines(testConfig, Charsets.UTF_8)) {
 			IPipeFactory pipeFactory = classResolver.classForName(className).newInstance();
 			// Still old factory
 			IPipeFactory returnedFactory = pipeRegistry.getPipeFactory(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
@@ -81,14 +84,4 @@ public class PipeFactoryLoaderTest {
 		return lines;
 	}
 
-	private ArrayList<String> readConf(final File fileName) throws IOException {
-		BufferedReader fileReader = new BufferedReader(new FileReader(fileName));
-		ArrayList<String> list = new ArrayList<String>();
-		String line;
-		while ((line = fileReader.readLine()) != null) {
-			list.add(line);
-		}
-		fileReader.close();
-		return list;
-	}
 }
