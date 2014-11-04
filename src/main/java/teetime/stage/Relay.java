@@ -3,7 +3,6 @@ package teetime.stage;
 import teetime.framework.InputPort;
 import teetime.framework.ProducerStage;
 import teetime.framework.pipe.InterThreadPipe;
-import teetime.framework.signal.OnStartingException;
 import teetime.framework.signal.TerminatingSignal;
 
 public class Relay<T> extends ProducerStage<T> {
@@ -26,7 +25,7 @@ public class Relay<T> extends ProducerStage<T> {
 	}
 
 	@Override
-	public void onStarting() throws OnStartingException {
+	public void onStarting() {
 		this.cachedCastedInputPipe = (InterThreadPipe) this.inputPort.getPipe();
 		super.onStarting();
 	}

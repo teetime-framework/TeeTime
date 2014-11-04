@@ -34,7 +34,7 @@ public abstract class InterThreadPipe extends AbstractPipe {
 	}
 
 	@Override
-	public void reportNewElement() {// NOPMD
+	public void reportNewElement() {
 		// do nothing
 	}
 }

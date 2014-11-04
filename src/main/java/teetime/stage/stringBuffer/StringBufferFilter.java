@@ -20,13 +20,12 @@ import java.util.LinkedList;
 
 import teetime.framework.ConsumerStage;
 import teetime.framework.OutputPort;
-import teetime.framework.signal.OnStartingException;
 import teetime.stage.stringBuffer.handler.AbstractDataTypeHandler;
 import teetime.stage.stringBuffer.util.KiekerHashMap;
 
 /**
  * @author Christian Wulf
- *
+ * 
  * @since 1.10
  */
 public class StringBufferFilter<T> extends ConsumerStage<T> {
@@ -45,7 +44,7 @@ public class StringBufferFilter<T> extends ConsumerStage<T> {
 	}
 
 	@Override
-	public void onStarting() throws OnStartingException {
+	public void onStarting() {
 		for (final AbstractDataTypeHandler<?> handler : this.dataTypeHandlers) {
 			handler.setLogger(this.logger);
 			handler.setStringRepository(this.kiekerHashMap);

@@ -37,6 +37,15 @@ public class Distributor<T> extends ConsumerStage<T> {
 		this.strategy.distribute((OutputPort<T>[]) this.getOutputPorts(), element);
 	}
 
+	@Override
+	public void onTerminating() {
+		super.onTerminating();
+		// for (OutputPort<T> op : this.outputPortList) {
+		// op.getPipe().close();
+		// System.out.println("End signal sent, size: " + op.getPipe().size());
+		// }
+	}
+
 	public OutputPort<T> getNewOutputPort() {
 		return this.createOutputPort();
 	}

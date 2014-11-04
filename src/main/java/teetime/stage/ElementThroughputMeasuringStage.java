@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 import teetime.framework.ConsumerStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.signal.OnStartingException;
 
 public class ElementThroughputMeasuringStage<T> extends ConsumerStage<T> {
 
@@ -31,7 +30,7 @@ public class ElementThroughputMeasuringStage<T> extends ConsumerStage<T> {
 	}
 
 	@Override
-	public void onStarting() throws OnStartingException {
+	public void onStarting() {
 		this.resetTimestamp(System.nanoTime());
 		super.onStarting();
 	}
