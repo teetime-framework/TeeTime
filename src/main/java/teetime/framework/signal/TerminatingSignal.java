@@ -19,7 +19,7 @@ public class TerminatingSignal implements ISignal {
 			stage.onTerminating();
 		} catch (Exception e) {
 			catchedExceptions.add(e);
-			LOGGER.error("Exception while sending the start signal", e);
+			LOGGER.error("Exception while sending the termination signal", e);
 		}
 	}
 
