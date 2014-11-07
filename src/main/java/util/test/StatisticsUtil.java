@@ -32,7 +32,7 @@ import teetime.util.TimestampObject;
  *
  * @since 1.10
  */
-public class StatisticsUtil {
+public final class StatisticsUtil {
 
 	/**
 	 * @since 1.10
