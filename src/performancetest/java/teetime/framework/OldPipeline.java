@@ -57,4 +57,22 @@ public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> impl
 		this.lastStage.validateOutputPorts(invalidPortConnections);
 	}
 
+	@Override
+	public TerminationStrategy getTerminationStrategy() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void terminate() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean shouldBeTerminated() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

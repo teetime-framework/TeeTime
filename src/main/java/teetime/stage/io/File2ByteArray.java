@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 
 import teetime.framework.ConsumerStage;
-import teetime.framework.HeadStage;
 import teetime.framework.OutputPort;
+import teetime.framework.Stage;
 
 import com.google.common.io.Files;
 
-public class File2ByteArray extends ConsumerStage<File> implements HeadStage {
+public class File2ByteArray extends ConsumerStage<File> implements Stage {
 
 	private final OutputPort<byte[]> outputPort = this.createOutputPort();
 

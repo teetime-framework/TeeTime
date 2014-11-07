@@ -5,7 +5,7 @@ import java.util.List;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public interface Stage {
+public interface Stage extends Terminable {
 
 	String getId();
 
