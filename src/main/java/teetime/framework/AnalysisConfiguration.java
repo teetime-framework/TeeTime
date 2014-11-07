@@ -1,7 +1,9 @@
 package teetime.framework;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import teetime.framework.pipe.PipeFactoryRegistry;
 
@@ -11,19 +13,19 @@ public class AnalysisConfiguration {
 
 	private final List<Runnable> threadableStageJobs = new LinkedList<Runnable>();
 
-	private final List<Stage> consumerStages = new LinkedList<Stage>();
-	private final List<Stage> finiteProducerStages = new LinkedList<Stage>();
-	private final List<Stage> infiniteProducerStages = new LinkedList<Stage>();
+	private final Set<Stage> consumerStages = new HashSet<Stage>();
+	private final Set<Stage> finiteProducerStages = new HashSet<Stage>();
+	private final Set<Stage> infiniteProducerStages = new HashSet<Stage>();
 
-	public List<Stage> getConsumerStages() {
+	public Set<Stage> getConsumerStages() {
 		return this.consumerStages;
 	}
 
-	public List<Stage> getFiniteProducerStages() {
+	public Set<Stage> getFiniteProducerStages() {
 		return this.finiteProducerStages;
 	}
 
-	public List<Stage> getInfiniteProducerStages() {
+	public Set<Stage> getInfiniteProducerStages() {
 		return this.infiniteProducerStages;
 	}
 

@@ -1,6 +1,7 @@
 package teetime.stage;
 
 import teetime.framework.ProducerStage;
+import teetime.framework.TerminationStrategy;
 
 public class Clock extends ProducerStage<Long> {
 
@@ -8,6 +9,11 @@ public class Clock extends ProducerStage<Long> {
 
 	private long initialDelayInMs;
 	private long intervalDelayInMs;
+
+	@Override
+	public TerminationStrategy getTerminationStrategy() {
+		return TerminationStrategy.BY_INTERRUPT;
+	}
 
 	@Override
 	protected void execute() {
