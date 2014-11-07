@@ -124,7 +124,7 @@ public abstract class AbstractStage implements Stage {
 		this.connectUnconnectedOutputPorts();
 	}
 
-	public void onTerminating() throws Exception {
+	public void onTerminating() throws Exception { // NOPMD
 		// empty default implementation
 	}
 
