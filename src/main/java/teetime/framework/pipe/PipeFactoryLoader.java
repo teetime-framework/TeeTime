@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.FileSearcher;
 
-public class PipeFactoryLoader {
+public final class PipeFactoryLoader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PipeFactoryLoader.class);
 

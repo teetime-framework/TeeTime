@@ -3,7 +3,7 @@ package teetime.util;
 import java.util.Collection;
 import java.util.List;
 
-public class ListUtil {
+public final class ListUtil {
 
 	private ListUtil() {
 		// utility class
