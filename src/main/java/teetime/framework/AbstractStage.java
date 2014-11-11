@@ -20,7 +20,7 @@ public abstract class AbstractStage implements Stage {
 	/**
 	 * A unique logger instance per stage instance
 	 */
-	protected final Logger logger;
+	protected final Logger logger; // NOPMD
 
 	private Stage parentStage;
 
