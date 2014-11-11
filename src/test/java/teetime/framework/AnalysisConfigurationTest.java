@@ -10,7 +10,7 @@ import teetime.stage.InitialElementProducer;
 public class AnalysisConfigurationTest {
 
 	@Test
-	public void test1() {
+	public void checkIfCorrectAdded() {
 		AnalysisConfiguration config = new AnalysisConfiguration();
 
 		// Consumer -> BY_SIGNAL
@@ -26,8 +26,8 @@ public class AnalysisConfigurationTest {
 		config.addThreadableStage(producer);
 
 		config.init();
-		Assert.assertEquals(counter, config.getConsumerStages().toArray()[0]);
-		Assert.assertEquals(clock, config.getInfiniteProducerStages().toArray()[0]);
-		Assert.assertEquals(producer, config.getFiniteProducerStages().toArray()[0]);
+		Assert.assertTrue(config.getConsumerStages().remove(counter));
+		Assert.assertTrue(config.getInfiniteProducerStages().remove(clock));
+		Assert.assertTrue(config.getFiniteProducerStages().remove(producer));
 	}
 }
