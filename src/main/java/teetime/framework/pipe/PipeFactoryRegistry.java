@@ -45,7 +45,7 @@ public final class PipeFactoryRegistry {
 	/**
 	 * The singleton instance of PipeFactoryRegistry
 	 */
-	public static PipeFactoryRegistry INSTANCE = new PipeFactoryRegistry("pipe-factories.conf");
+	public static final PipeFactoryRegistry INSTANCE = new PipeFactoryRegistry("pipe-factories.conf");
 
 	private PipeFactoryRegistry(final String configFileName) {
 		List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadPipeFactoriesFromClasspath(configFileName);

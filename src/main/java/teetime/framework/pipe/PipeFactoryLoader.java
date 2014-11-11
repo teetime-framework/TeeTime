@@ -25,7 +25,7 @@ public final class PipeFactoryLoader {
 	public static List<IPipeFactory> loadFromStream(final InputStream stream) throws IOException {
 		List<IPipeFactory> pipeFactories = new LinkedList<IPipeFactory>();
 
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 		try {
 			String line;
 			while (null != (line = bufferedReader.readLine())) {
