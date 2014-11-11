@@ -25,6 +25,5 @@
 	</classpathentry>
 	<classpathentry including="**/*.java" kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/resources"/>
-	<classpathentry kind="src" path="conf"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

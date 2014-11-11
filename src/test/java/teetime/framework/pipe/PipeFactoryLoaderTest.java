@@ -25,15 +25,15 @@ public class PipeFactoryLoaderTest {
 	@Test
 	public void singleConfig() throws IOException {
 		List<IPipeFactory> list = PipeFactoryLoader.loadPipeFactoriesFromClasspath("pipe-factories.conf");
-		int lines = Files.readLines(new File("conf/pipe-factories.conf"), Charsets.UTF_8).size();
+		int lines = Files.readLines(new File("target/classes/pipe-factories.conf"), Charsets.UTF_8).size();
 		Assert.assertEquals(lines, list.size());
 	}
 
 	@Test
 	public void multipleConfigs() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		List<URL> files = new ArrayList<URL>();
-		File pipeConfig = new File("conf/pipe-factories.conf");
-		File testConfig = new File("src/test/resources/data/normal-test.conf");
+		File pipeConfig = new File("target/classes/pipe-factories.conf");
+		File testConfig = new File("target/test-classes/data/normal-test.conf");
 		files.add(testConfig.toURI().toURL());
 		files.add(pipeConfig.toURI().toURL());
 		List<IPipeFactory> pipeFactories = PipeFactoryLoader.mergeFiles(files);
