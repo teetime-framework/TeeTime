@@ -19,10 +19,10 @@ import java.util.List;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
-public class MathUtil {
+public final class MathUtil {
 
 	private MathUtil() {
 		// utility class

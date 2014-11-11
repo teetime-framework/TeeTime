@@ -20,7 +20,7 @@ public abstract class AbstractStage implements Stage {
 	/**
 	 * A unique logger instance per stage instance
 	 */
-	protected final Logger logger;
+	protected final Logger logger; // NOPMD
 
 	private Stage parentStage;
 
@@ -124,7 +124,7 @@ public abstract class AbstractStage implements Stage {
 		this.connectUnconnectedOutputPorts();
 	}
 
-	public void onTerminating() throws Exception {
+	public void onTerminating() throws Exception { // NOPMD
 		// empty default implementation
 	}
 
