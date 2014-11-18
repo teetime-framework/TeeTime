@@ -13,6 +13,8 @@ import teetime.framework.signal.ISignal;
 @SuppressWarnings("rawtypes")
 public final class DummyPipe implements IPipe {
 
+	public DummyPipe() {}
+
 	@Override
 	public boolean add(final Object element) {
 		return false;

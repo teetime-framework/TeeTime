@@ -1,8 +1,8 @@
 package teetime.stage.basic;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 
-public class Sink<T> extends ConsumerStage<T> {
+public class Sink<T> extends AbstractConsumerStage<T> {
 
 	// PERFORMANCE let the sink remove all available input at once by using a new method receiveAll() that clears the pipe's buffer
 

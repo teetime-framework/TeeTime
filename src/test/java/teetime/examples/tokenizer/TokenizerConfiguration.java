@@ -22,13 +22,13 @@ public class TokenizerConfiguration extends AnalysisConfiguration {
 	public TokenizerConfiguration(final String inputFile, final String password) {
 		final File input = new File(inputFile);
 
-		InitialElementProducer<File> init = new InitialElementProducer<File>(input);
-		File2ByteArray f2b = new File2ByteArray();
-		ZipByteArray decomp = new ZipByteArray(ZipMode.DECOMP);
-		CipherByteArray decrypt = new CipherByteArray(password, CipherMode.DECRYPT);
-		ByteArray2String b2s = new ByteArray2String();
-		Tokenizer tokenizer = new Tokenizer(" ");
-		counter = new Counter<String>();
+		final InitialElementProducer<File> init = new InitialElementProducer<File>(input);
+		final File2ByteArray f2b = new File2ByteArray();
+		final ZipByteArray decomp = new ZipByteArray(ZipMode.DECOMP);
+		final CipherByteArray decrypt = new CipherByteArray(password, CipherMode.DECRYPT);
+		final ByteArray2String b2s = new ByteArray2String();
+		final Tokenizer tokenizer = new Tokenizer(" ");
+		this.counter = new Counter<String>();
 
 		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
 				init.getOutputPort(), f2b.getInputPort());
@@ -41,7 +41,7 @@ public class TokenizerConfiguration extends AnalysisConfiguration {
 		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
 				b2s.getOutputPort(), tokenizer.getInputPort());
 		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
-				tokenizer.getOutputPort(), counter.getInputPort());
+				tokenizer.getOutputPort(), this.counter.getInputPort());
 
 		// this.getFiniteProducerStages().add(init);
 		this.addThreadableStage(init);

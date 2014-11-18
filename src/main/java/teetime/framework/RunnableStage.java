@@ -11,11 +11,11 @@ import teetime.framework.validation.AnalysisNotValidException;
 @SuppressWarnings("PMD.BeanMembersShouldSerialize")
 public class RunnableStage implements Runnable {
 
-	private final Stage stage;
+	private final IStage stage;
 	private final Logger logger; // NOPMD
 	private boolean validationEnabled;
 
-	public RunnableStage(final Stage stage) {
+	public RunnableStage(final IStage stage) {
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
 	}
@@ -25,7 +25,7 @@ public class RunnableStage implements Runnable {
 		this.logger.debug("Executing runnable stage...");
 
 		if (this.validationEnabled) {
-			ValidatingSignal validatingSignal = new ValidatingSignal();
+			final ValidatingSignal validatingSignal = new ValidatingSignal();
 			this.stage.onSignal(validatingSignal, null);
 			if (validatingSignal.getInvalidPortConnections().size() > 0) {
 				throw new AnalysisNotValidException(validatingSignal.getInvalidPortConnections());
@@ -33,23 +33,23 @@ public class RunnableStage implements Runnable {
 		}
 
 		try {
-			StartingSignal startingSignal = new StartingSignal();
+			final StartingSignal startingSignal = new StartingSignal();
 			this.stage.onSignal(startingSignal, null);
 
 			do {
 				this.stage.executeWithPorts();
 			} while (!this.stage.shouldBeTerminated());
 
-			TerminatingSignal terminatingSignal = new TerminatingSignal();
+			final TerminatingSignal terminatingSignal = new TerminatingSignal();
 			this.stage.onSignal(terminatingSignal, null);
 
 		} catch (Error e) {
 			this.logger.error("Terminating thread due to the following exception: ", e);
 			throw e;
-		} catch (RuntimeException e) {
-			this.logger.error("Terminating thread due to the following exception: ", e);
-			throw e;
-		}
+		} // catch (RuntimeException e) {
+		// this.logger.error("Terminating thread due to the following exception: ", e);
+		// throw e;
+		// }
 
 		this.logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
 	}

@@ -4,12 +4,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
 import com.google.common.io.Files;
 
-public class FileExtensionSwitch extends ConsumerStage<File> {
+public class FileExtensionSwitch extends AbstractConsumerStage<File> {
 
 	private final Map<String, OutputPort<File>> fileExtensions = new HashMap<String, OutputPort<File>>();
 

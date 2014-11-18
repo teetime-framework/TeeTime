@@ -2,10 +2,10 @@ package teetime.stage;
 
 import java.util.StringTokenizer;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
-public class Tokenizer extends ConsumerStage<String> {
+public class Tokenizer extends AbstractConsumerStage<String> {
 
 	private final OutputPort<String> outputPort = this.createOutputPort();
 	private final String regex;

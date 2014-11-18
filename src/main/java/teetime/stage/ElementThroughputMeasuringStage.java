@@ -4,11 +4,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public class ElementThroughputMeasuringStage<T> extends ConsumerStage<T> {
+public class ElementThroughputMeasuringStage<T> extends AbstractConsumerStage<T> {
 
 	private final InputPort<Long> triggerInputPort = this.createInputPort();
 	private final OutputPort<T> outputPort = this.createOutputPort();

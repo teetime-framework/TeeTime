@@ -24,8 +24,8 @@ public class InvalidPortConnection {
 
 	@Override
 	public String toString() {
-		String sourcePortTypeName = (this.sourcePort.getType() == null) ? null : this.sourcePort.getType().getName();
-		String targetPortTypeName = (this.targetPort.getType() == null) ? null : this.targetPort.getType().getName();
+		final String sourcePortTypeName = (this.sourcePort.getType() == null) ? null : this.sourcePort.getType().getName();
+		final String targetPortTypeName = (this.targetPort.getType() == null) ? null : this.targetPort.getType().getName();
 		return sourcePortTypeName + " != " + targetPortTypeName;
 	}
 

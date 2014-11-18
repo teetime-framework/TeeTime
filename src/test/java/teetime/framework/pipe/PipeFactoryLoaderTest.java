@@ -16,29 +16,31 @@ import com.google.common.io.Files;
 
 public class PipeFactoryLoaderTest {
 
+	public PipeFactoryLoaderTest() {}
+
 	@Test
 	public void emptyConfig() throws IOException {
-		List<IPipeFactory> list = PipeFactoryLoader.loadPipeFactoriesFromClasspath("data/empty-test.conf");
+		final List<IPipeFactory> list = PipeFactoryLoader.loadPipeFactoriesFromClasspath("data/empty-test.conf");
 		Assert.assertEquals(true, list.isEmpty());
 	}
 
 	@Test
 	public void singleConfig() throws IOException {
-		List<IPipeFactory> list = PipeFactoryLoader.loadPipeFactoriesFromClasspath("pipe-factories.conf");
-		int lines = Files.readLines(new File("target/classes/pipe-factories.conf"), Charsets.UTF_8).size();
+		final List<IPipeFactory> list = PipeFactoryLoader.loadPipeFactoriesFromClasspath("pipe-factories.conf");
+		final int lines = Files.readLines(new File("target/classes/pipe-factories.conf"), Charsets.UTF_8).size();
 		Assert.assertEquals(lines, list.size());
 	}
 
 	@Test
 	public void multipleConfigs() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-		List<URL> files = new ArrayList<URL>();
-		File pipeConfig = new File("target/classes/pipe-factories.conf");
-		File testConfig = new File("target/test-classes/data/normal-test.conf");
+		final List<URL> files = new ArrayList<URL>();
+		final File pipeConfig = new File("target/classes/pipe-factories.conf");
+		final File testConfig = new File("target/test-classes/data/normal-test.conf");
 		files.add(testConfig.toURI().toURL());
 		files.add(pipeConfig.toURI().toURL());
-		List<IPipeFactory> pipeFactories = PipeFactoryLoader.mergeFiles(files);
+		final List<IPipeFactory> pipeFactories = PipeFactoryLoader.mergeFiles(files);
 
-		List<String> contents = Files.readLines(pipeConfig, Charsets.UTF_8);
+		final List<String> contents = Files.readLines(pipeConfig, Charsets.UTF_8);
 		contents.addAll(Files.readLines(testConfig, Charsets.UTF_8));
 
 		// Check if all read factories are contained in one of the files
@@ -47,18 +49,19 @@ public class PipeFactoryLoaderTest {
 		}
 
 		// Second part of the test: PipeFactoryRegistry
-		PipeFactoryRegistry pipeRegistry = PipeFactoryRegistry.INSTANCE;
-		ClassForNameResolver<IPipeFactory> classResolver = new ClassForNameResolver<IPipeFactory>(IPipeFactory.class);
+		final PipeFactoryRegistry pipeRegistry = PipeFactoryRegistry.INSTANCE;
+		final ClassForNameResolver<IPipeFactory> classResolver = new ClassForNameResolver<IPipeFactory>(IPipeFactory.class);
 
 		// Look for the "normal" pipes
 		for (String className : Files.readLines(pipeConfig, Charsets.UTF_8)) {
-			IPipeFactory pipeFactory = classResolver.classForName(className).newInstance();
-			IPipeFactory returnedFactory = pipeRegistry.getPipeFactory(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
+			final IPipeFactory pipeFactory = classResolver.classForName(className).newInstance();
+			final IPipeFactory returnedFactory = pipeRegistry.getPipeFactory(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(),
+					pipeFactory.isGrowable());
 			Assert.assertEquals(pipeFactory.getClass().getCanonicalName(), returnedFactory.getClass().getCanonicalName());
 		}
 		// Second "and a half" part
 		for (String className : Files.readLines(testConfig, Charsets.UTF_8)) {
-			IPipeFactory pipeFactory = classResolver.classForName(className).newInstance();
+			final IPipeFactory pipeFactory = classResolver.classForName(className).newInstance();
 			// Still old factory
 			IPipeFactory returnedFactory = pipeRegistry.getPipeFactory(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
 			Assert.assertNotEquals(pipeFactory.getClass().getCanonicalName(), returnedFactory.getClass().getCanonicalName());

@@ -19,7 +19,7 @@ import java.util.List;
 
 import teetime.framework.OldHeadPipeline;
 import teetime.framework.RunnableStage;
-import teetime.framework.Stage;
+import teetime.framework.IStage;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
@@ -47,7 +47,7 @@ public class MethodCallThroughputAnalysis14 {
 	private final PipeFactoryRegistry pipeFactory = PipeFactoryRegistry.INSTANCE;
 
 	public void init() {
-		Stage pipeline = this.buildPipeline();
+		IStage pipeline = this.buildPipeline();
 		this.runnable = new RunnableStage(pipeline);
 	}
 

@@ -4,9 +4,9 @@ import teetime.examples.experiment01.MethodCallThoughputTimestampAnalysis1Test;
 import util.test.MeasurementRepository;
 import util.test.PerformanceResult;
 import util.test.PerformanceTest;
-import util.test.ProfiledPerformanceAssertion;
+import util.test.AbstractProfiledPerformanceAssertion;
 
-abstract class AbstractPerformanceCheck extends ProfiledPerformanceAssertion {
+abstract class AbstractPerformanceCheck extends AbstractProfiledPerformanceAssertion {
 
 	protected PerformanceResult test01;
 	protected PerformanceResult test10;

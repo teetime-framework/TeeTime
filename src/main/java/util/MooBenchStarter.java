@@ -15,7 +15,7 @@ public class MooBenchStarter {
 	}
 
 	public void start(final int runs, final long calls) throws IOException {
-		List<String> command = new LinkedList<String>();
+		final List<String> command = new LinkedList<String>();
 		command.add("cmd");
 		command.add("/c");
 		command.add("start");

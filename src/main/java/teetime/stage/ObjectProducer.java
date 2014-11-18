@@ -15,7 +15,7 @@
  ***************************************************************************/
 package teetime.stage;
 
-import teetime.framework.ProducerStage;
+import teetime.framework.AbstractProducerStage;
 import teetime.util.ConstructorClosure;
 
 /**
@@ -23,7 +23,7 @@ import teetime.util.ConstructorClosure;
  *
  * @since 1.10
  */
-public class ObjectProducer<T> extends ProducerStage<T> {
+public class ObjectProducer<T> extends AbstractProducerStage<T> {
 
 	private long numInputObjects;
 	private ConstructorClosure<T> inputObjectCreator;

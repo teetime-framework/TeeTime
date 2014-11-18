@@ -9,7 +9,7 @@ package teetime.framework;
  *            the type of the default output port
  *
  */
-public abstract class ProducerStage<O> extends AbstractStage implements Stage {
+public abstract class AbstractProducerStage<O> extends AbstractStage implements IStage {
 
 	protected final OutputPort<O> outputPort = this.createOutputPort();
 

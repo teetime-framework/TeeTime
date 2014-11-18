@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 
 import com.google.common.io.Files;
 
-public class ByteArrayFileWriter extends ConsumerStage<byte[]> {
+public class ByteArrayFileWriter extends AbstractConsumerStage<byte[]> {
 
 	private final File file;
 	private FileOutputStream fo;

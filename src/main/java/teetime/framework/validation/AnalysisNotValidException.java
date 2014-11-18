@@ -18,7 +18,7 @@ public class AnalysisNotValidException extends RuntimeException {
 
 	@Override
 	public String getMessage() {
-		StringBuilder builder = new StringBuilder(this.invalidPortConnections.size() * 40);
+		final StringBuilder builder = new StringBuilder(this.invalidPortConnections.size() * 40);
 		builder.append(this.invalidPortConnections.size());
 		builder.append(" invalid port connections were detected.\n");
 		Joiner.on("\n").appendTo(builder, this.invalidPortConnections);

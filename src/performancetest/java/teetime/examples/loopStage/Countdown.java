@@ -2,9 +2,9 @@ package teetime.examples.loopStage;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.ProducerStage;
+import teetime.framework.AbstractProducerStage;
 
-public class Countdown extends ProducerStage<Void> {
+public class Countdown extends AbstractProducerStage<Void> {
 
 	private final InputPort<Integer> countdownInputPort = this.createInputPort();
 

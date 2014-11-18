@@ -10,9 +10,11 @@ public class PerformanceResult {
 	public long avgDurInNs;
 	public long confidenceWidthInNs;
 
+	public PerformanceResult() {}
+
 	@Override
 	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
+		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("overallDurationInNs: ");
 		stringBuilder.append(this.overallDurationInNs);
 		stringBuilder.append("\n");

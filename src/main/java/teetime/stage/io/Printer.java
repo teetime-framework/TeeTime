@@ -20,7 +20,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 
 /**
  * A filter to print objects to a configured stream
@@ -29,7 +29,7 @@ import teetime.framework.ConsumerStage;
  *
  * @since 1.10
  */
-public class Printer<T> extends ConsumerStage<T> {
+public class Printer<T> extends AbstractConsumerStage<T> {
 
 	public static final String STREAM_STDOUT = "STDOUT";
 	public static final String STREAM_STDERR = "STDERR";

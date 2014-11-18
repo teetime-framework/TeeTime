@@ -3,7 +3,7 @@ package teetime.framework.pipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class UnorderedGrowablePipe extends IntraThreadPipe {
+public final class UnorderedGrowablePipe extends AbstractIntraThreadPipe {
 
 	private Object[] elements;
 	// private final ArrayWrapper2<T> elements = new ArrayWrapper2<T>(2);
@@ -16,7 +16,7 @@ public final class UnorderedGrowablePipe extends IntraThreadPipe {
 
 	@Deprecated
 	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		IPipe pipe = new UnorderedGrowablePipe(null, null, 4);
+		final IPipe pipe = new UnorderedGrowablePipe(null, null, 4);
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 
@@ -36,7 +36,7 @@ public final class UnorderedGrowablePipe extends IntraThreadPipe {
 		// if (this.lastFreeIndex == 0) {
 		// return null;
 		// }
-		Object element = this.elements[--this.lastFreeIndex];
+		final Object element = this.elements[--this.lastFreeIndex];
 		this.elements[this.lastFreeIndex] = null;
 		// T element = this.elements.get(--this.lastFreeIndex);
 		return element;
@@ -59,7 +59,7 @@ public final class UnorderedGrowablePipe extends IntraThreadPipe {
 	}
 
 	private Object[] grow() {
-		int newSize = this.elements.length * 2;
+		final int newSize = this.elements.length * 2;
 		// System.out.println("growing to " + newSize);
 		return this.newArray(newSize);
 	}
@@ -71,7 +71,7 @@ public final class UnorderedGrowablePipe extends IntraThreadPipe {
 	// }
 
 	private Object[] newArray(final int newSize) {
-		Object[] newElements = new Object[newSize];
+		final Object[] newElements = new Object[newSize];
 
 		System.arraycopy(this.elements, 0, newElements, 0, this.elements.length);
 

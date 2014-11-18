@@ -48,7 +48,7 @@ public final class PipeFactoryRegistry {
 	public static final PipeFactoryRegistry INSTANCE = new PipeFactoryRegistry("pipe-factories.conf");
 
 	private PipeFactoryRegistry(final String configFileName) {
-		List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadPipeFactoriesFromClasspath(configFileName);
+		final List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadPipeFactoriesFromClasspath(configFileName);
 		for (IPipeFactory pipeFactory : pipeFactories) {
 			this.register(pipeFactory);
 		}
@@ -67,8 +67,8 @@ public final class PipeFactoryRegistry {
 	 *         A PipeFactory, which provides suitable pipes.
 	 */
 	public IPipeFactory getPipeFactory(final ThreadCommunication tc, final PipeOrdering ordering, final boolean growable) {
-		String key = this.buildKey(tc, ordering, growable);
-		IPipeFactory pipeFactory = this.pipeFactories.get(key);
+		final String key = this.buildKey(tc, ordering, growable);
+		final IPipeFactory pipeFactory = this.pipeFactories.get(key);
 		if (null == pipeFactory) {
 			throw new CouldNotFindPipeImplException(key);
 		}
@@ -84,7 +84,7 @@ public final class PipeFactoryRegistry {
 	 *            A PipeFactory which will be added to the registry
 	 */
 	public void register(final IPipeFactory pipeFactory) {
-		String key = this.buildKey(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
+		final String key = this.buildKey(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
 		this.pipeFactories.put(key, pipeFactory);
 		LOGGER.info("Registered pipe factory: " + pipeFactory.getClass().getCanonicalName());
 	}

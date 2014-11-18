@@ -17,14 +17,14 @@ package teetime.stage;
 
 import java.util.List;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 
 /**
  * @author Christian Wulf
  *
  * @since 1.10
  */
-public class CollectorSink<T> extends ConsumerStage<T> {
+public class CollectorSink<T> extends AbstractConsumerStage<T> {
 
 	// private final InputPort<T> inputPort = this.createInputPort();
 	//

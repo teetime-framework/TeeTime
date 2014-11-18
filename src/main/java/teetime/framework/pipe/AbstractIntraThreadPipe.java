@@ -4,9 +4,10 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
 
-public abstract class IntraThreadPipe extends AbstractPipe {
+public abstract class AbstractIntraThreadPipe extends AbstractPipe {
 
-	<T> IntraThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+
+	<T> AbstractIntraThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
 	}
 

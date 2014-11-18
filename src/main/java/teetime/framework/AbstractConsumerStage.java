@@ -1,6 +1,6 @@
 package teetime.framework;
 
-public abstract class ConsumerStage<I> extends AbstractStage {
+public abstract class AbstractConsumerStage<I> extends AbstractStage {
 
 	protected final InputPort<I> inputPort = this.createInputPort();
 
@@ -10,7 +10,7 @@ public abstract class ConsumerStage<I> extends AbstractStage {
 
 	@Override
 	public void executeWithPorts() {
-		I element = this.getInputPort().receive();
+		final I element = this.getInputPort().receive();
 
 		this.execute(element);
 	}

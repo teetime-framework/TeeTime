@@ -21,7 +21,7 @@ import java.util.List;
 
 import teetime.framework.OldHeadPipeline;
 import teetime.framework.RunnableStage;
-import teetime.framework.Stage;
+import teetime.framework.IStage;
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.PipeFactoryRegistry;
@@ -133,7 +133,7 @@ public class MethodCallThroughputAnalysis17 {
 	 * @param numNoopFilters
 	 * @since 1.10
 	 */
-	private OldHeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> buildPipeline(final Stage previousStage,
+	private OldHeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> buildPipeline(final IStage previousStage,
 			final List<TimestampObject> timestampObjects) {
 		// create stages
 		Relay<TimestampObject> relay = new Relay<TimestampObject>();

@@ -20,14 +20,16 @@ import com.google.common.io.Files;
  */
 public class CipherTest {
 
+	public CipherTest() {}
+
 	@Test
 	public void executeTest() throws IOException {
 		final String inputFile = "src/test/resources/data/input.txt";
 		final String outputFile = "src/test/resources/data/output.txt";
 		final String password = "Password";
 
-		AnalysisConfiguration configuration = new CipherConfiguration(inputFile, outputFile, password);
-		Analysis analysis = new Analysis(configuration);
+		final AnalysisConfiguration configuration = new CipherConfiguration(inputFile, outputFile, password);
+		final Analysis analysis = new Analysis(configuration);
 		analysis.init();
 		analysis.start();
 

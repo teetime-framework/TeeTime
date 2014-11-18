@@ -10,7 +10,7 @@ import org.jctools.queues.spec.Preference;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class SpScPipe extends InterThreadPipe {
+public final class SpScPipe extends AbstractInterThreadPipe {
 
 	private final Queue<Object> queue;
 	// statistics
@@ -23,7 +23,7 @@ public final class SpScPipe extends InterThreadPipe {
 
 	@Deprecated
 	public static <T> SpScPipe connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		SpScPipe pipe = new SpScPipe(sourcePort, targetPort, capacity);
+		final SpScPipe pipe = new SpScPipe(sourcePort, targetPort, capacity);
 		pipe.connectPorts(sourcePort, targetPort);
 		return pipe;
 	}

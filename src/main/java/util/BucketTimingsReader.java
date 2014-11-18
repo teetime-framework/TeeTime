@@ -17,29 +17,31 @@ import com.google.common.base.Charsets;
 import com.google.common.io.CharSource;
 import com.google.common.io.Files;
 
-public class BucketTimingsReader {
+public final class BucketTimingsReader {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(BucketTimingsReader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BucketTimingsReader.class);
+
+	private BucketTimingsReader() {}
 
 	public static void main(final String[] args) throws IOException {
-		String fileName = args[0];
+		final String fileName = args[0];
 
-		Long[] currentTimings = new Long[10000];
+		final Long[] currentTimings = new Long[10000];
 		int processedLines = 0;
-		List<Long> buckets = new LinkedList<Long>();
+		final List<Long> buckets = new LinkedList<Long>();
 
 		LOGGER.trace("Reading " + fileName);
-		CharSource charSource = Files.asCharSource(new File(fileName), Charsets.UTF_8);
-		BufferedReader bufferedStream = charSource.openBufferedStream();
+		final CharSource charSource = Files.asCharSource(new File(fileName), Charsets.UTF_8);
+		final BufferedReader bufferedStream = charSource.openBufferedStream();
 		String line;
 		while (null != (line = bufferedStream.readLine())) {
-			String[] strings = line.split(";");
-			Long timing = new Long(strings[1]);
+			final String[] strings = line.split(";");
+			final Long timing = new Long(strings[1]);
 			currentTimings[processedLines] = timing;
 			processedLines++;
 			if (currentTimings.length == processedLines) {
 				// Long aggregatedTimings = StatisticsUtil.calculateQuintiles(Arrays.asList(currentTimings)).get(0.5);
-				Long aggregatedTimings = StatisticsUtil.calculateAverage(Arrays.asList(currentTimings));
+				final Long aggregatedTimings = StatisticsUtil.calculateAverage(Arrays.asList(currentTimings));
 				buckets.add(aggregatedTimings);
 				processedLines = 0;
 			}
@@ -47,13 +49,13 @@ public class BucketTimingsReader {
 
 		LOGGER.trace("#buckets: " + buckets.size());
 
-		List<Long> durationsInNs = buckets.subList(buckets.size() / 2, buckets.size());
+		final List<Long> durationsInNs = buckets.subList(buckets.size() / 2, buckets.size());
 
 		LOGGER.trace("Calculating quantiles...");
-		Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(durationsInNs);
+		final Map<Double, Long> quintiles = StatisticsUtil.calculateQuintiles(durationsInNs);
 		LOGGER.info(StatisticsUtil.getQuantilesString(quintiles));
 
-		long confidenceWidth = StatisticsUtil.calculateConfidenceWidth(durationsInNs);
+		final long confidenceWidth = StatisticsUtil.calculateConfidenceWidth(durationsInNs);
 		LOGGER.info("Confidence width: " + confidenceWidth);
 	}
 }

@@ -3,11 +3,11 @@ package teetime.stage;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public class ElementDelayMeasuringStage<T> extends ConsumerStage<T> {
+public class ElementDelayMeasuringStage<T> extends AbstractConsumerStage<T> {
 
 	private final InputPort<Long> triggerInputPort = this.createInputPort();
 	private final OutputPort<T> outputPort = this.createOutputPort();

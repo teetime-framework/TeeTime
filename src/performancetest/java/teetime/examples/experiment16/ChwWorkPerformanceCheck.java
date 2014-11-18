@@ -3,9 +3,9 @@ package teetime.examples.experiment16;
 import static org.junit.Assert.assertEquals;
 import util.test.PerformanceResult;
 import util.test.PerformanceTest;
-import util.test.ProfiledPerformanceAssertion;
+import util.test.AbstractProfiledPerformanceAssertion;
 
-class ChwWorkPerformanceCheck extends ProfiledPerformanceAssertion {
+class ChwWorkPerformanceCheck extends AbstractProfiledPerformanceAssertion {
 
 	@Override
 	public void check() {

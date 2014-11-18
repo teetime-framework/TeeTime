@@ -20,15 +20,15 @@ public class CipherConfiguration extends AnalysisConfiguration {
 		final File input = new File(inputFile);
 		final File output = new File(outputFile);
 
-		InitialElementProducer<File> init = new InitialElementProducer<File>(input);
-		File2ByteArray f2b = new File2ByteArray();
-		CipherByteArray enc = new CipherByteArray(password, CipherMode.ENCRYPT);
-		ZipByteArray comp = new ZipByteArray(ZipMode.COMP);
-		ZipByteArray decomp = new ZipByteArray(ZipMode.DECOMP);
-		CipherByteArray decrypt = new CipherByteArray(password, CipherMode.DECRYPT);
-		ByteArrayFileWriter writer = new ByteArrayFileWriter(output);
+		final InitialElementProducer<File> init = new InitialElementProducer<File>(input);
+		final File2ByteArray f2b = new File2ByteArray();
+		final CipherByteArray enc = new CipherByteArray(password, CipherMode.ENCRYPT);
+		final ZipByteArray comp = new ZipByteArray(ZipMode.COMP);
+		final ZipByteArray decomp = new ZipByteArray(ZipMode.DECOMP);
+		final CipherByteArray decrypt = new CipherByteArray(password, CipherMode.DECRYPT);
+		final ByteArrayFileWriter writer = new ByteArrayFileWriter(output);
 
-		IPipeFactory factory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+		final IPipeFactory factory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 
 		factory.create(init.getOutputPort(), f2b.getInputPort());
 		factory.create(f2b.getOutputPort(), enc.getInputPort());

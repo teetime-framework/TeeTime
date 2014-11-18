@@ -1,8 +1,8 @@
 package teetime.stage;
 
-import teetime.framework.ProducerStage;
+import teetime.framework.AbstractProducerStage;
 
-public class IterableProducer<O extends Iterable<T>, T> extends ProducerStage<T> {
+public class IterableProducer<O extends Iterable<T>, T> extends AbstractProducerStage<T> {
 
 	private O iter = null;
 

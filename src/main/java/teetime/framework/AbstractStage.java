@@ -14,7 +14,7 @@ import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public abstract class AbstractStage implements Stage {
+public abstract class AbstractStage implements IStage {
 
 	private final String id;
 	/**
@@ -22,7 +22,7 @@ public abstract class AbstractStage implements Stage {
 	 */
 	protected final Logger logger; // NOPMD
 
-	private Stage parentStage;
+	private IStage parentStage;
 
 	private final List<InputPort<?>> inputPortList = new ArrayList<InputPort<?>>();
 	private final List<OutputPort<?>> outputPortList = new ArrayList<OutputPort<?>>();
@@ -75,12 +75,12 @@ public abstract class AbstractStage implements Stage {
 	}
 
 	@Override
-	public Stage getParentStage() {
+	public IStage getParentStage() {
 		return this.parentStage;
 	}
 
 	@Override
-	public void setParentStage(final Stage parentStage, final int index) {
+	public void setParentStage(final IStage parentStage, final int index) {
 		this.parentStage = parentStage;
 	}
 
@@ -126,18 +126,18 @@ public abstract class AbstractStage implements Stage {
 	}
 
 	public void onTerminating() throws Exception {
-		terminate();
+		this.terminate();
 	}
 
 	protected <T> InputPort<T> createInputPort() {
-		InputPort<T> inputPort = new InputPort<T>(this);
+		final InputPort<T> inputPort = new InputPort<T>(this);
 		// inputPort.setType(portType);
 		this.inputPortList.add(inputPort);
 		return inputPort;
 	}
 
 	protected <T> OutputPort<T> createOutputPort() {
-		OutputPort<T> outputPort = new OutputPort<T>();
+		final OutputPort<T> outputPort = new OutputPort<T>();
 		// outputPort.setType(portType);
 		this.outputPortList.add(outputPort);
 		return outputPort;
@@ -146,12 +146,12 @@ public abstract class AbstractStage implements Stage {
 	@Override
 	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
 		for (OutputPort<?> outputPort : this.getOutputPorts()) {
-			IPipe pipe = outputPort.getPipe();
+			final IPipe pipe = outputPort.getPipe();
 			if (null != pipe) { // if output port is connected with another one
-				Class<?> sourcePortType = outputPort.getType();
-				Class<?> targetPortType = pipe.getTargetPort().getType();
+				final Class<?> sourcePortType = outputPort.getType();
+				final Class<?> targetPortType = pipe.getTargetPort().getType();
 				if (null == sourcePortType || !sourcePortType.equals(targetPortType)) {
-					InvalidPortConnection invalidPortConnection = new InvalidPortConnection(outputPort, pipe.getTargetPort());
+					final InvalidPortConnection invalidPortConnection = new InvalidPortConnection(outputPort, pipe.getTargetPort());
 					invalidPortConnections.add(invalidPortConnection);
 				}
 			}
