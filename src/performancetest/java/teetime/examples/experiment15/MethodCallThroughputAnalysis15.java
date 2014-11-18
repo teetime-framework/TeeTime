@@ -18,8 +18,8 @@ package teetime.examples.experiment15;
 import java.util.List;
 
 import teetime.framework.OldHeadPipeline;
-import teetime.framework.HeadStage;
 import teetime.framework.RunnableStage;
+import teetime.framework.Stage;
 import teetime.framework.pipe.OrderedGrowableArrayPipe;
 import teetime.framework.pipe.SingleElementPipe;
 import teetime.framework.pipe.SpScPipe;
@@ -58,7 +58,7 @@ public class MethodCallThroughputAnalysis15 {
 		OldHeadPipeline<Clock, Sink<Long>> clockPipeline = this.buildClockPipeline();
 		this.clockRunnable = new RunnableStage(clockPipeline);
 
-		HeadStage pipeline = this.buildPipeline(this.clock);
+		Stage pipeline = this.buildPipeline(this.clock);
 		this.runnable = new RunnableStage(pipeline);
 	}
 

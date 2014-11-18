@@ -18,8 +18,8 @@ package teetime.examples.experiment14;
 import java.util.List;
 
 import teetime.framework.OldHeadPipeline;
-import teetime.framework.HeadStage;
 import teetime.framework.RunnableStage;
+import teetime.framework.Stage;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
@@ -47,7 +47,7 @@ public class MethodCallThroughputAnalysis14 {
 	private final PipeFactoryRegistry pipeFactory = PipeFactoryRegistry.INSTANCE;
 
 	public void init() {
-		HeadStage pipeline = this.buildPipeline();
+		Stage pipeline = this.buildPipeline();
 		this.runnable = new RunnableStage(pipeline);
 	}
 

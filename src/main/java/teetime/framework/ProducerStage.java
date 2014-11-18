@@ -9,10 +9,9 @@ package teetime.framework;
  *            the type of the default output port
  *
  */
-public abstract class ProducerStage<O> extends AbstractStage implements HeadStage {
+public abstract class ProducerStage<O> extends AbstractStage implements Stage {
 
 	protected final OutputPort<O> outputPort = this.createOutputPort();
-	private boolean shouldTerminate;
 
 	public final OutputPort<O> getOutputPort() {
 		return this.outputPort;
@@ -24,13 +23,8 @@ public abstract class ProducerStage<O> extends AbstractStage implements HeadStag
 	}
 
 	@Override
-	public void terminate() {
-		this.shouldTerminate = true;
-	}
-
-	@Override
-	public boolean shouldBeTerminated() {
-		return this.shouldTerminate;
+	public TerminationStrategy getTerminationStrategy() {
+		return TerminationStrategy.BY_SELF_DECISION;
 	}
 
 	protected abstract void execute();

@@ -11,11 +11,11 @@ import teetime.framework.validation.AnalysisNotValidException;
 @SuppressWarnings("PMD.BeanMembersShouldSerialize")
 public class RunnableStage implements Runnable {
 
-	private final HeadStage stage;
+	private final Stage stage;
 	private final Logger logger; // NOPMD
 	private boolean validationEnabled;
 
-	public RunnableStage(final HeadStage stage) {
+	public RunnableStage(final Stage stage) {
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
 	}

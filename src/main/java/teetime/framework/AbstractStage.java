@@ -33,6 +33,7 @@ public abstract class AbstractStage implements Stage {
 	protected OutputPort<?>[] cachedOutputPorts;
 
 	private final Map<ISignal, Void> visited = new HashMap<ISignal, Void>();
+	private boolean shouldTerminate;
 
 	public AbstractStage() {
 		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
@@ -124,8 +125,8 @@ public abstract class AbstractStage implements Stage {
 		this.connectUnconnectedOutputPorts();
 	}
 
-	public void onTerminating() throws Exception { // NOPMD
-		// empty default implementation
+	public void onTerminating() throws Exception {
+		terminate();
 	}
 
 	protected <T> InputPort<T> createInputPort() {
@@ -160,6 +161,21 @@ public abstract class AbstractStage implements Stage {
 	@Override
 	public String toString() {
 		return this.getClass().getName() + ": " + this.id;
+	}
+
+	@Override
+	public void terminate() {
+		this.shouldTerminate = true;
+	}
+
+	@Override
+	public boolean shouldBeTerminated() {
+		return this.shouldTerminate;
+	}
+
+	@Override
+	public TerminationStrategy getTerminationStrategy() {
+		return TerminationStrategy.BY_SIGNAL;
 	}
 
 }

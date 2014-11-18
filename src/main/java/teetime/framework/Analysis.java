@@ -28,17 +28,17 @@ public class Analysis implements UncaughtExceptionHandler {
 	}
 
 	public void init() {
-		for (HeadStage stage : this.configuration.getConsumerStages()) {
+		for (Stage stage : this.configuration.getConsumerStages()) {
 			Thread thread = new Thread(new RunnableStage(stage));
 			this.consumerThreads.add(thread);
 		}
 
-		for (HeadStage stage : this.configuration.getFiniteProducerStages()) {
+		for (Stage stage : this.configuration.getFiniteProducerStages()) {
 			Thread thread = new Thread(new RunnableStage(stage));
 			this.finiteProducerThreads.add(thread);
 		}
 
-		for (HeadStage stage : this.configuration.getInfiniteProducerStages()) {
+		for (Stage stage : this.configuration.getInfiniteProducerStages()) {
 			Thread thread = new Thread(new RunnableStage(stage));
 			this.infiniteProducerThreads.add(thread);
 		}
