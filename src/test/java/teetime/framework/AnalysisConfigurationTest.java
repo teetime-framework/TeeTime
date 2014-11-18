@@ -1,5 +1,6 @@
 package teetime.framework;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -28,6 +29,8 @@ public class AnalysisConfigurationTest {
 
 		config.init();
 		assertTrue(config.getConsumerStages().contains(counter));
+		assertFalse(config.getConsumerStages().contains(clock));
+
 		assertTrue(config.getInfiniteProducerStages().contains(clock));
 		assertTrue(config.getFiniteProducerStages().contains(producer));
 	}
