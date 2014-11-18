@@ -17,15 +17,15 @@ public class AnalysisConfiguration {
 	private final Set<Stage> finiteProducerStages = new HashSet<Stage>();
 	private final Set<Stage> infiniteProducerStages = new HashSet<Stage>();
 
-	public Set<Stage> getConsumerStages() {
+	Set<Stage> getConsumerStages() {
 		return this.consumerStages;
 	}
 
-	public Set<Stage> getFiniteProducerStages() {
+	Set<Stage> getFiniteProducerStages() {
 		return this.finiteProducerStages;
 	}
 
-	public Set<Stage> getInfiniteProducerStages() {
+	Set<Stage> getInfiniteProducerStages() {
 		return this.infiniteProducerStages;
 	}
 
