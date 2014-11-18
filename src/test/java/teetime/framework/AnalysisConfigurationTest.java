@@ -1,6 +1,7 @@
 package teetime.framework;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import teetime.stage.Clock;
@@ -26,8 +27,8 @@ public class AnalysisConfigurationTest {
 		config.addThreadableStage(producer);
 
 		config.init();
-		Assert.assertTrue(config.getConsumerStages().remove(counter));
-		Assert.assertTrue(config.getInfiniteProducerStages().remove(clock));
-		Assert.assertTrue(config.getFiniteProducerStages().remove(producer));
+		assertTrue(config.getConsumerStages().contains(counter));
+		assertTrue(config.getInfiniteProducerStages().contains(clock));
+		assertTrue(config.getFiniteProducerStages().contains(producer));
 	}
 }
