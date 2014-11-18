@@ -37,7 +37,8 @@ public class CipherConfiguration extends AnalysisConfiguration {
 		factory.create(decomp.getOutputPort(), decrypt.getInputPort());
 		factory.create(decrypt.getOutputPort(), writer.getInputPort());
 
-		this.getFiniteProducerStages().add(init);
+		// this.getFiniteProducerStages().add(init);
+		this.addThreadableStage(init);
 
 	}
 }

@@ -13,6 +13,7 @@ public class LoopStageAnalysisConfiguration extends AnalysisConfiguration {
 		IPipeFactory factory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.QUEUE_BASED, true);
 		factory.create(countdown.getNewCountdownOutputPort(), countdown.getCountdownInputPort());
 
-		this.getFiniteProducerStages().add(countdown);
+		// this.getFiniteProducerStages().add(countdown);
+		this.addThreadableStage(countdown);
 	}
 }

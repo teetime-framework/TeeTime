@@ -43,7 +43,8 @@ public class TokenizerConfiguration extends AnalysisConfiguration {
 		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
 				tokenizer.getOutputPort(), counter.getInputPort());
 
-		this.getFiniteProducerStages().add(init);
+		// this.getFiniteProducerStages().add(init);
+		this.addThreadableStage(init);
 	}
 
 	public int getTokenCount() {
