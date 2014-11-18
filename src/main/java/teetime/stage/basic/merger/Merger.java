@@ -65,7 +65,7 @@ public class Merger<T> extends AbstractStage {
 		}
 	}
 
-	public IMergerStrategy<T> getStrategy() {
+	public IMergerStrategy<T> getMergerStrategy() {
 		return this.strategy;
 	}
 
