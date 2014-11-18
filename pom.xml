@@ -196,6 +196,8 @@
 				<version>2.13</version>
 				<executions>
 					<execution>
+						<phase>test</phase>
+						<goals><goal>check</goal></goals>
 						<configuration>
 							<configLocation>${project.basedir}/conf/quality-config/cs-conf.xml</configLocation>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
@@ -205,9 +207,6 @@
 							<failOnViolation>false</failOnViolation>
 							<linkXRef>false</linkXRef>
 						</configuration>
-						<goals>
-							<goal>check</goal>
-						</goals>
 					</execution>
 				</executions>
 			</plugin>
