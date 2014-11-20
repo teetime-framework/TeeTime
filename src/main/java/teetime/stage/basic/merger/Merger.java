@@ -73,15 +73,6 @@ public class Merger<T> extends AbstractStage {
 			signalMap.put(signal.getClass(), 1);
 		}
 
-		// if (0 == finishedInputPorts) {
-		// signal.trigger(this);
-		// }
-		// this.finishedInputPorts++;
-		//
-		// if (this.finishedInputPorts == this.getInputPorts().length) {
-		// this.outputPort.sendSignal(signal);
-		// this.finishedInputPorts = 0;
-		// }
 	}
 
 	public IMergerStrategy<T> getMergerStrategy() {
