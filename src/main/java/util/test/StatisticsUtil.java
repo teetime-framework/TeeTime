@@ -42,7 +42,7 @@ public final class StatisticsUtil {
 	}
 
 	public static PerformanceResult computeStatistics(final long overallDurationInNs, final List<TimestampObject> timestampObjects) {
-		PerformanceResult performanceResult = new PerformanceResult();
+		final PerformanceResult performanceResult = new PerformanceResult();
 
 		performanceResult.overallDurationInNs = overallDurationInNs;
 
@@ -71,9 +71,9 @@ public final class StatisticsUtil {
 	}
 
 	public static String getQuantilesString(final Map<Double, Long> quantilesValues) {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		for (final Entry<Double, Long> entry : quantilesValues.entrySet()) {
-			String quantile = (entry.getKey() * 100) + " % : " + TimeUnit.NANOSECONDS.toNanos(entry.getValue()) + " ns";
+			final String quantile = (entry.getKey() * 100) + " % : " + TimeUnit.NANOSECONDS.toNanos(entry.getValue()) + " ns";
 			builder.append(quantile);
 			builder.append("\n");
 		}
@@ -113,7 +113,7 @@ public final class StatisticsUtil {
 	}
 
 	public static void removeLeadingZeroThroughputs(final List<Long> throughputs) {
-		Iterator<Long> iterator = throughputs.iterator();
+		final Iterator<Long> iterator = throughputs.iterator();
 		while (iterator.hasNext()) {
 			if (iterator.next() == 0) {
 				iterator.remove();

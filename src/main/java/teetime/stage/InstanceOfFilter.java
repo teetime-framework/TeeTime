@@ -1,13 +1,13 @@
 package teetime.stage;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
 /**
  * @author Jan Waller, Nils Christian Ehmke, Christian Wulf
  * 
  */
-public class InstanceOfFilter<I, O> extends ConsumerStage<I> {
+public class InstanceOfFilter<I, O> extends AbstractConsumerStage<I> {
 
 	private final OutputPort<O> outputPort = this.createOutputPort();
 

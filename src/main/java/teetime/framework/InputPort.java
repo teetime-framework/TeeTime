@@ -4,22 +4,22 @@ import teetime.framework.pipe.IPipe;
 
 public class InputPort<T> extends AbstractPort<T> {
 
-	private final Stage owningStage;
+	private final IStage owningStage;
 
-	InputPort(final Stage owningStage) {
+	InputPort(final IStage owningStage) {
 		super();
 		this.owningStage = owningStage;
 	}
 
 	public T receive() {
 		@SuppressWarnings("unchecked")
-		T element = (T) this.pipe.removeLast();
+		final T element = (T) this.pipe.removeLast();
 		return element;
 	}
 
 	public T read() {
 		@SuppressWarnings("unchecked")
-		T element = (T) this.pipe.readLast();
+		final T element = (T) this.pipe.readLast();
 		return element;
 	}
 
@@ -33,7 +33,7 @@ public class InputPort<T> extends AbstractPort<T> {
 		this.pipe = pipe;
 	}
 
-	public Stage getOwningStage() {
+	public IStage getOwningStage() {
 		return this.owningStage;
 	}
 

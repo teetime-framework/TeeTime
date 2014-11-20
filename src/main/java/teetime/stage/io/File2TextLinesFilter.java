@@ -23,7 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 import teetime.stage.util.TextLine;
 
@@ -31,7 +31,7 @@ import teetime.stage.util.TextLine;
  * @author Christian Wulf
  *
  */
-public class File2TextLinesFilter extends ConsumerStage<File> {
+public class File2TextLinesFilter extends AbstractConsumerStage<File> {
 
 	private final OutputPort<TextLine> outputPort = this.createOutputPort();
 

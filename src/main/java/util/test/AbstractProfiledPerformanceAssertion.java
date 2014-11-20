@@ -1,6 +1,6 @@
 package util.test;
 
-public abstract class ProfiledPerformanceAssertion {
+public abstract class AbstractProfiledPerformanceAssertion {
 
 	public abstract String getCorrespondingPerformanceProfile();
 

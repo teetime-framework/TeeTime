@@ -1,9 +1,9 @@
 package teetime.stage;
 
-import teetime.framework.ProducerStage;
+import teetime.framework.AbstractProducerStage;
 import teetime.framework.TerminationStrategy;
 
-public class Clock extends ProducerStage<Long> {
+public class Clock extends AbstractProducerStage<Long> {
 
 	private boolean initialDelayExceeded = false;
 

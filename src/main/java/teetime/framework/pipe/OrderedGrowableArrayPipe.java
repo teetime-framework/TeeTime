@@ -4,7 +4,7 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.util.concurrent.workstealing.CircularArray;
 
-public final class OrderedGrowableArrayPipe extends IntraThreadPipe {
+public final class OrderedGrowableArrayPipe extends AbstractIntraThreadPipe {
 
 	private final CircularArray<Object> elements;
 	private int head;
@@ -17,7 +17,7 @@ public final class OrderedGrowableArrayPipe extends IntraThreadPipe {
 
 	@Deprecated
 	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		IPipe pipe = new OrderedGrowableArrayPipe(sourcePort, targetPort, 4);
+		final IPipe pipe = new OrderedGrowableArrayPipe(sourcePort, targetPort, 4);
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 

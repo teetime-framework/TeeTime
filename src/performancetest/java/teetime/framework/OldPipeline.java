@@ -6,7 +6,7 @@ import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
 @Deprecated
-public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> implements Stage {
+public class OldPipeline<FirstStage extends IStage, LastStage extends IStage> implements IStage {
 
 	protected FirstStage firstStage;
 	protected LastStage lastStage;
@@ -38,12 +38,12 @@ public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> impl
 	}
 
 	@Override
-	public Stage getParentStage() {
+	public IStage getParentStage() {
 		return this.firstStage.getParentStage();
 	}
 
 	@Override
-	public void setParentStage(final Stage parentStage, final int index) {
+	public void setParentStage(final IStage parentStage, final int index) {
 		this.firstStage.setParentStage(parentStage, index);
 	}
 

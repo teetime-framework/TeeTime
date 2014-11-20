@@ -10,13 +10,15 @@ public class ValidatingSignal implements ISignal {
 
 	private final List<InvalidPortConnection> invalidPortConnections = new LinkedList<InvalidPortConnection>();
 
+	public ValidatingSignal() {}
+
 	@Override
 	public void trigger(final AbstractStage stage) {
 		stage.onValidating(this.invalidPortConnections);
 	}
 
 	public List<InvalidPortConnection> getInvalidPortConnections() {
-		return invalidPortConnections;
+		return this.invalidPortConnections;
 	}
 
 }

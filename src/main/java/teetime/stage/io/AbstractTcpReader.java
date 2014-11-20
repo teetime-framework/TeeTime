@@ -7,9 +7,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
-import teetime.framework.ProducerStage;
+import teetime.framework.AbstractProducerStage;
 
-public abstract class AbstractTcpReader<T> extends ProducerStage<T> {
+public abstract class AbstractTcpReader<T> extends AbstractProducerStage<T> {
 
 	private final int port;
 	private final int bufferCapacity;

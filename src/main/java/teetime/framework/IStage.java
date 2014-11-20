@@ -5,15 +5,15 @@ import java.util.List;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public interface Stage extends Terminable {
+public interface IStage extends ITerminable {
 
 	String getId();
 
 	void executeWithPorts();
 
-	Stage getParentStage();
+	IStage getParentStage();
 
-	void setParentStage(Stage parentStage, int index);
+	void setParentStage(IStage parentStage, int index);
 
 	void onSignal(ISignal signal, InputPort<?> inputPort);
 

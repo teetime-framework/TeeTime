@@ -7,9 +7,9 @@ import java.util.Map.Entry;
 
 import util.test.PerformanceResult;
 import util.test.PerformanceTest;
-import util.test.ProfiledPerformanceAssertion;
+import util.test.AbstractProfiledPerformanceAssertion;
 
-public class NieWorkComparisonMethodcallWithPorts extends ProfiledPerformanceAssertion {
+public class NieWorkComparisonMethodcallWithPorts extends AbstractProfiledPerformanceAssertion {
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {

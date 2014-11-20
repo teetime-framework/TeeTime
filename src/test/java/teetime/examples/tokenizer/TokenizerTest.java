@@ -19,18 +19,20 @@ import com.google.common.io.Files;
  */
 public class TokenizerTest {
 
+	public TokenizerTest() {}
+
 	@Test
 	public void executeTest() throws IOException {
 		// Encrypted lorem ipsum
-		String inputFile = "src/test/resources/data/cipherInput.txt";
-		String password = "Password";
+		final String inputFile = "src/test/resources/data/cipherInput.txt";
+		final String password = "Password";
 
-		TokenizerConfiguration configuration = new TokenizerConfiguration(inputFile, password);
-		Analysis analysis = new Analysis(configuration);
+		final TokenizerConfiguration configuration = new TokenizerConfiguration(inputFile, password);
+		final Analysis analysis = new Analysis(configuration);
 		analysis.init();
 		analysis.start();
 
-		String string = Files.toString(new File("src/test/resources/data/input.txt"), Charset.forName("UTF-8"));
+		final String string = Files.toString(new File("src/test/resources/data/input.txt"), Charset.forName("UTF-8"));
 
 		Assert.assertEquals(string.split(" ").length, configuration.getTokenCount());
 	}

@@ -1,6 +1,6 @@
 package teetime.framework;
 
-interface Terminable {
+interface ITerminable {
 
 	TerminationStrategy getTerminationStrategy();
 

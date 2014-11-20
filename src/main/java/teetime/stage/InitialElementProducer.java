@@ -1,8 +1,8 @@
 package teetime.stage;
 
-import teetime.framework.ProducerStage;
+import teetime.framework.AbstractProducerStage;
 
-public class InitialElementProducer<T> extends ProducerStage<T> {
+public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 
 	private final T[] elements;
 

@@ -19,7 +19,7 @@ public class SpScPipeTest {
 	public void testSignalOrdering() throws Exception {
 		OutputPort<? extends Object> sourcePort = null;
 		InputPort<Object> targetPort = null;
-		InterThreadPipe pipe = new SpScPipe(sourcePort, targetPort, 1); // IPipe does not provide getSignal method
+		AbstractInterThreadPipe pipe = new SpScPipe(sourcePort, targetPort, 1); // IPipe does not provide getSignal method
 
 		List<ISignal> list = new ArrayList<ISignal>();
 		list.add(new StartingSignal());

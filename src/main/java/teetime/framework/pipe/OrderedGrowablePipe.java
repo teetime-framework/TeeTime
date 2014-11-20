@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public class OrderedGrowablePipe extends IntraThreadPipe {
+public class OrderedGrowablePipe extends AbstractIntraThreadPipe {
 
 	private final LinkedList<Object> elements;
 
@@ -16,7 +16,7 @@ public class OrderedGrowablePipe extends IntraThreadPipe {
 
 	@Deprecated
 	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		IPipe pipe = new OrderedGrowablePipe(null, null, 100000);
+		final IPipe pipe = new OrderedGrowablePipe(null, null, 100000);
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 

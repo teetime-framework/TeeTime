@@ -4,7 +4,7 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.util.list.CommittableResizableArrayQueue;
 
-public final class CommittablePipe extends IntraThreadPipe {
+public final class CommittablePipe extends AbstractIntraThreadPipe {
 
 	private final CommittableResizableArrayQueue<Object> elements = new CommittableResizableArrayQueue<Object>(null, 4);
 
@@ -14,13 +14,13 @@ public final class CommittablePipe extends IntraThreadPipe {
 
 	@Deprecated
 	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		IPipe pipe = new CommittablePipe(null, null);
+		final IPipe pipe = new CommittablePipe(null, null);
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see teetime.examples.throughput.methodcall.IPipe#add(T)
 	 */
 	@Override
@@ -32,19 +32,19 @@ public final class CommittablePipe extends IntraThreadPipe {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see teetime.examples.throughput.methodcall.IPipe#removeLast()
 	 */
 	@Override
 	public Object removeLast() {
-		Object element = this.elements.removeFromHeadUncommitted();
+		final Object element = this.elements.removeFromHeadUncommitted();
 		this.elements.commit();
 		return element;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see teetime.examples.throughput.methodcall.IPipe#isEmpty()
 	 */
 	@Override
@@ -54,7 +54,7 @@ public final class CommittablePipe extends IntraThreadPipe {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see teetime.examples.throughput.methodcall.IPipe#readLast()
 	 */
 	@Override

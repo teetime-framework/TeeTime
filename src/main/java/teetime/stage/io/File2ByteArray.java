@@ -3,13 +3,13 @@ package teetime.stage.io;
 import java.io.File;
 import java.io.IOException;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
-import teetime.framework.Stage;
+import teetime.framework.IStage;
 
 import com.google.common.io.Files;
 
-public class File2ByteArray extends ConsumerStage<File> implements Stage {
+public class File2ByteArray extends AbstractConsumerStage<File> implements IStage {
 
 	private final OutputPort<byte[]> outputPort = this.createOutputPort();
 

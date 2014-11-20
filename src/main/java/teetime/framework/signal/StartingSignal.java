@@ -13,19 +13,21 @@ public class StartingSignal implements ISignal {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StartingSignal.class);
 	private final List<Exception> catchedExceptions = new LinkedList<Exception>();
 
+	public StartingSignal() {}
+
 	@Override
 	public void trigger(final AbstractStage stage) {
 		try {
 			stage.onStarting();
 			LOGGER.info(stage + " started.");
-		} catch (Exception e) {
-			catchedExceptions.add(e);
+		} catch (Exception e) { // NOCS (Stages can throw any arbitrary Exception)
+			this.catchedExceptions.add(e);
 			LOGGER.error("Exception while sending the start signal", e);
 		}
 	}
 
 	public List<Exception> getCatchedExceptions() {
-		return catchedExceptions;
+		return this.catchedExceptions;
 	}
 
 }

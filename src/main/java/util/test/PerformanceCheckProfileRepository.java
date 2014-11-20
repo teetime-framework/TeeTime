@@ -8,11 +8,11 @@ import org.slf4j.LoggerFactory;
 
 public class PerformanceCheckProfileRepository {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceCheckProfileRepository.class);
-
 	public static final PerformanceCheckProfileRepository INSTANCE = new PerformanceCheckProfileRepository();
 
-	private final Map<Class<?>, ProfiledPerformanceAssertion> performanceCheckProfiles = new HashMap<Class<?>, ProfiledPerformanceAssertion>();
+	private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceCheckProfileRepository.class);
+
+	private final Map<Class<?>, AbstractProfiledPerformanceAssertion> performanceCheckProfiles = new HashMap<Class<?>, AbstractProfiledPerformanceAssertion>();
 
 	private String currentProfile;
 
@@ -29,13 +29,13 @@ public class PerformanceCheckProfileRepository {
 		return this.currentProfile;
 	}
 
-	public void register(final Class<?> testClass, final ProfiledPerformanceAssertion profile) {
+	public void register(final Class<?> testClass, final AbstractProfiledPerformanceAssertion profile) {
 		if (profile.getCorrespondingPerformanceProfile().equals(this.currentProfile)) {
 			this.performanceCheckProfiles.put(testClass, profile);
 		}
 	}
 
-	public ProfiledPerformanceAssertion get(final Class<?> clazz) {
+	public AbstractProfiledPerformanceAssertion get(final Class<?> clazz) {
 		return this.performanceCheckProfiles.get(clazz);
 	}
 }

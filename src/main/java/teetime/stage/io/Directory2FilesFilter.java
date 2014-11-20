@@ -21,7 +21,7 @@ import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
 /**
@@ -29,7 +29,7 @@ import teetime.framework.OutputPort;
  * 
  * @since 1.10
  */
-public class Directory2FilesFilter extends ConsumerStage<File> {
+public class Directory2FilesFilter extends AbstractConsumerStage<File> {
 
 	private final OutputPort<File> outputPort = this.createOutputPort();
 

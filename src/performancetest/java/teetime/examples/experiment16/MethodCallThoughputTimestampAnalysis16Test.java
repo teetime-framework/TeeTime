@@ -26,7 +26,7 @@ import teetime.util.ListUtil;
 import teetime.util.TimestampObject;
 import util.test.PerformanceCheckProfileRepository;
 import util.test.PerformanceTest;
-import util.test.ProfiledPerformanceAssertion;
+import util.test.AbstractProfiledPerformanceAssertion;
 
 /**
  * @author Christian Wulf
@@ -46,7 +46,7 @@ public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest 
 
 	@AfterClass
 	public static void afterClass() {
-		ProfiledPerformanceAssertion pcp = PerformanceCheckProfileRepository.INSTANCE.get(MethodCallThoughputTimestampAnalysis16Test.class);
+		AbstractProfiledPerformanceAssertion pcp = PerformanceCheckProfileRepository.INSTANCE.get(MethodCallThoughputTimestampAnalysis16Test.class);
 		pcp.check();
 	}
 

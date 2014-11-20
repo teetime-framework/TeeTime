@@ -1,15 +1,15 @@
 package teetime.stage;
 
 import teetime.framework.InputPort;
-import teetime.framework.ProducerStage;
-import teetime.framework.pipe.InterThreadPipe;
+import teetime.framework.AbstractProducerStage;
+import teetime.framework.pipe.AbstractInterThreadPipe;
 import teetime.framework.signal.TerminatingSignal;
 
-public class Relay<T> extends ProducerStage<T> {
+public class Relay<T> extends AbstractProducerStage<T> {
 
 	private final InputPort<T> inputPort = this.createInputPort();
 
-	private InterThreadPipe cachedCastedInputPipe;
+	private AbstractInterThreadPipe cachedCastedInputPipe;
 
 	@Override
 	public void execute() {
@@ -27,7 +27,7 @@ public class Relay<T> extends ProducerStage<T> {
 	@Override
 	public void onStarting() throws Exception {
 		super.onStarting();
-		this.cachedCastedInputPipe = (InterThreadPipe) this.inputPort.getPipe();
+		this.cachedCastedInputPipe = (AbstractInterThreadPipe) this.inputPort.getPipe();
 	}
 
 	public InputPort<T> getInputPort() {

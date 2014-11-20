@@ -16,7 +16,7 @@
 
 package teetime.stage.basic.distributor;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
 /**
@@ -27,7 +27,7 @@ import teetime.framework.OutputPort;
  * @param T
  *            the type of the input port and the output ports
  */
-public class Distributor<T> extends ConsumerStage<T> {
+public class Distributor<T> extends AbstractConsumerStage<T> {
 
 	private IDistributorStrategy<T> strategy = new RoundRobinStrategy<T>();
 

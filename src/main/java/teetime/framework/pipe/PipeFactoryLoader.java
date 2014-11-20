@@ -23,18 +23,18 @@ public final class PipeFactoryLoader {
 	}
 
 	public static List<IPipeFactory> loadFromStream(final InputStream stream) throws IOException {
-		List<IPipeFactory> pipeFactories = new LinkedList<IPipeFactory>();
+		final List<IPipeFactory> pipeFactories = new LinkedList<IPipeFactory>();
 
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+		final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 		try {
 			String line;
 			while (null != (line = bufferedReader.readLine())) {
 				try {
 					line = line.trim();
 					if (!line.isEmpty()) {
-						Class<?> clazz = Class.forName(line);
-						Class<? extends IPipeFactory> pipeFactoryClass = clazz.asSubclass(IPipeFactory.class);
-						IPipeFactory pipeFactory = pipeFactoryClass.newInstance();
+						final Class<?> clazz = Class.forName(line);
+						final Class<? extends IPipeFactory> pipeFactoryClass = clazz.asSubclass(IPipeFactory.class);
+						final IPipeFactory pipeFactory = pipeFactoryClass.newInstance();
 						pipeFactories.add(pipeFactory);
 					}
 				} catch (ClassNotFoundException e) {
@@ -65,10 +65,10 @@ public final class PipeFactoryLoader {
 	}
 
 	public static List<IPipeFactory> mergeFiles(final List<URL> files) {
-		ArrayList<IPipeFactory> list = new ArrayList<IPipeFactory>();
+		final List<IPipeFactory> list = new ArrayList<IPipeFactory>();
 		for (URL url : files) {
 			try {
-				InputStream is = url.openStream();
+				final InputStream is = url.openStream();
 				list.addAll(loadFromStream(is));
 				is.close();
 			} catch (IOException e) {

@@ -1,9 +1,9 @@
 package teetime.stage;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
-public class Counter<T> extends ConsumerStage<T> {
+public class Counter<T> extends AbstractConsumerStage<T> {
 
 	private final OutputPort<T> outputPort = this.createOutputPort();
 

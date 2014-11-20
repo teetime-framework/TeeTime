@@ -2,7 +2,7 @@ package teetime.framework.pipe;
 
 import teetime.util.ConstructorClosure;
 
-public final class RelayTestPipe<T> extends InterThreadPipe {
+public final class RelayTestPipe<T> extends AbstractInterThreadPipe {
 
 	private int numInputObjects;
 	private final ConstructorClosure<T> inputObjectCreator;

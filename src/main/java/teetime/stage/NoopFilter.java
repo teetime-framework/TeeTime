@@ -15,7 +15,7 @@
  ***************************************************************************/
 package teetime.stage;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
 /**
@@ -23,7 +23,7 @@ import teetime.framework.OutputPort;
  *
  * @since 1.10
  */
-public class NoopFilter<T> extends ConsumerStage<T> {
+public class NoopFilter<T> extends AbstractConsumerStage<T> {
 
 	private final OutputPort<T> outputPort = this.createOutputPort();
 

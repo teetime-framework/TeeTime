@@ -18,7 +18,7 @@ package teetime.stage.stringBuffer;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 import teetime.stage.stringBuffer.handler.AbstractDataTypeHandler;
 import teetime.stage.stringBuffer.util.KiekerHashMap;
@@ -28,7 +28,7 @@ import teetime.stage.stringBuffer.util.KiekerHashMap;
  *
  * @since 1.10
  */
-public class StringBufferFilter<T> extends ConsumerStage<T> {
+public class StringBufferFilter<T> extends AbstractConsumerStage<T> {
 
 	private final OutputPort<T> outputPort = this.createOutputPort();
 

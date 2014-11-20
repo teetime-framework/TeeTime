@@ -15,7 +15,7 @@
  ***************************************************************************/
 package teetime.stage;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 import teetime.util.TimestampObject;
 
@@ -24,7 +24,7 @@ import teetime.util.TimestampObject;
  *
  * @since 1.10
  */
-public class StartTimestampFilter extends ConsumerStage<TimestampObject> {
+public class StartTimestampFilter extends AbstractConsumerStage<TimestampObject> {
 
 	private final OutputPort<TimestampObject> outputPort = this.createOutputPort();
 

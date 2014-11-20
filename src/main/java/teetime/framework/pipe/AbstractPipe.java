@@ -1,12 +1,10 @@
 package teetime.framework.pipe;
 
+import teetime.framework.IStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.Stage;
 
 public abstract class AbstractPipe implements IPipe {
-
-	private InputPort<?> targetPort;
 
 	/**
 	 * Performance cache: Avoids the following method chain
@@ -15,7 +13,9 @@ public abstract class AbstractPipe implements IPipe {
 	 * this.getPipe().getTargetPort().getOwningStage()
 	 * </pre>
 	 */
-	protected Stage cachedTargetStage;
+	protected IStage cachedTargetStage;
+
+	private InputPort<?> targetPort;
 
 	protected <T> AbstractPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		this.targetPort = targetPort;

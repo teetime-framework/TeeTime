@@ -3,7 +3,7 @@ package teetime.framework.pipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class SingleElementPipe extends IntraThreadPipe {
+public final class SingleElementPipe extends AbstractIntraThreadPipe {
 
 	private Object element;
 
@@ -13,7 +13,7 @@ public final class SingleElementPipe extends IntraThreadPipe {
 
 	@Deprecated
 	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		IPipe pipe = new SingleElementPipe(null, null);
+		final IPipe pipe = new SingleElementPipe(null, null);
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 
@@ -25,7 +25,7 @@ public final class SingleElementPipe extends IntraThreadPipe {
 
 	@Override
 	public Object removeLast() {
-		Object temp = this.element;
+		final Object temp = this.element;
 		this.element = null;
 		return temp;
 	}

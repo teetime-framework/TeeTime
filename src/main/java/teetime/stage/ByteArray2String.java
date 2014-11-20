@@ -2,10 +2,10 @@ package teetime.stage;
 
 import java.nio.charset.Charset;
 
-import teetime.framework.ConsumerStage;
+import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
-public class ByteArray2String extends ConsumerStage<byte[]> {
+public class ByteArray2String extends AbstractConsumerStage<byte[]> {
 
 	private final OutputPort<String> outputPort = this.createOutputPort();
 

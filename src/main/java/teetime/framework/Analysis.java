@@ -28,9 +28,9 @@ public class Analysis implements UncaughtExceptionHandler {
 	}
 
 	public void init() {
-		List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
-		for (Stage stage : threadableStageJobs) {
-			Thread thread = new Thread(new RunnableStage(stage));
+		final List<IStage> threadableStageJobs = this.configuration.getThreadableStageJobs();
+		for (IStage stage : threadableStageJobs) {
+			final Thread thread = new Thread(new RunnableStage(stage));
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL:
 				this.consumerThreads.add(thread);
@@ -40,6 +40,8 @@ public class Analysis implements UncaughtExceptionHandler {
 				break;
 			case BY_INTERRUPT:
 				this.infiniteProducerThreads.add(thread);
+				break;
+			default:
 				break;
 			}
 		}
