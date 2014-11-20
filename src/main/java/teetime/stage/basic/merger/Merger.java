@@ -16,6 +16,9 @@
 
 package teetime.stage.basic.merger;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
@@ -27,10 +30,10 @@ import teetime.framework.signal.ISignal;
  *
  * @author Christian Wulf
  *
- * @since 1.10
+ * @since 1.0
  *
  * @param <T>
- *            the type of the input ports and the output port
+ *            the type of both the input and output ports
  */
 public class Merger<T> extends AbstractStage {
 
@@ -39,6 +42,8 @@ public class Merger<T> extends AbstractStage {
 	private int finishedInputPorts;
 
 	private IMergerStrategy<T> strategy = new RoundRobinStrategy<T>();
+
+	private final Map<Class<?>, Integer> signalMap = new HashMap<Class<?>, Integer>();
 
 	@Override
 	public void executeWithPorts() {
@@ -54,18 +59,23 @@ public class Merger<T> extends AbstractStage {
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
 
-		if (0 == finishedInputPorts) {
+		if (signalMap.containsKey(signal.getClass())) {
+			int value = signalMap.get(signal.getClass());
+			value++;
+			if (value == this.getInputPorts().length) {
+				this.outputPort.sendSignal(signal);
+				signalMap.remove(signal.getClass());
+			} else {
+				signalMap.put(signal.getClass(), value);
+			}
+		} else {
 			signal.trigger(this);
+			signalMap.put(signal.getClass(), 1);
 		}
-		this.finishedInputPorts++;
 
-		if (this.finishedInputPorts == this.getInputPorts().length) {
-			this.outputPort.sendSignal(signal);
-			this.finishedInputPorts = 0;
-		}
 	}
 
-	public IMergerStrategy<T> getStrategy() {
+	public IMergerStrategy<T> getMergerStrategy() {
 		return this.strategy;
 	}
 
