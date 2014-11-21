@@ -28,6 +28,7 @@ import teetime.framework.signal.ISignal;
 /**
  *
  * This stage merges data from the input ports, by taking elements according to the chosen merge strategy and by putting them to the output port.
+ * For its signal handling behavior see {@link #onSignal(ISignal, InputPort)}
  *
  * @author Christian Wulf
  *
