@@ -17,6 +17,7 @@
 package teetime.stage.basic.merger;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import teetime.framework.AbstractStage;
@@ -41,7 +42,7 @@ public class Merger<T> extends AbstractStage {
 
 	private IMergerStrategy<T> strategy = new RoundRobinStrategy<T>();
 
-	private final Map<Class<?>, Integer> signalMap = new HashMap<Class<?>, Integer>();
+	private final Map<Class<?>, HashSet<InputPort<?>>> signalMap = new HashMap<Class<?>, HashSet<InputPort<?>>>();
 
 	@Override
 	public void executeWithPorts() {
@@ -58,17 +59,20 @@ public class Merger<T> extends AbstractStage {
 		this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
 
 		if (signalMap.containsKey(signal.getClass())) {
-			int value = signalMap.get(signal.getClass());
-			value++;
-			if (value == this.getInputPorts().length) {
+			HashSet<InputPort<?>> set = signalMap.get(signal.getClass());
+			if (!set.add(inputPort)) {
+				this.logger.trace("Got second signal " + signal + " from input port: " + inputPort);
+			}
+
+			if (set.size() == this.getInputPorts().length) {
 				this.outputPort.sendSignal(signal);
 				signalMap.remove(signal.getClass());
-			} else {
-				signalMap.put(signal.getClass(), value);
 			}
 		} else {
 			signal.trigger(this);
-			signalMap.put(signal.getClass(), 1);
+			HashSet<InputPort<?>> tempSet = new HashSet<InputPort<?>>();
+			tempSet.add(inputPort);
+			signalMap.put(signal.getClass(), tempSet);
 		}
 
 	}

@@ -63,8 +63,24 @@ public class MergerTest {
 		Assert.assertFalse(testPipe.startSent());
 		Assert.assertTrue(testPipe.terminateSent());
 
-		merger.onSignal(new StartingSignal(), firstPort);
+		merger.onSignal(new StartingSignal(), secondPort);
 		Assert.assertTrue(testPipe.startSent());
 		Assert.assertTrue(testPipe.terminateSent());
+	}
+
+	@Test
+	public void testMultipleSignals() {
+		this.beforeSignalTesting();
+		merger.onSignal(new StartingSignal(), firstPort);
+		Assert.assertFalse(testPipe.startSent());
+
+		merger.onSignal(new StartingSignal(), firstPort);
+		Assert.assertFalse(testPipe.startSent());
+
+		merger.onSignal(new StartingSignal(), firstPort);
+		Assert.assertFalse(testPipe.startSent());
+
+		merger.onSignal(new StartingSignal(), secondPort);
+		Assert.assertTrue(testPipe.startSent());
 	}
 }
