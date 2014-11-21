@@ -54,6 +54,17 @@ public class Merger<T> extends AbstractStage {
 		this.send(this.outputPort, token);
 	}
 
+	/**
+	 * This method is executed, if a signal is sent to a instance of this class.
+	 * Multiple signals of one certain type are ignored, if they are sent to same port.
+	 * Hence a signal is only passed on, when it arrived on all input ports, regardless how often.
+	 *
+	 * @param signal
+	 *            Signal which is sent
+	 *
+	 * @param inputPort
+	 *            The port which the signal was sent to
+	 */
 	@Override
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
