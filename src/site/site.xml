@@ -5,9 +5,46 @@
     <version>1.1.1</version>
   </skin>
   <body>
-    <breadcrumbs>
-    </breadcrumbs>
     <menu ref="modules"/>
-    <menu ref="reports" inherit="bottom"/>
+    <menu ref="reports"/>
   </body>
+  <custom>
+    <reflowSkin>
+      <theme>bootswatch-spacelab</theme>
+      <highlightJs>true</highlightJs>
+      <brand>
+        <name>TeeTime</name>
+        <href>https://sourceforge.net/projects/teetime/</href>
+      </brand>
+      <slogan>Make analysis clever and faster.</slogan>
+      <titleTemplate>%2$s | %1$s</titleTemplate>
+      <toc>top</toc>
+      <topNav>Download|reports</topNav>
+      <bottomNav>
+        <column>Main|Download</column>
+        <column>Documentation</column>
+        <column>reports|modules</column>
+      </bottomNav>
+      <bottomDescription>
+        This is a very good project doing interesting and valuable things.
+      </bottomDescription>
+      <pages>
+        <index project="project-id">
+          <shortTitle>Welcome</shortTitle>
+          <breadcrumbs>false</breadcrumbs>
+          <toc>false</toc>
+          <sections>
+            <carousel />
+            <body />
+            <sidebar />
+            <thumbs>2</thumbs>
+            <columns>3</columns>
+          </sections>
+        </index>
+        <developer-info>
+          <toc>sidebar</toc>
+        </developer-info>
+      </pages>
+    </reflowSkin>
+  </custom>
 </project>
