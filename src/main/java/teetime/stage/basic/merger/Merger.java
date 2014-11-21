@@ -61,7 +61,7 @@ public class Merger<T> extends AbstractStage {
 		if (signalMap.containsKey(signal.getClass())) {
 			HashSet<InputPort<?>> set = signalMap.get(signal.getClass());
 			if (!set.add(inputPort)) {
-				this.logger.warn("Got second signal " + signal + " from input port: " + inputPort);
+				this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
 			}
 
 			if (set.size() == this.getInputPorts().length) {
