@@ -6,12 +6,15 @@
     <version>1.1.1</version>
   </skin>
   <body>
+  	<menu name="Tutorial">
+  		<item name="Starting" href="tutorial/index.html"/>
+  	</menu>
   	<menu name="Documentation">
   		<item name="JavaDoc" href="apidocs/index.html" />
   		<item name="Dependencies" href="dependencies.html"/>
   	</menu>
   	<menu name="About">
-  		<item name="How to get it" href="dependency-info.html"/>
+  		<item name="Dependency Information" href="dependency-info.html"/>
   		<item name="License" href="license.html"/>
   		<item name="Team" href="team-list.html"/>
   	</menu>
