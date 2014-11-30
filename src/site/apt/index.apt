@@ -1,0 +1,17 @@
+Check again later, as this page and the whole project is still WIP. 
+
+	The first stable release will be published soon. For more informations visit: {{https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime}}
+
+===
+
+	TeeTime is a Pipes-And-Filter-Framework for Java.
+
+	It provides various features, which will bring you to the next level of analysis programming, such like:
+		
+		* Concurrent execution of stages
+		
+		* Flexible connection between stages
+		
+		* Typed ports
+		
+		* Pre-defined stages and pipelines
