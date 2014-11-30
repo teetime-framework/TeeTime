@@ -7,7 +7,7 @@
   </skin>
   <body>
   	<menu name="Tutorial">
-  		<item name="Starting" href="tutorial/index.html"/>
+  		<item name="Introduction" href="wiki/home.html"/>
   	</menu>
   	<menu name="Documentation">
   		<item name="JavaDoc" href="apidocs/index.html" />
