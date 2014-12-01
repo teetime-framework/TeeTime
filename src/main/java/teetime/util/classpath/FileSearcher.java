@@ -1,4 +1,4 @@
-package teetime.framework;
+package teetime.util.classpath;
 
 import java.io.IOException;
 import java.net.URL;
