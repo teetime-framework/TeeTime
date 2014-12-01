@@ -1,68 +1,74 @@
 <project name="TeeTime">
-	<publishDate position="right"/>
-  <skin>
-    <groupId>lt.velykis.maven.skins</groupId>
-    <artifactId>reflow-maven-skin</artifactId>
-    <version>1.1.1</version>
-  </skin>
-  <body>
-  	<menu name="Tutorial">
-  		<item name="Introduction" href="wiki/home.html"/>
-  	</menu>
-  	<menu name="Documentation">
-  		<item name="JavaDoc" href="apidocs/index.html" />
-  		<item name="Dependencies" href="dependencies.html"/>
-  	</menu>
-  	<menu name="About">
-  		<item name="Dependency Information" href="dependency-info.html"/>
-  		<item name="License" href="license.html"/>
-  		<item name="Team" href="team-list.html"/>
-  	</menu>
-<!--     <menu ref="modules"/> -->
-<!--     <menu ref="reports"/> -->
-  </body>
-  <custom>
-    <reflowSkin>
-      <theme>bootswatch-spacelab</theme>
-      <highlightJs>true</highlightJs>
-      <brand>
-        <name>
-            <![CDATA[
-            	<img src="images/teetime-wo-text-smaller-scaled.png">
-				TeeTime
-			]]>
-        </name>
-        <href>index.html</href>
-      </brand>
-<!--       <slogan>Make analysis clever and faster.</slogan> -->
-<!--       <titleTemplate>%2$s | %1$s</titleTemplate> -->
-<!--       <toc>top</toc> -->
-<!--       <topNav>Download|reports|modules</topNav> -->
-<!--       <bottomNav> -->
-<!--         <column>Main|Download</column> -->
-<!--         <column>Documentation</column> -->
-<!--         <column>reports|modules</column> -->
-<!--       </bottomNav> -->
-<!--       <bottomDescription> -->
-<!--         This is a very good project doing interesting and valuable things. -->
-<!--       </bottomDescription> -->
-<!--       <pages> -->
-<!--         <index project="project-id"> -->
-<!--           <shortTitle>Welcome</shortTitle> -->
-<!--           <breadcrumbs>false</breadcrumbs> -->
-<!--           <toc>false</toc> -->
-<!--           <sections> -->
-<!--             <carousel /> -->
-<!--             <body /> -->
-<!--             <sidebar /> -->
-<!--             <thumbs>2</thumbs> -->
-<!--             <columns>3</columns> -->
-<!--           </sections> -->
-<!--         </index> -->
-<!--         <developer-info> -->
-<!--           <toc>sidebar</toc> -->
-<!--         </developer-info> -->
-<!--       </pages> -->
-    </reflowSkin>
-  </custom>
+	<skin>
+		<groupId>lt.velykis.maven.skins</groupId>
+		<artifactId>reflow-maven-skin</artifactId>
+		<version>1.1.1</version>
+	</skin>
+	<body>
+		<menu name="Tutorial">
+			<item name="Introduction" href="wiki/home.html" />
+		</menu>
+		<menu name="Documentation">
+			<item name="JavaDoc" href="apidocs/index.html" />
+			<item name="Dependencies" href="dependencies.html" />
+		</menu>
+		<menu name="About">
+			<item name="Dependency Information" href="dependency-info.html" />
+			<item name="License" href="license.html" />
+			<item name="Team" href="team-list.html" />
+			<item name="FAQ" href="faq.html" />
+		</menu>
+		<!-- <menu ref="modules"/> -->
+		<!-- <menu ref="reports"/> -->
+	</body>
+	<custom>
+		<reflowSkin>
+			<theme>bootswatch-flatly</theme>
+			<highlightJs>true</highlightJs>
+			<brand>
+				<name>
+					<![CDATA[
+			        	<img src="images/teetime-wo-text-smaller-scaled.png">
+						TeeTime
+					]]>
+				</name>
+				<href>index.html</href>
+			</brand>
+			<pages>
+				<index project="TeeTime">
+					<publishDate position="right" />
+					<version position="left" />
+				</index>
+			</pages>
+			<!-- <slogan>Make analysis clever and faster.</slogan> -->
+			<!-- <titleTemplate>%2$s | %1$s</titleTemplate> -->
+			<!-- <toc>top</toc> -->
+			<!-- <topNav>Download|reports|modules</topNav> -->
+			<!-- <bottomNav> -->
+			<!-- <column>Main|Download</column> -->
+			<!-- <column>Documentation</column> -->
+			<!-- <column>reports|modules</column> -->
+			<!-- </bottomNav> -->
+			<!-- <bottomDescription> -->
+			<!-- This is a very good project doing interesting and valuable things. -->
+			<!-- </bottomDescription> -->
+			<!-- <pages> -->
+			<!-- <index project="project-id"> -->
+			<!-- <shortTitle>Welcome</shortTitle> -->
+			<!-- <breadcrumbs>false</breadcrumbs> -->
+			<!-- <toc>false</toc> -->
+			<!-- <sections> -->
+			<!-- <carousel /> -->
+			<!-- <body /> -->
+			<!-- <sidebar /> -->
+			<!-- <thumbs>2</thumbs> -->
+			<!-- <columns>3</columns> -->
+			<!-- </sections> -->
+			<!-- </index> -->
+			<!-- <developer-info> -->
+			<!-- <toc>sidebar</toc> -->
+			<!-- </developer-info> -->
+			<!-- </pages> -->
+		</reflowSkin>
+	</custom>
 </project>
