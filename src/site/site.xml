@@ -6,7 +6,7 @@
 	</skin>
 	<body>
 		<menu name="Tutorial">
-			<item name="Introduction" href="wiki/home.html" />
+			<item name="Introduction" href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
 		</menu>
 		<menu name="Documentation">
 			<item name="JavaDoc" href="apidocs/index.html" />
