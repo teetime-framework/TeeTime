@@ -26,7 +26,12 @@
       <theme>bootswatch-spacelab</theme>
       <highlightJs>true</highlightJs>
       <brand>
-        <name>TeeTime</name>
+        <name>
+            <![CDATA[
+            	<img src="images/teetime-wo-text-smaller-scaled.png">
+				TeeTime
+			]]>
+        </name>
         <href>index.html</href>
       </brand>
 <!--       <slogan>Make analysis clever and faster.</slogan> -->
