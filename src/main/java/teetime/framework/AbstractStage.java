@@ -1,9 +1,9 @@
 package teetime.framework;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public abstract class AbstractStage implements IStage {
 	/** A cached instance of <code>outputPortList</code> to avoid creating an iterator each time iterating it */
 	protected OutputPort<?>[] cachedOutputPorts;
 
-	private final Map<ISignal, Void> visited = new HashMap<ISignal, Void>();
+	private final Set<ISignal> triggeredSignals = new HashSet<ISignal>();
 	private boolean shouldTerminate;
 
 	public AbstractStage() {
@@ -104,12 +104,12 @@ public abstract class AbstractStage implements IStage {
 	}
 
 	protected boolean alreadyVisited(final ISignal signal, final InputPort<?> inputPort) {
-		if (this.visited.containsKey(signal)) {
+		if (this.triggeredSignals.contains(signal)) {
 			this.logger.trace("Got signal: " + signal + " again from input port: " + inputPort);
 			return true;
 		} else {
 			this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
-			this.visited.put(signal, null);
+			this.triggeredSignals.add(signal);
 			return false;
 		}
 	}
