@@ -4,40 +4,75 @@
 		<artifactId>reflow-maven-skin</artifactId>
 		<version>1.1.1</version>
 	</skin>
+
+	<bannerLeft>
+		<name>
+					<![CDATA[
+<!-- 			        	<img src="images/teetime-wo-text-smaller-scaled.png"> -->
+						TeeTime
+					]]>
+		</name>
+		<href>index.html</href>
+	</bannerLeft>
+
 	<body>
-		<menu name="Tutorial">
-			<item name="Introduction" href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
+
+		<breadcrumbs>
+			<item name="TeeTime" href="index.html" />
+		</breadcrumbs>
+		<menu name="Download">
+			<item name="from Maven Repository" href="dependency-info.html" />
+			<item name="from Git"
+				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime" />
 		</menu>
+		<links>
+			<item name="Wiki" href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
+		</links>
 		<menu name="Documentation">
 			<item name="JavaDoc" href="apidocs/index.html" />
 			<item name="Dependencies" href="dependencies.html" />
-		</menu>
-		<menu name="About">
-			<item name="Dependency Information" href="dependency-info.html" />
 			<item name="License" href="license.html" />
+		</menu>
+		<menu name="Get Involved">
+			<item name="SourceForge Project Site" href="https://sourceforge.net/projects/teetime/" />
+			<item name="Issue Tracking"
+				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/issues" />
 			<item name="Team" href="team-list.html" />
-			<item name="FAQ" href="faq.html" />
 		</menu>
 		<!-- <menu ref="modules"/> -->
 		<!-- <menu ref="reports"/> -->
 	</body>
+	<publishDate position="bottom" />
+	<version position="bottom" />
 	<custom>
 		<reflowSkin>
-			<theme>bootswatch-flatly</theme>
+			<absoluteResourceURL>http://teetime.sourceforge.net/</absoluteResourceURL>
+			<theme>default</theme>
 			<highlightJs>true</highlightJs>
 			<brand>
 				<name>
 					<![CDATA[
-			        	<img src="images/teetime-wo-text-smaller-scaled.png">
+<!-- 			        	<img src="images/teetime-wo-text-smaller-scaled.png"> -->
 						TeeTime
 					]]>
 				</name>
 				<href>index.html</href>
 			</brand>
+			<slogan>The next level Pipes-And-Filter-Framework for Java
+			</slogan>
+			<titleTemplate>%2$s | %1$s</titleTemplate>
+			<bottomNav maxSpan="9">
+				<column>Download</column>
+				<column>Wiki|Documentation</column>
+				<column>Get Involved</column>
+			</bottomNav>
+			<bottomDescription>
+				TeeTime is a Pipes-And-Filter-Framework for Java.
+				It provides a simple way
+				of analysis tooling.
+			</bottomDescription>
 			<pages>
 				<index project="TeeTime">
-					<publishDate position="right" />
-					<version position="left" />
 				</index>
 			</pages>
 			<!-- <slogan>Make analysis clever and faster.</slogan> -->

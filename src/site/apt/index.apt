@@ -1,10 +1,12 @@
-Check again later, as this page and the whole project is still WIP. 
+Check again later...
+
+	..., as this page and the whole project is still WIP. 
 
 	The first stable release will be published soon. For more informations visit: {{https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime}}
 
 ===
 
-[images\teetime-wo-arrows-shrinked.png] TeeTime Logo
+[images/teetime-wo-arrows-shrinked.png] TeeTime Logo
 
 	TeeTime is a Pipes-And-Filter-Framework for Java.
 	
@@ -17,3 +19,5 @@ Check again later, as this page and the whole project is still WIP.
 	 * Typed ports
 		
 	 * Pre-defined stages and pipelines
+
+	 
