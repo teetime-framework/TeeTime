@@ -21,12 +21,13 @@
 			<item name="TeeTime" href="index.html" />
 		</breadcrumbs>
 		<menu name="Download">
-			<item name="from Maven Repository" href="dependency-info.html" />
+			<item name="as Maven Dependency" href="dependency-info.html" />
 			<item name="from Git"
 				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime" />
 		</menu>
 		<links>
-			<item name="Wiki" href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
+			<item name="Wiki"
+				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
 		</links>
 		<menu name="Documentation">
 			<item name="JavaDoc" href="apidocs/index.html" />
@@ -39,16 +40,25 @@
 				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/issues" />
 			<item name="Team" href="team-list.html" />
 		</menu>
+		<menu name="Main">
+			<item name="Home" href="index.html" />
+			<item name="Release notes" href="release.html" />
+		</menu>
 		<!-- <menu ref="modules"/> -->
 		<!-- <menu ref="reports"/> -->
 	</body>
-	<publishDate position="bottom" />
-	<version position="bottom" />
+	<publishDate position="navigation-bottom" />
+	<version position="navigation-bottom" />
 	<custom>
 		<reflowSkin>
-			<absoluteResourceURL>http://teetime.sourceforge.net/</absoluteResourceURL>
+			<topNav>Download|Wiki|Documentation|Get Involved</topNav>
+			<!-- <toc>sidebar</toc> -->
+			<!-- <tocTopMax>4</tocTopMax> -->
+			<absoluteResourceURL>http://teetime.sourceforge.net/
+			</absoluteResourceURL>
 			<theme>default</theme>
 			<highlightJs>true</highlightJs>
+			<highlightJsTheme>github</highlightJsTheme>
 			<brand>
 				<name>
 					<![CDATA[
@@ -62,6 +72,7 @@
 			</slogan>
 			<titleTemplate>%2$s | %1$s</titleTemplate>
 			<bottomNav maxSpan="9">
+				<column>Main</column>
 				<column>Download</column>
 				<column>Wiki|Documentation</column>
 				<column>Get Involved</column>
@@ -74,6 +85,10 @@
 			<pages>
 				<index project="TeeTime">
 				</index>
+				<wiki-home project="net.sourceforge.teetime">
+					<toc>sidebar</toc>
+					<tocTopMax>4</tocTopMax>
+				</wiki-home>
 			</pages>
 			<!-- <slogan>Make analysis clever and faster.</slogan> -->
 			<!-- <titleTemplate>%2$s | %1$s</titleTemplate> -->
