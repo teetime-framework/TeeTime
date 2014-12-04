@@ -83,12 +83,17 @@
 				of analysis tooling.
 			</bottomDescription>
 			<pages>
-				<index project="TeeTime">
+				<index>
 				</index>
-				<wiki-home project="net.sourceforge.teetime">
+				<release>
 					<toc>sidebar</toc>
 					<tocTopMax>4</tocTopMax>
-				</wiki-home>
+					<breadcrumbs>false</breadcrumbs>
+				</release>
+				<wiki>
+					<toc>sidebar</toc>
+					<tocTopMax>4</tocTopMax>
+				</wiki>
 			</pages>
 			<!-- <slogan>Make analysis clever and faster.</slogan> -->
 			<!-- <titleTemplate>%2$s | %1$s</titleTemplate> -->
