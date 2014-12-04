@@ -82,6 +82,12 @@
 			<pages>
 				<index>
 					<breadcrumbs>false</breadcrumbs>
+					<sections>
+						<carousel />
+						<columns>2</columns>
+						<body />
+						<sidebar />
+					</sections>
 				</index>
 				<license>
 					<highlightJs>false</highlightJs>
@@ -91,10 +97,14 @@
 					<tocTopMax>4</tocTopMax>
 					<breadcrumbs>false</breadcrumbs>
 				</release>
-				<wiki>
+				<wiki-home>
+					<breadcrumbs>
+						<item name="TeeTime" href="/" />
+						<item name="Wiki" href="wiki/home.html" />
+					</breadcrumbs>
 					<toc>sidebar</toc>
 					<tocTopMax>4</tocTopMax>
-				</wiki>
+				</wiki-home>
 			</pages>
 		</reflowSkin>
 	</custom>
