@@ -4,13 +4,13 @@
 
 Implement your analysis or filters in a new, easy and fast way.
 
-#### Flexible connection between stages
+#### Simple & Fast
 
 ![Pipelining](images/code_screenshot.jpg)
 
-It is up to you, how your stages are connected. TeeTime gives you tools to freely route your dataflow between your stages.
+The main focus is on fast execution and easy usage.
 
-#### Predefined stages
+#### Start today
 
 ![Pipelining](images/code_screenshot.jpg)
 
@@ -26,6 +26,8 @@ The first stable release will be published soon. For more informations visit: ht
 
 ![Logo](images/teetime-wo-arrows-shrinked.png) TeeTime Logo
 
+## What is it?
+
 TeeTime is a Pipes-And-Filter-Framework for Java.
 	
 It provides various features, which will bring you to the next level of analysis programming, such like:
@@ -37,5 +39,23 @@ It provides various features, which will bring you to the next level of analysis
 - Typed ports
 		
 - Pre-defined stages and pipelines
+
+## Where to get it
+
+TeeTime is available in many ways. If your projects use Maven, just add following dependency to your pom.xml:
+
+```xml
+<dependency>
+  <groupId>net.sourceforge.teetime</groupId>
+  <artifactId>teetime</artifactId>
+  <version>1.0-SNAPSHOT</version>
+</dependency>
+```
+
+To get the source code or the plain jar, take a look at the download section.
+
+## Concurrency-aware
+
+TeeTime takes care of a parallel execution of stages. You do not need to think about anything, as TeeTime creates and manages all threads, needed by your analysis.
 
 	 
