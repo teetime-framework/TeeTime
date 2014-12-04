@@ -17,9 +17,6 @@
 
 	<body>
 
-		<breadcrumbs>
-			<item name="TeeTime" href="index.html" />
-		</breadcrumbs>
 		<menu name="Download">
 			<item name="as Maven Dependency" href="dependency-info.html" />
 			<item name="from Git"
@@ -84,7 +81,11 @@
 			</bottomDescription>
 			<pages>
 				<index>
+					<breadcrumbs>false</breadcrumbs>
 				</index>
+				<license>
+					<highlightJs>false</highlightJs>
+				</license>
 				<release>
 					<toc>sidebar</toc>
 					<tocTopMax>4</tocTopMax>
@@ -95,35 +96,6 @@
 					<tocTopMax>4</tocTopMax>
 				</wiki>
 			</pages>
-			<!-- <slogan>Make analysis clever and faster.</slogan> -->
-			<!-- <titleTemplate>%2$s | %1$s</titleTemplate> -->
-			<!-- <toc>top</toc> -->
-			<!-- <topNav>Download|reports|modules</topNav> -->
-			<!-- <bottomNav> -->
-			<!-- <column>Main|Download</column> -->
-			<!-- <column>Documentation</column> -->
-			<!-- <column>reports|modules</column> -->
-			<!-- </bottomNav> -->
-			<!-- <bottomDescription> -->
-			<!-- This is a very good project doing interesting and valuable things. -->
-			<!-- </bottomDescription> -->
-			<!-- <pages> -->
-			<!-- <index project="project-id"> -->
-			<!-- <shortTitle>Welcome</shortTitle> -->
-			<!-- <breadcrumbs>false</breadcrumbs> -->
-			<!-- <toc>false</toc> -->
-			<!-- <sections> -->
-			<!-- <carousel /> -->
-			<!-- <body /> -->
-			<!-- <sidebar /> -->
-			<!-- <thumbs>2</thumbs> -->
-			<!-- <columns>3</columns> -->
-			<!-- </sections> -->
-			<!-- </index> -->
-			<!-- <developer-info> -->
-			<!-- <toc>sidebar</toc> -->
-			<!-- </developer-info> -->
-			<!-- </pages> -->
 		</reflowSkin>
 	</custom>
 </project>
