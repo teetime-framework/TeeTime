@@ -5,9 +5,9 @@ import teetime.framework.OutputPort;
 
 /**
  * @author Jan Waller, Nils Christian Ehmke, Christian Wulf
- * 
+ *
  */
-public class InstanceOfFilter<I, O> extends AbstractConsumerStage<I> {
+public final class InstanceOfFilter<I, O> extends AbstractConsumerStage<I> {
 
 	private final OutputPort<O> outputPort = this.createOutputPort();
 

@@ -38,7 +38,7 @@ import teetime.framework.signal.ISignal;
  * @param <T>
  *            the type of both the input and output ports
  */
-public class Merger<T> extends AbstractStage {
+public final class Merger<T> extends AbstractStage {
 
 	private final OutputPort<T> outputPort = this.createOutputPort();
 

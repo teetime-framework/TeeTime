@@ -26,8 +26,8 @@ public final class CopyByReferenceStrategy<T> implements IDistributorStrategy<T>
 
 	@Override
 	public boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
-		for (final OutputPort<T> port : outputPorts) {
-			port.send(element);
+		for (final OutputPort<T> outputPort : outputPorts) {
+			outputPort.send(element);
 		}
 
 		return true;

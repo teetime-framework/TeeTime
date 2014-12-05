@@ -15,7 +15,7 @@ import teetime.framework.OutputPort;
  * @author Nelson Tavares de Sousa
  *
  */
-public class ZipByteArray extends AbstractConsumerStage<byte[]> {
+public final class ZipByteArray extends AbstractConsumerStage<byte[]> {
 
 	private final OutputPort<byte[]> outputPort = this.createOutputPort();
 	private final ZipMode mode;

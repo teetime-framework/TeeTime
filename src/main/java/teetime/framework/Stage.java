@@ -1,17 +1,39 @@
 package teetime.framework;
 
 import java.util.List;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
 public abstract class Stage {
 
-	public abstract String getId();
+	private final String id;
+	/**
+	 * A unique logger instance per stage instance
+	 */
+	protected final Logger logger; // NOPMD
 
-	public abstract Stage getParentStage();
+	protected Stage() {
+		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
+		this.logger = LoggerFactory.getLogger(this.getClass().getName() + "(" + this.id + ")");
+	}
 
-	public abstract void setParentStage(Stage parentStage, int index);
+	public String getId() {
+		return this.id;
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getName() + ": " + this.getId();
+	}
+
+	// public abstract Stage getParentStage();
+	//
+	// public abstract void setParentStage(Stage parentStage, int index);
 
 	/**
 	 *

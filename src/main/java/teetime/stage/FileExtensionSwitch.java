@@ -9,14 +9,17 @@ import teetime.framework.OutputPort;
 
 import com.google.common.io.Files;
 
-public class FileExtensionSwitch extends AbstractConsumerStage<File> {
+public final class FileExtensionSwitch extends AbstractConsumerStage<File> {
 
 	private final Map<String, OutputPort<File>> fileExtensions = new HashMap<String, OutputPort<File>>();
 
 	@Override
 	protected void execute(final File file) {
 		String fileExtension = Files.getFileExtension(file.getAbsolutePath());
-		this.logger.debug("fileExtension: " + fileExtension);
+		if (logger.isDebugEnabled()) {
+			this.logger.debug("fileExtension: " + fileExtension);
+		}
+
 		OutputPort<File> outputPort = this.fileExtensions.get(fileExtension);
 		outputPort.send(file);
 	}

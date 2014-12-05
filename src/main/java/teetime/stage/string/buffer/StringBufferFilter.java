@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.stage.stringBuffer;
+package teetime.stage.string.buffer;
 
 import java.util.Collection;
 import java.util.LinkedList;
 
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
-import teetime.stage.stringBuffer.handler.AbstractDataTypeHandler;
-import teetime.stage.stringBuffer.util.KiekerHashMap;
+import teetime.stage.string.buffer.handler.AbstractDataTypeHandler;
+import teetime.stage.string.buffer.util.KiekerHashMap;
 
 /**
  * @author Christian Wulf
  *
  * @since 1.10
  */
-public class StringBufferFilter<T> extends AbstractConsumerStage<T> {
+public final class StringBufferFilter<T> extends AbstractConsumerStage<T> {
 
 	private final OutputPort<T> outputPort = this.createOutputPort();
 

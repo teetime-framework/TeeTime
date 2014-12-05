@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
@@ -15,14 +11,6 @@ import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
 public abstract class AbstractStage extends Stage {
-
-	private final String id;
-	/**
-	 * A unique logger instance per stage instance
-	 */
-	protected final Logger logger; // NOPMD
-
-	private Stage parentStage;
 
 	private final List<InputPort<?>> inputPortList = new ArrayList<InputPort<?>>();
 	private final List<OutputPort<?>> outputPortList = new ArrayList<OutputPort<?>>();
@@ -34,11 +22,6 @@ public abstract class AbstractStage extends Stage {
 
 	private final Set<ISignal> triggeredSignals = new HashSet<ISignal>();
 	private boolean shouldTerminate;
-
-	public AbstractStage() {
-		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
-		this.logger = LoggerFactory.getLogger(this.getClass().getName() + "(" + this.id + ")");
-	}
 
 	private void connectUnconnectedOutputPorts() {
 		for (OutputPort<?> outputPort : this.cachedOutputPorts) {
@@ -55,21 +38,6 @@ public abstract class AbstractStage extends Stage {
 
 	protected OutputPort<?>[] getOutputPorts() {
 		return this.cachedOutputPorts;
-	}
-
-	@Override
-	public Stage getParentStage() {
-		return this.parentStage;
-	}
-
-	@Override
-	public void setParentStage(final Stage parentStage, final int index) {
-		this.parentStage = parentStage;
-	}
-
-	@Override
-	public String getId() {
-		return this.id;
 	}
 
 	/**
@@ -139,11 +107,6 @@ public abstract class AbstractStage extends Stage {
 				}
 			}
 		}
-	}
-
-	@Override
-	public String toString() {
-		return this.getClass().getName() + ": " + this.id;
 	}
 
 	@Override

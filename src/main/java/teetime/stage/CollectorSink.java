@@ -15,6 +15,7 @@
  ***************************************************************************/
 package teetime.stage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import teetime.framework.AbstractConsumerStage;
@@ -24,39 +25,24 @@ import teetime.framework.AbstractConsumerStage;
  *
  * @since 1.0
  */
-public class CollectorSink<T> extends AbstractConsumerStage<T> {
+public final class CollectorSink<T> extends AbstractConsumerStage<T> {
 
 	private final List<T> elements;
-	private final int threshold;
 
-	public CollectorSink(final List<T> list, final int threshold) {
-		this.elements = list;
-		this.threshold = threshold;
+	/**
+	 * Creates a new {@link CollectorSink} with an {@link ArrayList}.
+	 */
+	public CollectorSink() {
+		this(new ArrayList<T>());
 	}
 
 	public CollectorSink(final List<T> list) {
-		this(list, 100000);
-	}
-
-	@Override
-	public void onTerminating() throws Exception {
-		logNumElements();
-		super.onTerminating();
+		this.elements = list;
 	}
 
 	@Override
 	protected void execute(final T element) {
 		this.elements.add(element);
-
-		if ((this.elements.size() % this.threshold) == 0) {
-			logNumElements();
-		}
-	}
-
-	private void logNumElements() {
-		if (logger.isInfoEnabled()) {
-			logger.info("size: " + this.elements.size());
-		}
 	}
 
 }

@@ -24,7 +24,7 @@ import teetime.util.TimestampObject;
  *
  * @since 1.10
  */
-public class StopTimestampFilter extends AbstractConsumerStage<TimestampObject> {
+public final class StopTimestampFilter extends AbstractConsumerStage<TimestampObject> {
 
 	private final OutputPort<TimestampObject> outputPort = this.createOutputPort();
 

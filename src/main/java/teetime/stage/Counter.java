@@ -12,7 +12,7 @@ public class Counter<T> extends AbstractConsumerStage<T> {
 	@Override
 	protected void execute(final T element) {
 		this.numElementsPassed++;
-		// this.logger.debug("count: " + this.numElementsPassed);
+
 		outputPort.send(element);
 	}
 

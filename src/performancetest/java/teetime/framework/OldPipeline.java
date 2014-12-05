@@ -28,23 +28,8 @@ public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> exte
 	}
 
 	@Override
-	public String getId() {
-		return this.firstStage.getId();
-	}
-
-	@Override
 	public void executeWithPorts() {
 		this.firstStage.executeWithPorts();
-	}
-
-	@Override
-	public Stage getParentStage() {
-		return this.firstStage.getParentStage();
-	}
-
-	@Override
-	public void setParentStage(final Stage parentStage, final int index) {
-		this.firstStage.setParentStage(parentStage, index);
 	}
 
 	@Override
@@ -59,20 +44,17 @@ public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> exte
 
 	@Override
 	public TerminationStrategy getTerminationStrategy() {
-		// TODO Auto-generated method stub
-		return null;
+		return firstStage.getTerminationStrategy();
 	}
 
 	@Override
 	public void terminate() {
-		// TODO Auto-generated method stub
-
+		firstStage.terminate();
 	}
 
 	@Override
 	public boolean shouldBeTerminated() {
-		// TODO Auto-generated method stub
-		return false;
+		return firstStage.shouldBeTerminated();
 	}
 
 }
