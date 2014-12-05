@@ -13,7 +13,9 @@ public class SingleElementPipeFactory implements IPipeFactory {
 	}
 
 	/**
-	 * Hint: The capacity for this pipe implementation is ignored
+	 * Hint: The capacity for this pipe implementation is ignored.
+	 * <p>
+	 * {@inheritDoc}
 	 */
 	@Override
 	public <T> IPipe create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
