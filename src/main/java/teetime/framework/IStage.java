@@ -2,25 +2,21 @@ package teetime.framework;
 
 import java.util.List;
 
-import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public interface IStage extends ITerminable {
+@Deprecated
+public interface IStage {
 
-	String getId();
+	public String getId();
 
-	void executeWithPorts();
+	public IStage getParentStage();
 
-	IStage getParentStage();
-
-	void setParentStage(IStage parentStage, int index);
-
-	void onSignal(ISignal signal, InputPort<?> inputPort);
+	public void setParentStage(IStage parentStage, int index);
 
 	/**
 	 *
 	 * @param invalidPortConnections
 	 *            <i>(Passed as parameter for performance reasons)</i>
 	 */
-	void validateOutputPorts(List<InvalidPortConnection> invalidPortConnections);
+	public void validateOutputPorts(List<InvalidPortConnection> invalidPortConnections);
 }

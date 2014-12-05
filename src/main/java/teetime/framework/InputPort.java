@@ -4,9 +4,9 @@ import teetime.framework.pipe.IPipe;
 
 public class InputPort<T> extends AbstractPort<T> {
 
-	private final IStage owningStage;
+	private final AbstractBasicStage owningStage;
 
-	InputPort(final IStage owningStage) {
+	InputPort(final AbstractBasicStage owningStage) {
 		super();
 		this.owningStage = owningStage;
 	}
@@ -33,7 +33,7 @@ public class InputPort<T> extends AbstractPort<T> {
 		this.pipe = pipe;
 	}
 
-	public IStage getOwningStage() {
+	public AbstractBasicStage getOwningStage() {
 		return this.owningStage;
 	}
 

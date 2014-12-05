@@ -1,13 +1,11 @@
-package teetime.framework.pipe;
+package teetime.framework;
 
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.pipe.AbstractPipe;
 import teetime.framework.signal.ISignal;
 
 public abstract class AbstractIntraThreadPipe extends AbstractPipe {
 
-
-	<T> AbstractIntraThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	protected <T> AbstractIntraThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
 	}
 

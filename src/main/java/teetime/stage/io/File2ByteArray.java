@@ -5,11 +5,10 @@ import java.io.IOException;
 
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
-import teetime.framework.IStage;
 
 import com.google.common.io.Files;
 
-public class File2ByteArray extends AbstractConsumerStage<File> implements IStage {
+public class File2ByteArray extends AbstractConsumerStage<File> {
 
 	private final OutputPort<byte[]> outputPort = this.createOutputPort();
 

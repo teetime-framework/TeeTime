@@ -1,4 +1,4 @@
-package teetime.framework.pipe;
+package teetime.framework;
 
 import java.util.Queue;
 
@@ -7,15 +7,14 @@ import org.jctools.queues.spec.ConcurrentQueueSpec;
 import org.jctools.queues.spec.Ordering;
 import org.jctools.queues.spec.Preference;
 
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.pipe.AbstractPipe;
 import teetime.framework.signal.ISignal;
 
 public abstract class AbstractInterThreadPipe extends AbstractPipe {
 
 	private final Queue<ISignal> signalQueue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT));
 
-	<T> AbstractInterThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	protected <T> AbstractInterThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
 	}
 

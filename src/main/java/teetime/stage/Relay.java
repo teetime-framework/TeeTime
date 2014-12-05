@@ -1,8 +1,8 @@
 package teetime.stage;
 
+import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.AbstractProducerStage;
-import teetime.framework.pipe.AbstractInterThreadPipe;
 import teetime.framework.signal.TerminatingSignal;
 
 public class Relay<T> extends AbstractProducerStage<T> {

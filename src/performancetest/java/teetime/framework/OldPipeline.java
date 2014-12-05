@@ -6,7 +6,7 @@ import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
 @Deprecated
-public class OldPipeline<FirstStage extends IStage, LastStage extends IStage> implements IStage {
+public class OldPipeline<FirstStage extends AbstractBasicStage, LastStage extends IStage> extends AbstractBasicStage {
 
 	protected FirstStage firstStage;
 	protected LastStage lastStage;

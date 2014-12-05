@@ -14,7 +14,7 @@ import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public abstract class AbstractStage implements IStage {
+public abstract class AbstractStage extends AbstractBasicStage {
 
 	private final String id;
 	/**
