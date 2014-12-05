@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.framework.Stage;
 import teetime.framework.OldHeadPipeline;
 import teetime.framework.RunnableStage;
+import teetime.framework.Stage;
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.PipeFactoryRegistry;
@@ -35,6 +35,7 @@ import teetime.stage.Relay;
 import teetime.stage.StartTimestampFilter;
 import teetime.stage.StopTimestampFilter;
 import teetime.stage.basic.distributor.Distributor;
+import teetime.stage.io.EveryXthPrinter;
 import teetime.util.ConstructorClosure;
 import teetime.util.TimestampObject;
 
@@ -143,6 +144,7 @@ public class MethodCallThroughputAnalysis17 {
 			noopFilters[i] = new NoopFilter<TimestampObject>();
 		}
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
+		EveryXthPrinter<TimestampObject> everyXthPrinter = new EveryXthPrinter<TimestampObject>(100000);
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(timestampObjects);
 
 		IPipe startPipe = new RelayTestPipe<TimestampObject>(this.numInputObjects, this.inputObjectCreator);
@@ -155,7 +157,8 @@ public class MethodCallThroughputAnalysis17 {
 			UnorderedGrowablePipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
 		}
 		UnorderedGrowablePipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
-		UnorderedGrowablePipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
+		UnorderedGrowablePipe.connect(stopTimestampFilter.getOutputPort(), everyXthPrinter.getInputPort());
+		UnorderedGrowablePipe.connect(everyXthPrinter.getNewOutputPort(), collectorSink.getInputPort());
 
 		final OldHeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new OldHeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>>();
 		pipeline.setFirstStage(relay);

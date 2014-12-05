@@ -3,9 +3,10 @@ package teetime.stage;
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
-public class EveryXthStage<T> extends AbstractConsumerStage<T> {
+public final class EveryXthStage<T> extends AbstractConsumerStage<T> {
 
-	private final OutputPort<T> outputPort = createOutputPort();
+	private final OutputPort<Integer> outputPort = createOutputPort();
+
 	private final int threshold;
 
 	private int counter;
@@ -18,11 +19,11 @@ public class EveryXthStage<T> extends AbstractConsumerStage<T> {
 	protected void execute(final T element) {
 		counter++;
 		if (counter % threshold == 0) {
-			outputPort.send(element);
+			outputPort.send(Integer.valueOf(counter));
 		}
 	}
 
-	public OutputPort<T> getOutputPort() {
+	public OutputPort<Integer> getOutputPort() {
 		return outputPort;
 	}
 

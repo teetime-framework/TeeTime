@@ -13,6 +13,7 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 import teetime.stage.EveryXthStage;
+import teetime.stage.basic.distributor.CopyByReferenceStrategy;
 import teetime.stage.basic.distributor.Distributor;
 
 public final class EveryXthPrinter<T> extends Stage {
@@ -22,11 +23,13 @@ public final class EveryXthPrinter<T> extends Stage {
 	public EveryXthPrinter(final int threshold) {
 		distributor = new Distributor<T>();
 		EveryXthStage<T> everyXthStage = new EveryXthStage<T>(threshold);
-		Printer<T> printer = new Printer<T>();
+		Printer<Integer> printer = new Printer<Integer>();
 
 		IPipeFactory pipeFactory = PipeFactoryRegistry.INSTANCE.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 		pipeFactory.create(distributor.getNewOutputPort(), everyXthStage.getInputPort());
 		pipeFactory.create(everyXthStage.getOutputPort(), printer.getInputPort());
+
+		distributor.setStrategy(new CopyByReferenceStrategy<T>());
 	}
 
 	@Override
