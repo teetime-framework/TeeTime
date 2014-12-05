@@ -22,15 +22,9 @@ import teetime.framework.AbstractConsumerStage;
 /**
  * @author Christian Wulf
  *
- * @since 1.10
+ * @since 1.0
  */
 public class CollectorSink<T> extends AbstractConsumerStage<T> {
-
-	// private final InputPort<T> inputPort = this.createInputPort();
-	//
-	// public final InputPort<T> getInputPort() {
-	// return this.inputPort;
-	// }
 
 	private final List<T> elements;
 	private final int threshold;
@@ -46,7 +40,7 @@ public class CollectorSink<T> extends AbstractConsumerStage<T> {
 
 	@Override
 	public void onTerminating() throws Exception {
-		System.out.println("size: " + this.elements.size());
+		logNumElements();
 		super.onTerminating();
 	}
 
@@ -55,12 +49,14 @@ public class CollectorSink<T> extends AbstractConsumerStage<T> {
 		this.elements.add(element);
 
 		if ((this.elements.size() % this.threshold) == 0) {
-			System.out.println("size: " + this.elements.size());
+			logNumElements();
 		}
+	}
 
-		// if (this.elements.size() > 90000) {
-		// // System.out.println("size > 90000: " + this.elements.size());
-		// }
+	private void logNumElements() {
+		if (logger.isInfoEnabled()) {
+			logger.info("size: " + this.elements.size());
+		}
 	}
 
 }
