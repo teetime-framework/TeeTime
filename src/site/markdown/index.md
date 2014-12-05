@@ -28,9 +28,9 @@ The first stable release will be published soon. For more informations visit: ht
 
 ## What is it?
 
-TeeTime is a Pipes-And-Filter-Framework for Java.
+TeeTime is a Pipes-And-Filters-Framework for Java.
 	
-It provides various features, which will bring you to the next level of analysis programming, such like:
+It provides various features, which will bring you to the next level of program analysis, such like:
 		
 - Concurrent execution of stages
 		
