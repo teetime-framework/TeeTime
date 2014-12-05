@@ -13,7 +13,7 @@ public class Counter<T> extends AbstractConsumerStage<T> {
 	protected void execute(final T element) {
 		this.numElementsPassed++;
 		// this.logger.debug("count: " + this.numElementsPassed);
-		this.send(this.outputPort, element);
+		outputPort.send(element);
 	}
 
 	// BETTER find a solution w/o any thread-safe code in this stage

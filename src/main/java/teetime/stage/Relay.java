@@ -21,7 +21,7 @@ public class Relay<T> extends AbstractProducerStage<T> {
 			Thread.yield();
 			return;
 		}
-		this.send(this.outputPort, element);
+		outputPort.send(element);
 	}
 
 	@Override

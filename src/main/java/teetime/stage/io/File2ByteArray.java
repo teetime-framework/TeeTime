@@ -16,7 +16,7 @@ public class File2ByteArray extends AbstractConsumerStage<File> {
 	protected void execute(final File element) {
 		try {
 			byte[] cache = Files.toByteArray(element);
-			this.send(this.outputPort, cache);
+			outputPort.send(cache);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}

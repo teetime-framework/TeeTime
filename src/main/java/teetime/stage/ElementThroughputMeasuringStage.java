@@ -26,7 +26,7 @@ public class ElementThroughputMeasuringStage<T> extends AbstractConsumerStage<T>
 		}
 		this.numPassedElements++;
 
-		this.send(this.outputPort, element);
+		outputPort.send(element);
 	}
 
 	@Override

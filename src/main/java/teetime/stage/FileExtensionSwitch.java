@@ -18,9 +18,7 @@ public class FileExtensionSwitch extends AbstractConsumerStage<File> {
 		String fileExtension = Files.getFileExtension(file.getAbsolutePath());
 		this.logger.debug("fileExtension: " + fileExtension);
 		OutputPort<File> outputPort = this.fileExtensions.get(fileExtension);
-		if (outputPort != null) {
-			this.send(outputPort, file);
-		}
+		outputPort.send(file);
 	}
 
 	public OutputPort<File> addFileExtension(String fileExtension) {

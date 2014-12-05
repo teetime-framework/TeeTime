@@ -57,7 +57,7 @@ public class ObjectProducer<T> extends AbstractProducerStage<T> {
 		T newObject = this.inputObjectCreator.create();
 		this.numInputObjects--;
 
-		this.send(this.outputPort, newObject);
+		outputPort.send(newObject);
 
 		if (this.numInputObjects == 0) {
 			this.terminate();

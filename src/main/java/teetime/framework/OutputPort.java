@@ -14,15 +14,15 @@ public final class OutputPort<T> extends AbstractPort<T> {
 	 * @return <code>true</code> iff the given <code>element</code> could be sent, <code>false</code> otherwise (then use a re-try strategy)
 	 */
 	public boolean send(final T element) {
-		return this.pipe.add(element);
+		boolean added = this.pipe.add(element);
+		if (added) {
+			this.pipe.reportNewElement();
+		}
+		return added;
 	}
 
 	public void sendSignal(final ISignal signal) {
 		this.pipe.sendSignal(signal);
-	}
-
-	public void reportNewElement() {
-		this.pipe.reportNewElement();
 	}
 
 }

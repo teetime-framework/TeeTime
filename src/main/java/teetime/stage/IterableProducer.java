@@ -13,7 +13,7 @@ public class IterableProducer<O extends Iterable<T>, T> extends AbstractProducer
 	@Override
 	protected void execute() {
 		for (T i : iter) {
-			this.send(this.outputPort, i);
+			outputPort.send(i);
 		}
 
 	}

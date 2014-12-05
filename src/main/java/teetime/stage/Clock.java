@@ -25,7 +25,7 @@ public class Clock extends AbstractProducerStage<Long> {
 		}
 
 		// this.logger.debug("Emitting timestamp");
-		this.send(this.outputPort, this.getCurrentTimeInNs());
+		outputPort.send(this.getCurrentTimeInNs());
 	}
 
 	private void sleep(final long delayInMs) {

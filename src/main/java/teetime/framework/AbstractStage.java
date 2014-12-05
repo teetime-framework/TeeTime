@@ -40,23 +40,6 @@ public abstract class AbstractStage extends Stage {
 		this.logger = LoggerFactory.getLogger(this.getClass().getName() + "(" + this.id + ")");
 	}
 
-	/**
-	 * Sends the given <code>element</code> using the default output port
-	 *
-	 * @param element
-	 * @return <code>true</code> iff the given element could be sent, <code>false</code> otherwise (then use a re-try strategy)
-	 */
-	protected final <O> boolean send(final OutputPort<O> outputPort, final O element) {
-		if (!outputPort.send(element)) {
-			return false;
-		}
-
-		outputPort.reportNewElement();
-
-		return true;
-		// return outputPort.send(element);
-	}
-
 	private void connectUnconnectedOutputPorts() {
 		for (OutputPort<?> outputPort : this.cachedOutputPorts) {
 			if (null == outputPort.getPipe()) { // if port is unconnected

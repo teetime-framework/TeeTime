@@ -53,7 +53,7 @@ public class Merger<T> extends AbstractStage {
 			return;
 		}
 
-		this.send(this.outputPort, token);
+		outputPort.send(token);
 	}
 
 	/**

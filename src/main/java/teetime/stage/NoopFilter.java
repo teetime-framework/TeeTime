@@ -29,7 +29,7 @@ public class NoopFilter<T> extends AbstractConsumerStage<T> {
 
 	@Override
 	protected void execute(final T element) {
-		this.send(this.outputPort, element);
+		outputPort.send(element);
 	}
 
 	public OutputPort<T> getOutputPort() {

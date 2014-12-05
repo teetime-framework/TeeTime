@@ -29,7 +29,7 @@ public class Delay<T> extends AbstractStage {
 
 		while (!bufferedElements.isEmpty()) {
 			element = bufferedElements.remove(0);
-			this.send(this.outputPort, element);
+			outputPort.send(element);
 		}
 	}
 

@@ -40,7 +40,7 @@ public class ZipByteArray extends AbstractConsumerStage<byte[]> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		this.send(this.outputPort, cache);
+		outputPort.send(cache);
 	}
 
 	private byte[] compress(final byte[] data) throws IOException {

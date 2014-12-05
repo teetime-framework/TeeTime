@@ -40,7 +40,7 @@ public class StringBufferFilter<T> extends AbstractConsumerStage<T> {
 	@Override
 	protected void execute(final T element) {
 		final T returnedElement = this.handle(element);
-		this.send(this.outputPort, returnedElement);
+		outputPort.send(returnedElement);
 	}
 
 	@Override

@@ -20,7 +20,7 @@ public class InstanceCounter<T, C extends T> extends AbstractConsumerStage<T> {
 			this.counter++;
 		}
 
-		this.send(this.outputPort, element);
+		outputPort.send(element);
 	}
 
 	public int getCounter() {

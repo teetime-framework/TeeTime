@@ -31,7 +31,7 @@ public class StartTimestampFilter extends AbstractConsumerStage<TimestampObject>
 	@Override
 	protected void execute(final TimestampObject element) {
 		element.setStartTimestamp(System.nanoTime());
-		this.send(this.outputPort, element);
+		outputPort.send(element);
 	}
 
 	public OutputPort<TimestampObject> getOutputPort() {

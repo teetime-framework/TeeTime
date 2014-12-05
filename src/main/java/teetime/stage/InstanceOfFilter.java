@@ -21,7 +21,7 @@ public class InstanceOfFilter<I, O> extends AbstractConsumerStage<I> {
 	@Override
 	protected void execute(final I element) {
 		if (this.type.isInstance(element)) {
-			this.send(this.outputPort, (O) element);
+			outputPort.send((O) element);
 		} else { // swallow up the element
 			if (this.logger.isDebugEnabled()) {
 				this.logger.info("element is not an instance of " + this.type.getName() + ", but of " + element.getClass());

@@ -18,7 +18,7 @@ public class Tokenizer extends AbstractConsumerStage<String> {
 	protected void execute(final String element) {
 		StringTokenizer st = new StringTokenizer(element, this.regex);
 		while (st.hasMoreTokens()) {
-			this.send(this.outputPort, st.nextToken());
+			outputPort.send(st.nextToken());
 		}
 	}
 

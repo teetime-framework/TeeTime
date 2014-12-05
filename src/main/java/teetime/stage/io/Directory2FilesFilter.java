@@ -79,7 +79,7 @@ public class Directory2FilesFilter extends AbstractConsumerStage<File> {
 		}
 
 		for (final File file : inputFiles) {
-			this.send(this.outputPort, file);
+			outputPort.send(file);
 		}
 	}
 
