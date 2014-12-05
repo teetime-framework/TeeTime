@@ -15,8 +15,8 @@ import teetime.examples.experiment15.MethodCallThoughputTimestampAnalysis15Test;
 import teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test;
 import teetime.examples.experiment17.MethodCallThoughputTimestampAnalysis17Test;
 import teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test;
-import util.test.PerformanceCheckProfileRepository;
 import util.test.AbstractProfiledPerformanceAssertion;
+import util.test.PerformanceCheckProfileRepository;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -34,7 +34,7 @@ public class ComparisonMethodcallWithPorts {
 
 	@BeforeClass
 	public static void beforeClass() {
-		System.setProperty("logback.configurationFile", "src/test/resources/logback-test.groovy");
+		System.setProperty("logback.configurationFile", "src/test/resources/logback.groovy");
 		PerformanceCheckProfileRepository.INSTANCE.register(ComparisonMethodcallWithPorts.class, new ChwWorkComparisonMethodcallWithPorts());
 		PerformanceCheckProfileRepository.INSTANCE.register(ComparisonMethodcallWithPorts.class, new ChwHomeComparisonMethodcallWithPorts());
 		PerformanceCheckProfileRepository.INSTANCE.register(ComparisonMethodcallWithPorts.class, new NieWorkComparisonMethodcallWithPorts());
