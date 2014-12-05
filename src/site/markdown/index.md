@@ -24,13 +24,13 @@ Predefined stages are provided within the source code. You can immediatly start 
 
 The first stable release will be published soon. For more informations visit: https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime
 
-![Logo](images/teetime-wo-arrows-shrinked.png) TeeTime Logo
+<!--- ![Logo](images/teetime-wo-arrows-shrinked.png) TeeTime Logo -->
 
 ## What is it?
 
-TeeTime is a Pipes-And-Filters-Framework for Java.
+TeeTime is a Pipes-And-Filter-Framework for Java.
 	
-It provides various features, which will bring you to the next level of program analysis, such like:
+It provides various features, which will bring you to the next level of analysis programming, such like:
 		
 - Concurrent execution of stages
 		

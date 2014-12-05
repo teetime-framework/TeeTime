@@ -7,31 +7,26 @@
 
 	<bannerLeft>
 		<name>
-					<![CDATA[
-<!-- 			        	<img src="images/teetime-wo-text-smaller-scaled.png"> -->
-						TeeTime
-					]]>
+			TeeTime
 		</name>
 		<href>index.html</href>
 	</bannerLeft>
 
 	<body>
 
-		<menu name="Download">
-			<item name="as Maven Dependency" href="dependency-info.html" />
-			<item name="from Git"
-				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime" />
-		</menu>
+
 		<links>
 			<item name="Wiki"
 				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
+			<item name="Download" href="download.html" />
 		</links>
 		<menu name="Documentation">
 			<item name="JavaDoc" href="apidocs/index.html" />
-			<item name="Dependencies" href="dependencies.html" />
+			<item name="Project Dependencies" href="dependencies.html" />
 			<item name="License" href="license.html" />
 		</menu>
 		<menu name="Get Involved">
+			<item name="Contribute" href="contribute.html" />
 			<item name="SourceForge Project Site" href="https://sourceforge.net/projects/teetime/" />
 			<item name="Issue Tracking"
 				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/issues" />
@@ -39,7 +34,9 @@
 		</menu>
 		<menu name="Main">
 			<item name="Home" href="index.html" />
-			<item name="Wiki" href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
+			<item name="Download" href="download.html" />
+			<item name="Wiki"
+				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
 			<item name="Release notes" href="changes-report.html" />
 		</menu>
 		<!-- <menu ref="modules"/> -->
@@ -52,26 +49,25 @@
 			<topNav>Download|Wiki|Documentation|Get Involved</topNav>
 			<!-- <toc>sidebar</toc> -->
 			<!-- <tocTopMax>4</tocTopMax> -->
-			<absoluteResourceURL>http://teetime.sourceforge.net/
+			<absoluteResourceURL>http://teetime.sourceforge.net
 			</absoluteResourceURL>
 			<theme>default</theme>
 			<highlightJs>true</highlightJs>
 			<highlightJsTheme>github</highlightJsTheme>
 			<brand>
 				<name>
-					<![CDATA[
-<!-- 			        	<img src="images/teetime-wo-text-smaller-scaled.png"> -->
-						TeeTime
-					]]>
+					TeeTime
 				</name>
 				<href>index.html</href>
 			</brand>
-			<slogan>The next level Pipes-And-Filter-Framework for Java
+			<slogan>
+				<![CDATA[
+				<span class="slogan">The next level Pipes-And-Filters-Framework for Java</span>
+				]]>
 			</slogan>
 			<titleTemplate>%2$s | %1$s</titleTemplate>
 			<bottomNav maxSpan="9">
 				<column>Main</column>
-				<column>Download</column>
 				<column>Wiki|Documentation</column>
 				<column>Get Involved</column>
 			</bottomNav>
@@ -98,6 +94,10 @@
 					<tocTopMax>4</tocTopMax>
 					<breadcrumbs>false</breadcrumbs>
 				</release>
+				<download>
+					<toc>top</toc>
+					<tocTopMax>4</tocTopMax>
+				</download>
 				<wiki-home>
 					<breadcrumbs>
 						<item name="TeeTime" href="/" />
