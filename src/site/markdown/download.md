@@ -9,22 +9,24 @@ To get TeeTime as Dependency for your project, simply add following lines to you
 #### Latest stable release
 
 ```xml
-	<dependency>
-  		<groupId>net.sourceforge.teetime</groupId>
-  		<artifactId>teetime</artifactId>
-  		<version>1.0-SNAPSHOT</version>
-	</dependency>
+<dependency>
+	<groupId>net.sourceforge.teetime</groupId>
+	<artifactId>teetime</artifactId>
+	<version>1.0-SNAPSHOT</version>
+</dependency>
 ```
 
 #### Snapshot
 
 ```xml
-	<dependency>
-  		<groupId>net.sourceforge.teetime</groupId>
-  		<artifactId>teetime</artifactId>
-  		<version>1.0-SNAPSHOT</version>
-	</dependency>
+<dependency>
+	<groupId>net.sourceforge.teetime</groupId>
+  	<artifactId>teetime</artifactId>
+  	<version>1.0-SNAPSHOT</version>
+</dependency>
 ```
+
+Dependency informations for other project management tools can be found [here](dependency-info.html)
 
 ## Source
 
@@ -32,7 +34,7 @@ You can also download the source code.
 
 #### Latest stable release
 
-The latest TeeTime release can be downloaded [from Sourceforge](https://sourceforge.net/projects/teetime/files/latest/download).
+The latest TeeTime release can be downloaded from [Sourceforge](https://sourceforge.net/projects/teetime/files/latest/download).
 
 #### Snapshot
 

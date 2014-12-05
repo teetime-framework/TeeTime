@@ -6,7 +6,7 @@ Implement your analysis or filters in a new, easy and fast way.
 
 #### Simple & Fast
 
-![Pipelining](images/code_screenshot.jpg)
+![Pipelining](images/code_screenshot.png)
 
 The main focus is on fast execution and easy usage.
 

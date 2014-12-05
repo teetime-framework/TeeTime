@@ -5,7 +5,7 @@
     <title>Release notes</title>
   </properties>
   <body>
-    <release version="1.0-SNAPSHOT" date="15.12.2014" description="Initial Release">
+    <release version="1.0-SNAPSHOT" date="15.12.2014" description="Preparing initial Release">
       <action dev="ntd" type="add" issue="66">
       	Created a new site to promote TeeTime.
       </action>

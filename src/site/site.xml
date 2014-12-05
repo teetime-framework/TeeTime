@@ -16,9 +16,9 @@
 
 
 		<links>
+			<item name="Download" href="download.html" />
 			<item name="Wiki"
 				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
-			<item name="Download" href="download.html" />
 		</links>
 		<menu name="Documentation">
 			<item name="JavaDoc" href="apidocs/index.html" />
@@ -72,7 +72,7 @@
 				<column>Get Involved</column>
 			</bottomNav>
 			<bottomDescription>
-				TeeTime is a Pipes-And-Filter-Framework for Java.
+				TeeTime is a Pipes-And-Filters-Framework for Java.
 				It provides a simple way
 				of analysis tooling.
 			</bottomDescription>
@@ -82,8 +82,6 @@
 					<sections>
 						<carousel />
 						<columns>2</columns>
-						<body />
-						<sidebar />
 					</sections>
 				</index>
 				<license>
@@ -98,6 +96,13 @@
 					<toc>top</toc>
 					<tocTopMax>4</tocTopMax>
 				</download>
+				<dependencies>
+					<toc>top</toc>
+					<tocTopMax>5</tocTopMax>
+				</dependencies>
+				<contribute>
+					<highlightJs>false</highlightJs>
+				</contribute>
 				<wiki-home>
 					<breadcrumbs>
 						<item name="TeeTime" href="/" />
