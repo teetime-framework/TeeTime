@@ -39,7 +39,8 @@
 		</menu>
 		<menu name="Main">
 			<item name="Home" href="index.html" />
-			<item name="Release notes" href="release.html" />
+			<item name="Wiki" href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
+			<item name="Release notes" href="changes-report.html" />
 		</menu>
 		<!-- <menu ref="modules"/> -->
 		<!-- <menu ref="reports"/> -->
