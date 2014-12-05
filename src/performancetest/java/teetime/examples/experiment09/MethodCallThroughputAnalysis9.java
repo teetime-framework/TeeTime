@@ -17,7 +17,7 @@ package teetime.examples.experiment09;
 
 import java.util.List;
 
-import teetime.framework.AbstractBasicStage;
+import teetime.framework.Stage;
 import teetime.framework.OldHeadPipeline;
 import teetime.framework.RunnableStage;
 import teetime.framework.pipe.CommittablePipe;
@@ -43,7 +43,7 @@ public class MethodCallThroughputAnalysis9 {
 	private Runnable runnable;
 
 	public void init() {
-		AbstractBasicStage pipeline = this.buildPipeline();
+		Stage pipeline = this.buildPipeline();
 		this.runnable = new RunnableStage(pipeline);
 	}
 

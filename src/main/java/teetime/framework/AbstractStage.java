@@ -14,7 +14,7 @@ import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public abstract class AbstractStage extends AbstractBasicStage {
+public abstract class AbstractStage extends Stage {
 
 	private final String id;
 	/**
@@ -22,7 +22,7 @@ public abstract class AbstractStage extends AbstractBasicStage {
 	 */
 	protected final Logger logger; // NOPMD
 
-	private IStage parentStage;
+	private Stage parentStage;
 
 	private final List<InputPort<?>> inputPortList = new ArrayList<InputPort<?>>();
 	private final List<OutputPort<?>> outputPortList = new ArrayList<OutputPort<?>>();
@@ -75,12 +75,12 @@ public abstract class AbstractStage extends AbstractBasicStage {
 	}
 
 	@Override
-	public IStage getParentStage() {
+	public Stage getParentStage() {
 		return this.parentStage;
 	}
 
 	@Override
-	public void setParentStage(final IStage parentStage, final int index) {
+	public void setParentStage(final Stage parentStage, final int index) {
 		this.parentStage = parentStage;
 	}
 

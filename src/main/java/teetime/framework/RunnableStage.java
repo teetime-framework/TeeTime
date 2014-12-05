@@ -10,11 +10,11 @@ import teetime.framework.validation.AnalysisNotValidException;
 
 public class RunnableStage implements Runnable {
 
-	private final AbstractBasicStage stage;
+	private final Stage stage;
 	private final Logger logger; // NOPMD
 	private boolean validationEnabled;
 
-	public RunnableStage(final AbstractBasicStage stage) {
+	public RunnableStage(final Stage stage) {
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
 	}
