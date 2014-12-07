@@ -24,19 +24,31 @@ import org.junit.runners.MethodSorters;
 import teetime.util.ConstructorClosure;
 import teetime.util.ListUtil;
 import teetime.util.TimestampObject;
+import util.test.AbstractProfiledPerformanceAssertion;
 import util.test.PerformanceCheckProfileRepository;
 import util.test.PerformanceTest;
-import util.test.AbstractProfiledPerformanceAssertion;
 
 /**
  * @author Christian Wulf
  *
- * @since 1.10
+ * @since 1.0
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+// @RunWith(Parameterized.class)
 public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest {
 
-	// TODO use @Parameter for the number of threads
+	// private final int numThreads;
+	//
+	// @Parameters
+	// public static Iterable<Object[]> data() {
+	// return Arrays.asList(new Object[][] {
+	// { 1 }, { 2 }, { 4 }
+	// });
+	// }
+	//
+	// public MethodCallThoughputTimestampAnalysis16Test(final int numThreads) {
+	// this.numThreads = numThreads;
+	// }
 
 	@BeforeClass
 	public static void beforeClass() {
@@ -52,17 +64,17 @@ public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest 
 
 	@Test
 	public void testWithManyObjectsAnd1Thread() {
-		this.performAnalysis(1);
+		performAnalysis(1);
 	}
 
 	@Test
 	public void testWithManyObjectsAnd2Threads() {
-		this.performAnalysis(2);
+		performAnalysis(2);
 	}
 
 	@Test
 	public void testWithManyObjectsAnd4Threads() {
-		this.performAnalysis(4);
+		performAnalysis(4);
 	}
 
 	private void performAnalysis(final int numThreads) {
