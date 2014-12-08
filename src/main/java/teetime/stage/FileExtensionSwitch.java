@@ -1,17 +1,26 @@
 package teetime.stage;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
+import teetime.util.HashMapWithDefault;
+import teetime.util.concurrent.hashmap.ValueFactory;
 
 import com.google.common.io.Files;
 
 public final class FileExtensionSwitch extends AbstractConsumerStage<File> {
 
-	private final Map<String, OutputPort<File>> fileExtensions = new HashMap<String, OutputPort<File>>();
+	private final OutputPort<File> unknownFileExtensionOutputPort = createOutputPort();
+
+	// BETTER use the hppc ObjectObjectMap that provide getOrDefault()
+	private final Map<String, OutputPort<File>> fileExtensions = new HashMapWithDefault<String, OutputPort<File>>(new ValueFactory<OutputPort<File>>() {
+		@Override
+		public OutputPort<File> create() {
+			return unknownFileExtensionOutputPort;
+		}
+	});
 
 	@Override
 	protected void execute(final File file) {
