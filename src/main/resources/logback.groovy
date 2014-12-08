@@ -3,7 +3,7 @@ import ch.qos.logback.classic.filter.ThresholdFilter
 statusListener(OnConsoleStatusListener)
 
 appender("FILE", FileAppender) {
-  file = "src/test/data/load-logs/timings-results.txt"
+  file = "teetime.log"
   append = false
   filter(ThresholdFilter) {
 	level = INFO

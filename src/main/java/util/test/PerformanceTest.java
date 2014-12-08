@@ -28,7 +28,7 @@ public abstract class PerformanceTest {
 	protected List<TimestampObject> timestampObjects;
 
 	static {
-		System.setProperty("logback.configurationFile", "src/test/resources/logback-test.groovy");
+		System.setProperty("logback.configurationFile", "src/test/resources/logback.groovy");
 	}
 
 	@Rule
