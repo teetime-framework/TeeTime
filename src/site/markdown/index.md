@@ -18,16 +18,10 @@ Predefined stages are provided within the source code. You can immediatly start 
 
 ---
 
-##Check again later...
-
-..., as this page and the whole project is still WIP. 
-
-The first stable release will be published soon. For more informations visit: https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime
-
-<!--- ![Logo](images/teetime-wo-arrows-shrinked.png) TeeTime Logo -->
 
 ## What is it?
 
+<!--- ![Logo](images/teetime-wo-arrows-shrinked.png) TeeTime Logo -->
 TeeTime is a Pipes-And-Filter-Framework for Java.
 	
 It provides various features, which will bring you to the next level of analysis programming, such like:
@@ -48,14 +42,22 @@ TeeTime is available in many ways. If your projects use Maven, just add followin
 <dependency>
   <groupId>net.sourceforge.teetime</groupId>
   <artifactId>teetime</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
 </dependency>
 ```
 
-To get the source code or the plain jar, take a look at the download section.
+>TeeTime's first official release is not published yet. For more information, see [download](download.html).
 
-## Concurrency-aware
+To get the source code or the plain jar, take a look at the [download](download.html) section.
 
-TeeTime takes care of a parallel execution of stages. You do not need to think about anything, as TeeTime creates and manages all threads, needed by your analysis.
+## How to use it
+
+To make working with TeeTime as pleasant and efficient as possible, this homepage provides various tools for you, which explain TeeTime's functions.
+
+You can take a closer look at:
+
+- [TeeTime's Wiki](https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home). 
+
+- [API Documentation](apidocs/index.html). 
 
 	 
