@@ -22,7 +22,7 @@ Predefined stages are provided within the source code. You can immediatly start 
 ## What is it?
 
 <!--- ![Logo](images/teetime-wo-arrows-shrinked.png) TeeTime Logo -->
-TeeTime is a Pipes-And-Filter-Framework for Java.
+TeeTime is a Pipes-And-Filters-Framework for Java.
 	
 It provides various features, which will bring you to the next level of analysis programming, such like:
 		
@@ -36,7 +36,7 @@ It provides various features, which will bring you to the next level of analysis
 
 ## Where to get it
 
-TeeTime is available in many ways. If your projects use Maven, just add following dependency to your pom.xml:
+TeeTime is available in many ways. If your projects use Maven, just add following dependency to your ``pom.xml``:
 
 ```xml
 <dependency>
