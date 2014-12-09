@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.stage.stringBuffer.handler;
+package teetime.stage.string.buffer.handler;
 
 import org.slf4j.Logger;
 
-import teetime.stage.stringBuffer.util.KiekerHashMap;
+import teetime.stage.string.buffer.util.KiekerHashMap;
 
 /**
  * @author Christian Wulf

@@ -11,7 +11,7 @@ public class ByteArray2String extends AbstractConsumerStage<byte[]> {
 
 	@Override
 	protected void execute(final byte[] element) {
-		this.send(this.outputPort, new String(element, Charset.forName("UTF-8")));
+		outputPort.send(new String(element, Charset.forName("UTF-8")));
 	}
 
 	public OutputPort<? extends String> getOutputPort() {

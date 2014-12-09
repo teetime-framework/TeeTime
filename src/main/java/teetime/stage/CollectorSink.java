@@ -15,6 +15,7 @@
  ***************************************************************************/
 package teetime.stage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import teetime.framework.AbstractConsumerStage;
@@ -22,45 +23,26 @@ import teetime.framework.AbstractConsumerStage;
 /**
  * @author Christian Wulf
  *
- * @since 1.10
+ * @since 1.0
  */
-public class CollectorSink<T> extends AbstractConsumerStage<T> {
-
-	// private final InputPort<T> inputPort = this.createInputPort();
-	//
-	// public final InputPort<T> getInputPort() {
-	// return this.inputPort;
-	// }
+public final class CollectorSink<T> extends AbstractConsumerStage<T> {
 
 	private final List<T> elements;
-	private final int threshold;
 
-	public CollectorSink(final List<T> list, final int threshold) {
-		this.elements = list;
-		this.threshold = threshold;
+	/**
+	 * Creates a new {@link CollectorSink} with an {@link ArrayList}.
+	 */
+	public CollectorSink() {
+		this(new ArrayList<T>());
 	}
 
 	public CollectorSink(final List<T> list) {
-		this(list, 100000);
-	}
-
-	@Override
-	public void onTerminating() throws Exception {
-		System.out.println("size: " + this.elements.size());
-		super.onTerminating();
+		this.elements = list;
 	}
 
 	@Override
 	protected void execute(final T element) {
 		this.elements.add(element);
-
-		if ((this.elements.size() % this.threshold) == 0) {
-			System.out.println("size: " + this.elements.size());
-		}
-
-		// if (this.elements.size() > 90000) {
-		// // System.out.println("size > 90000: " + this.elements.size());
-		// }
 	}
 
 }

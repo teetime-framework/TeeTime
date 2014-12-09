@@ -17,7 +17,9 @@
 package teetime.stage.basic.merger;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
@@ -27,6 +29,7 @@ import teetime.framework.signal.ISignal;
 /**
  *
  * This stage merges data from the input ports, by taking elements according to the chosen merge strategy and by putting them to the output port.
+ * For its signal handling behavior see {@link #onSignal(ISignal, InputPort)}
  *
  * @author Christian Wulf
  *
@@ -35,13 +38,13 @@ import teetime.framework.signal.ISignal;
  * @param <T>
  *            the type of both the input and output ports
  */
-public class Merger<T> extends AbstractStage {
+public final class Merger<T> extends AbstractStage {
 
 	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	private IMergerStrategy<T> strategy = new RoundRobinStrategy<T>();
 
-	private final Map<Class<?>, Integer> signalMap = new HashMap<Class<?>, Integer>();
+	private final Map<Class<?>, Set<InputPort<?>>> signalMap = new HashMap<Class<?>, Set<InputPort<?>>>();
 
 	@Override
 	public void executeWithPorts() {
@@ -50,25 +53,39 @@ public class Merger<T> extends AbstractStage {
 			return;
 		}
 
-		this.send(this.outputPort, token);
+		outputPort.send(token);
 	}
 
+	/**
+	 * This method is executed, if a signal is sent to a instance of this class.
+	 * Multiple signals of one certain type are ignored, if they are sent to same port.
+	 * Hence a signal is only passed on, when it arrived on all input ports, regardless how often.
+	 *
+	 * @param signal
+	 *            Signal which is sent
+	 *
+	 * @param inputPort
+	 *            The port which the signal was sent to
+	 */
 	@Override
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
 
 		if (signalMap.containsKey(signal.getClass())) {
-			int value = signalMap.get(signal.getClass());
-			value++;
-			if (value == this.getInputPorts().length) {
+			Set<InputPort<?>> set = signalMap.get(signal.getClass());
+			if (!set.add(inputPort)) {
+				this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
+			}
+
+			if (set.size() == this.getInputPorts().length) {
 				this.outputPort.sendSignal(signal);
 				signalMap.remove(signal.getClass());
-			} else {
-				signalMap.put(signal.getClass(), value);
 			}
 		} else {
 			signal.trigger(this);
-			signalMap.put(signal.getClass(), 1);
+			Set<InputPort<?>> tempSet = new HashSet<InputPort<?>>();
+			tempSet.add(inputPort);
+			signalMap.put(signal.getClass(), tempSet);
 		}
 
 	}

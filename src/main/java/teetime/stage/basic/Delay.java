@@ -7,7 +7,7 @@ import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public class Delay<T> extends AbstractStage {
+public final class Delay<T> extends AbstractStage {
 
 	private final InputPort<T> inputPort = this.createInputPort();
 	private final InputPort<Long> timestampTriggerInputPort = this.createInputPort();
@@ -29,7 +29,7 @@ public class Delay<T> extends AbstractStage {
 
 		while (!bufferedElements.isEmpty()) {
 			element = bufferedElements.remove(0);
-			this.send(this.outputPort, element);
+			outputPort.send(element);
 		}
 	}
 

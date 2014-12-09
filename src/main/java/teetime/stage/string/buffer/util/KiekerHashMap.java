@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.stage.stringBuffer.util;
+package teetime.stage.string.buffer.util;
 
 import java.lang.ref.SoftReference;
 import java.util.concurrent.locks.ReentrantLock;

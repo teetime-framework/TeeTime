@@ -3,7 +3,7 @@ package teetime.stage;
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
-public class InstanceCounter<T, C extends T> extends AbstractConsumerStage<T> {
+public final class InstanceCounter<T, C extends T> extends AbstractConsumerStage<T> {
 
 	private final OutputPort<T> outputPort = this.createOutputPort();
 
@@ -20,7 +20,7 @@ public class InstanceCounter<T, C extends T> extends AbstractConsumerStage<T> {
 			this.counter++;
 		}
 
-		this.send(this.outputPort, element);
+		outputPort.send(element);
 	}
 
 	public int getCounter() {

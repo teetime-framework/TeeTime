@@ -8,14 +8,13 @@ import teetime.framework.signal.TerminatingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 
-@SuppressWarnings("PMD.BeanMembersShouldSerialize")
 public class RunnableStage implements Runnable {
 
-	private final IStage stage;
+	private final Stage stage;
 	private final Logger logger; // NOPMD
 	private boolean validationEnabled;
 
-	public RunnableStage(final IStage stage) {
+	public RunnableStage(final Stage stage) {
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
 	}
@@ -47,9 +46,9 @@ public class RunnableStage implements Runnable {
 			this.logger.error("Terminating thread due to the following exception: ", e);
 			throw e;
 		} // catch (RuntimeException e) {
-		// this.logger.error("Terminating thread due to the following exception: ", e);
-		// throw e;
-		// }
+			// this.logger.error("Terminating thread due to the following exception: ", e);
+			// throw e;
+			// }
 
 		this.logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
 	}

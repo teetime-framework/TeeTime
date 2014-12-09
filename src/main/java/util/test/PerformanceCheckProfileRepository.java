@@ -8,12 +8,11 @@ import org.slf4j.LoggerFactory;
 
 public class PerformanceCheckProfileRepository {
 
-	public static final PerformanceCheckProfileRepository INSTANCE = new PerformanceCheckProfileRepository();
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceCheckProfileRepository.class);
 
-	private final Map<Class<?>, AbstractProfiledPerformanceAssertion> performanceCheckProfiles = new HashMap<Class<?>, AbstractProfiledPerformanceAssertion>();
+	public static final PerformanceCheckProfileRepository INSTANCE = new PerformanceCheckProfileRepository();
 
+	private final Map<Class<?>, AbstractProfiledPerformanceAssertion> performanceCheckProfiles = new HashMap<Class<?>, AbstractProfiledPerformanceAssertion>();
 	private String currentProfile;
 
 	public PerformanceCheckProfileRepository() {

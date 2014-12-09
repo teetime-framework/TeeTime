@@ -13,7 +13,7 @@ public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 	@Override
 	protected void execute() {
 		for (T e : this.elements) {
-			this.send(this.outputPort, e);
+			outputPort.send(e);
 		}
 		this.terminate();
 	}

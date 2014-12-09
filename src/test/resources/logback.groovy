@@ -21,7 +21,7 @@ appender("CONSOLE", ConsoleAppender) {
 
 root ERROR, ["CONSOLE"]
 
-logger "teetime.framework", INFO
+//logger "teetime.framework", INFO
 logger "teetime.stage", INFO
 
 logger "util", INFO

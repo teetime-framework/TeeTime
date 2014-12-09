@@ -1,28 +1,16 @@
 package teetime.framework;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Set;
 
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public abstract class AbstractStage implements IStage {
-
-	private final String id;
-	/**
-	 * A unique logger instance per stage instance
-	 */
-	protected final Logger logger; // NOPMD
-
-	private IStage parentStage;
+public abstract class AbstractStage extends Stage {
 
 	private final List<InputPort<?>> inputPortList = new ArrayList<InputPort<?>>();
 	private final List<OutputPort<?>> outputPortList = new ArrayList<OutputPort<?>>();
@@ -32,30 +20,8 @@ public abstract class AbstractStage implements IStage {
 	/** A cached instance of <code>outputPortList</code> to avoid creating an iterator each time iterating it */
 	protected OutputPort<?>[] cachedOutputPorts;
 
-	private final Map<ISignal, Void> visited = new HashMap<ISignal, Void>();
+	private final Set<ISignal> triggeredSignals = new HashSet<ISignal>();
 	private boolean shouldTerminate;
-
-	public AbstractStage() {
-		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
-		this.logger = LoggerFactory.getLogger(this.getClass().getName() + "(" + this.id + ")");
-	}
-
-	/**
-	 * Sends the given <code>element</code> using the default output port
-	 *
-	 * @param element
-	 * @return <code>true</code> iff the given element could be sent, <code>false</code> otherwise (then use a re-try strategy)
-	 */
-	protected final <O> boolean send(final OutputPort<O> outputPort, final O element) {
-		if (!outputPort.send(element)) {
-			return false;
-		}
-
-		outputPort.reportNewElement();
-
-		return true;
-		// return outputPort.send(element);
-	}
 
 	private void connectUnconnectedOutputPorts() {
 		for (OutputPort<?> outputPort : this.cachedOutputPorts) {
@@ -74,21 +40,6 @@ public abstract class AbstractStage implements IStage {
 		return this.cachedOutputPorts;
 	}
 
-	@Override
-	public IStage getParentStage() {
-		return this.parentStage;
-	}
-
-	@Override
-	public void setParentStage(final IStage parentStage, final int index) {
-		this.parentStage = parentStage;
-	}
-
-	@Override
-	public String getId() {
-		return this.id;
-	}
-
 	/**
 	 * May not be invoked outside of IPipe implementations
 	 */
@@ -104,12 +55,12 @@ public abstract class AbstractStage implements IStage {
 	}
 
 	protected boolean alreadyVisited(final ISignal signal, final InputPort<?> inputPort) {
-		if (this.visited.containsKey(signal)) {
+		if (this.triggeredSignals.contains(signal)) {
 			this.logger.trace("Got signal: " + signal + " again from input port: " + inputPort);
 			return true;
 		} else {
 			this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
-			this.visited.put(signal, null);
+			this.triggeredSignals.add(signal);
 			return false;
 		}
 	}
@@ -156,11 +107,6 @@ public abstract class AbstractStage implements IStage {
 				}
 			}
 		}
-	}
-
-	@Override
-	public String toString() {
-		return this.getClass().getName() + ": " + this.id;
 	}
 
 	@Override

@@ -21,15 +21,15 @@ import teetime.util.ConstructorClosure;
 /**
  * @author Christian Wulf
  *
- * @since 1.10
+ * @since 1.0
  */
-public class ObjectProducer<T> extends AbstractProducerStage<T> {
+public final class ObjectProducer<T> extends AbstractProducerStage<T> {
 
 	private long numInputObjects;
 	private ConstructorClosure<T> inputObjectCreator;
 
 	/**
-	 * @since 1.10
+	 * @since 1.0
 	 */
 	public ObjectProducer(final long numInputObjects, final ConstructorClosure<T> inputObjectCreator) {
 		this.numInputObjects = numInputObjects;
@@ -57,7 +57,7 @@ public class ObjectProducer<T> extends AbstractProducerStage<T> {
 		T newObject = this.inputObjectCreator.create();
 		this.numInputObjects--;
 
-		this.send(this.outputPort, newObject);
+		outputPort.send(newObject);
 
 		if (this.numInputObjects == 0) {
 			this.terminate();

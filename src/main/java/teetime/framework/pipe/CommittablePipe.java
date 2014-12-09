@@ -1,5 +1,6 @@
 package teetime.framework.pipe;
 
+import teetime.framework.AbstractIntraThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.util.list.CommittableResizableArrayQueue;

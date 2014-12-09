@@ -1,8 +1,8 @@
 package teetime.examples.loopStage;
 
+import teetime.framework.AbstractProducerStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.AbstractProducerStage;
 
 public class Countdown extends AbstractProducerStage<Void> {
 
@@ -26,10 +26,10 @@ public class Countdown extends AbstractProducerStage<Void> {
 	protected void execute() {
 		Integer countdown = this.countdownInputPort.receive();
 		if (countdown == 0) {
-			this.send(this.outputPort, null);
+			outputPort.send(null);
 			this.terminate();
 		} else {
-			this.send(this.newCountdownOutputPort, --countdown);
+			newCountdownOutputPort.send(--countdown);
 		}
 	}
 

@@ -46,7 +46,7 @@ public class File2TextLinesFilter extends AbstractConsumerStage<File> {
 			while ((line = reader.readLine()) != null) {
 				line = line.trim();
 				if (line.length() != 0) {
-					this.send(this.outputPort, new TextLine(textFile, line));
+					outputPort.send(new TextLine(textFile, line));
 				} // else: ignore empty line
 			}
 		} catch (final FileNotFoundException e) {

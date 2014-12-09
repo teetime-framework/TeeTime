@@ -10,10 +10,10 @@ import teetime.stage.CipherByteArray;
 import teetime.stage.CipherByteArray.CipherMode;
 import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
-import teetime.stage.Tokenizer;
 import teetime.stage.ZipByteArray;
 import teetime.stage.ZipByteArray.ZipMode;
 import teetime.stage.io.File2ByteArray;
+import teetime.stage.string.Tokenizer;
 
 public class TokenizerConfiguration extends AnalysisConfiguration {
 

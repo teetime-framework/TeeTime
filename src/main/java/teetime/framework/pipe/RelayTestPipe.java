@@ -1,5 +1,6 @@
 package teetime.framework.pipe;
 
+import teetime.framework.AbstractInterThreadPipe;
 import teetime.util.ConstructorClosure;
 
 public final class RelayTestPipe<T> extends AbstractInterThreadPipe {

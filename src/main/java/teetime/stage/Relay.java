@@ -1,11 +1,11 @@
 package teetime.stage;
 
-import teetime.framework.InputPort;
+import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.AbstractProducerStage;
-import teetime.framework.pipe.AbstractInterThreadPipe;
+import teetime.framework.InputPort;
 import teetime.framework.signal.TerminatingSignal;
 
-public class Relay<T> extends AbstractProducerStage<T> {
+public final class Relay<T> extends AbstractProducerStage<T> {
 
 	private final InputPort<T> inputPort = this.createInputPort();
 
@@ -21,7 +21,7 @@ public class Relay<T> extends AbstractProducerStage<T> {
 			Thread.yield();
 			return;
 		}
-		this.send(this.outputPort, element);
+		outputPort.send(element);
 	}
 
 	@Override

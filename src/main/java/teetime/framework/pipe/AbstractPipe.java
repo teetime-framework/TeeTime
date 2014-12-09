@@ -1,6 +1,6 @@
 package teetime.framework.pipe;
 
-import teetime.framework.IStage;
+import teetime.framework.Stage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
@@ -13,7 +13,7 @@ public abstract class AbstractPipe implements IPipe {
 	 * this.getPipe().getTargetPort().getOwningStage()
 	 * </pre>
 	 */
-	protected IStage cachedTargetStage;
+	protected Stage cachedTargetStage;
 
 	private InputPort<?> targetPort;
 

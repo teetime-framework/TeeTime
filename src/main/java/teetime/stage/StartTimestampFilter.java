@@ -24,14 +24,14 @@ import teetime.util.TimestampObject;
  *
  * @since 1.10
  */
-public class StartTimestampFilter extends AbstractConsumerStage<TimestampObject> {
+public final class StartTimestampFilter extends AbstractConsumerStage<TimestampObject> {
 
 	private final OutputPort<TimestampObject> outputPort = this.createOutputPort();
 
 	@Override
 	protected void execute(final TimestampObject element) {
 		element.setStartTimestamp(System.nanoTime());
-		this.send(this.outputPort, element);
+		outputPort.send(element);
 	}
 
 	public OutputPort<TimestampObject> getOutputPort() {

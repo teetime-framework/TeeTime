@@ -9,20 +9,22 @@ public final class OutputPort<T> extends AbstractPort<T> {
 	}
 
 	/**
-	 *
 	 * @param element
-	 * @return <code>true</code> iff the given <code>element</code> could be sent, <code>false</code> otherwise (then use a re-try strategy)
+	 *            to be sent
 	 */
-	public boolean send(final T element) {
-		return this.pipe.add(element);
+	public void send(final T element) {
+		if (this.pipe.add(element)) {
+			this.pipe.reportNewElement();
+		}
 	}
 
+	/**
+	 *
+	 * @param signal
+	 *            to be sent
+	 */
 	public void sendSignal(final ISignal signal) {
 		this.pipe.sendSignal(signal);
-	}
-
-	public void reportNewElement() {
-		this.pipe.reportNewElement();
 	}
 
 }

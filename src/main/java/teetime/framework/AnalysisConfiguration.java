@@ -8,15 +8,15 @@ import teetime.framework.pipe.PipeFactoryRegistry;
 public class AnalysisConfiguration {
 
 	protected static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
-	private final List<IStage> threadableStageJobs = new LinkedList<IStage>();
+	private final List<Stage> threadableStageJobs = new LinkedList<Stage>();
 
 	public AnalysisConfiguration() {}
 
-	List<IStage> getThreadableStageJobs() {
+	List<Stage> getThreadableStageJobs() {
 		return this.threadableStageJobs;
 	}
 
-	public void addThreadableStage(final IStage stage) {
+	public void addThreadableStage(final Stage stage) {
 		this.threadableStageJobs.add(stage);
 	}
 

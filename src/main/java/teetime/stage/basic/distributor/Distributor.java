@@ -22,7 +22,7 @@ import teetime.framework.OutputPort;
 /**
  * @author Christian Wulf
  *
- * @since 1.10
+ * @since 1.0
  *
  * @param T
  *            the type of the input port and the output ports

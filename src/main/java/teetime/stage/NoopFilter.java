@@ -21,15 +21,15 @@ import teetime.framework.OutputPort;
 /**
  * @author Christian Wulf
  *
- * @since 1.10
+ * @since 1.0
  */
-public class NoopFilter<T> extends AbstractConsumerStage<T> {
+public final class NoopFilter<T> extends AbstractConsumerStage<T> {
 
 	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	@Override
 	protected void execute(final T element) {
-		this.send(this.outputPort, element);
+		outputPort.send(element);
 	}
 
 	public OutputPort<T> getOutputPort() {

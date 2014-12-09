@@ -75,7 +75,7 @@ public class CipherByteArray extends AbstractConsumerStage<byte[]> {
 			e.printStackTrace();
 		}
 
-		this.send(this.outputPort, output);
+		outputPort.send(output);
 	}
 
 	public OutputPort<? extends byte[]> getOutputPort() {

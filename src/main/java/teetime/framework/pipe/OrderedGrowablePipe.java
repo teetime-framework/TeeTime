@@ -2,6 +2,7 @@ package teetime.framework.pipe;
 
 import java.util.LinkedList;
 
+import teetime.framework.AbstractIntraThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 

@@ -25,7 +25,7 @@ public class Cache<T> extends AbstractConsumerStage<T> {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		for (T cachedElement : this.cachedObjects) {
-			this.send(this.outputPort, cachedElement);
+			outputPort.send(cachedElement);
 		}
 		stopWatch.end();
 		this.logger.debug("Emitting took " + TimeUnit.NANOSECONDS.toMillis(stopWatch.getDurationInNs()) + " ms");

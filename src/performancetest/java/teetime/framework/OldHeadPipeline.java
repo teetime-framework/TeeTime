@@ -1,7 +1,7 @@
 package teetime.framework;
 
 @Deprecated
-public class OldHeadPipeline<FirstStage extends IStage, LastStage extends IStage> extends OldPipeline<FirstStage, LastStage> implements IStage {
+public final class OldHeadPipeline<FirstStage extends Stage, LastStage extends Stage> extends OldPipeline<FirstStage, LastStage> {
 
 	public OldHeadPipeline() {}
 

@@ -1,4 +1,4 @@
-package teetime.framework;
+package teetime.util.classpath;
 
 import java.io.IOException;
 import java.net.URL;
@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import teetime.util.classpath.FileSearcher;
 
 public class FileSearcherTest {
 

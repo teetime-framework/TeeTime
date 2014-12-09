@@ -81,11 +81,11 @@ public class CommittableResizableArrayQueue<T> implements CommittableQueue<T> {
 		this.replaceCurrentArrayBy(newElements);
 	}
 
-	private void shrink() {
-		T[] newElements = this.arrayPool.acquire(this.elements.length / 2);
-		// System.out.println("shrink: " + this.lastFreeIndexUncommitted);
-		this.replaceCurrentArrayBy(newElements);
-	}
+	// private void shrink() {
+	// T[] newElements = this.arrayPool.acquire(this.elements.length / 2);
+	// // System.out.println("shrink: " + this.lastFreeIndexUncommitted);
+	// this.replaceCurrentArrayBy(newElements);
+	// }
 
 	private final void replaceCurrentArrayBy(final T[] newElements) {
 		this.copyArray(this.elements, newElements);
