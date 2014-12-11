@@ -1,7 +1,8 @@
 package teetime.framework;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public abstract class Stage {
+public abstract class Stage { // NOPMD (should not start with "Abstract")
+
+	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
 
 	private final String id;
 	/**
@@ -18,8 +21,8 @@ public abstract class Stage {
 	protected final Logger logger; // NOPMD
 
 	protected Stage() {
-		this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
-		this.logger = LoggerFactory.getLogger(this.getClass().getName() + "(" + this.id + ")");
+		this.id = this.createId();
+		this.logger = LoggerFactory.getLogger(this.id);
 	}
 
 	public String getId() {
@@ -29,6 +32,23 @@ public abstract class Stage {
 	@Override
 	public String toString() {
 		return this.getClass().getName() + ": " + this.getId();
+	}
+
+	private String createId() {
+		String simpleName = this.getClass().getSimpleName();
+
+		Integer numInstances = INSTANCES_COUNTER.get(simpleName);
+		if (null == numInstances) {
+			numInstances = 0;
+		}
+
+		String newId = simpleName + "-" + numInstances;
+		INSTANCES_COUNTER.put(simpleName, ++numInstances);
+		return newId;
+	}
+
+	static void clearInstanceCounters() { // NOPMD (package-private to clear map in tests)
+		INSTANCES_COUNTER.clear();
 	}
 
 	// public abstract Stage getParentStage();

@@ -12,7 +12,7 @@ public class AnalysisConfiguration {
 
 	public AnalysisConfiguration() {}
 
-	List<Stage> getThreadableStageJobs() {
+	List<Stage> getThreadableStageJobs() { // NOPMD only Analysis should use this method
 		return this.threadableStageJobs;
 	}
 
