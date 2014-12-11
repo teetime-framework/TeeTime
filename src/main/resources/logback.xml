@@ -1,0 +1,36 @@
+<configuration>
+	<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>teetime.log</file>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+		<append>false</append>
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+			by default -->
+		<encoder>
+			<pattern>%msg%n</pattern>
+		</encoder>
+		<filter>
+		</filter>
+	</appender>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} %level %logger - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="util.TimingsReader" level="TRACE">
+		<appender-ref ref="FILE" />
+	</logger>
+
+	<logger name="util.BucketTimingsReader" level="TRACE">
+		<appender-ref ref="FILE" />
+	</logger>
+
+	<root level="WARN">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
