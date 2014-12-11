@@ -34,16 +34,16 @@ public abstract class Stage { // NOPMD (should not start with "Abstract"
 	}
 
 	private String createId() {
-		int instances = 0;
 		String simpleName = this.getClass().getSimpleName();
 
-		if (INSTANCES_COUNTER.containsKey(simpleName)) {
-			instances = INSTANCES_COUNTER.get(simpleName);
+		Integer numInstances = INSTANCES_COUNTER.get(simpleName);
+		if (null == numInstances) {
+			numInstances = 0;
 		}
 
-		String id = simpleName + "-" + instances;
-		INSTANCES_COUNTER.put(simpleName, ++instances);
-		return id;
+		String newId = simpleName + "-" + numInstances;
+		INSTANCES_COUNTER.put(simpleName, ++numInstances);
+		return newId;
 	}
 
 	// public abstract Stage getParentStage();
