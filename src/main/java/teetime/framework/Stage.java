@@ -1,8 +1,8 @@
 package teetime.framework;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,14 +13,14 @@ import teetime.framework.validation.InvalidPortConnection;
 public abstract class Stage {
 
 	private final String id;
-	private final static Map<String, Integer> instancesCounter = new HashMap<String, Integer>();
+	private static final Map<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
 	/**
 	 * A unique logger instance per stage instance
 	 */
-	protected final Logger logger; // NOPMD
+	protected final Logger logger;
 
 	protected Stage() {
-		this.id = this.nameInstance();
+		this.id = this.createId();
 		this.logger = LoggerFactory.getLogger(this.getClass().getName() + "-" + this.id);
 	}
 
@@ -33,17 +33,17 @@ public abstract class Stage {
 		return this.getClass().getName() + ": " + this.getId();
 	}
 
-	private String nameInstance() {
+	private String createId() {
 		int instances = 0;
 		String id;
 		String simpleName = this.getClass().getSimpleName();
 
-		if (instancesCounter.containsKey(simpleName)) {
-			instances = instancesCounter.get(simpleName);
+		if (INSTANCES_COUNTER.containsKey(simpleName)) {
+			instances = INSTANCES_COUNTER.get(simpleName);
 		}
 
 		id = simpleName + "-" + instances;
-		instancesCounter.put(simpleName, ++instances);
+		INSTANCES_COUNTER.put(simpleName, ++instances);
 		return id;
 	}
 
