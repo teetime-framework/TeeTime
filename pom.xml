@@ -67,6 +67,11 @@
 		<tag>teetime-1.0</tag>
 	</scm>
 
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/</url>
+	</ciManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -116,7 +121,7 @@
 
 	<build>
 		<plugins>
-
+			<!-- Release plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
@@ -426,5 +431,6 @@
 			</build>
 		</profile>
 	</profiles>
+
 
 </project>
