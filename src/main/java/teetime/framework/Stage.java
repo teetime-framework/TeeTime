@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public abstract class Stage { // NOPMD (should not start with "Abstract"
+public abstract class Stage { // NOPMD (should not start with "Abstract")
 
 	private final String id;
 	private static final Map<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
