@@ -1,6 +1,6 @@
 #### TeeTime
 
-![Screenshot](images/code_screenshot.jpg)
+![Screenshot](images/code_screenshot.png)
 
 Implement your analysis or filters in a new, easy and fast way.
 
@@ -12,7 +12,7 @@ The main focus is on fast execution and easy usage.
 
 #### Start today
 
-![Pipelining](images/code_screenshot.jpg)
+![Pipelining](images/code_screenshot.png)
 
 Predefined stages are provided within the source code. You can immediatly start to write your own analysis.
 
