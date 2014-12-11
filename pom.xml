@@ -23,7 +23,16 @@
 		<java.version>1.6</java.version>
 	</properties>
 
+	<issueManagement>
+		<system>GitLab</system>
+		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/issues/</url>
+	</issueManagement>
+
 	<distributionManagement>
+		<site>
+			<id>teetime.sf.net</id>
+			<url>scp://shell.sourceforge.net/home/project-web/teetime/htdocs</url>
+		</site>
 		<snapshotRepository>
 			<id>teetime-deployment</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -55,7 +64,13 @@
 		<connection>scm:git:https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime.git</connection>
 		<developerConnection>scm:git:ssh://gitlab@build.se.informatik.uni-kiel.de:chw/teetime.git</developerConnection>
 		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/</url>
+		<tag>teetime-1.0</tag>
 	</scm>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/</url>
+	</ciManagement>
 
 	<dependencies>
 		<dependency>
@@ -101,7 +116,12 @@
 
 	<build>
 		<plugins>
-
+			<!-- Release plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.1</version>
+			</plugin>
 			<!-- we want JDK 1.6 source and binary compatibility -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -194,7 +214,9 @@
 				<executions>
 					<execution>
 						<phase>test</phase>
-						<goals><goal>check</goal></goals>
+						<goals>
+							<goal>check</goal>
+						</goals>
 						<configuration>
 							<configLocation>${project.basedir}/conf/quality-config/cs-conf.xml</configLocation>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
@@ -254,12 +276,59 @@
 					</execution>
 				</executions>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.3</version>
+				<dependencies>
+					<!-- for using markdown syntax -->
+					<dependency>
+						<groupId>org.apache.maven.doxia</groupId>
+						<artifactId>doxia-module-markdown</artifactId>
+						<version>1.3</version>
+					</dependency>
+					<!-- add support for ssh/scp -->
+					<dependency>
+						<groupId>org.apache.maven.wagon</groupId>
+						<artifactId>wagon-ssh</artifactId>
+						<version>1.0</version>
+					</dependency>
+					<!-- skin -->
+					<dependency>
+						<groupId>lt.velykis.maven.skins</groupId>
+						<artifactId>reflow-velocity-tools</artifactId>
+						<version>1.1.1</version>
+					</dependency>
+					<!-- Reflow skin requires Velocity >= 1.7 -->
+					<dependency>
+						<groupId>org.apache.velocity</groupId>
+						<artifactId>velocity</artifactId>
+						<version>1.7</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 		</plugins>
 	</build>
 
 	<reporting>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.11</version>
+				<configuration>
+					<issueLinkTemplatePerSystem>
+						<Gitlab>%URL%/%ISSUE%</Gitlab>
+					</issueLinkTemplatePerSystem>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
@@ -271,6 +340,19 @@
 						</reports>
 					</reportSet>
 				</reportSets>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.1</version>
+				<configuration>
+					<links>
+						<link>${basedir}/src/site/index.html</link>
+					</links>
+					<!-- <stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile> -->
+					<!-- <show>public</show> -->
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -344,5 +426,6 @@
 			</build>
 		</profile>
 	</profiles>
+
 
 </project>

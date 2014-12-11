@@ -1,0 +1,19 @@
+<document xmlns="http://maven.apache.org/changes/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+	<properties>
+		<title>Release notes</title>
+	</properties>
+	<body>
+		<release version="Snapshot" date="Daily basis" description="Unstable preview of oncoming versions">
+			<action dev="ntd" type="add" issue="66">
+				Created a new site to promote TeeTime.
+			</action>
+		</release>
+		<release version="1.0" date="Soon" description="Initial release">
+			<action type="add">
+				Initial release of TeeTime
+			</action>
+		</release>
+	</body>
+</document>
