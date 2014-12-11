@@ -12,11 +12,9 @@
 		<encoder>
 			<pattern>%msg%n</pattern>
 		</encoder>
-		<filter>
-		</filter>
 	</appender>
 
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} %level %logger - %msg%n</pattern>
 		</encoder>
@@ -26,6 +24,6 @@
 	<logger name="util" level="INFO" />
 
 	<root level="ERROR">
-		<appender-ref ref="STDOUT" />
+		<appender-ref ref="CONSOLE" />
 	</root>
 </configuration>
