@@ -2,6 +2,7 @@ package teetime.framework;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,7 @@ import teetime.framework.validation.InvalidPortConnection;
 public abstract class Stage {
 
 	private final String id;
-	private static HashMap<String, Integer> instancesCounter = new HashMap<String, Integer>();
+	private final static Map<String, Integer> instancesCounter = new HashMap<String, Integer>();
 	/**
 	 * A unique logger instance per stage instance
 	 */
@@ -20,8 +21,7 @@ public abstract class Stage {
 
 	protected Stage() {
 		this.id = this.nameInstance();
-		// this.id = UUID.randomUUID().toString(); // the id should only be represented by a UUID, not additionally by the class name
-		this.logger = LoggerFactory.getLogger(this.getClass().getName() + "(" + this.id + ")");
+		this.logger = LoggerFactory.getLogger(this.getClass().getName() + "-" + this.id);
 	}
 
 	public String getId() {
