@@ -10,14 +10,14 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public abstract class Stage {
+public abstract class Stage { // NOPMD (should not start with "Abstract"
 
 	private final String id;
 	private static final Map<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
 	/**
 	 * A unique logger instance per stage instance
 	 */
-	protected final Logger logger;
+	protected final Logger logger; // NOPMD
 
 	protected Stage() {
 		this.id = this.createId();
@@ -35,14 +35,13 @@ public abstract class Stage {
 
 	private String createId() {
 		int instances = 0;
-		String id;
 		String simpleName = this.getClass().getSimpleName();
 
 		if (INSTANCES_COUNTER.containsKey(simpleName)) {
 			instances = INSTANCES_COUNTER.get(simpleName);
 		}
 
-		id = simpleName + "-" + instances;
+		String id = simpleName + "-" + instances;
 		INSTANCES_COUNTER.put(simpleName, ++instances);
 		return id;
 	}
