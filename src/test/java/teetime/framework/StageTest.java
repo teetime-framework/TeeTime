@@ -10,6 +10,8 @@ public class StageTest {
 
 	@Test
 	public void testId() {
+		Stage.clearInstanceCounters();
+
 		Counter<Object> counter0 = new Counter<Object>();
 		Counter<Object> counter1 = new Counter<Object>();
 		Assert.assertEquals("Counter-0", counter0.getId());
