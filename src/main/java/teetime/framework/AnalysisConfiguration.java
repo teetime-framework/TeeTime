@@ -16,6 +16,12 @@ public class AnalysisConfiguration {
 		return this.threadableStageJobs;
 	}
 
+	/**
+	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
+	 *
+	 * @param stage
+	 *            A arbitrary stage, which will be added to the configuration und executed in a thread.
+	 */
 	public void addThreadableStage(final Stage stage) {
 		this.threadableStageJobs.add(stage);
 	}
