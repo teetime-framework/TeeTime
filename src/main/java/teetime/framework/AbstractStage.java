@@ -32,10 +32,20 @@ public abstract class AbstractStage extends Stage {
 		}
 	}
 
+	/**
+	 * Returns an Array of InputPorts associated with the according Stage.
+	 *
+	 * @return Array of InputPorts
+	 */
 	protected InputPort<?>[] getInputPorts() {
 		return this.cachedInputPorts;
 	}
 
+	/**
+	 * Returns an Array of OutputPorts associated with the according Stage.
+	 *
+	 * @return Array of OutputPorts
+	 */
 	protected OutputPort<?>[] getOutputPorts() {
 		return this.cachedOutputPorts;
 	}
@@ -54,6 +64,15 @@ public abstract class AbstractStage extends Stage {
 		}
 	}
 
+	/**
+	 * This method checks, if the signal was already sent to the Stage
+	 *
+	 * @param signal
+	 *            Arriving signal
+	 * @param inputPort
+	 *            InputPort which received the signal
+	 * @return true if stage already evaluated the signal, false otherwise
+	 */
 	protected boolean alreadyVisited(final ISignal signal, final InputPort<?> inputPort) {
 		if (this.triggeredSignals.contains(signal)) {
 			this.logger.trace("Got signal: " + signal + " again from input port: " + inputPort);
@@ -80,6 +99,11 @@ public abstract class AbstractStage extends Stage {
 		this.terminate();
 	}
 
+	/**
+	 * Creates and adds an InputPort to the stage
+	 *
+	 * @return Newly added InputPort
+	 */
 	protected <T> InputPort<T> createInputPort() {
 		final InputPort<T> inputPort = new InputPort<T>(this);
 		// inputPort.setType(portType);
@@ -87,6 +111,11 @@ public abstract class AbstractStage extends Stage {
 		return inputPort;
 	}
 
+	/**
+	 * Creates and adds an OutputPort to the stage
+	 *
+	 * @return Newly added OutputPort
+	 */
 	protected <T> OutputPort<T> createOutputPort() {
 		final OutputPort<T> outputPort = new OutputPort<T>();
 		// outputPort.setType(portType);
