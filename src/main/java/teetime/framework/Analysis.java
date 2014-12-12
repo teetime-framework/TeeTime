@@ -23,11 +23,17 @@ public class Analysis implements UncaughtExceptionHandler {
 
 	private final Collection<Pair<Thread, Throwable>> exceptions = new ConcurrentLinkedQueue<Pair<Thread, Throwable>>();
 
+	private boolean initExecuted = false;
+
 	public Analysis(final AnalysisConfiguration configuration) {
 		this.configuration = configuration;
 	}
 
+	/**
+	 * This initializes Analysis and needs to be run right before starting it.
+	 */
 	public void init() {
+		initExecuted = true;
 		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		for (Stage stage : threadableStageJobs) {
 			final Thread thread = new Thread(new RunnableStage(stage));
@@ -49,10 +55,14 @@ public class Analysis implements UncaughtExceptionHandler {
 	}
 
 	/**
+	 * This method will start the Analysis and all containing stages.
 	 *
 	 * @return a collection of thread/throwable pairs
 	 */
 	public Collection<Pair<Thread, Throwable>> start() {
+		if (!initExecuted) {
+			LOGGER.error("init() not executed before starting the analysis");
+		}
 		// start analysis
 		startThreads(this.consumerThreads);
 		startThreads(this.finiteProducerThreads);
@@ -93,6 +103,11 @@ public class Analysis implements UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 * Retrieves the Configuration which was used to add and arrange all stages needed for the Analysis
+	 *
+	 * @return Configuration used for the Analysis
+	 */
 	public AnalysisConfiguration getConfiguration() {
 		return this.configuration;
 	}
