@@ -25,6 +25,11 @@ public abstract class Stage { // NOPMD (should not start with "Abstract")
 		this.logger = LoggerFactory.getLogger(this.id);
 	}
 
+	/**
+	 * Retrieves the identifier associated with the stage
+	 *
+	 * @return An id as String
+	 */
 	public String getId() {
 		return this.id;
 	}
@@ -56,6 +61,7 @@ public abstract class Stage { // NOPMD (should not start with "Abstract")
 	// public abstract void setParentStage(Stage parentStage, int index);
 
 	/**
+	 * This should check, if the OutputPorts are connected correctly. This is needed to avoid NullPointerExceptions and other errors.
 	 *
 	 * @param invalidPortConnections
 	 *            <i>(Passed as parameter for performance reasons)</i>
