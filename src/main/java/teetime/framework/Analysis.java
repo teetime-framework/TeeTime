@@ -11,6 +11,13 @@ import org.slf4j.LoggerFactory;
 
 import teetime.util.Pair;
 
+/**
+ * Represents an Analysis to which stages can be added and executed later.
+ * This needs a {@link AnalysisConfiguration},
+ * in which the adding and configuring of stages takes place.
+ * To start the analysis {@link #init()} and {@link #start()} need to be executed in this order.
+ * This class will automatically create threads and join them without any further commitment.
+ */
 public class Analysis implements UncaughtExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Analysis.class);

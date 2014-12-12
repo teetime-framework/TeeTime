@@ -10,6 +10,10 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
+/**
+ * Represents a minimal Stage, with some pre-defined methods.
+ * Implemented stages need to adapt all abstract methods with own implementations.
+ */
 public abstract class Stage { // NOPMD (should not start with "Abstract")
 
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();

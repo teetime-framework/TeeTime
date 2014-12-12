@@ -5,6 +5,10 @@ import java.util.List;
 
 import teetime.framework.pipe.PipeFactoryRegistry;
 
+/**
+ * Represents a configuration of connected stages, which is needed to run a analysis.
+ * Stages can be added by executing {@link #addThreadableStage(Stage)}.
+ */
 public class AnalysisConfiguration {
 
 	protected static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
