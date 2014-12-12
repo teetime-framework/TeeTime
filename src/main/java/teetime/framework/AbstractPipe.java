@@ -1,8 +1,6 @@
-package teetime.framework.pipe;
+package teetime.framework;
 
-import teetime.framework.Stage;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.pipe.IPipe;
 
 public abstract class AbstractPipe implements IPipe {
 

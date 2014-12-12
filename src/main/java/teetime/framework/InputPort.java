@@ -1,8 +1,6 @@
 package teetime.framework;
 
-import teetime.framework.pipe.IPipe;
-
-public class InputPort<T> extends AbstractPort<T> {
+public final class InputPort<T> extends AbstractPort<T> {
 
 	private final Stage owningStage;
 
@@ -11,26 +9,13 @@ public class InputPort<T> extends AbstractPort<T> {
 		this.owningStage = owningStage;
 	}
 
-	public T receive() {
-		@SuppressWarnings("unchecked")
-		final T element = (T) this.pipe.removeLast();
-		return element;
-	}
-
-	public T read() {
-		@SuppressWarnings("unchecked")
-		final T element = (T) this.pipe.readLast();
-		return element;
-	}
-
 	/**
-	 * Connects this input port with the given <code>pipe</code> bi-directionally
 	 *
-	 * @param pipe
+	 * @return the next element from the connected pipe
 	 */
-	@Override
-	public void setPipe(final IPipe pipe) {
-		this.pipe = pipe;
+	@SuppressWarnings("unchecked")
+	public T receive() {
+		return (T) this.pipe.removeLast();
 	}
 
 	public Stage getOwningStage() {

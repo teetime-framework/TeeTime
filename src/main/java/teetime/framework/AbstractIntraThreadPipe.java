@@ -1,6 +1,5 @@
 package teetime.framework;
 
-import teetime.framework.pipe.AbstractPipe;
 import teetime.framework.signal.ISignal;
 
 public abstract class AbstractIntraThreadPipe extends AbstractPipe {
