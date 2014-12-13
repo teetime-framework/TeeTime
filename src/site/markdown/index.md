@@ -36,7 +36,7 @@ It provides various features, which will bring you to the next level of analysis
 
 ## Where to get it?
 
-You can get TeeTime through a various ways. If your projects uses Maven, just add following dependency to your ``pom.xml``:
+You can get TeeTime through various ways. If your projects uses Maven, just add following dependency to your ``pom.xml``:
 
 ```xml
 <dependency>
