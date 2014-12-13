@@ -34,7 +34,7 @@ It provides various features, which will bring you to the next level of analysis
 		
 - Pre-defined stages and pipelines
 
-## Where to get it
+## Where to get it?
 
 TeeTime is available in many ways. If your projects use Maven, just add following dependency to your ``pom.xml``:
 
@@ -50,7 +50,7 @@ TeeTime is available in many ways. If your projects use Maven, just add followin
 
 To get the source code or the plain jar, take a look at the [download](download.html) section.
 
-## How to use it
+## How to use it?
 
 To make working with TeeTime as pleasant and efficient as possible, this homepage provides various tools for you, which explain TeeTime's functions.
 

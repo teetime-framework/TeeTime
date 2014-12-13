@@ -62,6 +62,7 @@
 			</brand>
 			<slogan>
 				<![CDATA[
+				<img src="images/teetime-256.png">
 				<span class="slogan">The next level Pipes-And-Filters-Framework for Java</span>
 				]]>
 			</slogan>
