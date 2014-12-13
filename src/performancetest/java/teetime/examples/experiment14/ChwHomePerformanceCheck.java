@@ -30,6 +30,8 @@ class ChwHomePerformanceCheck extends AbstractPerformanceCheck {
 		// since 04.11.2014 (incl.)
 		// assertEquals(84, medianSpeedup, 2.1); // +22
 		// since 05.12.2014 (incl.)
-		assertEquals(75, medianSpeedup, 2.1); // -9
+		// assertEquals(75, medianSpeedup, 2.1); // -9
+		// since 13.12.2014 (incl.)
+		assertEquals(44, medianSpeedup, 2.1); // -31
 	}
 }

@@ -5,9 +5,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import util.test.AbstractProfiledPerformanceAssertion;
 import util.test.PerformanceResult;
 import util.test.PerformanceTest;
-import util.test.AbstractProfiledPerformanceAssertion;
 
 public class ChwHomeComparisonMethodcallWithPorts extends AbstractProfiledPerformanceAssertion {
 
@@ -69,8 +69,12 @@ public class ChwHomeComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 		// assertEquals(75, value17, 4.1); // +22
 
 		// since 04.11.2014 (incl.)
+		// assertEquals(40, value15, 4.1); // -28
+		// assertEquals(78, value17, 4.1); // +3
+
+		// since 13.12.2014 (incl.)
 		assertEquals(40, value15, 4.1); // -28
-		assertEquals(78, value17, 4.1); // +3
+		assertEquals(43, value17, 4.1); // -35
 
 		// below results vary too much, possibly due to the OS' scheduler
 		// assertEquals(RESULT_TESTS_16, (double) test16a.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
