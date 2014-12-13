@@ -24,7 +24,7 @@ Predefined stages are provided within the source code. You can immediatly start 
 <!--- ![Logo](images/teetime-wo-arrows-shrinked.png) TeeTime Logo -->
 TeeTime is a Pipes-And-Filters-Framework for Java.
 	
-It provides various features, which will bring you to the next level of analysis programming, such like:
+It provides various features, which will bring you to the next level of analysis programming, such as:
 		
 - Concurrent execution of stages
 		
@@ -36,7 +36,7 @@ It provides various features, which will bring you to the next level of analysis
 
 ## Where to get it?
 
-TeeTime is available in many ways. If your projects use Maven, just add following dependency to your ``pom.xml``:
+You can get TeeTime through a various ways. If your projects uses Maven, just add following dependency to your ``pom.xml``:
 
 ```xml
 <dependency>
@@ -56,7 +56,7 @@ To make working with TeeTime as pleasant and efficient as possible, this homepag
 
 You can take a closer look at:
 
-- [TeeTime's Wiki](https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home). 
+- [TeeTime's Wiki](https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home), or 
 
 - [API Documentation](apidocs/index.html). 
 
