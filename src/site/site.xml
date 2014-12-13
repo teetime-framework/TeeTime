@@ -7,7 +7,9 @@
 
 	<bannerLeft>
 		<name>
-			TeeTime
+			<![CDATA[
+					<img src="images/teetime-256.png">
+					]]>
 		</name>
 		<href>http://teetime.sourceforge.net</href>
 	</bannerLeft>
@@ -62,7 +64,6 @@
 			</brand>
 			<slogan>
 				<![CDATA[
-				<img src="images/teetime-256.png">
 				<span class="slogan">The next level Pipes-And-Filters-Framework for Java</span>
 				]]>
 			</slogan>
