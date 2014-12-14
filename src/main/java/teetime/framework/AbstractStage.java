@@ -33,18 +33,14 @@ public abstract class AbstractStage extends Stage {
 	}
 
 	/**
-	 * Returns an Array of InputPorts associated with the according Stage.
-	 *
-	 * @return Array of InputPorts
+	 * @return the stage's input ports
 	 */
 	protected InputPort<?>[] getInputPorts() {
 		return this.cachedInputPorts;
 	}
 
 	/**
-	 * Returns an Array of OutputPorts associated with the according Stage.
-	 *
-	 * @return Array of OutputPorts
+	 * @return the stage's output ports
 	 */
 	protected OutputPort<?>[] getOutputPorts() {
 		return this.cachedOutputPorts;
@@ -55,7 +51,7 @@ public abstract class AbstractStage extends Stage {
 	 */
 	@Override
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
-		if (!this.alreadyVisited(signal, inputPort)) {
+		if (!this.signalAlreadyReceived(signal, inputPort)) {
 			signal.trigger(this);
 
 			for (OutputPort<?> outputPort : this.outputPortList) {
@@ -65,15 +61,13 @@ public abstract class AbstractStage extends Stage {
 	}
 
 	/**
-	 * This method checks, if the signal was already sent to the Stage
-	 *
 	 * @param signal
-	 *            Arriving signal
+	 *            arriving signal
 	 * @param inputPort
-	 *            InputPort which received the signal
-	 * @return true if stage already evaluated the signal, false otherwise
+	 *            which received the signal
+	 * @return <code>true</code> if this stage has already received the given <code>signal</code>, <code>false</code> otherwise
 	 */
-	protected boolean alreadyVisited(final ISignal signal, final InputPort<?> inputPort) {
+	protected boolean signalAlreadyReceived(final ISignal signal, final InputPort<?> inputPort) {
 		if (this.triggeredSignals.contains(signal)) {
 			this.logger.trace("Got signal: " + signal + " again from input port: " + inputPort);
 			return true;
