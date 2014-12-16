@@ -183,7 +183,7 @@
 							<goal>check</goal>
 						</goals>
 						<configuration>
-							<configLocation>${project.basedir}/conf/quality-config/cs-conf.xml</configLocation>
+							<configLocation>${basedir}/conf/quality-config/cs-conf.xml</configLocation>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
 							<encoding>UTF-8</encoding>
 							<consoleOutput>true</consoleOutput>
