@@ -38,6 +38,11 @@
 		</repository>
 	</distributionManagement>
 
+	<issueManagement>
+		<system>GitLab</system>
+		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/issues/</url>
+	</issueManagement>
+
 	<developers>
 		<developer>
 			<id>chw</id>
@@ -60,6 +65,11 @@
 		<developerConnection>scm:git:ssh://gitlab@build.se.informatik.uni-kiel.de:chw/teetime.git</developerConnection>
 		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/</url>
 	</scm>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/</url>
+	</ciManagement>
 
 	<dependencies>
 		<dependency>
@@ -111,7 +121,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
-
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -184,7 +193,7 @@
 							<goal>check</goal>
 						</goals>
 						<configuration>
-							<configLocation>${project.basedir}/conf/quality-config/cs-conf.xml</configLocation>
+							<configLocation>${basedir}/conf/quality-config/cs-conf.xml</configLocation>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
 							<encoding>UTF-8</encoding>
 							<consoleOutput>true</consoleOutput>
@@ -206,7 +215,7 @@
 					<threshold>Low</threshold>
 					<includeTests>true</includeTests>
 					<failOnError>false</failOnError>
-					<excludeFilterFile>${project.basedir}/conf/quality-config/fb-filter.xml</excludeFilterFile>
+					<excludeFilterFile>${basedir}/conf/quality-config/fb-filter.xml</excludeFilterFile>
 				</configuration>
 				<executions>
 					<execution>
@@ -226,7 +235,7 @@
 
 				<configuration>
 					<rulesets>
-						<ruleset>${project.basedir}/conf/quality-config/pmd-ruleset.xml</ruleset>
+						<ruleset>${basedir}/conf/quality-config/pmd-ruleset.xml</ruleset>
 					</rulesets>
 					<includeTests>true</includeTests>
 					<targetJdk>${java.version}</targetJdk>
@@ -280,6 +289,24 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.11</version>
+				<configuration>
+					<issueLinkTemplatePerSystem>
+						<Gitlab>%URL%/%ISSUE%</Gitlab>
+					</issueLinkTemplatePerSystem>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<!-- Checkstyle -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>2.13</version>
 				<reportSets>
@@ -290,7 +317,11 @@
 					</reportSet>
 				</reportSets>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
@@ -331,8 +362,6 @@
 					</plugin>
 				</plugins>
 			</build>
-			<activation>
-			</activation>
 		</profile>
 		<profile>
 			<id>signing</id>
