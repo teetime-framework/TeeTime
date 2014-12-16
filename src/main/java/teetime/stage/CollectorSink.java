@@ -45,4 +45,8 @@ public final class CollectorSink<T> extends AbstractConsumerStage<T> {
 		this.elements.add(element);
 	}
 
+	public List<T> getElements() {
+		return elements;
+	}
+
 }
