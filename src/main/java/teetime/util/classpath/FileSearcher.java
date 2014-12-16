@@ -18,8 +18,8 @@ public final class FileSearcher {
 		final List<URL> list = new ArrayList<URL>();
 
 		final Enumeration<URL> systemRes = CLASS_LOADER.getResources(name);
-		while (systemRes.hasMoreElements()) { // NOPMD
-			list.add(systemRes.nextElement()); // NOPMD
+		while (systemRes.hasMoreElements()) { 
+			list.add(systemRes.nextElement()); 
 		}
 		return list;
 	}

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public abstract class Stage { // NOPMD (should not start with "Abstract")
+public abstract class Stage { 
 
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
 
@@ -18,7 +18,7 @@ public abstract class Stage { // NOPMD (should not start with "Abstract")
 	/**
 	 * A unique logger instance per stage instance
 	 */
-	protected final Logger logger; // NOPMD
+	protected final Logger logger; 
 
 	protected Stage() {
 		this.id = this.createId();
@@ -47,7 +47,7 @@ public abstract class Stage { // NOPMD (should not start with "Abstract")
 		return newId;
 	}
 
-	static void clearInstanceCounters() { // NOPMD (package-private to clear map in tests)
+	static void clearInstanceCounters() { 
 		INSTANCES_COUNTER.clear();
 	}
 

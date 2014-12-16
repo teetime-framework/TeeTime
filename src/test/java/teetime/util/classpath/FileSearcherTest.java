@@ -16,19 +16,19 @@ public class FileSearcherTest {
 	@Test
 	public void fileInClasspath() throws IOException {
 		final List<URL> list = FileSearcher.loadResources("pipe-factories.conf");
-		Assert.assertEquals(false, list.isEmpty()); // NOPMD
+		Assert.assertEquals(false, list.isEmpty()); 
 	}
 
 	@Test
 	public void multipleFiles() throws IOException {
 		final List<URL> list = FileSearcher.loadResources("LICENSE.txt");
-		Assert.assertEquals(true, list.size() > 1); // NOPMD
+		Assert.assertEquals(true, list.size() > 1); 
 	}
 
 	@Test
 	public void missingFile() throws IOException {
 		final List<URL> list = FileSearcher.loadResources("filethatdoesnotexistinanyproject.nope");
-		Assert.assertEquals(true, list.isEmpty()); // NOPMD
+		Assert.assertEquals(true, list.isEmpty()); 
 	}
 
 }
