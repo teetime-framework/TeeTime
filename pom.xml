@@ -23,11 +23,6 @@
 		<java.version>1.6</java.version>
 	</properties>
 
-	<issueManagement>
-		<system>GitLab</system>
-		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/issues/</url>
-	</issueManagement>
-
 	<distributionManagement>
 		<site>
 			<id>teetime.sf.net</id>
@@ -42,6 +37,11 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
+
+	<issueManagement>
+		<system>GitLab</system>
+		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/issues/</url>
+	</issueManagement>
 
 	<developers>
 		<developer>
@@ -64,7 +64,6 @@
 		<connection>scm:git:https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime.git</connection>
 		<developerConnection>scm:git:ssh://gitlab@build.se.informatik.uni-kiel.de:chw/teetime.git</developerConnection>
 		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/</url>
-		<tag>teetime-1.0</tag>
 	</scm>
 
 	<ciManagement>
@@ -116,18 +115,12 @@
 
 	<build>
 		<plugins>
-			<!-- Release plugin -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.1</version>
-			</plugin>
+
 			<!-- we want JDK 1.6 source and binary compatibility -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
-
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -176,8 +169,6 @@
 				</executions>
 			</plugin>
 
-
-
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -190,27 +181,11 @@
 				</configuration>
 			</plugin>
 
-			<!-- <plugin> -->
-			<!-- <groupId>org.apache.maven.plugins</groupId> -->
-			<!-- <artifactId>maven-shade-plugin</artifactId> -->
-			<!-- <executions> -->
-			<!-- <execution> -->
-			<!-- <phase>package</phase> -->
-			<!-- <goals> -->
-			<!-- <goal>shade</goal> -->
-			<!-- </goals> -->
-			<!-- </execution> -->
-			<!-- </executions> -->
-			<!-- <configuration> -->
-			<!-- <finalName>${project.artifactId}-${project.version}-with-dependencies</finalName> -->
-			<!-- </configuration> -->
-			<!-- </plugin> -->
-
 			<!-- Checkstyle -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.13</version>
+				<version>2.12</version>
 				<executions>
 					<execution>
 						<phase>test</phase>
@@ -218,7 +193,7 @@
 							<goal>check</goal>
 						</goals>
 						<configuration>
-							<configLocation>${project.basedir}/conf/quality-config/cs-conf.xml</configLocation>
+							<configLocation>${basedir}/conf/quality-config/cs-conf.xml</configLocation>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
 							<encoding>UTF-8</encoding>
 							<consoleOutput>true</consoleOutput>
@@ -240,7 +215,7 @@
 					<threshold>Low</threshold>
 					<includeTests>true</includeTests>
 					<failOnError>false</failOnError>
-					<excludeFilterFile>${project.basedir}/conf/quality-config/fb-filter.xml</excludeFilterFile>
+					<excludeFilterFile>${basedir}/conf/quality-config/fb-filter.xml</excludeFilterFile>
 				</configuration>
 				<executions>
 					<execution>
@@ -260,7 +235,7 @@
 
 				<configuration>
 					<rulesets>
-						<ruleset>${project.basedir}/conf/quality-config/pmd-ruleset.xml</ruleset>
+						<ruleset>${basedir}/conf/quality-config/pmd-ruleset.xml</ruleset>
 					</rulesets>
 					<includeTests>true</includeTests>
 					<targetJdk>${java.version}</targetJdk>
@@ -329,6 +304,7 @@
 					</reportSet>
 				</reportSets>
 			</plugin>
+			<!-- Checkstyle -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
@@ -341,7 +317,6 @@
 					</reportSet>
 				</reportSets>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -354,7 +329,6 @@
 					<!-- <show>public</show> -->
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
@@ -395,8 +369,6 @@
 					</plugin>
 				</plugins>
 			</build>
-			<activation>
-			</activation>
 		</profile>
 		<profile>
 			<id>signing</id>
@@ -426,6 +398,5 @@
 			</build>
 		</profile>
 	</profiles>
-
 
 </project>
