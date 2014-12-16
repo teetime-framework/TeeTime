@@ -50,24 +50,13 @@ public class Analysis implements UncaughtExceptionHandler {
 
 	/**
 	 *
-	 * @return a map of thread/throwable pair
+	 * @return a collection of thread/throwable pairs
 	 */
 	public Collection<Pair<Thread, Throwable>> start() {
 		// start analysis
-		for (Thread thread : this.consumerThreads) {
-			thread.setUncaughtExceptionHandler(this);
-			thread.start();
-		}
-
-		for (Thread thread : this.finiteProducerThreads) {
-			thread.setUncaughtExceptionHandler(this);
-			thread.start();
-		}
-
-		for (Thread thread : this.infiniteProducerThreads) {
-			thread.setUncaughtExceptionHandler(this);
-			thread.start();
-		}
+		startThreads(this.consumerThreads);
+		startThreads(this.finiteProducerThreads);
+		startThreads(this.infiniteProducerThreads);
 
 		// wait for the analysis to complete
 		try {
@@ -97,12 +86,19 @@ public class Analysis implements UncaughtExceptionHandler {
 		return this.exceptions;
 	}
 
+	private void startThreads(final Iterable<Thread> threads) {
+		for (Thread thread : threads) {
+			thread.setUncaughtExceptionHandler(this);
+			thread.start();
+		}
+	}
+
 	public AnalysisConfiguration getConfiguration() {
 		return this.configuration;
 	}
 
 	@Override
-	public void uncaughtException(final Thread t, final Throwable e) {
-		this.exceptions.add(Pair.of(t, e));
+	public void uncaughtException(final Thread thread, final Throwable throwable) {
+		this.exceptions.add(Pair.of(thread, throwable));
 	}
 }

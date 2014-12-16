@@ -7,7 +7,6 @@ import org.jctools.queues.spec.ConcurrentQueueSpec;
 import org.jctools.queues.spec.Ordering;
 import org.jctools.queues.spec.Preference;
 
-import teetime.framework.pipe.AbstractPipe;
 import teetime.framework.signal.ISignal;
 
 public abstract class AbstractInterThreadPipe extends AbstractPipe {
