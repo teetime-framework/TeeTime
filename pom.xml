@@ -38,6 +38,11 @@
 		</repository>
 	</distributionManagement>
 
+	<issueManagement>
+		<system>GitLab</system>
+		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/issues/</url>
+	</issueManagement>
+
 	<developers>
 		<developer>
 			<id>chw</id>
@@ -60,6 +65,11 @@
 		<developerConnection>scm:git:ssh://gitlab@build.se.informatik.uni-kiel.de:chw/teetime.git</developerConnection>
 		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/</url>
 	</scm>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/</url>
+	</ciManagement>
 
 	<dependencies>
 		<dependency>
@@ -307,7 +317,18 @@
 					</reportSet>
 				</reportSets>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.1</version>
+				<configuration>
+					<links>
+						<link>${basedir}/src/site/index.html</link>
+					</links>
+					<!-- <stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile> -->
+					<!-- <show>public</show> -->
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
