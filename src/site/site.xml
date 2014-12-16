@@ -7,7 +7,9 @@
 
 	<bannerLeft>
 		<name>
-			TeeTime
+			<![CDATA[
+					<img src="http://teetime.sourceforge.net/images/teetime-path.svg" id="logo">
+					]]>
 		</name>
 		<href>http://teetime.sourceforge.net</href>
 	</bannerLeft>
