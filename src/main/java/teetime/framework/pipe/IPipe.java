@@ -5,7 +5,7 @@ import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
 
 /**
- * Represents an interface, which should be adapted by all implementations of pipes.
+ * Represents a pipe that connects an output port with an input port.
  */
 public interface IPipe {
 
@@ -14,14 +14,14 @@ public interface IPipe {
 	 *
 	 * @param element
 	 *            Element which will be added
-	 * @return True if the element could be added, false otherwise
+	 * @return <code>true</code> if the element could be added, false otherwise
 	 */
 	boolean add(Object element);
 
 	/**
 	 * Checks whether the pipe is empty or not.
 	 *
-	 * @return True if the pipe is empty, false otherwise.
+	 * @return <code>true</code> if the pipe is empty, false otherwise.
 	 */
 	boolean isEmpty();
 
