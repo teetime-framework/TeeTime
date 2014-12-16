@@ -32,10 +32,16 @@ public abstract class AbstractStage extends Stage {
 		}
 	}
 
+	/**
+	 * @return the stage's input ports
+	 */
 	protected InputPort<?>[] getInputPorts() {
 		return this.cachedInputPorts;
 	}
 
+	/**
+	 * @return the stage's output ports
+	 */
 	protected OutputPort<?>[] getOutputPorts() {
 		return this.cachedOutputPorts;
 	}
@@ -45,7 +51,7 @@ public abstract class AbstractStage extends Stage {
 	 */
 	@Override
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
-		if (!this.alreadyVisited(signal, inputPort)) {
+		if (!this.signalAlreadyReceived(signal, inputPort)) {
 			signal.trigger(this);
 
 			for (OutputPort<?> outputPort : this.outputPortList) {
@@ -54,7 +60,14 @@ public abstract class AbstractStage extends Stage {
 		}
 	}
 
-	protected boolean alreadyVisited(final ISignal signal, final InputPort<?> inputPort) {
+	/**
+	 * @param signal
+	 *            arriving signal
+	 * @param inputPort
+	 *            which received the signal
+	 * @return <code>true</code> if this stage has already received the given <code>signal</code>, <code>false</code> otherwise
+	 */
+	protected boolean signalAlreadyReceived(final ISignal signal, final InputPort<?> inputPort) {
 		if (this.triggeredSignals.contains(signal)) {
 			this.logger.trace("Got signal: " + signal + " again from input port: " + inputPort);
 			return true;
@@ -80,6 +93,11 @@ public abstract class AbstractStage extends Stage {
 		this.terminate();
 	}
 
+	/**
+	 * Creates and adds an InputPort to the stage
+	 *
+	 * @return Newly added InputPort
+	 */
 	protected <T> InputPort<T> createInputPort() {
 		final InputPort<T> inputPort = new InputPort<T>(this);
 		// inputPort.setType(portType);
@@ -87,6 +105,11 @@ public abstract class AbstractStage extends Stage {
 		return inputPort;
 	}
 
+	/**
+	 * Creates and adds an OutputPort to the stage
+	 *
+	 * @return Newly added OutputPort
+	 */
 	protected <T> OutputPort<T> createOutputPort() {
 		final OutputPort<T> outputPort = new OutputPort<T>();
 		// outputPort.setType(portType);

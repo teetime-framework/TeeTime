@@ -10,7 +10,11 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
-public abstract class Stage { 
+/**
+ * Represents a minimal Stage, with some pre-defined methods.
+ * Implemented stages need to adapt all abstract methods with own implementations.
+ */
+public abstract class Stage { // NOPMD (should not start with "Abstract")
 
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
 
@@ -18,13 +22,18 @@ public abstract class Stage {
 	/**
 	 * A unique logger instance per stage instance
 	 */
-	protected final Logger logger; 
+	protected final Logger logger;
 
 	protected Stage() {
 		this.id = this.createId();
 		this.logger = LoggerFactory.getLogger(this.id);
 	}
 
+	/**
+	 * Retrieves the identifier associated with the stage
+	 *
+	 * @return An id as String
+	 */
 	public String getId() {
 		return this.id;
 	}
@@ -47,7 +56,7 @@ public abstract class Stage {
 		return newId;
 	}
 
-	static void clearInstanceCounters() { 
+	static void clearInstanceCounters() {
 		INSTANCES_COUNTER.clear();
 	}
 
@@ -56,6 +65,7 @@ public abstract class Stage {
 	// public abstract void setParentStage(Stage parentStage, int index);
 
 	/**
+	 * This should check, if the OutputPorts are connected correctly. This is needed to avoid NullPointerExceptions and other errors.
 	 *
 	 * @param invalidPortConnections
 	 *            <i>(Passed as parameter for performance reasons)</i>
