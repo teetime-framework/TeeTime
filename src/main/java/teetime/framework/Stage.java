@@ -14,7 +14,8 @@ import teetime.framework.validation.InvalidPortConnection;
  * Represents a minimal Stage, with some pre-defined methods.
  * Implemented stages need to adapt all abstract methods with own implementations.
  */
-public abstract class Stage { // NOPMD (should not start with "Abstract")
+@SuppressWarnings("PMD.AbstractNaming")
+public abstract class Stage {
 
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
 
@@ -22,6 +23,7 @@ public abstract class Stage { // NOPMD (should not start with "Abstract")
 	/**
 	 * A unique logger instance per stage instance
 	 */
+	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
 	protected Stage() {
@@ -30,9 +32,7 @@ public abstract class Stage { // NOPMD (should not start with "Abstract")
 	}
 
 	/**
-	 * Retrieves the identifier associated with the stage
-	 *
-	 * @return An id as String
+	 * @return an identifier that is unique among all stage instances. It is especially unique among all instances of the same stage type.
 	 */
 	public String getId() {
 		return this.id;
@@ -56,6 +56,7 @@ public abstract class Stage { // NOPMD (should not start with "Abstract")
 		return newId;
 	}
 
+	@SuppressWarnings("PMD.DefaultPackage")
 	static void clearInstanceCounters() {
 		INSTANCES_COUNTER.clear();
 	}
