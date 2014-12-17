@@ -36,7 +36,7 @@ public class Analysis implements UncaughtExceptionHandler {
 	}
 
 	private void validateStages() {
-		// TODO validate concurrently
+		// BETTER validate concurrently
 		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		for (Stage stage : threadableStageJobs) {
 			// portConnectionValidator.validate(stage);
