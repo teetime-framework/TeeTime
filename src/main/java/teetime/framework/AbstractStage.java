@@ -119,7 +119,8 @@ public abstract class AbstractStage extends Stage {
 
 	@Override
 	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
-		for (OutputPort<?> outputPort : this.getOutputPorts()) {
+		// for (OutputPort<?> outputPort : this.getOutputPorts()) {
+		for (OutputPort<?> outputPort : this.outputPortList) {
 			final IPipe pipe = outputPort.getPipe();
 			if (null != pipe) { // if output port is connected with another one
 				final Class<?> sourcePortType = outputPort.getType();

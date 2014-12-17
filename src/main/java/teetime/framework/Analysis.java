@@ -33,13 +33,13 @@ public class Analysis implements UncaughtExceptionHandler {
 	private final Collection<Pair<Thread, Throwable>> exceptions = new ConcurrentLinkedQueue<Pair<Thread, Throwable>>();
 
 	/**
-	 * Creates a new {@link Analysis} that initially validates the port connections.
+	 * Creates a new {@link Analysis} that skips validating the port connections.
 	 *
 	 * @param configuration
 	 *            to be used for the analysis
 	 */
 	public Analysis(final AnalysisConfiguration configuration) {
-		this(configuration, true);
+		this(configuration, false);
 	}
 
 	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled) {
