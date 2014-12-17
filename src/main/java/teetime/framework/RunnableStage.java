@@ -11,7 +11,8 @@ import teetime.framework.validation.AnalysisNotValidException;
 public class RunnableStage implements Runnable {
 
 	private final Stage stage;
-	private final Logger logger; 
+	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
+	private final Logger logger;
 	private boolean validationEnabled;
 
 	public RunnableStage(final Stage stage) {
