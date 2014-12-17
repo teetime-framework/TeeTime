@@ -3,17 +3,11 @@ package teetime.framework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.signal.StartingSignal;
-import teetime.framework.signal.TerminatingSignal;
-import teetime.framework.signal.ValidatingSignal;
-import teetime.framework.validation.AnalysisNotValidException;
+abstract class RunnableStage implements Runnable {
 
-public class RunnableStage implements Runnable {
-
-	private final Stage stage;
+	protected final Stage stage;
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
-	private final Logger logger;
-	private boolean validationEnabled;
+	protected final Logger logger;
 
 	public RunnableStage(final Stage stage) {
 		this.stage = stage;
@@ -21,44 +15,37 @@ public class RunnableStage implements Runnable {
 	}
 
 	@Override
-	public void run() {
+	public final void run() {
 		this.logger.debug("Executing runnable stage...");
 
-		if (this.validationEnabled) {
-			final ValidatingSignal validatingSignal = new ValidatingSignal();
-			this.stage.onSignal(validatingSignal, null);
-			if (validatingSignal.getInvalidPortConnections().size() > 0) {
-				throw new AnalysisNotValidException(validatingSignal.getInvalidPortConnections());
-			}
-		}
-
 		try {
-			final StartingSignal startingSignal = new StartingSignal();
-			this.stage.onSignal(startingSignal, null);
+			beforeStageExecution();
 
 			do {
-				this.stage.executeWithPorts();
+				try {
+					this.stage.executeWithPorts();
+				} catch (NotEnoughInputException e) {
+					// 1. check for terminating signal
+					// new Thread().getState() == State.WAITING
+
+					// 2. check for no input reaction: this.getStrategy()
+					// 2.1 if BUSY_WAITING with timeout to then sleep(to)
+					// 2.2 if BLOCKING_WAIT then
+
+				}
 			} while (!this.stage.shouldBeTerminated());
 
-			final TerminatingSignal terminatingSignal = new TerminatingSignal();
-			this.stage.onSignal(terminatingSignal, null);
+			afterStageExecution();
 
 		} catch (Error e) {
 			this.logger.error("Terminating thread due to the following exception: ", e);
 			throw e;
-		} // catch (RuntimeException e) {
-			// this.logger.error("Terminating thread due to the following exception: ", e);
-			// throw e;
-			// }
+		}
 
 		this.logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
 	}
 
-	public boolean isValidationEnabled() {
-		return this.validationEnabled;
-	}
+	protected abstract void beforeStageExecution();
 
-	public void setValidationEnabled(final boolean validationEnabled) {
-		this.validationEnabled = validationEnabled;
-	}
+	protected abstract void afterStageExecution();
 }

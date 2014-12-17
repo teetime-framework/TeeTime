@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import teetime.framework.OldHeadPipeline;
-import teetime.framework.RunnableStage;
+import teetime.framework.RunnableProducerStage;
 import teetime.framework.pipe.OrderedGrowableArrayPipe;
 import teetime.framework.pipe.SpScPipe;
 import teetime.stage.CollectorSink;
@@ -58,7 +58,7 @@ public class MethodCallThroughputAnalysis19 {
 	public void init() {
 		OldHeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> producerPipeline = this.buildProducerPipeline(this.numInputObjects,
 				this.inputObjectCreator);
-		this.producerThread = new Thread(new RunnableStage(producerPipeline));
+		this.producerThread = new Thread(new RunnableProducerStage(producerPipeline));
 
 		this.numWorkerThreads = Math.min(NUM_WORKER_THREADS, this.numWorkerThreads);
 
@@ -68,7 +68,7 @@ public class MethodCallThroughputAnalysis19 {
 			this.timestampObjectsList.add(resultList);
 
 			OldHeadPipeline<?, ?> pipeline = this.buildPipeline(producerPipeline.getLastStage(), resultList);
-			this.workerThreads[i] = new Thread(new RunnableStage(pipeline));
+			this.workerThreads[i] = new Thread(new RunnableProducerStage(pipeline));
 		}
 
 	}

@@ -18,7 +18,7 @@ package teetime.examples.experiment10;
 import java.util.List;
 
 import teetime.framework.OldHeadPipeline;
-import teetime.framework.RunnableStage;
+import teetime.framework.RunnableProducerStage;
 import teetime.framework.pipe.SingleElementPipe;
 import teetime.stage.CollectorSink;
 import teetime.stage.NoopFilter;
@@ -73,7 +73,7 @@ public class MethodCallThroughputAnalysis10 {
 		SingleElementPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
 		SingleElementPipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
-		return new RunnableStage(pipeline);
+		return new RunnableProducerStage(pipeline);
 	}
 
 	public void start() {

@@ -20,6 +20,7 @@ public final class Relay<T> extends AbstractProducerStage<T> {
 			}
 			Thread.yield();
 			return;
+			// returnNoElement();
 		}
 		outputPort.send(element);
 	}

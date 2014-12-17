@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import teetime.framework.OldHeadPipeline;
-import teetime.framework.RunnableStage;
+import teetime.framework.RunnableProducerStage;
 import teetime.framework.Stage;
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
@@ -62,7 +62,7 @@ public class MethodCallThroughputAnalysis17 {
 	public void init() {
 		OldHeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> producerPipeline = this.buildProducerPipeline(this.numInputObjects,
 				this.inputObjectCreator);
-		this.producerThread = new Thread(new RunnableStage(producerPipeline));
+		this.producerThread = new Thread(new RunnableProducerStage(producerPipeline));
 
 		int numWorkerThreads = Math.min(NUM_WORKER_THREADS, 1); // only for testing purpose
 
@@ -72,7 +72,7 @@ public class MethodCallThroughputAnalysis17 {
 			this.timestampObjectsList.add(resultList);
 
 			OldHeadPipeline<?, ?> pipeline = this.buildPipeline(null, resultList);
-			this.workerThreads[i] = new Thread(new RunnableStage(pipeline));
+			this.workerThreads[i] = new Thread(new RunnableProducerStage(pipeline));
 		}
 
 		// this.producerThread = new Thread(new Runnable() {
@@ -96,7 +96,7 @@ public class MethodCallThroughputAnalysis17 {
 
 		// this.producerThread.start();
 		// this.producerThread.run();
-		new RunnableStage(producerPipeline).run();
+		new RunnableProducerStage(producerPipeline).run();
 
 		// try {
 		// this.producerThread.join();
