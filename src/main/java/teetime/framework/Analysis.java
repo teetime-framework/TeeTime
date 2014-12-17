@@ -32,6 +32,15 @@ public class Analysis implements UncaughtExceptionHandler {
 
 	public Analysis(final AnalysisConfiguration configuration) {
 		this.configuration = configuration;
+		validateStages();
+	}
+
+	private void validateStages() {
+		// TODO validate concurrently
+		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
+		for (Stage stage : threadableStageJobs) {
+			// portConnectionValidator.validate(stage);
+		}
 	}
 
 	/**
