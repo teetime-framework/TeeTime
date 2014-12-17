@@ -22,17 +22,7 @@ abstract class RunnableStage implements Runnable {
 			beforeStageExecution();
 
 			do {
-				try {
-					this.stage.executeWithPorts();
-				} catch (NotEnoughInputException e) {
-					// 1. check for terminating signal
-					// new Thread().getState() == State.WAITING
-
-					// 2. check for no input reaction: this.getStrategy()
-					// 2.1 if BUSY_WAITING with timeout to then sleep(to)
-					// 2.2 if BLOCKING_WAIT then
-
-				}
+				executeStage();
 			} while (!this.stage.shouldBeTerminated());
 
 			afterStageExecution();
@@ -46,6 +36,8 @@ abstract class RunnableStage implements Runnable {
 	}
 
 	protected abstract void beforeStageExecution();
+
+	protected abstract void executeStage();
 
 	protected abstract void afterStageExecution();
 }

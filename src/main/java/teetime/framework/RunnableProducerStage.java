@@ -16,6 +16,11 @@ public final class RunnableProducerStage extends RunnableStage {
 	}
 
 	@Override
+	protected void executeStage() {
+		this.stage.executeWithPorts();
+	}
+
+	@Override
 	protected void afterStageExecution() {
 		final TerminatingSignal terminatingSignal = new TerminatingSignal();
 		this.stage.onSignal(terminatingSignal, null);
