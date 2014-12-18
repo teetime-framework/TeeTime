@@ -18,7 +18,7 @@ If you use Maven, simply add following lines to your ``pom.xml``:
 <dependency>
 	<groupId>net.sourceforge.teetime</groupId>
 	<artifactId>teetime</artifactId>
-	<version>VERSION</version>
+	<version>1.0</version>
 </dependency>
 ```
 
