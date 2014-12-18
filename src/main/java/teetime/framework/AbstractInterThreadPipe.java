@@ -21,11 +21,15 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 	@Override
 	public void sendSignal(final ISignal signal) {
 		this.signalQueue.offer(signal);
+		System.out.println("send signal: " + signal + " to " + cachedTargetStage);
 
 		Thread owningThread = cachedTargetStage.getOwningThread();
 		if (owningThread.getState() == State.WAITING || owningThread.getState() == State.TIMED_WAITING) {
 			owningThread.interrupt();
+			System.out.println("interrupted " + owningThread);
 		}
+
+		System.out.println("Signal sent.");
 	}
 
 	/**

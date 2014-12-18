@@ -21,8 +21,6 @@ import java.util.List;
 
 import teetime.framework.AnalysisConfiguration;
 import teetime.framework.OldHeadPipeline;
-import teetime.framework.RunnableConsumerStage;
-import teetime.framework.RunnableProducerStage;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
@@ -43,7 +41,7 @@ import teetime.util.TimestampObject;
  *
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis16 extends AnalysisConfiguration {
+class AnalysisConfiguration16 extends AnalysisConfiguration {
 
 	private static final int SPSC_INITIAL_CAPACITY = 100100;
 	private static final int NUM_WORKER_THREADS = Runtime.getRuntime().availableProcessors();
@@ -52,35 +50,31 @@ public class MethodCallThroughputAnalysis16 extends AnalysisConfiguration {
 
 	private int numInputObjects;
 	private ConstructorClosure<TimestampObject> inputObjectCreator;
-	private int numNoopFilters;
+	private final int numNoopFilters;
 
 	private final List<List<TimestampObject>> timestampObjectsList = new LinkedList<List<TimestampObject>>();
 
-	private Thread producerThread;
-
-	private Thread[] workerThreads;
-
 	private int numWorkerThreads;
 
-	public MethodCallThroughputAnalysis16() {
-		intraThreadPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+	public AnalysisConfiguration16(final int numWorkerThreads, final int numNoopFilters) {
+		this.numWorkerThreads = numWorkerThreads;
+		this.numNoopFilters = numNoopFilters;
+		this.intraThreadPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 	}
 
-	public void init() {
+	public void build() {
 		OldHeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> producerPipeline = this.buildProducerPipeline(this.numInputObjects,
 				this.inputObjectCreator);
-		this.producerThread = new Thread(new RunnableProducerStage(producerPipeline));
+		addThreadableStage(producerPipeline);
 
 		this.numWorkerThreads = Math.min(NUM_WORKER_THREADS, this.numWorkerThreads);
 
-		this.workerThreads = new Thread[this.numWorkerThreads];
-		for (int i = 0; i < this.workerThreads.length; i++) {
+		for (int i = 0; i < numWorkerThreads; i++) {
 			List<TimestampObject> resultList = new ArrayList<TimestampObject>(this.numInputObjects);
 			this.timestampObjectsList.add(resultList);
 
 			OldHeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> workerPipeline = this.buildPipeline(producerPipeline, resultList);
-			this.workerThreads[i] = new Thread(new RunnableConsumerStage(workerPipeline));
-			workerPipeline.setOwningThread(this.workerThreads[i]);
+			addThreadableStage(workerPipeline);
 		}
 	}
 
@@ -136,30 +130,6 @@ public class MethodCallThroughputAnalysis16 extends AnalysisConfiguration {
 		return pipeline;
 	}
 
-	public void start() {
-		this.producerThread.start();
-
-		for (Thread workerThread : this.workerThreads) {
-			workerThread.start();
-		}
-
-		try {
-			this.producerThread.join();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		try {
-			for (Thread workerThread : this.workerThreads) {
-				workerThread.join();
-			}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	public void setInput(final int numInputObjects, final ConstructorClosure<TimestampObject> inputObjectCreator) {
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;
@@ -169,20 +139,12 @@ public class MethodCallThroughputAnalysis16 extends AnalysisConfiguration {
 		return this.numNoopFilters;
 	}
 
-	public void setNumNoopFilters(final int numNoopFilters) {
-		this.numNoopFilters = numNoopFilters;
-	}
-
 	public List<List<TimestampObject>> getTimestampObjectsList() {
 		return this.timestampObjectsList;
 	}
 
 	public int getNumWorkerThreads() {
 		return this.numWorkerThreads;
-	}
-
-	public void setNumWorkerThreads(final int numWorkerThreads) {
-		this.numWorkerThreads = numWorkerThreads;
 	}
 
 }

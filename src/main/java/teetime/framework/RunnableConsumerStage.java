@@ -21,6 +21,12 @@ public final class RunnableConsumerStage extends RunnableStage {
 	@Override
 	protected void beforeStageExecution() {
 		// TODO wait for starting signal
+		do {
+			checkforSignals();
+			// logger.trace("Signals checked.");
+			Thread.yield();
+		} while (stage.getInputPorts().length == 0);
+		logger.debug("Stage initialized");
 	}
 
 	@Override

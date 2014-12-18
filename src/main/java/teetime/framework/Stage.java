@@ -30,7 +30,7 @@ public abstract class Stage {
 
 	protected Stage() {
 		this.id = this.createId();
-		this.logger = LoggerFactory.getLogger(this.id);
+		this.logger = LoggerFactory.getLogger(this.getClass().getCanonicalName() + ":" + id);
 	}
 
 	/**

@@ -21,6 +21,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import teetime.framework.Analysis;
 import teetime.util.ConstructorClosure;
 import teetime.util.ListUtil;
 import teetime.util.TimestampObject;
@@ -81,15 +82,16 @@ public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest 
 		System.out.println("Testing teetime (mc) with NUM_OBJECTS_TO_CREATE=" + NUM_OBJECTS_TO_CREATE + ", NUM_NOOP_FILTERS="
 				+ NUM_NOOP_FILTERS + "...");
 
-		final MethodCallThroughputAnalysis16 analysis = new MethodCallThroughputAnalysis16();
-		analysis.setNumWorkerThreads(numThreads);
-		analysis.setNumNoopFilters(NUM_NOOP_FILTERS);
-		analysis.setInput(NUM_OBJECTS_TO_CREATE, new ConstructorClosure<TimestampObject>() {
+		final AnalysisConfiguration16 configuration = new AnalysisConfiguration16(numThreads, NUM_NOOP_FILTERS);
+		configuration.setInput(NUM_OBJECTS_TO_CREATE, new ConstructorClosure<TimestampObject>() {
 			@Override
 			public TimestampObject create() {
 				return new TimestampObject();
 			}
 		});
+		configuration.build();
+
+		final Analysis analysis = new Analysis(configuration);
 		analysis.init();
 
 		this.stopWatch.start();
@@ -99,7 +101,7 @@ public class MethodCallThoughputTimestampAnalysis16Test extends PerformanceTest 
 			this.stopWatch.end();
 		}
 
-		this.timestampObjects = ListUtil.merge(analysis.getTimestampObjectsList());
+		this.timestampObjects = ListUtil.merge(configuration.getTimestampObjectsList());
 	}
 
 }
