@@ -19,15 +19,15 @@ import teetime.framework.InputPort;
 
 /**
  * @author Nils Christian Ehmke
- * 
- * @since 1.10
+ *
+ * @since 1.0
  */
-public final class RoundRobinStrategy<T> implements IMergerStrategy<T> {
+public final class RoundRobinStrategy implements IMergerStrategy {
 
 	private int index = 0;
 
 	@Override
-	public T getNextInput(final Merger<T> merger) {
+	public <T> T getNextInput(final Merger<T> merger) {
 		@SuppressWarnings("unchecked")
 		InputPort<T>[] inputPorts = (InputPort<T>[]) merger.getInputPorts();
 		int size = inputPorts.length;
@@ -42,7 +42,7 @@ public final class RoundRobinStrategy<T> implements IMergerStrategy<T> {
 		return null;
 	}
 
-	private InputPort<T> getNextPortInRoundRobinOrder(final InputPort<T>[] inputPorts) {
+	private <T> InputPort<T> getNextPortInRoundRobinOrder(final InputPort<T>[] inputPorts) {
 		InputPort<T> inputPort = inputPorts[this.index];
 
 		this.index = (this.index + 1) % inputPorts.length;

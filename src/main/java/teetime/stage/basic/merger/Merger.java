@@ -42,9 +42,17 @@ public final class Merger<T> extends AbstractStage {
 
 	private final OutputPort<T> outputPort = this.createOutputPort();
 
-	private IMergerStrategy<T> strategy = new RoundRobinStrategy<T>();
+	private IMergerStrategy strategy;
 
 	private final Map<Class<?>, Set<InputPort<?>>> signalMap = new HashMap<Class<?>, Set<InputPort<?>>>();
+
+	public Merger() {
+		this(new RoundRobinStrategy());
+	}
+
+	public Merger(final IMergerStrategy strategy) {
+		this.strategy = strategy;
+	}
 
 	@Override
 	public void executeWithPorts() {
@@ -90,11 +98,11 @@ public final class Merger<T> extends AbstractStage {
 
 	}
 
-	public IMergerStrategy<T> getMergerStrategy() {
+	public IMergerStrategy getMergerStrategy() {
 		return this.strategy;
 	}
 
-	public void setStrategy(final IMergerStrategy<T> strategy) {
+	public void setStrategy(final IMergerStrategy strategy) {
 		this.strategy = strategy;
 	}
 

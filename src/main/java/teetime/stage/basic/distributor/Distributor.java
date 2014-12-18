@@ -29,7 +29,15 @@ import teetime.framework.OutputPort;
  */
 public class Distributor<T> extends AbstractConsumerStage<T> {
 
-	private IDistributorStrategy<T> strategy = new RoundRobinStrategy<T>();
+	private IDistributorStrategy strategy;
+
+	public Distributor() {
+		this(new RoundRobinStrategy());
+	}
+
+	public Distributor(final IDistributorStrategy strategy) {
+		this.strategy = strategy;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -41,11 +49,11 @@ public class Distributor<T> extends AbstractConsumerStage<T> {
 		return this.createOutputPort();
 	}
 
-	public IDistributorStrategy<T> getStrategy() {
+	public IDistributorStrategy getStrategy() {
 		return this.strategy;
 	}
 
-	public void setStrategy(final IDistributorStrategy<T> strategy) {
+	public void setStrategy(final IDistributorStrategy strategy) {
 		this.strategy = strategy;
 	}
 

@@ -17,11 +17,11 @@ package teetime.stage.basic.merger;
 
 /**
  * @author Nils Christian Ehmke
- * 
- * @since 1.10
+ *
+ * @since 1.0
  */
-public interface IMergerStrategy<T> {
+public interface IMergerStrategy {
 
-	public T getNextInput(Merger<T> merger);
+	public <T> T getNextInput(Merger<T> merger);
 
 }

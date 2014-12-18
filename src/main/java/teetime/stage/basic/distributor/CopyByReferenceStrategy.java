@@ -19,13 +19,13 @@ import teetime.framework.OutputPort;
 
 /**
  * @author Nils Christian Ehmke
- * 
- * @since 1.10
+ *
+ * @since 1.0
  */
-public final class CopyByReferenceStrategy<T> implements IDistributorStrategy<T> {
+public final class CopyByReferenceStrategy implements IDistributorStrategy {
 
 	@Override
-	public boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
+	public <T> boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
 		for (final OutputPort<T> outputPort : outputPorts) {
 			outputPort.send(element);
 		}
