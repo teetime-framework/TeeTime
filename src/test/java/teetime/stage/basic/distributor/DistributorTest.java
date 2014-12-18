@@ -29,7 +29,7 @@ public class DistributorTest {
 	private CollectorSink<Integer> sndCollector;
 
 	@Before
-	public void initializeRecordSimplificator() throws Exception {
+	public void initializeDistributor() throws Exception {
 		this.distributorUnderTest = new Distributor<Integer>();
 		this.fstCollector = new CollectorSink<Integer>();
 		this.sndCollector = new CollectorSink<Integer>();
