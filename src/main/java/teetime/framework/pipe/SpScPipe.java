@@ -38,10 +38,13 @@ public final class SpScPipe extends AbstractInterThreadPipe {
 			Thread.yield();
 		}
 
+		System.out.println("Added: " + element);
+
 		Thread owningThread = cachedTargetStage.getOwningThread();
-		if (owningThread.getState() == State.WAITING || owningThread.getState() == State.TIMED_WAITING) {
+		if (null != owningThread && (owningThread.getState() == State.WAITING || owningThread.getState() == State.TIMED_WAITING)) {
 			synchronized (cachedTargetStage) {
 				cachedTargetStage.notify();
+				System.out.println("Notified: " + cachedTargetStage);
 			}
 		}
 

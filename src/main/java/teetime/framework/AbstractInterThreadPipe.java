@@ -24,12 +24,10 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 		System.out.println("send signal: " + signal + " to " + cachedTargetStage);
 
 		Thread owningThread = cachedTargetStage.getOwningThread();
-		if (owningThread.getState() == State.WAITING || owningThread.getState() == State.TIMED_WAITING) {
+		if (null != owningThread && (owningThread.getState() == State.WAITING || owningThread.getState() == State.TIMED_WAITING)) {
 			owningThread.interrupt();
 			System.out.println("interrupted " + owningThread);
 		}
-
-		System.out.println("Signal sent.");
 	}
 
 	/**

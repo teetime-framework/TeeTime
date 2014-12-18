@@ -23,6 +23,8 @@ public abstract class AbstractStage extends Stage {
 	private final Set<ISignal> triggeredSignals = new HashSet<ISignal>();
 	private boolean shouldTerminate;
 
+	private boolean started;
+
 	private void connectUnconnectedOutputPorts() {
 		for (OutputPort<?> outputPort : this.cachedOutputPorts) {
 			if (null == outputPort.getPipe()) { // if port is unconnected
@@ -37,7 +39,9 @@ public abstract class AbstractStage extends Stage {
 	 */
 	@Override
 	public InputPort<?>[] getInputPorts() {
-		return this.cachedInputPorts;
+		// return this.cachedInputPorts;
+		System.out.println("inputPortList: " + inputPortList);
+		return inputPortList.toArray(new InputPort<?>[0]);
 	}
 
 	/**
@@ -54,11 +58,17 @@ public abstract class AbstractStage extends Stage {
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
 			signal.trigger(this);
+			started = true;
 
 			for (OutputPort<?> outputPort : this.outputPortList) {
 				outputPort.sendSignal(signal);
 			}
 		}
+	}
+
+	@Override
+	public boolean isStarted() {
+		return started;
 	}
 
 	/**

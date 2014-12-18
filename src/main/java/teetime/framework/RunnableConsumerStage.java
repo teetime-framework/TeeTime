@@ -1,5 +1,7 @@
 package teetime.framework;
 
+import java.util.Arrays;
+
 import teetime.framework.idle.IdleStrategy;
 import teetime.framework.idle.YieldStrategy;
 import teetime.framework.pipe.IPipe;
@@ -20,13 +22,14 @@ public final class RunnableConsumerStage extends RunnableStage {
 
 	@Override
 	protected void beforeStageExecution() {
-		// TODO wait for starting signal
+		logger.trace("ENTRY beforeStageExecution");
+
 		do {
 			checkforSignals();
-			// logger.trace("Signals checked.");
 			Thread.yield();
-		} while (stage.getInputPorts().length == 0);
-		logger.debug("Stage initialized");
+		} while (!stage.isStarted());
+
+		logger.trace("EXIT beforeStageExecution");
 	}
 
 	@Override
@@ -50,6 +53,7 @@ public final class RunnableConsumerStage extends RunnableStage {
 	private void checkforSignals() {
 		// FIXME should getInputPorts() really be defined in Stage?
 		InputPort<?>[] inputPorts = stage.getInputPorts();
+		logger.debug("inputPorts: " + Arrays.toString(inputPorts));
 		for (InputPort<?> inputPort : inputPorts) {
 			IPipe pipe = inputPort.getPipe();
 			if (pipe instanceof AbstractInterThreadPipe) {

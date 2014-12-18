@@ -94,4 +94,6 @@ public abstract class Stage {
 	}
 
 	protected abstract InputPort<?>[] getInputPorts();
+
+	protected abstract boolean isStarted();
 }

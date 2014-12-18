@@ -72,4 +72,9 @@ public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> exte
 		return firstStage.getTerminationStrategy();
 	}
 
+	@Override
+	protected boolean isStarted() {
+		return firstStage.isStarted();
+	}
+
 }

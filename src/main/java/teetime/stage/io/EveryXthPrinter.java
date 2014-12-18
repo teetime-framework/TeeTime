@@ -75,4 +75,9 @@ public final class EveryXthPrinter<T> extends Stage {
 		return distributor.getInputPorts();
 	}
 
+	@Override
+	protected boolean isStarted() {
+		return distributor.isStarted();
+	}
+
 }
