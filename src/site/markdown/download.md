@@ -27,7 +27,7 @@ Please make sure, your project management tool uses Maven's central repository. 
 
 #### Binaries and sources
 
-The latest TeeTime release can be downloaded directly from [Sourceforge](https://sourceforge.net/projects/teetime/files/latest/download). If you also want to download the source and/or JavaDoc, you can also get a summary of available files on [Sourceforge](https://sourceforge.net/projects/teetime/files/). Alternatively, you can also download all files from the [CI Server](https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-release/lastSuccessfulBuild/artifact/target/).
+The latest TeeTime release can be downloaded directly from [Sourceforge](https://sourceforge.net/projects/teetime/files/latest/download). If you also want to download the source and/or JavaDoc, you can also get a summary of available files on [Sourceforge](https://sourceforge.net/projects/teetime/files/). Alternatively, all files are accessible from the [CI Server](https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-release/lastSuccessfulBuild/artifact/target/).
 
 ## Snapshot
 
