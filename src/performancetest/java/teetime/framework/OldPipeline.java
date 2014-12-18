@@ -43,11 +43,6 @@ public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> exte
 	}
 
 	@Override
-	public TerminationStrategy getTerminationStrategy() {
-		return firstStage.getTerminationStrategy();
-	}
-
-	@Override
 	public void terminate() {
 		firstStage.terminate();
 	}
@@ -70,6 +65,11 @@ public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> exte
 	@Override
 	public Thread getOwningThread() {
 		return firstStage.getOwningThread();
+	}
+
+	@Override
+	public TerminationStrategy getTerminationStrategy() {
+		return firstStage.getTerminationStrategy();
 	}
 
 }
