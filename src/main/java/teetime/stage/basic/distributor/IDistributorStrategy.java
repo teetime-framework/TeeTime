@@ -19,11 +19,11 @@ import teetime.framework.OutputPort;
 
 /**
  * @author Nils Christian Ehmke
- * 
- * @since 1.10
+ *
+ * @since 1.0
  */
-public interface IDistributorStrategy<T> {
+public interface IDistributorStrategy {
 
-	public boolean distribute(final OutputPort<T>[] allOutputPorts, final T element);
+	public <T> boolean distribute(final OutputPort<T>[] allOutputPorts, final T element);
 
 }

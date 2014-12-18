@@ -29,7 +29,7 @@ public final class EveryXthPrinter<T> extends Stage {
 		pipeFactory.create(distributor.getNewOutputPort(), everyXthStage.getInputPort());
 		pipeFactory.create(everyXthStage.getOutputPort(), printer.getInputPort());
 
-		distributor.setStrategy(new CopyByReferenceStrategy<T>());
+		distributor.setStrategy(new CopyByReferenceStrategy());
 	}
 
 	@Override

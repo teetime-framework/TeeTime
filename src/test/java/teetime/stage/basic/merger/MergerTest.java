@@ -1,86 +1,60 @@
 package teetime.stage.basic.merger;
 
-import org.junit.Assert;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Before;
 import org.junit.Test;
 
-import teetime.framework.InputPort;
-import teetime.framework.signal.StartingSignal;
-import teetime.framework.signal.TerminatingSignal;
+import teetime.framework.pipe.IPipeFactory;
+import teetime.framework.pipe.SingleElementPipeFactory;
+import teetime.stage.CollectorSink;
+import teetime.stage.InitialElementProducer;
 
+/**
+ * @author Nils Christian Ehmke
+ *
+ * @since 1.0
+ */
 public class MergerTest {
 
-	private Merger<Integer> merger;
-	private InputPort<Integer> firstPort;
-	private InputPort<Integer> secondPort;
-	private MergerTestingPipe testPipe;
+	private Merger<Integer> mergerUnderTest;
+	private CollectorSink<Integer> collector;
+	private InitialElementProducer<Integer> fstProducer;
+	private InitialElementProducer<Integer> sndProducer;
 
-	public void beforeSignalTesting() {
-		merger = new Merger<Integer>();
+	@Before
+	public void initializeMerger() throws Exception {
+		this.mergerUnderTest = new Merger<Integer>();
+		this.collector = new CollectorSink<Integer>();
+		this.fstProducer = new InitialElementProducer<Integer>(1, 2, 3);
+		this.sndProducer = new InitialElementProducer<Integer>(4, 5, 6);
 
-		firstPort = merger.getNewInputPort();
-		secondPort = merger.getNewInputPort();
+		final IPipeFactory pipeFactory = new SingleElementPipeFactory();
+		pipeFactory.create(this.fstProducer.getOutputPort(), this.mergerUnderTest.getNewInputPort());
+		pipeFactory.create(this.sndProducer.getOutputPort(), this.mergerUnderTest.getNewInputPort());
+		pipeFactory.create(this.mergerUnderTest.getOutputPort(), this.collector.getInputPort());
 
-		testPipe = new MergerTestingPipe();
-		merger.getOutputPort().setPipe(testPipe);
+		mergerUnderTest.onStarting();
 	}
 
 	@Test
-	public void testSameSignal() {
-		this.beforeSignalTesting();
-		merger.onSignal(new StartingSignal(), firstPort);
-		Assert.assertFalse(testPipe.startSent());
+	public void roundRobinShouldWork() {
+		mergerUnderTest.setStrategy(new RoundRobinStrategy());
 
-		merger.onSignal(new StartingSignal(), secondPort);
-		Assert.assertTrue(testPipe.startSent());
+		this.fstProducer.executeWithPorts();
+		this.sndProducer.executeWithPorts();
+
+		assertThat(this.collector.getElements(), contains(1, 2, 3, 4, 5, 6));
 	}
 
 	@Test
-	public void testDifferentSignals() {
-		this.beforeSignalTesting();
-		merger.onSignal(new StartingSignal(), firstPort);
-		Assert.assertFalse(testPipe.startSent());
+	public void roundRobinWithSingleProducerShouldWork() {
+		mergerUnderTest.setStrategy(new RoundRobinStrategy());
 
-		merger.onSignal(new TerminatingSignal(), secondPort);
-		Assert.assertFalse(testPipe.startSent());
+		this.fstProducer.executeWithPorts();
+
+		assertThat(this.collector.getElements(), contains(1, 2, 3));
 	}
 
-	@Test
-	public void testInterleavedSignals() {
-		this.beforeSignalTesting();
-		merger.onSignal(new StartingSignal(), firstPort);
-		Assert.assertFalse(testPipe.startSent());
-		Assert.assertFalse(testPipe.terminateSent());
-
-		merger.onSignal(new TerminatingSignal(), secondPort);
-		Assert.assertFalse(testPipe.startSent());
-		Assert.assertFalse(testPipe.terminateSent());
-
-		merger.onSignal(new TerminatingSignal(), firstPort);
-		Assert.assertFalse(testPipe.startSent());
-		Assert.assertTrue(testPipe.terminateSent());
-
-		merger.onSignal(new TerminatingSignal(), firstPort);
-		Assert.assertFalse(testPipe.startSent());
-		Assert.assertTrue(testPipe.terminateSent());
-
-		merger.onSignal(new StartingSignal(), secondPort);
-		Assert.assertTrue(testPipe.startSent());
-		Assert.assertTrue(testPipe.terminateSent());
-	}
-
-	@Test
-	public void testMultipleSignals() {
-		this.beforeSignalTesting();
-		merger.onSignal(new StartingSignal(), firstPort);
-		Assert.assertFalse(testPipe.startSent());
-
-		merger.onSignal(new StartingSignal(), firstPort);
-		Assert.assertFalse(testPipe.startSent());
-
-		merger.onSignal(new StartingSignal(), firstPort);
-		Assert.assertFalse(testPipe.startSent());
-
-		merger.onSignal(new StartingSignal(), secondPort);
-		Assert.assertTrue(testPipe.startSent());
-	}
 }

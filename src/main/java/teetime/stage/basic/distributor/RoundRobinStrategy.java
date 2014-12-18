@@ -19,15 +19,15 @@ import teetime.framework.OutputPort;
 
 /**
  * @author Nils Christian Ehmke
- * 
- * @since 1.10
+ *
+ * @since 1.0
  */
-public final class RoundRobinStrategy<T> implements IDistributorStrategy<T> {
+public final class RoundRobinStrategy implements IDistributorStrategy {
 
 	private int index = 0;
 
 	@Override
-	public boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
+	public <T> boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
 		final OutputPort<T> outputPort = this.getNextPortInRoundRobinOrder(outputPorts);
 
 		outputPort.send(element);
@@ -35,7 +35,7 @@ public final class RoundRobinStrategy<T> implements IDistributorStrategy<T> {
 		return true;
 	}
 
-	private OutputPort<T> getNextPortInRoundRobinOrder(final OutputPort<T>[] outputPorts) {
+	private <T> OutputPort<T> getNextPortInRoundRobinOrder(final OutputPort<T>[] outputPorts) {
 		final OutputPort<T> outputPort = outputPorts[this.index];
 
 		this.index = (this.index + 1) % outputPorts.length;
