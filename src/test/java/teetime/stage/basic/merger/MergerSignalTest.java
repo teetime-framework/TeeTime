@@ -7,7 +7,7 @@ import teetime.framework.InputPort;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
-public class MergerTest {
+public class MergerSignalTest {
 
 	private Merger<Integer> merger;
 	private InputPort<Integer> firstPort;
