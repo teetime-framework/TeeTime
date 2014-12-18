@@ -57,4 +57,19 @@ public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> exte
 		return firstStage.shouldBeTerminated();
 	}
 
+	@Override
+	protected InputPort<?>[] getInputPorts() {
+		return firstStage.getInputPorts();
+	}
+
+	@Override
+	public void setOwningThread(final Thread owningThread) {
+		firstStage.setOwningThread(owningThread);
+	}
+
+	@Override
+	public Thread getOwningThread() {
+		return firstStage.getOwningThread();
+	}
+
 }

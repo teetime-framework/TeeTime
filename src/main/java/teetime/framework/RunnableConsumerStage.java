@@ -42,8 +42,8 @@ public final class RunnableConsumerStage extends RunnableStage {
 	}
 
 	private void checkforSignals() {
-		// FIXME consider to use AbstractStage or to move getInputPorts() to Stage or...
-		InputPort<?>[] inputPorts = ((AbstractStage) stage).getInputPorts();
+		// FIXME should getInputPorts() really be defined in Stage?
+		InputPort<?>[] inputPorts = stage.getInputPorts();
 		for (InputPort<?> inputPort : inputPorts) {
 			IPipe pipe = inputPort.getPipe();
 			if (pipe instanceof AbstractInterThreadPipe) {

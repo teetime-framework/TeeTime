@@ -73,16 +73,19 @@ public class Analysis implements UncaughtExceptionHandler {
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
 				final Thread thread = new Thread(new RunnableConsumerStage(stage));
+				stage.setOwningThread(thread);
 				this.consumerThreads.add(thread);
 				break;
 			}
 			case BY_SELF_DECISION: {
 				final Thread thread = new Thread(new RunnableProducerStage(stage));
+				stage.setOwningThread(thread);
 				this.finiteProducerThreads.add(thread);
 				break;
 			}
 			case BY_INTERRUPT: {
 				final Thread thread = new Thread(new RunnableProducerStage(stage));
+				stage.setOwningThread(thread);
 				this.infiniteProducerThreads.add(thread);
 				break;
 			}

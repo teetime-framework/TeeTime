@@ -26,6 +26,8 @@ public abstract class Stage {
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
+	private Thread owningThread;
+
 	protected Stage() {
 		this.id = this.createId();
 		this.logger = LoggerFactory.getLogger(this.id);
@@ -82,4 +84,14 @@ public abstract class Stage {
 	protected abstract void terminate();
 
 	protected abstract boolean shouldBeTerminated();
+
+	public Thread getOwningThread() {
+		return owningThread;
+	}
+
+	public void setOwningThread(final Thread owningThread) {
+		this.owningThread = owningThread;
+	}
+
+	protected abstract InputPort<?>[] getInputPorts();
 }

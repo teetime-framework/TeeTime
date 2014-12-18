@@ -19,9 +19,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import teetime.framework.AnalysisConfiguration;
 import teetime.framework.OldHeadPipeline;
+import teetime.framework.RunnableConsumerStage;
 import teetime.framework.RunnableProducerStage;
-import teetime.framework.pipe.SingleElementPipe;
+import teetime.framework.pipe.IPipeFactory;
+import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
+import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.framework.pipe.SpScPipe;
 import teetime.stage.CollectorSink;
 import teetime.stage.NoopFilter;
@@ -30,6 +34,7 @@ import teetime.stage.Relay;
 import teetime.stage.StartTimestampFilter;
 import teetime.stage.StopTimestampFilter;
 import teetime.stage.basic.distributor.Distributor;
+import teetime.stage.io.EveryXthPrinter;
 import teetime.util.ConstructorClosure;
 import teetime.util.TimestampObject;
 
@@ -38,10 +43,12 @@ import teetime.util.TimestampObject;
  *
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis16 {
+public class MethodCallThroughputAnalysis16 extends AnalysisConfiguration {
 
 	private static final int SPSC_INITIAL_CAPACITY = 100100;
 	private static final int NUM_WORKER_THREADS = Runtime.getRuntime().availableProcessors();
+
+	private final IPipeFactory intraThreadPipeFactory;
 
 	private int numInputObjects;
 	private ConstructorClosure<TimestampObject> inputObjectCreator;
@@ -54,6 +61,10 @@ public class MethodCallThroughputAnalysis16 {
 	private Thread[] workerThreads;
 
 	private int numWorkerThreads;
+
+	public MethodCallThroughputAnalysis16() {
+		intraThreadPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+	}
 
 	public void init() {
 		OldHeadPipeline<ObjectProducer<TimestampObject>, Distributor<TimestampObject>> producerPipeline = this.buildProducerPipeline(this.numInputObjects,
@@ -68,7 +79,8 @@ public class MethodCallThroughputAnalysis16 {
 			this.timestampObjectsList.add(resultList);
 
 			OldHeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> workerPipeline = this.buildPipeline(producerPipeline, resultList);
-			this.workerThreads[i] = new Thread(new RunnableProducerStage(workerPipeline));
+			this.workerThreads[i] = new Thread(new RunnableConsumerStage(workerPipeline));
+			workerPipeline.setOwningThread(this.workerThreads[i]);
 		}
 	}
 
@@ -81,7 +93,7 @@ public class MethodCallThroughputAnalysis16 {
 		pipeline.setFirstStage(objectProducer);
 		pipeline.setLastStage(distributor);
 
-		SingleElementPipe.connect(objectProducer.getOutputPort(), distributor.getInputPort());
+		intraThreadPipeFactory.create(objectProducer.getOutputPort(), distributor.getInputPort());
 
 		return pipeline;
 	}
@@ -102,6 +114,7 @@ public class MethodCallThroughputAnalysis16 {
 			noopFilters[i] = new NoopFilter<TimestampObject>();
 		}
 		final StopTimestampFilter stopTimestampFilter = new StopTimestampFilter();
+		EveryXthPrinter<TimestampObject> everyXthPrinter = new EveryXthPrinter<TimestampObject>(100000);
 		final CollectorSink<TimestampObject> collectorSink = new CollectorSink<TimestampObject>(timestampObjects);
 
 		final OldHeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>> pipeline = new OldHeadPipeline<Relay<TimestampObject>, CollectorSink<TimestampObject>>();
@@ -110,20 +123,20 @@ public class MethodCallThroughputAnalysis16 {
 
 		SpScPipe.connect(previousStage.getLastStage().getNewOutputPort(), relay.getInputPort(), SPSC_INITIAL_CAPACITY);
 
-		SingleElementPipe.connect(relay.getOutputPort(), startTimestampFilter.getInputPort());
+		intraThreadPipeFactory.create(relay.getOutputPort(), startTimestampFilter.getInputPort());
 
-		SingleElementPipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
+		intraThreadPipeFactory.create(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
 		for (int i = 0; i < noopFilters.length - 1; i++) {
-			SingleElementPipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
+			intraThreadPipeFactory.create(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
 		}
-		SingleElementPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
-		SingleElementPipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
+		intraThreadPipeFactory.create(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
+		intraThreadPipeFactory.create(stopTimestampFilter.getOutputPort(), everyXthPrinter.getInputPort());
+		intraThreadPipeFactory.create(everyXthPrinter.getNewOutputPort(), collectorSink.getInputPort());
 
 		return pipeline;
 	}
 
 	public void start() {
-
 		this.producerThread.start();
 
 		for (Thread workerThread : this.workerThreads) {

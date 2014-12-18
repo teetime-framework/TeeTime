@@ -1,5 +1,6 @@
 package teetime.framework.pipe;
 
+import java.lang.Thread.State;
 import java.util.Queue;
 
 import org.jctools.queues.QueueFactory;
@@ -35,6 +36,13 @@ public final class SpScPipe extends AbstractInterThreadPipe {
 		while (!this.queue.offer(element)) {
 			this.numWaits++;
 			Thread.yield();
+		}
+
+		Thread owningThread = cachedTargetStage.getOwningThread();
+		if (owningThread.getState() == State.WAITING || owningThread.getState() == State.TIMED_WAITING) {
+			synchronized (cachedTargetStage) {
+				cachedTargetStage.notify();
+			}
 		}
 
 		return true;

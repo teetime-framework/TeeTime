@@ -1,5 +1,6 @@
 package teetime.framework;
 
+import java.lang.Thread.State;
 import java.util.Queue;
 
 import org.jctools.queues.QueueFactory;
@@ -20,6 +21,11 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 	@Override
 	public void sendSignal(final ISignal signal) {
 		this.signalQueue.offer(signal);
+
+		Thread owningThread = cachedTargetStage.getOwningThread();
+		if (owningThread.getState() == State.WAITING || owningThread.getState() == State.TIMED_WAITING) {
+			owningThread.interrupt();
+		}
 	}
 
 	/**

@@ -18,7 +18,7 @@ public class SpScPipeTest {
 
 	@Test
 	public void testSignalOrdering() throws Exception {
-		OutputPort<? extends Object> sourcePort = null;
+		OutputPort<Object> sourcePort = null;
 		InputPort<Object> targetPort = null;
 		AbstractInterThreadPipe pipe = new SpScPipe(sourcePort, targetPort, 1); // IPipe does not provide getSignal method
 

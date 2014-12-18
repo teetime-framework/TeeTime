@@ -16,7 +16,7 @@ public abstract class AbstractStage extends Stage {
 	private final List<OutputPort<?>> outputPortList = new ArrayList<OutputPort<?>>();
 
 	/** A cached instance of <code>inputPortList</code> to avoid creating an iterator each time iterating it */
-	protected InputPort<?>[] cachedInputPorts;
+	protected InputPort<?>[] cachedInputPorts = new InputPort[0];
 	/** A cached instance of <code>outputPortList</code> to avoid creating an iterator each time iterating it */
 	protected OutputPort<?>[] cachedOutputPorts;
 
@@ -35,7 +35,8 @@ public abstract class AbstractStage extends Stage {
 	/**
 	 * @return the stage's input ports
 	 */
-	protected InputPort<?>[] getInputPorts() {
+	@Override
+	public InputPort<?>[] getInputPorts() {
 		return this.cachedInputPorts;
 	}
 
