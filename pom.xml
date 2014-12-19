@@ -115,12 +115,7 @@
 
 	<build>
 		<plugins>
-			<!-- release plugin -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.1</version>
-			</plugin>
+			
 			<!-- we want JDK 1.6 source and binary compatibility -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
