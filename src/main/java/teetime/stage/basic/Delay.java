@@ -24,7 +24,7 @@ public final class Delay<T> extends AbstractStage {
 
 		Long timestampTrigger = this.timestampTriggerInputPort.receive();
 		if (null == timestampTrigger) {
-			returnNoElement();
+			return; // BETTER use returnNoElement(). so far, RunnableProducerStages cannot handle the NOT_ENOUGH__INPUT_EXCEPTION
 		}
 
 		sendAllBufferedEllements();
