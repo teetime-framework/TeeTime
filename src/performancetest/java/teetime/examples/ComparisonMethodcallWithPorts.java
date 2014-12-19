@@ -13,7 +13,6 @@ import teetime.examples.experiment11.MethodCallThoughputTimestampAnalysis11Test;
 import teetime.examples.experiment14.MethodCallThoughputTimestampAnalysis14Test;
 import teetime.examples.experiment15.MethodCallThoughputTimestampAnalysis15Test;
 import teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test;
-import teetime.examples.experiment17.MethodCallThoughputTimestampAnalysis17Test;
 import teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test;
 import util.test.AbstractProfiledPerformanceAssertion;
 import util.test.PerformanceCheckProfileRepository;
@@ -27,7 +26,6 @@ import util.test.PerformanceCheckProfileRepository;
 	MethodCallThoughputTimestampAnalysis14Test.class,
 	MethodCallThoughputTimestampAnalysis15Test.class,
 	MethodCallThoughputTimestampAnalysis16Test.class,
-	MethodCallThoughputTimestampAnalysis17Test.class,
 	MethodCallThoughputTimestampAnalysis19Test.class,
 })
 public class ComparisonMethodcallWithPorts {
