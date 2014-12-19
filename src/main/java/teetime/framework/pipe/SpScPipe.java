@@ -1,6 +1,5 @@
 package teetime.framework.pipe;
 
-import java.lang.Thread.State;
 import java.util.Queue;
 
 import org.jctools.queues.QueueFactory;
@@ -41,7 +40,7 @@ public final class SpScPipe extends AbstractInterThreadPipe {
 		}
 
 		Thread owningThread = cachedTargetStage.getOwningThread();
-		if (null != owningThread && (owningThread.getState() == State.WAITING || owningThread.getState() == State.TIMED_WAITING)) {
+		if (null != owningThread && isThreadWaiting(owningThread)) { // FIXME remove the null check for performance
 			synchronized (cachedTargetStage) {
 				cachedTargetStage.notify();
 				// LOGGER.trace("Notified: " + cachedTargetStage);

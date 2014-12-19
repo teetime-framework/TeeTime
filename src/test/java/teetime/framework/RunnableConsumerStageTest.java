@@ -9,8 +9,6 @@ import org.junit.Test;
 
 import teetime.util.Pair;
 
-import com.google.common.base.Joiner;
-
 public class RunnableConsumerStageTest {
 
 	@Test
@@ -22,7 +20,7 @@ public class RunnableConsumerStageTest {
 		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				start(analysis);
+				start(analysis); // FIXME react on exceptions
 			}
 		});
 		thread.start();
@@ -42,7 +40,7 @@ public class RunnableConsumerStageTest {
 		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				start(analysis);
+				start(analysis); // FIXME react on exceptions
 			}
 		});
 		thread.start();
@@ -70,8 +68,9 @@ public class RunnableConsumerStageTest {
 	private void start(final Analysis analysis) {
 		Collection<Pair<Thread, Throwable>> exceptions = analysis.start();
 		for (Pair<Thread, Throwable> pair : exceptions) {
-			System.out.println(pair.getSecond());
-			System.out.println(Joiner.on("\n").join(pair.getSecond().getStackTrace()));
+			// System.out.println(pair.getSecond());
+			// System.out.println(Joiner.on("\n").join(pair.getSecond().getStackTrace()));
+			throw new RuntimeException(pair.getSecond());
 		}
 		assertEquals(0, exceptions.size());
 	}
