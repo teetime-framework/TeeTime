@@ -1,6 +1,6 @@
 package teetime.framework.idle;
 
-public class SleepStrategy implements IdleStrategy {
+public final class SleepStrategy implements IdleStrategy {
 
 	private final long timeoutInMs;
 
