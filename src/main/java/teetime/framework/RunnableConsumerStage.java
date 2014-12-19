@@ -7,7 +7,7 @@ import teetime.framework.idle.YieldStrategy;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 
-public final class RunnableConsumerStage extends RunnableStage {
+final class RunnableConsumerStage extends RunnableStage {
 
 	private final IdleStrategy idleStrategy;
 
