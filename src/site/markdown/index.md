@@ -46,7 +46,6 @@ You can get TeeTime through various ways. If your projects uses Maven, just add 
 </dependency>
 ```
 
->TeeTime's first official release is not published yet. For more information, see [download](download.html).
 
 To get the source code or the plain jar, take a look at the [download](download.html) section.
 

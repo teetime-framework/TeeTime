@@ -6,8 +6,6 @@ There are several ways to get TeeTime. Choose the best one for you.
 
 There are two simple ways to add TeeTime to your own project.
 
->Please note, that TeeTime's first official release isn't published yet. You can switch to the snapshot release or wait a couple of days. We are looking forward, to release 1.0 still this month.
-
 #### As dependency
 
 TeeTime is available through Maven's central repository.
