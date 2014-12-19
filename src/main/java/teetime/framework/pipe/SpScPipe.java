@@ -14,6 +14,8 @@ import teetime.framework.OutputPort;
 
 public final class SpScPipe extends AbstractInterThreadPipe {
 
+	// private static final Logger LOGGER = LoggerFactory.getLogger(SpScPipe.class);
+
 	private final Queue<Object> queue;
 	// statistics
 	private int numWaits;
@@ -38,13 +40,11 @@ public final class SpScPipe extends AbstractInterThreadPipe {
 			Thread.yield();
 		}
 
-		System.out.println("Added: " + element);
-
 		Thread owningThread = cachedTargetStage.getOwningThread();
 		if (null != owningThread && (owningThread.getState() == State.WAITING || owningThread.getState() == State.TIMED_WAITING)) {
 			synchronized (cachedTargetStage) {
 				cachedTargetStage.notify();
-				System.out.println("Notified: " + cachedTargetStage);
+				// LOGGER.trace("Notified: " + cachedTargetStage);
 			}
 		}
 

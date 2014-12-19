@@ -40,8 +40,7 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	public InputPort<?>[] getInputPorts() {
 		// return this.cachedInputPorts;
-		System.out.println("inputPortList: " + inputPortList);
-		return inputPortList.toArray(new InputPort<?>[0]);
+		return inputPortList.toArray(new InputPort<?>[0]); // FIXME remove work-around
 	}
 
 	/**
@@ -58,7 +57,6 @@ public abstract class AbstractStage extends Stage {
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
 			signal.trigger(this);
-			started = true;
 
 			for (OutputPort<?> outputPort : this.outputPortList) {
 				outputPort.sendSignal(signal);
@@ -98,6 +96,8 @@ public abstract class AbstractStage extends Stage {
 		this.cachedOutputPorts = this.outputPortList.toArray(new OutputPort<?>[0]);
 
 		this.connectUnconnectedOutputPorts();
+		started = true;
+		logger.info(this + " started.");
 	}
 
 	public void onTerminating() throws Exception {

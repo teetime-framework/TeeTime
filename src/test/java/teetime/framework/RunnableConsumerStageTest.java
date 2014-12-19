@@ -15,7 +15,7 @@ public class RunnableConsumerStageTest {
 
 	@Test
 	public void testWaitingInfinitely() throws Exception {
-		WaitStrategyConfiguration waitStrategyConfiguration = new WaitStrategyConfiguration(5000, 1);
+		WaitStrategyConfiguration waitStrategyConfiguration = new WaitStrategyConfiguration(300, 1);
 
 		final Analysis analysis = new Analysis(waitStrategyConfiguration);
 		analysis.init();
@@ -49,15 +49,16 @@ public class RunnableConsumerStageTest {
 
 		Thread.sleep(200);
 		assertEquals(State.WAITING, thread.getState());
+		assertEquals(0, waitStrategyConfiguration.getCollectorSink().getElements().size());
 
-		Thread.sleep(500);
+		Thread.sleep(200);
 		assertEquals(State.TERMINATED, thread.getState());
 		assertEquals(1, waitStrategyConfiguration.getCollectorSink().getElements().get(0));
-		assertEquals(0, waitStrategyConfiguration.getCollectorSink().getElements().size());
+		assertEquals(1, waitStrategyConfiguration.getCollectorSink().getElements().size());
 	}
 
 	@Test
-	public void testSimpleRun() throws Exception {
+	public void testYieldRun() throws Exception {
 		YieldStrategyConfiguration waitStrategyConfiguration = new YieldStrategyConfiguration(42);
 
 		final Analysis analysis = new Analysis(waitStrategyConfiguration);

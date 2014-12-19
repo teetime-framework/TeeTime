@@ -19,7 +19,6 @@ public class StartingSignal implements ISignal {
 	public void trigger(final AbstractStage stage) {
 		try {
 			stage.onStarting();
-			LOGGER.info(stage + " started.");
 		} catch (Exception e) { // NOCS (Stages can throw any arbitrary Exception)
 			this.catchedExceptions.add(e);
 			LOGGER.error("Exception while sending the start signal", e);

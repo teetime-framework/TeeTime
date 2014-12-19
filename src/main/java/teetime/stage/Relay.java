@@ -24,7 +24,6 @@ public final class Relay<T> extends AbstractConsumerStage<T> {
 			logger.trace("relay: returnNoElement");
 			returnNoElement();
 		}
-		logger.trace("relay: " + element);
 		outputPort.send(element);
 	}
 

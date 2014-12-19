@@ -43,17 +43,20 @@ public final class RunnableConsumerStage extends RunnableStage {
 	}
 
 	private void executeIdleStrategy() {
+		if (stage.shouldBeTerminated()) {
+			return;
+		}
 		try {
 			idleStrategy.execute();
 		} catch (InterruptedException e) {
-			checkforSignals(); // check for termination
+			// checkforSignals(); // check for termination
 		}
 	}
 
 	private void checkforSignals() {
 		// FIXME should getInputPorts() really be defined in Stage?
 		InputPort<?>[] inputPorts = stage.getInputPorts();
-		logger.debug("inputPorts: " + Arrays.toString(inputPorts));
+		logger.debug("Checking signals for: " + Arrays.toString(inputPorts));
 		for (InputPort<?> inputPort : inputPorts) {
 			IPipe pipe = inputPort.getPipe();
 			if (pipe instanceof AbstractInterThreadPipe) {
