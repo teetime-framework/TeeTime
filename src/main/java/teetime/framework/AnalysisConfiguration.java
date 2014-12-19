@@ -14,9 +14,7 @@ public class AnalysisConfiguration {
 	protected static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
 	private final List<Stage> threadableStageJobs = new LinkedList<Stage>();
 
-	public AnalysisConfiguration() {}
-
-	List<Stage> getThreadableStageJobs() { 
+	List<Stage> getThreadableStageJobs() {
 		return this.threadableStageJobs;
 	}
 

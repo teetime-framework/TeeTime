@@ -19,7 +19,7 @@ import java.util.List;
 
 import teetime.framework.Stage;
 import teetime.framework.OldHeadPipeline;
-import teetime.framework.RunnableStage;
+import teetime.framework.RunnableProducerStage;
 import teetime.framework.pipe.CommittablePipe;
 import teetime.stage.CollectorSink;
 import teetime.stage.NoopFilter;
@@ -44,7 +44,7 @@ public class MethodCallThroughputAnalysis9 {
 
 	public void init() {
 		Stage pipeline = this.buildPipeline();
-		this.runnable = new RunnableStage(pipeline);
+		this.runnable = new RunnableProducerStage(pipeline);
 	}
 
 	/**

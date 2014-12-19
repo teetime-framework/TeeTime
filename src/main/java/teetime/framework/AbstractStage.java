@@ -16,27 +16,22 @@ public abstract class AbstractStage extends Stage {
 	private final List<OutputPort<?>> outputPortList = new ArrayList<OutputPort<?>>();
 
 	/** A cached instance of <code>inputPortList</code> to avoid creating an iterator each time iterating it */
-	protected InputPort<?>[] cachedInputPorts;
+	protected InputPort<?>[] cachedInputPorts = new InputPort[0];
 	/** A cached instance of <code>outputPortList</code> to avoid creating an iterator each time iterating it */
 	protected OutputPort<?>[] cachedOutputPorts;
 
 	private final Set<ISignal> triggeredSignals = new HashSet<ISignal>();
+	// BETTER aggregate both states in an enum
 	private boolean shouldTerminate;
-
-	private void connectUnconnectedOutputPorts() {
-		for (OutputPort<?> outputPort : this.cachedOutputPorts) {
-			if (null == outputPort.getPipe()) { // if port is unconnected
-				this.logger.warn("Unconnected output port: " + outputPort + ". Connecting with a dummy output port.");
-				outputPort.setPipe(new DummyPipe());
-			}
-		}
-	}
+	private boolean started;
 
 	/**
 	 * @return the stage's input ports
 	 */
-	protected InputPort<?>[] getInputPorts() {
-		return this.cachedInputPorts;
+	@Override
+	public InputPort<?>[] getInputPorts() {
+		// return this.cachedInputPorts;
+		return inputPortList.toArray(new InputPort<?>[0]); // FIXME remove work-around
 	}
 
 	/**
@@ -49,6 +44,7 @@ public abstract class AbstractStage extends Stage {
 	/**
 	 * May not be invoked outside of IPipe implementations
 	 */
+	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	@Override
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
@@ -58,6 +54,11 @@ public abstract class AbstractStage extends Stage {
 				outputPort.sendSignal(signal);
 			}
 		}
+	}
+
+	@Override
+	public boolean isStarted() {
+		return started;
 	}
 
 	/**
@@ -87,6 +88,18 @@ public abstract class AbstractStage extends Stage {
 		this.cachedOutputPorts = this.outputPortList.toArray(new OutputPort<?>[0]);
 
 		this.connectUnconnectedOutputPorts();
+		started = true;
+		logger.debug("Started.");
+	}
+
+	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+	private void connectUnconnectedOutputPorts() {
+		for (OutputPort<?> outputPort : this.cachedOutputPorts) {
+			if (null == outputPort.getPipe()) { // if port is unconnected
+				this.logger.warn("Unconnected output port: " + outputPort + ". Connecting with a dummy output port.");
+				outputPort.setPipe(new DummyPipe());
+			}
+		}
 	}
 
 	public void onTerminating() throws Exception {
@@ -117,9 +130,11 @@ public abstract class AbstractStage extends Stage {
 		return outputPort;
 	}
 
+	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	@Override
 	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
-		for (OutputPort<?> outputPort : this.getOutputPorts()) {
+		// for (OutputPort<?> outputPort : this.getOutputPorts()) {
+		for (OutputPort<?> outputPort : this.outputPortList) {
 			final IPipe pipe = outputPort.getPipe();
 			if (null != pipe) { // if output port is connected with another one
 				final Class<?> sourcePortType = outputPort.getType();

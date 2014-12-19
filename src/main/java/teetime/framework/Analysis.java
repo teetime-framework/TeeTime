@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import teetime.framework.signal.ValidatingSignal;
+import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.Pair;
 
 /**
@@ -30,16 +32,35 @@ public class Analysis implements UncaughtExceptionHandler {
 
 	private final Collection<Pair<Thread, Throwable>> exceptions = new ConcurrentLinkedQueue<Pair<Thread, Throwable>>();
 
+	/**
+	 * Creates a new {@link Analysis} that skips validating the port connections.
+	 *
+	 * @param configuration
+	 *            to be used for the analysis
+	 */
 	public Analysis(final AnalysisConfiguration configuration) {
+		this(configuration, false);
+	}
+
+	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled) {
 		this.configuration = configuration;
-		validateStages();
+		if (validationEnabled) {
+			validateStages();
+		}
 	}
 
 	private void validateStages() {
 		// BETTER validate concurrently
 		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		for (Stage stage : threadableStageJobs) {
-			// portConnectionValidator.validate(stage);
+			// // portConnectionValidator.validate(stage);
+			// }
+
+			final ValidatingSignal validatingSignal = new ValidatingSignal();
+			stage.onSignal(validatingSignal, null);
+			if (validatingSignal.getInvalidPortConnections().size() > 0) {
+				throw new AnalysisNotValidException(validatingSignal.getInvalidPortConnections());
+			}
 		}
 	}
 
@@ -49,17 +70,31 @@ public class Analysis implements UncaughtExceptionHandler {
 	public void init() {
 		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		for (Stage stage : threadableStageJobs) {
-			final Thread thread = new Thread(new RunnableStage(stage));
 			switch (stage.getTerminationStrategy()) {
-			case BY_SIGNAL:
+			case BY_SIGNAL: {
+				RunnableConsumerStage runnable;
+				if (stage instanceof AbstractConsumerStage<?>) {
+					runnable = new RunnableConsumerStage(stage, ((AbstractConsumerStage<?>) stage).getIdleStrategy()); // FIXME remove this word-around
+				} else {
+					runnable = new RunnableConsumerStage(stage);
+				}
+				final Thread thread = new Thread(runnable);
+				stage.setOwningThread(thread);
 				this.consumerThreads.add(thread);
 				break;
-			case BY_SELF_DECISION:
+			}
+			case BY_SELF_DECISION: {
+				final Thread thread = new Thread(new RunnableProducerStage(stage));
+				stage.setOwningThread(thread);
 				this.finiteProducerThreads.add(thread);
 				break;
-			case BY_INTERRUPT:
+			}
+			case BY_INTERRUPT: {
+				final Thread thread = new Thread(new RunnableProducerStage(stage));
+				stage.setOwningThread(thread);
 				this.infiniteProducerThreads.add(thread);
 				break;
+			}
 			default:
 				break;
 			}

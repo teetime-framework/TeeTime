@@ -5,9 +5,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import util.test.AbstractProfiledPerformanceAssertion;
 import util.test.PerformanceResult;
 import util.test.PerformanceTest;
-import util.test.AbstractProfiledPerformanceAssertion;
 
 public class NieWorkComparisonMethodcallWithPorts extends AbstractProfiledPerformanceAssertion {
 
@@ -41,8 +41,6 @@ public class NieWorkComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 				.get("testWithManyObjectsAnd2Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
 		PerformanceResult test16c = performanceResults
 				.get("testWithManyObjectsAnd4Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
-		PerformanceResult test17 = performanceResults
-				.get("testWithManyObjects(teetime.examples.experiment17.MethodCallThoughputTimestampAnalysis17Test)");
 		PerformanceResult test19a = performanceResults
 				.get("testWithManyObjectsAnd1Thread(teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
 		PerformanceResult test19b = performanceResults
@@ -65,7 +63,7 @@ public class NieWorkComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 		// assertEquals(RESULT_TESTS_19, (double) test19b.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
 		// assertEquals(RESULT_TESTS_19, (double) test19c.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
 
-		assertEquals(56, (double) test17.quantiles.get(0.5) / test1.quantiles.get(0.5), 4.1);
+		// assertEquals(56, (double) test17.quantiles.get(0.5) / test1.quantiles.get(0.5), 4.1);
 
 		// check speedup
 		assertEquals(2, (double) test16a.overallDurationInNs / test16b.overallDurationInNs, 0.2);

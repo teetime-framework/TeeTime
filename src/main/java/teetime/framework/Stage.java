@@ -18,6 +18,7 @@ import teetime.framework.validation.InvalidPortConnection;
 public abstract class Stage {
 
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
+	private static final NotEnoughInputException NOT_ENOUGH_INPUT_EXCEPTION = new NotEnoughInputException();
 
 	private final String id;
 	/**
@@ -26,9 +27,11 @@ public abstract class Stage {
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
+	private Thread owningThread;
+
 	protected Stage() {
 		this.id = this.createId();
-		this.logger = LoggerFactory.getLogger(this.id);
+		this.logger = LoggerFactory.getLogger(this.getClass().getCanonicalName() + ":" + id);
 	}
 
 	/**
@@ -65,6 +68,10 @@ public abstract class Stage {
 	//
 	// public abstract void setParentStage(Stage parentStage, int index);
 
+	protected final void returnNoElement() {
+		throw NOT_ENOUGH_INPUT_EXCEPTION;
+	}
+
 	/**
 	 * This should check, if the OutputPorts are connected correctly. This is needed to avoid NullPointerExceptions and other errors.
 	 *
@@ -82,4 +89,16 @@ public abstract class Stage {
 	protected abstract void terminate();
 
 	protected abstract boolean shouldBeTerminated();
+
+	public Thread getOwningThread() {
+		return owningThread;
+	}
+
+	public void setOwningThread(final Thread owningThread) {
+		this.owningThread = owningThread;
+	}
+
+	protected abstract InputPort<?>[] getInputPorts();
+
+	protected abstract boolean isStarted();
 }

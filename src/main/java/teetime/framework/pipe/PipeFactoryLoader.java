@@ -38,7 +38,7 @@ public final class PipeFactoryLoader {
 						pipeFactories.add(pipeFactory);
 					}
 				} catch (ClassNotFoundException e) {
-					LOGGER.warn("Could not find class: " + line, e);
+					LOGGER.warn("Could not find class: " + line, e); // NOMPD (PMD.GuardLogStatement)
 				} catch (InstantiationException e) {
 					LOGGER.warn("Could not instantiate pipe factory", e);
 				} catch (IllegalAccessException e) {

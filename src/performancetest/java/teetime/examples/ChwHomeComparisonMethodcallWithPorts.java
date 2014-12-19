@@ -33,8 +33,6 @@ public class ChwHomeComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 				.get("testWithManyObjectsAnd2Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
 		PerformanceResult test16c = performanceResults
 				.get("testWithManyObjectsAnd4Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
-		PerformanceResult test17 = performanceResults
-				.get("testWithManyObjects(teetime.examples.experiment17.MethodCallThoughputTimestampAnalysis17Test)");
 		PerformanceResult test19a = performanceResults
 				.get("testWithManyObjectsAnd1Thread(teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
 		PerformanceResult test19b = performanceResults
@@ -43,10 +41,8 @@ public class ChwHomeComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 				.get("testWithManyObjectsAnd4Threads(teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
 
 		double value15 = (double) test15.quantiles.get(0.5) / test1.quantiles.get(0.5);
-		double value17 = (double) test17.quantiles.get(0.5) / test1.quantiles.get(0.5);
 
 		System.out.println("value15: " + value15);
-		System.out.println("value17: " + value17);
 
 		// until 25.06.2014 (incl.)
 		// assertEquals(44, (double) test15.quantiles.get(0.5) / test1.quantiles.get(0.5), 4.1);
@@ -74,7 +70,7 @@ public class ChwHomeComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 
 		// since 13.12.2014 (incl.)
 		assertEquals(40, value15, 4.1); // -28
-		assertEquals(43, value17, 4.1); // -35
+		// assertEquals(43, value17, 4.1); // -35
 
 		// below results vary too much, possibly due to the OS' scheduler
 		// assertEquals(RESULT_TESTS_16, (double) test16a.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);

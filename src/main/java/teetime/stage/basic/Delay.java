@@ -24,20 +24,34 @@ public final class Delay<T> extends AbstractStage {
 
 		Long timestampTrigger = this.timestampTriggerInputPort.receive();
 		if (null == timestampTrigger) {
-			return;
+			return; // BETTER use returnNoElement(). so far, RunnableProducerStages cannot handle the NOT_ENOUGH__INPUT_EXCEPTION
 		}
 
+		sendAllBufferedEllements();
+	}
+
+	private void sendAllBufferedEllements() {
 		while (!bufferedElements.isEmpty()) {
-			element = bufferedElements.remove(0);
+			T element = bufferedElements.remove(0);
 			outputPort.send(element);
+			logger.trace("Sent buffered element: " + element);
 		}
 	}
 
 	@Override
 	public void onTerminating() throws Exception {
-		while (!this.inputPort.getPipe().isEmpty()) {
-			this.executeWithPorts();
+		while (null == timestampTriggerInputPort.receive()) {
+			// wait for the next trigger
 		}
+
+		sendAllBufferedEllements();
+
+		T element;
+		while (null != (element = inputPort.receive())) {
+			outputPort.send(element);
+			logger.trace("Sent element: " + element);
+		}
+
 		super.onTerminating();
 	}
 

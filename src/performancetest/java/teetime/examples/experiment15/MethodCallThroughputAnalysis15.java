@@ -17,11 +17,14 @@ package teetime.examples.experiment15;
 
 import java.util.List;
 
-import teetime.framework.Stage;
+import teetime.framework.AnalysisConfiguration;
 import teetime.framework.OldHeadPipeline;
-import teetime.framework.RunnableStage;
+import teetime.framework.RunnableProducerStage;
+import teetime.framework.Stage;
+import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.OrderedGrowableArrayPipe;
-import teetime.framework.pipe.SingleElementPipe;
+import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
+import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.framework.pipe.SpScPipe;
 import teetime.stage.Clock;
 import teetime.stage.CollectorSink;
@@ -39,10 +42,12 @@ import teetime.util.TimestampObject;
  *
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis15 {
+public class MethodCallThroughputAnalysis15 extends AnalysisConfiguration {
 	// FIXME this analysis sometimes runs infinitely
 
 	private static final int SPSC_INITIAL_CAPACITY = 4;
+
+	private final IPipeFactory intraThreadPipeFactory;
 
 	private int numInputObjects;
 	private ConstructorClosure<TimestampObject> inputObjectCreator;
@@ -53,13 +58,16 @@ public class MethodCallThroughputAnalysis15 {
 	private Runnable runnable;
 	private Clock clock;
 
-	public void init() {
+	public MethodCallThroughputAnalysis15() {
+		intraThreadPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+	}
 
+	public void init() {
 		OldHeadPipeline<Clock, Sink<Long>> clockPipeline = this.buildClockPipeline();
-		this.clockRunnable = new RunnableStage(clockPipeline);
+		this.clockRunnable = new RunnableProducerStage(clockPipeline);
 
 		Stage pipeline = this.buildPipeline(this.clock);
-		this.runnable = new RunnableStage(pipeline);
+		this.runnable = new RunnableProducerStage(pipeline);
 	}
 
 	private OldHeadPipeline<Clock, Sink<Long>> buildClockPipeline() {
@@ -99,15 +107,15 @@ public class MethodCallThroughputAnalysis15 {
 
 		SpScPipe.connect(clock.getOutputPort(), delay.getTimestampTriggerInputPort(), SPSC_INITIAL_CAPACITY);
 
-		SingleElementPipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
-		SingleElementPipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
+		intraThreadPipeFactory.create(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
+		intraThreadPipeFactory.create(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
 		for (int i = 0; i < noopFilters.length - 1; i++) {
-			SingleElementPipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
+			intraThreadPipeFactory.create(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
 		}
-		SingleElementPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
+		intraThreadPipeFactory.create(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
 		OrderedGrowableArrayPipe.connect(stopTimestampFilter.getOutputPort(), delay.getInputPort());
 
-		SingleElementPipe.connect(delay.getOutputPort(), collectorSink.getInputPort());
+		intraThreadPipeFactory.create(delay.getOutputPort(), collectorSink.getInputPort());
 
 		return pipeline;
 	}

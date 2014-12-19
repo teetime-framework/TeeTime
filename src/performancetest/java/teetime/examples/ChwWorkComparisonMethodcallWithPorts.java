@@ -5,9 +5,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import util.test.AbstractProfiledPerformanceAssertion;
 import util.test.PerformanceResult;
 import util.test.PerformanceTest;
-import util.test.AbstractProfiledPerformanceAssertion;
 
 public class ChwWorkComparisonMethodcallWithPorts extends AbstractProfiledPerformanceAssertion {
 
@@ -27,8 +27,6 @@ public class ChwWorkComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 				.get("testWithManyObjects(teetime.examples.experiment01.MethodCallThoughputTimestampAnalysis1Test)");
 		PerformanceResult test15 = performanceResults
 				.get("testWithManyObjects(teetime.examples.experiment15.MethodCallThoughputTimestampAnalysis15Test)");
-		PerformanceResult test17 = performanceResults
-				.get("testWithManyObjects(teetime.examples.experiment17.MethodCallThoughputTimestampAnalysis17Test)");
 		PerformanceResult test19a = performanceResults
 				.get("testWithManyObjectsAnd1Thread(teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
 		PerformanceResult test19b = performanceResults
@@ -37,10 +35,8 @@ public class ChwWorkComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 				.get("testWithManyObjectsAnd4Threads(teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
 
 		double value15 = (double) test15.quantiles.get(0.5) / test1.quantiles.get(0.5);
-		double value17 = (double) test17.quantiles.get(0.5) / test1.quantiles.get(0.5);
 
 		System.out.println("value15: " + value15);
-		System.out.println("value17: " + value17);
 
 		// until 25.06.2014 (incl.)
 		// assertEquals(44, (double) test15.quantiles.get(0.5) / test1.quantiles.get(0.5), 4.1);
@@ -60,7 +56,7 @@ public class ChwWorkComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 
 		// since 14.10.2014 (incl.)
 		assertEquals(36, value15, 4.1); // -8
-		assertEquals(46, value17, 4.1); // -7
+		// assertEquals(46, value17, 4.1); // -7
 
 		// below results vary too much, possibly due to the OS' scheduler
 		// assertEquals(RESULT_TESTS_16, (double) test16a.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);

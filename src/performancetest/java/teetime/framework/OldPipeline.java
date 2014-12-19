@@ -43,11 +43,6 @@ public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> exte
 	}
 
 	@Override
-	public TerminationStrategy getTerminationStrategy() {
-		return firstStage.getTerminationStrategy();
-	}
-
-	@Override
 	public void terminate() {
 		firstStage.terminate();
 	}
@@ -55,6 +50,31 @@ public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> exte
 	@Override
 	public boolean shouldBeTerminated() {
 		return firstStage.shouldBeTerminated();
+	}
+
+	@Override
+	protected InputPort<?>[] getInputPorts() {
+		return firstStage.getInputPorts();
+	}
+
+	@Override
+	public void setOwningThread(final Thread owningThread) {
+		firstStage.setOwningThread(owningThread);
+	}
+
+	@Override
+	public Thread getOwningThread() {
+		return firstStage.getOwningThread();
+	}
+
+	@Override
+	public TerminationStrategy getTerminationStrategy() {
+		return firstStage.getTerminationStrategy();
+	}
+
+	@Override
+	protected boolean isStarted() {
+		return firstStage.isStarted();
 	}
 
 }

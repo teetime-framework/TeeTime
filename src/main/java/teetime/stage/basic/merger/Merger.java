@@ -58,7 +58,7 @@ public final class Merger<T> extends AbstractStage {
 	public void executeWithPorts() {
 		final T token = this.strategy.getNextInput(this);
 		if (token == null) {
-			return;
+			returnNoElement();
 		}
 
 		outputPort.send(token);
