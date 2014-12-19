@@ -18,6 +18,7 @@ import teetime.framework.validation.InvalidPortConnection;
 public abstract class Stage {
 
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
+	private static final NotEnoughInputException NOT_ENOUGH_INPUT_EXCEPTION = new NotEnoughInputException();
 
 	private final String id;
 	/**
@@ -66,6 +67,10 @@ public abstract class Stage {
 	// public abstract Stage getParentStage();
 	//
 	// public abstract void setParentStage(Stage parentStage, int index);
+
+	protected final void returnNoElement() {
+		throw NOT_ENOUGH_INPUT_EXCEPTION;
+	}
 
 	/**
 	 * This should check, if the OutputPorts are connected correctly. This is needed to avoid NullPointerExceptions and other errors.

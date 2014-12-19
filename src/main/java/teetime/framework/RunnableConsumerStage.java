@@ -53,6 +53,7 @@ public final class RunnableConsumerStage extends RunnableStage {
 		}
 	}
 
+	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	private void checkforSignals() {
 		// FIXME should getInputPorts() really be defined in Stage?
 		InputPort<?>[] inputPorts = stage.getInputPorts();

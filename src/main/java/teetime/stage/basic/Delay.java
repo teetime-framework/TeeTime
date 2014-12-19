@@ -24,7 +24,7 @@ public final class Delay<T> extends AbstractStage {
 
 		Long timestampTrigger = this.timestampTriggerInputPort.receive();
 		if (null == timestampTrigger) {
-			return;
+			returnNoElement();
 		}
 
 		sendAllBufferedEllements();

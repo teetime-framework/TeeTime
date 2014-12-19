@@ -1,7 +1,6 @@
 package teetime.stage;
 
 import teetime.framework.AbstractConsumerStage;
-import teetime.framework.NotEnoughInputException;
 import teetime.framework.OutputPort;
 
 public final class Relay<T> extends AbstractConsumerStage<T> {
@@ -10,8 +9,6 @@ public final class Relay<T> extends AbstractConsumerStage<T> {
 	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	// private AbstractInterThreadPipe cachedCastedInputPipe;
-
-	private static final NotEnoughInputException NOT_ENOUGH_INPUT_EXCEPTION = new NotEnoughInputException();
 
 	@Override
 	protected void execute(final T element) {
@@ -25,10 +22,6 @@ public final class Relay<T> extends AbstractConsumerStage<T> {
 			returnNoElement();
 		}
 		outputPort.send(element);
-	}
-
-	private void returnNoElement() {
-		throw NOT_ENOUGH_INPUT_EXCEPTION;
 	}
 
 	// @Override
