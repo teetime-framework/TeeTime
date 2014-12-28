@@ -32,7 +32,8 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 	}
 
 	protected final boolean isThreadWaiting(final Thread thread) {
-		return thread.getState() == State.WAITING || thread.getState() == State.TIMED_WAITING;
+		final State state = thread.getState(); // store state in variable for performance reasons
+		return state == State.WAITING || state == State.TIMED_WAITING;
 	}
 
 	/**
