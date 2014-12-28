@@ -17,12 +17,14 @@ package teetime.examples.experiment09pipeimpls;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.framework.pipe.CommittablePipeFactory;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.OrderedGrowableArrayPipeFactory;
 import teetime.framework.pipe.SingleElementPipeFactory;
+import teetime.framework.pipe.UnorderedGrowablePipeFactory;
 import teetime.util.ConstructorClosure;
 import teetime.util.TimestampObject;
 import util.test.AbstractProfiledPerformanceAssertion;
@@ -62,6 +64,13 @@ public class MethodCallThoughputTimestampAnalysis9Test extends PerformanceTest {
 	@Test
 	public void testOrderedGrowableArrayPipes() throws Exception {
 		IPipeFactory pipeFactory = new OrderedGrowableArrayPipeFactory();
+		testWithManyObjects(pipeFactory);
+	}
+
+	@Ignore
+	@Test
+	public void testUnorderedGrowablePipes() throws Exception { // TODO remove test 11
+		IPipeFactory pipeFactory = new UnorderedGrowablePipeFactory();
 		testWithManyObjects(pipeFactory);
 	}
 

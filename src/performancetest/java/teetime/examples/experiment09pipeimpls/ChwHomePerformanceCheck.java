@@ -37,7 +37,7 @@ class ChwHomePerformanceCheck extends AbstractPerformanceCheck {
 		// since 04.11.2014 (incl.)
 		// assertEquals(71, medianSpeedup, 2.1); // +27
 		// since 05.12.2014 (incl.)
-		assertEquals(45, medianSpeedup, 2.1); // -26 (45-56)
+		assertEquals(43, medianSpeedup, 2.1); // -28 (41-56)
 	}
 
 	private void checkSingleElementPipes() {

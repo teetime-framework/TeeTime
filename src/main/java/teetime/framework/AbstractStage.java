@@ -12,6 +12,8 @@ import teetime.framework.validation.InvalidPortConnection;
 
 public abstract class AbstractStage extends Stage {
 
+	private static final IPipe DUMMY_PORT = new DummyPipe();
+
 	private final List<InputPort<?>> inputPortList = new ArrayList<InputPort<?>>();
 	private final List<OutputPort<?>> outputPortList = new ArrayList<OutputPort<?>>();
 
@@ -84,6 +86,7 @@ public abstract class AbstractStage extends Stage {
 	}
 
 	public void onStarting() throws Exception {
+		this.owningThread = Thread.currentThread();
 		this.cachedInputPorts = this.inputPortList.toArray(new InputPort<?>[0]);
 		this.cachedOutputPorts = this.outputPortList.toArray(new OutputPort<?>[0]);
 
@@ -97,7 +100,7 @@ public abstract class AbstractStage extends Stage {
 		for (OutputPort<?> outputPort : this.cachedOutputPorts) {
 			if (null == outputPort.getPipe()) { // if port is unconnected
 				this.logger.warn("Unconnected output port: " + outputPort + ". Connecting with a dummy output port.");
-				outputPort.setPipe(new DummyPipe());
+				outputPort.setPipe(DUMMY_PORT);
 			}
 		}
 	}
