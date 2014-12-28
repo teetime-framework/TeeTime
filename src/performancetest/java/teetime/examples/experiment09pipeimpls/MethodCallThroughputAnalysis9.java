@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.examples.experiment10;
+package teetime.examples.experiment09pipeimpls;
 
 import java.util.List;
 
 import teetime.framework.OldHeadPipeline;
 import teetime.framework.RunnableProducerStage;
-import teetime.framework.pipe.SingleElementPipe;
+import teetime.framework.Stage;
+import teetime.framework.pipe.IPipeFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.NoopFilter;
 import teetime.stage.ObjectProducer;
@@ -33,23 +34,26 @@ import teetime.util.TimestampObject;
  *
  * @since 1.10
  */
-public class MethodCallThroughputAnalysis10 {
+public class MethodCallThroughputAnalysis9 {
 
-	private long numInputObjects;
+	private int numInputObjects;
 	private ConstructorClosure<TimestampObject> inputObjectCreator;
 	private int numNoopFilters;
 	private List<TimestampObject> timestampObjects;
 	private Runnable runnable;
 
-	public void init() {
-		this.runnable = this.buildPipeline();
+	public void init(final IPipeFactory pipeFactory) {
+		Stage pipeline = this.buildPipeline(pipeFactory);
+		this.runnable = new RunnableProducerStage(pipeline);
 	}
 
 	/**
+	 * @param pipeFactory
 	 * @param numNoopFilters
+	 * @return
 	 * @since 1.10
 	 */
-	private Runnable buildPipeline() {
+	private OldHeadPipeline<ObjectProducer<TimestampObject>, CollectorSink<TimestampObject>> buildPipeline(final IPipeFactory pipeFactory) {
 		@SuppressWarnings("unchecked")
 		final NoopFilter<TimestampObject>[] noopFilters = new NoopFilter[this.numNoopFilters];
 		// create stages
@@ -65,15 +69,15 @@ public class MethodCallThroughputAnalysis10 {
 		pipeline.setFirstStage(objectProducer);
 		pipeline.setLastStage(collectorSink);
 
-		SingleElementPipe.connect(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
-		SingleElementPipe.connect(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
+		pipeFactory.create(objectProducer.getOutputPort(), startTimestampFilter.getInputPort());
+		pipeFactory.create(startTimestampFilter.getOutputPort(), noopFilters[0].getInputPort());
 		for (int i = 0; i < noopFilters.length - 1; i++) {
-			SingleElementPipe.connect(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
+			pipeFactory.create(noopFilters[i].getOutputPort(), noopFilters[i + 1].getInputPort());
 		}
-		SingleElementPipe.connect(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
-		SingleElementPipe.connect(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
+		pipeFactory.create(noopFilters[noopFilters.length - 1].getOutputPort(), stopTimestampFilter.getInputPort());
+		pipeFactory.create(stopTimestampFilter.getOutputPort(), collectorSink.getInputPort());
 
-		return new RunnableProducerStage(pipeline);
+		return pipeline;
 	}
 
 	public void start() {
