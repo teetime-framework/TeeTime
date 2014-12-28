@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import util.test.StatisticsUtil;
+import util.test.eval.StatisticsUtil;
 
 public class StopWatchTest {
 

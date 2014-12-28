@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package util.test;
+package util.test.eval;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import teetime.util.MathUtil;
 import teetime.util.TimestampObject;
+import util.test.PerformanceResult;
 
 /**
  * @author Christian Wulf
