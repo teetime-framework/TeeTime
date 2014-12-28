@@ -63,6 +63,11 @@ public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> exte
 	}
 
 	@Override
+	void setOwningThread(final Thread owningThread) {
+		firstStage.setOwningThread(owningThread);
+	}
+
+	@Override
 	public TerminationStrategy getTerminationStrategy() {
 		return firstStage.getTerminationStrategy();
 	}

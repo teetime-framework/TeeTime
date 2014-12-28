@@ -56,7 +56,7 @@ class ChwHomePerformanceCheck extends AbstractPerformanceCheck {
 		// since 13.12.2014 (incl.)
 		// assertEquals(40, medianSpeedup, 3.2); // -11
 		// since 28.12.2014 (incl.)
-		assertEquals(24, medianSpeedup, 3.2); // -16
+		assertEquals(26, medianSpeedup, 3.2); // -14
 	}
 
 	private void checkOrderedGrowableArrayPipes() {

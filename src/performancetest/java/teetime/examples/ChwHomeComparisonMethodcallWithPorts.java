@@ -71,7 +71,7 @@ public class ChwHomeComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 
 		// check speedup
 		assertEquals(2, (double) test19a.overallDurationInNs / test19b.overallDurationInNs, 0.3);
-		assertEquals(2.5, (double) test19a.overallDurationInNs / test19c.overallDurationInNs, 0.3);
+		assertEquals(2, (double) test19b.overallDurationInNs / test19c.overallDurationInNs, 0.3);
 	}
 
 }
