@@ -63,8 +63,11 @@ public class ChwHomeComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 		// assertEquals(78, value17, 4.1); // +3
 
 		// since 13.12.2014 (incl.)
-		assertEquals(40, value15, 4.1); // -28
+		// assertEquals(40, value15, 4.1); // -28
 		// assertEquals(43, value17, 4.1); // -35
+
+		// since 28.12.2014 (incl.)
+		assertEquals(30, value15, 4.1); // -10
 
 		// check speedup
 		assertEquals(2, (double) test19a.overallDurationInNs / test19b.overallDurationInNs, 0.3);

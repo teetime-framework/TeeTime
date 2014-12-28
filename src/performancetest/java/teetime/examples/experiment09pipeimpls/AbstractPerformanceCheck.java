@@ -11,6 +11,7 @@ abstract class AbstractPerformanceCheck extends AbstractProfiledPerformanceAsser
 	protected PerformanceResult test01;
 	protected PerformanceResult test09CommittablePipes;
 	protected PerformanceResult test09SingleElementPipes;
+	protected PerformanceResult test09OrderedGrowableArrayPipes;
 
 	@Override
 	public void check() {
@@ -22,6 +23,9 @@ abstract class AbstractPerformanceCheck extends AbstractProfiledPerformanceAsser
 
 		testMethodIdentifier = MeasurementRepository.buildTestMethodIdentifier(MethodCallThoughputTimestampAnalysis9Test.class, "testSingleElementPipes");
 		test09SingleElementPipes = PerformanceTest.measurementRepository.performanceResults.get(testMethodIdentifier);
+
+		testMethodIdentifier = MeasurementRepository.buildTestMethodIdentifier(MethodCallThoughputTimestampAnalysis9Test.class, "testOrderedGrowableArrayPipes");
+		test09OrderedGrowableArrayPipes = PerformanceTest.measurementRepository.performanceResults.get(testMethodIdentifier);
 	}
 
 }

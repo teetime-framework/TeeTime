@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import teetime.framework.pipe.CommittablePipeFactory;
 import teetime.framework.pipe.IPipeFactory;
+import teetime.framework.pipe.OrderedGrowableArrayPipeFactory;
 import teetime.framework.pipe.SingleElementPipeFactory;
 import teetime.util.ConstructorClosure;
 import teetime.util.TimestampObject;
@@ -55,6 +56,12 @@ public class MethodCallThoughputTimestampAnalysis9Test extends PerformanceTest {
 	@Test
 	public void testSingleElementPipes() throws Exception {
 		IPipeFactory pipeFactory = new SingleElementPipeFactory();
+		testWithManyObjects(pipeFactory);
+	}
+
+	@Test
+	public void testOrderedGrowableArrayPipes() throws Exception {
+		IPipeFactory pipeFactory = new OrderedGrowableArrayPipeFactory();
 		testWithManyObjects(pipeFactory);
 	}
 

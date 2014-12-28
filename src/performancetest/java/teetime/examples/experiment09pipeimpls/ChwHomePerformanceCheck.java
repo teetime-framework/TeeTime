@@ -16,6 +16,7 @@ class ChwHomePerformanceCheck extends AbstractPerformanceCheck {
 
 		checkCommittablePipes();
 		checkSingleElementPipes();
+		checkOrderedGrowableArrayPipes();
 	}
 
 	private void checkCommittablePipes() {
@@ -36,9 +37,7 @@ class ChwHomePerformanceCheck extends AbstractPerformanceCheck {
 		// since 04.11.2014 (incl.)
 		// assertEquals(71, medianSpeedup, 2.1); // +27
 		// since 05.12.2014 (incl.)
-		// assertEquals(45, medianSpeedup, 2.1); // -26
-		// since 28.12.2014 (incl.)
-		assertEquals(56, medianSpeedup, 2.1); // +11
+		assertEquals(45, medianSpeedup, 2.1); // -26 (45-56)
 	}
 
 	private void checkSingleElementPipes() {
@@ -58,6 +57,31 @@ class ChwHomePerformanceCheck extends AbstractPerformanceCheck {
 		// assertEquals(40, medianSpeedup, 3.2); // -11
 		// since 28.12.2014 (incl.)
 		assertEquals(24, medianSpeedup, 3.2); // -16
+	}
+
+	private void checkOrderedGrowableArrayPipes() {
+		double medianSpeedup = (double) test09OrderedGrowableArrayPipes.quantiles.get(0.5) / test01.quantiles.get(0.5);
+
+		System.out.println("medianSpeedup (09 ordered growable array pipes): " + medianSpeedup);
+
+		// until 25.06.2014 (incl.)
+		// assertEquals(60, (double) test14.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
+		// since 26.06.2014 (incl.)
+		// assertEquals(76, medianSpeedup, 5.1); // +16
+		// since 04.07.2014 (incl.)
+		// assertEquals(86, medianSpeedup, 5.1); // +16
+		// since 11.08.2014 (incl.)
+		// assertEquals(103, medianSpeedup, 5.1); // +17
+		// since 31.08.2014 (incl.)
+		// assertEquals(62, medianSpeedup, 2.1); // -41
+		// since 04.11.2014 (incl.)
+		// assertEquals(84, medianSpeedup, 2.1); // +22
+		// since 05.12.2014 (incl.)
+		// assertEquals(75, medianSpeedup, 2.1); // -9
+		// since 13.12.2014 (incl.)
+		// assertEquals(44, medianSpeedup, 2.1); // -31
+		// since 28.12.2014 (incl.)
+		assertEquals(46, medianSpeedup, 2.1); // +2
 	}
 
 }

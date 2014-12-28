@@ -15,6 +15,7 @@ class ChwWorkPerformanceCheck extends AbstractPerformanceCheck {
 
 		checkCommittablePipes();
 		checkSingleElementPipes();
+		checkOrderedGrowableArrayPipes();
 	}
 
 	private void checkCommittablePipes() {
@@ -52,4 +53,24 @@ class ChwWorkPerformanceCheck extends AbstractPerformanceCheck {
 		// since 14.10.2014 (incl.)
 		assertEquals(25, medianSpeedup, 3.1); // -31
 	}
+
+	private void checkOrderedGrowableArrayPipes() {
+		double medianSpeedup = (double) test09OrderedGrowableArrayPipes.quantiles.get(0.5) / test01.quantiles.get(0.5);
+
+		System.out.println("medianSpeedup (09 ordered growable array pipes): " + medianSpeedup);
+
+		// until 25.06.2014 (incl.)
+		// assertEquals(60, (double) test14.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
+		// since 26.06.2014 (incl.)
+		// assertEquals(76, medianSpeedup, 5.1); // +16
+		// since 04.07.2014 (incl.)
+		// assertEquals(86, medianSpeedup, 5.1); // +16
+		// since 27.08.2014 (incl.)
+		// assertEquals(102, medianSpeedup, 5.1); // +16
+		// since 14.10.2014 (incl.)
+		// assertEquals(81, medianSpeedup, 5.1); // -21
+		// since 19.12.2014 (incl.)
+		assertEquals(56, medianSpeedup, 5.1); // -25
+	}
+
 }
