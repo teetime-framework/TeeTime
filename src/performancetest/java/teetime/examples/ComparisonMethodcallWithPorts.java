@@ -32,7 +32,7 @@ public class ComparisonMethodcallWithPorts {
 
 	@BeforeClass
 	public static void beforeClass() {
-		System.setProperty("logback.configurationFile", "src/test/resources/logback.groovy");
+		// System.setProperty("logback.configurationFile", "src/test/resources/logback.groovy");
 		PerformanceCheckProfileRepository.INSTANCE.register(ComparisonMethodcallWithPorts.class, new ChwWorkComparisonMethodcallWithPorts());
 		PerformanceCheckProfileRepository.INSTANCE.register(ComparisonMethodcallWithPorts.class, new ChwHomeComparisonMethodcallWithPorts());
 		PerformanceCheckProfileRepository.INSTANCE.register(ComparisonMethodcallWithPorts.class, new NieWorkComparisonMethodcallWithPorts());

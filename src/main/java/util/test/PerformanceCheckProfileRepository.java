@@ -1,5 +1,7 @@
 package util.test;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +18,24 @@ public class PerformanceCheckProfileRepository {
 	private String currentProfile;
 
 	public PerformanceCheckProfileRepository() {
-		this.currentProfile = System.getProperty("TestProfile", "ChwWork");
+		String hostName = getHostName();
+		// this.currentProfile = System.getProperty("TestProfile", "ChwWork");
+		currentProfile = hostName;
 		LOGGER.info("Using test profile '" + this.currentProfile + "'");
+	}
+
+	private String getHostName() {
+		String hostname = "Unknown";
+
+		try
+		{
+			InetAddress addr = InetAddress.getLocalHost();
+			hostname = addr.getHostName();
+		} catch (UnknownHostException ex) {
+			LOGGER.warn("Hostname can not be resolved");
+		}
+
+		return hostname;
 	}
 
 	public void setCurrentProfile(final String currentProfile) {

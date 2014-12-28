@@ -1,12 +1,13 @@
 package teetime.examples.experiment09;
 
 import static org.junit.Assert.assertEquals;
+import teetime.examples.HostName;
 
 class ChwHomePerformanceCheck extends AbstractPerformanceCheck {
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {
-		return "ChwHome";
+		return HostName.CHW_HOME.toString();
 	}
 
 	@Override
@@ -30,6 +31,8 @@ class ChwHomePerformanceCheck extends AbstractPerformanceCheck {
 		// since 04.11.2014 (incl.)
 		// assertEquals(71, medianSpeedup, 2.1); // +33
 		// since 05.12.2014 (incl.)
-		assertEquals(45, medianSpeedup, 2.1); // -26
+		// assertEquals(45, medianSpeedup, 2.1); // -26
+		// since 28.12.2014 (incl.)
+		assertEquals(56, medianSpeedup, 2.1); // +11
 	}
 }
