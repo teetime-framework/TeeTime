@@ -27,7 +27,8 @@ public abstract class Stage {
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
-	private Thread owningThread;
+	/** The owning thread of this stage if this stage is directly executed by a {@link RunnableStage}, <code>null</code> otherwise. */
+	protected Thread owningThread;
 
 	protected Stage() {
 		this.id = this.createId();
@@ -94,11 +95,12 @@ public abstract class Stage {
 		return owningThread;
 	}
 
-	public void setOwningThread(final Thread owningThread) {
+	void setOwningThread(final Thread owningThread) {
 		this.owningThread = owningThread;
 	}
 
 	protected abstract InputPort<?>[] getInputPorts();
 
 	protected abstract boolean isStarted();
+
 }

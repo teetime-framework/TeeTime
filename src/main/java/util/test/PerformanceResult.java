@@ -2,6 +2,8 @@ package util.test;
 
 import java.util.Map;
 
+import util.test.eval.StatisticsUtil;
+
 public class PerformanceResult {
 
 	public long overallDurationInNs;

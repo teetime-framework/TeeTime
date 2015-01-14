@@ -11,6 +11,12 @@ final class RunnableConsumerStage extends RunnableStage {
 
 	private final IdleStrategy idleStrategy;
 
+	/**
+	 * Creates a new instance with the {@link YieldStrategy} as default idle strategy.
+	 * 
+	 * @param stage
+	 *            to execute within an own thread
+	 */
 	public RunnableConsumerStage(final Stage stage) {
 		this(stage, new YieldStrategy());
 	}

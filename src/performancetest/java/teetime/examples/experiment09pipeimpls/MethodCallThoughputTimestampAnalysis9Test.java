@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package teetime.examples.experiment09;
+package teetime.examples.experiment09pipeimpls;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import teetime.framework.pipe.CommittablePipeFactory;
+import teetime.framework.pipe.IPipeFactory;
+import teetime.framework.pipe.OrderedGrowableArrayPipeFactory;
+import teetime.framework.pipe.SingleElementPipeFactory;
+import teetime.framework.pipe.UnorderedGrowablePipeFactory;
 import teetime.util.ConstructorClosure;
 import teetime.util.TimestampObject;
-import util.test.PerformanceTest;
 import util.test.AbstractProfiledPerformanceAssertion;
+import util.test.PerformanceTest;
 
 /**
  * @author Christian Wulf
@@ -35,16 +41,40 @@ public class MethodCallThoughputTimestampAnalysis9Test extends PerformanceTest {
 	public static void beforeClass() {
 		PERFORMANCE_CHECK_PROFILE_REPOSITORY.register(MethodCallThoughputTimestampAnalysis9Test.class, new ChwWorkPerformanceCheck());
 		PERFORMANCE_CHECK_PROFILE_REPOSITORY.register(MethodCallThoughputTimestampAnalysis9Test.class, new ChwHomePerformanceCheck());
-	};
+	}
 
 	@AfterClass
 	public static void afterClass() {
 		AbstractProfiledPerformanceAssertion performanceCheckProfile = PERFORMANCE_CHECK_PROFILE_REPOSITORY.get(MethodCallThoughputTimestampAnalysis9Test.class);
 		performanceCheckProfile.check();
-	};
+	}
 
 	@Test
-	public void testWithManyObjects() {
+	public void testCommittablePipes() throws Exception {
+		IPipeFactory pipeFactory = new CommittablePipeFactory();
+		testWithManyObjects(pipeFactory);
+	}
+
+	@Test
+	public void testSingleElementPipes() throws Exception {
+		IPipeFactory pipeFactory = new SingleElementPipeFactory();
+		testWithManyObjects(pipeFactory);
+	}
+
+	@Test
+	public void testOrderedGrowableArrayPipes() throws Exception {
+		IPipeFactory pipeFactory = new OrderedGrowableArrayPipeFactory();
+		testWithManyObjects(pipeFactory);
+	}
+
+	@Ignore
+	@Test
+	public void testUnorderedGrowablePipes() throws Exception { // TODO remove test 11
+		IPipeFactory pipeFactory = new UnorderedGrowablePipeFactory();
+		testWithManyObjects(pipeFactory);
+	}
+
+	private void testWithManyObjects(final IPipeFactory pipeFactory) {
 		System.out.println("Testing teetime (mc) with NUM_OBJECTS_TO_CREATE=" + NUM_OBJECTS_TO_CREATE + ", NUM_NOOP_FILTERS="
 				+ NUM_NOOP_FILTERS + "...");
 
@@ -57,7 +87,7 @@ public class MethodCallThoughputTimestampAnalysis9Test extends PerformanceTest {
 				return new TimestampObject();
 			}
 		});
-		analysis.init();
+		analysis.init(pipeFactory);
 
 		this.stopWatch.start();
 		try {

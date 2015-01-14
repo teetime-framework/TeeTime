@@ -13,7 +13,7 @@ public class ChwHomeComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {
-		return "ChwHome";
+		return HostName.CHW_HOME.toString();
 	}
 
 	@Override
@@ -27,12 +27,6 @@ public class ChwHomeComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 				.get("testWithManyObjects(teetime.examples.experiment01.MethodCallThoughputTimestampAnalysis1Test)");
 		PerformanceResult test15 = performanceResults
 				.get("testWithManyObjects(teetime.examples.experiment15.MethodCallThoughputTimestampAnalysis15Test)");
-		PerformanceResult test16a = performanceResults
-				.get("testWithManyObjectsAnd1Thread(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
-		PerformanceResult test16b = performanceResults
-				.get("testWithManyObjectsAnd2Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
-		PerformanceResult test16c = performanceResults
-				.get("testWithManyObjectsAnd4Threads(teetime.examples.experiment16.MethodCallThoughputTimestampAnalysis16Test)");
 		PerformanceResult test19a = performanceResults
 				.get("testWithManyObjectsAnd1Thread(teetime.examples.experiment19.MethodCallThoughputTimestampAnalysis19Test)");
 		PerformanceResult test19b = performanceResults
@@ -69,24 +63,15 @@ public class ChwHomeComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 		// assertEquals(78, value17, 4.1); // +3
 
 		// since 13.12.2014 (incl.)
-		assertEquals(40, value15, 4.1); // -28
+		// assertEquals(40, value15, 4.1); // -28
 		// assertEquals(43, value17, 4.1); // -35
 
-		// below results vary too much, possibly due to the OS' scheduler
-		// assertEquals(RESULT_TESTS_16, (double) test16a.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
-		// assertEquals(RESULT_TESTS_16, (double) test16b.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
-		// assertEquals(RESULT_TESTS_16, (double) test16c.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
-		//
-		// assertEquals(RESULT_TESTS_19, (double) test19a.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
-		// assertEquals(RESULT_TESTS_19, (double) test19b.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
-		// assertEquals(RESULT_TESTS_19, (double) test19c.quantiles.get(0.5) / test1.quantiles.get(0.5), 5.1);
+		// since 28.12.2014 (incl.)
+		assertEquals(30, value15, 4.1); // -10
 
 		// check speedup
-		assertEquals(2, (double) test16a.overallDurationInNs / test16b.overallDurationInNs, 0.3);
-		assertEquals(2.5, (double) test16a.overallDurationInNs / test16c.overallDurationInNs, 0.2);
-
 		assertEquals(2, (double) test19a.overallDurationInNs / test19b.overallDurationInNs, 0.3);
-		assertEquals(2.5, (double) test19a.overallDurationInNs / test19c.overallDurationInNs, 0.3);
+		assertEquals(2, (double) test19b.overallDurationInNs / test19c.overallDurationInNs, 0.3);
 	}
 
 }

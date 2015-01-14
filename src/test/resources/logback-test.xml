@@ -20,8 +20,8 @@
 		</encoder>
 	</appender>
 	
-	<logger name="teetime.framework" level="TRACE" />
-	<logger name="teetime.stage" level="TRACE" />
+<!-- 	<logger name="teetime.framework" level="TRACE" /> -->
+<!-- 	<logger name="teetime.stage" level="TRACE" /> -->
 	<logger name="teetime" level="INFO" />
 	<logger name="util" level="INFO" />
 
