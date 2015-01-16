@@ -307,7 +307,7 @@
 						<exclude>experiments/**</exclude>
 						<exclude>run-configurations/**</exclude>
 						<exclude>target/**</exclude>
-						<exclude>pom.xml</exclude>
+						<exclude>*.xml</exclude>
 					</excludes>
 				</configuration>
 				<executions>
