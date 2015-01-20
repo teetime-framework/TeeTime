@@ -38,13 +38,13 @@ public abstract class AbstractTcpReader<T> extends AbstractProducerStage<T> {
 				socketChannel.close();
 			}
 		} catch (final IOException ex) {
-			logger.error("Error while reading", ex);
+			logger.error("Error while reading.", ex);
 		} finally {
 			if (null != serversocket) {
 				try {
 					serversocket.close();
 				} catch (final IOException e) {
-					logger.debug("Failed to close TCP connection!", e);
+					logger.debug("Failed to close TCP connection.", e);
 				}
 			}
 
@@ -66,6 +66,12 @@ public abstract class AbstractTcpReader<T> extends AbstractProducerStage<T> {
 		}
 	}
 
+	/**
+	 * Important note: Do not catch {@link BufferUnderflowException}s since they are caught by the caller to automatically fill the buffer with new content.
+	 *
+	 * @param buffer
+	 *            to be read from
+	 */
 	protected abstract void read(final ByteBuffer buffer);
 
 }
