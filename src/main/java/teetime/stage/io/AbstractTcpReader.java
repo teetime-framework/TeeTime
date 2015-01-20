@@ -57,21 +57,28 @@ public abstract class AbstractTcpReader<T> extends AbstractProducerStage<T> {
 		try {
 			while (buffer.hasRemaining()) {
 				buffer.mark();
-				this.read(buffer);
+				boolean success = this.read(buffer);
+				if (!success) {
+					buffer.reset();
+					buffer.compact();
+					return;
+				}
 			}
 			buffer.clear();
 		} catch (final BufferUnderflowException ex) {
+			logger.warn("Unexpected exception. Resetting and compacting buffer.", ex);
 			buffer.reset();
 			buffer.compact();
 		}
 	}
 
 	/**
-	 * Important note: Do not catch {@link BufferUnderflowException}s since they are caught by the caller to automatically fill the buffer with new content.
-	 *
 	 * @param buffer
 	 *            to be read from
+	 * @return <ul>
+	 *         <li><code>true</code> when there were enough bytes to perform the read operation
+	 *         <li><code>false</code> otherwise. In this case, the buffer is reset, compacted, and filled with new content.
 	 */
-	protected abstract void read(final ByteBuffer buffer);
+	protected abstract boolean read(final ByteBuffer buffer);
 
 }
