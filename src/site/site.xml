@@ -74,7 +74,7 @@
 		<!-- <menu ref="reports"/> -->
 	</body>
 	<publishDate position="navigation-bottom" />
-	<version position="navigation-bottom" />
+	<version position="none" />
 	<custom>
 		<reflowSkin>
 			<topNav>Download|Wiki|Documentation|Get Involved</topNav>
