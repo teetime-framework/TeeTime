@@ -295,20 +295,9 @@
 						<owner>TeeTime</owner>
 						<email>http://teetime.sourceforge.net</email>
 					</properties>
-					<excludes>
-						<exclude>**/README</exclude>
-						<exclude>src/test/resources/**</exclude>
-						<exclude>src/main/resources/**</exclude>
-						<exclude>src/changes/**</exclude>
-						<exclude>src/site/**</exclude>
-						<exclude>src/test/data/**</exclude>
-						<exclude>conf/**</exclude>
-						<exclude>doc/**</exclude>
-						<exclude>experiments/**</exclude>
-						<exclude>run-configurations/**</exclude>
-						<exclude>target/**</exclude>
-						<exclude>*.xml</exclude>
-					</excludes>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
 				</configuration>
 				<executions>
 					<execution>
