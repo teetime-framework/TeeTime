@@ -42,10 +42,9 @@ You can get TeeTime through various ways. If your projects uses Maven, just add 
 <dependency>
   <groupId>net.sourceforge.teetime</groupId>
   <artifactId>teetime</artifactId>
-  <version>1.0</version>
+  <version>${teetime.stableversion}</version>
 </dependency>
 ```
-
 
 To get the source code or the plain jar, take a look at the [download](download.html) section.
 

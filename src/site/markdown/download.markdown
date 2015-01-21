@@ -16,7 +16,7 @@ If you use Maven, simply add following lines to your ``pom.xml``:
 <dependency>
 	<groupId>net.sourceforge.teetime</groupId>
 	<artifactId>teetime</artifactId>
-	<version>1.0</version>
+	<version>${teetime.stableversion}</version>
 </dependency>
 ```
 
@@ -25,7 +25,7 @@ Please make sure, your project management tool uses Maven's central repository. 
 
 #### Binaries and sources
 
-The latest TeeTime release can be downloaded directly from [Sourceforge](https://sourceforge.net/projects/teetime/files/latest/download). If you also want to download the source and/or JavaDoc, you can also get a summary of available files on [Sourceforge](https://sourceforge.net/projects/teetime/files/). Alternatively, all files are accessible [directly from Maven's central repository](http://repo1.maven.org/maven2/net/sourceforge/teetime/teetime/).
+The latest TeeTime release can be downloaded directly from [Sourceforge](https://sourceforge.net/projects/teetime/files/latest/download). If you also want to download the source and/or JavaDoc, you can also get a summary of available files on [Sourceforge](https://sourceforge.net/projects/teetime/files/).
 
 ## Snapshot
 
@@ -43,7 +43,7 @@ To download these builds, add following lines to your project's ``pom.xml``:
 <dependency>
 	<groupId>net.sourceforge.teetime</groupId>
   	<artifactId>teetime</artifactId>
-  	<version>1.0-SNAPSHOT</version>
+  	<version>${teetime.snapshotversion}</version>
 </dependency>
 ```
 
