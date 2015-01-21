@@ -47,6 +47,7 @@
 		</head>
 
 		<links>
+			<item name="News" href="news.html" />
 			<item name="Download" href="download.html" />
 			<item name="Wiki"
 				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
@@ -65,6 +66,7 @@
 		</menu>
 		<menu name="Main">
 			<item name="Home" href="index.html" />
+			<item name="News" href="news.html" />
 			<item name="Download" href="download.html" />
 			<item name="Wiki"
 				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
@@ -77,7 +79,7 @@
 	<version position="none" />
 	<custom>
 		<reflowSkin>
-			<topNav>Download|Wiki|Documentation|Get Involved</topNav>
+			<topNav>News|Download|Wiki|Documentation|Get Involved</topNav>
 			<!-- <toc>sidebar</toc> -->
 			<!-- <tocTopMax>4</tocTopMax> -->
 			<absoluteResourceURL>http://teetime.sourceforge.net
