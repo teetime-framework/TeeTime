@@ -1,18 +1,18 @@
 #### TeeTime
 
-![Screenshot](images/code_screenshot.png)
+![Pipelining](images/carousel1.png)
 
-Implement your analysis or filters in a new, easy and fast way.
+Implement your analysis or filters in a new, easy, and fast way.
 
-#### Simple & Fast
+#### Automatic Thread Management
 
-![Pipelining](images/carousel3.png)
+![Pipelining](images/carousel2.png)
 
-The main focus is on fast execution and easy usage.
+Data exchange between stages is automatically synchronized on demand. 
 
 #### Start today
 
-![Pipelining](images/code_screenshot.png)
+![Screenshot](images/carousel3.png)
 
 Predefined stages are provided within the source code. You can immediatly start to write your own analysis.
 
