@@ -21,7 +21,6 @@ Predefined stages are provided within the source code. You can immediatly start 
 
 ## What is it?
 
-<!--- ![Logo](images/teetime-wo-arrows-shrinked.png) TeeTime Logo -->
 TeeTime is a Pipes-And-Filters-Framework for Java.
 	
 It provides various features, which will bring you to the next level of analysis programming, such as:
