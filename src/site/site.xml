@@ -105,12 +105,10 @@
 				<column>Get Involved</column>
 			</bottomNav>
 			<bottomDescription>
-				TeeTime is a Pipes-And-Filters-Framework for Java.
-				It provides a simple way
-				of analysis tooling.
 				<![CDATA[
+				<a href="https://sourceforge.net/p/teetime/" rel="nofollow"><img alt="Download TeeTime" src="https://sourceforge.net/sflogo.php?type=11&group_id=2244303"></a>
 				<br />
-				<a href="https://sourceforge.net/p/teetime/" rel="nofollow"><img alt="Download TeeTime" src="https://sourceforge.net/sflogo.php?type=10&group_id=2244303"></a>
+				<a href="http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22net.sourceforge.teetime%22%20AND%20a%3A%22teetime%22"><img alt="Maven Central Repository" src="https://img.shields.io/maven-central/v/net.sourceforge.teetime/teetime.svg?style=flat-square"></a>
 				]]>
 			</bottomDescription>
 			<pages>
