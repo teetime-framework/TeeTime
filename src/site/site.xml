@@ -47,9 +47,9 @@
 		</head>
 
 		<links>
+			<item name="News" href="news.html" />
 			<item name="Download" href="download.html" />
-			<item name="Wiki"
-				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
+			<item name="Wiki" href="wiki/" />
 		</links>
 		<menu name="Documentation">
 			<item name="JavaDoc" href="apidocs/index.html" />
@@ -65,6 +65,7 @@
 		</menu>
 		<menu name="Main">
 			<item name="Home" href="index.html" />
+			<item name="News" href="news.html" />
 			<item name="Download" href="download.html" />
 			<item name="Wiki"
 				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
@@ -74,10 +75,10 @@
 		<!-- <menu ref="reports"/> -->
 	</body>
 	<publishDate position="navigation-bottom" />
-	<version position="navigation-bottom" />
+	<version position="none" />
 	<custom>
 		<reflowSkin>
-			<topNav>Download|Wiki|Documentation|Get Involved</topNav>
+			<topNav>News|Download|Wiki|Documentation|Get Involved</topNav>
 			<!-- <toc>sidebar</toc> -->
 			<!-- <tocTopMax>4</tocTopMax> -->
 			<absoluteResourceURL>http://teetime.sourceforge.net
@@ -103,9 +104,11 @@
 				<column>Get Involved</column>
 			</bottomNav>
 			<bottomDescription>
-				TeeTime is a Pipes-And-Filters-Framework for Java.
-				It provides a simple way
-				of analysis tooling.
+				<![CDATA[
+				<a href="https://sourceforge.net/p/teetime/" rel="nofollow"><img alt="Download TeeTime" src="https://sourceforge.net/sflogo.php?type=11&group_id=2244303"></a>
+				<br />
+				<a href="http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22net.sourceforge.teetime%22%20AND%20a%3A%22teetime%22"><img alt="Maven Central Repository" src="https://img.shields.io/maven-central/v/net.sourceforge.teetime/teetime.svg?style=flat-square"></a>
+				]]>
 			</bottomDescription>
 			<pages>
 				<index>
