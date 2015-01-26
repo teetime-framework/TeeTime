@@ -301,8 +301,9 @@
 				</configuration>
 				<executions>
 					<execution>
+						<phase>test</phase>
 						<goals>
-							<goal>check</goal>
+							<goal>format</goal>
 						</goals>
 					</execution>
 				</executions>
