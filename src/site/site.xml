@@ -49,8 +49,7 @@
 		<links>
 			<item name="News" href="news.html" />
 			<item name="Download" href="download.html" />
-			<item name="Wiki"
-				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
+			<item name="Wiki" href="wiki/" />
 		</links>
 		<menu name="Documentation">
 			<item name="JavaDoc" href="apidocs/index.html" />
