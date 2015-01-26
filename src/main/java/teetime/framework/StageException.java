@@ -12,10 +12,16 @@ public class StageException extends Exception {
 	private static final long serialVersionUID = 6724637605943897808L;
 
 	private final Stage throwingStage;
+	private final Exception originalException;
 
-	public StageException(final Stage throwingStage) {
+	public StageException(final Exception e, final Stage throwingStage) {
 		super();
+		this.originalException = e;
 		this.throwingStage = throwingStage;
+	}
+
+	public Exception getOriginalException() {
+		return originalException;
 	}
 
 	/**
