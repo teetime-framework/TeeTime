@@ -12,7 +12,7 @@
 			</action>
 
 		</release>
-		<release version="1.0" date="Soon" description="Initial release">
+		<release version="1.0" date="19.12.2014" description="Initial release">
 			<action dev="ntd" type="add" issue="66">
 				Created a new site to
 				promote TeeTime.
