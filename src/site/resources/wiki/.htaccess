@@ -1,4 +1,2 @@
-RewriteEngine on
-CheckSpelling on
 Options MultiViews
 DirectoryIndex home.html
