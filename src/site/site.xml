@@ -13,7 +13,10 @@
 		</name>
 		<href>http://teetime.sourceforge.net</href>
 	</bannerLeft>
-
+	<poweredBy>
+		<logo name="Maven" href="http://maven.apache.org/"
+			img="http://maven.apache.org/images/logos/maven-feather.png" />
+	</poweredBy>
 	<body>
 		<head>
 			<link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png" />
@@ -45,7 +48,6 @@
 			<meta name="msapplication-TileImage" content="/mstile-144x144.png" />
 			<meta name="application-name" content="TeeTime" />
 		</head>
-
 		<links>
 			<item name="News" href="news.html" />
 			<item name="Download" href="download.html" />
@@ -67,8 +69,7 @@
 			<item name="Home" href="index.html" />
 			<item name="News" href="news.html" />
 			<item name="Download" href="download.html" />
-			<item name="Wiki"
-				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home" />
+			<item name="Wiki" href="wiki/" />
 			<item name="Release notes" href="changes-report.html" />
 		</menu>
 		<!-- <menu ref="modules"/> -->
@@ -85,7 +86,7 @@
 			</absoluteResourceURL>
 			<theme>default</theme>
 			<highlightJs>true</highlightJs>
-			<highlightJsTheme>github</highlightJsTheme>
+			<highlightJsTheme>Sunburst</highlightJsTheme>
 			<brand>
 				<name>
 					TeeTime
@@ -105,11 +106,12 @@
 			</bottomNav>
 			<bottomDescription>
 				<![CDATA[
-				<a href="https://sourceforge.net/p/teetime/" rel="nofollow"><img alt="Download TeeTime" src="https://sourceforge.net/sflogo.php?type=11&group_id=2244303"></a>
-				<br />
-				<a href="http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22net.sourceforge.teetime%22%20AND%20a%3A%22teetime%22"><img alt="Maven Central Repository" src="https://img.shields.io/maven-central/v/net.sourceforge.teetime/teetime.svg?style=flat-square"></a>
+				Snapshot state:
 				<br />
 				<a href="https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nighly-release/"><img alt="Jenkins build status" src="https://img.shields.io/jenkins/s/https/build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/teetime-nighly-release.svg?style=flat-square"></a>
+				<br />
+				<a href="https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nighly-release/"><img alt="Jenkins build status" src="https://img.shields.io/jenkins/t/https/build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/teetime-nighly-release.svg?style=flat-square"></a>
+				<br /><br /><a href="https://sourceforge.net/p/teetime/" rel="nofollow"><img alt="Download TeeTime" src="https://sourceforge.net/sflogo.php?type=11&group_id=2244303"></a>
 				]]>
 			</bottomDescription>
 			<pages>
