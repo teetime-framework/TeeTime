@@ -109,7 +109,7 @@
 				<br />
 				<a href="http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22net.sourceforge.teetime%22%20AND%20a%3A%22teetime%22"><img alt="Maven Central Repository" src="https://img.shields.io/maven-central/v/net.sourceforge.teetime/teetime.svg?style=flat-square"></a>
 				<br />
-				<a href="https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nighly-release/"><img alt="Jenkins build status" src="https://img.shields.io/jenkins/s/https/build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/teetime-nighly-release.svg"></a>
+				<a href="https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nighly-release/"><img alt="Jenkins build status" src="https://img.shields.io/jenkins/s/https/build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/teetime-nighly-release.svg?style=flat-square"></a>
 				]]>
 			</bottomDescription>
 			<pages>
