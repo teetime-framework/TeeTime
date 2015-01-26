@@ -86,7 +86,7 @@
 			</absoluteResourceURL>
 			<theme>default</theme>
 			<highlightJs>true</highlightJs>
-			<highlightJsTheme>Sunburst</highlightJsTheme>
+			<highlightJsTheme>xcode</highlightJsTheme>
 			<brand>
 				<name>
 					TeeTime
