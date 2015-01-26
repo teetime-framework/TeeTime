@@ -5,12 +5,18 @@
 		<title>Release notes</title>
 	</properties>
 	<body>
-		<release version="Snapshot" date="Daily basis" description="Unstable preview of oncoming versions">
-			<action dev="ntd" type="add" issue="66">
-				Created a new site to promote TeeTime.
+		<release version="Snapshot" date="Daily basis"
+			description="Unstable preview of oncoming versions">
+			<action dev="ntd" type="add" issue="32">
+				Introduced a generic exception handling for stages.
 			</action>
+
 		</release>
 		<release version="1.0" date="Soon" description="Initial release">
+			<action dev="ntd" type="add" issue="66">
+				Created a new site to
+				promote TeeTime.
+			</action>
 			<action type="add">
 				Initial release of TeeTime
 			</action>
