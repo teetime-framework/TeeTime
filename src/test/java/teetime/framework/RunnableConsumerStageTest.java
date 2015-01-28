@@ -8,6 +8,7 @@ import java.util.Collection;
 import org.junit.Test;
 
 import teetime.util.Pair;
+import teetime.framework.WaitStrategyConfiguration;
 
 import com.google.common.base.Joiner;
 

@@ -55,6 +55,7 @@
 		</links>
 		<menu name="Documentation">
 			<item name="JavaDoc" href="apidocs/index.html" />
+			<item name="Release Notes" href="changes-report.html" />
 			<item name="Project Dependencies" href="dependencies.html" />
 			<item name="License" href="license.html" />
 		</menu>
@@ -70,7 +71,6 @@
 			<item name="News" href="news.html" />
 			<item name="Download" href="download.html" />
 			<item name="Wiki" href="wiki/" />
-			<item name="Release notes" href="changes-report.html" />
 		</menu>
 		<!-- <menu ref="modules"/> -->
 		<!-- <menu ref="reports"/> -->
@@ -101,7 +101,7 @@
 			<titleTemplate>%2$s | %1$s</titleTemplate>
 			<bottomNav maxSpan="9">
 				<column>Main</column>
-				<column>Wiki|Documentation</column>
+				<column>Documentation</column>
 				<column>Get Involved</column>
 			</bottomNav>
 			<bottomDescription>
@@ -139,10 +139,6 @@
 					<toc>top</toc>
 					<tocTopMax>4</tocTopMax>
 				</download>
-				<dependencies>
-					<toc>top</toc>
-					<tocTopMax>5</tocTopMax>
-				</dependencies>
 				<contribute>
 					<highlightJs>false</highlightJs>
 				</contribute>
