@@ -30,7 +30,7 @@ The latest TeeTime release can be downloaded directly from [Sourceforge](https:/
 
 ## Snapshot
 
-TeeTime is built upon a daily basis. All these nightly builds are accessible to the public.
+TeeTime is built upon a daily basis. All these nightly builds are accessible to the public. A documentation is provided [here](apidocs/index.html).
 
 Please do not forget, that this releases are not intended for daily use. These builds may be unstable.
 
