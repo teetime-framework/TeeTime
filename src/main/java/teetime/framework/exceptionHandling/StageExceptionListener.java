@@ -1,4 +1,6 @@
-package teetime.framework;
+package teetime.framework.exceptionHandling;
+
+import teetime.framework.Stage;
 
 /**
  * Represent a minimalistic StageExceptionListener. Listener which extend from this one, must a least implement this functionality.

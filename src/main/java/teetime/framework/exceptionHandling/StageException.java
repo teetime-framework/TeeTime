@@ -1,10 +1,12 @@
-package teetime.framework;
+package teetime.framework.exceptionHandling;
+
+import teetime.framework.Stage;
 
 /**
  * Represents an Exception, which is thrown by stages, if uncatched exceptions are thrown.
  *
  */
-public class StageException extends Exception {
+public class StageException extends RuntimeException {
 
 	/**
 	 * Generated UID

@@ -1,5 +1,6 @@
 package teetime.framework;
 
+import teetime.framework.exceptionHandling.StageException;
 import teetime.framework.idle.IdleStrategy;
 import teetime.framework.idle.YieldStrategy;
 
@@ -20,7 +21,11 @@ public abstract class AbstractConsumerStage<I> extends AbstractStage {
 			returnNoElement();
 		}
 
-		this.execute(element);
+		try {
+			this.execute(element);
+		} catch (Exception e) {
+			throw new StageException(e, this);
+		}
 	}
 
 	protected abstract void execute(I element);

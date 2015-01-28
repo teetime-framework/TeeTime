@@ -1,5 +1,7 @@
 package teetime.framework;
 
+import teetime.framework.exceptionHandling.StageException;
+
 /**
  * The <code>ProducerStage</code> produces at least one element at each execution.<br>
  *
@@ -19,7 +21,11 @@ public abstract class AbstractProducerStage<O> extends AbstractStage {
 
 	@Override
 	public void executeWithPorts() {
-		this.execute();
+		try {
+			this.execute();
+		} catch (Exception e) {
+			throw new StageException(e, this);
+		}
 	}
 
 	@Override
