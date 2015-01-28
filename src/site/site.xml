@@ -54,7 +54,7 @@
 			<item name="Wiki" href="wiki/" />
 		</links>
 		<menu name="Documentation">
-			<item name="JavaDoc" href="apidocs/index.html" />
+			<item name="JavaDoc" href="stabledocs/index.html" />
 			<item name="Release Notes" href="changes-report.html" />
 			<item name="Project Dependencies" href="dependencies.html" />
 			<item name="License" href="license.html" />
