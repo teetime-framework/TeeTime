@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.exceptionHandling.DefaultListener;
+import teetime.framework.exceptionHandling.IgnoringStageListener;
 import teetime.framework.exceptionHandling.StageExceptionListener;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
@@ -43,11 +43,11 @@ public class Analysis implements UncaughtExceptionHandler {
 	 *            to be used for the analysis
 	 */
 	public Analysis(final AnalysisConfiguration configuration) {
-		this(configuration, false, new DefaultListener());
+		this(configuration, false, new IgnoringStageListener());
 	}
 
 	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled) {
-		this(configuration, validationEnabled, new DefaultListener());
+		this(configuration, validationEnabled, new IgnoringStageListener());
 	}
 
 	public Analysis(final AnalysisConfiguration configuration, final StageExceptionListener listener) {

@@ -2,9 +2,9 @@ package teetime.framework.exceptionHandling;
 
 import teetime.framework.Stage;
 
-public class DefaultListener extends StageExceptionListener {
+public class IgnoringStageListener extends StageExceptionListener {
 
-	public DefaultListener() {
+	public IgnoringStageListener() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

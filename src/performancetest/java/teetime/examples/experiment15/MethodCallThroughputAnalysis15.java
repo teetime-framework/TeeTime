@@ -21,7 +21,7 @@ import teetime.framework.AnalysisConfiguration;
 import teetime.framework.OldHeadPipeline;
 import teetime.framework.RunnableProducerStage;
 import teetime.framework.Stage;
-import teetime.framework.exceptionHandling.DefaultListener;
+import teetime.framework.exceptionHandling.IgnoringStageListener;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.OrderedGrowableArrayPipe;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
@@ -65,10 +65,10 @@ public class MethodCallThroughputAnalysis15 extends AnalysisConfiguration {
 
 	public void init() {
 		OldHeadPipeline<Clock, Sink<Long>> clockPipeline = this.buildClockPipeline();
-		this.clockRunnable = new RunnableProducerStage(clockPipeline, new DefaultListener());
+		this.clockRunnable = new RunnableProducerStage(clockPipeline, new IgnoringStageListener());
 
 		Stage pipeline = this.buildPipeline(this.clock);
-		this.runnable = new RunnableProducerStage(pipeline, new DefaultListener());
+		this.runnable = new RunnableProducerStage(pipeline, new IgnoringStageListener());
 	}
 
 	private OldHeadPipeline<Clock, Sink<Long>> buildClockPipeline() {
