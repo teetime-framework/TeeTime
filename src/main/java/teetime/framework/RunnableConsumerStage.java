@@ -2,6 +2,7 @@ package teetime.framework;
 
 import java.util.Arrays;
 
+import teetime.framework.exceptionHandling.StageExceptionListener;
 import teetime.framework.idle.IdleStrategy;
 import teetime.framework.idle.YieldStrategy;
 import teetime.framework.pipe.IPipe;
@@ -13,16 +14,16 @@ final class RunnableConsumerStage extends RunnableStage {
 
 	/**
 	 * Creates a new instance with the {@link YieldStrategy} as default idle strategy.
-	 * 
+	 *
 	 * @param stage
 	 *            to execute within an own thread
 	 */
-	public RunnableConsumerStage(final Stage stage) {
-		this(stage, new YieldStrategy());
+	public RunnableConsumerStage(final Stage stage, final StageExceptionListener exceptionListener) {
+		this(stage, new YieldStrategy(), exceptionListener);
 	}
 
-	public RunnableConsumerStage(final Stage stage, final IdleStrategy idleStrategy) {
-		super(stage);
+	public RunnableConsumerStage(final Stage stage, final IdleStrategy idleStrategy, final StageExceptionListener exceptionListener) {
+		super(stage, exceptionListener);
 		this.idleStrategy = idleStrategy;
 	}
 

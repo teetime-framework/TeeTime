@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import teetime.framework.exceptionHandling.DefaultListener;
+import teetime.framework.exceptionHandling.StageExceptionListener;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.Pair;
@@ -26,6 +28,8 @@ public class Analysis implements UncaughtExceptionHandler {
 
 	private final AnalysisConfiguration configuration;
 
+	private final StageExceptionListener listener;
+
 	private final List<Thread> consumerThreads = new LinkedList<Thread>();
 	private final List<Thread> finiteProducerThreads = new LinkedList<Thread>();
 	private final List<Thread> infiniteProducerThreads = new LinkedList<Thread>();
@@ -39,11 +43,20 @@ public class Analysis implements UncaughtExceptionHandler {
 	 *            to be used for the analysis
 	 */
 	public Analysis(final AnalysisConfiguration configuration) {
-		this(configuration, false);
+		this(configuration, false, new DefaultListener());
 	}
 
 	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled) {
+		this(configuration, validationEnabled, new DefaultListener());
+	}
+
+	public Analysis(final AnalysisConfiguration configuration, final StageExceptionListener listener) {
+		this(configuration, false, listener);
+	}
+
+	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled, final StageExceptionListener listener) {
 		this.configuration = configuration;
+		this.listener = listener;
 		if (validationEnabled) {
 			validateStages();
 		}
@@ -70,13 +83,22 @@ public class Analysis implements UncaughtExceptionHandler {
 	public void init() {
 		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		for (Stage stage : threadableStageJobs) {
+			StageExceptionListener newListener;
+			try {
+				newListener = listener.getClass().newInstance();
+			} catch (InstantiationException e) {
+				throw new IllegalStateException(e);
+			} catch (IllegalAccessException e) {
+				throw new IllegalStateException(e);
+			}
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
-				RunnableConsumerStage runnable;
+				RunnableConsumerStage runnable = null;
+				newListener.setHeadStage(runnable);
 				if (stage instanceof AbstractConsumerStage<?>) {
-					runnable = new RunnableConsumerStage(stage, ((AbstractConsumerStage<?>) stage).getIdleStrategy()); // FIXME remove this word-around
+					runnable = new RunnableConsumerStage(stage, ((AbstractConsumerStage<?>) stage).getIdleStrategy(), newListener); // FIXME remove this word-around
 				} else {
-					runnable = new RunnableConsumerStage(stage);
+					runnable = new RunnableConsumerStage(stage, newListener);
 				}
 				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
@@ -84,13 +106,19 @@ public class Analysis implements UncaughtExceptionHandler {
 				break;
 			}
 			case BY_SELF_DECISION: {
-				final Thread thread = new Thread(new RunnableProducerStage(stage));
+				RunnableProducerStage runnable = null;
+				newListener.setHeadStage(runnable);
+				runnable = new RunnableProducerStage(stage, newListener);
+				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.finiteProducerThreads.add(thread);
 				break;
 			}
 			case BY_INTERRUPT: {
-				final Thread thread = new Thread(new RunnableProducerStage(stage));
+				RunnableProducerStage runnable = null;
+				newListener.setHeadStage(runnable);
+				runnable = new RunnableProducerStage(stage, newListener);
+				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.infiniteProducerThreads.add(thread);
 				break;

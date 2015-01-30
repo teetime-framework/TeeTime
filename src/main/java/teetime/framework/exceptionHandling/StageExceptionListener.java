@@ -1,17 +1,26 @@
 package teetime.framework.exceptionHandling;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import teetime.framework.RunnableStage;
 import teetime.framework.Stage;
 
 /**
  * Represent a minimalistic StageExceptionListener. Listener which extend from this one, must a least implement this functionality.
- *
+ * This abstract class provides a Logger {@link #logger} and a method to terminate the threads execution {@link #terminateExecution()}.
  */
 public abstract class StageExceptionListener {
 
-	private final Thread thread;
+	private RunnableStage runnable;
 
-	public StageExceptionListener(final Thread thread) {
-		this.thread = thread;
+	/**
+	 * The default logger, which can be used by all subclasses
+	 */
+	protected final Logger logger;
+
+	public StageExceptionListener() {
+		this.logger = LoggerFactory.getLogger(this.getClass().getCanonicalName());
 	}
 
 	/**
@@ -25,12 +34,13 @@ public abstract class StageExceptionListener {
 	public abstract void onStageException(Exception e, Stage throwingStage);
 
 	/**
-	 * Retrieves the thread in which the exception occurred.
-	 *
-	 * @return exception throwing thread
+	 * This method can be used to terminate the execution of the thread.
 	 */
-	public Thread getThread() {
-		return thread;
+	protected final void terminateExecution() {
+		this.runnable.abortExecution();
 	}
 
+	public final void setHeadStage(final RunnableStage headStage) {
+		this.runnable = headStage;
+	}
 }
