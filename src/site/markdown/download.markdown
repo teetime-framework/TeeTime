@@ -22,7 +22,7 @@ If you use Maven, simply add following lines to your ``pom.xml``:
 </dependency>
 ```
 
-For other project management tools, please check [here](other-dependencies.html). 
+For other project management tools, please check [here](nomaven.html). 
 
 #### Binaries and sources
 
