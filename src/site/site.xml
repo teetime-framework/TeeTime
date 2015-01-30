@@ -56,7 +56,7 @@
 		<menu name="Documentation">
 			<item name="JavaDoc" href="stabledocs/index.html" />
 			<item name="Release Notes" href="changes-report.html" />
-			<item name="Project Dependencies" href="other-dependencies.html" />
+			<item name="Project Dependencies" href="dependencies.html" />
 			<item name="License" href="license.html" />
 		</menu>
 		<menu name="Get Involved">
