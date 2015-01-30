@@ -23,7 +23,7 @@ abstract class RunnableStage implements Runnable {
 	@Override
 	public final void run() {
 		this.logger.debug("Executing runnable stage...");
-
+		boolean failed = false;
 		try {
 			beforeStageExecution();
 
@@ -33,6 +33,7 @@ abstract class RunnableStage implements Runnable {
 				} catch (StageException e) {
 					if (this.listener.onStageException(e, e.getThrowingStage()) == FurtherExecution.TERMINATE) {
 						this.stage.terminate();
+						failed = true;
 					}
 				}
 			} while (!this.stage.shouldBeTerminated());
@@ -48,6 +49,9 @@ abstract class RunnableStage implements Runnable {
 		}
 
 		this.logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
+		if (failed) {
+			throw new IllegalStateException("Terminated by StageExceptionListener");
+		}
 	}
 
 	protected abstract void beforeStageExecution();
