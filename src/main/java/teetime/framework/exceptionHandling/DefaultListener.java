@@ -10,7 +10,7 @@ public class DefaultListener extends StageExceptionListener {
 	}
 
 	@Override
-	public void onStageException(final Exception e, final Stage throwingStage) {
-		// TODO Auto-generated method stub
+	public boolean onStageException(final Exception e, final Stage throwingStage) {
+		return true;
 	}
 }

@@ -99,7 +99,6 @@ public class Analysis implements UncaughtExceptionHandler {
 				} else {
 					runnable = new RunnableConsumerStage(stage, newListener);
 				}
-				newListener.setRunnableStage(runnable);
 				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.consumerThreads.add(thread);
@@ -107,7 +106,6 @@ public class Analysis implements UncaughtExceptionHandler {
 			}
 			case BY_SELF_DECISION: {
 				RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
-				newListener.setRunnableStage(runnable);
 				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.finiteProducerThreads.add(thread);
@@ -115,7 +113,6 @@ public class Analysis implements UncaughtExceptionHandler {
 			}
 			case BY_INTERRUPT: {
 				RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
-				newListener.setRunnableStage(runnable);
 				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.infiniteProducerThreads.add(thread);

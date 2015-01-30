@@ -3,7 +3,6 @@ package teetime.framework.exceptionHandling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.RunnableStage;
 import teetime.framework.Stage;
 
 /**
@@ -11,8 +10,6 @@ import teetime.framework.Stage;
  * This abstract class provides a Logger {@link #logger} and a method to terminate the threads execution {@link #terminateExecution()}.
  */
 public abstract class StageExceptionListener {
-
-	private RunnableStage runnable;
 
 	/**
 	 * The default logger, which can be used by all subclasses
@@ -31,16 +28,6 @@ public abstract class StageExceptionListener {
 	 * @param throwingStage
 	 *            the stage, which has thrown the exception.
 	 */
-	public abstract void onStageException(Exception e, Stage throwingStage);
+	public abstract boolean onStageException(Exception e, Stage throwingStage);
 
-	/**
-	 * This method can be used to terminate the execution of the thread.
-	 */
-	protected final void terminateExecution() {
-		this.runnable.abortExecution();
-	}
-
-	public final void setRunnableStage(final RunnableStage runnableStage) {
-		this.runnable = runnableStage;
-	}
 }
