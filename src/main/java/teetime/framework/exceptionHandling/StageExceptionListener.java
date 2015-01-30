@@ -28,7 +28,7 @@ public abstract class StageExceptionListener {
 	 * @param throwingStage
 	 *            the stage, which has thrown the exception.
 	 * @return
-	 *         true, if the thread can continue with execution or false, if thread should be terminated
+	 *         true, if the thread should be terminated, false otherwise
 	 */
 	public abstract boolean onStageException(Exception e, Stage throwingStage);
 

@@ -30,7 +30,7 @@ abstract class RunnableStage implements Runnable {
 				try {
 					executeStage();
 				} catch (StageException e) {
-					if (!this.listener.onStageException(e, e.getThrowingStage())) {
+					if (this.listener.onStageException(e, e.getThrowingStage())) {
 						this.stage.terminate();
 					}
 				}
