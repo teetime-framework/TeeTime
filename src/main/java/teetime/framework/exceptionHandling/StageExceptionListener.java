@@ -11,6 +11,10 @@ import teetime.framework.Stage;
  */
 public abstract class StageExceptionListener {
 
+	public enum FurtherExecution {
+		CONTINUE, TERMINATE
+	}
+
 	/**
 	 * The default logger, which can be used by all subclasses
 	 */
@@ -30,6 +34,6 @@ public abstract class StageExceptionListener {
 	 * @return
 	 *         true, if the thread should be terminated, false otherwise
 	 */
-	public abstract boolean onStageException(Exception e, Stage throwingStage);
+	public abstract FurtherExecution onStageException(Exception e, Stage throwingStage);
 
 }

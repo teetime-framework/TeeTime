@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.StageException;
 import teetime.framework.exceptionHandling.StageExceptionListener;
+import teetime.framework.exceptionHandling.StageExceptionListener.FurtherExecution;
 
 abstract class RunnableStage implements Runnable {
 
@@ -30,7 +31,7 @@ abstract class RunnableStage implements Runnable {
 				try {
 					executeStage();
 				} catch (StageException e) {
-					if (this.listener.onStageException(e, e.getThrowingStage())) {
+					if (this.listener.onStageException(e, e.getThrowingStage()) == FurtherExecution.TERMINATE) {
 						this.stage.terminate();
 					}
 				}

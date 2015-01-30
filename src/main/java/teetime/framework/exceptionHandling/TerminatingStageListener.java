@@ -5,9 +5,9 @@ import teetime.framework.Stage;
 public class TerminatingStageListener extends StageExceptionListener {
 
 	@Override
-	public boolean onStageException(final Exception e, final Stage throwingStage) {
+	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {
 		logger.warn("Exception arised from" + throwingStage.getId(), e);
-		return true;
+		return FurtherExecution.TERMINATE;
 	}
 
 }

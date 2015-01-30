@@ -37,7 +37,7 @@ public class Analysis implements UncaughtExceptionHandler {
 	private final Collection<Pair<Thread, Throwable>> exceptions = new ConcurrentLinkedQueue<Pair<Thread, Throwable>>();
 
 	/**
-	 * Creates a new {@link Analysis} that skips validating the port connections.
+	 * Creates a new {@link Analysis} that skips validating the port connections and uses the default listener.
 	 *
 	 * @param configuration
 	 *            to be used for the analysis
@@ -50,6 +50,14 @@ public class Analysis implements UncaughtExceptionHandler {
 		this(configuration, validationEnabled, new IgnoringStageListener());
 	}
 
+	/**
+	 * Creates a new {@link Analysis} that skips validating the port connections and uses a specific listener.
+	 *
+	 * @param configuration
+	 *            to be used for the analysis
+	 * @param listener
+	 *            specific listener for the exception handling
+	 */
 	public Analysis(final AnalysisConfiguration configuration, final StageExceptionListener listener) {
 		this(configuration, false, listener);
 	}

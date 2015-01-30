@@ -9,7 +9,7 @@ public class IgnoringStageListener extends StageExceptionListener {
 	}
 
 	@Override
-	public boolean onStageException(final Exception e, final Stage throwingStage) {
-		return false;
+	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {
+		return FurtherExecution.CONTINUE;
 	}
 }
