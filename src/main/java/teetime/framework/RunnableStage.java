@@ -3,7 +3,6 @@ package teetime.framework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.exceptionHandling.DefaultListener;
 import teetime.framework.exceptionHandling.StageException;
 import teetime.framework.exceptionHandling.StageExceptionListener;
 
@@ -13,13 +12,6 @@ public abstract class RunnableStage implements Runnable {
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 	private final StageExceptionListener listener;
-
-	public RunnableStage(final Stage stage) {
-		this.stage = stage;
-		this.logger = LoggerFactory.getLogger(stage.getClass());
-		this.listener = new DefaultListener();
-		listener.setHeadStage(this);
-	}
 
 	public RunnableStage(final Stage stage, final StageExceptionListener exceptionListener) {
 		this.stage = stage;

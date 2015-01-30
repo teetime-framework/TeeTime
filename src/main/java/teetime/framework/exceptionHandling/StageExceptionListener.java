@@ -40,7 +40,7 @@ public abstract class StageExceptionListener {
 		this.runnable.abortExecution();
 	}
 
-	public final void setHeadStage(final RunnableStage headStage) {
-		this.runnable = headStage;
+	public final void setRunnableStage(final RunnableStage runnableStage) {
+		this.runnable = runnableStage;
 	}
 }

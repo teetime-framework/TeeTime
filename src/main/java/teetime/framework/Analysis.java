@@ -93,31 +93,29 @@ public class Analysis implements UncaughtExceptionHandler {
 			}
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
-				RunnableConsumerStage runnable = null;
-				newListener.setHeadStage(runnable);
+				RunnableConsumerStage runnable;
 				if (stage instanceof AbstractConsumerStage<?>) {
 					runnable = new RunnableConsumerStage(stage, ((AbstractConsumerStage<?>) stage).getIdleStrategy(), newListener); // FIXME remove this word-around
 				} else {
 					runnable = new RunnableConsumerStage(stage, newListener);
 				}
+				newListener.setRunnableStage(runnable);
 				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.consumerThreads.add(thread);
 				break;
 			}
 			case BY_SELF_DECISION: {
-				RunnableProducerStage runnable = null;
-				newListener.setHeadStage(runnable);
-				runnable = new RunnableProducerStage(stage, newListener);
+				RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
+				newListener.setRunnableStage(runnable);
 				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.finiteProducerThreads.add(thread);
 				break;
 			}
 			case BY_INTERRUPT: {
-				RunnableProducerStage runnable = null;
-				newListener.setHeadStage(runnable);
-				runnable = new RunnableProducerStage(stage, newListener);
+				RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
+				newListener.setRunnableStage(runnable);
 				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.infiniteProducerThreads.add(thread);
