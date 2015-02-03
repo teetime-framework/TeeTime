@@ -16,47 +16,43 @@ import teetime.framework.validation.InvalidPortConnection;
 @SuppressWarnings("PMD.AbstractNaming")
 public abstract class CompositeStage extends Stage {
 
-	private final Stage firstStage;
-	private final Collection<Stage> lastStages;
+	protected abstract Stage getFirstStage();
 
-	protected CompositeStage(final Stage firstStage, final Collection<Stage> lastStages) {
-		this.firstStage = firstStage;
-		this.lastStages = lastStages;
-	}
+	protected abstract Collection<? extends Stage> getLastStages();
 
 	@Override
 	protected void executeWithPorts() {
-		firstStage.executeWithPorts();
+		getFirstStage().executeWithPorts();
 	}
 
 	@Override
 	protected void onSignal(final ISignal signal, final InputPort<?> inputPort) {
-		firstStage.onSignal(signal, inputPort);
+		getFirstStage().onSignal(signal, inputPort);
 	}
 
 	@Override
 	protected TerminationStrategy getTerminationStrategy() {
-		return firstStage.getTerminationStrategy();
+		return getFirstStage().getTerminationStrategy();
 	}
 
 	@Override
 	protected void terminate() {
-		firstStage.terminate();
+		getFirstStage().terminate();
 	}
 
 	@Override
 	protected boolean shouldBeTerminated() {
-		return firstStage.shouldBeTerminated();
+		return getFirstStage().shouldBeTerminated();
 	}
 
 	@Override
 	protected InputPort<?>[] getInputPorts() {
-		return firstStage.getInputPorts();
+		return getFirstStage().getInputPorts();
 	}
 
 	@Override
 	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
-		for (final Stage s : lastStages) {
+		for (final Stage s : getLastStages()) {
 			s.validateOutputPorts(invalidPortConnections);
 		}
 	}
@@ -64,7 +60,7 @@ public abstract class CompositeStage extends Stage {
 	@Override
 	protected boolean isStarted() {
 		boolean isStarted = true;
-		for (final Stage s : lastStages) {
+		for (final Stage s : getLastStages()) {
 			isStarted = isStarted && s.isStarted();
 		}
 		return isStarted;
