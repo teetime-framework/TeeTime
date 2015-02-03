@@ -6,6 +6,14 @@ import java.util.List;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
+/**
+ * Represents a minimal stage that composes several other stages.
+ *
+ * @since 1.1
+ * @author Christian Wulf
+ *
+ */
+@SuppressWarnings("PMD.AbstractNaming")
 public abstract class CompositeStage extends Stage {
 
 	private final Stage firstStage;
