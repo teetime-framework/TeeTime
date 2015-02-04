@@ -7,10 +7,13 @@ import org.jctools.queues.QueueFactory;
 import org.jctools.queues.spec.ConcurrentQueueSpec;
 import org.jctools.queues.spec.Ordering;
 import org.jctools.queues.spec.Preference;
+import org.slf4j.LoggerFactory;
 
 import teetime.framework.signal.ISignal;
 
 public abstract class AbstractInterThreadPipe extends AbstractPipe {
+
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AbstractInterThreadPipe.class);
 
 	private final Queue<ISignal> signalQueue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT));
 
@@ -23,8 +26,8 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 		this.signalQueue.offer(signal);
 
 		Thread owningThread = cachedTargetStage.getOwningThread();
-		if (owningThread == null) {
-			System.err.println("cachedTargetStage: " + cachedTargetStage);
+		if (owningThread == null && LOGGER.isWarnEnabled()) {
+			LOGGER.warn("owningThread of " + cachedTargetStage + " is null.");
 		}
 		if (null != owningThread && isThreadWaiting(owningThread)) { // FIXME remove the null check for performance
 			owningThread.interrupt();

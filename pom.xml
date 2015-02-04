@@ -22,6 +22,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.6</java.version>
+		<javadocOutputDir>apidocs</javadocOutputDir>
 	</properties>
 
 	<distributionManagement>
@@ -257,7 +258,7 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.3</version>
 				<dependencies>
-					<!-- for using markdown syntax -->
+					<!-- for using markdown syntax gitlab@build.se.informatik.uni-kiel.de:nts/doxia-module-markdown-teetime.git -->
 					<dependency>
 						<groupId>org.apache.maven.doxia</groupId>
 						<artifactId>doxia-module-markdown-teetime</artifactId>
@@ -347,6 +348,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9.1</version>
+				<configuration>
+					<destDir>${javadocOutputDir}</destDir>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

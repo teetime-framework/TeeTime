@@ -1,6 +1,8 @@
 # Download
 
-There are several ways to get TeeTime. Choose the best one for you.
+In order to work with TeeTime, you simply need to add the framework to your own project.
+
+TeeTime is distributed through a variety of channels to serve most needs.
 
 ## Latest stable
 
@@ -20,16 +22,15 @@ If you use Maven, simply add following lines to your ``pom.xml``:
 </dependency>
 ```
 
-<!--- Dependency informations for other project management tools can be found [here](dependency-info.html). -->
-Please make sure, your project management tool uses Maven's central repository. Help on how to add it, can be found [here](http://central.sonatype.org/pages/consumers.html).
+For other project management tools, please check [here](nomaven.html). 
 
 #### Binaries and sources
 
-The latest TeeTime release can be downloaded directly from [Sourceforge](https://sourceforge.net/projects/teetime/files/latest/download). If you also want to download the source and/or JavaDoc, you can also get a summary of available files on [Sourceforge](https://sourceforge.net/projects/teetime/files/).
+The latest TeeTime release can be downloaded directly from [Sourceforge](https://sourceforge.net/projects/teetime/files/latest/download). If you also want to download the source and/or JavaDoc, you can also get a summary of available files on [Sourceforge](https://sourceforge.net/projects/teetime/files/) or [the Central Repository](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22net.sourceforge.teetime%22%20AND%20a%3A%22teetime%22).
 
 ## Snapshot
 
-TeeTime is built upon a daily basis. All these nightly builds are accessible to the public.
+TeeTime is built upon a daily basis. All these nightly builds are accessible to the public. A documentation is provided [here](apidocs/index.html).
 
 Please do not forget, that this releases are not intended for daily use. These builds may be unstable.
 

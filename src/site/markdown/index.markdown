@@ -53,7 +53,7 @@ To make working with TeeTime as pleasant and efficient as possible, this homepag
 
 You can take a closer look at:
 
-- [TeeTime's Wiki](https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/wikis/home), or 
+- [TeeTime's Wiki](wiki/), or 
 
 - [API Documentation](apidocs/index.html). 
 
