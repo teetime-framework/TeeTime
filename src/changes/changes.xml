@@ -14,6 +14,9 @@
 				Introduced new method (returns void) in Analysis, which starts the execution of the analysis.
 				Marked old method as deprecated.
 			</action>
+			<action dev="chw" type="update" issue="93">
+				Introduced abstract class for composite stages.
+			</action>
 
 		</release>
 		<release version="1.0" date="19.12.2014" description="Initial release">
