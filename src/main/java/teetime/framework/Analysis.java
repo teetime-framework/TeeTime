@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.IgnoringStageListener;
 import teetime.framework.exceptionHandling.StageExceptionHandler;
-import teetime.framework.signal.TerminatingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.Pair;
@@ -140,8 +139,11 @@ public class Analysis implements UncaughtExceptionHandler {
 	 * This method will start the Analysis and all containing stages.
 	 *
 	 * @return a collection of thread/throwable pairs
+	 *
+	 * @deprecated As of release 1.1, replaced by {@link #execute()}
 	 */
-	public void start() {
+	@Deprecated
+	public Collection<Pair<Thread, Throwable>> start() {
 		// start analysis
 		startThreads(this.consumerThreads);
 		startThreads(this.finiteProducerThreads);
@@ -170,10 +172,18 @@ public class Analysis implements UncaughtExceptionHandler {
 		for (Thread thread : this.infiniteProducerThreads) {
 			thread.interrupt();
 		}
+
+		return this.exceptions;
+	}
+
+	/**
+	 * This method will start the Analysis and all containing stages.
+	 */
+	public void execute() {
+		start();
 		if (!exceptions.isEmpty()) {
 			throw new RuntimeException("Errors while running analysis"); // TODO: add exceptions
 		}
-		// return this.exceptions;
 	}
 
 	private void startThreads(final Iterable<Thread> threads) {
@@ -199,15 +209,8 @@ public class Analysis implements UncaughtExceptionHandler {
 			LOGGER.warn("Thread " + thread + " was interrupted. Terminating analysis now.");
 			for (Stage stage : configuration.getThreadableStageJobs()) {
 				if (stage.getOwningThread() != thread) {
-					switch (stage.getTerminationStrategy()) {
-					case BY_SELF_DECISION: {
-						stage.terminate(); // onSignal would also work, but this will execute in its own Thread
-					}
-					case BY_SIGNAL: {
-						final TerminatingSignal terminatingSignal = new TerminatingSignal();
-						stage.onSignal(terminatingSignal, null);
-					}
-					default:
+					if (stage.getTerminationStrategy() == TerminationStrategy.BY_SELF_DECISION) {
+						stage.terminate();
 					}
 				}
 			}

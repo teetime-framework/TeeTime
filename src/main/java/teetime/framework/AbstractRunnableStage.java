@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.exceptionHandling.StageException;
 import teetime.framework.exceptionHandling.StageExceptionHandler;
 import teetime.framework.exceptionHandling.StageExceptionHandler.FurtherExecution;
+import teetime.framework.signal.TerminatingSignal;
 
 abstract class AbstractRunnableStage implements Runnable {
 
@@ -52,6 +53,14 @@ abstract class AbstractRunnableStage implements Runnable {
 
 		this.logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
 		if (failed) {
+			if (stage.getTerminationStrategy() == TerminationStrategy.BY_SIGNAL) {
+				TerminatingSignal signal = new TerminatingSignal();
+				// TODO: Check if this is really needed... it seems like signals are passed on after their first arrival
+				InputPort<?>[] inputPorts = stage.getInputPorts();
+				for (int i = 0; i < inputPorts.length; i++) {
+					stage.onSignal(signal, inputPorts[i]);
+				}
+			}
 			throw new IllegalStateException("Terminated by StageExceptionListener");
 		}
 	}

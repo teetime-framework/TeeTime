@@ -10,6 +10,10 @@
 			<action dev="ntd" type="add" issue="32">
 				Introduced a generic exception handling for stages.
 			</action>
+			<action dev="ntd" type="update" issue="92">
+				Introduced new method (returns void) in Analysis, which starts the execution of the analysis.
+				Marked old method as deprecated.
+			</action>
 
 		</release>
 		<release version="1.0" date="19.12.2014" description="Initial release">
