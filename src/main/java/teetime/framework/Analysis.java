@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.IgnoringStageListener;
-import teetime.framework.exceptionHandling.StageExceptionListener;
+import teetime.framework.exceptionHandling.StageExceptionHandler;
 import teetime.framework.signal.TerminatingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
@@ -29,7 +29,7 @@ public class Analysis implements UncaughtExceptionHandler {
 
 	private final AnalysisConfiguration configuration;
 
-	private final StageExceptionListener listener;
+	private final StageExceptionHandler listener;
 
 	private boolean executionInterrupted = false;
 
@@ -61,11 +61,11 @@ public class Analysis implements UncaughtExceptionHandler {
 	 * @param listener
 	 *            specific listener for the exception handling
 	 */
-	public Analysis(final AnalysisConfiguration configuration, final StageExceptionListener listener) {
+	public Analysis(final AnalysisConfiguration configuration, final StageExceptionHandler listener) {
 		this(configuration, false, listener);
 	}
 
-	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled, final StageExceptionListener listener) {
+	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled, final StageExceptionHandler listener) {
 		this.configuration = configuration;
 		this.listener = listener;
 		if (validationEnabled) {
@@ -94,7 +94,7 @@ public class Analysis implements UncaughtExceptionHandler {
 	public void init() {
 		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		for (Stage stage : threadableStageJobs) {
-			StageExceptionListener newListener;
+			StageExceptionHandler newListener;
 			try {
 				newListener = listener.getClass().newInstance();
 			} catch (InstantiationException e) {

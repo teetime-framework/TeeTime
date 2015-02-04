@@ -2,13 +2,13 @@ package teetime.framework;
 
 import java.util.Arrays;
 
-import teetime.framework.exceptionHandling.StageExceptionListener;
+import teetime.framework.exceptionHandling.StageExceptionHandler;
 import teetime.framework.idle.IdleStrategy;
 import teetime.framework.idle.YieldStrategy;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 
-final class RunnableConsumerStage extends RunnableStage {
+final class RunnableConsumerStage extends AbstractRunnableStage {
 
 	private final IdleStrategy idleStrategy;
 
@@ -18,11 +18,11 @@ final class RunnableConsumerStage extends RunnableStage {
 	 * @param stage
 	 *            to execute within an own thread
 	 */
-	public RunnableConsumerStage(final Stage stage, final StageExceptionListener exceptionListener) {
+	public RunnableConsumerStage(final Stage stage, final StageExceptionHandler exceptionListener) {
 		this(stage, new YieldStrategy(), exceptionListener);
 	}
 
-	public RunnableConsumerStage(final Stage stage, final IdleStrategy idleStrategy, final StageExceptionListener exceptionListener) {
+	public RunnableConsumerStage(final Stage stage, final IdleStrategy idleStrategy, final StageExceptionHandler exceptionListener) {
 		super(stage, exceptionListener);
 		this.idleStrategy = idleStrategy;
 	}

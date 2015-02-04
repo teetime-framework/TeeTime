@@ -4,20 +4,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.StageException;
-import teetime.framework.exceptionHandling.StageExceptionListener;
-import teetime.framework.exceptionHandling.StageExceptionListener.FurtherExecution;
+import teetime.framework.exceptionHandling.StageExceptionHandler;
+import teetime.framework.exceptionHandling.StageExceptionHandler.FurtherExecution;
 
-abstract class RunnableStage implements Runnable {
+abstract class AbstractRunnableStage implements Runnable {
+
+	private final StageExceptionHandler exceptionHandler;
 
 	protected final Stage stage;
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
-	private final StageExceptionListener listener;
 
-	public RunnableStage(final Stage stage, final StageExceptionListener exceptionListener) {
+	public AbstractRunnableStage(final Stage stage, final StageExceptionHandler exceptionHandler) {
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
-		this.listener = exceptionListener;
+		this.exceptionHandler = exceptionHandler;
 	}
 
 	@Override
@@ -31,7 +32,8 @@ abstract class RunnableStage implements Runnable {
 				try {
 					executeStage();
 				} catch (StageException e) {
-					if (this.listener.onStageException(e, e.getThrowingStage()) == FurtherExecution.TERMINATE) {
+					final FurtherExecution furtherExecution = this.exceptionHandler.onStageException(e, e.getThrowingStage());
+					if (furtherExecution == FurtherExecution.TERMINATE) {
 						this.stage.terminate();
 						failed = true;
 					}

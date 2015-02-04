@@ -2,7 +2,7 @@ package teetime.framework.exceptionHandling;
 
 import teetime.framework.Stage;
 
-public class IgnoringStageListener extends StageExceptionListener {
+public class IgnoringStageListener extends StageExceptionHandler {
 
 	public IgnoringStageListener() {
 		super();

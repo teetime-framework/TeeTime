@@ -27,7 +27,7 @@ public abstract class Stage {
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
-	/** The owning thread of this stage if this stage is directly executed by a {@link RunnableStage}, <code>null</code> otherwise. */
+	/** The owning thread of this stage if this stage is directly executed by a {@link AbstractRunnableStage}, <code>null</code> otherwise. */
 	protected Thread owningThread;
 
 	protected Stage() {

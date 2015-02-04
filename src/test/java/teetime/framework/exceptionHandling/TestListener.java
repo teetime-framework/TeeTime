@@ -2,7 +2,7 @@ package teetime.framework.exceptionHandling;
 
 import teetime.framework.Stage;
 
-public class TestListener extends StageExceptionListener {
+public class TestListener extends StageExceptionHandler {
 
 	public static int exceptionInvoked = 0;
 
