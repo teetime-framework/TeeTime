@@ -11,4 +11,9 @@ public class ExceptionTestStage extends AbstractProducerStage {
 		}
 		loops++;
 	}
+
+	@Override
+	public TerminationStrategy getTerminationStrategy() {
+		return TerminationStrategy.BY_SELF_DECISION;
+	}
 }

@@ -1,13 +1,12 @@
 package teetime.stage;
 
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
@@ -18,7 +17,6 @@ import teetime.framework.OutputPort;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
-import teetime.util.Pair;
 
 public class MultipleInstanceOfFilterTest {
 
@@ -51,9 +49,11 @@ public class MultipleInstanceOfFilterTest {
 
 		final Analysis analysis = new Analysis(new TestConfiguration(initialInput, integerList, floatList));
 		analysis.init();
-		final Collection<Pair<Thread, Throwable>> errors = analysis.start();
-
-		assertThat(errors, is(empty()));
+		try {
+			analysis.start();
+		} catch (Exception e) {
+			assertTrue(false);
+		}
 
 		assertThat(integerList, contains(1, 2, 3));
 		assertThat(floatList, contains(1.5f, 2.5f, 3.5f));

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.IgnoringStageListener;
 import teetime.framework.exceptionHandling.StageExceptionListener;
+import teetime.framework.signal.TerminatingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.Pair;
@@ -29,6 +30,8 @@ public class Analysis implements UncaughtExceptionHandler {
 	private final AnalysisConfiguration configuration;
 
 	private final StageExceptionListener listener;
+
+	private boolean executionInterrupted = false;
 
 	private final List<Thread> consumerThreads = new LinkedList<Thread>();
 	private final List<Thread> finiteProducerThreads = new LinkedList<Thread>();
@@ -138,7 +141,7 @@ public class Analysis implements UncaughtExceptionHandler {
 	 *
 	 * @return a collection of thread/throwable pairs
 	 */
-	public Collection<Pair<Thread, Throwable>> start() {
+	public void start() {
 		// start analysis
 		startThreads(this.consumerThreads);
 		startThreads(this.finiteProducerThreads);
@@ -155,7 +158,6 @@ public class Analysis implements UncaughtExceptionHandler {
 			}
 		} catch (InterruptedException e) {
 			LOGGER.error("Analysis has stopped unexpectedly", e);
-
 			for (Thread thread : this.finiteProducerThreads) {
 				thread.interrupt();
 			}
@@ -168,8 +170,10 @@ public class Analysis implements UncaughtExceptionHandler {
 		for (Thread thread : this.infiniteProducerThreads) {
 			thread.interrupt();
 		}
-
-		return this.exceptions;
+		if (!exceptions.isEmpty()) {
+			throw new RuntimeException("Errors while running analysis"); // TODO: add exceptions
+		}
+		// return this.exceptions;
 	}
 
 	private void startThreads(final Iterable<Thread> threads) {
@@ -190,6 +194,24 @@ public class Analysis implements UncaughtExceptionHandler {
 
 	@Override
 	public void uncaughtException(final Thread thread, final Throwable throwable) {
+		if (!executionInterrupted) {
+			executionInterrupted = true;
+			LOGGER.warn("Thread " + thread + " was interrupted. Terminating analysis now.");
+			for (Stage stage : configuration.getThreadableStageJobs()) {
+				if (stage.getOwningThread() != thread) {
+					switch (stage.getTerminationStrategy()) {
+					case BY_SELF_DECISION: {
+						stage.terminate(); // onSignal would also work, but this will execute in its own Thread
+					}
+					case BY_SIGNAL: {
+						final TerminatingSignal terminatingSignal = new TerminatingSignal();
+						stage.onSignal(terminatingSignal, null);
+					}
+					default:
+					}
+				}
+			}
+		}
 		this.exceptions.add(Pair.of(thread, throwable));
 	}
 }
