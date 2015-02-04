@@ -19,7 +19,7 @@ import teetime.util.Pair;
  * Represents an Analysis to which stages can be added and executed later.
  * This needs a {@link AnalysisConfiguration},
  * in which the adding and configuring of stages takes place.
- * To start the analysis {@link #init()} and {@link #start()} need to be executed in this order.
+ * To start the analysis {@link #execute()} needs to be executed.
  * This class will automatically create threads and join them without any further commitment.
  */
 public class Analysis implements UncaughtExceptionHandler {
@@ -93,7 +93,7 @@ public class Analysis implements UncaughtExceptionHandler {
 	/**
 	 * This initializes Analysis and needs to be run right before starting it.
 	 *
-	 * @deprecated 1.1
+	 * @deprecated As of release 1.1. Will be no longer needed, as functionality is moved into the constructor.
 	 */
 	@Deprecated
 	public void init() {
