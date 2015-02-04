@@ -28,6 +28,10 @@ public class ExceptionTestProducerStage extends AbstractProducerStage<Object> {
 	@Override
 	protected void execute() {
 		getOutputPort().send(new Object());
+		if (numberOfExecutions >= 10000) {
+			this.terminate();
+		}
+		numberOfExecutions++;
 	}
 
 	@Override
