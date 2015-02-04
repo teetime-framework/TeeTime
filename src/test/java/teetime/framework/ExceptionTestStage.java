@@ -13,12 +13,15 @@ public class ExceptionTestStage extends AbstractProducerStage<Object> {
 			break;
 		}
 		case 1: {
-			strategy = TerminationStrategy.BY_SIGNAL;
+			strategy = TerminationStrategy.BY_INTERRUPT;
 			break;
 		}
 		case 2: {
-			strategy = TerminationStrategy.BY_INTERRUPT;
+			strategy = TerminationStrategy.BY_SIGNAL;
 			break;
+		}
+		default: {
+			strategy = TerminationStrategy.BY_SELF_DECISION;
 		}
 		}
 		instances++;
