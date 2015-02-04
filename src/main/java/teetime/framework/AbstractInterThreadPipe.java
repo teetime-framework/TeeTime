@@ -26,7 +26,7 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 		this.signalQueue.offer(signal);
 
 		Thread owningThread = cachedTargetStage.getOwningThread();
-		if (owningThread == null) {
+		if (owningThread == null && LOGGER.isWarnEnabled()) {
 			LOGGER.warn("owningThread of " + cachedTargetStage + " is null.");
 		}
 		if (null != owningThread && isThreadWaiting(owningThread)) { // FIXME remove the null check for performance
