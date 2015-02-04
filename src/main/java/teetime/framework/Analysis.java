@@ -32,6 +32,8 @@ public class Analysis implements UncaughtExceptionHandler {
 
 	private final Collection<Pair<Thread, Throwable>> exceptions = new ConcurrentLinkedQueue<Pair<Thread, Throwable>>();
 
+	private boolean initialized;
+
 	/**
 	 * Creates a new {@link Analysis} that skips validating the port connections.
 	 *
@@ -47,6 +49,7 @@ public class Analysis implements UncaughtExceptionHandler {
 		if (validationEnabled) {
 			validateStages();
 		}
+		init();
 	}
 
 	private void validateStages() {
@@ -66,8 +69,16 @@ public class Analysis implements UncaughtExceptionHandler {
 
 	/**
 	 * This initializes Analysis and needs to be run right before starting it.
+	 *
+	 * @deprecated 1.1
 	 */
+	@Deprecated
 	public void init() {
+		if (initialized) {
+			return;
+		}
+		initialized = true;
+
 		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		for (Stage stage : threadableStageJobs) {
 			switch (stage.getTerminationStrategy()) {
