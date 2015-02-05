@@ -193,7 +193,7 @@ public class Analysis implements UncaughtExceptionHandler {
 	public void execute() {
 		start();
 		if (!exceptions.isEmpty()) {
-			throw new RuntimeException("Errors while running analysis"); // TODO: add exceptions
+			throw new AnalysisException(exceptions); // TODO: add exceptions
 		}
 	}
 
