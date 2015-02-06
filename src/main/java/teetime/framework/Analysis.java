@@ -72,7 +72,7 @@ public class Analysis implements UncaughtExceptionHandler {
 		if (validationEnabled) {
 			validateStages();
 		}
-		init(); // http://stackoverflow.com/a/19504865 -> we should consider making this class final
+		init();
 	}
 
 	private void validateStages() {
@@ -96,7 +96,7 @@ public class Analysis implements UncaughtExceptionHandler {
 	 * @deprecated As of release 1.1. Will be no longer needed, as functionality is moved into the constructor.
 	 */
 	@Deprecated
-	public void init() {
+	public final void init() {
 		if (initialized) {
 			return;
 		}
