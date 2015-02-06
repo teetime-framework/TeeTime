@@ -28,7 +28,7 @@ public class Analysis implements UncaughtExceptionHandler {
 
 	private final AnalysisConfiguration configuration;
 
-	private final StageExceptionHandler listener;
+	private final Class<? extends teetime.framework.exceptionHandling.StageExceptionHandler> listener;
 
 	private boolean executionInterrupted = false;
 
@@ -47,11 +47,11 @@ public class Analysis implements UncaughtExceptionHandler {
 	 *            to be used for the analysis
 	 */
 	public Analysis(final AnalysisConfiguration configuration) {
-		this(configuration, false, new IgnoringStageListener());
+		this(configuration, false, IgnoringStageListener.class);
 	}
 
 	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled) {
-		this(configuration, validationEnabled, new IgnoringStageListener());
+		this(configuration, validationEnabled, IgnoringStageListener.class);
 	}
 
 	/**
@@ -62,11 +62,11 @@ public class Analysis implements UncaughtExceptionHandler {
 	 * @param listener
 	 *            specific listener for the exception handling
 	 */
-	public Analysis(final AnalysisConfiguration configuration, final StageExceptionHandler listener) {
+	public Analysis(final AnalysisConfiguration configuration, final Class<? extends StageExceptionHandler> listener) {
 		this(configuration, false, listener);
 	}
 
-	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled, final StageExceptionHandler listener) {
+	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled, final Class<? extends StageExceptionHandler> listener) {
 		this.configuration = configuration;
 		this.listener = listener;
 		if (validationEnabled) {
@@ -106,7 +106,7 @@ public class Analysis implements UncaughtExceptionHandler {
 		for (Stage stage : threadableStageJobs) {
 			StageExceptionHandler newListener;
 			try {
-				newListener = listener.getClass().newInstance();
+				newListener = listener.newInstance();
 			} catch (InstantiationException e) {
 				throw new IllegalStateException(e);
 			} catch (IllegalAccessException e) {

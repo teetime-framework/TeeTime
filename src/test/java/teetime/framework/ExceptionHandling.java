@@ -10,12 +10,12 @@ import teetime.framework.exceptionHandling.TestListener;
 
 public class ExceptionHandling {
 
-	TestListener listener;
+	Class<TestListener> listener;
 	Analysis analysis;
 
 	@Before
 	public void newInstances() {
-		listener = new TestListener();
+		listener = TestListener.class;
 		analysis = new Analysis(new ExceptionTestConfiguration(), listener);
 	}
 
