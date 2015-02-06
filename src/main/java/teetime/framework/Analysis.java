@@ -189,6 +189,8 @@ public class Analysis implements UncaughtExceptionHandler {
 
 	/**
 	 * This method will start the Analysis and all containing stages.
+	 *
+	 * @since 1.1
 	 */
 	public void execute() {
 		start();
