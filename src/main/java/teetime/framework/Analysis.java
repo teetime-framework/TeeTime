@@ -72,7 +72,7 @@ public class Analysis implements UncaughtExceptionHandler {
 		if (validationEnabled) {
 			validateStages();
 		}
-		init();
+		init(); // http://stackoverflow.com/a/19504865 -> we should consider making this class final
 	}
 
 	private void validateStages() {
