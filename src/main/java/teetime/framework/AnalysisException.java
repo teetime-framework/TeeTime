@@ -8,6 +8,7 @@ import teetime.util.Pair;
  * Represents a exception, which is thrown by an analysis, if any problems occured within its execution.
  * A collection of thrown exceptions within the analysis can be retrieved with {@link #getThrownExceptions()}.
  *
+ * @since 1.1
  */
 public class AnalysisException extends RuntimeException {
 
