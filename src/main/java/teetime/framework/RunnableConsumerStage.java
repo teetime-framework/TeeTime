@@ -22,13 +22,13 @@ import teetime.framework.idle.YieldStrategy;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 
-final class RunnableConsumerStage extends RunnableStage {
+final class RunnableConsumerStage extends AbstractRunnableStage {
 
 	private final IdleStrategy idleStrategy;
 
 	/**
 	 * Creates a new instance with the {@link YieldStrategy} as default idle strategy.
-	 * 
+	 *
 	 * @param stage
 	 *            to execute within an own thread
 	 */

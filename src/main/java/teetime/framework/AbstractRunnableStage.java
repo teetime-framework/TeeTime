@@ -18,13 +18,13 @@ package teetime.framework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class RunnableStage implements Runnable {
+abstract class AbstractRunnableStage implements Runnable {
 
 	protected final Stage stage;
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
-	public RunnableStage(final Stage stage) {
+	public AbstractRunnableStage(final Stage stage) {
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
 	}

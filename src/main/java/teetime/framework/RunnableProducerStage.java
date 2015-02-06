@@ -18,7 +18,7 @@ package teetime.framework;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
-public final class RunnableProducerStage extends RunnableStage {
+public final class RunnableProducerStage extends AbstractRunnableStage {
 
 	public RunnableProducerStage(final Stage stage) {
 		super(stage);
