@@ -4,7 +4,9 @@ import teetime.framework.Stage;
 
 /**
  * Represents an Exception, which is thrown by stages in case of they throw exceptions.
+ * To get the original exception, which was thrown, call {@link #getCause()}. {@link #getThrowingStage()} returns the stage, which has thrown the original exception.
  *
+ * @since 1.1
  */
 public class StageException extends RuntimeException {
 
@@ -18,10 +20,6 @@ public class StageException extends RuntimeException {
 	public StageException(final Exception e, final Stage throwingStage) {
 		super(e);
 		this.throwingStage = throwingStage;
-	}
-
-	public Throwable getOriginalException() {
-		return this.getCause();
 	}
 
 	/**
