@@ -3,7 +3,7 @@ package teetime.framework.exceptionHandling;
 import teetime.framework.Stage;
 
 /**
- * Represents an Exception, which is thrown by stages, if uncatched exceptions are thrown.
+ * Represents an Exception, which is thrown by stages in case of they throw exceptions.
  *
  */
 public class StageException extends RuntimeException {
@@ -14,16 +14,14 @@ public class StageException extends RuntimeException {
 	private static final long serialVersionUID = 6724637605943897808L;
 
 	private final Stage throwingStage;
-	private final Exception originalException;
 
 	public StageException(final Exception e, final Stage throwingStage) {
-		super();
-		this.originalException = e;
+		super(e);
 		this.throwingStage = throwingStage;
 	}
 
-	public Exception getOriginalException() {
-		return originalException;
+	public Throwable getOriginalException() {
+		return this.getCause();
 	}
 
 	/**
