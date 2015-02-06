@@ -11,7 +11,7 @@ public class ExceptionTestConfiguration extends AnalysisConfiguration {
 		ExceptionTestProducerStage third = new ExceptionTestProducerStage();
 
 		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false)
-				.create(first.getOutputPort(), second.getInputPort(), 4);
+				.create(first.getOutputPort(), second.getInputPort());
 		// this.addThreadableStage(new ExceptionTestStage());
 
 		this.addThreadableStage(first);

@@ -19,7 +19,7 @@ public class ExceptionHandling {
 		analysis = new Analysis(new ExceptionTestConfiguration(), listener);
 	}
 
-	@Test
+	@Test(timeout = 5000)
 	public void exceptionPassingAndTermination() {
 		boolean exceptionByExecute = false;
 
