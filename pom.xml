@@ -381,18 +381,7 @@
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>3.2</version>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>emma-maven-plugin</artifactId>
-				<version>1.0-alpha-3</version>
-				<inherited>true</inherited>
-				<configuration>
-					<includes>
-						<include>src/main/java/**</include>
-						<include>src/test/java/**</include>
-					</includes>
-				</configuration>
-			</plugin>
+			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
