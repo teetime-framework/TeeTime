@@ -23,7 +23,6 @@ import java.util.Collection;
 import org.junit.Test;
 
 import teetime.util.Pair;
-import teetime.framework.WaitStrategyConfiguration;
 
 import com.google.common.base.Joiner;
 
@@ -34,7 +33,6 @@ public class RunnableConsumerStageTest {
 		WaitStrategyConfiguration waitStrategyConfiguration = new WaitStrategyConfiguration(300, 42);
 
 		final Analysis analysis = new Analysis(waitStrategyConfiguration);
-		analysis.init();
 		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -54,7 +52,6 @@ public class RunnableConsumerStageTest {
 		WaitStrategyConfiguration waitStrategyConfiguration = new WaitStrategyConfiguration(300, 42);
 
 		final Analysis analysis = new Analysis(waitStrategyConfiguration);
-		analysis.init();
 		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -75,7 +72,6 @@ public class RunnableConsumerStageTest {
 		YieldStrategyConfiguration waitStrategyConfiguration = new YieldStrategyConfiguration(42);
 
 		final Analysis analysis = new Analysis(waitStrategyConfiguration);
-		analysis.init();
 
 		start(analysis);
 
