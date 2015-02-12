@@ -65,7 +65,6 @@ public class MultipleInstanceOfFilterTest {
 		final List<Float> floatList = new ArrayList<Float>();
 
 		final Analysis analysis = new Analysis(new TestConfiguration(initialInput, integerList, floatList));
-		analysis.init();
 		final Collection<Pair<Thread, Throwable>> errors = analysis.start();
 
 		assertThat(errors, is(empty()));
