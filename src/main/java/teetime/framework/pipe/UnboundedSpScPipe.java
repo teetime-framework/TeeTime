@@ -19,29 +19,23 @@ import java.util.Queue;
 
 import org.jctools.queues.QueueFactory;
 import org.jctools.queues.spec.ConcurrentQueueSpec;
+import org.jctools.queues.spec.Ordering;
+import org.jctools.queues.spec.Preference;
 
 import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class SpScPipe extends AbstractInterThreadPipe {
-
-	// private static final Logger LOGGER = LoggerFactory.getLogger(SpScPipe.class);
+public final class UnboundedSpScPipe extends AbstractInterThreadPipe {
 
 	private final Queue<Object> queue;
 	// statistics
 	private int numWaits;
 
-	<T> SpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	<T> UnboundedSpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
-		this.queue = QueueFactory.newQueue(ConcurrentQueueSpec.createBoundedSpsc(capacity));
-	}
-
-	@Deprecated
-	public static <T> SpScPipe connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		final SpScPipe pipe = new SpScPipe(sourcePort, targetPort, capacity);
-		pipe.connectPorts(sourcePort, targetPort);
-		return pipe;
+		ConcurrentQueueSpec specification = new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT);
+		this.queue = QueueFactory.newQueue(specification);
 	}
 
 	@Override
