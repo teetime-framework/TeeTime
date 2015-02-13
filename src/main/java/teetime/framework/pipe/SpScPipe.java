@@ -53,6 +53,7 @@ public final class SpScPipe extends AbstractInterThreadPipe {
 			this.numWaits++;
 			Thread.yield();
 		}
+		// this.reportNewElement();
 		return true;
 	}
 
