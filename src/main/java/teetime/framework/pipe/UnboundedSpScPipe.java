@@ -29,8 +29,6 @@ import teetime.framework.OutputPort;
 public final class UnboundedSpScPipe extends AbstractInterThreadPipe {
 
 	private final Queue<Object> queue;
-	// statistics
-	private int numWaits;
 
 	<T> UnboundedSpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
@@ -40,13 +38,7 @@ public final class UnboundedSpScPipe extends AbstractInterThreadPipe {
 
 	@Override
 	public boolean add(final Object element) {
-		// BETTER introduce a QueueIsFullStrategy
-		while (!this.queue.offer(element)) {
-			this.numWaits++;
-			Thread.yield();
-		}
-		// this.reportNewElement();
-		return true;
+		return this.queue.offer(element);
 	}
 
 	@Override
@@ -67,11 +59,6 @@ public final class UnboundedSpScPipe extends AbstractInterThreadPipe {
 	@Override
 	public Object readLast() {
 		return this.queue.peek();
-	}
-
-	// BETTER find a solution w/o any thread-safe code in this stage
-	public synchronized int getNumWaits() {
-		return this.numWaits;
 	}
 
 }
