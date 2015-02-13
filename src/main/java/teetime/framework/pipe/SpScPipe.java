@@ -53,15 +53,6 @@ public final class SpScPipe extends AbstractInterThreadPipe {
 			this.numWaits++;
 			Thread.yield();
 		}
-
-		Thread owningThread = cachedTargetStage.getOwningThread();
-		if (null != owningThread && isThreadWaiting(owningThread)) { // FIXME remove the null check for performance
-			synchronized (cachedTargetStage) {
-				cachedTargetStage.notify();
-				// LOGGER.trace("Notified: " + cachedTargetStage);
-			}
-		}
-
 		return true;
 	}
 
