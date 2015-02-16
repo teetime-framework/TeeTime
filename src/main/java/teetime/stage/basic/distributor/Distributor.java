@@ -26,7 +26,7 @@ import teetime.framework.OutputPort;
  * @param T
  *            the type of the input port and the output ports
  */
-public class Distributor<T> extends AbstractConsumerStage<T> {
+public final class Distributor<T> extends AbstractConsumerStage<T> {
 
 	private IDistributorStrategy strategy;
 
