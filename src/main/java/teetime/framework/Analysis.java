@@ -59,6 +59,8 @@ public class Analysis implements UncaughtExceptionHandler {
 		this(configuration, false);
 	}
 
+	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
+	// TODO remove @SuppressWarnings if init is no longer deprecated
 	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled) {
 		this.configuration = configuration;
 		if (validationEnabled) {
