@@ -18,6 +18,7 @@ package teetime.framework;
 import java.util.Collection;
 import java.util.List;
 
+import teetime.framework.pipe.PipeFactoryRegistry;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
@@ -30,6 +31,8 @@ import teetime.framework.validation.InvalidPortConnection;
  */
 @SuppressWarnings("PMD.AbstractNaming")
 public abstract class CompositeStage extends Stage {
+
+	private static PipeFactoryRegistry PIPEFACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
 
 	protected abstract Stage getFirstStage();
 

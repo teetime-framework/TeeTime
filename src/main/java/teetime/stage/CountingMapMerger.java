@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package teetime.stage;
 
 import java.util.Map;
@@ -17,14 +32,16 @@ import teetime.stage.util.CountingMap;
  * @param <T>
  *            Key type of the map to be sent
  */
-public class CountingmapMerger<T> extends AbstractConsumerStage<CountingMap<T>> {
+public class CountingMapMerger<T> extends AbstractConsumerStage<CountingMap<T>> {
 
 	private final CountingMap<T> result = new CountingMap<T>();
 	private final OutputPort<Map<T, Integer>> port = createOutputPort();
 
+	@SuppressWarnings("unused")
+	// May be needed to identify, if all stages before this one terminated
 	private final int numberOfInputPorts;
 
-	public CountingmapMerger(final int numberOfInputPorts) {
+	public CountingMapMerger(final int numberOfInputPorts) {
 		for (int i = 1; i < numberOfInputPorts; i++) {
 			createInputPort();
 		}
@@ -35,15 +52,7 @@ public class CountingmapMerger<T> extends AbstractConsumerStage<CountingMap<T>> 
 	protected void execute(final CountingMap<T> element) {
 		Set<Map.Entry<T, Integer>> entries = element.entrySet();
 		for (Entry<T, Integer> entry : entries) {
-			Integer resultValue = result.get(entry.getKey());
-			if (resultValue == null) {
-				result.put(entry.getKey(), entry.getValue());
-			}
-			else {
-				Integer temp = result.get(entry.getKey());
-				temp += entry.getValue();
-				result.put(entry.getKey(), temp);
-			}
+			result.add(entry.getKey(), entry.getValue());
 		}
 	}
 
@@ -51,6 +60,10 @@ public class CountingmapMerger<T> extends AbstractConsumerStage<CountingMap<T>> 
 	public void onTerminating() throws Exception {
 		port.send(result);
 		super.onTerminating();
+	}
+
+	public CountingMap<T> getResult() {
+		return result;
 	}
 
 }
