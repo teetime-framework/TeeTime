@@ -1,10 +1,8 @@
 package teetime.stage;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
+import teetime.stage.util.CountingMap;
 
 /**
  * This counts how many of different elements are sent to this stage. Nothing is forwarded.
@@ -16,8 +14,8 @@ import teetime.framework.OutputPort;
  */
 public class DistributedMapCounter<T> extends AbstractConsumerStage<T> {
 
-	private final Map<T, Integer> counter = new HashMap<T, Integer>();
-	private final OutputPort<Map<T, Integer>> port = createOutputPort();
+	private final CountingMap<T> counter = new CountingMap<T>();
+	private final OutputPort<CountingMap<T>> port = createOutputPort();
 
 	public DistributedMapCounter() {
 
@@ -25,13 +23,7 @@ public class DistributedMapCounter<T> extends AbstractConsumerStage<T> {
 
 	@Override
 	protected void execute(final T element) {
-		if (counter.containsKey(element)) {
-			Integer i = counter.get(element);
-			i++;
-			counter.put(element, i);
-		} else {
-			counter.put(element, 0);
-		}
+		counter.increment(element);
 
 	}
 
