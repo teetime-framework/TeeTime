@@ -41,13 +41,4 @@ public class File2ByteArray extends AbstractConsumerStage<File> {
 		return this.outputPort;
 	}
 
-	@Override
-	public boolean shouldBeTerminated() {
-		return false;
-	}
-
-	@Override
-	public void terminate() {
-
-	}
 }
