@@ -12,7 +12,7 @@ public class WordCountingTest {
 
 	@Test
 	public void test1() {
-		WordCountingConfiguration wcc = new WordCountingConfiguration(new File("src/test/resources/data/output.txt"));
+		WordCountingConfiguration wcc = new WordCountingConfiguration(new File("src/test/resources/data/output.txt"), 2);
 		Analysis analysis = new Analysis(wcc);
 		analysis.start();
 		CountingMap<String> map = wcc.getResult();

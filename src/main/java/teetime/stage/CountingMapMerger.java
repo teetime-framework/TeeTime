@@ -27,6 +27,8 @@ import teetime.stage.util.CountingMap;
  * Receives different CountingMap instances and merges them into a single one.
  * The result is sent upon termination.
  *
+ * @since 1.1
+ *
  * @author Nelson Tavares de Sousa
  *
  * @param <T>

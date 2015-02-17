@@ -16,31 +16,34 @@ public class WordCountingConfiguration extends AnalysisConfiguration {
 
 	private final CountingMapMerger<String> result = new CountingMapMerger<String>();
 
-	public WordCountingConfiguration(final File input/* TODO: scale to i threads */) {
+	public WordCountingConfiguration(final File input, final int threads) {
 		final InitialElementProducer<File> init = new InitialElementProducer<File>(input);
 		final File2ByteArray f2b = new File2ByteArray();
 		final ByteArray2String b2s = new ByteArray2String();
 		final Distributor<String> dist = new Distributor<String>();
 
-		final WordCounter wc = new WordCounter();
-
 		final Merger<CountingMap<String>> merger = new Merger<CountingMap<String>>();
 		// result
-		IPipeFactory intraFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
-		IPipeFactory interFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+		IPipeFactory interFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
+		IPipeFactory intraFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 
-		interFact.create(init.getOutputPort(), f2b.getInputPort());
-		interFact.create(f2b.getOutputPort(), b2s.getInputPort());
-		interFact.create(b2s.getOutputPort(), dist.getInputPort());
+		intraFact.create(init.getOutputPort(), f2b.getInputPort());
+		intraFact.create(f2b.getOutputPort(), b2s.getInputPort());
+		intraFact.create(b2s.getOutputPort(), dist.getInputPort());
 
 		// scale
-		intraFact.create(dist.getNewOutputPort(), wc.getInputPort());
-		intraFact.create(wc.getOutputPort(), merger.getNewInputPort());
+		WordCounter wc;
+		for (int i = 0; i < threads; i++) {
+			wc = new WordCounter();
+			interFact.create(dist.getNewOutputPort(), wc.getInputPort());
+			interFact.create(wc.getOutputPort(), merger.getNewInputPort());
+			addThreadableStage(wc);
+		}
 
-		interFact.create(merger.getOutputPort(), result.getInputPort());
+		intraFact.create(merger.getOutputPort(), result.getInputPort());
 
 		addThreadableStage(init);
-		addThreadableStage(wc);
+
 		addThreadableStage(merger);
 	}
 

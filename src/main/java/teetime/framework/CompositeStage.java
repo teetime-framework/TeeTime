@@ -84,4 +84,10 @@ public abstract class CompositeStage extends Stage {
 		return isStarted;
 	}
 
+	@Override
+	void setOwningThread(final Thread owningThread) {
+		getFirstStage().setOwningThread(owningThread);
+		super.setOwningThread(owningThread);
+	}
+
 }

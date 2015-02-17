@@ -23,6 +23,8 @@ import teetime.stage.util.CountingMap;
  * This counts how many of different elements are sent to this stage. Nothing is forwarded.
  * On termination a CountingMap is sent to its outputport.
  *
+ * @since 1.1
+ *
  * @author Nelson Tavares de Sousa
  *
  * @param <T>

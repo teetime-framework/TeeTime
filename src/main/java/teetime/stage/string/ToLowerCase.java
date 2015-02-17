@@ -22,6 +22,8 @@ import teetime.framework.OutputPort;
  * Receives a string and passes it on to the next stage only with lower case letters.
  * Punctuation and similar characters will be removed. Only [a-zA-Z ] will be passed on.
  *
+ * @since 1.1
+ *
  * @author Nelson Tavares de Sousa
  *
  */
