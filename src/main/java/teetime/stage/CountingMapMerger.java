@@ -47,6 +47,7 @@ public class CountingMapMerger<T> extends AbstractConsumerStage<CountingMap<T>> 
 
 	@Override
 	public void onTerminating() throws Exception {
+		System.out.println("TERMINATE");
 		port.send(result);
 		super.onTerminating();
 	}

@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import teetime.framework.CompositeStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.Stage;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.MappingCounter;
+import teetime.stage.util.CountingMap;
 
 /**
  * Intermediate stage, which receives texts and counts the occurring words.
@@ -43,6 +46,14 @@ public class WordCounter extends CompositeStage {
 	@Override
 	protected Collection<? extends Stage> getLastStages() {
 		return lastStages;
+	}
+
+	public InputPort<String> getInputPort() {
+		return tokenizer.getInputPort();
+	}
+
+	public OutputPort<CountingMap<String>> getOutputPort() {
+		return mapCounter.getOutputPort();
 	}
 
 }
