@@ -20,6 +20,7 @@ import teetime.framework.OutputPort;
 
 /**
  * Receives a string and passes it on to the next stage only with lower case letters.
+ * Punctuation and similar characters will be removed. Only [a-zA-Z ] will be passed on.
  *
  * @author Nelson Tavares de Sousa
  *
@@ -30,7 +31,7 @@ public class ToLowerCase extends AbstractConsumerStage<String> {
 
 	@Override
 	protected void execute(final String element) {
-		outputPort.send(element.toLowerCase());
+		outputPort.send(element.replaceAll("[^a-zA-Z ]", "").toLowerCase());
 
 	}
 

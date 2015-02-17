@@ -26,8 +26,8 @@ public class WordCountingConfiguration extends AnalysisConfiguration {
 
 		final Merger<CountingMap<String>> merger = new Merger<CountingMap<String>>();
 		// result
-		IPipeFactory interFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
-		IPipeFactory intraFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+		IPipeFactory intraFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
+		IPipeFactory interFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 
 		interFact.create(init.getOutputPort(), f2b.getInputPort());
 		interFact.create(f2b.getOutputPort(), b2s.getInputPort());
@@ -39,6 +39,9 @@ public class WordCountingConfiguration extends AnalysisConfiguration {
 
 		interFact.create(merger.getOutputPort(), result.getInputPort());
 
+		addThreadableStage(init);
+		addThreadableStage(wc);
+		addThreadableStage(merger);
 	}
 
 	public CountingMap<String> getResult() {

@@ -32,7 +32,7 @@ public class WordCounter extends CompositeStage {
 	public WordCounter() {
 		lastStages.add(mapCounter);
 
-		IPipeFactory pipeFact = PipeFactoryRegistry.INSTANCE.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
+		IPipeFactory pipeFact = PipeFactoryRegistry.INSTANCE.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 		ToLowerCase toLowerCase = new ToLowerCase();
 		pipeFact.create(tokenizer.getOutputPort(), toLowerCase.getInputPort());
 		pipeFact.create(toLowerCase.getOutputPort(), mapCounter.getInputPort());
