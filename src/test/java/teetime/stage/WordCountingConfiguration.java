@@ -16,7 +16,7 @@ public class WordCountingConfiguration extends AnalysisConfiguration {
 
 	private final CountingMapMerger<String> result = new CountingMapMerger<String>();
 
-	public WordCountingConfiguration(final File input, final int threads) {
+	public WordCountingConfiguration(final int threads, final File... input) {
 		final InitialElementProducer<File> init = new InitialElementProducer<File>(input);
 		final File2ByteArray f2b = new File2ByteArray();
 		final ByteArray2String b2s = new ByteArray2String();
@@ -43,7 +43,6 @@ public class WordCountingConfiguration extends AnalysisConfiguration {
 		intraFact.create(merger.getOutputPort(), result.getInputPort());
 
 		addThreadableStage(init);
-
 		addThreadableStage(merger);
 	}
 
