@@ -1,7 +1,8 @@
 package teetime.stage;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
-import java.util.Map;
 
 import org.junit.Test;
 
@@ -10,17 +11,17 @@ import teetime.stage.util.CountingMap;
 
 public class WordCountingTest {
 
-	@Test
+	@Test(timeout = 3000)
 	public void test1() {
-		WordCountingConfiguration wcc = new WordCountingConfiguration(3, new File("src/test/resources/data/output.txt"), new File(
+		int threads = 2;
+		WordCountingConfiguration wcc = new WordCountingConfiguration(threads, new File("src/test/resources/data/output.txt"), new File(
 				"src/test/resources/data/output.txt"));
 		Analysis analysis = new Analysis(wcc);
 		analysis.start();
 		CountingMap<String> map = wcc.getResult();
-		for (Map.Entry<String, Integer> entry : map.entrySet())
-		{
-			System.out.println(entry.getKey() + " " + entry.getValue());
-		}
+		assertEquals(new Integer(54), map.get("diam"));
+		assertEquals(new Integer(8), map.get("tation"));
+		assertEquals(new Integer(4), map.get("cum"));
 	}
 }
 

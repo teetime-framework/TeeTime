@@ -86,7 +86,7 @@ public final class Merger<T> extends AbstractStage {
 
 			if (set.size() == this.getInputPorts().length) {
 				signal.trigger(this);
-				// this.outputPort.sendSignal(signal);
+				this.outputPort.sendSignal(signal);
 				signalMap.remove(signal.getClass());
 			}
 		} else {
