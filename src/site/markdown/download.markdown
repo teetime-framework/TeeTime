@@ -76,6 +76,7 @@ Available formats:
 
 * PNG, transparent: [641 x 150px](images/teetime-transparent-150.png), [427 x 100px](images/teetime-transparent-100.png), [214 x 50px](images/teetime-transparent-50.png)
 * PNG, white background: [641 x 150px](images/teetime-white-150.png), [427 x 100px](images/teetime-white-100.png), [214 x 50px](images/teetime-white-50.png)
-* SVG: [transparent](images/teetime-path.svg)
-* PDF:
+* SVG: [transparent](images/teetime-path.svg), [white background](images/teetime-path-white.svg)
+* EMF: [transparent](images/teetime-path.emf), [white background](images/teetime-path-white.emf)
+* PDF: [white background](images/teetime-path-white.pdf)
 
