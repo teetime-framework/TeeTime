@@ -37,17 +37,6 @@ public class CountingMapMerger<T> extends AbstractConsumerStage<CountingMap<T>> 
 	private final CountingMap<T> result = new CountingMap<T>();
 	private final OutputPort<Map<T, Integer>> port = createOutputPort();
 
-	@SuppressWarnings("unused")
-	// May be needed to identify, if all stages before this one terminated
-	private final int numberOfInputPorts;
-
-	public CountingMapMerger(final int numberOfInputPorts) {
-		for (int i = 1; i < numberOfInputPorts; i++) {
-			createInputPort();
-		}
-		this.numberOfInputPorts = numberOfInputPorts;
-	}
-
 	@Override
 	protected void execute(final CountingMap<T> element) {
 		Set<Map.Entry<T, Integer>> entries = element.entrySet();

@@ -28,12 +28,12 @@ import teetime.stage.util.CountingMap;
  * @param <T>
  *            Type to be count
  */
-public class DistributedMapCounter<T> extends AbstractConsumerStage<T> {
+public class MappingCounter<T> extends AbstractConsumerStage<T> {
 
 	private final CountingMap<T> counter = new CountingMap<T>();
 	private final OutputPort<CountingMap<T>> port = createOutputPort();
 
-	public DistributedMapCounter() {
+	public MappingCounter() {
 
 	}
 
@@ -47,6 +47,10 @@ public class DistributedMapCounter<T> extends AbstractConsumerStage<T> {
 	public void onTerminating() throws Exception {
 		port.send(counter);
 		super.onTerminating();
+	}
+
+	public OutputPort<CountingMap<T>> getOutputPort() {
+		return port;
 	}
 
 }

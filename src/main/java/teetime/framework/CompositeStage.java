@@ -32,7 +32,7 @@ import teetime.framework.validation.InvalidPortConnection;
 @SuppressWarnings("PMD.AbstractNaming")
 public abstract class CompositeStage extends Stage {
 
-	private static PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
+	protected static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
 
 	protected abstract Stage getFirstStage();
 

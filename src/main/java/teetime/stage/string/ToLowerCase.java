@@ -34,4 +34,8 @@ public class ToLowerCase extends AbstractConsumerStage<String> {
 
 	}
 
+	public OutputPort<String> getOutputPort() {
+		return outputPort;
+	}
+
 }
