@@ -21,10 +21,10 @@ import teetime.util.concurrent.hashmap.ValueFactory;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
-public class HashMapWithDefault<K, V> extends HashMap<K, V> {
+public final class HashMapWithDefault<K, V> extends HashMap<K, V> {
 
 	private static final long serialVersionUID = -7958038532219740472L;
 

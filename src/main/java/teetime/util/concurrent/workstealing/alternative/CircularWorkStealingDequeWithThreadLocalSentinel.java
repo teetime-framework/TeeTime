@@ -20,14 +20,14 @@ import java.util.concurrent.atomic.AtomicLong;
 import teetime.util.concurrent.workstealing.CircularArray;
 
 /**
- * 
+ *
  * @author Christian Wulf
- * 
+ *
  * @see "Dynamic Circular WorkStealing Deque"
- * 
+ *
  * @since 1.10
  */
-public class CircularWorkStealingDequeWithThreadLocalSentinel<T> {
+public final class CircularWorkStealingDequeWithThreadLocalSentinel<T> {
 
 	public static enum State {
 		REGULAR, EMPTY, ABORT
@@ -96,7 +96,7 @@ public class CircularWorkStealingDequeWithThreadLocalSentinel<T> {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 *         <ul>
 	 *         <li><code>empty()</code> if the deque contains no elements,
@@ -144,7 +144,7 @@ public class CircularWorkStealingDequeWithThreadLocalSentinel<T> {
 
 	/**
 	 * Tries to steal (return & remove) the oldest element from this deque.
-	 * 
+	 *
 	 * @return
 	 *         <ul>
 	 *         <li><code>empty()</code> if the deque contains no elements,
@@ -189,7 +189,7 @@ public class CircularWorkStealingDequeWithThreadLocalSentinel<T> {
 
 	/**
 	 * For debugging purposes
-	 * 
+	 *
 	 * @return but does not remove the bottom element from this deque
 	 */
 	public T readBottom() {
@@ -212,7 +212,7 @@ public class CircularWorkStealingDequeWithThreadLocalSentinel<T> {
 
 	/**
 	 * For debugging purposes
-	 * 
+	 *
 	 * @return the number of elements this deque contains
 	 */
 	public long size(final Object sourceStage) {
