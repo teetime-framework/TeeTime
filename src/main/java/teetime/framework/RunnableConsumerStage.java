@@ -81,7 +81,7 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 		logger.debug("Checking signals for: " + Arrays.toString(inputPorts));
 		for (InputPort<?> inputPort : inputPorts) {
 			IPipe pipe = inputPort.getPipe();
-			if (pipe instanceof AbstractInterThreadPipe) {
+			if (pipe instanceof AbstractInterThreadPipe) { // TODO: is this needed?
 				AbstractInterThreadPipe intraThreadPipe = (AbstractInterThreadPipe) pipe;
 				ISignal signal = intraThreadPipe.getSignal();
 				if (null != signal) {
