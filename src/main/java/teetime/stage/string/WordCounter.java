@@ -34,7 +34,7 @@ import teetime.stage.util.CountingMap;
  * @author Nelson Tavares de Sousa
  *
  */
-public class WordCounter extends CompositeStage {
+public final class WordCounter extends CompositeStage {
 
 	// This fields are needed for the methods to work.
 	private final Tokenizer tokenizer = new Tokenizer(" ");

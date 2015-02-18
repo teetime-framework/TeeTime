@@ -29,7 +29,7 @@ import teetime.framework.AbstractConsumerStage;
  *
  * @since 1.10
  */
-public class Printer<T> extends AbstractConsumerStage<T> {
+public final class Printer<T> extends AbstractConsumerStage<T> {
 
 	public static final String STREAM_STDOUT = "STDOUT";
 	public static final String STREAM_STDERR = "STDERR";

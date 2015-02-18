@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
-public class ByteArray2String extends AbstractConsumerStage<byte[]> {
+public final class ByteArray2String extends AbstractConsumerStage<byte[]> {
 
 	private final OutputPort<String> outputPort = this.createOutputPort();
 

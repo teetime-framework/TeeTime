@@ -34,7 +34,7 @@ import teetime.stage.util.CountingMap;
  * @param <T>
  *            Key type of the map to be sent
  */
-public class CountingMapMerger<T> extends AbstractConsumerStage<CountingMap<T>> {
+public final class CountingMapMerger<T> extends AbstractConsumerStage<CountingMap<T>> {
 
 	private final CountingMap<T> result = new CountingMap<T>();
 	private final OutputPort<Map<T, Integer>> port = createOutputPort();

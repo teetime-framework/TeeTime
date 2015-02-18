@@ -23,7 +23,7 @@ import teetime.framework.OutputPort;
 
 import com.google.common.io.Files;
 
-public class File2ByteArray extends AbstractConsumerStage<File> {
+public final class File2ByteArray extends AbstractConsumerStage<File> {
 
 	private final OutputPort<byte[]> outputPort = this.createOutputPort();
 

@@ -30,7 +30,7 @@ import teetime.stage.util.CountingMap;
  * @param <T>
  *            Type to be count
  */
-public class MappingCounter<T> extends AbstractConsumerStage<T> {
+public final class MappingCounter<T> extends AbstractConsumerStage<T> {
 
 	private final CountingMap<T> counter = new CountingMap<T>();
 	private final OutputPort<CountingMap<T>> port = createOutputPort();

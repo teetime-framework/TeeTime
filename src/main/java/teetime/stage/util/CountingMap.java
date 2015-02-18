@@ -28,7 +28,7 @@ import java.util.HashMap;
  * @param <T>
  *            Key type to be count
  */
-public class CountingMap<T> extends HashMap<T, Integer> {
+public final class CountingMap<T> extends HashMap<T, Integer> {
 
 	/**
 	 * Generated serialVersionUID

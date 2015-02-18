@@ -27,7 +27,7 @@ import teetime.framework.OutputPort;
  * @author Nelson Tavares de Sousa
  *
  */
-public class ToLowerCase extends AbstractConsumerStage<String> {
+public final class ToLowerCase extends AbstractConsumerStage<String> {
 
 	private final OutputPort<String> outputPort = this.createOutputPort();
 
