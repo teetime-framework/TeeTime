@@ -32,13 +32,14 @@ abstract class AbstractRunnableStage implements Runnable {
 	@Override
 	public final void run() {
 		this.logger.debug("Executing runnable stage...");
+		final Stage stage = this.stage;
 
 		try {
 			beforeStageExecution();
 
 			do {
 				executeStage();
-			} while (!this.stage.shouldBeTerminated());
+			} while (!stage.shouldBeTerminated());
 
 			afterStageExecution();
 
@@ -50,7 +51,7 @@ abstract class AbstractRunnableStage implements Runnable {
 			throw e;
 		}
 
-		this.logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
+		this.logger.debug("Finished runnable stage. (" + stage.getId() + ")");
 	}
 
 	protected abstract void beforeStageExecution();

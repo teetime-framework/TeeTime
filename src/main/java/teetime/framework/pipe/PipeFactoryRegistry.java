@@ -101,7 +101,9 @@ public final class PipeFactoryRegistry {
 	public void register(final IPipeFactory pipeFactory) {
 		final String key = this.buildKey(pipeFactory.getThreadCommunication(), pipeFactory.getOrdering(), pipeFactory.isGrowable());
 		this.pipeFactories.put(key, pipeFactory);
-		LOGGER.info("Registered pipe factory: " + pipeFactory.getClass().getCanonicalName());
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Registered pipe factory: " + pipeFactory.getClass().getCanonicalName());
+		}
 	}
 
 	private String buildKey(final ThreadCommunication tc, final PipeOrdering ordering, final boolean growable) {

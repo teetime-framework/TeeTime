@@ -15,51 +15,50 @@
  */
 package teetime.framework.pipe;
 
-import teetime.framework.AbstractIntraThreadPipe;
+import java.util.Queue;
+
+import org.jctools.queues.QueueFactory;
+import org.jctools.queues.spec.ConcurrentQueueSpec;
+import org.jctools.queues.spec.Ordering;
+import org.jctools.queues.spec.Preference;
+
+import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class SingleElementPipe extends AbstractIntraThreadPipe {
+public final class UnboundedSpScPipe extends AbstractInterThreadPipe {
 
-	private Object element;
+	private final Queue<Object> queue;
 
-	<T> SingleElementPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	<T> UnboundedSpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
-	}
-
-	@Deprecated
-	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		final IPipe pipe = new SingleElementPipe(null, null);
-		pipe.connectPorts(sourcePort, targetPort);
+		ConcurrentQueueSpec specification = new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT);
+		this.queue = QueueFactory.newQueue(specification);
 	}
 
 	@Override
 	public boolean add(final Object element) {
-		this.element = element;
-		this.reportNewElement();
-		return true;
+		return this.queue.offer(element);
 	}
 
 	@Override
 	public Object removeLast() {
-		final Object temp = this.element;
-		this.element = null;
-		return temp;
+		return this.queue.poll();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return this.element == null;
-	}
-
-	@Override
-	public Object readLast() {
-		return this.element;
+		return this.queue.isEmpty();
 	}
 
 	@Override
 	public int size() {
-		return (this.element == null) ? 0 : 1;
+		return this.queue.size();
+	}
+
+	@Override
+	public Object readLast() {
+		return this.queue.peek();
 	}
 
 }
