@@ -77,7 +77,7 @@ public final class Merger<T> extends AbstractStage {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
-		this.logger.info("Got signal: " + signal + " from input port: " + inputPort);
+		this.logger.debug("Got signal: " + signal + " from input port: " + inputPort);
 
 		Class<? extends ISignal> signalClass = signal.getClass();
 
@@ -94,6 +94,7 @@ public final class Merger<T> extends AbstractStage {
 		}
 
 		if (signalMap.get(signalClass).size() == this.getInputPorts().length) {
+			System.out.println("SENT");
 			signal.trigger(this);
 			this.outputPort.sendSignal(signal);
 			signalMap.remove(signalClass);
