@@ -35,7 +35,7 @@ import teetime.util.Pair;
  * To start the analysis {@link #init()} and {@link #start()} need to be executed in this order.
  * This class will automatically create threads and join them without any further commitment.
  */
-public class Analysis implements UncaughtExceptionHandler {
+public final class Analysis implements UncaughtExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Analysis.class);
 
