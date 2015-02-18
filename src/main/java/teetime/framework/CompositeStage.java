@@ -29,7 +29,7 @@ import teetime.framework.validation.InvalidPortConnection;
  * Represents a minimal stage that composes several other stages.
  *
  * @since 1.1
- * @author Christian Wulf
+ * @author Christian Wulf, Nelson Tavares de Sousa
  *
  */
 @SuppressWarnings("PMD.AbstractNaming")

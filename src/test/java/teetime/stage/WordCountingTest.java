@@ -26,11 +26,12 @@ import teetime.stage.util.CountingMap;
 
 public class WordCountingTest {
 
+	private final File testFile = new File("src/test/resources/data/output.txt");
+
 	@Test
 	public void test1() {
 		int threads = 6;
-		WordCountingConfiguration wcc = new WordCountingConfiguration(threads, new File("src/test/resources/data/output.txt"), new File(
-				"src/test/resources/data/output.txt"));
+		WordCountingConfiguration wcc = new WordCountingConfiguration(threads, testFile, testFile);
 		Analysis analysis = new Analysis(wcc);
 		analysis.start();
 		CountingMap<String> map = wcc.getResult();
