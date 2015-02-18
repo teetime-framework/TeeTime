@@ -39,6 +39,7 @@ public class CountingMap<T> extends HashMap<T, Integer> {
 	 * Increments the value of key by one.
 	 *
 	 * @param key
+	 *            The key which sould be incremented
 	 */
 	public void increment(final T key) {
 		if (super.containsKey(key)) {
