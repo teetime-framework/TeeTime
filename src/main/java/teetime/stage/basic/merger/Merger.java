@@ -30,7 +30,7 @@ import teetime.framework.signal.ISignal;
  * This stage merges data from the input ports, by taking elements according to the chosen merge strategy and by putting them to the output port.
  * For its signal handling behavior see {@link #onSignal(ISignal, InputPort)}
  *
- * @author Christian Wulf
+ * @author Christian Wulf, Nelson Tavares de Sousa
  *
  * @since 1.0
  *
@@ -43,7 +43,7 @@ public final class Merger<T> extends AbstractStage {
 
 	private IMergerStrategy strategy;
 
-	private final Map<Class<?>, Set<InputPort<?>>> signalMap = new HashMap<Class<?>, Set<InputPort<?>>>();
+	private final Map<Class<ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<ISignal>, Set<InputPort<?>>>();
 
 	public Merger() {
 		this(new RoundRobinStrategy());
@@ -92,7 +92,7 @@ public final class Merger<T> extends AbstractStage {
 		} else {
 			Set<InputPort<?>> tempSet = new HashSet<InputPort<?>>();
 			tempSet.add(inputPort);
-			signalMap.put(signal.getClass(), tempSet);
+			signalMap.put((Class<ISignal>) signal.getClass(), tempSet);
 		}
 
 	}
