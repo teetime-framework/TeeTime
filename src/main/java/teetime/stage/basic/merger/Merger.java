@@ -79,8 +79,10 @@ public final class Merger<T> extends AbstractStage {
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		this.logger.info("Got signal: " + signal + " from input port: " + inputPort);
 
-		if (signalMap.containsKey(signal.getClass())) {
-			Set<InputPort<?>> set = signalMap.get(signal.getClass());
+		Class<? extends ISignal> signalClass = signal.getClass();
+
+		if (signalMap.containsKey(signalClass)) {
+			Set<InputPort<?>> set = signalMap.get(signalClass);
 			if (!set.add(inputPort)) {
 				this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
 			}
@@ -88,14 +90,13 @@ public final class Merger<T> extends AbstractStage {
 		} else {
 			Set<InputPort<?>> tempSet = new HashSet<InputPort<?>>();
 			tempSet.add(inputPort);
-			signalMap.put((Class<ISignal>) signal.getClass(), tempSet);
+			signalMap.put((Class<ISignal>) signalClass, tempSet);
 		}
 
-		if (signalMap.get(signal.getClass()).size() == this.getInputPorts().length) {
-			System.out.println("SENT");
+		if (signalMap.get(signalClass).size() == this.getInputPorts().length) {
 			signal.trigger(this);
 			this.outputPort.sendSignal(signal);
-			signalMap.remove(signal.getClass());
+			signalMap.remove(signalClass);
 		}
 
 	}
