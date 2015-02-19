@@ -19,8 +19,6 @@ import java.util.Queue;
 
 import org.jctools.queues.QueueFactory;
 import org.jctools.queues.spec.ConcurrentQueueSpec;
-import org.jctools.queues.spec.Ordering;
-import org.jctools.queues.spec.Preference;
 
 import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
@@ -36,7 +34,7 @@ public final class SpScPipe extends AbstractInterThreadPipe {
 
 	<T> SpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		super(sourcePort, targetPort);
-		this.queue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, capacity, Ordering.FIFO, Preference.THROUGHPUT));
+		this.queue = QueueFactory.newQueue(ConcurrentQueueSpec.createBoundedSpsc(capacity));
 	}
 
 	@Deprecated
@@ -53,15 +51,7 @@ public final class SpScPipe extends AbstractInterThreadPipe {
 			this.numWaits++;
 			Thread.yield();
 		}
-
-		Thread owningThread = cachedTargetStage.getOwningThread();
-		if (null != owningThread && isThreadWaiting(owningThread)) { // FIXME remove the null check for performance
-			synchronized (cachedTargetStage) {
-				cachedTargetStage.notify();
-				// LOGGER.trace("Notified: " + cachedTargetStage);
-			}
-		}
-
+		// this.reportNewElement();
 		return true;
 	}
 

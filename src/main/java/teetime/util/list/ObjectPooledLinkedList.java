@@ -15,7 +15,7 @@
  */
 package teetime.util.list;
 
-public class ObjectPooledLinkedList<T> {
+public final class ObjectPooledLinkedList<T> {
 
 	private final ObjectPool<ListContainer<T>> objectPool = new ListContainerPool<T>(10);
 
@@ -31,7 +31,7 @@ public class ObjectPooledLinkedList<T> {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return <code>null</code> if the list is empty.
 	 */
 	public T pop() {

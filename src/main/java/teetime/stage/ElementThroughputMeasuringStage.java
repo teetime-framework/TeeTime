@@ -23,7 +23,7 @@ import teetime.framework.AbstractConsumerStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public class ElementThroughputMeasuringStage<T> extends AbstractConsumerStage<T> {
+public final class ElementThroughputMeasuringStage<T> extends AbstractConsumerStage<T> {
 
 	private final InputPort<Long> triggerInputPort = this.createInputPort();
 	private final OutputPort<T> outputPort = this.createOutputPort();

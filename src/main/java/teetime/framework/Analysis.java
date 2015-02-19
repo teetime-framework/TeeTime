@@ -37,7 +37,7 @@ import teetime.util.Pair;
  * To start the analysis {@link #execute()} needs to be executed.
  * This class will automatically create threads and join them without any further commitment.
  */
-public class Analysis implements UncaughtExceptionHandler {
+public final class Analysis implements UncaughtExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Analysis.class);
 
@@ -65,6 +65,8 @@ public class Analysis implements UncaughtExceptionHandler {
 		this(configuration, false, IgnoringStageListener.class);
 	}
 
+	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
+	// TODO remove @SuppressWarnings if init is no longer deprecated
 	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled) {
 		this(configuration, validationEnabled, IgnoringStageListener.class);
 	}

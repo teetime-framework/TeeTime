@@ -15,7 +15,7 @@
  */
 package teetime.util.list;
 
-public class CommittableResizableArrayQueue<T> implements CommittableQueue<T> {
+public final class CommittableResizableArrayQueue<T> implements CommittableQueue<T> {
 
 	// private final int MIN_CAPACITY;
 

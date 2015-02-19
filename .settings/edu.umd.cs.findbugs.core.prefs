@@ -1,9 +1,4 @@
 #FindBugs User Preferences
-<<<<<<< HEAD
-#Wed Feb 04 14:55:08 CET 2015
-=======
-#Wed Feb 04 15:13:53 CET 2015
->>>>>>> refs/remotes/origin/master
 detector_threshold=3
 effort=max
 excludefilter0=.fbExcludeFilterFile|true

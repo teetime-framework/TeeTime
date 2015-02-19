@@ -17,7 +17,7 @@ package teetime.util.concurrent.hashmap;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ConcurrentHashMapWithDefault<K, V> extends ConcurrentHashMap<K, V> {
+public final class ConcurrentHashMapWithDefault<K, V> extends ConcurrentHashMap<K, V> {
 
 	private static final long serialVersionUID = 199185976241037967L;
 

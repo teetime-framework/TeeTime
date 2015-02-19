@@ -67,7 +67,7 @@ public abstract class AbstractStage extends Stage {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
 			signal.trigger(this);
 
-			for (OutputPort<?> outputPort : this.outputPortList) {
+			for (OutputPort<?> outputPort : outputPortList) {
 				outputPort.sendSignal(signal);
 			}
 		}
@@ -87,10 +87,14 @@ public abstract class AbstractStage extends Stage {
 	 */
 	protected boolean signalAlreadyReceived(final ISignal signal, final InputPort<?> inputPort) {
 		if (this.triggeredSignals.contains(signal)) {
-			this.logger.trace("Got signal: " + signal + " again from input port: " + inputPort);
+			if (logger.isTraceEnabled()) {
+				logger.trace("Got signal: " + signal + " again from input port: " + inputPort);
+			}
 			return true;
 		} else {
-			this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
+			if (logger.isTraceEnabled()) {
+				logger.trace("Got signal: " + signal + " from input port: " + inputPort);
+			}
 			this.triggeredSignals.add(signal);
 			return false;
 		}

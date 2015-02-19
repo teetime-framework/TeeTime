@@ -15,7 +15,6 @@
  */
 package teetime.framework;
 
-import teetime.framework.idle.WaitStrategy;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
@@ -69,7 +68,7 @@ class WaitStrategyConfiguration extends AnalysisConfiguration {
 		Relay<Object> relay = new Relay<Object>();
 		CollectorSink<Object> collectorSink = new CollectorSink<Object>();
 
-		relay.setIdleStrategy(new WaitStrategy(relay));
+		// relay.setIdleStrategy(new WaitStrategy(relay));
 
 		interThreadPipeFactory.create(delay.getOutputPort(), relay.getInputPort());
 		intraThreadPipeFactory.create(relay.getOutputPort(), collectorSink.getInputPort());

@@ -18,7 +18,7 @@ package teetime.util.list;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListContainerPool<T> implements ObjectPool<ListContainer<T>> {
+public final class ListContainerPool<T> implements ObjectPool<ListContainer<T>> {
 
 	private final List<ListContainer<T>> pool = new ArrayList<ListContainer<T>>();
 

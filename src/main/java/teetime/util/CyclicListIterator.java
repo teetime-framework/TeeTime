@@ -20,12 +20,12 @@ import java.util.List;
 
 /**
  * This iterator infinitely iterates over a list and allows the list to be modified without throwing a <code>ConcurrentMOdificationException</code>.
- * 
+ *
  * @author Christian Wulf
- * 
+ *
  * @param <T>
  */
-public class CyclicListIterator<T> implements Iterator<T> {
+public final class CyclicListIterator<T> implements Iterator<T> {
 
 	private final List<T> list;
 	// private Iterator<T> iterator;
@@ -37,10 +37,12 @@ public class CyclicListIterator<T> implements Iterator<T> {
 		// this.iterator = this.list.iterator();
 	}
 
+	@Override
 	public boolean hasNext() {
 		return true;
 	}
 
+	@Override
 	public T next() {
 		// if (!this.iterator.hasNext()) {
 		// this.iterator = this.list.iterator();
@@ -56,6 +58,7 @@ public class CyclicListIterator<T> implements Iterator<T> {
 		return element;
 	}
 
+	@Override
 	public void remove() {
 		// this.iterator.remove();
 		this.currentIndex = this.getCurrentIndex();

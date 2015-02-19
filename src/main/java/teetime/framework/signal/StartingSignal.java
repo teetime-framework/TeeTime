@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.AbstractStage;
 
-public class StartingSignal implements ISignal {
+public final class StartingSignal implements ISignal {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StartingSignal.class);
 	private final List<Exception> catchedExceptions = new LinkedList<Exception>();

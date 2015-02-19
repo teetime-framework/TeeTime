@@ -25,18 +25,16 @@ public final class OutputPort<T> extends AbstractPort<T> {
 
 	/**
 	 * @param element
-	 *            to be sent
+	 *            to be sent; May not be <code>null</code>.
 	 */
 	public void send(final T element) {
-		if (this.pipe.add(element)) {
-			this.pipe.reportNewElement();
-		}
+		this.pipe.add(element);
 	}
 
 	/**
 	 *
 	 * @param signal
-	 *            to be sent
+	 *            to be sent; May not be <code>null</code>.
 	 */
 	public void sendSignal(final ISignal signal) {
 		this.pipe.sendSignal(signal);

@@ -28,7 +28,7 @@ import teetime.framework.OutputPort;
  * 
  * @since 1.10
  */
-public class Directory2FilesFilter extends AbstractConsumerStage<File> {
+public final class Directory2FilesFilter extends AbstractConsumerStage<File> {
 
 	private final OutputPort<File> outputPort = this.createOutputPort();
 

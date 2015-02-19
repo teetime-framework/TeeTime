@@ -63,6 +63,7 @@ abstract class AbstractRunnableStage implements Runnable {
 			}
 			throw new IllegalStateException("Terminated by StageExceptionListener");
 		}
+
 	}
 
 	protected abstract void beforeStageExecution();
