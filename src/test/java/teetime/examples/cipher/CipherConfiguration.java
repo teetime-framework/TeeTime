@@ -43,14 +43,14 @@ public class CipherConfiguration extends AnalysisConfiguration {
 		final CipherByteArray decrypt = new CipherByteArray(password, CipherMode.DECRYPT);
 		final ByteArrayFileWriter writer = new ByteArrayFileWriter(output);
 
-		final IPipeFactory factory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+		final IPipeFactory intraFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 
-		factory.create(init.getOutputPort(), f2b.getInputPort());
-		factory.create(f2b.getOutputPort(), enc.getInputPort());
-		factory.create(enc.getOutputPort(), comp.getInputPort());
-		factory.create(comp.getOutputPort(), decomp.getInputPort());
-		factory.create(decomp.getOutputPort(), decrypt.getInputPort());
-		factory.create(decrypt.getOutputPort(), writer.getInputPort());
+		intraFactory.create(init.getOutputPort(), f2b.getInputPort());
+		intraFactory.create(f2b.getOutputPort(), enc.getInputPort());
+		intraFactory.create(enc.getOutputPort(), comp.getInputPort());
+		intraFactory.create(comp.getOutputPort(), decomp.getInputPort());
+		intraFactory.create(decomp.getOutputPort(), decrypt.getInputPort());
+		intraFactory.create(decrypt.getOutputPort(), writer.getInputPort());
 
 		// this.getFiniteProducerStages().add(init);
 		this.addThreadableStage(init);

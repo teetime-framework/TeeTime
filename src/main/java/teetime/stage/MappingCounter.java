@@ -17,26 +17,42 @@ package teetime.stage;
 
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
+import teetime.stage.util.CountingMap;
 
-public final class Counter<T> extends AbstractConsumerStage<T> {
+/**
+ * This counts how many of different elements are sent to this stage. Nothing is forwarded.
+ * On termination a CountingMap is sent to its outputport.
+ *
+ * @since 1.1
+ *
+ * @author Nelson Tavares de Sousa
+ *
+ * @param <T>
+ *            Type to be count
+ */
+public final class MappingCounter<T> extends AbstractConsumerStage<T> {
 
-	private final OutputPort<T> outputPort = this.createOutputPort();
+	private final CountingMap<T> counter = new CountingMap<T>();
+	private final OutputPort<CountingMap<T>> port = createOutputPort();
 
-	private int numElementsPassed;
+	public MappingCounter() {
+
+	}
 
 	@Override
 	protected void execute(final T element) {
-		this.numElementsPassed++;
+		counter.increment(element);
 
-		outputPort.send(element);
 	}
 
-	// BETTER find a solution w/o any thread-safe code in this stage
-	public synchronized int getNumElementsPassed() {
-		return this.numElementsPassed;
+	@Override
+	public void onTerminating() throws Exception {
+		port.send(counter);
+		super.onTerminating();
 	}
 
-	public OutputPort<T> getOutputPort() {
-		return this.outputPort;
+	public OutputPort<CountingMap<T>> getOutputPort() {
+		return port;
 	}
+
 }

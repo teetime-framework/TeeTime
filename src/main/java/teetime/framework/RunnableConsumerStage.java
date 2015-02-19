@@ -81,7 +81,7 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 		final Stage stage = this.stage;
 		for (InputPort<?> inputPort : inputPorts) {
 			final IPipe pipe = inputPort.getPipe();
-			if (pipe instanceof AbstractInterThreadPipe) {
+			if (pipe instanceof AbstractInterThreadPipe) { // TODO: is this needed?
 				final AbstractInterThreadPipe intraThreadPipe = (AbstractInterThreadPipe) pipe;
 				final ISignal signal = intraThreadPipe.getSignal();
 				if (null != signal) {

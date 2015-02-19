@@ -20,7 +20,7 @@ package teetime.stage.util;
  *
  * @since 1.10
  */
-public class MappingException extends Exception {
+public final class MappingException extends Exception {
 
 	private static final long serialVersionUID = 7300752837946139350L;
 

@@ -22,7 +22,7 @@ package teetime.util.classpath;
  * @author Christian Wulf
  * @since 1.11
  */
-public class ClassForNameResolver<T> {
+public final class ClassForNameResolver<T> {
 
 	private final Class<T> classToCast;
 

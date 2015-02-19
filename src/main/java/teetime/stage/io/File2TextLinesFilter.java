@@ -30,7 +30,7 @@ import teetime.stage.util.TextLine;
  * @author Christian Wulf
  *
  */
-public class File2TextLinesFilter extends AbstractConsumerStage<File> {
+public final class File2TextLinesFilter extends AbstractConsumerStage<File> {
 
 	private final OutputPort<TextLine> outputPort = this.createOutputPort();
 

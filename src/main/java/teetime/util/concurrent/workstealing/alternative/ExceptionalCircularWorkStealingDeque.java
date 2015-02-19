@@ -29,7 +29,7 @@ import teetime.util.concurrent.workstealing.exception.OperationAbortedException;
  *
  * @since 1.10
  */
-public class ExceptionalCircularWorkStealingDeque<T> {
+public final class ExceptionalCircularWorkStealingDeque<T> {
 
 	public static final DequeIsEmptyException DEQUE_IS_EMPTY_EXCEPTION = new DequeIsEmptyException();
 

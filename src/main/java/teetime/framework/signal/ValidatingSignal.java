@@ -21,7 +21,7 @@ import java.util.List;
 import teetime.framework.AbstractStage;
 import teetime.framework.validation.InvalidPortConnection;
 
-public class ValidatingSignal implements ISignal {
+public final class ValidatingSignal implements ISignal {
 
 	private final List<InvalidPortConnection> invalidPortConnections = new LinkedList<InvalidPortConnection>();
 

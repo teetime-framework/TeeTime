@@ -18,7 +18,7 @@ package teetime.util.list;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ArrayPool<T> {
+public final class ArrayPool<T> {
 
 	// BETTER use a map with int as key due to performance
 	private final Map<Integer, T[]> cache = new HashMap<Integer, T[]>();

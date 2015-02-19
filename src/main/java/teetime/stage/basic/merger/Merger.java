@@ -30,7 +30,7 @@ import teetime.framework.signal.ISignal;
  * This stage merges data from the input ports, by taking elements according to the chosen merge strategy and by putting them to the output port.
  * For its signal handling behavior see {@link #onSignal(ISignal, InputPort)}
  *
- * @author Christian Wulf
+ * @author Christian Wulf, Nelson Tavares de Sousa
  *
  * @since 1.0
  *
@@ -43,7 +43,7 @@ public final class Merger<T> extends AbstractStage {
 
 	private IMergerStrategy strategy;
 
-	private final Map<Class<?>, Set<InputPort<?>>> signalMap = new HashMap<Class<?>, Set<InputPort<?>>>();
+	private final Map<Class<ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<ISignal>, Set<InputPort<?>>>();
 
 	public Merger() {
 		this(new RoundRobinStrategy());
@@ -74,25 +74,29 @@ public final class Merger<T> extends AbstractStage {
 	 * @param inputPort
 	 *            The port which the signal was sent to
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
-		this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
+		this.logger.warn("Got signal: " + signal + " from input port: " + inputPort);
 
-		if (signalMap.containsKey(signal.getClass())) {
-			Set<InputPort<?>> set = signalMap.get(signal.getClass());
+		Class<? extends ISignal> signalClass = signal.getClass();
+
+		if (signalMap.containsKey(signalClass)) {
+			Set<InputPort<?>> set = signalMap.get(signalClass);
 			if (!set.add(inputPort)) {
 				this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
 			}
 
-			if (set.size() == this.getInputPorts().length) {
-				this.outputPort.sendSignal(signal);
-				signalMap.remove(signal.getClass());
-			}
 		} else {
-			signal.trigger(this);
 			Set<InputPort<?>> tempSet = new HashSet<InputPort<?>>();
 			tempSet.add(inputPort);
-			signalMap.put(signal.getClass(), tempSet);
+			signalMap.put((Class<ISignal>) signalClass, tempSet);
+		}
+
+		if (signalMap.get(signalClass).size() == this.getInputPorts().length) {
+			signal.trigger(this);
+			this.outputPort.sendSignal(signal);
+			signalMap.remove(signalClass);
 		}
 
 	}

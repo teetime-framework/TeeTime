@@ -17,14 +17,14 @@ package teetime.util.concurrent.hashmap;
 
 /**
  * @author Christian Wulf
- * 
+ *
  * @since 1.10
  */
 public interface ValueFactory<T> {
 
 	/**
 	 * Create a new instance of the type <code>T</code>.
-	 * 
+	 *
 	 * @since 1.10
 	 */
 	public T create();

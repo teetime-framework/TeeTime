@@ -13,30 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage;
+package teetime.stage.string;
 
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
-public final class Counter<T> extends AbstractConsumerStage<T> {
+/**
+ * Receives a string and passes it on to the next stage only with lower case letters.
+ * Punctuation and similar characters will be removed. Only [a-zA-Z ] will be passed on.
+ *
+ * @since 1.1
+ *
+ * @author Nelson Tavares de Sousa
+ *
+ */
+public final class ToLowerCase extends AbstractConsumerStage<String> {
 
-	private final OutputPort<T> outputPort = this.createOutputPort();
-
-	private int numElementsPassed;
+	private final OutputPort<String> outputPort = this.createOutputPort();
 
 	@Override
-	protected void execute(final T element) {
-		this.numElementsPassed++;
+	protected void execute(final String element) {
+		outputPort.send(element.replaceAll("[^a-zA-Z ]", "").toLowerCase());
 
-		outputPort.send(element);
 	}
 
-	// BETTER find a solution w/o any thread-safe code in this stage
-	public synchronized int getNumElementsPassed() {
-		return this.numElementsPassed;
+	public OutputPort<String> getOutputPort() {
+		return outputPort;
 	}
 
-	public OutputPort<T> getOutputPort() {
-		return this.outputPort;
-	}
 }

@@ -30,7 +30,7 @@ import javax.crypto.spec.SecretKeySpec;
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
-public class CipherByteArray extends AbstractConsumerStage<byte[]> {
+public final class CipherByteArray extends AbstractConsumerStage<byte[]> {
 
 	private final OutputPort<byte[]> outputPort = this.createOutputPort();
 	private Cipher cipher = null;

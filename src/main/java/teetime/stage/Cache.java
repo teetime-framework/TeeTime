@@ -23,7 +23,7 @@ import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 import teetime.util.StopWatch;
 
-public class Cache<T> extends AbstractConsumerStage<T> {
+public final class Cache<T> extends AbstractConsumerStage<T> {
 
 	private final OutputPort<T> outputPort = this.createOutputPort();
 

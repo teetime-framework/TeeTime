@@ -20,7 +20,7 @@ import teetime.framework.OutputPort;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 
-public class UnorderedGrowablePipeFactory implements IPipeFactory {
+public final class UnorderedGrowablePipeFactory implements IPipeFactory {
 
 	@Override
 	public <T> IPipe create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {

@@ -22,7 +22,7 @@ import java.io.File;
  *
  * @since 1.10
  */
-public class TextLine {
+public final class TextLine {
 
 	private final File textFile;
 	private final String textLine;

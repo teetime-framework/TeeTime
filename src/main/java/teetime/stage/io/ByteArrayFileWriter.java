@@ -23,7 +23,7 @@ import teetime.framework.AbstractConsumerStage;
 
 import com.google.common.io.Files;
 
-public class ByteArrayFileWriter extends AbstractConsumerStage<byte[]> {
+public final class ByteArrayFileWriter extends AbstractConsumerStage<byte[]> {
 
 	private final File file;
 	private FileOutputStream fo;

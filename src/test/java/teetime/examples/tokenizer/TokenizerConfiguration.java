@@ -18,6 +18,7 @@ package teetime.examples.tokenizer;
 import java.io.File;
 
 import teetime.framework.AnalysisConfiguration;
+import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.ByteArray2String;
@@ -32,6 +33,7 @@ import teetime.stage.string.Tokenizer;
 
 public class TokenizerConfiguration extends AnalysisConfiguration {
 
+	private static final IPipeFactory INTRA_PIPE_FACTORY = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 	private final Counter<String> counter;
 
 	public TokenizerConfiguration(final String inputFile, final String password) {
@@ -45,17 +47,17 @@ public class TokenizerConfiguration extends AnalysisConfiguration {
 		final Tokenizer tokenizer = new Tokenizer(" ");
 		this.counter = new Counter<String>();
 
-		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+		INTRA_PIPE_FACTORY.create(
 				init.getOutputPort(), f2b.getInputPort());
-		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+		INTRA_PIPE_FACTORY.create(
 				f2b.getOutputPort(), decomp.getInputPort());
-		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+		INTRA_PIPE_FACTORY.create(
 				decomp.getOutputPort(), decrypt.getInputPort());
-		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+		INTRA_PIPE_FACTORY.create(
 				decrypt.getOutputPort(), b2s.getInputPort());
-		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+		INTRA_PIPE_FACTORY.create(
 				b2s.getOutputPort(), tokenizer.getInputPort());
-		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false).create(
+		INTRA_PIPE_FACTORY.create(
 				tokenizer.getOutputPort(), this.counter.getInputPort());
 
 		// this.getFiniteProducerStages().add(init);
