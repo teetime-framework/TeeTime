@@ -30,7 +30,7 @@ public final class IterableProducer<T> extends AbstractProducerStage<T> {
 		for (final T i : this.iter) {
 			this.outputPort.send(i);
 		}
-
+		this.terminate();
 	}
 
 	public void setIter(final Iterable<T> iter) {
