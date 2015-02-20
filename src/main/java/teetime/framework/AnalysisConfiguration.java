@@ -26,6 +26,9 @@ import teetime.framework.pipe.PipeFactoryRegistry;
  */
 public abstract class AnalysisConfiguration {
 
+	/**
+	 * Can be used by subclasses, to obtain pipe factories
+	 */
 	protected static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
 	private final List<Stage> threadableStageJobs = new LinkedList<Stage>();
 
@@ -39,7 +42,7 @@ public abstract class AnalysisConfiguration {
 	 * @param stage
 	 *            A arbitrary stage, which will be added to the configuration und executed in a thread.
 	 */
-	public void addThreadableStage(final Stage stage) {
+	protected void addThreadableStage(final Stage stage) {
 		this.threadableStageJobs.add(stage);
 	}
 

@@ -17,20 +17,32 @@ package teetime.stage;
 
 import teetime.framework.AbstractProducerStage;
 
-public final class IterableProducer<O extends Iterable<T>, T> extends AbstractProducerStage<T> {
+public final class IterableProducer<T> extends AbstractProducerStage<T> {
 
-	private O iter = null;
+	private Iterable<T> iter;
 
-	public IterableProducer(final O iter) {
+	public <O extends Iterable<T>> IterableProducer(final O iter) {
 		this.iter = iter;
 	}
 
 	@Override
 	protected void execute() {
-		for (T i : iter) {
-			outputPort.send(i);
+		for (final T i : this.iter) {
+			this.outputPort.send(i);
 		}
 
+	}
+
+	public void setIter(final Iterable<T> iter) {
+		this.iter = iter;
+	}
+
+	@Override
+	public void onStarting() throws Exception {
+		if (iter == null) {
+			throw new NullPointerException("iter must not be null");
+		}
+		super.onStarting();
 	}
 
 }
