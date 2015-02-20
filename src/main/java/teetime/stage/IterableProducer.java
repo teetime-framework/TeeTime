@@ -40,7 +40,7 @@ public final class IterableProducer<T> extends AbstractProducerStage<T> {
 	@Override
 	public void onStarting() throws Exception {
 		if (iter == null) {
-			throw new NullPointerException("iter must not be null");
+			throw new IllegalArgumentException("iter must not be null");
 		}
 		super.onStarting();
 	}
