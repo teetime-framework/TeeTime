@@ -40,7 +40,7 @@ public final class InitialElementProducer<T> extends AbstractProducerStage<T> {
 	@Override
 	public void onStarting() throws Exception {
 		if (elements == null) {
-			throw new IllegalArgumentException("iter must not be null");
+			throw new IllegalArgumentException("elements must not be null");
 		}
 		super.onStarting();
 	}
