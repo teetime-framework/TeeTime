@@ -54,6 +54,16 @@ public class RunnableConsumerStageTest {
 		thread.join();
 	}
 
+	@Test
+	public void testCorrectStartAndTerminatation() throws Exception {
+		RunnableConsumerStageTestConfiguration configuration = new RunnableConsumerStageTestConfiguration(0, 1, 2, 3, 5);
+
+		final Analysis analysis = new Analysis(configuration);
+		start(analysis);
+
+		assertEquals(5, configuration.getCollectedElements().size());
+	}
+
 	// @Test
 	// public void testWaitingInfinitely() throws Exception {
 	// WaitStrategyConfiguration waitStrategyConfiguration = new WaitStrategyConfiguration(300, 42);

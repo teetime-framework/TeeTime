@@ -16,7 +16,9 @@ public class RunnableConsumerStageTestConfiguration extends AnalysisConfiguratio
 
 	public RunnableConsumerStageTestConfiguration(final Integer... inputElements) {
 		InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>(inputElements);
-		// addThreadableStage(producer);
+		if (inputElements.length > 0) {
+			addThreadableStage(producer);
+		}
 
 		CollectorSink<Integer> collectorSink = new CollectorSink<Integer>(collectedElements);
 		addThreadableStage(collectorSink);
