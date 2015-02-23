@@ -15,11 +15,18 @@
  */
 package teetime.stage;
 
+import java.util.Arrays;
+import java.util.List;
+
 import teetime.framework.AbstractProducerStage;
 
 public final class IterableProducer<T> extends AbstractProducerStage<T> {
 
 	private Iterable<T> iter;
+
+	public IterableProducer(final T... elements) {
+		this.iter = Arrays.asList(elements);
+	}
 
 	public <O extends Iterable<T>> IterableProducer(final O iter) {
 		this.iter = iter;
@@ -43,6 +50,21 @@ public final class IterableProducer<T> extends AbstractProducerStage<T> {
 			throw new IllegalArgumentException("iter must not be null");
 		}
 		super.onStarting();
+	}
+
+	public static void main(final String[] args) {
+		// int[] array = new int[] { 0, 0, 0 };
+		// new IterableProducer<Integer>(array);
+		//
+		// new InitialElementProducer<Integer>(array);
+
+		Integer[] array = new Integer[] { 0, 0, 0 };
+		new IterableProducer<Integer>(array);
+
+		new IterableProducer<Integer>(0, 0, 0);
+
+		List<Integer> iterable = Arrays.asList(0, 0, 0);
+		new IterableProducer<Integer>(iterable);
 	}
 
 }
