@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 abstract class AbstractRunnableStage implements Runnable {
 
-	protected final Stage stage;
+	private final Stage stage;
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
@@ -35,13 +35,13 @@ abstract class AbstractRunnableStage implements Runnable {
 		final Stage stage = this.stage;
 
 		try {
-			beforeStageExecution();
+			beforeStageExecution(stage);
 
 			do {
-				executeStage();
+				executeStage(stage);
 			} while (!stage.shouldBeTerminated());
 
-			afterStageExecution();
+			afterStageExecution(stage);
 
 		} catch (Error e) {
 			this.logger.error("Terminating thread due to the following exception: ", e);
@@ -54,9 +54,9 @@ abstract class AbstractRunnableStage implements Runnable {
 		this.logger.debug("Finished runnable stage. (" + stage.getId() + ")");
 	}
 
-	protected abstract void beforeStageExecution();
+	protected abstract void beforeStageExecution(Stage stage);
 
-	protected abstract void executeStage();
+	protected abstract void executeStage(Stage stage);
 
-	protected abstract void afterStageExecution();
+	protected abstract void afterStageExecution(Stage stage);
 }

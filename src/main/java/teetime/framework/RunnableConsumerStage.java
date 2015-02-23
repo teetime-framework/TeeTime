@@ -43,12 +43,11 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	}
 
 	@Override
-	protected void beforeStageExecution() {
+	protected void beforeStageExecution(final Stage stage) {
 		logger.trace("ENTRY beforeStageExecution");
-		final Stage stage = this.stage;
 
 		do {
-			checkforSignals();
+			checkforSignals(stage);
 			Thread.yield();
 		} while (!stage.isStarted());
 
@@ -56,16 +55,16 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	}
 
 	@Override
-	protected void executeStage() {
+	protected void executeStage(final Stage stage) {
 		try {
-			this.stage.executeWithPorts();
+			stage.executeWithPorts();
 		} catch (NotEnoughInputException e) {
-			checkforSignals(); // check for termination
-			executeIdleStrategy();
+			checkforSignals(stage); // check for termination
+			executeIdleStrategy(stage);
 		}
 	}
 
-	private void executeIdleStrategy() {
+	private void executeIdleStrategy(final Stage stage) {
 		if (stage.shouldBeTerminated()) {
 			return;
 		}
@@ -77,8 +76,7 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	}
 
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-	private void checkforSignals() {
-		final Stage stage = this.stage;
+	private void checkforSignals(final Stage stage) {
 		for (InputPort<?> inputPort : inputPorts) {
 			final IPipe pipe = inputPort.getPipe();
 			if (pipe instanceof AbstractInterThreadPipe) { // TODO: is this needed?
@@ -92,7 +90,7 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	}
 
 	@Override
-	protected void afterStageExecution() {
+	protected void afterStageExecution(final Stage stage) {
 		// do nothing
 	}
 
