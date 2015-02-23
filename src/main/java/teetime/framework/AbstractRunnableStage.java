@@ -49,12 +49,14 @@ abstract class AbstractRunnableStage implements Runnable {
 		} catch (RuntimeException e) {
 			this.logger.error("Terminating thread due to the following exception: ", e);
 			throw e;
+		} catch (InterruptedException e) {
+			this.logger.error("Terminating thread due to the following exception: ", e);
 		}
 
 		this.logger.debug("Finished runnable stage. (" + stage.getId() + ")");
 	}
 
-	protected abstract void beforeStageExecution(Stage stage);
+	protected abstract void beforeStageExecution(Stage stage) throws InterruptedException;
 
 	protected abstract void executeStage(Stage stage);
 

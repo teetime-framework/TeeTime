@@ -70,12 +70,6 @@ public class MergerTestingPipe implements IPipe {
 	}
 
 	@Override
-	public Object readLast() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public InputPort<?> getTargetPort() {
 		// TODO Auto-generated method stub
 		return null;
@@ -91,6 +85,28 @@ public class MergerTestingPipe implements IPipe {
 	public void reportNewElement() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean isClosed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean hasMore() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void waitForStartSignal() throws InterruptedException {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
 	}
 
 }

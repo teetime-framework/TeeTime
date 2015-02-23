@@ -16,6 +16,7 @@
 package teetime.framework;
 
 import teetime.framework.signal.ISignal;
+import teetime.framework.signal.TerminatingSignal;
 
 public final class OutputPort<T> extends AbstractPort<T> {
 
@@ -37,7 +38,10 @@ public final class OutputPort<T> extends AbstractPort<T> {
 	 *            to be sent; May not be <code>null</code>.
 	 */
 	public void sendSignal(final ISignal signal) {
-		this.pipe.sendSignal(signal);
+		if (signal instanceof TerminatingSignal) {
+			pipe.close();
+		}
+		pipe.sendSignal(signal);
 	}
 
 }

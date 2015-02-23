@@ -55,13 +55,6 @@ public interface IPipe {
 	Object removeLast();
 
 	/**
-	 * Reads the pipe's last element, but does not delete it.
-	 *
-	 * @return The last element in the pipe.
-	 */
-	Object readLast();
-
-	/**
 	 * Retrieves the receiving port.
 	 *
 	 * @return InputPort which is connected to the pipe.
@@ -83,5 +76,15 @@ public interface IPipe {
 	 * Stages report new elements with this method.
 	 */
 	void reportNewElement();
+
+	boolean isClosed();
+
+	boolean hasMore();
+
+	// "signal" handling
+
+	void waitForStartSignal() throws InterruptedException;
+
+	void close();
 
 }

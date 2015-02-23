@@ -17,12 +17,11 @@ package teetime.framework;
 
 import teetime.framework.idle.IdleStrategy;
 import teetime.framework.idle.YieldStrategy;
-import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
+import teetime.framework.signal.TerminatingSignal;
 
 final class RunnableConsumerStage extends AbstractRunnableStage {
 
-	private final IdleStrategy idleStrategy;
 	// cache the input ports here since getInputPorts() always returns a new copy
 	private final InputPort<?>[] inputPorts;
 
@@ -38,18 +37,16 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 
 	public RunnableConsumerStage(final Stage stage, final IdleStrategy idleStrategy) {
 		super(stage);
-		this.idleStrategy = idleStrategy;
 		this.inputPorts = stage.getInputPorts(); // FIXME should getInputPorts() really be defined in Stage?
 	}
 
 	@Override
-	protected void beforeStageExecution(final Stage stage) {
+	protected void beforeStageExecution(final Stage stage) throws InterruptedException {
 		logger.trace("ENTRY beforeStageExecution");
 
-		do {
-			checkforSignals(stage);
-			Thread.yield();
-		} while (!stage.isStarted());
+		for (InputPort<?> inputPort : inputPorts) {
+			inputPort.waitForStartSignal();
+		}
 
 		logger.trace("EXIT beforeStageExecution");
 	}
@@ -59,33 +56,20 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 		try {
 			stage.executeWithPorts();
 		} catch (NotEnoughInputException e) {
-			checkforSignals(stage); // check for termination
-			executeIdleStrategy(stage);
+			checkForTerminationSignal(stage);
 		}
 	}
 
-	private void executeIdleStrategy(final Stage stage) {
-		if (stage.shouldBeTerminated()) {
-			return;
-		}
-		try {
-			idleStrategy.execute();
-		} catch (InterruptedException e) {
-			// checkforSignals(); // check for termination
-		}
-	}
-
-	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-	private void checkforSignals(final Stage stage) {
+	private void checkForTerminationSignal(final Stage stage) {
 		for (InputPort<?> inputPort : inputPorts) {
-			final IPipe pipe = inputPort.getPipe();
-			if (pipe instanceof AbstractInterThreadPipe) { // TODO: is this needed?
-				final AbstractInterThreadPipe intraThreadPipe = (AbstractInterThreadPipe) pipe;
-				final ISignal signal = intraThreadPipe.getSignal();
-				if (null != signal) {
-					stage.onSignal(signal, inputPort);
-				}
+			if (!inputPort.isClosed()) {
+				return;
 			}
+		}
+
+		final ISignal signal = new TerminatingSignal();
+		for (InputPort<?> inputPort : inputPorts) {
+			stage.onSignal(signal, inputPort);
 		}
 	}
 

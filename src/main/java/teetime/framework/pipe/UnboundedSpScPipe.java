@@ -56,9 +56,4 @@ public final class UnboundedSpScPipe extends AbstractInterThreadPipe {
 		return this.queue.size();
 	}
 
-	@Override
-	public Object readLast() {
-		return this.queue.peek();
-	}
-
 }

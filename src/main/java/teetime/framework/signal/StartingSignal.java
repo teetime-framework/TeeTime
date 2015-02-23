@@ -21,7 +21,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.AbstractStage;
+import teetime.framework.Stage;
 
 public final class StartingSignal implements ISignal {
 
@@ -31,7 +31,7 @@ public final class StartingSignal implements ISignal {
 	public StartingSignal() {}
 
 	@Override
-	public void trigger(final AbstractStage stage) {
+	public void trigger(final Stage stage) {
 		try {
 			stage.onStarting();
 		} catch (Exception e) { // NOCS (Stages can throw any arbitrary Exception)

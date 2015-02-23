@@ -53,11 +53,6 @@ public final class SingleElementPipe extends AbstractIntraThreadPipe {
 	}
 
 	@Override
-	public Object readLast() {
-		return this.element;
-	}
-
-	@Override
 	public int size() {
 		return (this.element == null) ? 0 : 1;
 	}

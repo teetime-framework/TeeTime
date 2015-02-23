@@ -118,4 +118,12 @@ public abstract class Stage {
 
 	protected abstract boolean isStarted();
 
+	// events
+
+	public abstract void onValidating(List<InvalidPortConnection> invalidPortConnections);
+
+	public abstract void onStarting() throws Exception;
+
+	public abstract void onTerminating() throws Exception;
+
 }

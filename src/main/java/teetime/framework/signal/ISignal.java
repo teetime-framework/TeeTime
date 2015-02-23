@@ -15,9 +15,9 @@
  */
 package teetime.framework.signal;
 
-import teetime.framework.AbstractStage;
+import teetime.framework.Stage;
 
 public interface ISignal {
 
-	void trigger(AbstractStage stage);
+	void trigger(Stage stage);
 }

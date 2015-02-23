@@ -15,43 +15,38 @@
  */
 package teetime.framework;
 
-import java.lang.Thread.State;
 import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 
 import org.jctools.queues.QueueFactory;
 import org.jctools.queues.spec.ConcurrentQueueSpec;
 import org.jctools.queues.spec.Ordering;
 import org.jctools.queues.spec.Preference;
-import org.slf4j.LoggerFactory;
 
 import teetime.framework.signal.ISignal;
+import teetime.util.concurrent.queue.PCBlockingQueue;
+import teetime.util.concurrent.queue.putstrategy.PutStrategy;
+import teetime.util.concurrent.queue.putstrategy.YieldPutStrategy;
+import teetime.util.concurrent.queue.takestrategy.SCParkTakeStrategy;
+import teetime.util.concurrent.queue.takestrategy.TakeStrategy;
 
 public abstract class AbstractInterThreadPipe extends AbstractPipe {
 
-	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AbstractInterThreadPipe.class);
+	private final BlockingQueue<ISignal> signalQueue;
 
-	private final Queue<ISignal> signalQueue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT));
+	private volatile boolean isClosed;
 
 	protected <T> AbstractInterThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
+		final Queue<ISignal> localSignalQueue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT));
+		final PutStrategy<ISignal> putStrategy = new YieldPutStrategy<ISignal>();
+		final TakeStrategy<ISignal> takeStrategy = new SCParkTakeStrategy<ISignal>();
+		signalQueue = new PCBlockingQueue<ISignal>(localSignalQueue, putStrategy, takeStrategy);
 	}
 
 	@Override
 	public void sendSignal(final ISignal signal) {
 		this.signalQueue.offer(signal);
-
-		Thread owningThread = cachedTargetStage.getOwningThread();
-		if (owningThread == null && LOGGER.isWarnEnabled()) {
-			LOGGER.warn("owningThread of " + cachedTargetStage + " is null.");
-		}
-		if (null != owningThread && isThreadWaiting(owningThread)) { // FIXME remove the null check for performance
-			owningThread.interrupt();
-		}
-	}
-
-	protected final boolean isThreadWaiting(final Thread thread) {
-		final State state = thread.getState(); // store state in variable for performance reasons
-		return state == State.WAITING || state == State.TIMED_WAITING;
 	}
 
 	/**
@@ -66,5 +61,21 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 	@Override
 	public void reportNewElement() { // NOPMD
 		// do nothing
+	}
+
+	@Override
+	public final void waitForStartSignal() throws InterruptedException {
+		final ISignal signal = signalQueue.take();
+		signal.trigger(getTargetPort().getOwningStage());
+	}
+
+	@Override
+	public final boolean isClosed() {
+		return isClosed;
+	}
+
+	@Override
+	public final void close() {
+		isClosed = true;
 	}
 }

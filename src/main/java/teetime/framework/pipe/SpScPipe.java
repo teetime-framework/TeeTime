@@ -70,11 +70,6 @@ public final class SpScPipe extends AbstractInterThreadPipe {
 		return this.queue.size();
 	}
 
-	@Override
-	public Object readLast() {
-		return this.queue.peek();
-	}
-
 	// BETTER find a solution w/o any thread-safe code in this stage
 	public synchronized int getNumWaits() {
 		return this.numWaits;

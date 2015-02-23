@@ -98,4 +98,23 @@ public abstract class CompositeStage extends Stage {
 		INTRA_PIPE_FACTORY.create(out, in);
 	}
 
+	@Override
+	public final Thread getOwningThread() {
+		return getFirstStage().getOwningThread();
+	}
+
+	@Override
+	public final void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
+		getFirstStage().onValidating(invalidPortConnections);
+	}
+
+	@Override
+	public final void onStarting() throws Exception {
+		getFirstStage().onStarting();
+	}
+
+	@Override
+	public final void onTerminating() throws Exception {
+		getFirstStage().onTerminating();
+	}
 }

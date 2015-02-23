@@ -64,12 +64,6 @@ public final class UnorderedGrowablePipe extends AbstractIntraThreadPipe {
 	}
 
 	@Override
-	public Object readLast() {
-		return this.elements[this.lastFreeIndex - 1];
-		// return this.elements.get(this.lastFreeIndex - 1);
-	}
-
-	@Override
 	public int size() {
 		return this.lastFreeIndex;
 	}
