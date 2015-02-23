@@ -17,8 +17,10 @@ package teetime.framework;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.Thread.State;
 import java.util.Collection;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.util.Pair;
@@ -26,6 +28,31 @@ import teetime.util.Pair;
 import com.google.common.base.Joiner;
 
 public class RunnableConsumerStageTest {
+
+	@Test
+	public void testWaitingInfinitely() throws Exception {
+		RunnableConsumerStageTestConfiguration configuration = new RunnableConsumerStageTestConfiguration();
+
+		final Analysis analysis = new Analysis(configuration);
+		final Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				start(analysis);
+			}
+		});
+		thread.start();
+
+		Thread.sleep(200);
+
+		// assertEquals(State.WAITING, thread.getState());
+		assertEquals(State.WAITING, configuration.getConsumerThread().getState());
+		assertEquals(0, configuration.getCollectedElements().size());
+
+		// clean up
+		configuration.getConsumerThread().interrupt();
+		configuration.getConsumerThread().join();
+		thread.join();
+	}
 
 	// @Test
 	// public void testWaitingInfinitely() throws Exception {
@@ -45,7 +72,7 @@ public class RunnableConsumerStageTest {
 	// assertEquals(State.WAITING, thread.getState());
 	// assertEquals(0, waitStrategyConfiguration.getCollectorSink().getElements().size());
 	// }
-	//
+
 	// @Test
 	// public void testWaitingFinitely() throws Exception {
 	// WaitStrategyConfiguration waitStrategyConfiguration = new WaitStrategyConfiguration(300, 42);
@@ -66,6 +93,7 @@ public class RunnableConsumerStageTest {
 	// assertEquals(1, waitStrategyConfiguration.getCollectorSink().getElements().size());
 	// }
 
+	@Ignore
 	@Test
 	public void testYieldRun() throws Exception {
 		YieldStrategyConfiguration waitStrategyConfiguration = new YieldStrategyConfiguration(42);
