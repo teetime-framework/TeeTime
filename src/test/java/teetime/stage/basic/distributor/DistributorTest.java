@@ -20,19 +20,19 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.Assert.assertThat;
+import static teetime.framework.test.StageTester.test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.SingleElementPipeFactory;
-import teetime.stage.CollectorSink;
-
 /**
  * @author Nils Christian Ehmke
- *
+ * 
  * @since 1.0
  */
 public class DistributorTest {
@@ -40,93 +40,80 @@ public class DistributorTest {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
-	private Distributor<Integer> distributorUnderTest;
-	private CollectorSink<Integer> fstCollector;
-	private CollectorSink<Integer> sndCollector;
+	private Distributor<Integer> distributor;
+	private List<Integer> fstList;
+	private List<Integer> sndList;
 
 	@Before
 	public void initializeDistributor() throws Exception {
-		this.distributorUnderTest = new Distributor<Integer>();
-		this.fstCollector = new CollectorSink<Integer>();
-		this.sndCollector = new CollectorSink<Integer>();
-
-		final IPipeFactory pipeFactory = new SingleElementPipeFactory();
-		pipeFactory.create(this.distributorUnderTest.getNewOutputPort(), this.fstCollector.getInputPort());
-		pipeFactory.create(this.distributorUnderTest.getNewOutputPort(), this.sndCollector.getInputPort());
-
-		distributorUnderTest.onStarting();
+		this.distributor = new Distributor<Integer>();
+		this.fstList = new ArrayList<Integer>();
+		this.sndList = new ArrayList<Integer>();
 	}
 
 	@Test
 	public void roundRobinShouldWork() {
-		distributorUnderTest.setStrategy(new RoundRobinStrategy());
+		distributor.setStrategy(new RoundRobinStrategy());
 
-		this.distributorUnderTest.execute(1);
-		this.distributorUnderTest.execute(2);
-		this.distributorUnderTest.execute(3);
-		this.distributorUnderTest.execute(4);
-		this.distributorUnderTest.execute(5);
+		test(distributor).and().send(1, 2, 3, 4, 5).to(distributor.getInputPort()).and().receive(fstList).from(distributor.getNewOutputPort()).and()
+				.receive(sndList).from(distributor.getNewOutputPort()).start();
 
-		assertThat(this.fstCollector.getElements(), contains(1, 3, 5));
-		assertThat(this.sndCollector.getElements(), contains(2, 4));
+		assertThat(this.fstList, contains(1, 3, 5));
+		assertThat(this.sndList, contains(2, 4));
 	}
 
 	@Test
 	public void singleElementRoundRobinShouldWork() {
-		distributorUnderTest.setStrategy(new RoundRobinStrategy());
+		distributor.setStrategy(new RoundRobinStrategy());
 
-		this.distributorUnderTest.execute(1);
+		test(distributor).and().send(1).to(distributor.getInputPort()).and().receive(fstList).from(distributor.getNewOutputPort()).and().receive(sndList)
+				.from(distributor.getNewOutputPort()).start();
 
-		assertThat(this.fstCollector.getElements(), contains(1));
-		assertThat(this.sndCollector.getElements(), is(empty()));
+		assertThat(this.fstList, contains(1));
+		assertThat(this.sndList, is(empty()));
 	}
 
 	@Test
 	public void copyByReferenceShouldWork() {
-		distributorUnderTest.setStrategy(new CopyByReferenceStrategy());
+		distributor.setStrategy(new CopyByReferenceStrategy());
 
-		this.distributorUnderTest.execute(1);
-		this.distributorUnderTest.execute(2);
-		this.distributorUnderTest.execute(3);
-		this.distributorUnderTest.execute(4);
-		this.distributorUnderTest.execute(5);
+		test(distributor).and().send(1, 2, 3, 4, 5).to(distributor.getInputPort()).and().receive(fstList).from(distributor.getNewOutputPort()).and()
+				.receive(sndList).from(distributor.getNewOutputPort()).start();
 
-		assertThat(this.fstCollector.getElements(), contains(1, 2, 3, 4, 5));
-		assertThat(this.sndCollector.getElements(), contains(1, 2, 3, 4, 5));
+		assertThat(this.fstList, contains(1, 2, 3, 4, 5));
+		assertThat(this.sndList, contains(1, 2, 3, 4, 5));
 	}
 
 	@Test
 	public void singleElementCopyByReferenceShouldWork() {
-		distributorUnderTest.setStrategy(new CopyByReferenceStrategy());
+		distributor.setStrategy(new CopyByReferenceStrategy());
 
-		this.distributorUnderTest.execute(1);
+		test(distributor).and().send(1).to(distributor.getInputPort()).and().receive(fstList).from(distributor.getNewOutputPort()).and().receive(sndList)
+				.from(distributor.getNewOutputPort()).start();
 
-		assertThat(this.fstCollector.getElements(), contains(1));
-		assertThat(this.sndCollector.getElements(), contains(1));
+		assertThat(this.fstList, contains(1));
+		assertThat(this.sndList, contains(1));
 	}
 
 	@Test
-	public void cloneForIntegerShouldNotWork() {
-		distributorUnderTest.setStrategy(new CloneStrategy());
+	public void cloneForIntegerShouldNotWork() throws Exception {
+		this.distributor.setStrategy(new CloneStrategy());
+		this.distributor.getNewOutputPort();
+		this.distributor.onStarting();
 
 		expectedException.expect(UnsupportedOperationException.class);
-		this.distributorUnderTest.execute(1);
+		this.distributor.execute(1);
 	}
 
 	@Test
 	public void cloneForSimpleBeanShoulWork() throws Exception {
-		final Distributor<SimpleBean> distributorUnderTest = new Distributor<SimpleBean>(new CloneStrategy());
-		final CollectorSink<SimpleBean> collector = new CollectorSink<SimpleBean>();
-
-		final IPipeFactory pipeFactory = new SingleElementPipeFactory();
-		pipeFactory.create(distributorUnderTest.getNewOutputPort(), collector.getInputPort());
-
-		distributorUnderTest.onStarting();
-
+		final Distributor<SimpleBean> distributor = new Distributor<SimpleBean>(new CloneStrategy());
+		final List<SimpleBean> results = new ArrayList<SimpleBean>();
 		final SimpleBean originalBean = new SimpleBean(42);
-		distributorUnderTest.execute(originalBean);
-		final SimpleBean clonedBean = collector.getElements().get(0);
 
+		test(distributor).and().send(originalBean).to(distributor.getInputPort()).and().receive(results).from(distributor.getNewOutputPort()).start();
+
+		final SimpleBean clonedBean = results.get(0);
 		assertThat(originalBean, is(not(clonedBean)));
 		assertThat(originalBean.getValue(), is(clonedBean.getValue()));
 	}

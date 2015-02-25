@@ -16,6 +16,8 @@
 package teetime.framework.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import teetime.framework.Analysis;
@@ -31,7 +33,7 @@ import teetime.stage.IterableProducer;
 
 /**
  * This class can be used to test single stages in JUnit test cases.
- *
+ * 
  * @author Nils Christian Ehmke
  */
 public final class StageTester {
@@ -52,6 +54,14 @@ public final class StageTester {
 		InputHolder<I> inputHolder = new InputHolder<I>(input);
 		this.inputHolders.add(inputHolder);
 		return inputHolder;
+	}
+
+	public <I> InputHolder<I> send(final I... input) {
+		return this.send(Arrays.asList(input));
+	}
+
+	public <I> InputHolder<I> send(final I input) {
+		return this.send(Collections.singletonList(input));
 	}
 
 	public <O> OutputHolder<O> receive(final List<O> output) {
