@@ -28,7 +28,8 @@ import org.junit.runner.Description;
 
 import teetime.util.StopWatch;
 import teetime.util.TimestampObject;
-import util.test.eval.StatisticsUtil;
+import teetime.util.test.eval.PerformanceResult;
+import teetime.util.test.eval.StatisticsUtil;
 
 public abstract class PerformanceTest {
 

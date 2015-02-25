@@ -16,9 +16,9 @@
 package teetime.examples.experiment09pipeimpls;
 
 import teetime.examples.experiment01.MethodCallThoughputTimestampAnalysis1Test;
+import teetime.util.test.eval.PerformanceResult;
 import util.test.AbstractProfiledPerformanceAssertion;
 import util.test.MeasurementRepository;
-import util.test.PerformanceResult;
 import util.test.PerformanceTest;
 
 abstract class AbstractPerformanceCheck extends AbstractProfiledPerformanceAssertion {

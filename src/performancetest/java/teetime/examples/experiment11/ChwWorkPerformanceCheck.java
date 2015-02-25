@@ -16,7 +16,7 @@
 package teetime.examples.experiment11;
 
 import static org.junit.Assert.assertEquals;
-import util.test.PerformanceResult;
+import teetime.util.test.eval.PerformanceResult;
 import util.test.PerformanceTest;
 import util.test.AbstractProfiledPerformanceAssertion;
 

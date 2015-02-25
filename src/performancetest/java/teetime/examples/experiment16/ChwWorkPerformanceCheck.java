@@ -16,8 +16,8 @@
 package teetime.examples.experiment16;
 
 import static org.junit.Assert.assertEquals;
+import teetime.util.test.eval.PerformanceResult;
 import util.test.AbstractProfiledPerformanceAssertion;
-import util.test.PerformanceResult;
 import util.test.PerformanceTest;
 
 class ChwWorkPerformanceCheck extends AbstractProfiledPerformanceAssertion {
