@@ -18,8 +18,6 @@ package teetime.framework.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.AssertionFailedError;
-
 import teetime.framework.Analysis;
 import teetime.framework.AnalysisConfiguration;
 import teetime.framework.InputPort;
@@ -85,7 +83,7 @@ public final class StageTester {
 		@SuppressWarnings("unchecked")
 		public StageTester to(final InputPort<I> port) {
 			if (port.getOwningStage() != stage) {
-				throw new AssertionFailedError();
+				throw new AssertionError();
 			}
 			this.port = (InputPort<Object>) port;
 
