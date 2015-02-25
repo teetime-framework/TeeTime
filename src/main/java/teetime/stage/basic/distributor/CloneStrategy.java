@@ -71,7 +71,7 @@ public final class CloneStrategy implements IDistributorStrategy {
 
 		for (Method method : clazz.getMethods()) {
 			if (method.getReturnType() == Void.TYPE) {
-				if (method.getParameterCount() == 1) {
+				if (method.getParameterTypes().length == 1) {
 					if (method.getName().matches("set[A-Z].*")) {
 						methods.add(method);
 					}
@@ -87,7 +87,7 @@ public final class CloneStrategy implements IDistributorStrategy {
 
 		for (Method method : clazz.getMethods()) {
 			if (method.getReturnType() != Void.TYPE) {
-				if (method.getParameterCount() == 0) {
+				if (method.getParameterTypes().length == 0) {
 					if (method.getName().matches("get[A-Z].*") || method.getName().matches("is[A-Z].*")) {
 						methods.add(method);
 					}
