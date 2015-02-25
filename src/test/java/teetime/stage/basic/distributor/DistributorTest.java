@@ -17,6 +17,7 @@ package teetime.stage.basic.distributor;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.Assert.assertThat;
 
@@ -105,11 +106,50 @@ public class DistributorTest {
 	}
 
 	@Test
-	public void cloneShouldNotWork() {
+	public void cloneForIntegerShouldNotWork() {
 		distributorUnderTest.setStrategy(new CloneStrategy());
 
 		expectedException.expect(UnsupportedOperationException.class);
 		this.distributorUnderTest.execute(1);
+	}
+
+	@Test
+	public void cloneForSimpleBeanShoulWork() throws Exception {
+		final Distributor<SimpleBean> distributorUnderTest = new Distributor<SimpleBean>(new CloneStrategy());
+		final CollectorSink<SimpleBean> collector = new CollectorSink<SimpleBean>();
+
+		final IPipeFactory pipeFactory = new SingleElementPipeFactory();
+		pipeFactory.create(distributorUnderTest.getNewOutputPort(), collector.getInputPort());
+
+		distributorUnderTest.onStarting();
+
+		final SimpleBean originalBean = new SimpleBean(42);
+		distributorUnderTest.execute(originalBean);
+		final SimpleBean clonedBean = collector.getElements().get(0);
+
+		assertThat(originalBean, is(not(clonedBean)));
+		assertThat(originalBean.getValue(), is(clonedBean.getValue()));
+	}
+
+	private static class SimpleBean {
+
+		private int value;
+
+		@SuppressWarnings("unused")
+		public SimpleBean() {}
+
+		public SimpleBean(final int value) {
+			this.setValue(value);
+		}
+
+		public int getValue() {
+			return value;
+		}
+
+		public void setValue(final int value) {
+			this.value = value;
+		}
+
 	}
 
 }
