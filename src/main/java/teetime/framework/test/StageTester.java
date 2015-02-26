@@ -17,7 +17,6 @@ package teetime.framework.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import teetime.framework.Analysis;
@@ -33,7 +32,7 @@ import teetime.stage.IterableProducer;
 
 /**
  * This class can be used to test single stages in JUnit test cases.
- * 
+ *
  * @author Nils Christian Ehmke
  */
 public final class StageTester {
@@ -58,10 +57,6 @@ public final class StageTester {
 
 	public <I> InputHolder<I> send(final I... input) {
 		return this.send(Arrays.asList(input));
-	}
-
-	public <I> InputHolder<I> send(final I input) {
-		return this.send(Collections.singletonList(input));
 	}
 
 	public <O> OutputHolder<O> receive(final List<O> output) {
@@ -140,16 +135,20 @@ public final class StageTester {
 	private final class Configuration extends AnalysisConfiguration {
 
 		public Configuration() {
-			IPipeFactory pipeFactory = AnalysisConfiguration.PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+			final IPipeFactory interPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
 
 			for (InputHolder<?> inputHolder : inputHolders) {
 				final IterableProducer<Object> producer = new IterableProducer<Object>(inputHolder.getInput());
-				pipeFactory.create(producer.getOutputPort(), inputHolder.getPort());
+				interPipeFactory.create(producer.getOutputPort(), inputHolder.getPort());
 				addThreadableStage(producer);
 			}
+
+			addThreadableStage(stage);
+
+			final IPipeFactory intraPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 			for (OutputHolder<?> outputHolder : outputHolders) {
 				final CollectorSink<Object> sink = new CollectorSink<Object>(outputHolder.getOutput());
-				pipeFactory.create(outputHolder.getPort(), sink.getInputPort());
+				intraPipeFactory.create(outputHolder.getPort(), sink.getInputPort());
 			}
 		}
 
