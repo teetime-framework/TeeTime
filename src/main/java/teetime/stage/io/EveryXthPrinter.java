@@ -23,9 +23,6 @@ import teetime.framework.CompositeStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.Stage;
-import teetime.framework.TerminationStrategy;
-import teetime.framework.signal.ISignal;
-import teetime.framework.validation.InvalidPortConnection;
 import teetime.stage.EveryXthStage;
 import teetime.stage.basic.distributor.CopyByReferenceStrategy;
 import teetime.stage.basic.distributor.Distributor;
@@ -47,47 +44,12 @@ public final class EveryXthPrinter<T> extends CompositeStage {
 		distributor.setStrategy(new CopyByReferenceStrategy());
 	}
 
-	@Override
-	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
-		distributor.validateOutputPorts(invalidPortConnections);
-	}
-
-	@Override
-	protected void onSignal(final ISignal signal, final InputPort<?> inputPort) {
-		distributor.onSignal(signal, inputPort);
-	}
-
-	@Override
-	protected TerminationStrategy getTerminationStrategy() {
-		return distributor.getTerminationStrategy();
-	}
-
-	@Override
-	protected void terminate() {
-		distributor.terminate();
-	}
-
-	@Override
-	protected boolean shouldBeTerminated() {
-		return distributor.shouldBeTerminated();
-	}
-
 	public InputPort<T> getInputPort() {
 		return distributor.getInputPort();
 	}
 
 	public OutputPort<T> getNewOutputPort() {
 		return distributor.getNewOutputPort();
-	}
-
-	@Override
-	protected InputPort<?>[] getInputPorts() {
-		return distributor.getInputPorts();
-	}
-
-	@Override
-	protected boolean isStarted() {
-		return distributor.isStarted();
 	}
 
 	@Override

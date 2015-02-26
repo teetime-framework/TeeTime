@@ -48,39 +48,39 @@ public abstract class CompositeStage extends Stage {
 	}
 
 	@Override
-	protected void onSignal(final ISignal signal, final InputPort<?> inputPort) {
+	protected final void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		getFirstStage().onSignal(signal, inputPort);
 	}
 
 	@Override
-	protected TerminationStrategy getTerminationStrategy() {
+	protected final TerminationStrategy getTerminationStrategy() {
 		return getFirstStage().getTerminationStrategy();
 	}
 
 	@Override
-	protected void terminate() {
+	protected final void terminate() {
 		getFirstStage().terminate();
 	}
 
 	@Override
-	protected boolean shouldBeTerminated() {
+	protected final boolean shouldBeTerminated() {
 		return getFirstStage().shouldBeTerminated();
 	}
 
 	@Override
-	protected InputPort<?>[] getInputPorts() {
+	protected final InputPort<?>[] getInputPorts() {
 		return getFirstStage().getInputPorts();
 	}
 
 	@Override
-	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
+	public final void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
 		for (final Stage s : getLastStages()) {
 			s.validateOutputPorts(invalidPortConnections);
 		}
 	}
 
 	@Override
-	protected boolean isStarted() {
+	protected final boolean isStarted() {
 		boolean isStarted = true;
 		for (final Stage s : getLastStages()) {
 			isStarted = isStarted && s.isStarted();
@@ -89,7 +89,7 @@ public abstract class CompositeStage extends Stage {
 	}
 
 	@Override
-	void setOwningThread(final Thread owningThread) {
+	final void setOwningThread(final Thread owningThread) {
 		getFirstStage().setOwningThread(owningThread);
 		super.setOwningThread(owningThread);
 	}
