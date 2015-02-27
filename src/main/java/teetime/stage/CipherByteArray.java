@@ -43,7 +43,7 @@ public final class CipherByteArray extends AbstractConsumerStage<byte[]> {
 		final byte[] salt = { 't', 'e', 's', 't' };
 		SecretKeySpec skeyspec = null;
 
-		KeySpec keySpec = new PBEKeySpec(password.toCharArray(),
+		final KeySpec keySpec = new PBEKeySpec(password.toCharArray(),
 				salt,
 				1024, 128);
 
@@ -52,9 +52,9 @@ public final class CipherByteArray extends AbstractConsumerStage<byte[]> {
 		try {
 			secretKey = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").
 					generateSecret(keySpec);
-		} catch (InvalidKeySpecException e1) {
+		} catch (final InvalidKeySpecException e1) {
 			throw new IllegalStateException(e1);
-		} catch (NoSuchAlgorithmException e1) {
+		} catch (final NoSuchAlgorithmException e1) {
 			throw new IllegalStateException(e1);
 		}
 
@@ -62,9 +62,9 @@ public final class CipherByteArray extends AbstractConsumerStage<byte[]> {
 
 		try {
 			this.cipher = Cipher.getInstance(skeyspec.getAlgorithm());
-		} catch (NoSuchAlgorithmException e) {
+		} catch (final NoSuchAlgorithmException e) {
 			throw new IllegalStateException(e);
-		} catch (NoSuchPaddingException e) {
+		} catch (final NoSuchPaddingException e) {
 			throw new IllegalStateException(e);
 		}
 
@@ -74,7 +74,7 @@ public final class CipherByteArray extends AbstractConsumerStage<byte[]> {
 			} else {
 				this.cipher.init(Cipher.DECRYPT_MODE, skeyspec);
 			}
-		} catch (InvalidKeyException e) {
+		} catch (final InvalidKeyException e) {
 			throw new IllegalStateException(e);
 		}
 	}
@@ -86,14 +86,14 @@ public final class CipherByteArray extends AbstractConsumerStage<byte[]> {
 
 		try {
 			output = this.cipher.doFinal(element);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 
-		outputPort.send(output);
+		this.outputPort.send(output);
 	}
 
-	public OutputPort<? extends byte[]> getOutputPort() {
+	public OutputPort<byte[]> getOutputPort() {
 		return this.outputPort;
 	}
 
