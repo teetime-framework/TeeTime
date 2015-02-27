@@ -86,7 +86,7 @@ public final class StageTester {
 		}
 
 		@SuppressWarnings("unchecked")
-		public StageTester to(final InputPort<I> port) {
+		public StageTester to(final InputPort<? extends I> port) {
 			if (port.getOwningStage() != stage) {
 				throw new AssertionError();
 			}
