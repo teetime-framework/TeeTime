@@ -28,31 +28,31 @@ import org.junit.Test;
 /**
  * @author Nils Christian Ehmke
  */
-public class ToLowerCaseTest {
+public class TokenizerTest {
 
-	private ToLowerCase filter;
+	private Tokenizer tokenizer;
 
 	@Before
-	public void initializeFilter() {
-		this.filter = new ToLowerCase();
+	public void initializeTokenizer() {
+		tokenizer = new Tokenizer(";");
 	}
 
 	@Test
-	public void toLowerCaseShouldWork() {
-		final List<String> results = new ArrayList<String>();
+	public void tokenizerShouldJustDelaySingleToken() {
+		List<String> results = new ArrayList<String>();
 
-		test(this.filter).and().send("Hello World").to(this.filter.getInputPort()).and().receive(results).from(this.filter.getOutputPort()).start();
+		test(tokenizer).and().send("Hello World").to(tokenizer.getInputPort()).and().receive(results).from(tokenizer.getOutputPort()).start();
 
-		assertThat(results, contains("hello world"));
+		assertThat(results, contains("Hello World"));
 	}
 
 	@Test
-	public void toLowerCaseShouldNotRemoveNonWordCharacters() {
-		final List<String> results = new ArrayList<String>();
+	public void tokenizerShouldSplitMultipleToken() {
+		List<String> results = new ArrayList<String>();
 
-		test(this.filter).and().send("1 2 3").to(this.filter.getInputPort()).and().receive(results).from(this.filter.getOutputPort()).start();
+		test(tokenizer).and().send("Hello;World").to(tokenizer.getInputPort()).and().receive(results).from(tokenizer.getOutputPort()).start();
 
-		assertThat(results, contains("1 2 3"));
+		assertThat(results, contains("Hello", "World"));
 	}
 
 }
