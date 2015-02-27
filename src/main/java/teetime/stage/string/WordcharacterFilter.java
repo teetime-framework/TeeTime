@@ -19,19 +19,20 @@ import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
 /**
- * Receives a string and passes it on to the next stage only with lower case letters.
+ * Receives a string and passes it with removed punctuation and similar characters on to the next stage. Only [a-zA-Z ] will be passed on.
  *
  * @since 1.1
  *
  * @author Nelson Tavares de Sousa
+ *
  */
-public final class ToLowerCase extends AbstractConsumerStage<String> {
+public final class WordcharacterFilter extends AbstractConsumerStage<String> {
 
 	private final OutputPort<String> outputPort = this.createOutputPort();
 
 	@Override
 	protected void execute(final String element) {
-		this.outputPort.send(element.toLowerCase());
+		this.outputPort.send(element.replaceAll("[^a-zA-Z ]", ""));
 
 	}
 
