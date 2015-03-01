@@ -15,35 +15,44 @@
  */
 package teetime.stage;
 
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
-
-import teetime.stage.CipherByteArray.CipherMode;
 
 /**
  * @author Nils Christian Ehmke
  */
-public class CipherByteArrayTest {
+public class EveryXthStageTest {
+
+	private EveryXthStage<Integer> stage;
+	private List<Integer> results;
+
+	@Before
+	public void initializeStage() {
+		this.stage = new EveryXthStage<Integer>(5);
+		this.results = new ArrayList<Integer>();
+	}
 
 	@Test
-	public void decryptShouldInvertEncryption() {
-		final CipherByteArray encryptStage = new CipherByteArray("somePassword", CipherMode.ENCRYPT);
-		final CipherByteArray decryptStage = new CipherByteArray("somePassword", CipherMode.DECRYPT);
+	public void notEnoughInputShouldResultInEmptyOutput() {
+		test(this.stage).and().send(1, 5, 9, 10).to(this.stage.getInputPort()).and().receive(this.results).from(this.stage.getOutputPort()).start();
 
-		final byte[] input = new byte[] { 1, 2, 3, 4, 5 };
-		final List<byte[]> encryptedResult = new ArrayList<byte[]>();
-		final List<byte[]> decryptedResult = new ArrayList<byte[]>();
+		assertThat(this.results, is(empty()));
+	}
 
-		test(encryptStage).and().send(input).to(encryptStage.getInputPort()).and().receive(encryptedResult).from(encryptStage.getOutputPort()).start();
-		test(decryptStage).and().send(encryptedResult).to(decryptStage.getInputPort()).and().receive(decryptedResult).from(decryptStage.getOutputPort()).start();
+	@Test
+	public void enoughInputShouldResultInCounterValuesBeingSend() {
+		test(this.stage).and().send(1, 5, 9, 10, 8).to(this.stage.getInputPort()).and().receive(this.results).from(this.stage.getOutputPort()).start();
 
-		assertThat(decryptedResult, contains(input));
+		assertThat(this.results, contains(5));
 	}
 
 }

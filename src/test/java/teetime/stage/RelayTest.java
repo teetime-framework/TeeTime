@@ -24,26 +24,19 @@ import java.util.List;
 
 import org.junit.Test;
 
-import teetime.stage.CipherByteArray.CipherMode;
-
 /**
  * @author Nils Christian Ehmke
  */
-public class CipherByteArrayTest {
+public class RelayTest {
 
 	@Test
-	public void decryptShouldInvertEncryption() {
-		final CipherByteArray encryptStage = new CipherByteArray("somePassword", CipherMode.ENCRYPT);
-		final CipherByteArray decryptStage = new CipherByteArray("somePassword", CipherMode.DECRYPT);
+	public void relayFilterShouldForwardInput() {
+		final List<Integer> results = new ArrayList<Integer>();
+		final Relay<Integer> relay = new Relay<Integer>();
 
-		final byte[] input = new byte[] { 1, 2, 3, 4, 5 };
-		final List<byte[]> encryptedResult = new ArrayList<byte[]>();
-		final List<byte[]> decryptedResult = new ArrayList<byte[]>();
+		test(relay).and().send(1, 2, 3).to(relay.getInputPort()).and().receive(results).from(relay.getOutputPort()).start();
 
-		test(encryptStage).and().send(input).to(encryptStage.getInputPort()).and().receive(encryptedResult).from(encryptStage.getOutputPort()).start();
-		test(decryptStage).and().send(encryptedResult).to(decryptStage.getInputPort()).and().receive(decryptedResult).from(decryptStage.getOutputPort()).start();
-
-		assertThat(decryptedResult, contains(input));
+		assertThat(results, contains(1, 2, 3));
 	}
 
 }
