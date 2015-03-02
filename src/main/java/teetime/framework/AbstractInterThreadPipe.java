@@ -66,7 +66,7 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 	@Override
 	public final void waitForStartSignal() throws InterruptedException {
 		final ISignal signal = signalQueue.take();
-		signal.trigger(getTargetPort().getOwningStage());
+		cachedTargetStage.onSignal(signal, getTargetPort());
 	}
 
 	@Override

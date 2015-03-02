@@ -44,9 +44,13 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	protected void beforeStageExecution(final Stage stage) throws InterruptedException {
 		logger.trace("ENTRY beforeStageExecution");
 
+		logger.trace("Waiting for start signals..." + inputPorts);
 		for (InputPort<?> inputPort : inputPorts) {
 			inputPort.waitForStartSignal();
 		}
+		logger.trace("Starting..." + stage);
+
+		// stage.onSignal(signal, inputPort);
 
 		logger.trace("EXIT beforeStageExecution");
 	}

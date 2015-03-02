@@ -117,4 +117,5 @@ public abstract class CompositeStage extends Stage {
 	public final void onTerminating() throws Exception {
 		getFirstStage().onTerminating();
 	}
+
 }

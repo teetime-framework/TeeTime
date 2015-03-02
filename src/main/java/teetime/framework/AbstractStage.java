@@ -67,6 +67,7 @@ public abstract class AbstractStage extends Stage {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
 			signal.trigger(this);
 
+			logger.debug("outputPortList: " + outputPortList);
 			for (OutputPort<?> outputPort : outputPortList) {
 				outputPort.sendSignal(signal);
 			}
@@ -100,10 +101,12 @@ public abstract class AbstractStage extends Stage {
 		}
 	}
 
+	@Override
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
 		this.validateOutputPorts(invalidPortConnections);
 	}
 
+	@Override
 	public void onStarting() throws Exception {
 		this.owningThread = Thread.currentThread();
 		this.cachedInputPorts = this.inputPortList.toArray(new InputPort<?>[0]);
@@ -124,7 +127,9 @@ public abstract class AbstractStage extends Stage {
 		}
 	}
 
+	@Override
 	public void onTerminating() throws Exception {
+		logger.trace("onTerminating: " + this.getId());
 		this.terminate();
 	}
 
