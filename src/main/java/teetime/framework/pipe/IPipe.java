@@ -41,9 +41,7 @@ public interface IPipe {
 	boolean isEmpty();
 
 	/**
-	 * Retrieves the number of elements, the pipe is capable to carry at the same time.
-	 *
-	 * @return Number of elements
+	 * @return the current number of elements
 	 */
 	int size();
 
