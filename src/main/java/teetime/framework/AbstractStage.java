@@ -67,7 +67,6 @@ public abstract class AbstractStage extends Stage {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
 			signal.trigger(this);
 
-			logger.debug("outputPortList: " + outputPortList);
 			for (OutputPort<?> outputPort : outputPortList) {
 				outputPort.sendSignal(signal);
 			}
