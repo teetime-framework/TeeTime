@@ -87,7 +87,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 	/**
 	 * This initializes Analysis and needs to be run right before starting it.
 	 *
-	 * @deprecated 1.1
+	 * @deprecated since 1.1
 	 */
 	@Deprecated
 	public void init() {
