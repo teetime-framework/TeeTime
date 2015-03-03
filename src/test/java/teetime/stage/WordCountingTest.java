@@ -31,7 +31,7 @@ public class WordCountingTest {
 
 	@Test
 	public void test1() throws IOException {
-		int threads = 4;
+		int threads = 1;
 		WordCountingConfiguration wcc = new WordCountingConfiguration(threads, testFile);
 		Analysis analysis = new Analysis(wcc);
 		analysis.start();
