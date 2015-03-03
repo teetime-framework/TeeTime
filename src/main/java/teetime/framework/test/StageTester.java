@@ -22,8 +22,6 @@ import java.util.List;
 
 import teetime.framework.Analysis;
 import teetime.framework.AnalysisConfiguration;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
 import teetime.framework.Stage;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
@@ -52,7 +50,7 @@ public final class StageTester {
 	}
 
 	public <I> InputHolder<I> send(final Iterable<I> input) {
-		final InputHolder<I> inputHolder = new InputHolder<I>(input);
+		final InputHolder<I> inputHolder = new InputHolder<I>(this, stage, input);
 		this.inputHolders.add(inputHolder);
 		return inputHolder;
 	}
@@ -62,7 +60,7 @@ public final class StageTester {
 	}
 
 	public <O> OutputHolder<O> receive(final List<O> outputList) {
-		final OutputHolder<O> outputHolder = new OutputHolder<O>(outputList);
+		final OutputHolder<O> outputHolder = new OutputHolder<O>(this, stage, outputList);
 		this.outputHolders.add(outputHolder);
 		return outputHolder;
 	}
@@ -72,71 +70,14 @@ public final class StageTester {
 	}
 
 	public Collection<Pair<Thread, Throwable>> start() {
-		final AnalysisConfiguration configuration = new Configuration();
+		final AnalysisConfiguration configuration = new Configuration(inputHolders, stage, outputHolders);
 		final Analysis analysis = new Analysis(configuration);
 		return analysis.start();
 	}
 
-	public final class InputHolder<I> {
-
-		private final Iterable<Object> input;
-		private InputPort<Object> port;
-
-		@SuppressWarnings("unchecked")
-		private InputHolder(final Iterable<I> input) {
-			this.input = (Iterable<Object>) input;
-		}
-
-		@SuppressWarnings("unchecked")
-		public StageTester to(final InputPort<? extends I> port) {
-			if (port.getOwningStage() != stage) {
-				throw new AssertionError();
-			}
-			this.port = (InputPort<Object>) port;
-
-			return StageTester.this;
-		}
-
-		public Iterable<Object> getInput() {
-			return input;
-		}
-
-		public InputPort<Object> getPort() {
-			return port;
-		}
-
-	}
-
-	public final class OutputHolder<O> {
-
-		private final List<Object> outputElements;
-		private OutputPort<Object> port;
-
-		@SuppressWarnings("unchecked")
-		private OutputHolder(final List<O> outputList) {
-			this.outputElements = (List<Object>) outputList;
-		}
-
-		@SuppressWarnings("unchecked")
-		public StageTester from(final OutputPort<O> port) {
-			this.port = (OutputPort<Object>) port;
-
-			return StageTester.this;
-		}
-
-		public List<Object> getOutputElements() {
-			return outputElements;
-		}
-
-		public OutputPort<Object> getPort() {
-			return port;
-		}
-
-	}
-
 	private final class Configuration extends AnalysisConfiguration {
 
-		public Configuration() {
+		public Configuration(final List<InputHolder<?>> inputHolders, final Stage stage, final List<OutputHolder<?>> outputHolders) {
 			final IPipeFactory interPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
 
 			for (InputHolder<?> inputHolder : inputHolders) {
