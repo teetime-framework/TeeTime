@@ -121,7 +121,7 @@ public class RunnableConsumerStageTest {
 		for (Pair<Thread, Throwable> pair : exceptions) {
 			System.err.println(pair.getSecond());
 			System.err.println(Joiner.on("\n").join(pair.getSecond().getStackTrace()));
-			throw new RuntimeException(pair.getSecond());
+			throw new AssertionError(pair.getSecond());
 		}
 		assertEquals(0, exceptions.size());
 	}
