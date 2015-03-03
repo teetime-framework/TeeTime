@@ -41,7 +41,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.76"
-     inkscape:cx="153.05361"
+     inkscape:cx="178.7115"
      inkscape:cy="907.09677"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -84,8 +84,8 @@
        x="241.91232"
        y="104.80113" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.50909197px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL)"
-       d="m 266.15737,117.51215 206.65459,0"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.37272882;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL)"
+       d="m 266.15737,117.51215 200.47842,0"
        id="path3382"
        inkscape:connector-curvature="0" />
     <text
@@ -103,13 +103,13 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:16.92839622px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="280.26459"
-       y="106.23499"
+       y="102.28763"
        id="text3392"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3394"
          x="280.26459"
-         y="106.23499">&lt;&lt; communicates &gt;&gt;</tspan></text>
+         y="102.28763">&lt;&lt; communicates &gt;&gt;</tspan></text>
     <rect
        style="fill:#ffffff;stroke:#000000;stroke-width:1.07569444"
        id="rect3340-7"
