@@ -71,15 +71,15 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 			}
 		}
 
-		final ISignal signal = new TerminatingSignal();
-		for (InputPort<?> inputPort : inputPorts) {
-			stage.onSignal(signal, inputPort);
-		}
+		stage.terminate();
 	}
 
 	@Override
 	protected void afterStageExecution(final Stage stage) {
-		// do nothing
+		final ISignal signal = new TerminatingSignal();
+		for (InputPort<?> inputPort : inputPorts) {
+			stage.onSignal(signal, inputPort);
+		}
 	}
 
 }

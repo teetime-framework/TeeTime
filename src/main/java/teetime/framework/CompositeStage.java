@@ -73,19 +73,15 @@ public abstract class CompositeStage extends Stage {
 	}
 
 	@Override
+	public final StageState getCurrentState() {
+		return getFirstStage().getCurrentState();
+	}
+
+	@Override
 	public final void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
 		for (final Stage s : getLastStages()) {
 			s.validateOutputPorts(invalidPortConnections);
 		}
-	}
-
-	@Override
-	protected final boolean isStarted() {
-		boolean isStarted = true;
-		for (final Stage s : getLastStages()) {
-			isStarted = isStarted && s.isStarted();
-		}
-		return isStarted;
 	}
 
 	@Override

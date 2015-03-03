@@ -3,7 +3,6 @@ package teetime.framework.test;
 import java.util.List;
 
 import teetime.framework.OutputPort;
-import teetime.framework.Stage;
 
 public final class OutputHolder<O> {
 
@@ -13,7 +12,7 @@ public final class OutputHolder<O> {
 	private OutputPort<Object> port;
 
 	@SuppressWarnings("unchecked")
-	OutputHolder(final StageTester stageTester, final Stage stage, final List<O> outputList) {
+	OutputHolder(final StageTester stageTester, final List<O> outputList) {
 		this.stageTester = stageTester;
 		this.outputElements = (List<Object>) outputList;
 	}

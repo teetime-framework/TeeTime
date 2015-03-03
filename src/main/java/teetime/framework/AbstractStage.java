@@ -31,16 +31,14 @@ public abstract class AbstractStage extends Stage {
 
 	private final List<InputPort<?>> inputPortList = new ArrayList<InputPort<?>>();
 	private final List<OutputPort<?>> outputPortList = new ArrayList<OutputPort<?>>();
+	private final Set<ISignal> triggeredSignals = new HashSet<ISignal>();
 
 	/** A cached instance of <code>inputPortList</code> to avoid creating an iterator each time iterating it */
 	protected InputPort<?>[] cachedInputPorts = new InputPort[0];
 	/** A cached instance of <code>outputPortList</code> to avoid creating an iterator each time iterating it */
 	protected OutputPort<?>[] cachedOutputPorts;
-
-	private final Set<ISignal> triggeredSignals = new HashSet<ISignal>();
-	// BETTER aggregate both states in an enum
-	private boolean shouldTerminate;
-	private boolean started;
+	/** The current state of this stage */
+	private StageState currentState = StageState.CREATED;
 
 	/**
 	 * @return the stage's input ports
@@ -58,6 +56,11 @@ public abstract class AbstractStage extends Stage {
 		return this.cachedOutputPorts;
 	}
 
+	@Override
+	public StageState getCurrentState() {
+		return currentState;
+	}
+
 	/**
 	 * May not be invoked outside of IPipe implementations
 	 */
@@ -71,11 +74,6 @@ public abstract class AbstractStage extends Stage {
 				outputPort.sendSignal(signal);
 			}
 		}
-	}
-
-	@Override
-	public boolean isStarted() {
-		return started;
 	}
 
 	/**
@@ -103,6 +101,7 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
 		this.validateOutputPorts(invalidPortConnections);
+		currentState = StageState.VALIDATED;
 	}
 
 	@Override
@@ -112,7 +111,7 @@ public abstract class AbstractStage extends Stage {
 		this.cachedOutputPorts = this.outputPortList.toArray(new OutputPort<?>[0]);
 
 		this.connectUnconnectedOutputPorts();
-		started = true;
+		currentState = StageState.STARTED;
 		logger.debug("Started.");
 	}
 
@@ -129,7 +128,7 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	public void onTerminating() throws Exception {
 		logger.trace("onTerminating: " + this.getId());
-		this.terminate();
+		currentState = StageState.TERMINATED;
 	}
 
 	/**
@@ -174,17 +173,17 @@ public abstract class AbstractStage extends Stage {
 	}
 
 	@Override
-	public void terminate() {
-		this.shouldTerminate = true;
+	protected void terminate() {
+		currentState = StageState.TERMINATING;
 	}
 
 	@Override
-	public boolean shouldBeTerminated() {
-		return this.shouldTerminate;
+	protected boolean shouldBeTerminated() {
+		return (currentState == StageState.TERMINATING);
 	}
 
 	@Override
-	public TerminationStrategy getTerminationStrategy() {
+	protected TerminationStrategy getTerminationStrategy() {
 		return TerminationStrategy.BY_SIGNAL;
 	}
 

@@ -23,6 +23,7 @@ import java.util.List;
 import teetime.framework.Analysis;
 import teetime.framework.AnalysisConfiguration;
 import teetime.framework.Stage;
+import teetime.framework.StageState;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
@@ -46,6 +47,9 @@ public final class StageTester {
 	}
 
 	public static StageTester test(final Stage stage) {
+		if (stage.getCurrentState() != StageState.CREATED) {
+			throw new AssertionError("This stage has already been tested in this test method. Move this test into a new test method.");
+		}
 		return new StageTester(stage);
 	}
 
@@ -60,7 +64,7 @@ public final class StageTester {
 	}
 
 	public <O> OutputHolder<O> receive(final List<O> outputList) {
-		final OutputHolder<O> outputHolder = new OutputHolder<O>(this, stage, outputList);
+		final OutputHolder<O> outputHolder = new OutputHolder<O>(this, outputList);
 		this.outputHolders.add(outputHolder);
 		return outputHolder;
 	}
@@ -79,7 +83,6 @@ public final class StageTester {
 
 		public Configuration(final List<InputHolder<?>> inputHolders, final Stage stage, final List<OutputHolder<?>> outputHolders) {
 			final IPipeFactory interPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
-
 			for (InputHolder<?> inputHolder : inputHolders) {
 				final IterableProducer<Object> producer = new IterableProducer<Object>(inputHolder.getInput());
 				interPipeFactory.create(producer.getOutputPort(), inputHolder.getPort());
