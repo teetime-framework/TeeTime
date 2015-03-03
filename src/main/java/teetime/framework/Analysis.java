@@ -100,13 +100,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 		for (Stage stage : threadableStageJobs) {
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
-				RunnableConsumerStage runnable;
-				if (stage instanceof AbstractConsumerStage<?>) {
-					runnable = new RunnableConsumerStage(stage, ((AbstractConsumerStage<?>) stage).getIdleStrategy()); // FIXME remove this word-around
-				} else {
-					runnable = new RunnableConsumerStage(stage);
-				}
-				final Thread thread = new Thread(runnable);
+				final Thread thread = new Thread(new RunnableConsumerStage(stage));
 				stage.setOwningThread(thread);
 				this.consumerThreads.add(thread);
 				break;
