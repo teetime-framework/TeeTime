@@ -17,6 +17,7 @@ package teetime.framework.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import teetime.framework.Analysis;
@@ -29,6 +30,7 @@ import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.CollectorSink;
 import teetime.stage.IterableProducer;
+import teetime.util.Pair;
 
 /**
  * This class can be used to test single stages in JUnit test cases.
@@ -50,7 +52,7 @@ public final class StageTester {
 	}
 
 	public <I> InputHolder<I> send(final Iterable<I> input) {
-		InputHolder<I> inputHolder = new InputHolder<I>(input);
+		final InputHolder<I> inputHolder = new InputHolder<I>(input);
 		this.inputHolders.add(inputHolder);
 		return inputHolder;
 	}
@@ -59,8 +61,8 @@ public final class StageTester {
 		return this.send(Arrays.asList(input));
 	}
 
-	public <O> OutputHolder<O> receive(final List<O> output) {
-		OutputHolder<O> outputHolder = new OutputHolder<O>(output);
+	public <O> OutputHolder<O> receive(final List<O> outputList) {
+		final OutputHolder<O> outputHolder = new OutputHolder<O>(outputList);
 		this.outputHolders.add(outputHolder);
 		return outputHolder;
 	}
@@ -69,10 +71,10 @@ public final class StageTester {
 		return this;
 	}
 
-	public void start() {
+	public Collection<Pair<Thread, Throwable>> start() {
 		final AnalysisConfiguration configuration = new Configuration();
 		final Analysis analysis = new Analysis(configuration);
-		analysis.start();
+		return analysis.start();
 	}
 
 	public final class InputHolder<I> {
@@ -107,12 +109,12 @@ public final class StageTester {
 
 	public final class OutputHolder<O> {
 
-		private final List<Object> output;
+		private final List<Object> outputElements;
 		private OutputPort<Object> port;
 
 		@SuppressWarnings("unchecked")
-		private OutputHolder(final List<O> output) {
-			this.output = (List<Object>) output;
+		private OutputHolder(final List<O> outputList) {
+			this.outputElements = (List<Object>) outputList;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -122,8 +124,8 @@ public final class StageTester {
 			return StageTester.this;
 		}
 
-		public List<Object> getOutput() {
-			return output;
+		public List<Object> getOutputElements() {
+			return outputElements;
 		}
 
 		public OutputPort<Object> getPort() {
@@ -147,7 +149,7 @@ public final class StageTester {
 
 			final IPipeFactory intraPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 			for (OutputHolder<?> outputHolder : outputHolders) {
-				final CollectorSink<Object> sink = new CollectorSink<Object>(outputHolder.getOutput());
+				final CollectorSink<Object> sink = new CollectorSink<Object>(outputHolder.getOutputElements());
 				intraPipeFactory.create(outputHolder.getPort(), sink.getInputPort());
 			}
 		}
