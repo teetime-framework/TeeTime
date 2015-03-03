@@ -112,9 +112,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.62"
-     inkscape:cx="203.32017"
-     inkscape:cy="786.45278"
+     inkscape:zoom="2.32"
+     inkscape:cx="178.59826"
+     inkscape:cy="782.55957"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -124,7 +124,12 @@
      inkscape:window-height="700"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1">
+    <sodipodi:guide
+       position="541.93549,790.3226"
+       orientation="0,1"
+       id="guide4214" />
+  </sodipodi:namedview>
   <metadata
      id="metadata3476">
     <rdf:RDF>
@@ -185,13 +190,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:25.20640373px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="338.05045"
+       x="339.7746"
        y="257.18689"
        id="text3341"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3343"
-         x="338.05045"
+         x="339.7746"
          y="257.18689">State</tspan></text>
     <flowRoot
        xml:space="preserve"
@@ -226,5 +231,27 @@
          id="tspan5030"
          x="524.78796"
          y="105.77609">Stage B</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:16.92839622px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="62.147957"
+       y="271.57639"
+       id="text3392"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3394"
+         x="62.147957"
+         y="271.57639">&lt;&lt; communicates &gt;&gt;</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:16.92839622px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="499.24472"
+       y="271.68759"
+       id="text3392-9"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3394-8"
+         x="499.24472"
+         y="271.68759">&lt;&lt; communicates &gt;&gt;</tspan></text>
   </g>
 </svg>
