@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 /**
  * An implementation of HashMap which can be used to count the occurrence of different keys.
- * This conaitns all methods of HashMap, but is enhanched with the {@link #add(T, Integer)} and {@link #increment(T)} methods.
+ * This contains all methods of HashMap, but is enhanced with the {@link #add(T, Integer) add} and {@link #increment(T) increment} methods.
  *
  * @since 1.1
  *
