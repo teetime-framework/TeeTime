@@ -54,9 +54,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.87"
-     inkscape:cx="412.11899"
-     inkscape:cy="1044.5779"
+     inkscape:zoom="1.75"
+     inkscape:cx="409.20641"
+     inkscape:cy="942.65194"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -75,7 +75,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -107,7 +107,7 @@
          sodipodi:role="line"
          id="tspan4157"
          x="113.45462"
-         y="66.024902">Thread 1</tspan></text>
+         y="66.024902">Thread 0</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:28.43970871px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -118,7 +118,7 @@
          sodipodi:role="line"
          id="tspan4161"
          x="502.97699"
-         y="65.851196">Thread 2</tspan></text>
+         y="65.851196">Thread 1</tspan></text>
     <rect
        style="fill:#ffffff;stroke:#000000;stroke-width:0.87380373;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4165"
@@ -145,8 +145,8 @@
        x="438.00781"
        y="133.37955" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.63139224;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:5.80000019;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInL);marker-end:url(#TriangleOutL)"
-       d="m 320.89244,152.22235 c 41.79205,-20.13061 74.74963,-15.05857 104.20655,0"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.6211586;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:5.80000019;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInL);marker-end:url(#TriangleOutL)"
+       d="m 321.91757,152.25116 c 41.09982,-20.31077 73.51149,-15.19334 102.48049,0"
        id="path4196"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
