@@ -121,7 +121,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 
 		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		if (threadableStageJobs.isEmpty()) {
-			throw new IllegalStateException("At least one stage must be added to the threadable jobs list");
+			throw new IllegalStateException("No stage was added, using the addThreadableStage(..) method. At least one stage must be added.");
 		}
 		for (Stage stage : threadableStageJobs) {
 			StageExceptionHandler newListener;
