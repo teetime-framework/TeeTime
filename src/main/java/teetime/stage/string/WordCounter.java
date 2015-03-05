@@ -46,7 +46,6 @@ public final class WordCounter extends CompositeStage {
 		this.lastStages.add(this.mapCounter);
 
 		final ToLowerCase toLowerCase = new ToLowerCase();
-		final WordcharacterFilter wordcharacterFilter = new WordcharacterFilter();
 
 		connectStages(this.tokenizer.getOutputPort(), toLowerCase.getInputPort());
 		connectStages(toLowerCase.getOutputPort(), this.mapCounter.getInputPort());
