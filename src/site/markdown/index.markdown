@@ -55,6 +55,6 @@ You can take a closer look at:
 
 - [TeeTime's Wiki](wiki/), or 
 
-- [API Documentation](apidocs/index.html). 
+- [API Documentation](stabledocs/index.html). 
 
 	 
