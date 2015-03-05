@@ -56,4 +56,8 @@ public abstract class AbstractPipe implements IPipe {
 		this.cachedTargetStage = targetPort.getOwningStage();
 	}
 
+	@Override
+	public final boolean hasMore() {
+		return !isEmpty();
+	}
 }

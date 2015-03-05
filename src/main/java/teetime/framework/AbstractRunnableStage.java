@@ -12,7 +12,7 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	private final StageExceptionHandler exceptionHandler;
 
-	protected final Stage stage;
+	private final Stage stage;
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
@@ -27,11 +27,11 @@ abstract class AbstractRunnableStage implements Runnable {
 		this.logger.debug("Executing runnable stage...");
 		boolean failed = false;
 		try {
-			beforeStageExecution();
+			beforeStageExecution(stage);
 
 			do {
 				try {
-					executeStage();
+					executeStage(stage);
 				} catch (StageException e) {
 					final FurtherExecution furtherExecution = this.exceptionHandler.onStageException(e, e.getThrowingStage());
 					if (furtherExecution == FurtherExecution.TERMINATE) {
@@ -39,9 +39,9 @@ abstract class AbstractRunnableStage implements Runnable {
 						failed = true;
 					}
 				}
-			} while (!this.stage.shouldBeTerminated());
+			} while (!stage.shouldBeTerminated());
 
-			afterStageExecution();
+			afterStageExecution(stage);
 
 		} catch (Error e) {
 			this.logger.error("Terminating thread due to the following exception: ", e);
@@ -49,6 +49,8 @@ abstract class AbstractRunnableStage implements Runnable {
 		} catch (RuntimeException e) {
 			this.logger.error("Terminating thread due to the following exception: ", e);
 			throw e;
+		} catch (InterruptedException e) {
+			this.logger.error("Terminating thread due to the following exception: ", e);
 		}
 
 		this.logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
@@ -66,9 +68,9 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	}
 
-	protected abstract void beforeStageExecution();
+	protected abstract void beforeStageExecution(Stage stage) throws InterruptedException;
 
-	protected abstract void executeStage();
+	protected abstract void executeStage(Stage stage);
 
-	protected abstract void afterStageExecution();
+	protected abstract void afterStageExecution(Stage stage);
 }

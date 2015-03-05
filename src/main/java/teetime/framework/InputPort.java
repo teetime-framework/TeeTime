@@ -37,4 +37,12 @@ public final class InputPort<T> extends AbstractPort<T> {
 		return this.owningStage;
 	}
 
+	public boolean isClosed() {
+		return pipe.isClosed() && !pipe.hasMore();
+	}
+
+	public void waitForStartSignal() throws InterruptedException {
+		pipe.waitForStartSignal();
+	}
+
 }

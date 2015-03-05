@@ -15,17 +15,17 @@
  */
 package teetime.framework;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import teetime.framework.signal.ISignal;
-import teetime.framework.validation.InvalidPortConnection;
-
 @Deprecated
-public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> extends Stage {
+public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> extends CompositeStage {
 
 	protected FirstStage firstStage;
-	protected LastStage lastStage;
+	private final List<LastStage> lastStages = new ArrayList<LastStage>();
 
+	@Override
 	public FirstStage getFirstStage() {
 		return this.firstStage;
 	}
@@ -34,62 +34,18 @@ public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> exte
 		this.firstStage = firstStage;
 	}
 
-	public LastStage getLastStage() {
-		return this.lastStage;
-	}
-
 	public void setLastStage(final LastStage lastStage) {
-		this.lastStage = lastStage;
+		this.lastStages.clear();
+		this.lastStages.add(lastStage);
+	}
+
+	public LastStage getLastStage() {
+		return lastStages.get(0);
 	}
 
 	@Override
-	public void executeWithPorts() {
-		this.firstStage.executeWithPorts();
-	}
-
-	@Override
-	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
-		this.firstStage.onSignal(signal, inputPort);
-	}
-
-	@Override
-	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
-		this.lastStage.validateOutputPorts(invalidPortConnections);
-	}
-
-	@Override
-	public void terminate() {
-		firstStage.terminate();
-	}
-
-	@Override
-	public boolean shouldBeTerminated() {
-		return firstStage.shouldBeTerminated();
-	}
-
-	@Override
-	protected InputPort<?>[] getInputPorts() {
-		return firstStage.getInputPorts();
-	}
-
-	@Override
-	public Thread getOwningThread() {
-		return firstStage.getOwningThread();
-	}
-
-	@Override
-	void setOwningThread(final Thread owningThread) {
-		firstStage.setOwningThread(owningThread);
-	}
-
-	@Override
-	public TerminationStrategy getTerminationStrategy() {
-		return firstStage.getTerminationStrategy();
-	}
-
-	@Override
-	protected boolean isStarted() {
-		return firstStage.isStarted();
+	protected Collection<? extends Stage> getLastStages() {
+		return lastStages;
 	}
 
 }

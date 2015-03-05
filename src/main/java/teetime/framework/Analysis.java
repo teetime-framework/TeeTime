@@ -110,7 +110,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 	/**
 	 * This initializes Analysis and needs to be run right before starting it.
 	 *
-	 * @deprecated As of release 1.1. Will be no longer needed, as functionality is moved into the constructor.
+	 * @deprecated since 1.1
 	 */
 	@Deprecated
 	public final void init() {
@@ -131,13 +131,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 			}
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
-				RunnableConsumerStage runnable;
-				if (stage instanceof AbstractConsumerStage<?>) {
-					runnable = new RunnableConsumerStage(stage, ((AbstractConsumerStage<?>) stage).getIdleStrategy(), newListener); // FIXME remove this word-around
-				} else {
-					runnable = new RunnableConsumerStage(stage, newListener);
-				}
-				final Thread thread = new Thread(runnable);
+				final Thread thread = new Thread(new RunnableConsumerStage(stage, newListener));
 				stage.setOwningThread(thread);
 				this.consumerThreads.add(thread);
 				break;

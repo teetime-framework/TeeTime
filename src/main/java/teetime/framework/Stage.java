@@ -106,6 +106,8 @@ public abstract class Stage {
 
 	protected abstract boolean shouldBeTerminated();
 
+	public abstract StageState getCurrentState();
+
 	public Thread getOwningThread() {
 		return owningThread;
 	}
@@ -116,6 +118,12 @@ public abstract class Stage {
 
 	protected abstract InputPort<?>[] getInputPorts();
 
-	protected abstract boolean isStarted();
+	// events
+
+	public abstract void onValidating(List<InvalidPortConnection> invalidPortConnections);
+
+	public abstract void onStarting() throws Exception;
+
+	public abstract void onTerminating() throws Exception;
 
 }

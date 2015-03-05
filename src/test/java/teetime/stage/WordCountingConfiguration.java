@@ -23,7 +23,7 @@ import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.merger.Merger;
-import teetime.stage.io.File2ByteArray;
+import teetime.stage.io.File2Lines;
 import teetime.stage.string.WordCounter;
 import teetime.stage.util.CountingMap;
 
@@ -48,8 +48,7 @@ public class WordCountingConfiguration extends AnalysisConfiguration {
 	public WordCountingConfiguration(final int threads, final File... input) {
 		// First part of the config
 		final InitialElementProducer<File> init = new InitialElementProducer<File>(input);
-		final File2ByteArray f2b = new File2ByteArray();
-		final ByteArray2String b2s = new ByteArray2String();
+		final File2Lines f2b = new File2Lines();
 		final Distributor<String> dist = new Distributor<String>();
 
 		// last part
@@ -62,14 +61,13 @@ public class WordCountingConfiguration extends AnalysisConfiguration {
 
 		// Connecting the stages of the first part of the config
 		intraFact.create(init.getOutputPort(), f2b.getInputPort());
-		intraFact.create(f2b.getOutputPort(), b2s.getInputPort());
-		intraFact.create(b2s.getOutputPort(), dist.getInputPort());
+		intraFact.create(f2b.getOutputPort(), dist.getInputPort());
 
 		// Middle part... multiple instances of WordCounter are created and connected to the merger and distrubuter stages
 		WordCounter wc;
 		for (int i = 0; i < threads; i++) {
 			wc = new WordCounter();
-			interFact.create(dist.getNewOutputPort(), wc.getInputPort());
+			interFact.create(dist.getNewOutputPort(), wc.getInputPort(), 10000);
 			interFact.create(wc.getOutputPort(), merger.getNewInputPort());
 			// Add WordCounter as a threadable stage, so it runs in its own thread
 			addThreadableStage(wc);

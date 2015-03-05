@@ -41,9 +41,7 @@ public interface IPipe {
 	boolean isEmpty();
 
 	/**
-	 * Retrieves the number of elements, the pipe is capable to carry at the same time.
-	 *
-	 * @return Number of elements
+	 * @return the current number of elements
 	 */
 	int size();
 
@@ -53,13 +51,6 @@ public interface IPipe {
 	 * @return The last element in the pipe.
 	 */
 	Object removeLast();
-
-	/**
-	 * Reads the pipe's last element, but does not delete it.
-	 *
-	 * @return The last element in the pipe.
-	 */
-	Object readLast();
 
 	/**
 	 * Retrieves the receiving port.
@@ -83,5 +74,15 @@ public interface IPipe {
 	 * Stages report new elements with this method.
 	 */
 	void reportNewElement();
+
+	boolean isClosed();
+
+	boolean hasMore();
+
+	// "signal" handling
+
+	void waitForStartSignal() throws InterruptedException;
+
+	void close();
 
 }

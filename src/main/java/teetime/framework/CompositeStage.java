@@ -35,7 +35,7 @@ import teetime.framework.validation.InvalidPortConnection;
 @SuppressWarnings("PMD.AbstractNaming")
 public abstract class CompositeStage extends Stage {
 
-	protected static final IPipeFactory INTRA_PIPE_FACTORY = PipeFactoryRegistry.INSTANCE
+	private static final IPipeFactory INTRA_PIPE_FACTORY = PipeFactoryRegistry.INSTANCE
 			.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 
 	protected abstract Stage getFirstStage();
@@ -48,54 +48,70 @@ public abstract class CompositeStage extends Stage {
 	}
 
 	@Override
-	protected void onSignal(final ISignal signal, final InputPort<?> inputPort) {
+	protected final void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		getFirstStage().onSignal(signal, inputPort);
 	}
 
 	@Override
-	protected TerminationStrategy getTerminationStrategy() {
+	protected final TerminationStrategy getTerminationStrategy() {
 		return getFirstStage().getTerminationStrategy();
 	}
 
 	@Override
-	protected void terminate() {
+	protected final void terminate() {
 		getFirstStage().terminate();
 	}
 
 	@Override
-	protected boolean shouldBeTerminated() {
+	protected final boolean shouldBeTerminated() {
 		return getFirstStage().shouldBeTerminated();
 	}
 
 	@Override
-	protected InputPort<?>[] getInputPorts() {
+	protected final InputPort<?>[] getInputPorts() {
 		return getFirstStage().getInputPorts();
 	}
 
 	@Override
-	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
+	public final StageState getCurrentState() {
+		return getFirstStage().getCurrentState();
+	}
+
+	@Override
+	public final void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
 		for (final Stage s : getLastStages()) {
 			s.validateOutputPorts(invalidPortConnections);
 		}
 	}
 
 	@Override
-	protected boolean isStarted() {
-		boolean isStarted = true;
-		for (final Stage s : getLastStages()) {
-			isStarted = isStarted && s.isStarted();
-		}
-		return isStarted;
-	}
-
-	@Override
-	void setOwningThread(final Thread owningThread) {
+	final void setOwningThread(final Thread owningThread) {
 		getFirstStage().setOwningThread(owningThread);
 		super.setOwningThread(owningThread);
 	}
 
 	protected static <T> void connectStages(final OutputPort<? extends T> out, final InputPort<T> in) {
 		INTRA_PIPE_FACTORY.create(out, in);
+	}
+
+	@Override
+	public final Thread getOwningThread() {
+		return getFirstStage().getOwningThread();
+	}
+
+	@Override
+	public final void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
+		getFirstStage().onValidating(invalidPortConnections);
+	}
+
+	@Override
+	public final void onStarting() throws Exception {
+		getFirstStage().onStarting();
+	}
+
+	@Override
+	public final void onTerminating() throws Exception {
+		getFirstStage().onTerminating();
 	}
 
 }

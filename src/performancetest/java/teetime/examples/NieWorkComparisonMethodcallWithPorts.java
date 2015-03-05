@@ -20,8 +20,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import teetime.util.test.eval.PerformanceResult;
 import util.test.AbstractProfiledPerformanceAssertion;
-import util.test.PerformanceResult;
 import util.test.PerformanceTest;
 
 public class NieWorkComparisonMethodcallWithPorts extends AbstractProfiledPerformanceAssertion {

@@ -52,11 +52,6 @@ public class OrderedGrowablePipe extends AbstractIntraThreadPipe {
 	}
 
 	@Override
-	public Object readLast() {
-		return this.elements.peek();
-	}
-
-	@Override
 	public int size() {
 		return this.elements.size();
 	}

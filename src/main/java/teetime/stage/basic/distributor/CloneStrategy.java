@@ -15,6 +15,12 @@
  */
 package teetime.stage.basic.distributor;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import teetime.framework.OutputPort;
 
 /**
@@ -26,7 +32,83 @@ public final class CloneStrategy implements IDistributorStrategy {
 
 	@Override
 	public <T> boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
-		throw new UnsupportedOperationException();
+		for (final OutputPort<T> outputPort : outputPorts) {
+			outputPort.send(clone(element));
+		}
+
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T> T clone(final T element) {
+		try {
+			final T newInstance = (T) element.getClass().newInstance();
+
+			final Collection<Method> setters = findSetters(element.getClass());
+			final Collection<Method> getters = findGetters(element.getClass());
+
+			for (Method setter : setters) {
+				final Method getter = findCorrespondingGetter(setter, getters);
+				if (getter != null) {
+					setter.invoke(newInstance, getter.invoke(element, new Object[0]));
+				}
+			}
+
+			return newInstance;
+		} catch (InstantiationException e) {
+			throw new UnsupportedOperationException();
+		} catch (IllegalAccessException e) {
+			throw new UnsupportedOperationException();
+		} catch (IllegalArgumentException e) {
+			throw new UnsupportedOperationException();
+		} catch (InvocationTargetException e) {
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	private static Collection<Method> findSetters(final Class<?> clazz) {
+		final List<Method> methods = new ArrayList<Method>();
+
+		for (Method method : clazz.getMethods()) {
+			if (method.getReturnType() == Void.TYPE) {
+				if (method.getParameterTypes().length == 1) {
+					if (method.getName().matches("set[A-Z].*")) {
+						methods.add(method);
+					}
+				}
+			}
+		}
+
+		return methods;
+	}
+
+	private static Collection<Method> findGetters(final Class<?> clazz) {
+		final List<Method> methods = new ArrayList<Method>();
+
+		for (Method method : clazz.getMethods()) {
+			if (method.getReturnType() != Void.TYPE) {
+				if (method.getParameterTypes().length == 0) {
+					if (method.getName().matches("get[A-Z].*") || method.getName().matches("is[A-Z].*")) {
+						methods.add(method);
+					}
+				}
+			}
+		}
+
+		return methods;
+	}
+
+	private static Method findCorrespondingGetter(final Method setter, final Collection<Method> getters) {
+		final String attributeName = setter.getName().substring(3);
+		for (Method getter : getters) {
+			if (getter.getReturnType() == setter.getParameterTypes()[0]) {
+				if (getter.getName().matches("get" + attributeName) || getter.getName().matches("is" + attributeName)) {
+					return getter;
+				}
+			}
+		}
+
+		return null;
 	}
 
 }

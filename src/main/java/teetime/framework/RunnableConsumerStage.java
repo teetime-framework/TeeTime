@@ -18,12 +18,11 @@ package teetime.framework;
 import teetime.framework.exceptionHandling.StageExceptionHandler;
 import teetime.framework.idle.IdleStrategy;
 import teetime.framework.idle.YieldStrategy;
-import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
+import teetime.framework.signal.TerminatingSignal;
 
 final class RunnableConsumerStage extends AbstractRunnableStage {
 
-	private final IdleStrategy idleStrategy;
 	// cache the input ports here since getInputPorts() always returns a new copy
 	private final InputPort<?>[] inputPorts;
 
@@ -39,62 +38,49 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 
 	public RunnableConsumerStage(final Stage stage, final IdleStrategy idleStrategy, final StageExceptionHandler exceptionListener) {
 		super(stage, exceptionListener);
-		this.idleStrategy = idleStrategy;
 		this.inputPorts = stage.getInputPorts(); // FIXME should getInputPorts() really be defined in Stage?
 	}
 
 	@Override
-	protected void beforeStageExecution() {
+	protected void beforeStageExecution(final Stage stage) throws InterruptedException {
 		logger.trace("ENTRY beforeStageExecution");
-		final Stage stage = this.stage;
 
-		do {
-			checkforSignals();
-			Thread.yield();
-		} while (!stage.isStarted());
+		logger.trace("Waiting for start signals..." + inputPorts);
+		for (InputPort<?> inputPort : inputPorts) {
+			inputPort.waitForStartSignal();
+		}
+		logger.trace("Starting..." + stage);
+
+		// stage.onSignal(signal, inputPort);
 
 		logger.trace("EXIT beforeStageExecution");
 	}
 
 	@Override
-	protected void executeStage() {
+	protected void executeStage(final Stage stage) {
 		try {
-			this.stage.executeWithPorts();
+			stage.executeWithPorts();
 		} catch (NotEnoughInputException e) {
-			checkforSignals(); // check for termination
-			executeIdleStrategy();
+			checkForTerminationSignal(stage);
 		}
 	}
 
-	private void executeIdleStrategy() {
-		if (stage.shouldBeTerminated()) {
-			return;
-		}
-		try {
-			idleStrategy.execute();
-		} catch (InterruptedException e) {
-			// checkforSignals(); // check for termination
-		}
-	}
-
-	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-	private void checkforSignals() {
-		final Stage stage = this.stage;
+	private void checkForTerminationSignal(final Stage stage) {
 		for (InputPort<?> inputPort : inputPorts) {
-			final IPipe pipe = inputPort.getPipe();
-			if (pipe instanceof AbstractInterThreadPipe) { // TODO: is this needed?
-				final AbstractInterThreadPipe intraThreadPipe = (AbstractInterThreadPipe) pipe;
-				final ISignal signal = intraThreadPipe.getSignal();
-				if (null != signal) {
-					stage.onSignal(signal, inputPort);
-				}
+			if (!inputPort.isClosed()) {
+				return;
 			}
 		}
+
+		stage.terminate();
 	}
 
 	@Override
-	protected void afterStageExecution() {
-		// do nothing
+	protected void afterStageExecution(final Stage stage) {
+		final ISignal signal = new TerminatingSignal();
+		for (InputPort<?> inputPort : inputPorts) {
+			stage.onSignal(signal, inputPort);
+		}
 	}
 
 }

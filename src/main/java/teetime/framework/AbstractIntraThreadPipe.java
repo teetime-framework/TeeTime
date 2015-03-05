@@ -19,6 +19,8 @@ import teetime.framework.signal.ISignal;
 
 public abstract class AbstractIntraThreadPipe extends AbstractPipe {
 
+	private boolean isClosed;
+
 	protected <T> AbstractIntraThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
 	}
@@ -34,4 +36,19 @@ public abstract class AbstractIntraThreadPipe extends AbstractPipe {
 		this.cachedTargetStage.executeWithPorts();
 	}
 
+	@Override
+	public boolean isClosed() {
+		return isClosed;
+	}
+
+	@Override
+	public void close() {
+		isClosed = true;
+	}
+
+	@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+	@Override
+	public void waitForStartSignal() throws InterruptedException {
+		// do nothing
+	}
 }

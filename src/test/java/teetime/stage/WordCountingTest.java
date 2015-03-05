@@ -25,36 +25,29 @@ import org.junit.Test;
 import teetime.framework.Analysis;
 import teetime.stage.util.CountingMap;
 
-import com.google.common.base.CharMatcher;
-import com.google.common.base.Charsets;
-import com.google.common.base.Splitter;
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multiset;
-import com.google.common.io.Files;
-
 public class WordCountingTest {
 
-	private static final File testFile = new File("src/test/resources/data/output.txt");
+	private static final File testFile = new File("src/test/resources/data/consoleText.txt-aa");
 
 	@Test
 	public void test1() throws IOException {
 		int threads = 1;
-		WordCountingConfiguration wcc = new WordCountingConfiguration(threads, testFile, testFile);
+		WordCountingConfiguration wcc = new WordCountingConfiguration(threads, testFile);
 		Analysis analysis = new Analysis(wcc);
 		analysis.start();
 		CountingMap<String> map = wcc.getResult();
-		assertEquals(new Integer(wordOccurrences(testFile).count(new String("diam")) * 2), map.get("diam"));
-		assertEquals(new Integer(wordOccurrences(testFile).count(new String("tation")) * 2), map.get("tation"));
-		assertEquals(new Integer(wordOccurrences(testFile).count(new String("cum")) * 2), map.get("cum"));
+		assertEquals(new Integer(525059), map.get("rsa"));
+		// assertEquals(new Integer(wordOccurrences(testFile).count(new String("tation"))), map.get("tation"));
+		// assertEquals(new Integer(wordOccurrences(testFile).count(new String("cum"))), map.get("cum"));
 	}
-
-	private Multiset<String> wordOccurrences(final File file) throws IOException {
-		return HashMultiset.create(
-				Splitter.on(CharMatcher.WHITESPACE)
-						.trimResults()
-						.omitEmptyStrings()
-						.split(Files.asCharSource(testFile, Charsets.UTF_8).read()));
-	}
+	//
+	// private Multiset<String> wordOccurrences(final File file) throws IOException {
+	// return HashMultiset.create(
+	// Splitter.on(CharMatcher.WHITESPACE)
+	// .trimResults()
+	// .omitEmptyStrings()
+	// .split(Files.asCharSource(testFile, Charsets.UTF_8).read()));
+	// }
 
 }
 

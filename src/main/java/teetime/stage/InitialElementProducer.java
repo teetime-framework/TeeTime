@@ -19,7 +19,7 @@ import teetime.framework.AbstractProducerStage;
 
 public final class InitialElementProducer<T> extends AbstractProducerStage<T> {
 
-	private final T[] elements;
+	private T[] elements;
 
 	public InitialElementProducer(final T... elements) {
 		this.elements = elements;
@@ -31,6 +31,18 @@ public final class InitialElementProducer<T> extends AbstractProducerStage<T> {
 			outputPort.send(e);
 		}
 		this.terminate();
+	}
+
+	public void setIter(final T[] elements) {
+		this.elements = elements;
+	}
+
+	@Override
+	public void onStarting() throws Exception {
+		if (elements == null) {
+			throw new IllegalArgumentException("elements must not be null");
+		}
+		super.onStarting();
 	}
 
 }

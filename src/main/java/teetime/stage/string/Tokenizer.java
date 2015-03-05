@@ -37,7 +37,7 @@ public final class Tokenizer extends AbstractConsumerStage<String> {
 		}
 	}
 
-	public OutputPort<? extends String> getOutputPort() {
+	public OutputPort<String> getOutputPort() {
 		return this.outputPort;
 	}
 

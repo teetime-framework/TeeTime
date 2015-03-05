@@ -15,22 +15,56 @@
  */
 package teetime.stage;
 
+import java.util.Arrays;
+import java.util.List;
+
 import teetime.framework.AbstractProducerStage;
 
-public final class IterableProducer<O extends Iterable<T>, T> extends AbstractProducerStage<T> {
+public final class IterableProducer<T> extends AbstractProducerStage<T> {
 
-	private O iter = null;
+	private Iterable<T> iter;
 
-	public IterableProducer(final O iter) {
+	public IterableProducer(final T... elements) {
+		this.iter = Arrays.asList(elements);
+	}
+
+	public <O extends Iterable<T>> IterableProducer(final O iter) {
 		this.iter = iter;
 	}
 
 	@Override
 	protected void execute() {
-		for (T i : iter) {
-			outputPort.send(i);
+		for (final T i : this.iter) {
+			this.outputPort.send(i);
 		}
+		this.terminate();
+	}
 
+	public void setIter(final Iterable<T> iter) {
+		this.iter = iter;
+	}
+
+	@Override
+	public void onStarting() throws Exception {
+		if (iter == null) {
+			throw new IllegalArgumentException("iter must not be null");
+		}
+		super.onStarting();
+	}
+
+	public static void main(final String[] args) {
+		// int[] array = new int[] { 0, 0, 0 };
+		// new IterableProducer<Integer>(array);
+		//
+		// new InitialElementProducer<Integer>(array);
+
+		Integer[] array = new Integer[] { 0, 0, 0 };
+		new IterableProducer<Integer>(array);
+
+		new IterableProducer<Integer>(0, 0, 0);
+
+		List<Integer> iterable = Arrays.asList(0, 0, 0);
+		new IterableProducer<Integer>(iterable);
 	}
 
 }

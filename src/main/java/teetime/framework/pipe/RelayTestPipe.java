@@ -54,9 +54,4 @@ public final class RelayTestPipe<T> extends AbstractInterThreadPipe {
 		return this.numInputObjects;
 	}
 
-	@Override
-	public T readLast() {
-		return null;
-	}
-
 }

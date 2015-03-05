@@ -43,29 +43,32 @@ public final class WordCounter extends CompositeStage {
 
 	// The connection of the different stages is realized within the construction of a instance of this class.
 	public WordCounter() {
-		lastStages.add(mapCounter);
+		this.lastStages.add(this.mapCounter);
 
-		ToLowerCase toLowerCase = new ToLowerCase();
-		connectStages(tokenizer.getOutputPort(), toLowerCase.getInputPort());
-		connectStages(toLowerCase.getOutputPort(), mapCounter.getInputPort());
+		final ToLowerCase toLowerCase = new ToLowerCase();
+		final WordcharacterFilter wordcharacterFilter = new WordcharacterFilter();
+
+		connectStages(this.tokenizer.getOutputPort(), toLowerCase.getInputPort());
+		connectStages(toLowerCase.getOutputPort(), this.mapCounter.getInputPort());
+		// connectStages(wordcharacterFilter.getOutputPort(), this.mapCounter.getInputPort());
 	}
 
 	@Override
 	protected Stage getFirstStage() {
-		return tokenizer;
+		return this.tokenizer;
 	}
 
 	@Override
 	protected Collection<? extends Stage> getLastStages() {
-		return lastStages;
+		return this.lastStages;
 	}
 
 	public InputPort<String> getInputPort() {
-		return tokenizer.getInputPort();
+		return this.tokenizer.getInputPort();
 	}
 
 	public OutputPort<CountingMap<String>> getOutputPort() {
-		return mapCounter.getOutputPort();
+		return this.mapCounter.getOutputPort();
 	}
 
 }

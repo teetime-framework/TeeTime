@@ -34,11 +34,6 @@ public final class CommittablePipe extends AbstractIntraThreadPipe {
 		pipe.connectPorts(sourcePort, targetPort);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see teetime.examples.throughput.methodcall.IPipe#add(T)
-	 */
 	@Override
 	public boolean add(final Object element) {
 		this.elements.addToTailUncommitted(element);
@@ -46,11 +41,6 @@ public final class CommittablePipe extends AbstractIntraThreadPipe {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see teetime.examples.throughput.methodcall.IPipe#removeLast()
-	 */
 	@Override
 	public Object removeLast() {
 		final Object element = this.elements.removeFromHeadUncommitted();
@@ -58,24 +48,9 @@ public final class CommittablePipe extends AbstractIntraThreadPipe {
 		return element;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see teetime.examples.throughput.methodcall.IPipe#isEmpty()
-	 */
 	@Override
 	public boolean isEmpty() {
 		return this.elements.isEmpty();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see teetime.examples.throughput.methodcall.IPipe#readLast()
-	 */
-	@Override
-	public Object readLast() {
-		return this.elements.getTail();
 	}
 
 	public CommittableResizableArrayQueue<?> getElements() {

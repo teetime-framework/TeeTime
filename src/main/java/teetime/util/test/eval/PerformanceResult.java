@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package util.test;
+package teetime.util.test.eval;
 
 import java.util.Map;
-
-import util.test.eval.StatisticsUtil;
 
 public class PerformanceResult {
 
