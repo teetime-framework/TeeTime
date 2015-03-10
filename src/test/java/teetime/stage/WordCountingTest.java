@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.framework.Analysis;
@@ -30,9 +31,10 @@ public class WordCountingTest {
 	// A excellent test file is src/test/resources/data/hugetext.txt.zip, but make sure to unzip it before
 	private static final File testFile = new File("src/test/resources/data/hugetext.txt");
 
+	@Ignore
 	@Test
 	public void test1() throws IOException {
-		int threads = 1;
+		int threads = 3;
 		WordCountingConfiguration wcc = new WordCountingConfiguration(threads, testFile);
 		Analysis analysis = new Analysis(wcc);
 		analysis.start();
