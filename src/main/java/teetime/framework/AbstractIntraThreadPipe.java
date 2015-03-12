@@ -33,7 +33,7 @@ public abstract class AbstractIntraThreadPipe extends AbstractPipe {
 
 	@Override
 	public final void reportNewElement() {
-		this.cachedTargetStage.executeWithPorts();
+		this.cachedTargetStage.executeStage();
 	}
 
 	@Override
