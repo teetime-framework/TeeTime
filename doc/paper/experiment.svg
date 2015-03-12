@@ -19,33 +19,33 @@
   <defs
      id="defs4266">
     <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker4575"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL">
+      <path
+         transform="scale(0.8)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         id="path4577" />
+    </marker>
+    <marker
        inkscape:stockid="TriangleOutL"
        orient="auto"
        refY="0.0"
        refX="0.0"
        id="marker5620"
        style="overflow:visible"
-       inkscape:isstock="true">
+       inkscape:isstock="true"
+       inkscape:collect="always">
       <path
          id="path5622"
          d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
          style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
          transform="scale(0.8)" />
-    </marker>
-    <marker
-       inkscape:isstock="true"
-       style="overflow:visible"
-       id="marker5478"
-       refX="0.0"
-       refY="0.0"
-       orient="auto"
-       inkscape:stockid="TriangleOutL"
-       inkscape:collect="always">
-      <path
-         transform="scale(0.8)"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
-         id="path5480" />
     </marker>
     <marker
        inkscape:isstock="true"
@@ -98,9 +98,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.65"
-     inkscape:cx="163.76884"
-     inkscape:cy="938.17939"
+     inkscape:zoom="4.6669048"
+     inkscape:cx="429.5244"
+     inkscape:cy="955.96795"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -108,7 +108,14 @@
      inkscape:window-height="700"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       position="679.25107,934.66662"
+       orientation="0,1"
+       id="guide4825" />
+  </sodipodi:namedview>
   <metadata
      id="metadata4269">
     <rdf:RDF>
@@ -280,22 +287,17 @@
          id="tspan4913">Reduction</tspan></text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.9650405px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL)"
-       d="m 147.03557,118.7657 67.73114,0"
+       d="m 147.03557,118.47591 67.73114,0"
        id="path4990"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.05664146px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker5372)"
-       d="m 339.04027,118.30483 95.01953,-0.32675"
+       d="m 339.04027,118.36392 95.01953,-0.32675"
        id="path4994"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.98250109px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker5478)"
-       d="m 559.08508,119.93219 61.72112,0.41537"
-       id="path4996"
-       inkscape:connector-curvature="0" />
-    <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.98182499px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker5620)"
-       d="m 745.25942,120.32673 59.34963,0.41615"
+       d="m 745.25942,118.50761 59.34963,0.41615"
        id="path4998"
        inkscape:connector-curvature="0" />
     <text
@@ -309,5 +311,10 @@
          id="tspan5920"
          x="361.06384"
          y="114.23491">&lt;&lt;TCP&gt;&gt;</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.95821589px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker4575)"
+       d="m 558.82863,118.26724 62.17058,0"
+       id="path4567"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

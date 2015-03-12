@@ -40,9 +40,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4.3299648"
-     inkscape:cx="504.72648"
-     inkscape:cy="953.28652"
+     inkscape:zoom="0.90509668"
+     inkscape:cx="386.85903"
+     inkscape:cy="982.4006"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -75,7 +75,7 @@
        width="223.20784"
        height="134.32114"
        x="29.909212"
-       y="48.360672" />
+       y="48.351582" />
     <rect
        style="fill:#ffffff;stroke:#000000;stroke-width:1.53901696"
        id="rect3361"
@@ -123,29 +123,29 @@
        width="24.822855"
        height="23.581711"
        x="481.78259"
-       y="105.1043" />
+       y="104.80113" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:30.78034019px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="81.995834"
-       y="124.96692"
+       x="80.681381"
+       y="123.73327"
        id="text3442"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3444"
-         x="81.995834"
-         y="124.96692">Stage A</tspan></text>
+         x="80.681381"
+         y="123.73327">Stage A</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:23.08525276px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="546.56506"
-       y="125.50504"
+       x="545.04083"
+       y="123.73327"
        id="text3448"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3450"
-         x="546.56506"
-         y="125.50504"
+         x="545.04083"
+         y="123.73327"
          style="font-size:30.78034019px">Stage B</tspan></text>
   </g>
 </svg>
