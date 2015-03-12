@@ -39,7 +39,7 @@ public final class InstanceOfFilter<I, O> extends AbstractConsumerStage<I> {
 			outputPort.send((O) element);
 		} else { // swallow up the element
 			if (this.logger.isDebugEnabled()) {
-				this.logger.info("element is not an instance of " + this.type.getName() + ", but of " + element.getClass());
+				this.logger.debug("element is not an instance of " + this.type.getName() + ", but of " + element.getClass());
 			}
 		}
 	}
