@@ -141,7 +141,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.90509668"
-     inkscape:cx="629.28369"
+     inkscape:cx="428.75263"
      inkscape:cy="893.10532"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -176,9 +176,9 @@
        height="134.01747"
        width="520.31885"
        id="rect4873"
-       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.22910345;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.229;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.67160749;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.272;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect4871"
        width="154.71086"
        height="134.57498"
@@ -350,13 +350,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:11.25px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="248.74072"
+       x="247.47729"
        y="129.79875"
        id="text4594"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4596"
-         x="248.74072"
-         y="129.79875">load-driver</tspan></text>
+         x="247.47729"
+         y="129.79875">Load driver</tspan></text>
   </g>
 </svg>
