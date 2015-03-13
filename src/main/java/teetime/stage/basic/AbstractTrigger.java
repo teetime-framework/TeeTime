@@ -32,7 +32,7 @@ abstract class AbstractTrigger<I, T, O> extends AbstractStage {
 	@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
 	// disabled while in development
 	@Override
-	protected void executeWithPorts() {
+	protected void executeStage() {
 		// TODO Auto-generated method stub
 
 	}

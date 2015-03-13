@@ -31,7 +31,7 @@ public final class Delay<T> extends AbstractStage {
 	private final List<T> bufferedElements = new LinkedList<T>();
 
 	@Override
-	public void executeWithPorts() {
+	public void executeStage() {
 		T element = inputPort.receive();
 		if (null != element) {
 			bufferedElements.add(element);

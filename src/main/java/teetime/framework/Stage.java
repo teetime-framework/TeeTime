@@ -96,7 +96,7 @@ public abstract class Stage {
 	 */
 	public abstract void validateOutputPorts(List<InvalidPortConnection> invalidPortConnections);
 
-	protected abstract void executeWithPorts();
+	protected abstract void executeStage();
 
 	protected abstract void onSignal(ISignal signal, InputPort<?> inputPort);
 

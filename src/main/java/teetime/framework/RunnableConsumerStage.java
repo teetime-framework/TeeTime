@@ -58,7 +58,7 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	@Override
 	protected void executeStage(final Stage stage) {
 		try {
-			stage.executeWithPorts();
+			stage.executeStage();
 		} catch (NotEnoughInputException e) {
 			checkForTerminationSignal(stage);
 		}

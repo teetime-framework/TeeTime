@@ -57,8 +57,8 @@ public class MergerTest {
 	public void roundRobinShouldWork() {
 		mergerUnderTest.setStrategy(new RoundRobinStrategy());
 
-		this.fstProducer.executeWithPorts();
-		this.sndProducer.executeWithPorts();
+		this.fstProducer.executeStage();
+		this.sndProducer.executeStage();
 
 		assertThat(this.collector.getElements(), contains(1, 2, 3, 4, 5, 6));
 	}
@@ -67,7 +67,7 @@ public class MergerTest {
 	public void roundRobinWithSingleProducerShouldWork() {
 		mergerUnderTest.setStrategy(new RoundRobinStrategy());
 
-		this.fstProducer.executeWithPorts();
+		this.fstProducer.executeStage();
 
 		assertThat(this.collector.getElements(), contains(1, 2, 3));
 	}

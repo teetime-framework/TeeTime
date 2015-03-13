@@ -43,8 +43,8 @@ public abstract class CompositeStage extends Stage {
 	protected abstract Collection<? extends Stage> getLastStages();
 
 	@Override
-	protected final void executeWithPorts() {
-		getFirstStage().executeWithPorts();
+	protected final void executeStage() {
+		getFirstStage().executeStage();
 	}
 
 	@Override

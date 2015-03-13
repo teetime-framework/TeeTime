@@ -32,7 +32,7 @@ public final class RunnableProducerStage extends AbstractRunnableStage {
 
 	@Override
 	protected void executeStage(final Stage stage) {
-		stage.executeWithPorts();
+		stage.executeStage();
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public abstract class AbstractProducerStage<O> extends AbstractStage {
 	}
 
 	@Override
-	public void executeWithPorts() {
+	public void executeStage() {
 		this.execute();
 	}
 
