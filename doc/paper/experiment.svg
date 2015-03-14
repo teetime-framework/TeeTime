@@ -141,7 +141,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.90509668"
-     inkscape:cx="428.75263"
+     inkscape:cx="581.77496"
      inkscape:cy="893.10532"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -259,48 +259,48 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:11.25px;line-height:125%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="499.89026"
+       x="499.80457"
        y="116.8557"
        id="text4899"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4901"
-         x="499.89026"
+         x="499.80457"
          y="116.8557"
          style="font-size:11.25px;text-align:center;text-anchor:middle">TCP Record</tspan><tspan
          sodipodi:role="line"
-         x="499.89026"
+         x="499.80457"
          y="130.9182"
          style="font-size:11.25px;text-align:center;text-anchor:middle"
          id="tspan4982">Reconstruction</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:11.25px;line-height:125%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="686.59338"
+       x="685.80457"
        y="117.18443"
        id="text4903"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4905"
-         x="686.59338"
+         x="685.80457"
          y="117.18443">Trace</tspan><tspan
          sodipodi:role="line"
-         x="686.59338"
+         x="685.80457"
          y="131.24693"
          id="tspan4907">Reconstruction</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:11.25px;line-height:125%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="871.56702"
+       x="869.80457"
        y="116.66393"
        id="text4909"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4911"
-         x="873.35779"
+         x="871.59534"
          y="116.66393">Trace </tspan><tspan
          sodipodi:role="line"
-         x="871.56702"
+         x="869.80457"
          y="130.72644"
          id="tspan4913">Reduction</tspan></text>
     <text
