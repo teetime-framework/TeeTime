@@ -19,12 +19,13 @@ import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
 /**
- * @author Jan Waller, Nils Christian Ehmke, Christian Wulf
+ * @author Jan Waller, Nils Christian Ehmke, Christian Wulf, Nelson Tavares de Sousa
  *
  */
-public final class InstanceOfFilter<I, O> extends AbstractConsumerStage<I> {
+public final class InstanceOfFilter<I, O extends I> extends AbstractConsumerStage<I> {
 
-	private final OutputPort<O> outputPort = this.createOutputPort();
+	private final OutputPort<O> matchedOutputPort = this.createOutputPort();
+	private final OutputPort<I> mismatchedOutputPort = this.createOutputPort();
 
 	private Class<O> type;
 
@@ -36,11 +37,12 @@ public final class InstanceOfFilter<I, O> extends AbstractConsumerStage<I> {
 	@Override
 	protected void execute(final I element) {
 		if (this.type.isInstance(element)) {
-			outputPort.send((O) element);
-		} else { // swallow up the element
+			matchedOutputPort.send((O) element);
+		} else {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("element is not an instance of " + this.type.getName() + ", but of " + element.getClass());
 			}
+			mismatchedOutputPort.send(element);
 		}
 	}
 
@@ -52,8 +54,23 @@ public final class InstanceOfFilter<I, O> extends AbstractConsumerStage<I> {
 		this.type = type;
 	}
 
+	/**
+	 *
+	 * @return the output port that outputs
+	 *
+	 * @deprecated 1.1. Use {@link #getMatchedOutputPort()} instead.
+	 */
+	@Deprecated
 	public OutputPort<O> getOutputPort() {
-		return this.outputPort;
+		return matchedOutputPort;
+	}
+
+	public OutputPort<O> getMatchedOutputPort() {
+		return matchedOutputPort;
+	}
+
+	public OutputPort<I> getMismatchedOutputPort() {
+		return mismatchedOutputPort;
 	}
 
 }
