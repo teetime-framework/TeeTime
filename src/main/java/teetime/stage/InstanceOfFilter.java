@@ -56,7 +56,7 @@ public final class InstanceOfFilter<I, O extends I> extends AbstractConsumerStag
 
 	/**
 	 *
-	 * @return the output port that outputs
+	 * @return the output port that is used when the element is a (sub)type of the internal type attribute
 	 *
 	 * @deprecated 1.1. Use {@link #getMatchedOutputPort()} instead.
 	 */
