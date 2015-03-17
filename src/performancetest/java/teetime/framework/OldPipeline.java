@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Deprecated
-public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> extends CompositeStage {
+public class OldPipeline<FirstStage extends Stage, LastStage extends Stage> extends AbstractCompositeStage {
 
 	protected FirstStage firstStage;
 	private final List<LastStage> lastStages = new ArrayList<LastStage>();

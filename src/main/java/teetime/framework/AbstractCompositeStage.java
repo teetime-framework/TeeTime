@@ -33,7 +33,7 @@ import teetime.framework.validation.InvalidPortConnection;
  *
  */
 @SuppressWarnings("PMD.AbstractNaming")
-public abstract class CompositeStage extends Stage {
+public abstract class AbstractCompositeStage extends Stage {
 
 	private static final IPipeFactory INTRA_PIPE_FACTORY = PipeFactoryRegistry.INSTANCE
 			.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
