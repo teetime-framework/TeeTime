@@ -26,7 +26,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.71375"
-     inkscape:cx="439.73127"
+     inkscape:cx="257.58805"
      inkscape:cy="873.93374"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -55,7 +55,7 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="fill:#ffffff;stroke:#000000;stroke-width:1.60410511;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.60375;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect4136"
        width="713.51031"
        height="277.58047"
@@ -63,7 +63,7 @@
        y="14.925258" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:32.5px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:32.5px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.60375;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        x="301.40344"
        y="54.089478"
        id="text4138"
@@ -96,12 +96,14 @@
          y="216.3622" /></text>
     <g
        id="g4154"
-       transform="translate(0,-44)">
+       transform="translate(0,-44)"
+       style="stroke-width:1.60375;stroke-miterlimit:4;stroke-dasharray:none">
       <g
          transform="translate(-0.91145515,0)"
-         id="g4150">
+         id="g4150"
+         style="stroke-width:1.60375;stroke-miterlimit:4;stroke-dasharray:none">
         <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:1.47800004;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           style="fill:#ffffff;stroke:#000000;stroke-width:1.60375;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
            id="rect4142"
            width="222.72728"
            height="193.18182"
@@ -113,7 +115,7 @@
            height="193.18182"
            width="222.72728"
            id="rect4152"
-           style="fill:#ffffff;stroke:#000000;stroke-width:1.47800004;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+           style="fill:#ffffff;stroke:#000000;stroke-width:1.60375;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
       </g>
       <rect
          y="179.99379"
@@ -121,9 +123,9 @@
          height="76.973686"
          width="32.894737"
          id="rect4170"
-         style="fill:#ffffff;stroke:#000000;stroke-width:1.47800004;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+         style="fill:#ffffff;stroke:#000000;stroke-width:1.60375;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
       <rect
-         style="fill:#ffffff;stroke:#000000;stroke-width:1.47800004;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         style="fill:#ffffff;stroke:#000000;stroke-width:1.60375;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="rect4150"
          width="32.894737"
          height="76.973686"
@@ -135,13 +137,13 @@
          height="51.92234"
          width="224.17442"
          id="rect4196"
-         style="fill:#ffffff;stroke:#000000;stroke-width:2.30356956;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+         style="fill:#ffffff;stroke:#000000;stroke-width:1.60375;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
       <text
          sodipodi:linespacing="125%"
          id="text4198"
          y="224.3622"
          x="84"
-         style="font-style:normal;font-weight:normal;font-size:35px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         style="font-style:normal;font-weight:normal;font-size:35px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.60375;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
          xml:space="preserve"><tspan
            y="224.3622"
            x="84"
@@ -152,7 +154,7 @@
          id="text4210"
          y="224.21036"
          x="526.89319"
-         style="font-style:normal;font-weight:normal;font-size:35px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         style="font-style:normal;font-weight:normal;font-size:35px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.60375;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
          xml:space="preserve"><tspan
            y="224.21036"
            x="526.89319"
@@ -164,7 +166,7 @@
          height="38.709679"
          width="38.709679"
          id="rect4814"
-         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.47800004;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.60375;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     </g>
   </g>
 </svg>

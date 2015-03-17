@@ -40,9 +40,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.6203867"
-     inkscape:cx="289.49773"
-     inkscape:cy="943.39536"
+     inkscape:zoom="0.45254834"
+     inkscape:cx="165.73851"
+     inkscape:cy="942.90797"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -70,14 +70,14 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="fill:#ffffff;stroke:#000000;stroke-width:1.07569444"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect3340"
        width="223.20784"
        height="134.32114"
        x="29.909212"
        y="48.351582" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.51429224;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL)"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL)"
        d="m 253.45155,117.51215 225.11425,0"
        id="path3382"
        inkscape:connector-curvature="0" />
@@ -94,7 +94,7 @@
          y="108.39669" /></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:16.92839622px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:16.92839622px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        x="280.26459"
        y="102.28763"
        id="text3392"
@@ -104,7 +104,7 @@
          x="280.26459"
          y="102.28763">&lt;&lt; communicates &gt;&gt;</tspan></text>
     <rect
-       style="fill:#ffffff;stroke:#000000;stroke-width:1.07569444"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect3340-7"
        width="223.20784"
        height="134.32114"
@@ -112,7 +112,7 @@
        y="48.351582" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:30.78034019px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:30.78034019px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        x="80.681381"
        y="123.73327"
        id="text3442"
@@ -123,7 +123,7 @@
          y="123.73327">Stage A</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:23.08525276px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:23.08525276px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        x="545.04083"
        y="123.73327"
        id="text3448"
@@ -132,6 +132,6 @@
          id="tspan3450"
          x="545.04083"
          y="123.73327"
-         style="font-size:30.78034019px">Stage B</tspan></text>
+         style="font-size:30.78034019px;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none">Stage B</tspan></text>
   </g>
 </svg>

@@ -54,9 +54,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.2374369"
-     inkscape:cx="214.81162"
-     inkscape:cy="936.91977"
+     inkscape:zoom="4.9497476"
+     inkscape:cx="371.57562"
+     inkscape:cy="862.17369"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -84,14 +84,14 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="fill:#ffffff;stroke:#000000;stroke-width:0.82331032;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.5;stroke-miterlimit:4.36000013;stroke-dasharray:none;stroke-opacity:1"
        id="rect4136"
        width="309.04807"
        height="230.66838"
        x="25.243267"
        y="23.734138" />
     <rect
-       style="fill:#ffffff;stroke:#000000;stroke-width:0.82286423;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.5;stroke-miterlimit:4.36000013;stroke-dasharray:none;stroke-opacity:1"
        id="rect4136-8"
        width="309.04849"
        height="230.41814"
@@ -99,7 +99,7 @@
        y="23.733915" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:28.43970871px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:28.43970871px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4.36000013;stroke-dasharray:none"
        x="117.35408"
        y="66.024902"
        id="text4155"
@@ -110,7 +110,7 @@
          y="66.024902">Thread 0</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:28.43970871px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:28.43970871px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4.36000013;stroke-dasharray:none"
        x="503.58334"
        y="65.851196"
        id="text4159"
@@ -120,7 +120,7 @@
          x="503.58334"
          y="65.851196">Thread 1</tspan></text>
     <rect
-       style="fill:#ffffff;stroke:#000000;stroke-width:0.87380373;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.5;stroke-miterlimit:4.36000013;stroke-dasharray:none;stroke-opacity:1"
        id="rect4165"
        width="256.96252"
        height="139.28098"
@@ -129,23 +129,24 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot4167"
-       style="font-style:normal;font-weight:normal;font-size:27.5px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:27.5px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.45043683;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4.36000013;stroke-dasharray:none"
        transform="matrix(1.0341712,0,0,1.0341712,43.331685,-77.998578)"><flowRegion
          id="flowRegion4169"><rect
            id="rect4171"
            width="149.42529"
            height="79.310349"
            x="91.954025"
-           y="210.98289" /></flowRegion><flowPara
+           y="210.98289"
+           style="stroke-width:1.45043683;stroke-miterlimit:4.36000013;stroke-dasharray:none" /></flowRegion><flowPara
          id="flowPara4173">Stage</flowPara></flowRoot>    <rect
-       style="fill:#ffffff;stroke:#000000;stroke-width:0.87387472;stroke-miterlimit:4;stroke-dasharray:6.99099763, 6.99099763;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.5;stroke-miterlimit:4.36000013;stroke-dasharray:6,6;stroke-dashoffset:0;stroke-opacity:1"
        id="rect4165-9"
        width="256.96252"
        height="139.28098"
        x="437.14731"
        y="91.304214" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.61900544;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:5.80000019;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInL);marker-end:url(#TriangleOutL)"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.36000013;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInL);marker-end:url(#TriangleOutL)"
        d="m 321.89273,152.25713 c 40.95747,-20.34789 73.25689,-15.22111 102.12555,0"
        id="path4196"
        inkscape:connector-curvature="0"
