@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="teetime-delay-problem.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="359.13746"
+     inkscape:cy="891.6204"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1138"
+     inkscape:window-x="1592"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3067"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion3069"><rect
+           id="rect3071"
+           width="184.28572"
+           height="152.14285"
+           x="245"
+           y="162.36218" /></flowRegion><flowPara
+         id="flowPara3073"></flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3096"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion3098"><rect
+           id="rect3100"
+           width="193.57143"
+           height="120"
+           x="25"
+           y="193.07646" /></flowRegion><flowPara
+         id="flowPara3102"></flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3125"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion3127"><rect
+           id="rect3129"
+           width="215.71428"
+           height="168.57143"
+           x="437.85715"
+           y="153.79076" /></flowRegion><flowPara
+         id="flowPara3131"></flowPara></flowRoot>    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.60138369"
+       id="rect2991"
+       width="116.1129"
+       height="80.398613"
+       x="68.372124"
+       y="204.04083" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="103.66002"
+       y="251.28116"
+       id="text3042-0-4"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3044-9-8"
+         x="103.66002"
+         y="251.28116"
+         style="font-size:20px">initial</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000"
+       id="rect3135"
+       width="10.714286"
+       height="12.142858"
+       x="179.28572"
+       y="238.16872" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.60138369"
+       id="rect2991-1"
+       width="116.1129"
+       height="80.398613"
+       x="271.49707"
+       y="206.36227" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="305.37384"
+       y="251.6153"
+       id="text3042-0"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3044-9"
+         x="305.37384"
+         y="251.6153"
+         style="font-size:20px">delay</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000"
+       id="rect3135-4"
+       width="10.714286"
+       height="12.142858"
+       x="267.29077"
+       y="237.78993" />
+    <rect
+       style="fill:none;stroke:#000000"
+       id="rect3135-5"
+       width="10.714286"
+       height="12.142858"
+       x="381.99493"
+       y="239.48001" />
+    <rect
+       style="fill:none;stroke:#000000"
+       id="rect3135-51"
+       width="10.714286"
+       height="12.142858"
+       x="324.32703"
+       y="201.91873" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.60138369"
+       id="rect2991-1-4"
+       width="116.1129"
+       height="80.398613"
+       x="271.49707"
+       y="52.162872" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="306.409"
+       y="99.403198"
+       id="text3042"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3044"
+         x="306.409"
+         y="99.403198"
+         style="font-size:20px">clock</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000"
+       id="rect3135-7"
+       width="10.714286"
+       height="12.142858"
+       x="324.19638"
+       y="125.57645" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.60138369"
+       id="rect2991-1-7"
+       width="116.1129"
+       height="80.398613"
+       x="464.80066"
+       y="204.04083" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="485.07391"
+       y="251.28116"
+       id="text3042-0-4-8"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3044-9-8-2"
+         x="485.07391"
+         y="251.28116"
+         style="font-size:20px">collector</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000"
+       id="rect3135-1"
+       width="10.714286"
+       height="12.142858"
+       x="459.72949"
+       y="239.17886"
+       inkscape:transform-center-x="65"
+       inkscape:transform-center-y="-51.428571" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:2, 6;stroke-dashoffset:0"
+       id="rect3191"
+       width="377.29196"
+       height="147.98735"
+       x="40.996876"
+       y="170.24648" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.99484962;stroke-miterlimit:4;stroke-dasharray:1.9896993, 5.96909789;stroke-dashoffset:0"
+       id="rect4005"
+       width="165.15994"
+       height="148.96632"
+       x="443.96204"
+       y="168.98376" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.92324066;stroke-miterlimit:4;stroke-dasharray:1.84648136, 5.53944408;stroke-dashoffset:0"
+       id="rect4005-5"
+       width="175.68086"
+       height="120.61"
+       x="241.76468"
+       y="32.448273" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:0.97021782;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect4025"
+       width="6.0609155"
+       height="66.086128"
+       x="326.78436"
+       y="136.77596" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect4041"
+       width="78.286819"
+       height="6.5659914"
+       x="189.50198"
+       y="240.19954" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:0.92066318;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect4041-2"
+       width="66.357529"
+       height="6.5659914"
+       x="393.29312"
+       y="242.1179" />
+  </g>
+</svg>
