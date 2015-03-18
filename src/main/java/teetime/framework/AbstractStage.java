@@ -113,7 +113,7 @@ public abstract class AbstractStage extends Stage {
 
 		this.connectUnconnectedOutputPorts();
 		currentState = StageState.STARTED;
-		logger.debug("Started.");
+		logger.trace("Started.");
 	}
 
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
@@ -132,6 +132,7 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	public void onTerminating() throws Exception {
 		currentState = StageState.TERMINATED;
+		logger.trace("Terminated.");
 	}
 
 	/**
