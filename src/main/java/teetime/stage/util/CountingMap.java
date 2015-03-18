@@ -42,10 +42,10 @@ public final class CountingMap<T> extends HashMap<T, Integer> {
 	 *            The key which sould be incremented
 	 */
 	public void increment(final T key) {
-		if (super.containsKey(key)) {
-			Integer i = super.get(key);
-			i++;
-			super.put(key, i);
+		Integer count = super.get(key);
+		if (null != count) {
+			count++;
+			super.put(key, count);
 		} else {
 			super.put(key, 1);
 		}
