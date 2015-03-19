@@ -26,13 +26,25 @@ public final class OutputPort<T> extends AbstractPort<T> {
 
 	/**
 	 *
+	 * Guarantees the delivery of the given <code>element</code>.
+	 *
+	 * @param element
+	 *            to be sent; May not be <code>null</code>.
+	 *
+	 */
+	public void send(final T element) {
+		this.pipe.add(element);
+	}
+
+	/**
+	 *
 	 * @param element
 	 *            to be sent; May not be <code>null</code>.
 	 *
 	 * @return <code>true</code> iff the <code>element</code> was sent; <code>false</code> otherwise.
 	 */
-	public boolean send(final T element) {
-		return this.pipe.add(element);
+	public boolean sendNonBlocking(final T element) {
+		return this.pipe.addNonBlocking(element);
 	}
 
 	/**

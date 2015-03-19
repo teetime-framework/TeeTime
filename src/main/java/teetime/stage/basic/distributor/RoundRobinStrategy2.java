@@ -18,13 +18,14 @@ package teetime.stage.basic.distributor;
 import teetime.framework.OutputPort;
 
 /**
- * @author Nils Christian Ehmke
+ * @author Nils Christian Ehmke, Christian Wulf
  *
  * @since 1.0
  */
 public final class RoundRobinStrategy2 implements IDistributorStrategy {
 
 	private int index = 0;
+	private int numWaits;
 
 	@Override
 	public <T> boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
@@ -33,9 +34,10 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 		boolean success;
 		do {
 			OutputPort<T> outputPort = getNextPortInRoundRobinOrder(outputPorts);
-			success = outputPort.send(element);
+			success = outputPort.sendNonBlocking(element);
 			numLoops--;
 			if (0 == numLoops) {
+				numWaits++;
 				// Thread.yield();
 				try {
 					Thread.sleep(1);
@@ -57,6 +59,10 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 		this.index = (this.index + 1) % outputPorts.length;
 
 		return outputPort;
+	}
+
+	public int getNumWaits() {
+		return numWaits;
 	}
 
 }

@@ -42,6 +42,11 @@ public final class UnboundedSpScPipe extends AbstractInterThreadPipe {
 	}
 
 	@Override
+	public boolean addNonBlocking(final Object element) {
+		return add(element);
+	}
+
+	@Override
 	public Object removeLast() {
 		return this.queue.poll();
 	}

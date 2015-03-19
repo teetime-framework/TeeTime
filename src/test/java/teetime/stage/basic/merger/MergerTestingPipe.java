@@ -52,6 +52,11 @@ public class MergerTestingPipe implements IPipe {
 	}
 
 	@Override
+	public boolean addNonBlocking(final Object element) {
+		return add(element);
+	}
+
+	@Override
 	public boolean isEmpty() {
 		// TODO Auto-generated method stub
 		return false;
