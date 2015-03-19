@@ -18,9 +18,9 @@ package teetime.stage.basic.distributor;
 import teetime.framework.OutputPort;
 
 /**
- * @author Nils Christian Ehmke, Christian Wulf
+ * @author Christian Wulf
  *
- * @since 1.0
+ * @since 1.1
  */
 public final class RoundRobinStrategy2 implements IDistributorStrategy {
 

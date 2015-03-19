@@ -18,6 +18,15 @@ package teetime.framework;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ * @param <T>
+ *            the type of elements to be sent
+ *
+ * @since 1.0
+ */
 public final class OutputPort<T> extends AbstractPort<T> {
 
 	OutputPort() {
@@ -42,6 +51,8 @@ public final class OutputPort<T> extends AbstractPort<T> {
 	 *            to be sent; May not be <code>null</code>.
 	 *
 	 * @return <code>true</code> iff the <code>element</code> was sent; <code>false</code> otherwise.
+	 *
+	 * @since 1.1
 	 */
 	public boolean sendNonBlocking(final T element) {
 		return this.pipe.addNonBlocking(element);
