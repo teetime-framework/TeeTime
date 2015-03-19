@@ -36,7 +36,6 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 		do {
 			final OutputPort<T> outputPort = getNextPortInRoundRobinOrder(outputPorts);
 			success = outputPort.sendNonBlocking(element);
-			numLoops--;
 			if (0 == numLoops) {
 				numWaits++;
 				// Thread.yield();
@@ -49,6 +48,7 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 
 				numLoops = numOutputPorts;
 			}
+			numLoops--;
 		} while (!success);
 
 		return true;
