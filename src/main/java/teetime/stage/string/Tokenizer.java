@@ -15,20 +15,35 @@
  */
 package teetime.stage.string;
 
+import java.util.concurrent.TimeUnit;
+
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
+import teetime.framework.pipe.IPipe;
+import teetime.util.StopWatch;
 
 public final class Tokenizer extends AbstractConsumerStage<String> {
 
 	private final OutputPort<String> outputPort = this.createOutputPort();
 	private final String regex;
+	private final StopWatch stopWatch;
 
 	public Tokenizer(final String regex) {
 		this.regex = regex;
+		stopWatch = new StopWatch();
+		stopWatch.start();
 	}
 
 	@Override
 	protected void execute(final String element) {
+
+		stopWatch.end();
+		if (stopWatch.getDurationInNs() >= TimeUnit.SECONDS.toNanos(1)) {
+			IPipe pipe = inputPort.getPipe();
+			logger.debug("pipe size: " + pipe.size());
+			stopWatch.start();
+		}
+
 		String[] tokens = element.split(regex);
 		for (String token : tokens) {
 			outputPort.send(token);

@@ -25,11 +25,14 @@ public final class OutputPort<T> extends AbstractPort<T> {
 	}
 
 	/**
+	 *
 	 * @param element
 	 *            to be sent; May not be <code>null</code>.
+	 *
+	 * @return <code>true</code> iff the <code>element</code> was sent; <code>false</code> otherwise.
 	 */
-	public void send(final T element) {
-		this.pipe.add(element);
+	public boolean send(final T element) {
+		return this.pipe.add(element);
 	}
 
 	/**
