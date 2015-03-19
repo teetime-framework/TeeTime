@@ -29,11 +29,12 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 
 	@Override
 	public <T> boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
-		int numLoops = outputPorts.length;
+		final int numOutputPorts = outputPorts.length;
+		int numLoops = numOutputPorts;
 
 		boolean success;
 		do {
-			OutputPort<T> outputPort = getNextPortInRoundRobinOrder(outputPorts);
+			final OutputPort<T> outputPort = getNextPortInRoundRobinOrder(outputPorts);
 			success = outputPort.sendNonBlocking(element);
 			numLoops--;
 			if (0 == numLoops) {
@@ -46,7 +47,7 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 					e.printStackTrace();
 				}
 
-				numLoops = outputPorts.length;
+				numLoops = numOutputPorts;
 			}
 		} while (!success);
 
