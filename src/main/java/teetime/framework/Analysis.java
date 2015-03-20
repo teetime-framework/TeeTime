@@ -103,18 +103,21 @@ public final class Analysis implements UncaughtExceptionHandler {
 				final Thread thread = new Thread(new RunnableConsumerStage(stage));
 				stage.setOwningThread(thread);
 				this.consumerThreads.add(thread);
+				thread.setName(stage.getId());
 				break;
 			}
 			case BY_SELF_DECISION: {
 				final Thread thread = new Thread(new RunnableProducerStage(stage));
 				stage.setOwningThread(thread);
 				this.finiteProducerThreads.add(thread);
+				thread.setName(stage.getId());
 				break;
 			}
 			case BY_INTERRUPT: {
 				final Thread thread = new Thread(new RunnableProducerStage(stage));
 				stage.setOwningThread(thread);
 				this.infiniteProducerThreads.add(thread);
+				thread.setName(stage.getId());
 				break;
 			}
 			default:
