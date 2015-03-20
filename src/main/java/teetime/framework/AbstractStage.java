@@ -104,6 +104,7 @@ public abstract class AbstractStage extends Stage {
 		currentState = StageState.VALIDATED;
 	}
 
+	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	@Override
 	public void onStarting() throws Exception {
 		this.owningThread = Thread.currentThread();
@@ -112,23 +113,26 @@ public abstract class AbstractStage extends Stage {
 
 		this.connectUnconnectedOutputPorts();
 		currentState = StageState.STARTED;
-		logger.debug("Started.");
+		logger.trace("Started.");
 	}
 
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	private void connectUnconnectedOutputPorts() {
 		for (OutputPort<?> outputPort : this.cachedOutputPorts) {
 			if (null == outputPort.getPipe()) { // if port is unconnected
-				this.logger.warn("Unconnected output port: " + outputPort + ". Connecting with a dummy output port.");
+				if (logger.isInfoEnabled()) {
+					this.logger.info("Unconnected output port: " + outputPort + ". Connecting with a dummy output port.");
+				}
 				outputPort.setPipe(DUMMY_PORT);
 			}
 		}
 	}
 
+	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	@Override
 	public void onTerminating() throws Exception {
-		logger.trace("onTerminating: " + this.getId());
 		currentState = StageState.TERMINATED;
+		logger.trace("Terminated.");
 	}
 
 	/**

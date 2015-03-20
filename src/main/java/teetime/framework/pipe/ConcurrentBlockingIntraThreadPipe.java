@@ -13,34 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage.basic;
+package teetime.framework.pipe;
 
-import teetime.framework.AbstractStage;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import teetime.framework.AbstractIntraThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-abstract class AbstractTrigger<I, T, O> extends AbstractStage {
+public final class ConcurrentBlockingIntraThreadPipe<T> extends AbstractIntraThreadPipe {
 
-	private final InputPort<I> inputPort = createInputPort();
-	private final InputPort<T> triggerInputPort = createInputPort();
-	private final OutputPort<O> outputPort = createOutputPort();
+	private final ConcurrentLinkedQueue<Object> queue;
 
-	protected AbstractTrigger() {
-		super();
-	}
-
-	@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-	// disabled while in development
-	@Override
-	protected void executeStage() {
-		// TODO Auto-generated method stub
-
+	ConcurrentBlockingIntraThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		super(sourcePort, targetPort);
+		queue = new ConcurrentLinkedQueue<Object>();
 	}
 
 	@Override
-	public void onTerminating() throws Exception {
-		// TODO Auto-generated method stub
-		super.onTerminating();
+	public boolean add(final Object element) {
+		return queue.add(element);
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return queue.isEmpty();
+	}
+
+	@Override
+	public int size() {
+		return queue.size();
+	}
+
+	@Override
+	public Object removeLast() {
+		return queue.poll();
 	}
 
 }

@@ -137,6 +137,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 				final Thread thread = new Thread(new RunnableConsumerStage(stage, newListener));
 				stage.setOwningThread(thread);
 				this.consumerThreads.add(thread);
+				thread.setName(stage.getId());
 				break;
 			}
 			case BY_SELF_DECISION: {
@@ -144,6 +145,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.finiteProducerThreads.add(thread);
+				thread.setName(stage.getId());
 				break;
 			}
 			case BY_INTERRUPT: {
@@ -151,6 +153,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.infiniteProducerThreads.add(thread);
+				thread.setName(stage.getId());
 				break;
 			}
 			default:

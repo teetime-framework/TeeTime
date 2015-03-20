@@ -96,7 +96,7 @@ public abstract class Stage {
 	 */
 	public abstract void validateOutputPorts(List<InvalidPortConnection> invalidPortConnections);
 
-	protected abstract void executeWithPorts();
+	protected abstract void executeStage();
 
 	protected abstract void onSignal(ISignal signal, InputPort<?> inputPort);
 
@@ -112,6 +112,7 @@ public abstract class Stage {
 		return owningThread;
 	}
 
+	@SuppressWarnings("PMD.DefaultPackage")
 	void setOwningThread(final Thread owningThread) {
 		this.owningThread = owningThread;
 	}
@@ -122,8 +123,10 @@ public abstract class Stage {
 
 	public abstract void onValidating(List<InvalidPortConnection> invalidPortConnections);
 
+	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public abstract void onStarting() throws Exception;
 
+	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public abstract void onTerminating() throws Exception;
 
 }

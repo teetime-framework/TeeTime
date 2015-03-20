@@ -35,6 +35,11 @@ public final class RelayTestPipe<T> extends AbstractInterThreadPipe {
 	}
 
 	@Override
+	public boolean addNonBlocking(final Object element) {
+		return add(element);
+	}
+
+	@Override
 	public T removeLast() {
 		if (this.numInputObjects == 0) {
 			return null;

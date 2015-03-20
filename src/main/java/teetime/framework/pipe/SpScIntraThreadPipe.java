@@ -19,46 +19,45 @@ import java.util.Queue;
 
 import org.jctools.queues.QueueFactory;
 import org.jctools.queues.spec.ConcurrentQueueSpec;
-import org.jctools.queues.spec.Ordering;
-import org.jctools.queues.spec.Preference;
 
-import teetime.framework.AbstractInterThreadPipe;
+import teetime.framework.AbstractIntraThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class UnboundedSpScPipe extends AbstractInterThreadPipe {
+/**
+ * Represents a less efficient implementation of an intra-thread pipe.
+ *
+ * @author Christian Wulf
+ *
+ * @param <T>
+ */
+public final class SpScIntraThreadPipe<T> extends AbstractIntraThreadPipe {
 
 	private final Queue<Object> queue;
 
-	<T> UnboundedSpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	SpScIntraThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
-		ConcurrentQueueSpec specification = new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT);
-		this.queue = QueueFactory.newQueue(specification);
+		queue = QueueFactory.newQueue(ConcurrentQueueSpec.createBoundedSpsc(1));
 	}
 
 	@Override
 	public boolean add(final Object element) {
-		return this.queue.offer(element);
-	}
-
-	@Override
-	public boolean addNonBlocking(final Object element) {
-		return add(element);
-	}
-
-	@Override
-	public Object removeLast() {
-		return this.queue.poll();
+		return queue.offer(element);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return this.queue.isEmpty();
+		return queue.isEmpty();
 	}
 
 	@Override
 	public int size() {
-		return this.queue.size();
+		return queue.size();
+	}
+
+	@Override
+	public Object removeLast() {
+		return queue.poll();
 	}
 
 }

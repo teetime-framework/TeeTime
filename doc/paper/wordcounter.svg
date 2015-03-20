@@ -129,9 +129,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.07"
-     inkscape:cx="353.81714"
-     inkscape:cy="854.8101"
+     inkscape:zoom="2.14"
+     inkscape:cx="398.59961"
+     inkscape:cy="844.60549"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -194,7 +194,7 @@
        x="550.37476"
        y="171.81822" />
     <rect
-       y="171.3232"
+       y="171.81822"
        x="651.69849"
        height="50.375938"
        width="80.451126"
@@ -212,11 +212,11 @@
        id="rect4154"
        width="240.84717"
        height="50.375938"
-       x="255.10263"
+       x="255.71994"
        y="113.50002" />
     <rect
        y="232.50049"
-       x="254.72812"
+       x="255.71994"
        height="50.375938"
        width="240.84717"
        id="rect4156"
@@ -246,45 +246,45 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:17.5px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="74.782616"
+       x="72.514389"
        y="148.9364"
        id="text4178"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4180"
-         x="74.782616"
+         x="72.514389"
          y="148.9364">Thread 0</tspan></text>
     <text
        sodipodi:linespacing="125%"
        id="text4182"
        y="104.04761"
-       x="338.31741"
+       x="337.96481"
        style="font-style:normal;font-weight:normal;font-size:17.5px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"><tspan
          y="104.04761"
-         x="338.31741"
+         x="337.96481"
          id="tspan4184"
          sodipodi:role="line">Thread 1</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:17.5px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="330.31741"
+       x="329.24899"
        y="304.26111"
        id="text4186"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4188"
-         x="330.31741"
+         x="329.24899"
          y="304.26111">Thread n-1</tspan></text>
     <text
        sodipodi:linespacing="125%"
        id="text4190"
        y="148.88394"
-       x="604.34784"
+       x="602.00513"
        style="font-style:normal;font-weight:normal;font-size:17.5px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"><tspan
          y="148.88394"
-         x="604.34784"
+         x="602.00513"
          id="tspan4192"
          sodipodi:role="line">Thread n</tspan></text>
     <path
@@ -299,22 +299,22 @@
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:12, 12;stroke-dashoffset:0;stroke-opacity:1" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.70000005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.7, 11.1;stroke-dashoffset:0;stroke-opacity:1"
-       d="m 377.35299,180.81021 0,33.21678"
+       d="m 376.14352,180.81021 0,33.21678"
        id="path4198"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.88139659px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL)"
-       d="m 99.706467,197.38688 16.818083,0"
+       d="m 99.706467,197.09904 16.818083,0"
        id="path4200"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99021673;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker4610)"
-       d="M 202.56952,180.44399 250.15034,141.2391"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99459749;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker4610)"
+       d="m 202.56199,180.43375 48.02597,-39.18594"
        id="path4602"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.00142932;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker4766)"
-       d="m 202.53923,215.56052 46.89679,40.9432"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.01931775;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker4766)"
+       d="m 202.5083,215.60241 48.67932,40.8657"
        id="path4850"
        inkscape:connector-curvature="0" />
     <path
@@ -329,7 +329,7 @@
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.95959461px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker5432)"
-       d="m 630.97784,196.55696 14.82972,0"
+       d="m 630.97784,197.00619 14.82972,0"
        id="path5424"
        inkscape:connector-curvature="0" />
     <path
@@ -345,24 +345,24 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:13.75px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="25.233644"
+       x="25.66799"
        y="201.89491"
        id="text4221"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4223"
-         x="25.233644"
+         x="25.66799"
          y="201.89491">File2Lines</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:13.75px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="124.73751"
+       x="124.67748"
        y="202.28743"
        id="text4225"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4227"
-         x="124.73751"
+         x="124.67748"
          y="202.28743">Distributor</tspan></text>
     <text
        xml:space="preserve"
@@ -389,23 +389,23 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:13.75px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="330.99066"
-       y="144.21268"
+       x="330.13376"
+       y="143.81403"
        id="text4237"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4239"
-         x="330.99066"
-         y="144.21268">WordCounter</tspan></text>
+         x="330.13376"
+         y="143.81403">WordCounter</tspan></text>
     <text
        sodipodi:linespacing="125%"
        id="text4241"
-       y="262.21268"
-       x="330.99066"
+       y="262.81448"
+       x="329.75925"
        style="font-style:normal;font-weight:normal;font-size:13.75px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"><tspan
-         y="262.21268"
-         x="330.99066"
+         y="262.81448"
+         x="329.75925"
          id="tspan4243"
          sodipodi:role="line">WordCounter</tspan></text>
   </g>

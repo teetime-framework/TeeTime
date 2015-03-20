@@ -15,8 +15,6 @@
  */
 package teetime.stage.string;
 
-import java.util.StringTokenizer;
-
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
@@ -31,9 +29,9 @@ public final class Tokenizer extends AbstractConsumerStage<String> {
 
 	@Override
 	protected void execute(final String element) {
-		StringTokenizer st = new StringTokenizer(element, this.regex);
-		while (st.hasMoreTokens()) {
-			outputPort.send(st.nextToken());
+		String[] tokens = element.split(regex);
+		for (String token : tokens) {
+			outputPort.send(token);
 		}
 	}
 

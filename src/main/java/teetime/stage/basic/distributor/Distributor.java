@@ -31,7 +31,7 @@ public final class Distributor<T> extends AbstractConsumerStage<T> {
 	private IDistributorStrategy strategy;
 
 	public Distributor() {
-		this(new RoundRobinStrategy());
+		this(new RoundRobinStrategy2());
 	}
 
 	public Distributor(final IDistributorStrategy strategy) {

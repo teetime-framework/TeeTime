@@ -26,7 +26,7 @@ public abstract class AbstractConsumerStage<I> extends AbstractStage {
 	}
 
 	@Override
-	public final void executeWithPorts() {
+	public final void executeStage() {
 		final I element = this.getInputPort().receive();
 		if (null == element) {
 			returnNoElement();

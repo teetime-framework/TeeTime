@@ -45,7 +45,7 @@ public class InstanceOfFilterTest {
 		final List<Clazz> results = new ArrayList<InstanceOfFilterTest.Clazz>();
 		final Object clazz = new Clazz();
 
-		test(filter).and().send(clazz).to(filter.getInputPort()).and().receive(results).from(filter.getOutputPort()).start();
+		test(filter).and().send(clazz).to(filter.getInputPort()).and().receive(results).from(filter.getMatchedOutputPort()).start();
 
 		assertThat(results, contains(clazz));
 	}
@@ -55,7 +55,7 @@ public class InstanceOfFilterTest {
 		final List<Clazz> results = new ArrayList<InstanceOfFilterTest.Clazz>();
 		final Object clazz = new SubClazz();
 
-		test(filter).and().send(clazz).to(filter.getInputPort()).and().receive(results).from(filter.getOutputPort()).start();
+		test(filter).and().send(clazz).to(filter.getInputPort()).and().receive(results).from(filter.getMatchedOutputPort()).start();
 
 		assertThat(results, contains(clazz));
 	}
@@ -65,7 +65,7 @@ public class InstanceOfFilterTest {
 		final List<Clazz> results = new ArrayList<InstanceOfFilterTest.Clazz>();
 		final Object object = new Object();
 
-		test(filter).and().send(object).to(filter.getInputPort()).and().receive(results).from(filter.getOutputPort()).start();
+		test(filter).and().send(object).to(filter.getInputPort()).and().receive(results).from(filter.getMatchedOutputPort()).start();
 
 		assertThat(results, is(empty()));
 	}
@@ -81,7 +81,7 @@ public class InstanceOfFilterTest {
 		input.add(new SubClazz());
 		input.add(new Object());
 
-		test(filter).and().send(input).to(filter.getInputPort()).and().receive(results).from(filter.getOutputPort()).start();
+		test(filter).and().send(input).to(filter.getInputPort()).and().receive(results).from(filter.getMatchedOutputPort()).start();
 
 		assertThat(results, hasSize(2));
 	}

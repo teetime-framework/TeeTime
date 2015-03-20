@@ -32,7 +32,12 @@ public final class DummyPipe implements IPipe {
 
 	@Override
 	public boolean add(final Object element) {
-		return false;
+		return true;
+	}
+
+	@Override
+	public boolean addNonBlocking(final Object element) {
+		return add(element);
 	}
 
 	@Override

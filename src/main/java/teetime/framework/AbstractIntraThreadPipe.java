@@ -26,6 +26,11 @@ public abstract class AbstractIntraThreadPipe extends AbstractPipe {
 	}
 
 	@Override
+	public boolean addNonBlocking(final Object element) {
+		return add(element);
+	}
+
+	@Override
 	public final void sendSignal(final ISignal signal) {
 		// getTargetPort is always non-null since the framework adds dummy ports if necessary
 		this.cachedTargetStage.onSignal(signal, this.getTargetPort());
@@ -33,7 +38,7 @@ public abstract class AbstractIntraThreadPipe extends AbstractPipe {
 
 	@Override
 	public final void reportNewElement() {
-		this.cachedTargetStage.executeWithPorts();
+		this.cachedTargetStage.executeStage();
 	}
 
 	@Override

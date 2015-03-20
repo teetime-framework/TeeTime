@@ -49,10 +49,21 @@ public final class SpScPipe extends AbstractInterThreadPipe {
 		// BETTER introduce a QueueIsFullStrategy
 		while (!this.queue.offer(element)) {
 			this.numWaits++;
-			Thread.yield();
+			// Thread.yield();
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		// this.reportNewElement();
 		return true;
+	}
+
+	@Override
+	public boolean addNonBlocking(final Object element) {
+		return this.queue.offer(element);
 	}
 
 	@Override

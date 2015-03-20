@@ -15,25 +15,23 @@
  */
 package teetime.stage.util;
 
-import java.util.HashMap;
+import com.carrotsearch.hppc.ObjectIntMap;
+import com.carrotsearch.hppc.ObjectIntOpenHashMap;
+import com.carrotsearch.hppc.procedures.ObjectIntProcedure;
 
 /**
- * An implementation of HashMap which can be used to count the occurrence of different keys.
- * This contains all methods of HashMap, but is enhanced with the {@link #add(T, Integer) add} and {@link #increment(T) increment} methods.
+ * An implementation of a map which can be used to count the occurrence of different keys.
  *
  * @since 1.1
  *
- * @author Nelson Tavares de Sousa
+ * @author Nelson Tavares de Sousa, Christian Wulf
  *
  * @param <T>
  *            Key type to be count
  */
-public final class CountingMap<T> extends HashMap<T, Integer> {
+public final class CountingMap<T> {
 
-	/**
-	 * Generated serialVersionUID
-	 */
-	private static final long serialVersionUID = -8036971796701648200L;
+	private final ObjectIntMap<T> map = new ObjectIntOpenHashMap<T>();
 
 	/**
 	 * Increments the value of key by one.
@@ -42,31 +40,37 @@ public final class CountingMap<T> extends HashMap<T, Integer> {
 	 *            The key which sould be incremented
 	 */
 	public void increment(final T key) {
-		if (super.containsKey(key)) {
-			Integer i = super.get(key);
-			i++;
-			super.put(key, i);
-		} else {
-			super.put(key, 1);
-		}
+		map.addTo(key, 1);
 	}
 
 	/**
 	 * Adds i to the value of key.
 	 *
 	 * @param key
-	 *            Key which is used to add i.
-	 * @param i
-	 *            Integer value to be added.
+	 *            the key which is used to add i.
+	 * @param value
+	 *            the value to be added.
 	 */
-	public void add(final T key, final Integer i) {
-		if (super.containsKey(key)) {
-			Integer j = super.get(key);
-			j += i;
-			super.put(key, j);
-		} else {
-			super.put(key, i);
-		}
+	public void add(final T key, final int value) {
+		map.addTo(key, value);
+	}
+
+	public void add(final CountingMap<T> otherMap) {
+		final ObjectIntProcedure<? super T> procedure = new ObjectIntProcedure<T>() {
+			@Override
+			public void apply(final T key, final int value) {
+				map.addTo(key, value);
+			}
+		};
+		otherMap.map.forEach(procedure);
+	}
+
+	public int get(final T key) {
+		return map.get(key);
+	}
+
+	public int size() {
+		return map.size();
 	}
 
 }
