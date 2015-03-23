@@ -10,8 +10,8 @@ import teetime.framework.exceptionHandling.TestListener;
 
 public class ExceptionHandling {
 
-	Class<TestListener> listener;
-	Analysis analysis;
+	private Class<TestListener> listener;
+	private Analysis analysis;
 
 	@Before
 	public void newInstances() {
@@ -19,16 +19,9 @@ public class ExceptionHandling {
 		analysis = new Analysis(new ExceptionTestConfiguration(), listener);
 	}
 
-	@Test(timeout = 5000)
+	@Test(timeout = 5000, expected = RuntimeException.class)
 	public void exceptionPassingAndTermination() {
-		boolean exceptionByExecute = false;
-
-		try {
-			analysis.execute();
-		} catch (RuntimeException e) {
-			exceptionByExecute = true;
-		}
-		assertTrue(exceptionByExecute); // thread was killed
+		analysis.execute();
 		assertEquals(TestListener.exceptionInvoked, 2); // listener did not kill thread to early
 	}
 
