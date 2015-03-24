@@ -59,4 +59,14 @@ public final class RelayTestPipe<T> extends AbstractInterThreadPipe {
 		return this.numInputObjects;
 	}
 
+	@Override
+	public long getPushThroughput() {
+		return -1;
+	}
+
+	@Override
+	public long getPullThroughput() {
+		return -1;
+	}
+
 }

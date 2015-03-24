@@ -78,4 +78,8 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 	public final void close() {
 		isClosed = true;
 	}
+
+	public abstract long getPushThroughput();
+
+	public abstract long getPullThroughput();
 }

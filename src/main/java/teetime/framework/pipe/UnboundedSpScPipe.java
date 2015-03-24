@@ -61,4 +61,14 @@ public final class UnboundedSpScPipe extends AbstractInterThreadPipe {
 		return this.queue.size();
 	}
 
+	@Override
+	public long getPushThroughput() {
+		return -1;
+	}
+
+	@Override
+	public long getPullThroughput() {
+		return -1;
+	}
+
 }
