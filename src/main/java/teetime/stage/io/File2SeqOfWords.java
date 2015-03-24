@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.CharBuffer;
 
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
@@ -28,32 +29,28 @@ import teetime.framework.OutputPort;
 /**
  * @author Christian Wulf
  *
- * @since 1.1
- *
  */
-public final class File2Lines extends AbstractConsumerStage<File> {
+public final class File2SeqOfWords extends AbstractConsumerStage<File> {
 
 	private final OutputPort<String> outputPort = this.createOutputPort();
 
 	private final String charset;
+	private final int bufferCapacity;
 
 	/**
 	 * <ol>
 	 * <li>charset = UTF-8
+	 * <li>bufferCapacity = 1024
 	 * </ol>
 	 */
-	public File2Lines() {
-		this("UTF-8");
+	public File2SeqOfWords() {
+		this("UTF-8", 1024);
 	}
 
-	/**
-	 *
-	 * @param charset
-	 *            to be used when interpreting text files
-	 */
-	public File2Lines(final String charset) {
+	public File2SeqOfWords(final String charset, final int bufferCapacity) {
 		super();
 		this.charset = charset;
+		this.bufferCapacity = bufferCapacity;
 	}
 
 	@Override
@@ -61,12 +58,24 @@ public final class File2Lines extends AbstractConsumerStage<File> {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(textFile), this.charset));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				line = line.trim();
-				if (line.length() != 0) {
-					outputPort.send(line);
-				} // else: ignore empty line
+			CharBuffer charBuffer = CharBuffer.allocate(bufferCapacity);
+			while (reader.read(charBuffer) != -1) {
+				final int position = getPreviousWhitespacePosition(charBuffer);
+				if (-1 == position) {
+					if (logger.isErrorEnabled()) {
+						logger.error("A word in the following text file is bigger than the buffer's capacity: " + textFile.getAbsolutePath());
+						return;
+					}
+				}
+				final int limit = charBuffer.limit();
+
+				charBuffer.limit(position);
+				charBuffer.rewind();
+				outputPort.send(charBuffer.toString()); // from position to limit-1
+
+				charBuffer.limit(limit);
+				charBuffer.position(position);
+				charBuffer.compact();
 			}
 		} catch (final FileNotFoundException e) {
 			this.logger.error("", e);
@@ -83,8 +92,30 @@ public final class File2Lines extends AbstractConsumerStage<File> {
 		}
 	}
 
+	private int getPreviousWhitespacePosition(final CharBuffer charBuffer) {
+		char[] characters = charBuffer.array();
+		int index = charBuffer.arrayOffset() + charBuffer.position() - 1;
+
+		while (index >= 0) {
+			switch (characters[index]) {
+			case ' ':
+			case '\n':
+			case '\r':
+			case '\t':
+				return index - charBuffer.arrayOffset();
+			default:
+				index--;
+			}
+		}
+		return -1;
+	}
+
 	public String getCharset() {
 		return this.charset;
+	}
+
+	public int getBufferCapacity() {
+		return bufferCapacity;
 	}
 
 	public OutputPort<String> getOutputPort() {
