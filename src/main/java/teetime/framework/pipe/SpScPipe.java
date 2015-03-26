@@ -21,7 +21,7 @@ import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class SpScPipe extends AbstractInterThreadPipe {
+public final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe {
 
 	// private static final Logger LOGGER = LoggerFactory.getLogger(SpScPipe.class);
 
@@ -91,6 +91,16 @@ public final class SpScPipe extends AbstractInterThreadPipe {
 	@Override
 	public long getPullThroughput() {
 		return queue.getConsumerFrequency();
+	}
+
+	@Override
+	public long getNumPushes() {
+		return queue.getNumPushes();
+	}
+
+	@Override
+	public long getNumPulls() {
+		return queue.getNumPulls();
 	}
 
 }
