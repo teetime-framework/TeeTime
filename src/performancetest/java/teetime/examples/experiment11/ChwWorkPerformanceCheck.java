@@ -16,15 +16,16 @@
 package teetime.examples.experiment11;
 
 import static org.junit.Assert.assertEquals;
+import teetime.examples.HostName;
 import teetime.util.test.eval.PerformanceResult;
-import util.test.PerformanceTest;
 import util.test.AbstractProfiledPerformanceAssertion;
+import util.test.PerformanceTest;
 
 class ChwWorkPerformanceCheck extends AbstractProfiledPerformanceAssertion {
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {
-		return "ChwWork";
+		return HostName.CHW_WORK.toString();
 	}
 
 	@Override
