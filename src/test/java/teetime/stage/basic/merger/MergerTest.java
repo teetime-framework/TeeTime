@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,6 @@ import org.junit.Test;
 
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.SingleElementPipeFactory;
-import teetime.framework.test.StageTester;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 
@@ -81,11 +81,11 @@ public class MergerTest {
 
 	@Test
 	public void roundRobinShouldWork2() {
-		mergerUnderTest = new Merger<Integer>();
-		mergerUnderTest.setStrategy(new RoundRobinStrategy());
+		mergerUnderTest = new Merger<Integer>(new RoundRobinStrategy());
 
 		List<Integer> outputList = new ArrayList<Integer>();
-		StageTester.test(mergerUnderTest).and().send(1, 2, 3).to(mergerUnderTest.getNewInputPort())
+		test(mergerUnderTest)
+				.and().send(1, 2, 3).to(mergerUnderTest.getNewInputPort())
 				.and().send(4, 5, 6).to(mergerUnderTest.getNewInputPort())
 				.and().receive(outputList);
 
