@@ -87,9 +87,9 @@ public class MergerTest {
 		test(mergerUnderTest)
 				.and().send(1, 2, 3).to(mergerUnderTest.getNewInputPort())
 				.and().send(4, 5, 6).to(mergerUnderTest.getNewInputPort())
-				.and().receive(outputList);
+				.and().receive(outputList).from(mergerUnderTest.getOutputPort()).start();
 
 		assertThat(outputList, is(not(empty())));
-		assertThat(outputList, contains(1, 2, 3, 4, 5, 6));
+		assertThat(outputList, contains(1, 4, 2, 5, 3, 6));
 	}
 }
