@@ -15,6 +15,13 @@
  */
 package teetime.framework.idle;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ * @deprecated since 1.1
+ */
+@Deprecated
 public interface IdleStrategy {
 
 	void execute() throws InterruptedException;

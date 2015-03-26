@@ -15,6 +15,10 @@
  */
 package teetime.framework.idle;
 
+/**
+ * @deprecated since 1.1
+ */
+@Deprecated
 public final class YieldStrategy implements IdleStrategy {
 
 	@Override
