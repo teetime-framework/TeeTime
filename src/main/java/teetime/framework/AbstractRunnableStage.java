@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 
 abstract class AbstractRunnableStage implements Runnable {
 
+	private static final String TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION = "Terminating thread due to the following exception: ";
+
 	private final Stage stage;
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
@@ -43,14 +45,11 @@ abstract class AbstractRunnableStage implements Runnable {
 
 			afterStageExecution(stage);
 
-		} catch (Error e) {
-			this.logger.error("Terminating thread due to the following exception: ", e);
-			throw e;
 		} catch (RuntimeException e) {
-			this.logger.error("Terminating thread due to the following exception: ", e);
+			this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
 			throw e;
 		} catch (InterruptedException e) {
-			this.logger.error("Terminating thread due to the following exception: ", e);
+			this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
 		}
 
 		this.logger.debug("Finished runnable stage. (" + stage.getId() + ")");
