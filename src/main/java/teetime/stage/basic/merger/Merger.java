@@ -59,7 +59,6 @@ public final class Merger<T> extends AbstractStage {
 		if (token == null) {
 			returnNoElement();
 		}
-
 		outputPort.send(token);
 	}
 
