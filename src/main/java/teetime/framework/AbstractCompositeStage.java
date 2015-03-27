@@ -15,6 +15,8 @@
  */
 package teetime.framework;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,15 +34,23 @@ import teetime.framework.validation.InvalidPortConnection;
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
  */
-@SuppressWarnings("PMD.AbstractNaming")
 public abstract class AbstractCompositeStage extends Stage {
 
 	private static final IPipeFactory INTRA_PIPE_FACTORY = PipeFactoryRegistry.INSTANCE
 			.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 
+	private final List<OutputPort<?>> outputPorts;
+
 	protected abstract Stage getFirstStage();
 
 	protected abstract Collection<? extends Stage> getLastStages();
+
+	public AbstractCompositeStage() {
+		outputPorts = new ArrayList<OutputPort<?>>();
+		for (final Stage s : getLastStages()) {
+			outputPorts.addAll(Arrays.asList(s.getOutputPorts()));
+		}
+	}
 
 	@Override
 	protected final void executeStage() {
@@ -70,6 +80,11 @@ public abstract class AbstractCompositeStage extends Stage {
 	@Override
 	protected final InputPort<?>[] getInputPorts() {
 		return getFirstStage().getInputPorts();
+	}
+
+	@Override
+	protected OutputPort<?>[] getOutputPorts() {
+		return outputPorts.toArray(new OutputPort[0]);
 	}
 
 	@Override

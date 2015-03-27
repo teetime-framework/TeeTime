@@ -119,6 +119,8 @@ public abstract class Stage {
 
 	protected abstract InputPort<?>[] getInputPorts();
 
+	protected abstract OutputPort<?>[] getOutputPorts();
+
 	// events
 
 	public abstract void onValidating(List<InvalidPortConnection> invalidPortConnections);
