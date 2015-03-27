@@ -4,7 +4,7 @@ public class LoggingExceptionListenerFactory implements IExceptionListenerFactor
 
 	@Override
 	public AbstractExceptionListener create() {
-		return new LoggingExceptionListenerListener();
+		return new LoggingExceptionListener();
 	}
 
 }

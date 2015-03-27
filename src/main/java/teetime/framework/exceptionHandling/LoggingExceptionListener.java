@@ -2,11 +2,11 @@ package teetime.framework.exceptionHandling;
 
 import teetime.framework.Stage;
 
-public class LoggingExceptionListenerListener extends AbstractExceptionListener {
+public class LoggingExceptionListener extends AbstractExceptionListener {
 
 	@Override
 	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {
-		logger.warn("Exception arised from" + throwingStage.getId(), e);
+		logger.warn("Exception occurred in " + throwingStage.getId(), e);
 		return FurtherExecution.CONTINUE;
 	}
 

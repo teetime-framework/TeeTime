@@ -6,7 +6,7 @@ public class TerminatingExceptionListener extends AbstractExceptionListener {
 
 	@Override
 	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {
-		logger.warn("Exception arised from" + throwingStage.getId(), e);
+		logger.warn("Exception occurred in " + throwingStage.getId(), e);
 		return FurtherExecution.TERMINATE;
 	}
 
