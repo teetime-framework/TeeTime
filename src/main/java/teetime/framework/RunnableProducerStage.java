@@ -15,13 +15,13 @@
  */
 package teetime.framework;
 
-import teetime.framework.exceptionHandling.StageExceptionHandler;
+import teetime.framework.exceptionHandling.AbstractStageExceptionHandler;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
 public final class RunnableProducerStage extends AbstractRunnableStage {
 
-	public RunnableProducerStage(final Stage stage, final StageExceptionHandler listener) {
+	public RunnableProducerStage(final Stage stage, final AbstractStageExceptionHandler listener) {
 		super(stage, listener);
 	}
 

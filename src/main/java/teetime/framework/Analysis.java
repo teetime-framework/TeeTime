@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.IgnoringStageListener;
-import teetime.framework.exceptionHandling.StageExceptionHandler;
+import teetime.framework.exceptionHandling.AbstractStageExceptionHandler;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.Pair;
@@ -43,7 +43,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 
 	private final AnalysisConfiguration configuration;
 
-	private final Class<? extends teetime.framework.exceptionHandling.StageExceptionHandler> listener;
+	private final Class<? extends teetime.framework.exceptionHandling.AbstractStageExceptionHandler> listener;
 
 	private boolean executionInterrupted = false;
 
@@ -79,11 +79,11 @@ public final class Analysis implements UncaughtExceptionHandler {
 	 * @param listener
 	 *            specific listener for the exception handling
 	 */
-	public Analysis(final AnalysisConfiguration configuration, final Class<? extends StageExceptionHandler> listener) {
+	public Analysis(final AnalysisConfiguration configuration, final Class<? extends AbstractStageExceptionHandler> listener) {
 		this(configuration, false, listener);
 	}
 
-	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled, final Class<? extends StageExceptionHandler> listener) {
+	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled, final Class<? extends AbstractStageExceptionHandler> listener) {
 		this.configuration = configuration;
 		this.listener = listener;
 		if (validationEnabled) {
@@ -124,7 +124,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
 		for (Stage stage : threadableStageJobs) {
-			StageExceptionHandler newListener;
+			AbstractStageExceptionHandler newListener;
 			try {
 				newListener = listener.newInstance();
 			} catch (InstantiationException e) {

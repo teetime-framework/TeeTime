@@ -15,7 +15,7 @@
  */
 package teetime.framework;
 
-import teetime.framework.exceptionHandling.StageExceptionHandler;
+import teetime.framework.exceptionHandling.AbstractStageExceptionHandler;
 import teetime.framework.idle.IdleStrategy;
 import teetime.framework.idle.YieldStrategy;
 import teetime.framework.signal.ISignal;
@@ -32,11 +32,11 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	 * @param stage
 	 *            to execute within an own thread
 	 */
-	public RunnableConsumerStage(final Stage stage, final StageExceptionHandler exceptionListener) {
+	public RunnableConsumerStage(final Stage stage, final AbstractStageExceptionHandler exceptionListener) {
 		this(stage, new YieldStrategy(), exceptionListener);
 	}
 
-	public RunnableConsumerStage(final Stage stage, final IdleStrategy idleStrategy, final StageExceptionHandler exceptionListener) {
+	public RunnableConsumerStage(final Stage stage, final IdleStrategy idleStrategy, final AbstractStageExceptionHandler exceptionListener) {
 		super(stage, exceptionListener);
 		this.inputPorts = stage.getInputPorts(); // FIXME should getInputPorts() really be defined in Stage?
 	}

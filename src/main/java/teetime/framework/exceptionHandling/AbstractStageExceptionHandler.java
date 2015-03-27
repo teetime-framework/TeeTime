@@ -9,7 +9,7 @@ import teetime.framework.Stage;
  * Represent a minimalistic StageExceptionListener. Listener which extend from this one, must a least implement this functionality.
  * This abstract class provides a Logger {@link #logger} and a method to terminate the threads execution {@link #terminateExecution()}.
  */
-public abstract class StageExceptionHandler {
+public abstract class AbstractStageExceptionHandler {
 
 	public enum FurtherExecution {
 		CONTINUE, TERMINATE
@@ -20,7 +20,7 @@ public abstract class StageExceptionHandler {
 	 */
 	protected final Logger logger;
 
-	public StageExceptionHandler() {
+	public AbstractStageExceptionHandler() {
 		this.logger = LoggerFactory.getLogger(this.getClass().getCanonicalName());
 	}
 
