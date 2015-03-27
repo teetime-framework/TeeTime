@@ -2,7 +2,7 @@ package teetime.framework;
 
 import teetime.framework.pipe.IPipe;
 
-public interface StageVisitor {
+public interface IStageVisitor {
 
 	public enum VisitorBehavior {
 		CONTINUE, STOP

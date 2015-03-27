@@ -3,15 +3,15 @@ package teetime.framework;
 import java.util.HashSet;
 import java.util.Set;
 
-import teetime.framework.StageVisitor.VisitorBehavior;
+import teetime.framework.IStageVisitor.VisitorBehavior;
 import teetime.framework.pipe.IPipe;
 
 public class Traversor {
 
-	private final StageVisitor stageVisitor;
+	private final IStageVisitor stageVisitor;
 	private final Set<Stage> visitedStage = new HashSet<Stage>();
 
-	public Traversor(final StageVisitor stageVisitor) {
+	public Traversor(final IStageVisitor stageVisitor) {
 		this.stageVisitor = stageVisitor;
 	}
 
