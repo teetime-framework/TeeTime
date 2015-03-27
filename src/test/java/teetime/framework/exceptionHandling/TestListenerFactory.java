@@ -3,7 +3,7 @@ package teetime.framework.exceptionHandling;
 public class TestListenerFactory implements IExceptionListenerFactory {
 
 	@Override
-	public AbstractExceptionListener newHandlerInstance() {
+	public AbstractExceptionListener create() {
 		return new TestListener();
 	}
 

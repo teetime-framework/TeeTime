@@ -126,7 +126,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 		}
 		for (Stage stage : threadableStageJobs) {
 			AbstractExceptionListener newListener;
-			newListener = factory.newHandlerInstance();
+			newListener = factory.create();
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
 				final Thread thread = new Thread(new RunnableConsumerStage(stage, newListener));
