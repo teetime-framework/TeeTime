@@ -46,6 +46,11 @@ public class MergerTestingPipe implements IPipe {
 		return this.terminateSent;
 	}
 
+	public void reset() {
+		this.startSent = false;
+		this.terminateSent = false;
+	}
+
 	@Override
 	public boolean add(final Object element) {
 		return false;
