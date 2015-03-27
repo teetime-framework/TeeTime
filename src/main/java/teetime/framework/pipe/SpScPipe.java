@@ -50,7 +50,7 @@ public final class SpScPipe extends AbstractInterThreadPipe implements IMonitora
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				// FIXME Handle it correctly
 				e.printStackTrace();
 			}
 		}

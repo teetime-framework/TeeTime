@@ -32,10 +32,9 @@ public class ExceptionTestProducerStage extends AbstractProducerStage<Object> {
 	@Override
 	protected void execute() {
 		getOutputPort().send(new Object());
-		if (numberOfExecutions >= 10000) {
+		if (numberOfExecutions++ >= 10000 && strategy == TerminationStrategy.BY_SELF_DECISION) {
 			this.terminate();
 		}
-		numberOfExecutions++;
 	}
 
 	@Override
@@ -43,4 +42,11 @@ public class ExceptionTestProducerStage extends AbstractProducerStage<Object> {
 		return strategy;
 	}
 
+	@Override
+	public String getId() {
+		if (strategy == TerminationStrategy.BY_INTERRUPT) {
+			return "Infinite" + super.getId();
+		}
+		return "Finite" + super.getId();
+	}
 }
