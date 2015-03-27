@@ -24,6 +24,8 @@ import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
+import teetime.framework.signal.StartingSignal;
+import teetime.framework.signal.TerminatingSignal;
 
 /**
  *
@@ -59,7 +61,6 @@ public final class Merger<T> extends AbstractStage {
 		if (token == null) {
 			returnNoElement();
 		}
-
 		outputPort.send(token);
 	}
 
@@ -88,19 +89,27 @@ public final class Merger<T> extends AbstractStage {
 			if (!set.add(inputPort)) {
 				this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
 			}
-
+			if (signalMap.get(signalClass).size() == this.getInputPorts().length && signalClass == TerminatingSignal.class) {
+				signal.trigger(this);
+				sendSignalToOutputPorts(signal);
+				signalMap.remove(signalClass);
+			}
 		} else {
 			Set<InputPort<?>> tempSet = new HashSet<InputPort<?>>();
 			tempSet.add(inputPort);
 			signalMap.put((Class<ISignal>) signalClass, tempSet);
+			if (signalClass == StartingSignal.class) {
+				signal.trigger(this);
+				sendSignalToOutputPorts(signal);
+			}
 		}
 
-		if (signalMap.get(signalClass).size() == this.getInputPorts().length) {
-			signal.trigger(this);
-			this.outputPort.sendSignal(signal);
-			signalMap.remove(signalClass);
-		}
+	}
 
+	private void sendSignalToOutputPorts(final ISignal signal) {
+		for (OutputPort<?> outputPort : getOutputPorts()) {
+			outputPort.sendSignal(signal);
+		}
 	}
 
 	public IMergerStrategy getMergerStrategy() {

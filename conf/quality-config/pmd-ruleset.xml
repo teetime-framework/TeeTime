@@ -21,12 +21,12 @@
 	<rule ref="rulesets/java/empty.xml" />
 	<rule ref="rulesets/java/finalizers.xml" />
 	<rule ref="rulesets/java/imports.xml" />
-<!-- 	<rule ref="rulesets/java/j2ee.xml" /> -->
-<!-- 	<rule ref="rulesets/java/javabeans.xml" /> -->
+	<!-- <rule ref="rulesets/java/j2ee.xml" /> -->
+	<!-- <rule ref="rulesets/java/javabeans.xml" /> -->
 	<rule ref="rulesets/java/junit.xml" />
 	<rule ref="rulesets/java/logging-jakarta-commons.xml" />
 	<rule ref="rulesets/java/logging-java.xml" />
-	
+
 	<rule ref="rulesets/java/migrating.xml" />
 	<rule ref="rulesets/java/naming.xml" />
 	<!-- <rule ref="rulesets/java/optimizations.xml" /> -->
@@ -61,14 +61,15 @@
 
 	<rule ref="rulesets/java/controversial.xml">
 		<exclude name="AtLeastOneConstructor" />
+		<exclude name="AvoidUsingVolatile" />
 	</rule>
-	
+
 	<rule ref="rulesets/java/j2ee.xml">
 		<exclude name="DoNotUseThreads" />
 	</rule>
-	
+
 	<rule ref="rulesets/java/javabeans.xml">
-		<exclude name="BeanMembersShouldSerialize"/>
+		<exclude name="BeanMembersShouldSerialize" />
 	</rule>
 
 	<rule ref="rulesets/java/naming.xml/VariableNamingConventions">
@@ -78,5 +79,6 @@
 	<rule ref="rulesets/java/optimizations.xml">
 		<exclude name="LocalVariableCouldBeFinal" />
 	</rule>
+
 
 </ruleset>

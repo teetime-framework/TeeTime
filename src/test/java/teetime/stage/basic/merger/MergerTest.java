@@ -16,7 +16,15 @@
 package teetime.stage.basic.merger;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static teetime.framework.test.StageTester.test;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +33,7 @@ import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.SingleElementPipeFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
+import teetime.util.Pair;
 
 /**
  * @author Nils Christian Ehmke
@@ -72,4 +81,19 @@ public class MergerTest {
 		assertThat(this.collector.getElements(), contains(1, 2, 3));
 	}
 
+	@Test
+	public void roundRobinShouldWork2() {
+		mergerUnderTest = new Merger<Integer>(new RoundRobinStrategy());
+
+		List<Integer> outputList = new ArrayList<Integer>();
+		Collection<Pair<Thread, Throwable>> exceptions = test(mergerUnderTest)
+				.and().send(1, 2, 3).to(mergerUnderTest.getNewInputPort())
+				.and().send(4, 5, 6).to(mergerUnderTest.getNewInputPort())
+				.and().receive(outputList).from(mergerUnderTest.getOutputPort())
+				.start();
+
+		assertThat(exceptions, is(empty()));
+		assertThat(outputList, is(not(empty())));
+		assertThat(outputList, contains(1, 4, 2, 5, 3, 6));
+	}
 }

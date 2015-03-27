@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.idle;
+package teetime.framework.pipe;
 
-/**
- *
- * @author Christian Wulf
- *
- * @deprecated since 1.1
- */
-@Deprecated
-public interface IdleStrategy {
+public interface IMonitorablePipe {
 
-	void execute() throws InterruptedException;
+	long getNumPushes();
+
+	long getNumPulls();
+
+	int size();
+
+	long getPushThroughput();
+
+	long getPullThroughput();
 }

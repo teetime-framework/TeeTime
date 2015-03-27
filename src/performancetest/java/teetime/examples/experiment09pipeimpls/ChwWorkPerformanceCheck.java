@@ -16,12 +16,13 @@
 package teetime.examples.experiment09pipeimpls;
 
 import static org.junit.Assert.assertEquals;
+import teetime.examples.HostName;
 
 class ChwWorkPerformanceCheck extends AbstractPerformanceCheck {
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {
-		return "ChwWork";
+		return HostName.CHW_WORK.toString();
 	}
 
 	@Override

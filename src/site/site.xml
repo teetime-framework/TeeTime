@@ -95,7 +95,7 @@
 			</brand>
 			<slogan>
 				<![CDATA[
-				<span class="slogan">The next level Pipes-And-Filters-Framework for Java</span>
+				<span class="slogan">The next-generation Pipe-and-Filter Framework for Java</span>
 				]]>
 			</slogan>
 			<titleTemplate>%2$s | %1$s</titleTemplate>

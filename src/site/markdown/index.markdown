@@ -21,17 +21,22 @@ Predefined stages are provided within the source code. You can immediatly start 
 
 ## What is it?
 
-TeeTime is a Pipes-And-Filters-Framework for Java.
-	
-It provides various features, which will bring you to the next level of analysis programming, such as:
-		
-- Concurrent execution of stages
-		
-- Flexible connection between stages
-		
-- Typed ports
-		
-- Pre-defined stages and pipelines
+TeeTime is a Pipe-and-Filter Framework for Java.
+
+It provides support for the *modeling* and the *execution* of P&F architectures.
+In particular, it features...
+
+- many primitive and composite ready-to-use stages
+
+- a type-safety way to develop and connect stages
+
+- no(!) single-threaded overhead
+
+- only a minimal multi-threaded overhead
+
+- threads can be assigned to stages arbitrarily
+
+- and many more...
 
 ## Where to get it?
 

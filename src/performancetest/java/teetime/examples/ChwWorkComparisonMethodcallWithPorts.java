@@ -28,7 +28,7 @@ public class ChwWorkComparisonMethodcallWithPorts extends AbstractProfiledPerfor
 
 	@Override
 	public String getCorrespondingPerformanceProfile() {
-		return "ChwWork";
+		return HostName.CHW_WORK.toString();
 	}
 
 	@Override

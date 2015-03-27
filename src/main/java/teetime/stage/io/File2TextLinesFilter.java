@@ -29,12 +29,37 @@ import teetime.stage.util.TextLine;
 /**
  * @author Christian Wulf
  *
+ * @since 1.0
+ *
  */
 public final class File2TextLinesFilter extends AbstractConsumerStage<File> {
 
 	private final OutputPort<TextLine> outputPort = this.createOutputPort();
 
-	private String charset = "UTF-8";
+	private final String charset;
+
+	/**
+	 * <ol>
+	 * <li>charset = UTF-8
+	 * </ol>
+	 *
+	 * @since 1.1
+	 */
+	public File2TextLinesFilter() {
+		this("UTF-8");
+	}
+
+	/**
+	 *
+	 * @param charset
+	 *            to be used when interpreting text files
+	 *
+	 * @since 1.1
+	 */
+	public File2TextLinesFilter(final String charset) {
+		super();
+		this.charset = charset;
+	}
 
 	@Override
 	protected void execute(final File textFile) {
@@ -65,10 +90,6 @@ public final class File2TextLinesFilter extends AbstractConsumerStage<File> {
 
 	public String getCharset() {
 		return this.charset;
-	}
-
-	public void setCharset(final String charset) {
-		this.charset = charset;
 	}
 
 	public OutputPort<TextLine> getOutputPort() {

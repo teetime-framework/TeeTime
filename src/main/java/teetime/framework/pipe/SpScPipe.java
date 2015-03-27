@@ -15,26 +15,23 @@
  */
 package teetime.framework.pipe;
 
-import java.util.Queue;
-
-import org.jctools.queues.QueueFactory;
-import org.jctools.queues.spec.ConcurrentQueueSpec;
+import org.jctools.queues.ObservableSpScArrayQueue;
 
 import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class SpScPipe extends AbstractInterThreadPipe {
+public final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe {
 
 	// private static final Logger LOGGER = LoggerFactory.getLogger(SpScPipe.class);
 
-	private final Queue<Object> queue;
+	private final ObservableSpScArrayQueue<Object> queue;
 	// statistics
 	private int numWaits;
 
 	<T> SpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		super(sourcePort, targetPort);
-		this.queue = QueueFactory.newQueue(ConcurrentQueueSpec.createBoundedSpsc(capacity));
+		this.queue = new ObservableSpScArrayQueue<Object>(capacity);
 	}
 
 	@Deprecated
@@ -84,6 +81,26 @@ public final class SpScPipe extends AbstractInterThreadPipe {
 	// BETTER find a solution w/o any thread-safe code in this stage
 	public synchronized int getNumWaits() {
 		return this.numWaits;
+	}
+
+	@Override
+	public long getPushThroughput() {
+		return queue.getProducerFrequency();
+	}
+
+	@Override
+	public long getPullThroughput() {
+		return queue.getConsumerFrequency();
+	}
+
+	@Override
+	public long getNumPushes() {
+		return queue.getNumPushes();
+	}
+
+	@Override
+	public long getNumPulls() {
+		return queue.getNumPulls();
 	}
 
 }
