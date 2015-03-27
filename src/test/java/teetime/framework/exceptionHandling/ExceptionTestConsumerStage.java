@@ -1,4 +1,6 @@
-package teetime.framework;
+package teetime.framework.exceptionHandling;
+
+import teetime.framework.AbstractConsumerStage;
 
 public class ExceptionTestConsumerStage extends AbstractConsumerStage<Object> {
 

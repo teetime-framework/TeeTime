@@ -1,5 +1,6 @@
-package teetime.framework;
+package teetime.framework.exceptionHandling;
 
+import teetime.framework.AnalysisConfiguration;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 

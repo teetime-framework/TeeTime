@@ -1,4 +1,4 @@
-package teetime.framework;
+package teetime.framework.exceptionHandling;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -6,17 +6,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.framework.exceptionHandling.TestListener;
+import teetime.framework.Analysis;
 
 public class ExceptionHandling {
 
-	private Class<TestListener> listener;
 	private Analysis analysis;
 
 	@Before
 	public void newInstances() {
-		listener = TestListener.class;
-		analysis = new Analysis(new ExceptionTestConfiguration(), listener);
+		analysis = new Analysis(new ExceptionTestConfiguration(), new TestListenerFactory());
 	}
 
 	@Test(timeout = 5000, expected = RuntimeException.class)

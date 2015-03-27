@@ -4,13 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.StageException;
-import teetime.framework.exceptionHandling.AbstractStageExceptionHandler;
-import teetime.framework.exceptionHandling.AbstractStageExceptionHandler.FurtherExecution;
+import teetime.framework.exceptionHandling.AbstractExceptionListener;
+import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExecution;
 import teetime.framework.signal.TerminatingSignal;
 
 abstract class AbstractRunnableStage implements Runnable {
 
-	private final AbstractStageExceptionHandler exceptionHandler;
+	private final AbstractExceptionListener exceptionHandler;
 
 	private static final String TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION = "Terminating thread due to the following exception: ";
 
@@ -18,7 +18,7 @@ abstract class AbstractRunnableStage implements Runnable {
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
-	public AbstractRunnableStage(final Stage stage, final AbstractStageExceptionHandler exceptionHandler) {
+	public AbstractRunnableStage(final Stage stage, final AbstractExceptionListener exceptionHandler) {
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
 		this.exceptionHandler = exceptionHandler;

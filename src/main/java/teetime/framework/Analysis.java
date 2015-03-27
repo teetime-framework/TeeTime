@@ -24,8 +24,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.exceptionHandling.IgnoringStageListener;
-import teetime.framework.exceptionHandling.AbstractStageExceptionHandler;
+import teetime.framework.exceptionHandling.AbstractExceptionListener;
+import teetime.framework.exceptionHandling.IExceptionListenerFactory;
+import teetime.framework.exceptionHandling.IgnoringExceptionListenerFactory;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.Pair;
@@ -43,7 +44,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 
 	private final AnalysisConfiguration configuration;
 
-	private final Class<? extends teetime.framework.exceptionHandling.AbstractStageExceptionHandler> listener;
+	private final IExceptionListenerFactory factory;
 
 	private boolean executionInterrupted = false;
 
@@ -62,13 +63,13 @@ public final class Analysis implements UncaughtExceptionHandler {
 	 *            to be used for the analysis
 	 */
 	public Analysis(final AnalysisConfiguration configuration) {
-		this(configuration, false, IgnoringStageListener.class);
+		this(configuration, false, new IgnoringExceptionListenerFactory());
 	}
 
 	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
 	// TODO remove @SuppressWarnings if init is no longer deprecated
 	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled) {
-		this(configuration, validationEnabled, IgnoringStageListener.class);
+		this(configuration, validationEnabled, new IgnoringExceptionListenerFactory());
 	}
 
 	/**
@@ -76,16 +77,16 @@ public final class Analysis implements UncaughtExceptionHandler {
 	 *
 	 * @param configuration
 	 *            to be used for the analysis
-	 * @param listener
+	 * @param factory
 	 *            specific listener for the exception handling
 	 */
-	public Analysis(final AnalysisConfiguration configuration, final Class<? extends AbstractStageExceptionHandler> listener) {
-		this(configuration, false, listener);
+	public Analysis(final AnalysisConfiguration configuration, final IExceptionListenerFactory factory) {
+		this(configuration, false, factory);
 	}
 
-	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled, final Class<? extends AbstractStageExceptionHandler> listener) {
+	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled, final IExceptionListenerFactory factory) {
 		this.configuration = configuration;
-		this.listener = listener;
+		this.factory = factory;
 		if (validationEnabled) {
 			validateStages();
 		}
@@ -124,14 +125,8 @@ public final class Analysis implements UncaughtExceptionHandler {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
 		for (Stage stage : threadableStageJobs) {
-			AbstractStageExceptionHandler newListener;
-			try {
-				newListener = listener.newInstance();
-			} catch (InstantiationException e) {
-				throw new IllegalStateException(e);
-			} catch (IllegalAccessException e) {
-				throw new IllegalStateException(e);
-			}
+			AbstractExceptionListener newListener;
+			newListener = factory.newHandlerInstance();
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
 				final Thread thread = new Thread(new RunnableConsumerStage(stage, newListener));

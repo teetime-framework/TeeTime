@@ -2,7 +2,7 @@ package teetime.framework.exceptionHandling;
 
 import teetime.framework.Stage;
 
-public class LoggingStageListener extends AbstractStageExceptionHandler {
+public class LoggingExceptionListenerListener extends AbstractExceptionListener {
 
 	@Override
 	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {

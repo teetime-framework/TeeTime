@@ -1,4 +1,8 @@
-package teetime.framework;
+package teetime.framework.exceptionHandling;
+
+import teetime.framework.AbstractProducerStage;
+import teetime.framework.InputPort;
+import teetime.framework.TerminationStrategy;
 
 public class ExceptionTestProducerStage extends AbstractProducerStage<Object> {
 
