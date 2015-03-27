@@ -129,14 +129,15 @@ public final class Analysis implements UncaughtExceptionHandler {
 			newListener = factory.create();
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
-				final Thread thread = new Thread(new RunnableConsumerStage(stage, newListener));
+				final RunnableConsumerStage runnableConsumerStage = new RunnableConsumerStage(stage, newListener);
+				final Thread thread = new Thread(runnableConsumerStage);
 				stage.setOwningThread(thread);
 				this.consumerThreads.add(thread);
 				thread.setName(stage.getId());
 				break;
 			}
 			case BY_SELF_DECISION: {
-				RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
+				final RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
 				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.finiteProducerThreads.add(thread);
@@ -144,7 +145,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 				break;
 			}
 			case BY_INTERRUPT: {
-				RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
+				final RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
 				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.infiniteProducerThreads.add(thread);
