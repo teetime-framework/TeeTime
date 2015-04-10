@@ -315,7 +315,7 @@
 				<configuration>
 					<header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
 					<properties>
-						<owner>TeeTime</owner>
+						<owner>Christian Wulf, Nelson Tavares de Sousa</owner>
 						<email>http://teetime.sourceforge.net</email>
 					</properties>
 					<includes>
