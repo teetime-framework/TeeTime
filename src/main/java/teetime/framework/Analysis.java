@@ -164,7 +164,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 	 *
 	 * @return a collection of thread/throwable pairs
 	 *
-	 * @deprecated As of release 1.1, replaced by {@link #execute()}
+	 * @deprecated since 1.1, replaced by {@link #execute()}
 	 */
 	@Deprecated
 	public Collection<Pair<Thread, Throwable>> start() {
@@ -203,6 +203,9 @@ public final class Analysis implements UncaughtExceptionHandler {
 	/**
 	 * This method will start the Analysis and all containing stages.
 	 *
+	 * @throws AnalysisException
+	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable
+	 *
 	 * @since 1.1
 	 */
 	public void execute() {
@@ -222,7 +225,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 	/**
 	 * Retrieves the Configuration which was used to add and arrange all stages needed for the Analysis
 	 *
-	 * @return Configuration used for the Analysis
+	 * @return the configuration used for the Analysis
 	 */
 	public AnalysisConfiguration getConfiguration() {
 		return this.configuration;
