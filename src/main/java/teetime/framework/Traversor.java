@@ -51,4 +51,8 @@ public class Traversor {
 			}
 		}
 	}
+
+	public Set<Stage> getVisitedStage() {
+		return visitedStage;
+	}
 }
