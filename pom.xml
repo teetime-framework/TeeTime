@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 
 	<name>TeeTime</name>
-	<description>TeeTime is a Pipes-and-Filters framework for Java</description>
+	<description>TeeTime is a Pipe-and-Filter framework for Java</description>
 	<url>http://teetime.sourceforge.org</url>
 	<inceptionYear>2015</inceptionYear>
 
