@@ -31,14 +31,15 @@ public class Traversor {
 	}
 
 	public void traverse(final Stage stage, final IPipe inputPipe) {
-		if (!visitedStage.contains(stage)) {
-			visitedStage.add(stage);
-		} else {
-			return;
-		}
 
 		VisitorBehavior visitorBehavior = stageVisitor.visit(stage, inputPipe);
 		if (visitorBehavior == VisitorBehavior.STOP) {
+			return;
+		}
+
+		if (!visitedStage.contains(stage)) {
+			visitedStage.add(stage);
+		} else {
 			return;
 		}
 

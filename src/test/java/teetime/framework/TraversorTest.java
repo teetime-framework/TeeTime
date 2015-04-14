@@ -1,6 +1,10 @@
 package teetime.framework;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -24,21 +28,28 @@ public class TraversorTest {
 	@Test
 	public void traverse() {
 		TestConfiguration tc = new TestConfiguration();
+		new Analysis(tc).execute();
 		traversor.traverse(tc.init, tc.init.getOutputPort().getPipe());
-		System.out.println(traversor.getVisitedStage());
+		Set<Stage> comparingSet = new HashSet<Stage>();
+		comparingSet.add(tc.init);
+		comparingSet.add(tc.f2b);
+		comparingSet.add(tc.distributor);
+		assertTrue(comparingSet.equals(traversor.getVisitedStage()));
 	}
 
 	private class TestConfiguration extends AnalysisConfiguration {
 
 		public final CountingMapMerger<String> result = new CountingMapMerger<String>();
 		public final InitialElementProducer<File> init;
+		public final File2SeqOfWords f2b;
+		public Distributor<String> distributor;
 
 		public TestConfiguration() {
-			int threads = 1;
+			int threads = 2;
 			init = new InitialElementProducer<File>(new File(""));
 			// final File2Lines f2b = new File2Lines();
-			final File2SeqOfWords f2b = new File2SeqOfWords("UTF-8", 512);
-			Distributor<String> distributor = new Distributor<String>(new RoundRobinStrategy2());
+			f2b = new File2SeqOfWords("UTF-8", 512);
+			distributor = new Distributor<String>(new RoundRobinStrategy2());
 
 			// last part
 			final Merger<CountingMap<String>> merger = new Merger<CountingMap<String>>();
