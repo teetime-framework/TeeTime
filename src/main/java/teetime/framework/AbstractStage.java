@@ -15,7 +15,7 @@
  */
 package teetime.framework;
 
-import java.util.ArrayList;
+import java.lang.reflect.Array;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,31 +29,20 @@ public abstract class AbstractStage extends Stage {
 
 	private static final IPipe DUMMY_PORT = new DummyPipe();
 
-	private final List<InputPort<?>> inputPortList = new ArrayList<InputPort<?>>();
-	private final List<OutputPort<?>> outputPortList = new ArrayList<OutputPort<?>>();
 	private final Set<ISignal> triggeredSignals = new HashSet<ISignal>();
 
-	/** A cached instance of <code>inputPortList</code> to avoid creating an iterator each time iterating it */
-	protected InputPort<?>[] cachedInputPorts = new InputPort[0];
-	/** A cached instance of <code>outputPortList</code> to avoid creating an iterator each time iterating it */
-	protected OutputPort<?>[] cachedOutputPorts;
-	/** The current state of this stage */
+	private InputPort<?>[] inputPorts = new InputPort<?>[0];
+	private OutputPort<?>[] outputPorts = new OutputPort<?>[0];
 	private StageState currentState = StageState.CREATED;
 
-	/**
-	 * @return the stage's input ports
-	 */
 	@Override
 	public InputPort<?>[] getInputPorts() {
-		// return this.cachedInputPorts;
-		return inputPortList.toArray(new InputPort<?>[0]); // FIXME remove work-around
+		return inputPorts;
 	}
 
-	/**
-	 * @return the stage's output ports
-	 */
+	@Override
 	protected OutputPort<?>[] getOutputPorts() {
-		return this.cachedOutputPorts;
+		return this.outputPorts;
 	}
 
 	@Override
@@ -70,7 +59,7 @@ public abstract class AbstractStage extends Stage {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
 			signal.trigger(this);
 
-			for (OutputPort<?> outputPort : outputPortList) {
+			for (OutputPort<?> outputPort : outputPorts) {
 				outputPort.sendSignal(signal);
 			}
 		}
@@ -108,8 +97,6 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	public void onStarting() throws Exception {
 		this.owningThread = Thread.currentThread();
-		this.cachedInputPorts = this.inputPortList.toArray(new InputPort<?>[0]);
-		this.cachedOutputPorts = this.outputPortList.toArray(new OutputPort<?>[0]);
 
 		this.connectUnconnectedOutputPorts();
 		currentState = StageState.STARTED;
@@ -118,7 +105,7 @@ public abstract class AbstractStage extends Stage {
 
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	private void connectUnconnectedOutputPorts() {
-		for (OutputPort<?> outputPort : this.cachedOutputPorts) {
+		for (OutputPort<?> outputPort : this.outputPorts) {
 			if (null == outputPort.getPipe()) { // if port is unconnected
 				if (logger.isInfoEnabled()) {
 					this.logger.info("Unconnected output port: " + outputPort + ". Connecting with a dummy output port.");
@@ -143,7 +130,7 @@ public abstract class AbstractStage extends Stage {
 	protected <T> InputPort<T> createInputPort() {
 		final InputPort<T> inputPort = new InputPort<T>(this);
 		// inputPort.setType(portType);
-		this.inputPortList.add(inputPort);
+		inputPorts = addElementToArray(inputPort, inputPorts, InputPort.class);
 		return inputPort;
 	}
 
@@ -155,15 +142,22 @@ public abstract class AbstractStage extends Stage {
 	protected <T> OutputPort<T> createOutputPort() {
 		final OutputPort<T> outputPort = new OutputPort<T>();
 		// outputPort.setType(portType);
-		this.outputPortList.add(outputPort);
+		outputPorts = addElementToArray(outputPort, outputPorts, OutputPort.class);
 		return outputPort;
+	}
+
+	private <T> T[] addElementToArray(final T element, final T[] srcArray, final Class<T> arrayType) {
+		@SuppressWarnings("unchecked")
+		T[] newOutputPorts = (T[]) Array.newInstance(arrayType, srcArray.length + 1);
+		System.arraycopy(srcArray, 0, newOutputPorts, 0, srcArray.length);
+		newOutputPorts[srcArray.length] = element;
+		return newOutputPorts;
 	}
 
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	@Override
 	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
-		// for (OutputPort<?> outputPort : this.getOutputPorts()) {
-		for (OutputPort<?> outputPort : this.outputPortList) {
+		for (OutputPort<?> outputPort : outputPorts) {
 			final IPipe pipe = outputPort.getPipe();
 			if (null != pipe) { // if output port is connected with another one
 				final Class<?> sourcePortType = outputPort.getType();
