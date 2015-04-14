@@ -47,20 +47,13 @@ public class TokenizerConfiguration extends AnalysisConfiguration {
 		final Tokenizer tokenizer = new Tokenizer(" ");
 		this.counter = new Counter<String>();
 
-		INTRA_PIPE_FACTORY.create(
-				init.getOutputPort(), f2b.getInputPort());
-		INTRA_PIPE_FACTORY.create(
-				f2b.getOutputPort(), decomp.getInputPort());
-		INTRA_PIPE_FACTORY.create(
-				decomp.getOutputPort(), decrypt.getInputPort());
-		INTRA_PIPE_FACTORY.create(
-				decrypt.getOutputPort(), b2s.getInputPort());
-		INTRA_PIPE_FACTORY.create(
-				b2s.getOutputPort(), tokenizer.getInputPort());
-		INTRA_PIPE_FACTORY.create(
-				tokenizer.getOutputPort(), this.counter.getInputPort());
+		INTRA_PIPE_FACTORY.create(init.getOutputPort(), f2b.getInputPort());
+		INTRA_PIPE_FACTORY.create(f2b.getOutputPort(), decomp.getInputPort());
+		INTRA_PIPE_FACTORY.create(decomp.getOutputPort(), decrypt.getInputPort());
+		INTRA_PIPE_FACTORY.create(decrypt.getOutputPort(), b2s.getInputPort());
+		INTRA_PIPE_FACTORY.create(b2s.getOutputPort(), tokenizer.getInputPort());
+		INTRA_PIPE_FACTORY.create(tokenizer.getOutputPort(), this.counter.getInputPort());
 
-		// this.getFiniteProducerStages().add(init);
 		this.addThreadableStage(init);
 	}
 
