@@ -15,7 +15,7 @@
  */
 package teetime.framework;
 
-import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -130,7 +130,7 @@ public abstract class AbstractStage extends Stage {
 	protected <T> InputPort<T> createInputPort() {
 		final InputPort<T> inputPort = new InputPort<T>(this);
 		// inputPort.setType(portType);
-		inputPorts = addElementToArray(inputPort, inputPorts, InputPort.class);
+		inputPorts = addElementToArray(inputPort, inputPorts);
 		return inputPort;
 	}
 
@@ -142,14 +142,12 @@ public abstract class AbstractStage extends Stage {
 	protected <T> OutputPort<T> createOutputPort() {
 		final OutputPort<T> outputPort = new OutputPort<T>();
 		// outputPort.setType(portType);
-		outputPorts = addElementToArray(outputPort, outputPorts, OutputPort.class);
+		outputPorts = addElementToArray(outputPort, outputPorts);
 		return outputPort;
 	}
 
-	private <T> T[] addElementToArray(final T element, final T[] srcArray, final Class<T> arrayType) {
-		@SuppressWarnings("unchecked")
-		T[] newOutputPorts = (T[]) Array.newInstance(arrayType, srcArray.length + 1);
-		System.arraycopy(srcArray, 0, newOutputPorts, 0, srcArray.length);
+	private <T> T[] addElementToArray(final T element, final T[] srcArray) {
+		T[] newOutputPorts = Arrays.copyOf(srcArray, srcArray.length + 1);
 		newOutputPorts[srcArray.length] = element;
 		return newOutputPorts;
 	}
