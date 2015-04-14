@@ -39,18 +39,9 @@ public abstract class AbstractCompositeStage extends Stage {
 	private static final IPipeFactory INTRA_PIPE_FACTORY = PipeFactoryRegistry.INSTANCE
 			.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 
-	private final List<OutputPort<?>> outputPorts;
-
 	protected abstract Stage getFirstStage();
 
 	protected abstract Collection<? extends Stage> getLastStages();
-
-	public AbstractCompositeStage() {
-		outputPorts = new ArrayList<OutputPort<?>>();
-		for (final Stage s : getLastStages()) {
-			outputPorts.addAll(Arrays.asList(s.getOutputPorts()));
-		}
-	}
 
 	@Override
 	protected final void executeStage() {
@@ -84,6 +75,10 @@ public abstract class AbstractCompositeStage extends Stage {
 
 	@Override
 	protected OutputPort<?>[] getOutputPorts() {
+		List<OutputPort<?>> outputPorts = new ArrayList<OutputPort<?>>();
+		for (final Stage s : getLastStages()) {
+			outputPorts.addAll(Arrays.asList(s.getOutputPorts()));
+		}
 		return outputPorts.toArray(new OutputPort[0]);
 	}
 

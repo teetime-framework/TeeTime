@@ -34,7 +34,7 @@ public class TraversorTest {
 		public final InitialElementProducer<File> init;
 
 		public TestConfiguration() {
-			int threads = 4;
+			int threads = 1;
 			init = new InitialElementProducer<File>(new File(""));
 			// final File2Lines f2b = new File2Lines();
 			final File2SeqOfWords f2b = new File2SeqOfWords("UTF-8", 512);
@@ -57,12 +57,11 @@ public class TraversorTest {
 				// final InputPortSizePrinter<String> inputPortSizePrinter = new InputPortSizePrinter<String>();
 				final WordCounter wc = new WordCounter();
 				// intraFact.create(inputPortSizePrinter.getOutputPort(), wc.getInputPort());
-				final WordCounter threadableStage = wc;
 
-				final IPipe distributorPipe = interFact.create(distributor.getNewOutputPort(), threadableStage.getInputPort(), 10000);
+				final IPipe distributorPipe = interFact.create(distributor.getNewOutputPort(), wc.getInputPort(), 10000);
 				final IPipe mergerPipe = interFact.create(wc.getOutputPort(), merger.getNewInputPort());
 				// Add WordCounter as a threadable stage, so it runs in its own thread
-				addThreadableStage(threadableStage);
+				addThreadableStage(wc);
 
 			}
 

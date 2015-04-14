@@ -44,7 +44,6 @@ public final class WordCounter extends AbstractCompositeStage {
 	// The connection of the different stages is realized within the construction of a instance of this class.
 	public WordCounter() {
 		this.lastStages.add(this.mapCounter);
-
 		final ToLowerCase toLowerCase = new ToLowerCase();
 
 		connectStages(this.tokenizer.getOutputPort(), toLowerCase.getInputPort());
