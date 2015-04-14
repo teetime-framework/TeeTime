@@ -37,9 +37,7 @@ public class Traversor {
 			return;
 		}
 
-		if (!visitedStage.contains(stage)) {
-			visitedStage.add(stage);
-		} else {
+		if (!visitedStage.add(stage)) {
 			return;
 		}
 
