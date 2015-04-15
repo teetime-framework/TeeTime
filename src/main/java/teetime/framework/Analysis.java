@@ -17,8 +17,10 @@ package teetime.framework;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
@@ -112,9 +114,9 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	}
 
 	/**
-	 * This initializes Analysis and needs to be run right before starting it.
+	 * This initializes the analysis and needs to be run right before starting it.
 	 *
-	 * @deprecated since 1.1
+	 * @deprecated since 1.1, analysis will be initialized automatically by the framework
 	 */
 	@Deprecated
 	public final void init() {
@@ -127,12 +129,15 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		if (threadableStageJobs.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
+		AbstractExceptionListener newListener;
+		Set<Stage> intraStages;
 		for (Stage stage : threadableStageJobs) {
-			AbstractExceptionListener newListener;
+			intraStages = traverseIntraStages(stage);
 			newListener = factory.create();
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
 				final RunnableConsumerStage runnableConsumerStage = new RunnableConsumerStage(stage, newListener);
+				runnableConsumerStage.setIntraStages(intraStages);
 				final Thread thread = new Thread(runnableConsumerStage);
 				stage.setOwningThread(thread);
 				this.consumerThreads.add(thread);
@@ -141,6 +146,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			}
 			case BY_SELF_DECISION: {
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
+				runnable.setIntraStages(intraStages);
 				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.finiteProducerThreads.add(thread);
@@ -149,6 +155,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			}
 			case BY_INTERRUPT: {
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
+				runnable.setIntraStages(intraStages);
 				final Thread thread = new Thread(runnable);
 				stage.setOwningThread(thread);
 				this.infiniteProducerThreads.add(thread);
@@ -309,5 +316,14 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			}
 		}
 		this.exceptions.add(Pair.of(thread, throwable));
+	}
+
+	private Set<Stage> traverseIntraStages(final Stage stage) {
+		final Traversor traversor = new Traversor(new IntraStageVisitor());
+		if (stage.getOutputPorts().length == 0) {
+			return new HashSet<Stage>();
+		}
+		traversor.traverse(stage, stage.getOutputPorts()[0].getPipe());
+		return traversor.getVisitedStage();
 	}
 }

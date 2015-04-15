@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import teetime.framework.Analysis;
 
-public class ExceptionHandling {
+public class ExceptionHandlingTest {
 
 	private Analysis analysis;
 
@@ -49,8 +49,8 @@ public class ExceptionHandling {
 	 * SpScPipe.add and cycle through the sleep method. As a result, the thread will never return to the point
 	 * where it checks if it should be terminated.
 	 */
-	@Test(timeout = 30000)
 	@Ignore
+	@Test(timeout = 30000)
 	public void forAFewTimes() {
 		for (int i = 0; i < 1000; i++) {
 			newInstances();
