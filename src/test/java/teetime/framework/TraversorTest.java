@@ -28,7 +28,6 @@ public class TraversorTest {
 	@Test
 	public void traverse() {
 		TestConfiguration tc = new TestConfiguration();
-		new Analysis(tc).execute();
 		traversor.traverse(tc.init, tc.init.getOutputPort().getPipe());
 		Set<Stage> comparingSet = new HashSet<Stage>();
 		comparingSet.add(tc.init);
@@ -37,6 +36,7 @@ public class TraversorTest {
 		assertTrue(comparingSet.equals(traversor.getVisitedStage()));
 	}
 
+	// WordCounterConfiguration
 	private class TestConfiguration extends AnalysisConfiguration {
 
 		public final CountingMapMerger<String> result = new CountingMapMerger<String>();
