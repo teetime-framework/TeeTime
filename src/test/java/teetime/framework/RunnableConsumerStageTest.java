@@ -18,6 +18,7 @@ package teetime.framework;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.Thread.State;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.Ignore;
@@ -117,7 +118,12 @@ public class RunnableConsumerStageTest {
 	}
 
 	private void start(final Analysis analysis) {
-		Collection<Pair<Thread, Throwable>> exceptions = analysis.start();
+		Collection<Pair<Thread, Throwable>> exceptions = new ArrayList<Pair<Thread, Throwable>>();
+		try {
+			analysis.executeBlocking();
+		} catch (AnalysisException e) {
+			exceptions = e.getThrownExceptions();
+		}
 		for (Pair<Thread, Throwable> pair : exceptions) {
 			System.err.println(pair.getSecond());
 			System.err.println(Joiner.on("\n").join(pair.getSecond().getStackTrace()));

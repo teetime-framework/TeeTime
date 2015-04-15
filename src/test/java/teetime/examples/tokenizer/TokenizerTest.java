@@ -44,7 +44,7 @@ public class TokenizerTest {
 
 		final TokenizerConfiguration configuration = new TokenizerConfiguration(inputFile, password);
 		final Analysis analysis = new Analysis(configuration);
-		analysis.start();
+		analysis.executeBlocking();
 
 		final String string = Files.toString(new File("src/test/resources/data/input.txt"), Charset.forName("UTF-8"));
 

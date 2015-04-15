@@ -45,7 +45,7 @@ public class CipherTest {
 
 		final AnalysisConfiguration configuration = new CipherConfiguration(inputFile, outputFile, password);
 		final Analysis analysis = new Analysis(configuration);
-		analysis.start();
+		analysis.executeBlocking();
 
 		Assert.assertTrue(Files.equal(new File(inputFile), new File(outputFile)));
 	}

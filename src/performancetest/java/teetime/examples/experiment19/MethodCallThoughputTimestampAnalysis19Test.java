@@ -77,11 +77,10 @@ public class MethodCallThoughputTimestampAnalysis19Test extends PerformanceTest 
 		configuration.build();
 
 		final Analysis analysis = new Analysis(configuration);
-		analysis.init();
 
 		this.stopWatch.start();
 		try {
-			analysis.start();
+			analysis.executeBlocking();
 		} finally {
 			this.stopWatch.end();
 		}

@@ -29,9 +29,8 @@ public class FiniteSignalPassingTest {
 		boolean exceptionsOccured = false;
 		LoopStageAnalysisConfiguration configuration = new LoopStageAnalysisConfiguration();
 		Analysis analysis = new Analysis(configuration);
-		analysis.init();
 		try {
-			analysis.start();
+			analysis.executeBlocking();
 		} catch (RuntimeException e) {
 			exceptionsOccured = true;
 		}

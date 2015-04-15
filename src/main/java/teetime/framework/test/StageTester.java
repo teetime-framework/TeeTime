@@ -17,7 +17,6 @@ package teetime.framework.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import teetime.framework.Analysis;
@@ -29,7 +28,6 @@ import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.CollectorSink;
 import teetime.stage.IterableProducer;
-import teetime.util.Pair;
 
 /**
  * This class can be used to test single stages in JUnit test cases.
@@ -73,10 +71,10 @@ public final class StageTester {
 		return this;
 	}
 
-	public Collection<Pair<Thread, Throwable>> start() {
+	public void start() {
 		final AnalysisConfiguration configuration = new Configuration(inputHolders, stage, outputHolders);
 		final Analysis analysis = new Analysis(configuration);
-		return analysis.start();
+		analysis.executeBlocking();
 	}
 
 	private final class Configuration extends AnalysisConfiguration {
