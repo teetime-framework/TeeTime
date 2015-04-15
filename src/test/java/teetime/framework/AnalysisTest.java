@@ -7,8 +7,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.concurrent.TimeUnit;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +36,7 @@ public class AnalysisTest {
 		analysis.executeNonBlocking();
 		watch.end();
 
-		assertThat(watch.getDurationInMs() - ABSOLUTE_MAX_ERROR_IN_MS, is(lessThan(DELAY_IN_MS)));
+		assertThat(watch.getDurationInMs(), is(lessThan(DELAY_IN_MS)));
 		assertFalse(analysis.getConfiguration().delay.finished);
 
 		analysis.waitForTermination();
@@ -52,7 +50,7 @@ public class AnalysisTest {
 		analysis.executeBlocking();
 		watch.end();
 
-		assertThat(TimeUnit.NANOSECONDS.toMillis(watch.getDurationInNs()) + 1, is(greaterThanOrEqualTo(DELAY_IN_MS)));
+		assertThat(watch.getDurationInMs() + ABSOLUTE_MAX_ERROR_IN_MS, is(greaterThanOrEqualTo(DELAY_IN_MS)));
 	}
 
 	private static class TestConfig extends AnalysisConfiguration {
