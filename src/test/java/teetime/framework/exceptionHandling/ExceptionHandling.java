@@ -33,7 +33,7 @@ public class ExceptionHandling {
 
 	// @Test(timeout = 5000, expected = RuntimeException.class)
 	public void exceptionPassingAndTermination() {
-		analysis.execute();
+		analysis.executeBlocking();
 		assertEquals(TestListener.exceptionInvoked, 2); // listener did not kill thread to early
 	}
 

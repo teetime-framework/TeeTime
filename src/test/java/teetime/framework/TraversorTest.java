@@ -47,7 +47,6 @@ public class TraversorTest {
 		public TestConfiguration() {
 			int threads = 2;
 			init = new InitialElementProducer<File>(new File(""));
-			// final File2Lines f2b = new File2Lines();
 			f2b = new File2SeqOfWords("UTF-8", 512);
 			distributor = new Distributor<String>(new RoundRobinStrategy2());
 

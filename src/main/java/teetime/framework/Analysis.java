@@ -35,7 +35,7 @@ import teetime.util.Pair;
  * Represents an Analysis to which stages can be added and executed later.
  * This needs a {@link AnalysisConfiguration},
  * in which the adding and configuring of stages takes place.
- * To start the analysis {@link #execute()} needs to be executed.
+ * To start the analysis {@link #executeBlocking()} needs to be executed.
  * This class will automatically create threads and join them without any further commitment.
  */
 public final class Analysis implements UncaughtExceptionHandler {
@@ -164,7 +164,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 	 *
 	 * @return a collection of thread/throwable pairs
 	 *
-	 * @deprecated since 1.1, replaced by {@link #execute()}
+	 * @deprecated since 1.1, replaced by {@link #executeBlocking()}
 	 */
 	@Deprecated
 	public Collection<Pair<Thread, Throwable>> start() {
@@ -196,23 +196,84 @@ public final class Analysis implements UncaughtExceptionHandler {
 		for (Thread thread : this.infiniteProducerThreads) {
 			thread.interrupt();
 		}
-
 		return this.exceptions;
 	}
 
 	/**
-	 * This method will start the Analysis and all containing stages.
+	 * Calling this method will block the current thread, until the analysis terminates.
 	 *
 	 * @throws AnalysisException
 	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable
 	 *
 	 * @since 1.1
 	 */
-	public void execute() {
-		start();
+	public void waitForTermination() {
+
+		try {
+			for (Thread thread : this.finiteProducerThreads) {
+				thread.join();
+			}
+
+			for (Thread thread : this.consumerThreads) {
+				thread.join();
+			}
+		} catch (InterruptedException e) {
+			LOGGER.error("Analysis has stopped unexpectedly", e);
+			for (Thread thread : this.finiteProducerThreads) {
+				thread.interrupt();
+			}
+
+			for (Thread thread : this.consumerThreads) {
+				thread.interrupt();
+			}
+		}
+
+		for (Thread thread : this.infiniteProducerThreads) {
+			thread.interrupt();
+		}
+
 		if (!exceptions.isEmpty()) {
 			throw new AnalysisException(exceptions);
 		}
+	}
+
+	// public void abortEventually() {
+	// for (Thread thread : this.finiteProducerThreads) {
+	// thread.interrupt();
+	// }
+	//
+	// for (Thread thread : this.consumerThreads) {
+	// thread.interrupt();
+	// }
+	//
+	// for (Thread thread : this.infiniteProducerThreads) {
+	// thread.interrupt();
+	// }
+	// }
+
+	/**
+	 * This method will start the Analysis and block until it is finished.
+	 *
+	 * @throws AnalysisException
+	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable
+	 *
+	 * @since 1.1
+	 */
+	public void executeBlocking() {
+		executeNonBlocking();
+		waitForTermination();
+	}
+
+	/**
+	 * This method starts the analysis without waiting for its termination. The method {@link #waitForTermination()} must be called to unsure a correct termination
+	 * of the analysis.
+	 *
+	 * @since 1.1
+	 */
+	public void executeNonBlocking() {
+		startThreads(this.consumerThreads);
+		startThreads(this.finiteProducerThreads);
+		startThreads(this.infiniteProducerThreads);
 	}
 
 	private void startThreads(final Iterable<Thread> threads) {

@@ -118,7 +118,7 @@ public class InstanceOfFilterTest {
 		InstanceOfFilterTestConfig config = new InstanceOfFilterTestConfig();
 		Analysis analysis = new Analysis(config);
 		try {
-			analysis.execute();
+			analysis.executeBlocking();
 		} catch (AnalysisException e) {
 			Collection<Pair<Thread, Throwable>> thrownExceptions = e.getThrownExceptions();
 			// TODO: handle exception
