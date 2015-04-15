@@ -37,12 +37,15 @@ import teetime.util.Pair;
  * in which the adding and configuring of stages takes place.
  * To start the analysis {@link #executeBlocking()} needs to be executed.
  * This class will automatically create threads and join them without any further commitment.
+ *
+ * @param <T>
+ *            the type of the {@link AnalysisConfiguration}
  */
-public final class Analysis implements UncaughtExceptionHandler {
+public final class Analysis<T extends AnalysisConfiguration> implements UncaughtExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Analysis.class);
 
-	private final AnalysisConfiguration configuration;
+	private final T configuration;
 
 	private final IExceptionListenerFactory factory;
 
@@ -62,13 +65,13 @@ public final class Analysis implements UncaughtExceptionHandler {
 	 * @param configuration
 	 *            to be used for the analysis
 	 */
-	public Analysis(final AnalysisConfiguration configuration) {
+	public Analysis(final T configuration) {
 		this(configuration, false, new IgnoringExceptionListenerFactory());
 	}
 
 	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
 	// TODO remove @SuppressWarnings if init is no longer deprecated
-	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled) {
+	public Analysis(final T configuration, final boolean validationEnabled) {
 		this(configuration, validationEnabled, new IgnoringExceptionListenerFactory());
 	}
 
@@ -80,11 +83,11 @@ public final class Analysis implements UncaughtExceptionHandler {
 	 * @param factory
 	 *            specific listener for the exception handling
 	 */
-	public Analysis(final AnalysisConfiguration configuration, final IExceptionListenerFactory factory) {
+	public Analysis(final T configuration, final IExceptionListenerFactory factory) {
 		this(configuration, false, factory);
 	}
 
-	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled, final IExceptionListenerFactory factory) {
+	public Analysis(final T configuration, final boolean validationEnabled, final IExceptionListenerFactory factory) {
 		this.configuration = configuration;
 		this.factory = factory;
 		if (validationEnabled) {
@@ -288,7 +291,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 	 *
 	 * @return the configuration used for the Analysis
 	 */
-	public AnalysisConfiguration getConfiguration() {
+	public T getConfiguration() {
 		return this.configuration;
 	}
 

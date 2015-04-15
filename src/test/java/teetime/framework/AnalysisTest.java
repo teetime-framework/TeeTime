@@ -1,8 +1,15 @@
 package teetime.framework;
 
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import teetime.framework.pipe.IPipeFactory;
@@ -13,53 +20,68 @@ import teetime.util.StopWatch;
 
 public class AnalysisTest {
 
-	private Analysis analysis;
-	private TestConfig configuration;
+	private static final long DELAY_IN_MS = 500;
+	private static final long ABSOLUTE_MAX_ERROR_IN_MS = 1;
+
+	private Analysis<TestConfig> analysis;
+
+	@Before
+	public void before() {
+		TestConfig configuration = new TestConfig();
+		analysis = new Analysis<TestConfig>(configuration);
+	}
 
 	@Test
 	public void testExecuteNonBlocking() throws Exception {
-		newInstances();
+		StopWatch watch = new StopWatch();
+		watch.start();
 		analysis.executeNonBlocking();
-		assertFalse(configuration.delay.finished);
+		watch.end();
+
+		assertThat(watch.getDurationInMs() - ABSOLUTE_MAX_ERROR_IN_MS, is(lessThan(DELAY_IN_MS)));
+		assertFalse(analysis.getConfiguration().delay.finished);
+
 		analysis.waitForTermination();
-		assertTrue(configuration.delay.finished);
+		assertTrue(analysis.getConfiguration().delay.finished);
 	}
 
 	@Test
 	public void testExecuteBlocking() {
 		StopWatch watch = new StopWatch();
-		newInstances();
 		watch.start();
 		analysis.executeBlocking();
 		watch.end();
-		assertTrue(watch.getDurationInNs() >= 500000000);
+
+		assertThat(TimeUnit.NANOSECONDS.toMillis(watch.getDurationInNs()) + 1, is(greaterThanOrEqualTo(DELAY_IN_MS)));
 	}
 
-	private void newInstances() {
-		configuration = new TestConfig();
-		analysis = new Analysis(configuration);
-	}
-
-	private class TestConfig extends AnalysisConfiguration {
+	private static class TestConfig extends AnalysisConfiguration {
 		final IPipeFactory intraFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 		public final DelayAndTerminate delay;
 
 		public TestConfig() {
 			final InitialElementProducer<String> init = new InitialElementProducer<String>("Hello");
-			delay = new DelayAndTerminate();
+			delay = new DelayAndTerminate(DELAY_IN_MS);
 			intraFact.create(init.getOutputPort(), delay.getInputPort());
 			addThreadableStage(init);
 		}
 	}
 
-	private class DelayAndTerminate extends AbstractConsumerStage<String> {
+	private static class DelayAndTerminate extends AbstractConsumerStage<String> {
+
+		private final long delayInMs;
 
 		public boolean finished;
+
+		public DelayAndTerminate(final long delayInMs) {
+			super();
+			this.delayInMs = delayInMs;
+		}
 
 		@Override
 		protected void execute(final String element) {
 			try {
-				Thread.sleep(500);
+				Thread.sleep(delayInMs);
 			} catch (InterruptedException e) {
 			}
 			finished = true;

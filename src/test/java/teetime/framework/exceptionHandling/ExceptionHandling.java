@@ -18,6 +18,7 @@ package teetime.framework.exceptionHandling;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.framework.Analysis;
@@ -49,6 +50,7 @@ public class ExceptionHandling {
 	 * where it checks if it should be terminated.
 	 */
 	@Test(timeout = 30000)
+	@Ignore
 	public void forAFewTimes() {
 		for (int i = 0; i < 1000; i++) {
 			newInstances();
