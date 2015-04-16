@@ -57,7 +57,6 @@ public class ExceptionHandlingTest {
 			} catch (RuntimeException e) {
 				// TODO: handle exception
 			}
-			System.out.println(i);
 		}
 	}
 }
