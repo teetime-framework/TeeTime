@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
@@ -41,6 +42,8 @@ public abstract class Stage {
 	 */
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
+
+	protected AbstractExceptionListener exceptionHandler;
 
 	/** The owning thread of this stage if this stage is directly executed by a {@link AbstractRunnableStage}, <code>null</code> otherwise. */
 	protected Thread owningThread;
@@ -131,4 +134,7 @@ public abstract class Stage {
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public abstract void onTerminating() throws Exception;
 
+	protected final void setExceptionHandler(final AbstractExceptionListener exceptionHandler) {
+		this.exceptionHandler = exceptionHandler;
+	}
 }

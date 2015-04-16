@@ -15,6 +15,7 @@
  */
 package teetime.framework;
 
+import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExecution;
 import teetime.framework.exceptionHandling.StageException;
 
 public abstract class AbstractConsumerStage<I> extends AbstractStage {
@@ -35,7 +36,10 @@ public abstract class AbstractConsumerStage<I> extends AbstractStage {
 		try {
 			this.execute(element);
 		} catch (Exception e) {
-			throw new StageException(e, this);
+			final FurtherExecution furtherExecution = exceptionHandler.onStageException(e, this);
+			if (furtherExecution == FurtherExecution.TERMINATE) {
+				throw new StageException(e, this);
+			}
 		}
 	}
 

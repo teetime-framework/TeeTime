@@ -18,14 +18,10 @@ package teetime.framework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.exceptionHandling.AbstractExceptionListener;
-import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExecution;
 import teetime.framework.exceptionHandling.StageException;
 import teetime.framework.signal.TerminatingSignal;
 
 abstract class AbstractRunnableStage implements Runnable {
-
-	private final AbstractExceptionListener exceptionHandler;
 
 	private static final String TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION = "Terminating thread due to the following exception: ";
 
@@ -33,10 +29,9 @@ abstract class AbstractRunnableStage implements Runnable {
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
-	public AbstractRunnableStage(final Stage stage, final AbstractExceptionListener exceptionHandler) {
+	public AbstractRunnableStage(final Stage stage) {
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
-		this.exceptionHandler = exceptionHandler;
 	}
 
 	@Override
@@ -45,19 +40,13 @@ abstract class AbstractRunnableStage implements Runnable {
 		boolean failed = false;
 		try {
 			beforeStageExecution(stage);
-
-			do {
-				try {
+			try {
+				do {
 					executeStage(stage);
-				} catch (StageException e) {
-					final FurtherExecution furtherExecution = this.exceptionHandler.onStageException(e, e.getThrowingStage());
-					if (furtherExecution == FurtherExecution.TERMINATE) {
-						this.stage.terminate();
-						failed = true;
-					}
-				}
-			} while (!stage.shouldBeTerminated());
-
+				} while (!stage.shouldBeTerminated());
+			} catch (StageException e) {
+				this.stage.terminate();
+			}
 			afterStageExecution(stage);
 
 		} catch (RuntimeException e) {

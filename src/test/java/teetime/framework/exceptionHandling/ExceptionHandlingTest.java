@@ -18,21 +18,20 @@ package teetime.framework.exceptionHandling;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.framework.Analysis;
 
 public class ExceptionHandlingTest {
 
-	private Analysis analysis;
+	private Analysis<ExceptionTestConfiguration> analysis;
 
 	// @Before
 	public void newInstances() {
-		analysis = new Analysis(new ExceptionTestConfiguration(), new TestListenerFactory());
+		analysis = new Analysis<ExceptionTestConfiguration>(new ExceptionTestConfiguration(), new TestListenerFactory());
 	}
 
-	// @Test(timeout = 5000, expected = RuntimeException.class)
+	@Test(timeout = 5000, expected = RuntimeException.class)
 	public void exceptionPassingAndTermination() {
 		analysis.executeBlocking();
 		assertEquals(TestListener.exceptionInvoked, 2); // listener did not kill thread to early
@@ -49,7 +48,6 @@ public class ExceptionHandlingTest {
 	 * SpScPipe.add and cycle through the sleep method. As a result, the thread will never return to the point
 	 * where it checks if it should be terminated.
 	 */
-	@Ignore
 	@Test(timeout = 30000)
 	public void forAFewTimes() {
 		for (int i = 0; i < 1000; i++) {

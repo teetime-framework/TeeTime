@@ -15,7 +15,10 @@
  */
 package teetime.framework;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,6 +52,8 @@ public class StageTest {
 		TestConfig tc = new TestConfig();
 		new Analysis<TestConfig>(tc);
 		assertEquals(tc.init.owningThread, tc.delay.owningThread);
+		assertThat(tc.delay.exceptionHandler, is(notNullValue()));
+		assertEquals(tc.init.exceptionHandler, tc.delay.exceptionHandler);
 	}
 
 	private static class TestConfig extends AnalysisConfiguration {

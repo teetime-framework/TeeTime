@@ -136,30 +136,36 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			newListener = factory.create();
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
-				final RunnableConsumerStage runnableConsumerStage = new RunnableConsumerStage(stage, newListener);
+				final RunnableConsumerStage runnableConsumerStage = new RunnableConsumerStage(stage);
 				final Thread thread = new Thread(runnableConsumerStage);
+				stage.setExceptionHandler(newListener);
 				for (Stage intraStage : intraStages) {
 					intraStage.setOwningThread(thread);
+					intraStage.setExceptionHandler(newListener);
 				}
 				this.consumerThreads.add(thread);
 				thread.setName(stage.getId());
 				break;
 			}
 			case BY_SELF_DECISION: {
-				final RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
+				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
 				final Thread thread = new Thread(runnable);
+				stage.setExceptionHandler(newListener);
 				for (Stage intraStage : intraStages) {
 					intraStage.setOwningThread(thread);
+					intraStage.setExceptionHandler(newListener);
 				}
 				this.finiteProducerThreads.add(thread);
 				thread.setName(stage.getId());
 				break;
 			}
 			case BY_INTERRUPT: {
-				final RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
+				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
 				final Thread thread = new Thread(runnable);
+				stage.setExceptionHandler(newListener);
 				for (Stage intraStage : intraStages) {
 					intraStage.setOwningThread(thread);
+					intraStage.setExceptionHandler(newListener);
 				}
 				this.infiniteProducerThreads.add(thread);
 				thread.setName(stage.getId());
