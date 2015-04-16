@@ -136,27 +136,21 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			newListener = factory.create();
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
-				final RunnableConsumerStage runnableConsumerStage = new RunnableConsumerStage(stage);
-				final Thread thread = new Thread(runnableConsumerStage);
+				final RunnableConsumerStage runnable = new RunnableConsumerStage(stage);
+				final Thread thread = createThread(newListener, intraStages, stage, runnable);
 				this.consumerThreads.add(thread);
-
-				configureThread(newListener, intraStages, stage, thread);
 				break;
 			}
 			case BY_SELF_DECISION: {
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
-				final Thread thread = new Thread(runnable);
+				final Thread thread = createThread(newListener, intraStages, stage, runnable);
 				this.finiteProducerThreads.add(thread);
-
-				configureThread(newListener, intraStages, stage, thread);
 				break;
 			}
 			case BY_INTERRUPT: {
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
-				final Thread thread = new Thread(runnable);
+				final Thread thread = createThread(newListener, intraStages, stage, runnable);
 				this.infiniteProducerThreads.add(thread);
-
-				configureThread(newListener, intraStages, stage, thread);
 				break;
 			}
 			default:
@@ -166,7 +160,8 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 	}
 
-	private void configureThread(final AbstractExceptionListener newListener, final Set<Stage> intraStages, final Stage stage, final Thread thread) {
+	private Thread createThread(final AbstractExceptionListener newListener, final Set<Stage> intraStages, final Stage stage, final AbstractRunnableStage runnable) {
+		final Thread thread = new Thread(runnable);
 		stage.setExceptionHandler(newListener);
 		for (Stage intraStage : intraStages) {
 			intraStage.setOwningThread(thread);
@@ -174,6 +169,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		}
 		thread.setUncaughtExceptionHandler(this);
 		thread.setName(stage.getId());
+		return thread;
 	}
 
 	/**
