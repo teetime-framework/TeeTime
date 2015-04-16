@@ -15,8 +15,6 @@
  */
 package teetime.framework;
 
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +26,6 @@ import teetime.framework.signal.TerminatingSignal;
 abstract class AbstractRunnableStage implements Runnable {
 
 	private final AbstractExceptionListener exceptionHandler;
-	private Set<Stage> intraStages;
 
 	private static final String TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION = "Terminating thread due to the following exception: ";
 
@@ -91,11 +88,4 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	protected abstract void afterStageExecution(Stage stage);
 
-	public Set<Stage> getIntraStages() {
-		return intraStages;
-	}
-
-	public void setIntraStages(final Set<Stage> intraStages) {
-		this.intraStages = intraStages;
-	}
 }

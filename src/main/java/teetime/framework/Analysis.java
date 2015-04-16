@@ -137,27 +137,30 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
 				final RunnableConsumerStage runnableConsumerStage = new RunnableConsumerStage(stage, newListener);
-				runnableConsumerStage.setIntraStages(intraStages);
 				final Thread thread = new Thread(runnableConsumerStage);
-				stage.setOwningThread(thread);
+				for (Stage intraStage : intraStages) {
+					intraStage.setOwningThread(thread);
+				}
 				this.consumerThreads.add(thread);
 				thread.setName(stage.getId());
 				break;
 			}
 			case BY_SELF_DECISION: {
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
-				runnable.setIntraStages(intraStages);
 				final Thread thread = new Thread(runnable);
-				stage.setOwningThread(thread);
+				for (Stage intraStage : intraStages) {
+					intraStage.setOwningThread(thread);
+				}
 				this.finiteProducerThreads.add(thread);
 				thread.setName(stage.getId());
 				break;
 			}
 			case BY_INTERRUPT: {
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
-				runnable.setIntraStages(intraStages);
 				final Thread thread = new Thread(runnable);
-				stage.setOwningThread(thread);
+				for (Stage intraStage : intraStages) {
+					intraStage.setOwningThread(thread);
+				}
 				this.infiniteProducerThreads.add(thread);
 				thread.setName(stage.getId());
 				break;
