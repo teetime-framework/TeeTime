@@ -31,7 +31,7 @@ public class ExceptionHandlingTest {
 		analysis = new Analysis<ExceptionTestConfiguration>(new ExceptionTestConfiguration(), new TestListenerFactory());
 	}
 
-	@Test(timeout = 5000, expected = RuntimeException.class)
+	@Test(expected = RuntimeException.class)
 	public void exceptionPassingAndTermination() {
 		analysis.executeBlocking();
 		assertEquals(TestListener.exceptionInvoked, 2); // listener did not kill thread to early
@@ -48,9 +48,9 @@ public class ExceptionHandlingTest {
 	 * SpScPipe.add and cycle through the sleep method. As a result, the thread will never return to the point
 	 * where it checks if it should be terminated.
 	 */
-	@Test(timeout = 30000)
+	@Test
 	public void forAFewTimes() {
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 100; i++) {
 			newInstances();
 			try {
 				exceptionPassingAndTermination();
