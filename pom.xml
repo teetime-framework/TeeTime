@@ -73,6 +73,13 @@
 		<url>https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/</url>
 	</ciManagement>
 
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -108,11 +115,16 @@
 			<artifactId>guava</artifactId>
 			<version>18.0</version>
 		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.jctools</groupId> -->
+		<!-- <artifactId>jctools-core</artifactId> -->
+		<!-- <version>1.0</version> -->
+		<!-- <version>1.1-SNAPSHOT</version> -->
+		<!-- </dependency> -->
 		<dependency>
-			<groupId>org.jctools</groupId>
-			<artifactId>jctools-core</artifactId>
-			<version>1.0</version>
-			<!-- <version>1.1-SNAPSHOT</version> -->
+			<groupId>com.github.JCTools</groupId>
+			<artifactId>JCTools</artifactId>
+			<version>3e1afaa505</version>		<!-- SNAPSHOT master version -->
 		</dependency>
 
 		<dependency>

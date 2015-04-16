@@ -19,7 +19,7 @@ import teetime.util.StopWatch;
 public class AnalysisTest {
 
 	private static final long DELAY_IN_MS = 500;
-	private static final long ABSOLUTE_MAX_ERROR_IN_MS = 1;
+	private static final long ABSOLUTE_MAX_ERROR_IN_MS = 2;
 
 	private Analysis<TestConfig> analysis;
 
