@@ -18,6 +18,7 @@ package teetime.framework.pipe;
 import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.StageState;
 import teetime.util.concurrent.queue.ObservableSpScArrayQueue;
 
 public final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe {
@@ -44,8 +45,11 @@ public final class SpScPipe extends AbstractInterThreadPipe implements IMonitora
 	public boolean add(final Object element) {
 		// BETTER introduce a QueueIsFullStrategy
 		while (!this.queue.offer(element)) {
-			this.numWaits++;
 			// Thread.yield();
+			if (this.cachedTargetStage.getCurrentState() == StageState.TERMINATED) {
+				return false;
+			}
+			this.numWaits++;
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
