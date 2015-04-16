@@ -15,11 +15,10 @@
  */
 package teetime.framework.pipe;
 
-import org.jctools.queues.ObservableSpScArrayQueue;
-
 import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.util.concurrent.queue.ObservableSpScArrayQueue;
 
 public final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe {
 

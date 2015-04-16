@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jctools.queues;
+package teetime.util.concurrent.queue;
+
+import org.jctools.queues.SpscArrayQueue;
 
 public final class ObservableSpScArrayQueue<E> extends SpscArrayQueue<E> {
 
