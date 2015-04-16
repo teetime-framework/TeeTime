@@ -144,6 +144,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 					intraStage.setExceptionHandler(newListener);
 				}
 				this.consumerThreads.add(thread);
+				thread.setUncaughtExceptionHandler(this);
 				thread.setName(stage.getId());
 				break;
 			}
@@ -156,6 +157,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 					intraStage.setExceptionHandler(newListener);
 				}
 				this.finiteProducerThreads.add(thread);
+				thread.setUncaughtExceptionHandler(this);
 				thread.setName(stage.getId());
 				break;
 			}
@@ -168,6 +170,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 					intraStage.setExceptionHandler(newListener);
 				}
 				this.infiniteProducerThreads.add(thread);
+				thread.setUncaughtExceptionHandler(this);
 				thread.setName(stage.getId());
 				break;
 			}
@@ -298,7 +301,6 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 	private void startThreads(final Iterable<Thread> threads) {
 		for (Thread thread : threads) {
-			thread.setUncaughtExceptionHandler(this);
 			thread.start();
 		}
 	}
