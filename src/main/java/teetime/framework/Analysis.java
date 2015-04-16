@@ -256,19 +256,20 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		}
 	}
 
-	// public void abortEventually() {
-	// for (Thread thread : this.finiteProducerThreads) {
-	// thread.interrupt();
-	// }
-	//
-	// for (Thread thread : this.consumerThreads) {
-	// thread.interrupt();
-	// }
-	//
-	// for (Thread thread : this.infiniteProducerThreads) {
-	// thread.interrupt();
-	// }
-	// }
+	// TODO: implement
+	private void abortEventually() {
+		for (Thread thread : this.finiteProducerThreads) {
+			thread.interrupt();
+		}
+
+		for (Thread thread : this.consumerThreads) {
+			thread.interrupt();
+		}
+
+		for (Thread thread : this.infiniteProducerThreads) {
+			thread.interrupt();
+		}
+	}
 
 	/**
 	 * This method will start the Analysis and block until it is finished.
