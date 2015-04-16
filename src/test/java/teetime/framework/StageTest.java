@@ -15,11 +15,17 @@
  */
 package teetime.framework;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Assert;
 import org.junit.Test;
 
+import teetime.framework.pipe.IPipeFactory;
+import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
+import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.Cache;
 import teetime.stage.Counter;
+import teetime.stage.InitialElementProducer;
 
 public class StageTest {
 
@@ -36,6 +42,48 @@ public class StageTest {
 			Cache<Object> cache = new Cache<Object>();
 			Assert.assertEquals("Cache-" + i, cache.getId());
 		}
+	}
+
+	@Test
+	public void testSetOwningThread() throws Exception {
+		TestConfig tc = new TestConfig();
+		new Analysis<TestConfig>(tc);
+		assertEquals(tc.init.owningThread, tc.delay.owningThread);
+	}
+
+	private static class TestConfig extends AnalysisConfiguration {
+		final IPipeFactory intraFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+		public final DelayAndTerminate delay;
+		public InitialElementProducer<String> init;
+
+		public TestConfig() {
+			init = new InitialElementProducer<String>("Hello");
+			delay = new DelayAndTerminate(0);
+			intraFact.create(init.getOutputPort(), delay.getInputPort());
+			addThreadableStage(init);
+		}
+	}
+
+	private static class DelayAndTerminate extends AbstractConsumerStage<String> {
+
+		private final long delayInMs;
+
+		public boolean finished;
+
+		public DelayAndTerminate(final long delayInMs) {
+			super();
+			this.delayInMs = delayInMs;
+		}
+
+		@Override
+		protected void execute(final String element) {
+			try {
+				Thread.sleep(delayInMs);
+			} catch (InterruptedException e) {
+			}
+			finished = true;
+		}
+
 	}
 
 }
