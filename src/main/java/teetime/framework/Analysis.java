@@ -138,40 +138,25 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			case BY_SIGNAL: {
 				final RunnableConsumerStage runnableConsumerStage = new RunnableConsumerStage(stage);
 				final Thread thread = new Thread(runnableConsumerStage);
-				stage.setExceptionHandler(newListener);
-				for (Stage intraStage : intraStages) {
-					intraStage.setOwningThread(thread);
-					intraStage.setExceptionHandler(newListener);
-				}
 				this.consumerThreads.add(thread);
-				thread.setUncaughtExceptionHandler(this);
-				thread.setName(stage.getId());
+
+				configureThread(newListener, intraStages, stage, thread);
 				break;
 			}
 			case BY_SELF_DECISION: {
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
 				final Thread thread = new Thread(runnable);
-				stage.setExceptionHandler(newListener);
-				for (Stage intraStage : intraStages) {
-					intraStage.setOwningThread(thread);
-					intraStage.setExceptionHandler(newListener);
-				}
 				this.finiteProducerThreads.add(thread);
-				thread.setUncaughtExceptionHandler(this);
-				thread.setName(stage.getId());
+
+				configureThread(newListener, intraStages, stage, thread);
 				break;
 			}
 			case BY_INTERRUPT: {
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
 				final Thread thread = new Thread(runnable);
-				stage.setExceptionHandler(newListener);
-				for (Stage intraStage : intraStages) {
-					intraStage.setOwningThread(thread);
-					intraStage.setExceptionHandler(newListener);
-				}
 				this.infiniteProducerThreads.add(thread);
-				thread.setUncaughtExceptionHandler(this);
-				thread.setName(stage.getId());
+
+				configureThread(newListener, intraStages, stage, thread);
 				break;
 			}
 			default:
@@ -179,6 +164,16 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			}
 		}
 
+	}
+
+	private void configureThread(final AbstractExceptionListener newListener, final Set<Stage> intraStages, final Stage stage, final Thread thread) {
+		stage.setExceptionHandler(newListener);
+		for (Stage intraStage : intraStages) {
+			intraStage.setOwningThread(thread);
+			intraStage.setExceptionHandler(newListener);
+		}
+		thread.setUncaughtExceptionHandler(this);
+		thread.setName(stage.getId());
 	}
 
 	/**
