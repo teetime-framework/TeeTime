@@ -139,10 +139,23 @@ public abstract class AbstractStage extends Stage {
 	 * Creates and adds an InputPort to the stage
 	 *
 	 * @return Newly added InputPort
+	 *
 	 */
+	// * @deprecated Since 1.1. Use {@link #createInputPort(Class)} instead.
+	@SuppressWarnings("unchecked")
+	// @Deprecated
 	protected <T> InputPort<T> createInputPort() {
-		final InputPort<T> inputPort = new InputPort<T>(this);
-		// inputPort.setType(portType);
+		return (InputPort<T>) createInputPort(null);
+	}
+
+	/**
+	 * Creates and adds an InputPort to the stage
+	 *
+	 * @param type
+	 * @return Newly added InputPort
+	 */
+	protected <T> InputPort<T> createInputPort(final Class<T> type) {
+		final InputPort<T> inputPort = new InputPort<T>(type, this);
 		this.inputPortList.add(inputPort);
 		return inputPort;
 	}
@@ -151,10 +164,23 @@ public abstract class AbstractStage extends Stage {
 	 * Creates and adds an OutputPort to the stage
 	 *
 	 * @return Newly added OutputPort
+	 *
 	 */
+	// * @deprecated Since 1.1. Use {@link #createOutputPort(Class)} instead.
+	@SuppressWarnings("unchecked")
+	// @Deprecated
 	protected <T> OutputPort<T> createOutputPort() {
-		final OutputPort<T> outputPort = new OutputPort<T>();
-		// outputPort.setType(portType);
+		return (OutputPort<T>) createOutputPort(null);
+	}
+
+	/**
+	 * Creates and adds an OutputPort to the stage
+	 *
+	 * @param type
+	 * @return Newly added OutputPort
+	 */
+	protected <T> OutputPort<T> createOutputPort(final Class<T> type) {
+		final OutputPort<T> outputPort = new OutputPort<T>(type);
 		this.outputPortList.add(outputPort);
 		return outputPort;
 	}

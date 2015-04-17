@@ -29,8 +29,8 @@ import teetime.framework.signal.TerminatingSignal;
  */
 public final class OutputPort<T> extends AbstractPort<T> {
 
-	OutputPort() {
-		super();
+	OutputPort(final Class<T> type) {
+		super(type);
 	}
 
 	/**

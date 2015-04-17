@@ -19,8 +19,8 @@ public final class InputPort<T> extends AbstractPort<T> {
 
 	private final Stage owningStage;
 
-	InputPort(final Stage owningStage) {
-		super();
+	InputPort(final Class<T> type, final Stage owningStage) {
+		super(type);
 		this.owningStage = owningStage;
 	}
 

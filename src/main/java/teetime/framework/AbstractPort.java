@@ -26,7 +26,12 @@ public abstract class AbstractPort<T> {
 	 * <i>Used to validate the connection between two ports at runtime.</i>
 	 * </p>
 	 */
-	protected Class<T> type;
+	protected final Class<T> type;
+
+	public AbstractPort(final Class<T> type) {
+		super();
+		this.type = type;
+	}
 
 	public IPipe getPipe() {
 		return this.pipe;
@@ -38,9 +43,5 @@ public abstract class AbstractPort<T> {
 
 	public Class<T> getType() {
 		return this.type;
-	}
-
-	public void setType(final Class<T> type) {
-		this.type = type;
 	}
 }
