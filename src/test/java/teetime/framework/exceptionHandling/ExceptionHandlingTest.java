@@ -56,6 +56,12 @@ public class ExceptionHandlingTest {
 			boolean exceptionArised = false;
 			try {
 				exceptionPassingAndTermination();
+			} catch (AnalysisException e) {
+				exceptionArised = true;
+			}
+			assertTrue(exceptionArised);
+			exceptionArised = false;
+			try {
 				terminatesAllStages();
 			} catch (AnalysisException e) {
 				exceptionArised = true;
