@@ -67,7 +67,6 @@ abstract class AbstractRunnableStage implements Runnable {
 					stage.onSignal(signal, inputPorts[i]);
 				}
 			}
-			System.out.println("HELLO");
 			throw new IllegalStateException("Terminated by StageExceptionListener");
 		}
 
