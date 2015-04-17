@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package qa;
+package qa.cs;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,11 +22,11 @@ import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public class PluralForCollectionVariableCheck extends Check {
+public class PluralForCollectionVariable extends Check {
 
 	private final Set<String> collectionNames = new HashSet<String>();
 
-	public PluralForCollectionVariableCheck() {
+	public PluralForCollectionVariable() {
 		collectionNames.add("Collection");
 		collectionNames.add("Set");
 		collectionNames.add("List");
