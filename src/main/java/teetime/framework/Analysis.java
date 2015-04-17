@@ -163,6 +163,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	private Thread createThread(final AbstractExceptionListener newListener, final Set<Stage> intraStages, final Stage stage, final AbstractRunnableStage runnable) {
 		final Thread thread = new Thread(runnable);
 		stage.setExceptionHandler(newListener);
+		stage.setOwningThread(thread);
 		for (Stage intraStage : intraStages) {
 			intraStage.setOwningThread(thread);
 			intraStage.setExceptionHandler(newListener);
