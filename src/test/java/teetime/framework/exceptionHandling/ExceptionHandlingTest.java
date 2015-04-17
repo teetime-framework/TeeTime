@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import teetime.framework.Analysis;
+import teetime.framework.AnalysisException;
 import teetime.framework.StageState;
 
 public class ExceptionHandlingTest {
@@ -34,14 +35,12 @@ public class ExceptionHandlingTest {
 		return configuration;
 	}
 
-	@Test
 	public void exceptionPassingAndTermination() {
 		newInstances();
 		analysis.executeBlocking();
-		assertEquals(TestListener.exceptionInvoked, 2); // listener did not kill thread to early
+		assertEquals(TestListener.exceptionInvoked, 2); // listener did not kill thread too early
 	}
 
-	@Test
 	public void terminatesAllStages() {
 		ExceptionTestConfiguration config = newInstances();
 		analysis.executeBlocking();
@@ -53,8 +52,12 @@ public class ExceptionHandlingTest {
 	@Test
 	public void forAFewTimes() {
 		for (int i = 0; i < 100; i++) {
-			newInstances();
-			exceptionPassingAndTermination();
+			try {
+				exceptionPassingAndTermination();
+				terminatesAllStages();
+			} catch (AnalysisException e) {
+				// Correct behavior
+			}
 		}
 	}
 }

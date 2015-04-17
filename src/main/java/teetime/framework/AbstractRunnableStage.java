@@ -46,6 +46,7 @@ abstract class AbstractRunnableStage implements Runnable {
 				} while (!stage.shouldBeTerminated());
 			} catch (StageException e) {
 				this.stage.terminate();
+				failed = true;
 			}
 			afterStageExecution(stage);
 
@@ -66,6 +67,7 @@ abstract class AbstractRunnableStage implements Runnable {
 					stage.onSignal(signal, inputPorts[i]);
 				}
 			}
+			System.out.println("HELLO");
 			throw new IllegalStateException("Terminated by StageExceptionListener");
 		}
 
