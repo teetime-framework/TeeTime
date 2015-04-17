@@ -15,48 +15,46 @@
  */
 package teetime.framework.exceptionHandling;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
 import teetime.framework.Analysis;
+import teetime.framework.StageState;
 
 public class ExceptionHandlingTest {
 
 	private Analysis<ExceptionTestConfiguration> analysis;
 
-	// @Before
-	public void newInstances() {
-		analysis = new Analysis<ExceptionTestConfiguration>(new ExceptionTestConfiguration(), new TestListenerFactory());
+	public ExceptionTestConfiguration newInstances() {
+		ExceptionTestConfiguration configuration = new ExceptionTestConfiguration();
+		analysis = new Analysis<ExceptionTestConfiguration>(configuration, new TestListenerFactory());
+		return configuration;
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void exceptionPassingAndTermination() {
+		newInstances();
 		analysis.executeBlocking();
 		assertEquals(TestListener.exceptionInvoked, 2); // listener did not kill thread to early
 	}
 
 	@Test
 	public void terminatesAllStages() {
-		// TODO: more than one stage and check, if all are terminated (at least 3, each of every terminationtype)
-		assertTrue(true);
+		ExceptionTestConfiguration config = newInstances();
+		analysis.executeBlocking();
+		assertThat(config.first.getCurrentState(), is(StageState.TERMINATED));
+		assertThat(config.second.getCurrentState(), is(StageState.TERMINATED));
+		assertThat(config.third.getCurrentState(), is(StageState.TERMINATED));
 	}
 
-	/**
-	 * If the consumer is terminated first while the pipe is full, the finite producer will be locked in
-	 * SpScPipe.add and cycle through the sleep method. As a result, the thread will never return to the point
-	 * where it checks if it should be terminated.
-	 */
 	@Test
 	public void forAFewTimes() {
 		for (int i = 0; i < 100; i++) {
 			newInstances();
-			try {
-				exceptionPassingAndTermination();
-			} catch (RuntimeException e) {
-				// TODO: handle exception
-			}
+			exceptionPassingAndTermination();
 		}
 	}
 }

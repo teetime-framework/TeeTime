@@ -21,10 +21,14 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 
 public class ExceptionTestConfiguration extends AnalysisConfiguration {
 
+	ExceptionTestProducerStage first;
+	ExceptionTestConsumerStage second;
+	ExceptionTestProducerStage third;
+
 	public ExceptionTestConfiguration() {
-		ExceptionTestProducerStage first = new ExceptionTestProducerStage();
-		ExceptionTestConsumerStage second = new ExceptionTestConsumerStage();
-		ExceptionTestProducerStage third = new ExceptionTestProducerStage();
+		first = new ExceptionTestProducerStage();
+		second = new ExceptionTestConsumerStage();
+		third = new ExceptionTestProducerStage();
 
 		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false)
 				.create(first.getOutputPort(), second.getInputPort());
