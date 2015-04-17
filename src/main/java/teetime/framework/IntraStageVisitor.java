@@ -22,7 +22,7 @@ public class IntraStageVisitor implements IStageVisitor {
 	public IntraStageVisitor() {}
 
 	@Override
-	public VisitorBehavior visit(final Stage stage, final IPipe inputPipe) {
+	public VisitorBehavior visit(final IPipe inputPipe) {
 		if (inputPipe instanceof AbstractIntraThreadPipe) {
 			return VisitorBehavior.CONTINUE;
 		}

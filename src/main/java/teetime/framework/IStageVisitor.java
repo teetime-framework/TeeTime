@@ -23,6 +23,6 @@ public interface IStageVisitor {
 		CONTINUE, STOP
 	}
 
-	VisitorBehavior visit(Stage stage, IPipe inputPipe);
+	VisitorBehavior visit(IPipe inputPipe);
 
 }

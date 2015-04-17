@@ -17,7 +17,6 @@ package teetime.framework;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -162,8 +161,6 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 	private Thread createThread(final AbstractExceptionListener newListener, final Set<Stage> intraStages, final Stage stage, final AbstractRunnableStage runnable) {
 		final Thread thread = new Thread(runnable);
-		stage.setExceptionHandler(newListener);
-		stage.setOwningThread(thread);
 		for (Stage intraStage : intraStages) {
 			intraStage.setOwningThread(thread);
 			intraStage.setExceptionHandler(newListener);
@@ -324,10 +321,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 	private Set<Stage> traverseIntraStages(final Stage stage) {
 		final Traversor traversor = new Traversor(new IntraStageVisitor());
-		if (stage.getOutputPorts().length == 0) {
-			return new HashSet<Stage>();
-		}
-		traversor.traverse(stage, stage.getOutputPorts()[0].getPipe());
+		traversor.traverse(stage);
 		return traversor.getVisitedStage();
 	}
 }

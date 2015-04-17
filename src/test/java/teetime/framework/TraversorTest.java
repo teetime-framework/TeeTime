@@ -28,7 +28,7 @@ public class TraversorTest {
 	@Test
 	public void traverse() {
 		TestConfiguration tc = new TestConfiguration();
-		traversor.traverse(tc.init, tc.init.getOutputPort().getPipe());
+		traversor.traverse(tc.init);
 		Set<Stage> comparingSet = new HashSet<Stage>();
 		comparingSet.add(tc.init);
 		comparingSet.add(tc.f2b);

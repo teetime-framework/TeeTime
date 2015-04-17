@@ -18,6 +18,7 @@ package teetime.framework.exceptionHandling;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -52,12 +53,14 @@ public class ExceptionHandlingTest {
 	@Test
 	public void forAFewTimes() {
 		for (int i = 0; i < 100; i++) {
+			boolean exceptionArised = false;
 			try {
 				exceptionPassingAndTermination();
 				terminatesAllStages();
 			} catch (AnalysisException e) {
-				// Correct behavior
+				exceptionArised = true;
 			}
+			assertTrue(exceptionArised);
 		}
 	}
 }

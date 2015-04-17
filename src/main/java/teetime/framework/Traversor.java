@@ -30,12 +30,7 @@ public class Traversor {
 		this.stageVisitor = stageVisitor;
 	}
 
-	public void traverse(final Stage stage, final IPipe inputPipe) {
-
-		VisitorBehavior visitorBehavior = stageVisitor.visit(stage, inputPipe);
-		if (visitorBehavior == VisitorBehavior.STOP) {
-			return;
-		}
+	public void traverse(final Stage stage) {
 
 		if (!visitedStage.add(stage)) {
 			return;
@@ -44,9 +39,9 @@ public class Traversor {
 		OutputPort<?>[] outputPorts = stage.getOutputPorts();
 		for (OutputPort<?> outputPort : outputPorts) {
 			IPipe pipe = outputPort.getPipe();
-			if (null != pipe) {
+			if (null != pipe && stageVisitor.visit(pipe) == VisitorBehavior.CONTINUE) {
 				Stage owningStage = pipe.getTargetPort().getOwningStage();
-				traverse(owningStage, pipe); // recursive call
+				traverse(owningStage); // recursive call
 			}
 		}
 	}
