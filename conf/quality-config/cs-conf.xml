@@ -1210,6 +1210,8 @@
             <property name="allowEmptyConstructors" value="true"/>
             <property name="allowEmptyMethods"      value="true"/>
         </module>
+        
+        <module name="qa.PluralForCollectionVariableCheck" />
 
     </module>
 
