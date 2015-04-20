@@ -21,6 +21,7 @@ import java.util.List;
 
 import teetime.framework.Analysis;
 import teetime.framework.AnalysisConfiguration;
+import teetime.framework.AnalysisException;
 import teetime.framework.Stage;
 import teetime.framework.StageState;
 import teetime.stage.CollectorSink;
@@ -68,9 +69,17 @@ public final class StageTester {
 		return this;
 	}
 
+	/**
+	 * This method will start the test and block until it is finished.
+	 *
+	 * @throws AnalysisException
+	 *             if at least one exception in one thread has occurred within the analysis.
+	 *             The exception contains the pairs of thread and throwable.
+	 *
+	 */
 	public void start() {
 		final AnalysisConfiguration configuration = new Configuration(inputHolders, stage, outputHolders);
-		final Analysis analysis = new Analysis(configuration);
+		final Analysis<AnalysisConfiguration> analysis = new Analysis<AnalysisConfiguration>(configuration);
 		analysis.executeBlocking();
 	}
 

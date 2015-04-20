@@ -267,7 +267,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	 * This method will start the Analysis and block until it is finished.
 	 *
 	 * @throws AnalysisException
-	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable
+	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable.
 	 *
 	 * @since 1.1
 	 */

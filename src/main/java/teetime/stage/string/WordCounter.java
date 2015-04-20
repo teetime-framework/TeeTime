@@ -45,8 +45,8 @@ public final class WordCounter extends AbstractCompositeStage {
 		this.lastStages.add(this.mapCounter);
 		final ToLowerCase toLowerCase = new ToLowerCase();
 
-		connectStages(this.tokenizer.getOutputPort(), toLowerCase.getInputPort());
-		connectStages(toLowerCase.getOutputPort(), this.mapCounter.getInputPort());
+		connectPorts(this.tokenizer.getOutputPort(), toLowerCase.getInputPort());
+		connectPorts(toLowerCase.getOutputPort(), this.mapCounter.getInputPort());
 		// connectStages(wordcharacterFilter.getOutputPort(), this.mapCounter.getInputPort());
 	}
 

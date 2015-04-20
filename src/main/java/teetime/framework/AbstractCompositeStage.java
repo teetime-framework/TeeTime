@@ -107,7 +107,7 @@ public abstract class AbstractCompositeStage extends Stage {
 		super.setOwningThread(owningThread);
 	}
 
-	protected <T> void connectStages(final OutputPort<? extends T> out, final InputPort<T> in) {
+	protected <T> void connectPorts(final OutputPort<? extends T> out, final InputPort<T> in) {
 		INTRA_PIPE_FACTORY.create(out, in);
 		containingStages.add(out.getOwningStage());
 		containingStages.add(in.getOwningStage());
