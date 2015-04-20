@@ -17,12 +17,16 @@ package teetime.framework;
 
 import teetime.framework.pipe.IPipe;
 
-public interface IStageVisitor {
+public class IntraStageCollector implements IPipeVisitor {
 
-	public enum VisitorBehavior {
-		CONTINUE, STOP
+	public IntraStageCollector() {}
+
+	@Override
+	public VisitorBehavior visit(final IPipe outputPipe) {
+		if (outputPipe instanceof AbstractIntraThreadPipe) {
+			return VisitorBehavior.CONTINUE;
+		}
+		return VisitorBehavior.STOP;
 	}
-
-	VisitorBehavior visit(IPipe inputPipe);
 
 }

@@ -320,7 +320,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	}
 
 	private Set<Stage> traverseIntraStages(final Stage stage) {
-		final Traversor traversor = new Traversor(new IntraStageVisitor());
+		final Traversor traversor = new Traversor(new IntraStageCollector());
 		traversor.traverse(stage);
 		return traversor.getVisitedStage();
 	}

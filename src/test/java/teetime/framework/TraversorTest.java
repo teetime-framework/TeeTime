@@ -38,7 +38,7 @@ import teetime.stage.util.CountingMap;
 
 public class TraversorTest {
 
-	private final Traversor traversor = new Traversor(new IntraStageVisitor());
+	private final Traversor traversor = new Traversor(new IntraStageCollector());
 
 	@Test
 	public void traverse() {
