@@ -32,7 +32,7 @@ public final class EveryXthPrinter<T> extends AbstractCompositeStage {
 	private final List<Stage> lastStages = new ArrayList<Stage>();
 
 	public EveryXthPrinter(final int threshold) {
-		distributor = new Distributor<T>();
+		distributor = new Distributor<T>(new CopyByReferenceStrategy());
 		EveryXthStage<T> everyXthStage = new EveryXthStage<T>(threshold);
 		Printer<Integer> printer = new Printer<Integer>();
 
@@ -40,7 +40,6 @@ public final class EveryXthPrinter<T> extends AbstractCompositeStage {
 		connectPorts(everyXthStage.getOutputPort(), printer.getInputPort());
 
 		lastStages.add(printer);
-		distributor.setStrategy(new CopyByReferenceStrategy());
 	}
 
 	public InputPort<T> getInputPort() {
