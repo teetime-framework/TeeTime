@@ -167,7 +167,7 @@ public abstract class AbstractStage extends Stage {
 	 * @return Newly added OutputPort
 	 */
 	protected <T> OutputPort<T> createOutputPort(final Class<T> type) {
-		final OutputPort<T> outputPort = new OutputPort<T>(type);
+		final OutputPort<T> outputPort = new OutputPort<T>(type, this);
 		outputPorts = addElementToArray(outputPort, outputPorts);
 		return outputPort;
 	}

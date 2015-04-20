@@ -16,7 +16,6 @@
 package teetime.stage.string;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import teetime.framework.AbstractCompositeStage;
 import teetime.framework.InputPort;
@@ -54,11 +53,6 @@ public final class WordCounter extends AbstractCompositeStage {
 	@Override
 	protected Stage getFirstStage() {
 		return this.tokenizer;
-	}
-
-	@Override
-	protected Collection<? extends Stage> getLastStages() {
-		return this.lastStages;
 	}
 
 	public InputPort<String> getInputPort() {

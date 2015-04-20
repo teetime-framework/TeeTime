@@ -27,10 +27,12 @@ public abstract class AbstractPort<T> {
 	 * </p>
 	 */
 	protected final Class<T> type;
+	private final Stage owningStage;
 
-	public AbstractPort(final Class<T> type) {
+	public AbstractPort(final Class<T> type, final Stage owningStage) {
 		super();
 		this.type = type;
+		this.owningStage = owningStage;
 	}
 
 	public IPipe getPipe() {
@@ -43,5 +45,9 @@ public abstract class AbstractPort<T> {
 
 	public Class<T> getType() {
 		return this.type;
+	}
+
+	public final Stage getOwningStage() {
+		return owningStage;
 	}
 }

@@ -16,7 +16,6 @@
 package teetime.stage.io;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import teetime.framework.AbstractCompositeStage;
@@ -55,11 +54,6 @@ public final class EveryXthPrinter<T> extends AbstractCompositeStage {
 	@Override
 	protected Stage getFirstStage() {
 		return distributor;
-	}
-
-	@Override
-	protected Collection<? extends Stage> getLastStages() {
-		return lastStages;
 	}
 
 }

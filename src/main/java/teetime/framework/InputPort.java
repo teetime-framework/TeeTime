@@ -17,11 +17,8 @@ package teetime.framework;
 
 public final class InputPort<T> extends AbstractPort<T> {
 
-	private final Stage owningStage;
-
 	InputPort(final Class<T> type, final Stage owningStage) {
-		super(type);
-		this.owningStage = owningStage;
+		super(type, owningStage);
 	}
 
 	/**
@@ -31,10 +28,6 @@ public final class InputPort<T> extends AbstractPort<T> {
 	@SuppressWarnings("unchecked")
 	public T receive() {
 		return (T) this.pipe.removeLast();
-	}
-
-	public Stage getOwningStage() {
-		return this.owningStage;
 	}
 
 	public boolean isClosed() {
