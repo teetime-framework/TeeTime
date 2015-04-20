@@ -32,9 +32,6 @@ import org.junit.Test;
 import teetime.framework.Analysis;
 import teetime.framework.AnalysisConfiguration;
 import teetime.framework.AnalysisException;
-import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.util.Pair;
 
 /**
@@ -127,17 +124,15 @@ public class InstanceOfFilterTest {
 
 	private static class InstanceOfFilterTestConfig extends AnalysisConfiguration {
 
-		private final IPipeFactory pipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
-
 		public InstanceOfFilterTestConfig() {
 			InitialElementProducer<Object> elementProducer = new InitialElementProducer<Object>();
 			InstanceOfFilter<Object, Clazz> instanceOfFilter = new InstanceOfFilter<Object, Clazz>(Clazz.class);
 			CollectorSink<Clazz> clazzCollector = new CollectorSink<Clazz>();
 			CollectorSink<Object> mismatchedCollector = new CollectorSink<Object>();
 
-			pipeFactory.create(elementProducer.getOutputPort(), instanceOfFilter.getInputPort());
-			pipeFactory.create(instanceOfFilter.getMatchedOutputPort(), clazzCollector.getInputPort());
-			pipeFactory.create(instanceOfFilter.getMismatchedOutputPort(), mismatchedCollector.getInputPort());
+			connectIntraThreads(elementProducer.getOutputPort(), instanceOfFilter.getInputPort());
+			connectIntraThreads(instanceOfFilter.getMatchedOutputPort(), clazzCollector.getInputPort());
+			connectIntraThreads(instanceOfFilter.getMismatchedOutputPort(), mismatchedCollector.getInputPort());
 
 			addThreadableStage(elementProducer);
 		}

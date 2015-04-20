@@ -16,8 +16,6 @@
 package teetime.framework.exceptionHandling;
 
 import teetime.framework.AnalysisConfiguration;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 
 public class ExceptionTestConfiguration extends AnalysisConfiguration {
 
@@ -30,8 +28,7 @@ public class ExceptionTestConfiguration extends AnalysisConfiguration {
 		second = new ExceptionTestConsumerStage();
 		third = new ExceptionTestProducerStage();
 
-		PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false)
-				.create(first.getOutputPort(), second.getInputPort());
+		connectBoundedInterThreads(first.getOutputPort(), second.getInputPort());
 		// this.addThreadableStage(new ExceptionTestStage());
 
 		this.addThreadableStage(first);

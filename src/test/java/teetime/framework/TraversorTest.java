@@ -24,9 +24,6 @@ import java.util.Set;
 import org.junit.Test;
 
 import teetime.framework.pipe.IPipe;
-import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.CountingMapMerger;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.distributor.Distributor;
@@ -69,13 +66,9 @@ public class TraversorTest {
 			final Merger<CountingMap<String>> merger = new Merger<CountingMap<String>>();
 			// CountingMapMerger (already as field)
 
-			// PipeFactory instaces for intra- and inter-thread communication
-			final IPipeFactory interFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
-			final IPipeFactory intraFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
-
 			// Connecting the stages of the first part of the config
-			intraFact.create(init.getOutputPort(), f2b.getInputPort());
-			intraFact.create(f2b.getOutputPort(), distributor.getInputPort());
+			connectIntraThreads(init.getOutputPort(), f2b.getInputPort());
+			connectIntraThreads(f2b.getOutputPort(), distributor.getInputPort());
 
 			// Middle part... multiple instances of WordCounter are created and connected to the merger and distrubuter stages
 			for (int i = 0; i < threads; i++) {
@@ -83,15 +76,15 @@ public class TraversorTest {
 				final WordCounter wc = new WordCounter();
 				// intraFact.create(inputPortSizePrinter.getOutputPort(), wc.getInputPort());
 
-				final IPipe distributorPipe = interFact.create(distributor.getNewOutputPort(), wc.getInputPort(), 10000);
-				final IPipe mergerPipe = interFact.create(wc.getOutputPort(), merger.getNewInputPort());
+				final IPipe distributorPipe = connectBoundedInterThreads(distributor.getNewOutputPort(), wc.getInputPort(), 10000);
+				final IPipe mergerPipe = connectBoundedInterThreads(wc.getOutputPort(), merger.getNewInputPort());
 				// Add WordCounter as a threadable stage, so it runs in its own thread
 				addThreadableStage(wc);
 
 			}
 
 			// Connect the stages of the last part
-			intraFact.create(merger.getOutputPort(), result.getInputPort());
+			connectIntraThreads(merger.getOutputPort(), result.getInputPort());
 
 			// Add the first and last part to the threadable stages
 			addThreadableStage(init);

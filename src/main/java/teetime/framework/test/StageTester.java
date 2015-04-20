@@ -23,9 +23,6 @@ import teetime.framework.Analysis;
 import teetime.framework.AnalysisConfiguration;
 import teetime.framework.Stage;
 import teetime.framework.StageState;
-import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.CollectorSink;
 import teetime.stage.IterableProducer;
 
@@ -80,22 +77,19 @@ public final class StageTester {
 	private final class Configuration extends AnalysisConfiguration {
 
 		public Configuration(final List<InputHolder<?>> inputHolders, final Stage stage, final List<OutputHolder<?>> outputHolders) {
-			final IPipeFactory interPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
 			for (InputHolder<?> inputHolder : inputHolders) {
 				final IterableProducer<Object> producer = new IterableProducer<Object>(inputHolder.getInput());
-				interPipeFactory.create(producer.getOutputPort(), inputHolder.getPort());
+				connectBoundedInterThreads(producer.getOutputPort(), inputHolder.getPort());
 				addThreadableStage(producer);
 			}
 
 			addThreadableStage(stage);
 
-			final IPipeFactory intraPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 			for (OutputHolder<?> outputHolder : outputHolders) {
 				final CollectorSink<Object> sink = new CollectorSink<Object>(outputHolder.getOutputElements());
-				intraPipeFactory.create(outputHolder.getPort(), sink.getInputPort());
+				connectIntraThreads(outputHolder.getPort(), sink.getInputPort());
 			}
 		}
-
 	}
 
 }

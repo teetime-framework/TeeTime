@@ -23,9 +23,6 @@ import static org.junit.Assert.assertThat;
 import org.junit.Assert;
 import org.junit.Test;
 
-import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.Cache;
 import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
@@ -57,14 +54,13 @@ public class StageTest {
 	}
 
 	private static class TestConfig extends AnalysisConfiguration {
-		final IPipeFactory intraFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 		public final DelayAndTerminate delay;
 		public InitialElementProducer<String> init;
 
 		public TestConfig() {
 			init = new InitialElementProducer<String>("Hello");
 			delay = new DelayAndTerminate(0);
-			intraFact.create(init.getOutputPort(), delay.getInputPort());
+			connectIntraThreads(init.getOutputPort(), delay.getInputPort());
 			addThreadableStage(init);
 		}
 	}

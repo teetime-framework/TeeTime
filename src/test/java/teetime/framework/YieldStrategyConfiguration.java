@@ -15,22 +15,15 @@
  */
 package teetime.framework;
 
-import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.Relay;
 
 class YieldStrategyConfiguration extends AnalysisConfiguration {
-	private final IPipeFactory intraThreadPipeFactory;
-	private final IPipeFactory interThreadPipeFactory;
 
 	private CollectorSink<Object> collectorSink;
 
 	public YieldStrategyConfiguration(final Object... elements) {
-		intraThreadPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
-		interThreadPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
 
 		InitialElementProducer<Object> producer = buildProducer(elements);
 		addThreadableStage(producer);
@@ -51,8 +44,8 @@ class YieldStrategyConfiguration extends AnalysisConfiguration {
 
 		// relay.setIdleStrategy(new YieldStrategy());
 
-		interThreadPipeFactory.create(producer.getOutputPort(), relay.getInputPort());
-		intraThreadPipeFactory.create(relay.getOutputPort(), collectorSink.getInputPort());
+		connectBoundedInterThreads(producer.getOutputPort(), relay.getInputPort());
+		connectIntraThreads(relay.getOutputPort(), collectorSink.getInputPort());
 
 		this.collectorSink = collectorSink;
 

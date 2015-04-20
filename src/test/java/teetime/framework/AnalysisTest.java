@@ -25,9 +25,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.InitialElementProducer;
 import teetime.util.StopWatch;
 
@@ -69,13 +66,12 @@ public class AnalysisTest {
 	}
 
 	private static class TestConfig extends AnalysisConfiguration {
-		final IPipeFactory intraFact = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 		public final DelayAndTerminate delay;
 
 		public TestConfig() {
 			final InitialElementProducer<String> init = new InitialElementProducer<String>("Hello");
 			delay = new DelayAndTerminate(DELAY_IN_MS);
-			intraFact.create(init.getOutputPort(), delay.getInputPort());
+			connectIntraThreads(init.getOutputPort(), delay.getInputPort());
 			addThreadableStage(init);
 		}
 	}

@@ -60,6 +60,7 @@ public class ExceptionHandlingTest {
 				exceptionArised = true;
 			}
 			assertTrue(exceptionArised);
+
 			exceptionArised = false;
 			try {
 				terminatesAllStages();

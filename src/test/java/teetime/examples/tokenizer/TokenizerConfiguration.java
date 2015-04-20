@@ -18,9 +18,6 @@ package teetime.examples.tokenizer;
 import java.io.File;
 
 import teetime.framework.AnalysisConfiguration;
-import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.ByteArray2String;
 import teetime.stage.CipherByteArray;
 import teetime.stage.CipherByteArray.CipherMode;
@@ -33,7 +30,6 @@ import teetime.stage.string.Tokenizer;
 
 public class TokenizerConfiguration extends AnalysisConfiguration {
 
-	private static final IPipeFactory INTRA_PIPE_FACTORY = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 	private final Counter<String> counter;
 
 	public TokenizerConfiguration(final String inputFile, final String password) {
@@ -47,12 +43,12 @@ public class TokenizerConfiguration extends AnalysisConfiguration {
 		final Tokenizer tokenizer = new Tokenizer(" ");
 		this.counter = new Counter<String>();
 
-		INTRA_PIPE_FACTORY.create(init.getOutputPort(), f2b.getInputPort());
-		INTRA_PIPE_FACTORY.create(f2b.getOutputPort(), decomp.getInputPort());
-		INTRA_PIPE_FACTORY.create(decomp.getOutputPort(), decrypt.getInputPort());
-		INTRA_PIPE_FACTORY.create(decrypt.getOutputPort(), b2s.getInputPort());
-		INTRA_PIPE_FACTORY.create(b2s.getOutputPort(), tokenizer.getInputPort());
-		INTRA_PIPE_FACTORY.create(tokenizer.getOutputPort(), this.counter.getInputPort());
+		connectIntraThreads(init.getOutputPort(), f2b.getInputPort());
+		connectIntraThreads(f2b.getOutputPort(), decomp.getInputPort());
+		connectIntraThreads(decomp.getOutputPort(), decrypt.getInputPort());
+		connectIntraThreads(decrypt.getOutputPort(), b2s.getInputPort());
+		connectIntraThreads(b2s.getOutputPort(), tokenizer.getInputPort());
+		connectIntraThreads(tokenizer.getOutputPort(), this.counter.getInputPort());
 
 		this.addThreadableStage(init);
 	}

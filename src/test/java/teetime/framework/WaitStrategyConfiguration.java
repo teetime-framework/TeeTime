@@ -15,9 +15,6 @@
  */
 package teetime.framework;
 
-import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.Clock;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
@@ -26,15 +23,10 @@ import teetime.stage.basic.Delay;
 
 class WaitStrategyConfiguration extends AnalysisConfiguration {
 
-	private final IPipeFactory intraThreadPipeFactory;
-	private final IPipeFactory interThreadPipeFactory;
-
 	private Delay<Object> delay;
 	private CollectorSink<Object> collectorSink;
 
 	public WaitStrategyConfiguration(final long initialDelayInMs, final Object... elements) {
-		intraThreadPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
-		interThreadPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
 
 		Stage producer = buildProducer(elements);
 		addThreadableStage(producer);
@@ -50,7 +42,7 @@ class WaitStrategyConfiguration extends AnalysisConfiguration {
 		Clock clock = new Clock();
 		clock.setInitialDelayInMs(initialDelayInMs);
 
-		interThreadPipeFactory.create(clock.getOutputPort(), delay.getTimestampTriggerInputPort());
+		connectBoundedInterThreads(clock.getOutputPort(), delay.getTimestampTriggerInputPort());
 
 		return clock;
 	}
@@ -59,7 +51,7 @@ class WaitStrategyConfiguration extends AnalysisConfiguration {
 		InitialElementProducer<Object> initialElementProducer = new InitialElementProducer<Object>(elements);
 		delay = new Delay<Object>();
 
-		intraThreadPipeFactory.create(initialElementProducer.getOutputPort(), delay.getInputPort());
+		connectIntraThreads(initialElementProducer.getOutputPort(), delay.getInputPort());
 
 		return initialElementProducer;
 	}
@@ -70,8 +62,8 @@ class WaitStrategyConfiguration extends AnalysisConfiguration {
 
 		// relay.setIdleStrategy(new WaitStrategy(relay));
 
-		interThreadPipeFactory.create(delay.getOutputPort(), relay.getInputPort());
-		intraThreadPipeFactory.create(relay.getOutputPort(), collectorSink.getInputPort());
+		connectBoundedInterThreads(delay.getOutputPort(), relay.getInputPort());
+		connectIntraThreads(relay.getOutputPort(), collectorSink.getInputPort());
 
 		this.collectorSink = collectorSink;
 

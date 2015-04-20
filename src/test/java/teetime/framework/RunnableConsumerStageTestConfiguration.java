@@ -18,9 +18,6 @@ package teetime.framework;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 
@@ -38,8 +35,7 @@ public class RunnableConsumerStageTestConfiguration extends AnalysisConfiguratio
 		CollectorSink<Integer> collectorSink = new CollectorSink<Integer>(collectedElements);
 		addThreadableStage(collectorSink);
 
-		IPipeFactory pipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
-		pipeFactory.create(producer.getOutputPort(), collectorSink.getInputPort());
+		connectBoundedInterThreads(producer.getOutputPort(), collectorSink.getInputPort());
 
 		this.collectorSink = collectorSink;
 	}
