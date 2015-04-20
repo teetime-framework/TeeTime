@@ -31,9 +31,6 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 public abstract class AnalysisConfiguration {
 
 	private final List<Stage> threadableStageJobs = new LinkedList<Stage>();
-	private final IPipeFactory intraThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
-	private final IPipeFactory interBoundedThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, true);
-	private final IPipeFactory interUnboundedThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
 
 	/**
 	 * Can be used by subclasses, to obtain pipe factories
@@ -41,6 +38,10 @@ public abstract class AnalysisConfiguration {
 	@Deprecated
 	// TODO: set private
 	protected static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
+
+	private final static IPipeFactory intraThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+	private final static IPipeFactory interBoundedThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, true);
+	private final static IPipeFactory interUnboundedThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
 
 	List<Stage> getThreadableStageJobs() {
 		return this.threadableStageJobs;
@@ -56,23 +57,23 @@ public abstract class AnalysisConfiguration {
 		this.threadableStageJobs.add(stage);
 	}
 
-	protected <T> IPipe connectIntraThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	protected static <T> IPipe connectIntraThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return intraThreadFactory.create(sourcePort, targetPort);
 	}
 
-	protected <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	protected static <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return interBoundedThreadFactory.create(sourcePort, targetPort);
 	}
 
-	protected <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	protected static <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return interUnboundedThreadFactory.create(sourcePort, targetPort);
 	}
 
-	protected <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	protected static <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		return interBoundedThreadFactory.create(sourcePort, targetPort, capacity);
 	}
 
-	protected <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	protected static <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		return interUnboundedThreadFactory.create(sourcePort, targetPort, capacity);
 	}
 
