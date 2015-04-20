@@ -125,7 +125,7 @@
 			<groupId>com.github.JCTools</groupId>
 			<artifactId>JCTools</artifactId>
 			<!-- SNAPSHOT master version -->
-			<version>ea6ac4c4b7</version>
+			<version>7239659ba08e0679e5ca160bbe5f923f07fd4730</version>
 		</dependency>
 		<dependency>
 			<groupId>com.puppycrawl.tools</groupId>
