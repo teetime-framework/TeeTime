@@ -57,22 +57,64 @@ public abstract class AnalysisConfiguration {
 		this.threadableStageJobs.add(stage);
 	}
 
+	/**
+	 * Connects two stages with a pipe within the same thread.
+	 *
+	 * @param sourcePort
+	 * @param targetPort
+	 * @return
+	 *         the pipe instance which connects the two given stages
+	 */
 	protected static <T> IPipe connectIntraThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return intraThreadFactory.create(sourcePort, targetPort);
 	}
 
+	/**
+	 * Connects two stages with a bounded pipe within two separate threads.
+	 *
+	 * @param sourcePort
+	 * @param targetPort
+	 * @return
+	 *         the pipe instance which connects the two given stages
+	 */
 	protected static <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return interBoundedThreadFactory.create(sourcePort, targetPort);
 	}
 
+	/**
+	 * Connects two stages with a unbounded pipe within two separate threads.
+	 *
+	 * @param sourcePort
+	 * @param targetPort
+	 * @return
+	 *         the pipe instance which connects the two given stages
+	 */
 	protected static <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return interUnboundedThreadFactory.create(sourcePort, targetPort);
 	}
 
+	/**
+	 * Connects two stages with a bounded pipe within two separate threads.
+	 *
+	 * @param sourcePort
+	 * @param targetPort
+	 * @param capacity
+	 *            capacity of the underlying queue
+	 * @return
+	 */
 	protected static <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		return interBoundedThreadFactory.create(sourcePort, targetPort, capacity);
 	}
 
+	/**
+	 * Connects two stages with a unbounded pipe within two separate threads.
+	 *
+	 * @param sourcePort
+	 * @param targetPort
+	 * @param capacity
+	 *            capacity of the underlying queue
+	 * @return
+	 */
 	protected static <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		return interUnboundedThreadFactory.create(sourcePort, targetPort, capacity);
 	}
