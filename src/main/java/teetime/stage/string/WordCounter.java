@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package teetime.stage.string;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import teetime.framework.AbstractCompositeStage;
 import teetime.framework.InputPort;
@@ -44,7 +43,6 @@ public final class WordCounter extends AbstractCompositeStage {
 	// The connection of the different stages is realized within the construction of a instance of this class.
 	public WordCounter() {
 		this.lastStages.add(this.mapCounter);
-
 		final ToLowerCase toLowerCase = new ToLowerCase();
 
 		connectStages(this.tokenizer.getOutputPort(), toLowerCase.getInputPort());
@@ -55,11 +53,6 @@ public final class WordCounter extends AbstractCompositeStage {
 	@Override
 	protected Stage getFirstStage() {
 		return this.tokenizer;
-	}
-
-	@Override
-	protected Collection<? extends Stage> getLastStages() {
-		return this.lastStages;
 	}
 
 	public InputPort<String> getInputPort() {

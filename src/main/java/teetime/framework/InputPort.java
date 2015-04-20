@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,8 @@ package teetime.framework;
 
 public final class InputPort<T> extends AbstractPort<T> {
 
-	private final Stage owningStage;
-
 	InputPort(final Class<T> type, final Stage owningStage) {
-		super(type);
-		this.owningStage = owningStage;
+		super(type, owningStage);
 	}
 
 	/**
@@ -31,10 +28,6 @@ public final class InputPort<T> extends AbstractPort<T> {
 	@SuppressWarnings("unchecked")
 	public T receive() {
 		return (T) this.pipe.removeLast();
-	}
-
-	public Stage getOwningStage() {
-		return this.owningStage;
 	}
 
 	public boolean isClosed() {

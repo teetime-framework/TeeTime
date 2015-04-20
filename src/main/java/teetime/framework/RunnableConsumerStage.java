@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package teetime.framework;
 
-import teetime.framework.exceptionHandling.StageExceptionHandler;
 import teetime.framework.idle.IdleStrategy;
 import teetime.framework.idle.YieldStrategy;
 import teetime.framework.signal.ISignal;
@@ -32,12 +31,12 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	 * @param stage
 	 *            to execute within an own thread
 	 */
-	public RunnableConsumerStage(final Stage stage, final StageExceptionHandler exceptionListener) {
-		this(stage, new YieldStrategy(), exceptionListener);
+	public RunnableConsumerStage(final Stage stage) {
+		this(stage, new YieldStrategy());
 	}
 
-	public RunnableConsumerStage(final Stage stage, final IdleStrategy idleStrategy, final StageExceptionHandler exceptionListener) {
-		super(stage, exceptionListener);
+	public RunnableConsumerStage(final Stage stage, final IdleStrategy idleStrategy) {
+		super(stage);
 		this.inputPorts = stage.getInputPorts(); // FIXME should getInputPorts() really be defined in Stage?
 	}
 

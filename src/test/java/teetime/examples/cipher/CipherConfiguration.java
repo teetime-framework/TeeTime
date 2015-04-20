@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,6 @@ package teetime.examples.cipher;
 import java.io.File;
 
 import teetime.framework.AnalysisConfiguration;
-import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.CipherByteArray;
 import teetime.stage.CipherByteArray.CipherMode;
 import teetime.stage.InitialElementProducer;
@@ -43,14 +40,12 @@ public class CipherConfiguration extends AnalysisConfiguration {
 		final CipherByteArray decrypt = new CipherByteArray(password, CipherMode.DECRYPT);
 		final ByteArrayFileWriter writer = new ByteArrayFileWriter(output);
 
-		final IPipeFactory intraFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
-
-		intraFactory.create(init.getOutputPort(), f2b.getInputPort());
-		intraFactory.create(f2b.getOutputPort(), enc.getInputPort());
-		intraFactory.create(enc.getOutputPort(), comp.getInputPort());
-		intraFactory.create(comp.getOutputPort(), decomp.getInputPort());
-		intraFactory.create(decomp.getOutputPort(), decrypt.getInputPort());
-		intraFactory.create(decrypt.getOutputPort(), writer.getInputPort());
+		connectIntraThreads(init.getOutputPort(), f2b.getInputPort());
+		connectIntraThreads(f2b.getOutputPort(), enc.getInputPort());
+		connectIntraThreads(enc.getOutputPort(), comp.getInputPort());
+		connectIntraThreads(comp.getOutputPort(), decomp.getInputPort());
+		connectIntraThreads(decomp.getOutputPort(), decrypt.getInputPort());
+		connectIntraThreads(decrypt.getOutputPort(), writer.getInputPort());
 
 		// this.getFiniteProducerStages().add(init);
 		this.addThreadableStage(init);

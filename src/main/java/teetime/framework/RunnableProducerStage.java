@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,13 @@
  */
 package teetime.framework;
 
-import teetime.framework.exceptionHandling.StageExceptionHandler;
-import teetime.framework.exceptionHandling.TerminatingStageListener;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
 public final class RunnableProducerStage extends AbstractRunnableStage {
 
-	/**
-	 * Uses the {@link TerminatingStageListener} as default exception handler
-	 * 
-	 * @param stage
-	 */
 	public RunnableProducerStage(final Stage stage) {
-		super(stage, new TerminatingStageListener());
-	}
-
-	public RunnableProducerStage(final Stage stage, final StageExceptionHandler handler) {
-		super(stage, handler);
+		super(stage);
 	}
 
 	@Override

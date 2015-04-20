@@ -28,7 +28,7 @@ In particular, it features...
 
 - many primitive and composite ready-to-use stages
 
-- a type-safety way to develop and connect stages
+- a type-safe way to develop and connect stages
 
 - no(!) single-threaded overhead
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,26 @@
  */
 package teetime.util;
 
+import java.util.concurrent.TimeUnit;
+
 public final class StopWatch {
 
 	private long startTimeInNs;
 	private long endTimeInNs;
 
-	public final void start() {
+	public void start() {
 		this.startTimeInNs = System.nanoTime();
 	}
 
-	public final void end() {
+	public void end() {
 		this.endTimeInNs = System.nanoTime();
 	}
 
-	public final long getDurationInNs() {
+	public long getDurationInNs() {
 		return this.endTimeInNs - this.startTimeInNs;
+	}
+
+	public long getDurationInMs() {
+		return TimeUnit.NANOSECONDS.toMillis(getDurationInNs());
 	}
 }

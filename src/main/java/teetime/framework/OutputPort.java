@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ import teetime.framework.signal.TerminatingSignal;
  */
 public final class OutputPort<T> extends AbstractPort<T> {
 
-	OutputPort(final Class<T> type) {
-		super(type);
+	OutputPort(final Class<T> type, final Stage owningStage) {
+		super(type, owningStage);
 	}
 
 	/**

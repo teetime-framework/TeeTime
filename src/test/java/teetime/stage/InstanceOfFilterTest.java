@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,16 @@ import static org.junit.Assert.assertThat;
 import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import teetime.framework.Analysis;
+import teetime.framework.AnalysisConfiguration;
+import teetime.framework.AnalysisException;
+import teetime.util.Pair;
 
 /**
  * @author Nils Christian Ehmke
@@ -45,7 +51,10 @@ public class InstanceOfFilterTest {
 		final List<Clazz> results = new ArrayList<InstanceOfFilterTest.Clazz>();
 		final Object clazz = new Clazz();
 
-		test(filter).and().send(clazz).to(filter.getInputPort()).and().receive(results).from(filter.getMatchedOutputPort()).start();
+		test(filter)
+				.and().send(clazz).to(filter.getInputPort())
+				.and().receive(results).from(filter.getMatchedOutputPort())
+				.start();
 
 		assertThat(results, contains(clazz));
 	}
@@ -55,7 +64,10 @@ public class InstanceOfFilterTest {
 		final List<Clazz> results = new ArrayList<InstanceOfFilterTest.Clazz>();
 		final Object clazz = new SubClazz();
 
-		test(filter).and().send(clazz).to(filter.getInputPort()).and().receive(results).from(filter.getMatchedOutputPort()).start();
+		test(filter)
+				.and().send(clazz).to(filter.getInputPort())
+				.and().receive(results).from(filter.getMatchedOutputPort())
+				.start();
 
 		assertThat(results, contains(clazz));
 	}
@@ -65,7 +77,10 @@ public class InstanceOfFilterTest {
 		final List<Clazz> results = new ArrayList<InstanceOfFilterTest.Clazz>();
 		final Object object = new Object();
 
-		test(filter).and().send(object).to(filter.getInputPort()).and().receive(results).from(filter.getMatchedOutputPort()).start();
+		test(filter)
+				.and().send(object).to(filter.getInputPort())
+				.and().receive(results).from(filter.getMatchedOutputPort())
+				.start();
 
 		assertThat(results, is(empty()));
 	}
@@ -81,7 +96,10 @@ public class InstanceOfFilterTest {
 		input.add(new SubClazz());
 		input.add(new Object());
 
-		test(filter).and().send(input).to(filter.getInputPort()).and().receive(results).from(filter.getMatchedOutputPort()).start();
+		test(filter)
+				.and().send(input).to(filter.getInputPort())
+				.and().receive(results).from(filter.getMatchedOutputPort())
+				.start();
 
 		assertThat(results, hasSize(2));
 	}
@@ -90,6 +108,34 @@ public class InstanceOfFilterTest {
 	}
 
 	private static class SubClazz extends Clazz {
+	}
+
+	@Test
+	public void filterShouldSendToBothOutputPorts() throws Exception {
+		InstanceOfFilterTestConfig config = new InstanceOfFilterTestConfig();
+		Analysis analysis = new Analysis(config);
+		try {
+			analysis.executeBlocking();
+		} catch (AnalysisException e) {
+			Collection<Pair<Thread, Throwable>> thrownExceptions = e.getThrownExceptions();
+			// TODO: handle exception
+		}
+	}
+
+	private static class InstanceOfFilterTestConfig extends AnalysisConfiguration {
+
+		public InstanceOfFilterTestConfig() {
+			InitialElementProducer<Object> elementProducer = new InitialElementProducer<Object>();
+			InstanceOfFilter<Object, Clazz> instanceOfFilter = new InstanceOfFilter<Object, Clazz>(Clazz.class);
+			CollectorSink<Clazz> clazzCollector = new CollectorSink<Clazz>();
+			CollectorSink<Object> mismatchedCollector = new CollectorSink<Object>();
+
+			connectIntraThreads(elementProducer.getOutputPort(), instanceOfFilter.getInputPort());
+			connectIntraThreads(instanceOfFilter.getMatchedOutputPort(), clazzCollector.getInputPort());
+			connectIntraThreads(instanceOfFilter.getMismatchedOutputPort(), mismatchedCollector.getInputPort());
+
+			addThreadableStage(elementProducer);
+		}
 	}
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,12 @@
  */
 package teetime.framework;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry;
@@ -32,15 +36,19 @@ import teetime.framework.validation.InvalidPortConnection;
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
  */
-@SuppressWarnings("PMD.AbstractNaming")
 public abstract class AbstractCompositeStage extends Stage {
 
 	private static final IPipeFactory INTRA_PIPE_FACTORY = PipeFactoryRegistry.INSTANCE
 			.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 
+	private final Set<Stage> containingStages = new HashSet<Stage>();
+	private final Set<Stage> lastStages = new HashSet<Stage>();
+
 	protected abstract Stage getFirstStage();
 
-	protected abstract Collection<? extends Stage> getLastStages();
+	protected final Collection<? extends Stage> getLastStages() {
+		return lastStages;
+	}
 
 	@Override
 	protected final void executeStage() {
@@ -73,6 +81,15 @@ public abstract class AbstractCompositeStage extends Stage {
 	}
 
 	@Override
+	protected OutputPort<?>[] getOutputPorts() {
+		List<OutputPort<?>> outputPorts = new ArrayList<OutputPort<?>>();
+		for (final Stage s : getLastStages()) {
+			outputPorts.addAll(Arrays.asList(s.getOutputPorts()));
+		}
+		return outputPorts.toArray(new OutputPort[0]);
+	}
+
+	@Override
 	public final StageState getCurrentState() {
 		return getFirstStage().getCurrentState();
 	}
@@ -90,8 +107,10 @@ public abstract class AbstractCompositeStage extends Stage {
 		super.setOwningThread(owningThread);
 	}
 
-	protected static <T> void connectStages(final OutputPort<? extends T> out, final InputPort<T> in) {
+	protected <T> void connectStages(final OutputPort<? extends T> out, final InputPort<T> in) {
 		INTRA_PIPE_FACTORY.create(out, in);
+		containingStages.add(out.getOwningStage());
+		containingStages.add(in.getOwningStage());
 	}
 
 	@Override
@@ -106,6 +125,17 @@ public abstract class AbstractCompositeStage extends Stage {
 
 	@Override
 	public final void onStarting() throws Exception {
+		for (Stage stage : containingStages) {
+			if (stage.getOutputPorts().length == 0) {
+				lastStages.add(stage);
+				break;
+			}
+			for (OutputPort<?> outputPort : stage.getOutputPorts()) {
+				if (!containingStages.contains(outputPort.getPipe().getTargetPort().getOwningStage())) {
+					lastStages.add(stage);
+				}
+			}
+		}
 		getFirstStage().onStarting();
 	}
 

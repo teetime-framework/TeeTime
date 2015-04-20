@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 
 	<name>TeeTime</name>
-	<description>TeeTime is a Pipes-and-Filters framework for Java</description>
+	<description>TeeTime is a Pipe-and-Filter framework for Java</description>
 	<url>http://teetime.sourceforge.org</url>
 	<inceptionYear>2015</inceptionYear>
 
@@ -73,6 +73,13 @@
 		<url>https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/</url>
 	</ciManagement>
 
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -108,11 +115,23 @@
 			<artifactId>guava</artifactId>
 			<version>18.0</version>
 		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.jctools</groupId> -->
+		<!-- <artifactId>jctools-core</artifactId> -->
+		<!-- <version>1.0</version> -->
+		<!-- <version>1.1-SNAPSHOT</version> -->
+		<!-- </dependency> -->
 		<dependency>
-			<groupId>org.jctools</groupId>
-			<artifactId>jctools-core</artifactId>
-			<version>1.0</version>
-			<!-- <version>1.1-SNAPSHOT</version> -->
+			<groupId>com.github.JCTools</groupId>
+			<artifactId>JCTools</artifactId>
+			<!-- SNAPSHOT master version -->
+			<version>7239659ba0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.puppycrawl.tools</groupId>
+			<artifactId>checkstyle</artifactId>
+			<version>6.5</version>
 		</dependency>
 
 		<dependency>
@@ -206,28 +225,28 @@
 			</plugin>
 
 			<!-- Checkstyle -->
-			<!-- <plugin> -->
-			<!-- <groupId>org.apache.maven.plugins</groupId> -->
-			<!-- <artifactId>maven-checkstyle-plugin</artifactId> -->
-			<!-- <version>2.12</version> -->
-			<!-- <executions> -->
-			<!-- <execution> -->
-			<!-- <phase>test</phase> -->
-			<!-- <goals> -->
-			<!-- <goal>check</goal> -->
-			<!-- </goals> -->
-			<!-- <configuration> -->
-			<!-- <configLocation>${project.basedir}/conf/quality-config/cs-conf.xml</configLocation> -->
-			<!-- <includeTestSourceDirectory>true</includeTestSourceDirectory> -->
-			<!-- <encoding>UTF-8</encoding> -->
-			<!-- <consoleOutput>true</consoleOutput> -->
-			<!-- <failsOnError>false</failsOnError> -->
-			<!-- <failOnViolation>false</failOnViolation> -->
-			<!-- <linkXRef>false</linkXRef> -->
-			<!-- </configuration> -->
-			<!-- </execution> -->
-			<!-- </executions> -->
-			<!-- </plugin> -->
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 				<artifactId>maven-checkstyle-plugin</artifactId> -->
+<!-- 				<version>2.15</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<phase>test</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>check</goal> -->
+<!-- 						</goals> -->
+<!-- 						<configuration> -->
+<!-- 							<configLocation>${project.basedir}/conf/quality-config/cs-conf.xml</configLocation> -->
+<!-- 							<includeTestSourceDirectory>true</includeTestSourceDirectory> -->
+<!-- 							<encoding>UTF-8</encoding> -->
+<!-- 							<consoleOutput>true</consoleOutput> -->
+<!-- 							<failsOnError>false</failsOnError> -->
+<!-- 							<failOnViolation>false</failOnViolation> -->
+<!-- 							<linkXRef>false</linkXRef> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
 
 			<!-- Findbugs -->
 			<plugin>
@@ -315,7 +334,7 @@
 				<configuration>
 					<header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
 					<properties>
-						<owner>TeeTime</owner>
+						<owner>Christian Wulf, Nelson Tavares de Sousa</owner>
 						<email>http://teetime.sourceforge.net</email>
 					</properties>
 					<includes>

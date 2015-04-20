@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class CipherTest {
 
 		final AnalysisConfiguration configuration = new CipherConfiguration(inputFile, outputFile, password);
 		final Analysis analysis = new Analysis(configuration);
-		analysis.start();
+		analysis.executeBlocking();
 
 		Assert.assertTrue(Files.equal(new File(inputFile), new File(outputFile)));
 	}

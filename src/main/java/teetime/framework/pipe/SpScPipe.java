@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package teetime.framework.pipe;
 
-import org.jctools.queues.ObservableSpScArrayQueue;
-
 import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.StageState;
+import teetime.util.concurrent.queue.ObservableSpScArrayQueue;
 
 public final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe {
 
@@ -45,12 +45,15 @@ public final class SpScPipe extends AbstractInterThreadPipe implements IMonitora
 	public boolean add(final Object element) {
 		// BETTER introduce a QueueIsFullStrategy
 		while (!this.queue.offer(element)) {
-			this.numWaits++;
 			// Thread.yield();
+			if (this.cachedTargetStage.getCurrentState() == StageState.TERMINATED) {
+				return false;
+			}
+			this.numWaits++;
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				// FIXME Handle it correctly
 				e.printStackTrace();
 			}
 		}

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,14 @@ package teetime.framework.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import teetime.framework.Analysis;
 import teetime.framework.AnalysisConfiguration;
 import teetime.framework.Stage;
 import teetime.framework.StageState;
-import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 import teetime.stage.CollectorSink;
 import teetime.stage.IterableProducer;
-import teetime.util.Pair;
 
 /**
  * This class can be used to test single stages in JUnit test cases.
@@ -73,31 +68,28 @@ public final class StageTester {
 		return this;
 	}
 
-	public Collection<Pair<Thread, Throwable>> start() {
+	public void start() {
 		final AnalysisConfiguration configuration = new Configuration(inputHolders, stage, outputHolders);
 		final Analysis analysis = new Analysis(configuration);
-		return analysis.start();
+		analysis.executeBlocking();
 	}
 
 	private final class Configuration extends AnalysisConfiguration {
 
 		public Configuration(final List<InputHolder<?>> inputHolders, final Stage stage, final List<OutputHolder<?>> outputHolders) {
-			final IPipeFactory interPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
 			for (InputHolder<?> inputHolder : inputHolders) {
 				final IterableProducer<Object> producer = new IterableProducer<Object>(inputHolder.getInput());
-				interPipeFactory.create(producer.getOutputPort(), inputHolder.getPort());
+				connectBoundedInterThreads(producer.getOutputPort(), inputHolder.getPort());
 				addThreadableStage(producer);
 			}
 
 			addThreadableStage(stage);
 
-			final IPipeFactory intraPipeFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 			for (OutputHolder<?> outputHolder : outputHolders) {
 				final CollectorSink<Object> sink = new CollectorSink<Object>(outputHolder.getOutputElements());
-				intraPipeFactory.create(outputHolder.getPort(), sink.getInputPort());
+				connectIntraThreads(outputHolder.getPort(), sink.getInputPort());
 			}
 		}
-
 	}
 
 }

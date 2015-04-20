@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,15 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.exceptionHandling.IgnoringStageListener;
-import teetime.framework.exceptionHandling.StageExceptionHandler;
+import teetime.framework.exceptionHandling.AbstractExceptionListener;
+import teetime.framework.exceptionHandling.IExceptionListenerFactory;
+import teetime.framework.exceptionHandling.IgnoringExceptionListenerFactory;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.Pair;
@@ -34,16 +36,19 @@ import teetime.util.Pair;
  * Represents an Analysis to which stages can be added and executed later.
  * This needs a {@link AnalysisConfiguration},
  * in which the adding and configuring of stages takes place.
- * To start the analysis {@link #execute()} needs to be executed.
+ * To start the analysis {@link #executeBlocking()} needs to be executed.
  * This class will automatically create threads and join them without any further commitment.
+ *
+ * @param <T>
+ *            the type of the {@link AnalysisConfiguration}
  */
-public final class Analysis implements UncaughtExceptionHandler {
+public final class Analysis<T extends AnalysisConfiguration> implements UncaughtExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Analysis.class);
 
-	private final AnalysisConfiguration configuration;
+	private final T configuration;
 
-	private final Class<? extends teetime.framework.exceptionHandling.StageExceptionHandler> listener;
+	private final IExceptionListenerFactory factory;
 
 	private boolean executionInterrupted = false;
 
@@ -61,14 +66,14 @@ public final class Analysis implements UncaughtExceptionHandler {
 	 * @param configuration
 	 *            to be used for the analysis
 	 */
-	public Analysis(final AnalysisConfiguration configuration) {
-		this(configuration, false, IgnoringStageListener.class);
+	public Analysis(final T configuration) {
+		this(configuration, false, new IgnoringExceptionListenerFactory());
 	}
 
 	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
 	// TODO remove @SuppressWarnings if init is no longer deprecated
-	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled) {
-		this(configuration, validationEnabled, IgnoringStageListener.class);
+	public Analysis(final T configuration, final boolean validationEnabled) {
+		this(configuration, validationEnabled, new IgnoringExceptionListenerFactory());
 	}
 
 	/**
@@ -76,16 +81,16 @@ public final class Analysis implements UncaughtExceptionHandler {
 	 *
 	 * @param configuration
 	 *            to be used for the analysis
-	 * @param listener
+	 * @param factory
 	 *            specific listener for the exception handling
 	 */
-	public Analysis(final AnalysisConfiguration configuration, final Class<? extends StageExceptionHandler> listener) {
-		this(configuration, false, listener);
+	public Analysis(final T configuration, final IExceptionListenerFactory factory) {
+		this(configuration, false, factory);
 	}
 
-	public Analysis(final AnalysisConfiguration configuration, final boolean validationEnabled, final Class<? extends StageExceptionHandler> listener) {
+	public Analysis(final T configuration, final boolean validationEnabled, final IExceptionListenerFactory factory) {
 		this.configuration = configuration;
-		this.listener = listener;
+		this.factory = factory;
 		if (validationEnabled) {
 			validateStages();
 		}
@@ -108,9 +113,9 @@ public final class Analysis implements UncaughtExceptionHandler {
 	}
 
 	/**
-	 * This initializes Analysis and needs to be run right before starting it.
+	 * This initializes the analysis and needs to be run right before starting it.
 	 *
-	 * @deprecated since 1.1
+	 * @deprecated since 1.1, analysis will be initialized automatically by the framework
 	 */
 	@Deprecated
 	public final void init() {
@@ -123,37 +128,28 @@ public final class Analysis implements UncaughtExceptionHandler {
 		if (threadableStageJobs.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
+		AbstractExceptionListener newListener;
+		Set<Stage> intraStages;
 		for (Stage stage : threadableStageJobs) {
-			StageExceptionHandler newListener;
-			try {
-				newListener = listener.newInstance();
-			} catch (InstantiationException e) {
-				throw new IllegalStateException(e);
-			} catch (IllegalAccessException e) {
-				throw new IllegalStateException(e);
-			}
+			intraStages = traverseIntraStages(stage);
+			newListener = factory.create();
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
-				final Thread thread = new Thread(new RunnableConsumerStage(stage, newListener));
-				stage.setOwningThread(thread);
+				final RunnableConsumerStage runnable = new RunnableConsumerStage(stage);
+				final Thread thread = createThread(newListener, intraStages, stage, runnable);
 				this.consumerThreads.add(thread);
-				thread.setName(stage.getId());
 				break;
 			}
 			case BY_SELF_DECISION: {
-				RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
-				final Thread thread = new Thread(runnable);
-				stage.setOwningThread(thread);
+				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
+				final Thread thread = createThread(newListener, intraStages, stage, runnable);
 				this.finiteProducerThreads.add(thread);
-				thread.setName(stage.getId());
 				break;
 			}
 			case BY_INTERRUPT: {
-				RunnableProducerStage runnable = new RunnableProducerStage(stage, newListener);
-				final Thread thread = new Thread(runnable);
-				stage.setOwningThread(thread);
+				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
+				final Thread thread = createThread(newListener, intraStages, stage, runnable);
 				this.infiniteProducerThreads.add(thread);
-				thread.setName(stage.getId());
 				break;
 			}
 			default:
@@ -163,12 +159,23 @@ public final class Analysis implements UncaughtExceptionHandler {
 
 	}
 
+	private Thread createThread(final AbstractExceptionListener newListener, final Set<Stage> intraStages, final Stage stage, final AbstractRunnableStage runnable) {
+		final Thread thread = new Thread(runnable);
+		for (Stage intraStage : intraStages) {
+			intraStage.setOwningThread(thread);
+			intraStage.setExceptionHandler(newListener);
+		}
+		thread.setUncaughtExceptionHandler(this);
+		thread.setName(stage.getId());
+		return thread;
+	}
+
 	/**
 	 * This method will start the Analysis and all containing stages.
 	 *
 	 * @return a collection of thread/throwable pairs
 	 *
-	 * @deprecated since 1.1, replaced by {@link #execute()}
+	 * @deprecated since 1.1, replaced by {@link #executeBlocking()}
 	 */
 	@Deprecated
 	public Collection<Pair<Thread, Throwable>> start() {
@@ -200,28 +207,89 @@ public final class Analysis implements UncaughtExceptionHandler {
 		for (Thread thread : this.infiniteProducerThreads) {
 			thread.interrupt();
 		}
-
 		return this.exceptions;
 	}
 
 	/**
-	 * This method will start the Analysis and all containing stages.
+	 * Calling this method will block the current thread, until the analysis terminates.
 	 *
 	 * @throws AnalysisException
 	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable
 	 *
 	 * @since 1.1
 	 */
-	public void execute() {
-		start();
+	public void waitForTermination() {
+
+		try {
+			for (Thread thread : this.finiteProducerThreads) {
+				thread.join();
+			}
+
+			for (Thread thread : this.consumerThreads) {
+				thread.join();
+			}
+		} catch (InterruptedException e) {
+			LOGGER.error("Analysis has stopped unexpectedly", e);
+			for (Thread thread : this.finiteProducerThreads) {
+				thread.interrupt();
+			}
+
+			for (Thread thread : this.consumerThreads) {
+				thread.interrupt();
+			}
+		}
+
+		for (Thread thread : this.infiniteProducerThreads) {
+			thread.interrupt();
+		}
+
 		if (!exceptions.isEmpty()) {
 			throw new AnalysisException(exceptions);
 		}
 	}
 
+	// TODO: implement
+	private void abortEventually() {
+		for (Thread thread : this.finiteProducerThreads) {
+			thread.interrupt();
+		}
+
+		for (Thread thread : this.consumerThreads) {
+			thread.interrupt();
+		}
+
+		for (Thread thread : this.infiniteProducerThreads) {
+			thread.interrupt();
+		}
+	}
+
+	/**
+	 * This method will start the Analysis and block until it is finished.
+	 *
+	 * @throws AnalysisException
+	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable
+	 *
+	 * @since 1.1
+	 */
+	public void executeBlocking() {
+		executeNonBlocking();
+		waitForTermination();
+	}
+
+	/**
+	 * This method starts the analysis without waiting for its termination. The method {@link #waitForTermination()} must be called to unsure a correct termination
+	 * of the analysis.
+	 *
+	 * @since 1.1
+	 */
+	public void executeNonBlocking() {
+		startThreads(this.consumerThreads);
+		startThreads(this.finiteProducerThreads);
+		startThreads(this.infiniteProducerThreads);
+	}
+
 	private void startThreads(final Iterable<Thread> threads) {
 		for (Thread thread : threads) {
-			thread.setUncaughtExceptionHandler(this);
 			thread.start();
 		}
 	}
@@ -231,7 +299,7 @@ public final class Analysis implements UncaughtExceptionHandler {
 	 *
 	 * @return the configuration used for the Analysis
 	 */
-	public AnalysisConfiguration getConfiguration() {
+	public T getConfiguration() {
 		return this.configuration;
 	}
 
@@ -249,5 +317,11 @@ public final class Analysis implements UncaughtExceptionHandler {
 			}
 		}
 		this.exceptions.add(Pair.of(thread, throwable));
+	}
+
+	private Set<Stage> traverseIntraStages(final Stage stage) {
+		final Traversor traversor = new Traversor(new IntraStageCollector());
+		traversor.traverse(stage);
+		return traversor.getVisitedStage();
 	}
 }

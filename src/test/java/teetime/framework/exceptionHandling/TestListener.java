@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,13 @@ package teetime.framework.exceptionHandling;
 
 import teetime.framework.Stage;
 
-public class TestListener extends StageExceptionHandler {
+public class TestListener extends AbstractExceptionListener {
 
 	public static int exceptionInvoked = 0;
+
+	public TestListener() {
+		TestListener.exceptionInvoked = 0;
+	}
 
 	@Override
 	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {

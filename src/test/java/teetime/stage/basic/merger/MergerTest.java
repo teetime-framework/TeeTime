@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 TeeTime (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import static org.junit.Assert.assertThat;
 import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
@@ -33,7 +32,6 @@ import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.SingleElementPipeFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
-import teetime.util.Pair;
 
 /**
  * @author Nils Christian Ehmke
@@ -86,13 +84,12 @@ public class MergerTest {
 		mergerUnderTest = new Merger<Integer>(new RoundRobinStrategy());
 
 		List<Integer> outputList = new ArrayList<Integer>();
-		Collection<Pair<Thread, Throwable>> exceptions = test(mergerUnderTest)
+		test(mergerUnderTest)
 				.and().send(1, 2, 3).to(mergerUnderTest.getNewInputPort())
 				.and().send(4, 5, 6).to(mergerUnderTest.getNewInputPort())
 				.and().receive(outputList).from(mergerUnderTest.getOutputPort())
 				.start();
 
-		assertThat(exceptions, is(empty()));
 		assertThat(outputList, is(not(empty())));
 		assertThat(outputList, contains(1, 4, 2, 5, 3, 6));
 	}
