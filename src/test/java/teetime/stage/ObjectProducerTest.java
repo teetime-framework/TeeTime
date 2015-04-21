@@ -53,6 +53,14 @@ public class ObjectProducerTest {
 		assertThat(results, is(empty()));
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void producerShouldFailOnNegativeInput() {
+		final List<Integer> results = new ArrayList<Integer>();
+		final ObjectProducer<Integer> producer = new ObjectProducer<Integer>(-1, new Generator());
+
+		test(producer).and().receive(results).from(producer.getOutputPort()).start();
+	}
+
 	private static class Generator implements ConstructorClosure<Integer> {
 
 		private int counter = 1;
