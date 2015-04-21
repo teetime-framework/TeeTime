@@ -25,7 +25,7 @@ import teetime.framework.AnalysisException;
 import teetime.framework.Stage;
 import teetime.framework.StageState;
 import teetime.stage.CollectorSink;
-import teetime.stage.IterableProducer;
+import teetime.stage.InitialElementProducer;
 
 /**
  * This class can be used to test single stages in JUnit test cases.
@@ -87,7 +87,7 @@ public final class StageTester {
 
 		public Configuration(final List<InputHolder<?>> inputHolders, final Stage stage, final List<OutputHolder<?>> outputHolders) {
 			for (InputHolder<?> inputHolder : inputHolders) {
-				final IterableProducer<Object> producer = new IterableProducer<Object>(inputHolder.getInput());
+				final InitialElementProducer<Object> producer = new InitialElementProducer<Object>(inputHolder.getInput());
 				connectBoundedInterThreads(producer.getOutputPort(), inputHolder.getPort());
 				addThreadableStage(producer);
 			}
