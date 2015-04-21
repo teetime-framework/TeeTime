@@ -16,7 +16,6 @@
 package teetime.stage;
 
 import java.util.Arrays;
-import java.util.List;
 
 import teetime.framework.AbstractProducerStage;
 
@@ -54,21 +53,6 @@ public final class InitialElementProducer<T> extends AbstractProducerStage<T> {
 
 	public void setIter(final Iterable<T> elements) {
 		this.elements = elements;
-	}
-
-	public static void main(final String[] args) {
-		// int[] array = new int[] { 0, 0, 0 };
-		// new IterableProducer<Integer>(array);
-		//
-		// new InitialElementProducer<Integer>(array);
-
-		Integer[] array = new Integer[] { 0, 0, 0 };
-		new InitialElementProducer<Integer>(array);
-
-		new InitialElementProducer<Integer>(0, 0, 0);
-
-		List<Integer> iterable = Arrays.asList(0, 0, 0);
-		new InitialElementProducer<Integer>(iterable);
 	}
 
 }

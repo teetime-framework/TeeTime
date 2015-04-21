@@ -24,7 +24,6 @@ import static teetime.framework.test.StageTester.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -34,13 +33,14 @@ public class InitialElementProducerTest {
 
 	private InitialElementProducer<Integer> producer;
 
-	@Before
+	// @Before
 	public void initializeProducer() {
 		producer = new InitialElementProducer<Integer>();
 	}
 
 	@Test
 	public void producerShouldByDefaultSendNothing() {
+		initializeProducer();
 		List<Integer> results = new ArrayList<Integer>();
 
 		test(producer).and().receive(results).from(producer.getOutputPort()).start();
@@ -48,7 +48,8 @@ public class InitialElementProducerTest {
 	}
 
 	@Test
-	public void producerShouldSendDefinedValues() {
+	public void testSetIterArray() {
+		initializeProducer();
 		producer.setIter(new Integer[] { 1, 2, 3 });
 		List<Integer> results = new ArrayList<Integer>();
 
@@ -56,4 +57,44 @@ public class InitialElementProducerTest {
 		assertThat(results, contains(1, 2, 3));
 	}
 
+	@Test
+	public void testSetIterVarargs() {
+		initializeProducer();
+		producer.setIter(1, 2, 3);
+		List<Integer> results = new ArrayList<Integer>();
+
+		test(producer).and().receive(results).from(producer.getOutputPort()).start();
+		assertThat(results, contains(1, 2, 3));
+	}
+
+	@Test
+	public void instantiateWithArray() {
+		producer = new InitialElementProducer<Integer>(new Integer[] { 1, 2, 3 });
+		List<Integer> results = new ArrayList<Integer>();
+
+		test(producer).and().receive(results).from(producer.getOutputPort()).start();
+		assertThat(results, contains(1, 2, 3));
+	}
+
+	@Test
+	public void instantiateWithVarargs() {
+		producer = new InitialElementProducer<Integer>(1, 2, 3);
+		List<Integer> results = new ArrayList<Integer>();
+
+		test(producer).and().receive(results).from(producer.getOutputPort()).start();
+		assertThat(results, contains(1, 2, 3));
+	}
+
+	@Test
+	public void instantiateWithIterable() {
+		List<Integer> test = new ArrayList<Integer>();
+		test.add(1);
+		test.add(2);
+		test.add(3);
+		producer = new InitialElementProducer<Integer>(test);
+		List<Integer> results = new ArrayList<Integer>();
+
+		test(producer).and().receive(results).from(producer.getOutputPort()).start();
+		assertThat(results, contains(1, 2, 3));
+	}
 }
