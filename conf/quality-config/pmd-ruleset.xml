@@ -78,6 +78,7 @@
 
 	<rule ref="rulesets/java/optimizations.xml">
 		<exclude name="LocalVariableCouldBeFinal" />
+		<exclude name="SimplifyStartsWith" />
 	</rule>
 
 

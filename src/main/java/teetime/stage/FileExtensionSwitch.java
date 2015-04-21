@@ -27,7 +27,7 @@ import com.google.common.io.Files;
 
 public final class FileExtensionSwitch extends AbstractConsumerStage<File> {
 
-	private final OutputPort<File> unknownFileExtensionOutputPort = createOutputPort();
+	private final OutputPort<File> unknownFileExtensionOutputPort = createOutputPort(File.class);
 
 	// BETTER use the hppc ObjectObjectMap that provide getOrDefault()
 	private final Map<String, OutputPort<File>> fileExtensions = new HashMapWithDefault<String, OutputPort<File>>(new ValueFactory<OutputPort<File>>() {
@@ -48,6 +48,7 @@ public final class FileExtensionSwitch extends AbstractConsumerStage<File> {
 		outputPort.send(file);
 	}
 
+	@SuppressWarnings("PMD.AvoidReassigningParameters")
 	public OutputPort<File> addFileExtension(String fileExtension) {
 		if (fileExtension.startsWith(".")) {
 			fileExtension = fileExtension.substring(1);
