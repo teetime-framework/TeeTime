@@ -127,12 +127,6 @@
 			<!-- SNAPSHOT master version -->
 			<version>7239659ba0</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>com.puppycrawl.tools</groupId>
-			<artifactId>checkstyle</artifactId>
-			<version>6.5</version>
-		</dependency>
 
 		<dependency>
 			<groupId>com.carrotsearch</groupId>
@@ -152,11 +146,6 @@
 						<format>html</format>
 						<format>xml</format>
 					</formats>
-					<instrumentation>
-						<excludes>
-							<exclude>src/performancetest/**/*</exclude>
-						</excludes>
-					</instrumentation>
 				</configuration>
 			</plugin>
 			<!-- we want JDK 1.6 source and binary compatibility -->
