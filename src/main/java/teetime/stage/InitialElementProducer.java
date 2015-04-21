@@ -48,12 +48,12 @@ public final class InitialElementProducer<T> extends AbstractProducerStage<T> {
 		this.terminate();
 	}
 
-	public void setIter(final Iterable<T> elements) {
-		this.elements = elements;
-	}
-
 	public void setIter(final T... elements) {
 		this.elements = Arrays.asList(elements);
+	}
+
+	public void setIter(final Iterable<T> elements) {
+		this.elements = elements;
 	}
 
 	public static void main(final String[] args) {
