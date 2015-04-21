@@ -22,38 +22,38 @@ import teetime.framework.AbstractProducerStage;
 
 public final class InitialElementProducer<T> extends AbstractProducerStage<T> {
 
-	private Iterable<T> iter;
+	private Iterable<T> elements;
 
 	public InitialElementProducer(final T... elements) {
-		this.iter = Arrays.asList(elements);
+		this.elements = Arrays.asList(elements);
 	}
 
-	public <O extends Iterable<T>> InitialElementProducer(final O iter) {
-		this.iter = iter;
-	}
-
-	@Override
-	protected void execute() {
-		for (final T i : this.iter) {
-			this.outputPort.send(i);
-		}
-		this.terminate();
-	}
-
-	public void setIter(final Iterable<T> iter) {
-		this.iter = iter;
-	}
-
-	public void setIter(final T... elements) {
-		this.iter = Arrays.asList(elements);
+	public <O extends Iterable<T>> InitialElementProducer(final O elements) {
+		this.elements = elements;
 	}
 
 	@Override
 	public void onStarting() throws Exception {
-		if (iter == null) {
-			throw new IllegalArgumentException("iter must not be null");
+		if (elements == null) {
+			throw new IllegalArgumentException("The given iterable must not be null");
 		}
 		super.onStarting();
+	}
+
+	@Override
+	protected void execute() {
+		for (final T element : this.elements) {
+			this.outputPort.send(element);
+		}
+		this.terminate();
+	}
+
+	public void setIter(final Iterable<T> elements) {
+		this.elements = elements;
+	}
+
+	public void setIter(final T... elements) {
+		this.elements = Arrays.asList(elements);
 	}
 
 	public static void main(final String[] args) {
