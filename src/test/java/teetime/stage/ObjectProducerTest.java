@@ -43,6 +43,7 @@ public class ObjectProducerTest {
 		assertThat(results, contains(1, 2, 3));
 	}
 
+	@Test
 	public void producerShouldSendNothingIfSpecified() {
 		final List<Integer> results = new ArrayList<Integer>();
 		final ObjectProducer<Integer> producer = new ObjectProducer<Integer>(0, new Generator());

@@ -54,14 +54,11 @@ public final class ObjectProducer<T> extends AbstractProducerStage<T> {
 
 	@Override
 	protected void execute() {
-		T newObject = this.inputObjectCreator.create();
-		this.numInputObjects--;
-
-		outputPort.send(newObject);
-
-		if (this.numInputObjects == 0) {
-			this.terminate();
+		for (int i = 0; i < numInputObjects; i++) {
+			T newObject = this.inputObjectCreator.create();
+			outputPort.send(newObject);
 		}
+		this.terminate();
 	}
 
 }
