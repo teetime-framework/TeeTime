@@ -19,8 +19,8 @@ import java.io.File;
 
 import teetime.framework.AnalysisConfiguration;
 import teetime.stage.ByteArray2String;
-import teetime.stage.CipherByteArray;
-import teetime.stage.CipherByteArray.CipherMode;
+import teetime.stage.CipherStage;
+import teetime.stage.CipherStage.CipherMode;
 import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.ZipByteArray;
@@ -38,7 +38,7 @@ public class TokenizerConfiguration extends AnalysisConfiguration {
 		final InitialElementProducer<File> init = new InitialElementProducer<File>(input);
 		final File2ByteArray f2b = new File2ByteArray();
 		final ZipByteArray decomp = new ZipByteArray(ZipMode.DECOMP);
-		final CipherByteArray decrypt = new CipherByteArray(password, CipherMode.DECRYPT);
+		final CipherStage decrypt = new CipherStage(password, CipherMode.DECRYPT);
 		final ByteArray2String b2s = new ByteArray2String();
 		final Tokenizer tokenizer = new Tokenizer(" ");
 		this.counter = new Counter<String>();

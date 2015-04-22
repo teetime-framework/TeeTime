@@ -24,17 +24,17 @@ import java.util.List;
 
 import org.junit.Test;
 
-import teetime.stage.CipherByteArray.CipherMode;
+import teetime.stage.CipherStage.CipherMode;
 
 /**
  * @author Nils Christian Ehmke
  */
-public class CipherByteArrayTest {
+public class CipherStageTest {
 
 	@Test
 	public void decryptShouldInvertEncryption() {
-		final CipherByteArray encryptStage = new CipherByteArray("somePassword", CipherMode.ENCRYPT);
-		final CipherByteArray decryptStage = new CipherByteArray("somePassword", CipherMode.DECRYPT);
+		final CipherStage encryptStage = new CipherStage("somePassword", CipherMode.ENCRYPT);
+		final CipherStage decryptStage = new CipherStage("somePassword", CipherMode.DECRYPT);
 
 		final byte[] input = new byte[] { 1, 2, 3, 4, 5 };
 		final List<byte[]> encryptedResult = new ArrayList<byte[]>();

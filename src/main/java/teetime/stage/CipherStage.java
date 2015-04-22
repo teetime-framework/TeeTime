@@ -20,7 +20,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -30,19 +32,20 @@ import javax.crypto.spec.SecretKeySpec;
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
-public final class CipherByteArray extends AbstractConsumerStage<byte[]> {
+public final class CipherStage extends AbstractConsumerStage<byte[]> {
 
 	private final OutputPort<byte[]> outputPort = this.createOutputPort();
-	private Cipher cipher = null;
+	private Cipher cipher;
 
 	public enum CipherMode {
 		ENCRYPT, DECRYPT
 	}
 
-	public CipherByteArray(final String password, final CipherMode mode) {
-		final byte[] salt = { 't', 'e', 's', 't' };
-		SecretKeySpec skeyspec = null;
+	public CipherStage(final String password, final CipherMode mode) {
+		this(password, mode, new byte[] { 't', 'e', 's', 't' });
+	}
 
+	public CipherStage(final String password, final CipherMode mode, final byte[] salt) {
 		final KeySpec keySpec = new PBEKeySpec(password.toCharArray(),
 				salt,
 				1024, 128);
@@ -58,7 +61,7 @@ public final class CipherByteArray extends AbstractConsumerStage<byte[]> {
 			throw new IllegalStateException(e1);
 		}
 
-		skeyspec = new SecretKeySpec(secretKey.getEncoded(), "AES");
+		final SecretKeySpec skeyspec = new SecretKeySpec(secretKey.getEncoded(), "AES");
 
 		try {
 			this.cipher = Cipher.getInstance(skeyspec.getAlgorithm());
@@ -68,12 +71,9 @@ public final class CipherByteArray extends AbstractConsumerStage<byte[]> {
 			throw new IllegalStateException(e);
 		}
 
+		final int convertedMode = (mode == CipherMode.ENCRYPT) ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE;
 		try {
-			if (mode == CipherMode.ENCRYPT) {
-				this.cipher.init(Cipher.ENCRYPT_MODE, skeyspec);
-			} else {
-				this.cipher.init(Cipher.DECRYPT_MODE, skeyspec);
-			}
+			this.cipher.init(convertedMode, skeyspec);
 		} catch (final InvalidKeyException e) {
 			throw new IllegalStateException(e);
 		}
@@ -81,16 +81,14 @@ public final class CipherByteArray extends AbstractConsumerStage<byte[]> {
 
 	@Override
 	protected void execute(final byte[] element) {
-
-		byte[] output = null;
-
 		try {
-			output = this.cipher.doFinal(element);
-		} catch (final Exception e) {
-			e.printStackTrace();
+			byte[] output = this.cipher.doFinal(element);
+			this.outputPort.send(output);
+		} catch (IllegalBlockSizeException e) {
+			throw new IllegalStateException(e);
+		} catch (BadPaddingException e) {
+			throw new IllegalStateException(e);
 		}
-
-		this.outputPort.send(output);
 	}
 
 	public OutputPort<byte[]> getOutputPort() {

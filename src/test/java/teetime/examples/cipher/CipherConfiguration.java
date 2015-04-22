@@ -18,8 +18,8 @@ package teetime.examples.cipher;
 import java.io.File;
 
 import teetime.framework.AnalysisConfiguration;
-import teetime.stage.CipherByteArray;
-import teetime.stage.CipherByteArray.CipherMode;
+import teetime.stage.CipherStage;
+import teetime.stage.CipherStage.CipherMode;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.ZipByteArray;
 import teetime.stage.ZipByteArray.ZipMode;
@@ -34,10 +34,10 @@ public class CipherConfiguration extends AnalysisConfiguration {
 
 		final InitialElementProducer<File> init = new InitialElementProducer<File>(input);
 		final File2ByteArray f2b = new File2ByteArray();
-		final CipherByteArray enc = new CipherByteArray(password, CipherMode.ENCRYPT);
+		final CipherStage enc = new CipherStage(password, CipherMode.ENCRYPT);
 		final ZipByteArray comp = new ZipByteArray(ZipMode.COMP);
 		final ZipByteArray decomp = new ZipByteArray(ZipMode.DECOMP);
-		final CipherByteArray decrypt = new CipherByteArray(password, CipherMode.DECRYPT);
+		final CipherStage decrypt = new CipherStage(password, CipherMode.DECRYPT);
 		final ByteArrayFileWriter writer = new ByteArrayFileWriter(output);
 
 		connectIntraThreads(init.getOutputPort(), f2b.getInputPort());
