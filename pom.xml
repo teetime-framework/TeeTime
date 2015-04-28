@@ -263,6 +263,8 @@
 						<groupId>de.chw</groupId>
 						<artifactId>pmd.ruleset</artifactId>
 						<version>0.0.1-SNAPSHOT</version>
+						<scope>system</scope>
+						<systemPath>${project.basedir}/conf/quality-config/pmd/CustomPmdRules_1.0.0.201504281519.jar</systemPath>
 					</dependency>
 				</dependencies>
 				<configuration>

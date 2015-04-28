@@ -81,6 +81,6 @@
 		<exclude name="SimplifyStartsWith" />
 	</rule>
 	
-<!-- 	<rule ref="rulesets/chw/basic.xml" /> -->
+	<rule ref="rulesets/chw/basic.xml" />
 
 </ruleset>
