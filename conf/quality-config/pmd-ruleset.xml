@@ -43,11 +43,11 @@
 	<rule ref="rulesets/jsp/basic-jsf.xml" />
 	<rule ref="rulesets/jsp/basic.xml" />
 
-	<rule ref="rulesets/vm/basic.xml" />
+<!-- 	<rule ref="rulesets/vm/basic.xml" /> -->
 
-	<rule ref="rulesets/xml/basic.xml" />
+<!-- 	<rule ref="rulesets/xml/basic.xml" /> -->
 
-	<rule ref="rulesets/xsl/xpath.xml" />
+<!-- 	<rule ref="rulesets/xsl/xpath.xml" /> -->
 
 	<!-- custom adaptations -->
 
@@ -80,6 +80,7 @@
 		<exclude name="LocalVariableCouldBeFinal" />
 		<exclude name="SimplifyStartsWith" />
 	</rule>
-
+	
+<!-- 	<rule ref="rulesets/chw/basic.xml" /> -->
 
 </ruleset>
