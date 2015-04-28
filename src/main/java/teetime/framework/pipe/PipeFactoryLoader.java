@@ -82,17 +82,17 @@ public final class PipeFactoryLoader {
 	}
 
 	public static List<IPipeFactory> mergeFiles(final List<URL> files) {
-		final List<IPipeFactory> list = new ArrayList<IPipeFactory>();
+		final List<IPipeFactory> mergedPipeFactories = new ArrayList<IPipeFactory>();
 		for (URL url : files) {
 			try {
 				final InputStream is = url.openStream();
-				list.addAll(loadFromStream(is));
+				mergedPipeFactories.addAll(loadFromStream(is));
 				is.close();
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
 			}
 
 		}
-		return list;
+		return mergedPipeFactories;
 	}
 }
