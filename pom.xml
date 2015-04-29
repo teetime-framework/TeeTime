@@ -299,7 +299,7 @@
 					<!-- add support for ssh/scp -->
 					<dependency>
 						<groupId>org.apache.maven.wagon</groupId>
-						<artifactId>maven-wagon</artifactId>
+						<artifactId>wagon-ssh</artifactId>
 						<version>2.9-SNAPSHOT</version>
 					</dependency>
 					<!-- skin -->
