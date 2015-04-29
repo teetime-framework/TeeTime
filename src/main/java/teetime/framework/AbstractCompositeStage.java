@@ -36,6 +36,7 @@ import teetime.framework.validation.InvalidPortConnection;
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
  */
+@Deprecated
 public abstract class AbstractCompositeStage extends Stage {
 
 	private static final IPipeFactory INTRA_PIPE_FACTORY = PipeFactoryRegistry.INSTANCE
