@@ -18,7 +18,7 @@ package teetime.framework.exceptionHandling;
 public class LoggingExceptionListenerFactory implements IExceptionListenerFactory {
 
 	@Override
-	public AbstractExceptionListener create() {
+	public AbstractExceptionListener createInstance() {
 		return new LoggingExceptionListener();
 	}
 

@@ -132,7 +132,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		Set<Stage> intraStages;
 		for (Stage stage : threadableStageJobs) {
 			intraStages = traverseIntraStages(stage);
-			newListener = factory.create();
+			newListener = factory.createInstance();
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
 				final RunnableConsumerStage runnable = new RunnableConsumerStage(stage);
