@@ -40,28 +40,28 @@ public class SpScPipeTest {
 		InputPort<Object> targetPort = null;
 		AbstractInterThreadPipe pipe = new SpScPipe(sourcePort, targetPort, 1); // IPipe does not provide getSignal method
 
-		List<ISignal> list = new ArrayList<ISignal>();
-		list.add(new StartingSignal());
-		list.add(new TerminatingSignal());
-		list.add(new ValidatingSignal());
-		list.add(new StartingSignal());
-		list.add(new TerminatingSignal());
-		list.add(new ValidatingSignal());
-		list.add(new StartingSignal());
-		list.add(new TerminatingSignal());
-		list.add(new ValidatingSignal());
+		List<ISignal> signals = new ArrayList<ISignal>();
+		signals.add(new StartingSignal());
+		signals.add(new TerminatingSignal());
+		signals.add(new ValidatingSignal());
+		signals.add(new StartingSignal());
+		signals.add(new TerminatingSignal());
+		signals.add(new ValidatingSignal());
+		signals.add(new StartingSignal());
+		signals.add(new TerminatingSignal());
+		signals.add(new ValidatingSignal());
 
-		for (ISignal s : list) {
+		for (ISignal s : signals) {
 			pipe.sendSignal(s);
 		}
 
-		List<ISignal> secondList = new ArrayList<ISignal>();
+		List<ISignal> secondSignals = new ArrayList<ISignal>();
 		while (true) {
 			ISignal temp = pipe.getSignal();
 			if (temp == null) {
 				break;
 			}
-			secondList.add(temp);
+			secondSignals.add(temp);
 		}
 		// Assert.assertEquals(list, secondList);
 	}
