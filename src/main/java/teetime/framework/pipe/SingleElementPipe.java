@@ -19,7 +19,7 @@ import teetime.framework.AbstractIntraThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class SingleElementPipe extends AbstractIntraThreadPipe {
+final class SingleElementPipe extends AbstractIntraThreadPipe {
 
 	private Object element;
 

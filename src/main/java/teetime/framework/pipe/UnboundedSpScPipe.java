@@ -26,7 +26,7 @@ import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class UnboundedSpScPipe extends AbstractInterThreadPipe {
+final class UnboundedSpScPipe extends AbstractInterThreadPipe {
 
 	private final Queue<Object> queue;
 

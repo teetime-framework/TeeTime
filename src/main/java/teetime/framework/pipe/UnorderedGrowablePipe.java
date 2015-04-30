@@ -19,7 +19,7 @@ import teetime.framework.AbstractIntraThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class UnorderedGrowablePipe extends AbstractIntraThreadPipe {
+final class UnorderedGrowablePipe extends AbstractIntraThreadPipe {
 
 	private Object[] elements;
 	// private final ArrayWrapper2<T> elements = new ArrayWrapper2<T>(2);

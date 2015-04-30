@@ -21,7 +21,7 @@ import teetime.framework.OutputPort;
 import teetime.framework.StageState;
 import teetime.util.concurrent.queue.ObservableSpScArrayQueue;
 
-public final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe {
+final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe {
 
 	// private static final Logger LOGGER = LoggerFactory.getLogger(SpScPipe.class);
 

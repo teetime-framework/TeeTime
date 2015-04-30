@@ -31,7 +31,7 @@ import teetime.framework.OutputPort;
  *
  * @param <T>
  */
-public final class SpScIntraThreadPipe<T> extends AbstractIntraThreadPipe {
+final class SpScIntraThreadPipe<T> extends AbstractIntraThreadPipe {
 
 	private final Queue<Object> queue;
 

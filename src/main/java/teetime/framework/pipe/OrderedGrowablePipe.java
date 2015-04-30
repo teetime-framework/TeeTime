@@ -21,7 +21,7 @@ import teetime.framework.AbstractIntraThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public class OrderedGrowablePipe extends AbstractIntraThreadPipe {
+class OrderedGrowablePipe extends AbstractIntraThreadPipe {
 
 	private final LinkedList<Object> elements;
 

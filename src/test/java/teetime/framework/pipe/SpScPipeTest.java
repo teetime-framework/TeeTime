@@ -15,8 +15,12 @@
  */
 package teetime.framework.pipe;
 
+import static org.junit.Assert.assertFalse;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Test;
 
 import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
@@ -60,5 +64,11 @@ public class SpScPipeTest {
 			secondList.add(temp);
 		}
 		// Assert.assertEquals(list, secondList);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testAdd() throws Exception {
+		SpScPipe pipe = new SpScPipe(null, null, 4);
+		assertFalse(pipe.add(null));
 	}
 }

@@ -20,7 +20,7 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.util.concurrent.workstealing.CircularArray;
 
-public final class OrderedGrowableArrayPipe extends AbstractIntraThreadPipe {
+final class OrderedGrowableArrayPipe extends AbstractIntraThreadPipe {
 
 	private final CircularArray<Object> elements;
 	private int head;

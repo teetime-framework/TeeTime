@@ -20,7 +20,7 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.util.list.CommittableResizableArrayQueue;
 
-public final class CommittablePipe extends AbstractIntraThreadPipe {
+final class CommittablePipe extends AbstractIntraThreadPipe {
 
 	private final CommittableResizableArrayQueue<Object> elements = new CommittableResizableArrayQueue<Object>(null, 4);
 

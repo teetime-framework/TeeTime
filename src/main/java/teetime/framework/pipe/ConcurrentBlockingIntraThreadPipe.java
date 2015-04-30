@@ -21,7 +21,7 @@ import teetime.framework.AbstractIntraThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class ConcurrentBlockingIntraThreadPipe<T> extends AbstractIntraThreadPipe {
+final class ConcurrentBlockingIntraThreadPipe<T> extends AbstractIntraThreadPipe {
 
 	private final ConcurrentLinkedQueue<Object> queue;
 
