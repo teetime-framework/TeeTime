@@ -35,12 +35,12 @@ final class SingleElementPipe extends AbstractIntraThreadPipe {
 
 	@Override
 	public boolean add(final Object element) {
-		if (null != element) {
-			this.element = element;
-			this.reportNewElement();
-			return true;
+		if (null == element) {
+			throw new IllegalArgumentException("Parameter 'element' is null, but must be non-null.");
 		}
-		return false;
+		this.element = element;
+		this.reportNewElement();
+		return true;
 	}
 
 	@Override
