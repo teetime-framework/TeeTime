@@ -6,40 +6,31 @@
 	</properties>
 	<body>
 		<release version="Snapshot" date="Daily basis" description="Unstable preview of oncoming versions">
-			<action dev="ntd" type="add" issue="32">
-				Introduced a generic exception handling for stages.
-			</action>
-			<action dev="ntd" type="update" issue="92">
-				Introduced new method (returns void) in Analysis, which starts the execution of the analysis.
-				Marked old method as deprecated.
-			</action>
-			<action dev="chw" type="update" issue="93">
-				Introduced abstract class for composite stages.
-			</action>
+			
 
 		</release>
 		<release version="1.1" date="30.04.2015" description="Second release">
 			<action dev="ntd" type="add" issue="32">
-				New concept: exception handling incl. Wiki tutorial
+				New concept: exception handling incl. Wiki tutorial.
 			</action>
 			<action due-to="nie" type="add" issue="107">
-				New concept: unit test framework for testing a single stage
+				New concept: unit test framework for testing a single stage.
 			</action>
 			<action dev="chw" type="add">
 				New class: AbstractTransformation; 
-				Represents a stage with a single input and a single output port
+				Represents a stage with a single input and a single output port.
 			</action>
-			<action dev="chw" type="add">
+			<action dev="Nils C. Ehmke" type="add">
 				New class: AbstractFilter;
-				Represents a stage with a single input and a single output port of the same type
+				Represents a stage with a single input and a single output port of the same type.
 			</action>
 			
 			
 			<action dev="ntd" type="update" issue="92">
 				Analysis.start() is now deprecated. Use Analysis.execute() instead.
 			</action>
-			<action due-to="ajs" type="update" issue="120">
-				Renamed Stage.executeWithPorts() to Stage.executeStage()
+			<action due-to="Arne J. Salveter" type="update" issue="120">
+				Renamed Stage.executeWithPorts() to Stage.executeStage().
 			</action>
 			<action dev="ntd" type="update" issue="112">
 				Removed IterableProducer. Use InitialElementProducer instead.
@@ -47,21 +38,21 @@
 			
 			
 			<action dev="chw" type="fix" issue="143">
-				#143 Null values can block the analysis 
+				#143 Null values can block the analysis.
 			</action>
 			<action dev="ntd" type="fix" issue="109">
-				#109 Minor bug in ObjectProducer stage 
+				#109 Minor bug in ObjectProducer stage.
 			</action>
 			<action dev="ntd" type="fix" issue="75">
-				#75 Signal passing is incorrect 
+				#75 Signal passing is incorrect.
 			</action>
 
 
 			<action dev="chw" type="update" issue="141">
-				Updated dependencies
+				Updated dependencies.
 			</action>
 			<action dev="ntd" type="update" issue="72">
-				Jar is not only published via the Central Maven Repository, but also via our CI server Jenkins
+				Jar is not only published via the Central Maven Repository, but also via our CI server Jenkins.
 			</action>
 		</release>
 		
@@ -71,7 +62,7 @@
 				promote TeeTime.
 			</action>
 			<action type="add">
-				Initial release of TeeTime
+				Initial release of TeeTime.
 			</action>
 		</release>
 	</body>
