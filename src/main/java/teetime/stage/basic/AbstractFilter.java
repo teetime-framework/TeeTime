@@ -15,7 +15,7 @@
  */
 package teetime.stage.basic;
 
-public abstract class AbstractFilter<E> extends AbstractTransform<E, E> {
+public abstract class AbstractFilter<E> extends AbstractTransformation<E, E> {
 
 	protected AbstractFilter() {
 		super();
