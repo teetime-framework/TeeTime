@@ -35,9 +35,12 @@ public final class SingleElementPipe extends AbstractIntraThreadPipe {
 
 	@Override
 	public boolean add(final Object element) {
-		this.element = element;
-		this.reportNewElement();
-		return true;
+		if (null != element) {
+			this.element = element;
+			this.reportNewElement();
+			return true;
+		}
+		return false;
 	}
 
 	@Override

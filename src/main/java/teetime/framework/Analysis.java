@@ -128,11 +128,10 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		if (threadableStageJobs.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
-		AbstractExceptionListener newListener;
-		Set<Stage> intraStages;
+
 		for (Stage stage : threadableStageJobs) {
-			intraStages = traverseIntraStages(stage);
-			newListener = factory.createInstance();
+			Set<Stage> intraStages = traverseIntraStages(stage);
+			AbstractExceptionListener newListener = factory.createInstance();
 			switch (stage.getTerminationStrategy()) {
 			case BY_SIGNAL: {
 				final RunnableConsumerStage runnable = new RunnableConsumerStage(stage);
