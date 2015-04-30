@@ -13,14 +13,14 @@
 			<action dev="ntd" type="add" issue="32">
 				New concept: exception handling incl. Wiki tutorial.
 			</action>
-			<action due-to="nie" type="add" issue="107">
+			<action due-to="Nils C. Ehmke" type="add" issue="107">
 				New concept: unit test framework for testing a single stage.
 			</action>
 			<action dev="chw" type="add">
 				New class: AbstractTransformation; 
 				Represents a stage with a single input and a single output port.
 			</action>
-			<action dev="Nils C. Ehmke" type="add">
+			<action dev="chw" type="add">
 				New class: AbstractFilter;
 				Represents a stage with a single input and a single output port of the same type.
 			</action>
