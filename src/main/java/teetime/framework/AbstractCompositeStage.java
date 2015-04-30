@@ -35,6 +35,8 @@ import teetime.framework.validation.InvalidPortConnection;
  * @since 1.1
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
+ * @deprecated This concept is not yet implemented in a correct way. As soon as the concept is stable, we will remove the deprecated tag.
+ *
  */
 @Deprecated
 public abstract class AbstractCompositeStage extends Stage {
@@ -117,6 +119,11 @@ public abstract class AbstractCompositeStage extends Stage {
 	@Override
 	public final Thread getOwningThread() {
 		return getFirstStage().getOwningThread();
+	}
+
+	@Override
+	public final void onInitializing() throws Exception {
+		getFirstStage().onInitializing();
 	}
 
 	@Override

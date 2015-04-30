@@ -88,17 +88,22 @@ public abstract class AbstractStage extends Stage {
 	}
 
 	@Override
+	public void onInitializing() throws Exception {
+		this.connectUnconnectedOutputPorts();
+		currentState = StageState.INITIALIZED;
+		logger.trace("Initialized.");
+	}
+
+	@Override
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
 		this.validateOutputPorts(invalidPortConnections);
 		currentState = StageState.VALIDATED;
+		logger.trace("Validated.");
 	}
 
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	@Override
 	public void onStarting() throws Exception {
-		this.owningThread = Thread.currentThread();
-
-		this.connectUnconnectedOutputPorts();
 		currentState = StageState.STARTED;
 		logger.trace("Started.");
 	}
@@ -183,13 +188,12 @@ public abstract class AbstractStage extends Stage {
 	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
 		for (OutputPort<?> outputPort : outputPorts) {
 			final IPipe pipe = outputPort.getPipe();
-			if (null != pipe) { // if output port is connected with another one
-				final Class<?> sourcePortType = outputPort.getType();
-				final Class<?> targetPortType = pipe.getTargetPort().getType();
-				if (null == sourcePortType || !sourcePortType.equals(targetPortType)) {
-					final InvalidPortConnection invalidPortConnection = new InvalidPortConnection(outputPort, pipe.getTargetPort());
-					invalidPortConnections.add(invalidPortConnection);
-				}
+
+			final Class<?> sourcePortType = outputPort.getType();
+			final Class<?> targetPortType = pipe.getTargetPort().getType();
+			if (null == sourcePortType || !sourcePortType.equals(targetPortType)) {
+				final InvalidPortConnection invalidPortConnection = new InvalidPortConnection(outputPort, pipe.getTargetPort());
+				invalidPortConnections.add(invalidPortConnection);
 			}
 		}
 	}

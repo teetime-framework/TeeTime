@@ -130,43 +130,56 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		}
 
 		for (Stage stage : threadableStageJobs) {
-			Set<Stage> intraStages = traverseIntraStages(stage);
-			AbstractExceptionListener newListener = factory.createInstance();
-			switch (stage.getTerminationStrategy()) {
+			final Thread thread;
+
+			final TerminationStrategy terminationStrategy = stage.getTerminationStrategy();
+			switch (terminationStrategy) {
 			case BY_SIGNAL: {
 				final RunnableConsumerStage runnable = new RunnableConsumerStage(stage);
-				final Thread thread = createThread(newListener, intraStages, stage, runnable);
+				thread = createThread(runnable, stage.getId());
 				this.consumerThreads.add(thread);
 				break;
 			}
 			case BY_SELF_DECISION: {
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
-				final Thread thread = createThread(newListener, intraStages, stage, runnable);
+				thread = createThread(runnable, stage.getId());
 				this.finiteProducerThreads.add(thread);
 				break;
 			}
 			case BY_INTERRUPT: {
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
-				final Thread thread = createThread(newListener, intraStages, stage, runnable);
+				thread = createThread(runnable, stage.getId());
 				this.infiniteProducerThreads.add(thread);
 				break;
 			}
 			default:
-				break;
+				throw new IllegalStateException("Unhandled termination strategy: " + terminationStrategy);
 			}
+
+			final Set<Stage> intraStages = traverseIntraStages(stage);
+			final AbstractExceptionListener newListener = factory.createInstance();
+			initializeIntraStages(intraStages, thread, newListener);
 		}
 
 	}
 
-	private Thread createThread(final AbstractExceptionListener newListener, final Set<Stage> intraStages, final Stage stage, final AbstractRunnableStage runnable) {
+	private Thread createThread(final AbstractRunnableStage runnable, final String name) {
 		final Thread thread = new Thread(runnable);
+		thread.setUncaughtExceptionHandler(this);
+		thread.setName(name);
+		return thread;
+	}
+
+	private void initializeIntraStages(final Set<Stage> intraStages, final Thread thread, final AbstractExceptionListener newListener) {
 		for (Stage intraStage : intraStages) {
 			intraStage.setOwningThread(thread);
 			intraStage.setExceptionHandler(newListener);
+			try {
+				intraStage.onInitializing();
+			} catch (Exception e) { // NOPMD(generic framework catch)
+				throw new IllegalStateException("The following exception occurs within initializing the analysis:", e);
+			}
 		}
-		thread.setUncaughtExceptionHandler(this);
-		thread.setName(stage.getId());
-		return thread;
 	}
 
 	/**

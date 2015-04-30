@@ -128,6 +128,13 @@ public abstract class Stage {
 
 	public abstract void onValidating(List<InvalidPortConnection> invalidPortConnections);
 
+	/**
+	 * Event that is triggered within the initialization phase of the analysis.
+	 * It does not count to the execution time.
+	 */
+	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
+	public abstract void onInitializing() throws Exception;
+
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public abstract void onStarting() throws Exception;
 
@@ -137,4 +144,5 @@ public abstract class Stage {
 	protected final void setExceptionHandler(final AbstractExceptionListener exceptionHandler) {
 		this.exceptionHandler = exceptionHandler;
 	}
+
 }
