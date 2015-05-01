@@ -118,7 +118,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	 * @deprecated since 1.1, analysis will be initialized automatically by the framework
 	 */
 	@Deprecated
-	public final void init() {
+	private final void init() {
 		if (initialized) {
 			return;
 		}
@@ -180,46 +180,6 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 				throw new IllegalStateException("The following exception occurs within initializing the analysis:", e);
 			}
 		}
-	}
-
-	/**
-	 * This method will start the Analysis and all containing stages.
-	 *
-	 * @return a collection of thread/throwable pairs
-	 *
-	 * @deprecated since 1.1, replaced by {@link #executeBlocking()}
-	 */
-	@Deprecated
-	public Collection<Pair<Thread, Throwable>> start() {
-		// start analysis
-		startThreads(this.consumerThreads);
-		startThreads(this.finiteProducerThreads);
-		startThreads(this.infiniteProducerThreads);
-
-		// wait for the analysis to complete
-		try {
-			for (Thread thread : this.finiteProducerThreads) {
-				thread.join();
-			}
-
-			for (Thread thread : this.consumerThreads) {
-				thread.join();
-			}
-		} catch (InterruptedException e) {
-			LOGGER.error("Analysis has stopped unexpectedly", e);
-			for (Thread thread : this.finiteProducerThreads) {
-				thread.interrupt();
-			}
-
-			for (Thread thread : this.consumerThreads) {
-				thread.interrupt();
-			}
-		}
-
-		for (Thread thread : this.infiniteProducerThreads) {
-			thread.interrupt();
-		}
-		return this.exceptions;
 	}
 
 	/**
