@@ -115,9 +115,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	/**
 	 * This initializes the analysis and needs to be run right before starting it.
 	 *
-	 * @deprecated since 1.1, analysis will be initialized automatically by the framework
 	 */
-	@Deprecated
 	private final void init() {
 		if (initialized) {
 			return;
