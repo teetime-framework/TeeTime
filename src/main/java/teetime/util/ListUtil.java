@@ -25,12 +25,12 @@ public final class ListUtil {
 	}
 
 	public static <T> List<T> merge(final List<List<T>> listOfLists) {
-		List<T> resultList = listOfLists.get(0);
+		List<T> mergedElements = listOfLists.get(0);
 		for (int i = 1; i < listOfLists.size(); i++) {
-			Collection<? extends T> timestampObjectList = listOfLists.get(i);
-			resultList.addAll(timestampObjectList);
+			Collection<? extends T> elements = listOfLists.get(i);
+			mergedElements.addAll(elements);
 		}
-		return resultList;
+		return mergedElements;
 	}
 
 	public static <T> List<T> removeFirstHalfElements(final List<T> list) {

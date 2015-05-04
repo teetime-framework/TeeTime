@@ -27,13 +27,13 @@ import java.util.List;
  */
 public final class CyclicListIterator<T> implements Iterator<T> {
 
-	private final List<T> list;
+	private final List<T> elements;
 	// private Iterator<T> iterator;
 
 	private int currentIndex = 0;
 
-	public CyclicListIterator(final List<T> list) {
-		this.list = list;
+	public CyclicListIterator(final List<T> elements) {
+		this.elements = elements;
 		// this.iterator = this.list.iterator();
 	}
 
@@ -53,7 +53,7 @@ public final class CyclicListIterator<T> implements Iterator<T> {
 		// <li>an index overflow (then restart from index 0), or
 		// <li>an add() or a remove(), so update the index
 		this.currentIndex = this.getCurrentIndex();
-		final T element = this.list.get(this.currentIndex);
+		final T element = this.elements.get(this.currentIndex);
 		this.currentIndex++;
 		return element;
 	}
@@ -62,11 +62,11 @@ public final class CyclicListIterator<T> implements Iterator<T> {
 	public void remove() {
 		// this.iterator.remove();
 		this.currentIndex = this.getCurrentIndex();
-		this.list.remove(this.currentIndex);
+		this.elements.remove(this.currentIndex);
 	}
 
 	private int getCurrentIndex() {
-		return this.currentIndex % this.list.size();
+		return this.currentIndex % this.elements.size();
 	}
 
 }

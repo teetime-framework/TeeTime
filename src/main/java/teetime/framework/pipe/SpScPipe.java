@@ -35,7 +35,7 @@ final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe
 	}
 
 	@Deprecated
-	public static <T> SpScPipe connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	public static <T> IMonitorablePipe connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		final SpScPipe pipe = new SpScPipe(sourcePort, targetPort, capacity);
 		pipe.connectPorts(sourcePort, targetPort);
 		return pipe;
@@ -81,8 +81,8 @@ final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe
 		return this.queue.size();
 	}
 
-	// BETTER find a solution w/o any thread-safe code in this stage
-	public synchronized int getNumWaits() {
+	@Override
+	public int getNumWaits() {
 		return this.numWaits;
 	}
 

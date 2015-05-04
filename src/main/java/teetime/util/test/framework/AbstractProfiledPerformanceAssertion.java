@@ -13,20 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package util.test;
+package teetime.util.test.framework;
 
-import java.util.HashMap;
-import java.util.Map;
+public abstract class AbstractProfiledPerformanceAssertion {
 
-import teetime.util.test.eval.PerformanceResult;
+	public abstract String getCorrespondingPerformanceProfile();
 
-public class MeasurementRepository {
-
-	public final Map<String, PerformanceResult> performanceResults = new HashMap<String, PerformanceResult>();
-
-	public MeasurementRepository() {}
-
-	public static final String buildTestMethodIdentifier(final Class<?> testClass, final String methodName) {
-		return testClass.getName() + "(" + methodName + ")";
-	}
+	public abstract void check();
 }

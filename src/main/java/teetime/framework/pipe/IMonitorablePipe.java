@@ -26,4 +26,10 @@ public interface IMonitorablePipe {
 	long getPushThroughput();
 
 	long getPullThroughput();
+
+	/**
+	 *
+	 * @return the number of pauses of the pushing stage
+	 */
+	int getNumWaits();
 }
