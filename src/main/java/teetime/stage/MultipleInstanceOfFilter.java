@@ -42,7 +42,6 @@ public final class MultipleInstanceOfFilter<I> extends AbstractConsumerStage<I> 
 	@SuppressWarnings("unchecked")
 	public void onStarting() throws Exception {
 		super.onStarting();
-
 		// We cache the map to avoid the creating of iterators during runtime
 		cachedOutputPortsMap = (Entry<Class<? extends I>, OutputPort<? super I>>[]) outputPortsMap.entrySet().toArray(new Entry<?, ?>[outputPortsMap.size()]);
 	}

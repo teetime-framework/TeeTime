@@ -47,6 +47,9 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 		for (InputPort<?> inputPort : inputPorts) {
 			inputPort.waitForStartSignal();
 		}
+		for (InputPort<?> inputPort : inputPorts) {
+			inputPort.waitForStartSignal();
+		}
 		logger.trace("Starting..." + stage);
 	}
 
