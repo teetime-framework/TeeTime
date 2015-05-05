@@ -32,15 +32,19 @@ public abstract class AnalysisConfiguration {
 
 	private final List<Stage> threadableStageJobs = new LinkedList<Stage>();
 
-	/**
-	 * Can be used by subclasses, to obtain pipe factories
-	 */
-	@Deprecated
-	// TODO: set private
-	protected static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
+	private static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
 
+	/**
+	 * Can be used by subclasses, to connect stages
+	 */
 	private final static IPipeFactory intraThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+	/**
+	 * Can be used by subclasses, to connect stages
+	 */
 	private final static IPipeFactory interBoundedThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
+	/**
+	 * Can be used by subclasses, to connect stages
+	 */
 	private final static IPipeFactory interUnboundedThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, true);
 
 	List<Stage> getThreadableStageJobs() {

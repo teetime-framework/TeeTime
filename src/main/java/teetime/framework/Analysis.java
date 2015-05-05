@@ -70,8 +70,6 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		this(configuration, false, new IgnoringExceptionListenerFactory());
 	}
 
-	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
-	// TODO remove @SuppressWarnings if init is no longer deprecated
 	public Analysis(final T configuration, final boolean validationEnabled) {
 		this(configuration, validationEnabled, new IgnoringExceptionListenerFactory());
 	}

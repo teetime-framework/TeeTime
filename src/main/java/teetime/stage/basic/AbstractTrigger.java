@@ -33,14 +33,7 @@ abstract class AbstractTrigger<I, T, O> extends AbstractStage {
 	// disabled while in development
 	@Override
 	protected void executeStage() {
-		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public void onTerminating() throws Exception {
-		// TODO Auto-generated method stub
-		super.onTerminating();
 	}
 
 }

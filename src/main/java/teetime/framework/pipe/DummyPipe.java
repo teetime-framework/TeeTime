@@ -73,25 +73,21 @@ public final class DummyPipe implements IPipe {
 
 	@Override
 	public boolean isClosed() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean hasMore() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void waitForStartSignal() throws InterruptedException {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
 
 	}
 
