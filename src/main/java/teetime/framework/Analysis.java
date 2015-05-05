@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.IExceptionListenerFactory;
 import teetime.framework.exceptionHandling.IgnoringExceptionListenerFactory;
+import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.Pair;
@@ -142,22 +143,24 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
 				thread = createThread(runnable, stage.getId());
 				this.finiteProducerThreads.add(thread);
+				InitializingSignal initializingSignal = new InitializingSignal();
+				stage.onSignal(initializingSignal, null);
 				break;
 			}
 			case BY_INTERRUPT: {
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
 				thread = createThread(runnable, stage.getId());
+				InitializingSignal initializingSignal = new InitializingSignal();
+				stage.onSignal(initializingSignal, null);
 				this.infiniteProducerThreads.add(thread);
 				break;
 			}
 			default:
 				throw new IllegalStateException("Unhandled termination strategy: " + terminationStrategy);
 			}
-
-			// FIXME: remove, if this solves the #151 bug
-			// final Set<Stage> intraStages = traverseIntraStages(stage);
-			// final AbstractExceptionListener newListener = factory.createInstance();
-			// initializeIntraStages(intraStages, thread, newListener);
+			final Set<Stage> intraStages = traverseIntraStages(stage);
+			final AbstractExceptionListener newListener = factory.createInstance();
+			initializeIntraStages(intraStages, thread, newListener);
 		}
 
 	}
@@ -173,11 +176,6 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		for (Stage intraStage : intraStages) {
 			intraStage.setOwningThread(thread);
 			intraStage.setExceptionHandler(newListener);
-			try {
-				intraStage.onInitializing();
-			} catch (Exception e) { // NOPMD(generic framework catch)
-				throw new IllegalStateException("The following exception occurs within initializing the analysis:", e);
-			}
 		}
 	}
 
