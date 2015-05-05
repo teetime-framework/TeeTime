@@ -154,9 +154,10 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 				throw new IllegalStateException("Unhandled termination strategy: " + terminationStrategy);
 			}
 
-			final Set<Stage> intraStages = traverseIntraStages(stage);
-			final AbstractExceptionListener newListener = factory.createInstance();
-			initializeIntraStages(intraStages, thread, newListener);
+			// FIXME: remove, if this solves the #151 bug
+			// final Set<Stage> intraStages = traverseIntraStages(stage);
+			// final AbstractExceptionListener newListener = factory.createInstance();
+			// initializeIntraStages(intraStages, thread, newListener);
 		}
 
 	}
