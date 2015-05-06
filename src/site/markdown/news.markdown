@@ -2,7 +2,7 @@
 
 ### Release 1.1.1 - 06.05.2015
 
-Today, version 1.1.1 was released. It solves a bug which could lead to a NullPointerException.
+Today, version 1.1.1 of TeeTime was released. It solves a bug which could lead to a NullPointerException.
 Changes are documented in the [release notes](changes-report.html#1.1.1).
 
 ### Release 1.1 - 30.04.2015
