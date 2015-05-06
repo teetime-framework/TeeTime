@@ -12,7 +12,7 @@
 		
 		<release version="1.1.1" date="06.05.2015" description="Minor bugfixes for 1.1">
 			<action dev="ntd" due-to="Nils C. Ehmke" type="fix" issue="151">
-				Solved bug which led to NullPointerExceptions.
+				Solved bug which led to a NullPointerExceptions.
 			</action>
 			<action dev="ntd" type="update" issue="102">
 				Removed deprecated methods.
