@@ -58,10 +58,10 @@ public abstract class AbstractStage extends Stage {
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
 			signal.trigger(this);
-
 			for (OutputPort<?> outputPort : outputPorts) {
 				outputPort.sendSignal(signal);
 			}
+
 		}
 	}
 

@@ -16,7 +16,9 @@
 package teetime.stage;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ public class MultipleInstanceOfFilterTest {
 
 		StageTester.test(filter).and().send(input).to(filter.getInputPort()).and().receive(result).from(filter.getOutputPortForType(String.class)).start();
 
+		assertThat(result, is(not(empty())));
 		assertThat(result, contains("1", "2", "3"));
 	}
 
