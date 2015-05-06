@@ -55,7 +55,7 @@ public abstract class AbstractCompositeStage extends Stage {
 
 	@Override
 	protected final void executeStage() {
-		getFirstStage().executeStage();
+		getFirstStage().executeStage();// test
 	}
 
 	@Override
