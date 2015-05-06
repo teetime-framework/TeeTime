@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.framework.pipe.IPipeFactory;
@@ -79,6 +80,8 @@ public class MergerTest {
 		assertThat(this.collector.getElements(), contains(1, 2, 3));
 	}
 
+	@Ignore
+	// Needs to be rewritten
 	@Test
 	public void roundRobinShouldWork2() {
 		mergerUnderTest = new Merger<Integer>(new RoundRobinStrategy());
