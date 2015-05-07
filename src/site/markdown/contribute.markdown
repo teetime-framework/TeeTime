@@ -18,6 +18,8 @@ or
 http://build.se.informatik.uni-kiel.de/gitlab/chw/teetime.git
 ```
 
+Least, but not last, TeeTime is also available on [GitHub](https://github.com/ChristianWulf/teetime).
+
 ### Workflow
 
 If you contribute, please follow our guidelines to comply to our quality standards.
