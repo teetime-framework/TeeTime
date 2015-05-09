@@ -33,7 +33,7 @@ public abstract class AbstractStage extends Stage {
 
 	private InputPort<?>[] inputPorts = new InputPort<?>[0];
 	private OutputPort<?>[] outputPorts = new OutputPort<?>[0];
-	private StageState currentState = StageState.CREATED;
+	private StageState currentState = StageState.NOT_INITIALIZED;
 
 	@Override
 	public InputPort<?>[] getInputPorts() {
@@ -73,18 +73,18 @@ public abstract class AbstractStage extends Stage {
 	 * @return <code>true</code> if this stage has already received the given <code>signal</code>, <code>false</code> otherwise
 	 */
 	protected boolean signalAlreadyReceived(final ISignal signal, final InputPort<?> inputPort) {
-		if (this.triggeredSignals.contains(signal)) {
+		boolean signalAlreadyReceived = this.triggeredSignals.contains(signal);
+		if (signalAlreadyReceived) {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Got signal: " + signal + " again from input port: " + inputPort);
 			}
-			return true;
 		} else {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Got signal: " + signal + " from input port: " + inputPort);
 			}
 			this.triggeredSignals.add(signal);
-			return false;
 		}
+		return signalAlreadyReceived;
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public abstract class AbstractProducerStage<O> extends AbstractStage {
 	}
 
 	@Override
-	public void executeStage() {
+	protected void executeStage() {
 		try {
 			this.execute();
 		} catch (Exception e) {
