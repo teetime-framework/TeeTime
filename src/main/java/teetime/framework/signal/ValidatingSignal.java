@@ -17,15 +17,15 @@ package teetime.framework.signal;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
+import teetime.framework.InputPort;
 import teetime.framework.Stage;
 import teetime.framework.validation.InvalidPortConnection;
 
 public final class ValidatingSignal implements ISignal {
 
 	private final List<InvalidPortConnection> invalidPortConnections = new LinkedList<InvalidPortConnection>();
-
-	public ValidatingSignal() {}
 
 	@Override
 	public void trigger(final Stage stage) {
@@ -34,6 +34,11 @@ public final class ValidatingSignal implements ISignal {
 
 	public List<InvalidPortConnection> getInvalidPortConnections() {
 		return this.invalidPortConnections;
+	}
+
+	@Override
+	public boolean mayBeTriggered(final Set<InputPort<?>> receivedInputPorts, final InputPort<?>[] allInputPorts) {
+		return true;
 	}
 
 }

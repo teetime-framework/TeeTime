@@ -15,20 +15,12 @@
  */
 package teetime.framework.signal;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import teetime.framework.InputPort;
 import teetime.framework.Stage;
 
-public final class TerminatingSignal implements ISignal {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(TerminatingSignal.class);
-	private final List<Exception> catchedExceptions = new LinkedList<Exception>();
-
-	public TerminatingSignal() {}
+public final class TerminatingSignal extends AbstractSignal {
 
 	@Override
 	public void trigger(final Stage stage) {
@@ -40,8 +32,9 @@ public final class TerminatingSignal implements ISignal {
 		}
 	}
 
-	public List<Exception> getCatchedExceptions() {
-		return this.catchedExceptions;
+	@Override
+	public boolean mayBeTriggered(final Set<InputPort<?>> receivedInputPorts, final InputPort<?>[] allInputPorts) {
+		return receivedInputPorts.size() == allInputPorts.length;
 	}
 
 }

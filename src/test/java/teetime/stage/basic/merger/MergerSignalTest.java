@@ -18,6 +18,7 @@ package teetime.stage.basic.merger;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import teetime.framework.InputPort;
@@ -29,83 +30,80 @@ public class MergerSignalTest {
 	private Merger<Integer> merger;
 	private InputPort<Integer> firstPort;
 	private InputPort<Integer> secondPort;
-	private MergerTestingPipe testPipe;
+	private MergerTestingPipe mergerOutputPipe;
 
+	@Before
 	public void beforeSignalTesting() {
 		merger = new Merger<Integer>();
 
 		firstPort = merger.getNewInputPort();
 		secondPort = merger.getNewInputPort();
 
-		testPipe = new MergerTestingPipe();
-		merger.getOutputPort().setPipe(testPipe);
+		mergerOutputPipe = new MergerTestingPipe();
+		merger.getOutputPort().setPipe(mergerOutputPipe);
 	}
 
 	@Test
 	public void testSameSignal() {
-		this.beforeSignalTesting();
 		merger.onSignal(new StartingSignal(), firstPort);
-		assertTrue(testPipe.startSent());
-		testPipe.reset();
+		assertTrue(mergerOutputPipe.startSent());
+		mergerOutputPipe.reset();
 		merger.onSignal(new StartingSignal(), secondPort);
-		assertFalse(testPipe.startSent());
+		assertFalse(mergerOutputPipe.startSent());
 	}
 
 	@Test
 	public void testDifferentSignals() {
-		this.beforeSignalTesting();
 		merger.onSignal(new StartingSignal(), firstPort);
-		assertTrue(testPipe.startSent());
-		testPipe.reset();
+		assertTrue(mergerOutputPipe.startSent());
+		mergerOutputPipe.reset();
 
 		merger.onSignal(new TerminatingSignal(), secondPort);
-		assertFalse(testPipe.startSent());
+		assertFalse(mergerOutputPipe.startSent());
 	}
 
 	@Test
 	public void testInterleavedSignals() {
-		this.beforeSignalTesting();
 		merger.onSignal(new StartingSignal(), firstPort);
-		assertTrue(testPipe.startSent());
-		assertFalse(testPipe.terminateSent());
-		testPipe.reset();
+		assertTrue(mergerOutputPipe.startSent());
+		assertFalse(mergerOutputPipe.terminateSent());
+		mergerOutputPipe.reset();
 
 		merger.onSignal(new TerminatingSignal(), secondPort);
-		assertFalse(testPipe.startSent());
-		assertFalse(testPipe.terminateSent());
-		testPipe.reset();
+		assertFalse(mergerOutputPipe.startSent());
+		assertFalse(mergerOutputPipe.terminateSent());
+		mergerOutputPipe.reset();
 
 		merger.onSignal(new TerminatingSignal(), firstPort);
-		assertFalse(testPipe.startSent());
-		assertTrue(testPipe.terminateSent());
-		testPipe.reset();
+		assertFalse(mergerOutputPipe.startSent());
+		assertTrue(mergerOutputPipe.terminateSent());
+		mergerOutputPipe.reset();
 
 		merger.onSignal(new TerminatingSignal(), firstPort);
-		assertFalse(testPipe.startSent());
-		assertFalse(testPipe.terminateSent());
-		testPipe.reset();
+		assertFalse(mergerOutputPipe.startSent());
+		assertFalse(mergerOutputPipe.terminateSent());
+		mergerOutputPipe.reset();
 
 		merger.onSignal(new StartingSignal(), secondPort);
-		assertFalse(testPipe.startSent());
-		assertFalse(testPipe.terminateSent());
+		assertFalse(mergerOutputPipe.startSent());
+		assertFalse(mergerOutputPipe.terminateSent());
 	}
 
 	@Test
 	public void testMultipleSignals() {
-		this.beforeSignalTesting();
 		merger.onSignal(new StartingSignal(), firstPort);
-		assertTrue(testPipe.startSent());
-		testPipe.reset();
+		assertTrue(mergerOutputPipe.startSent());
+		mergerOutputPipe.reset();
 
 		merger.onSignal(new StartingSignal(), firstPort);
-		assertFalse(testPipe.startSent());
-		testPipe.reset();
+		assertFalse(mergerOutputPipe.startSent());
+		mergerOutputPipe.reset();
 
 		merger.onSignal(new StartingSignal(), firstPort);
-		assertFalse(testPipe.startSent());
-		testPipe.reset();
+		assertFalse(mergerOutputPipe.startSent());
+		mergerOutputPipe.reset();
 
 		merger.onSignal(new StartingSignal(), secondPort);
-		assertFalse(testPipe.startSent());
+		assertFalse(mergerOutputPipe.startSent());
 	}
 }

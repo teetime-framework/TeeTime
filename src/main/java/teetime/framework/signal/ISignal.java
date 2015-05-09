@@ -15,9 +15,22 @@
  */
 package teetime.framework.signal;
 
+import java.util.Set;
+
+import teetime.framework.InputPort;
 import teetime.framework.Stage;
 
 public interface ISignal {
 
 	void trigger(Stage stage);
+
+	/**
+	 * Used by the merger only (so far)
+	 *
+	 * @param receivedInputPorts
+	 * @param allInputPorts
+	 * @param stageState
+	 * @return <code>true</code> iff the signal may be triggered, <code>false</code> otherwise.
+	 */
+	boolean mayBeTriggered(Set<InputPort<?>> receivedInputPorts, InputPort<?>[] allInputPorts);
 }

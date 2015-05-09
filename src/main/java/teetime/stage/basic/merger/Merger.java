@@ -24,9 +24,6 @@ import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
-import teetime.framework.signal.InitializingSignal;
-import teetime.framework.signal.StartingSignal;
-import teetime.framework.signal.TerminatingSignal;
 
 /**
  *
@@ -85,33 +82,52 @@ public final class Merger<T> extends AbstractStage {
 
 		Class<? extends ISignal> signalClass = signal.getClass();
 
+		Set<InputPort<?>> inputPorts;
 		if (signalMap.containsKey(signalClass)) {
-			Set<InputPort<?>> set = signalMap.get(signalClass);
-			if (!set.add(inputPort)) {
-				this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
-			}
-			if (signalMap.get(signalClass).size() == this.getInputPorts().length && signalClass == TerminatingSignal.class) {
-				signal.trigger(this);
-				sendSignalToOutputPorts(signal);
-				signalMap.remove(signalClass);
-			}
+			inputPorts = signalMap.get(signalClass);
 		} else {
-			Set<InputPort<?>> tempSet = new HashSet<InputPort<?>>();
-			tempSet.add(inputPort);
-			signalMap.put((Class<ISignal>) signalClass, tempSet);
-			if (signalClass == InitializingSignal.class || signalClass == StartingSignal.class) {
-				signal.trigger(this);
-				sendSignalToOutputPorts(signal);
-			}
+			inputPorts = new HashSet<InputPort<?>>();
+			signalMap.put((Class<ISignal>) signalClass, inputPorts);
 		}
+
+		if (!inputPorts.add(inputPort)) {
+			this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
+		}
+
+		if (signal.mayBeTriggered(inputPorts, getInputPorts())) {
+			super.onSignal(signal, inputPort);
+		}
+
+		// if (signalMap.containsKey(signalClass)) {
+		// Set<InputPort<?>> set = signalMap.get(signalClass);
+		// if (!set.add(inputPort)) {
+		// this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
+		// }
+		// if (signalMap.get(signalClass).size() == this.getInputPorts().length && signalClass == TerminatingSignal.class) {
+		// triggerAndPassOn(signal);
+		// // signalMap.remove(signalClass);
+		// }
+		// } else {
+		// Set<InputPort<?>> tempSet = new HashSet<InputPort<?>>();
+		// signalMap.put((Class<ISignal>) signalClass, tempSet);
+		// tempSet.add(inputPort);
+		// if (signalClass == InitializingSignal.class || signalClass == StartingSignal.class) {
+		// triggerAndPassOn(signal);
+		// }
+		// }
 
 	}
 
-	private void sendSignalToOutputPorts(final ISignal signal) {
-		for (OutputPort<?> outputPort : getOutputPorts()) {
-			outputPort.sendSignal(signal);
-		}
-	}
+	// private void triggerAndPassOn(final ISignal signal) {
+	// signal.trigger(this);
+	// sendSignalToOutputPorts(signal);
+	// }
+
+	// private void sendSignalToOutputPorts(final ISignal signal) {
+	// for (OutputPort<?> outputPort : getOutputPorts()) {
+	// outputPort.sendSignal(signal);
+	// }
+	// }
 
 	public IMergerStrategy getMergerStrategy() {
 		return this.strategy;

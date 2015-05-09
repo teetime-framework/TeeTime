@@ -29,7 +29,7 @@ public abstract class AbstractStage extends Stage {
 
 	private static final IPipe DUMMY_PORT = new DummyPipe();
 
-	private final Set<ISignal> triggeredSignals = new HashSet<ISignal>();
+	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
 
 	private InputPort<?>[] inputPorts = new InputPort<?>[0];
 	private OutputPort<?>[] outputPorts = new OutputPort<?>[0];
@@ -73,16 +73,16 @@ public abstract class AbstractStage extends Stage {
 	 * @return <code>true</code> if this stage has already received the given <code>signal</code>, <code>false</code> otherwise
 	 */
 	protected boolean signalAlreadyReceived(final ISignal signal, final InputPort<?> inputPort) {
-		boolean signalAlreadyReceived = this.triggeredSignals.contains(signal);
+		boolean signalAlreadyReceived = this.triggeredSignalTypes.contains(signal.getClass());
 		if (signalAlreadyReceived) {
 			if (logger.isTraceEnabled()) {
-				logger.trace("Got signal: " + signal + " again from input port: " + inputPort);
+				logger.trace("Got signal again: " + signal + " from input port: " + inputPort);
 			}
 		} else {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Got signal: " + signal + " from input port: " + inputPort);
 			}
-			this.triggeredSignals.add(signal);
+			this.triggeredSignalTypes.add(signal.getClass());
 		}
 		return signalAlreadyReceived;
 	}

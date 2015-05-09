@@ -22,18 +22,16 @@ import teetime.framework.signal.ISignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
-public class MergerTestingPipe implements IPipe {
+class MergerTestingPipe implements IPipe {
 
 	private boolean startSent = false;
 	private boolean terminateSent = false;
 
-	public MergerTestingPipe() {}
-
 	@Override
 	public void sendSignal(final ISignal signal) {
-		if (signal.getClass().equals(StartingSignal.class)) {
+		if (signal instanceof StartingSignal) {
 			this.startSent = true;
-		} else if (signal.getClass().equals(TerminatingSignal.class)) {
+		} else if (signal instanceof TerminatingSignal) {
 			this.terminateSent = true;
 		}
 	}
