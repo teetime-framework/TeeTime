@@ -24,6 +24,7 @@ import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
+import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
@@ -98,7 +99,7 @@ public final class Merger<T> extends AbstractStage {
 			Set<InputPort<?>> tempSet = new HashSet<InputPort<?>>();
 			tempSet.add(inputPort);
 			signalMap.put((Class<ISignal>) signalClass, tempSet);
-			if (signalClass == StartingSignal.class) {
+			if (signalClass == InitializingSignal.class || signalClass == StartingSignal.class) {
 				signal.trigger(this);
 				sendSignalToOutputPorts(signal);
 			}
