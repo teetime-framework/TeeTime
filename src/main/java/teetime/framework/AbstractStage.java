@@ -33,7 +33,7 @@ public abstract class AbstractStage extends Stage {
 
 	private InputPort<?>[] inputPorts = new InputPort<?>[0];
 	private OutputPort<?>[] outputPorts = new OutputPort<?>[0];
-	private StageState currentState = StageState.NOT_INITIALIZED;
+	private StageState currentState = StageState.CREATED;
 
 	@Override
 	public InputPort<?>[] getInputPorts() {
