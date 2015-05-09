@@ -63,7 +63,7 @@ public class MergerTest {
 	}
 
 	@Test
-	// @Ignore
+	@Ignore
 	public void roundRobinShouldWork() {
 		mergerUnderTest.setStrategy(new RoundRobinStrategy());
 
