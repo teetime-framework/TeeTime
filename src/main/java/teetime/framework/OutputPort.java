@@ -69,4 +69,5 @@ public final class OutputPort<T> extends AbstractPort<T> {
 		}
 		pipe.sendSignal(signal);
 	}
+
 }

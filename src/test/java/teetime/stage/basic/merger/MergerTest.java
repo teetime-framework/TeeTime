@@ -58,11 +58,12 @@ public class MergerTest {
 		pipeFactory.create(this.sndProducer.getOutputPort(), this.mergerUnderTest.getNewInputPort());
 		pipeFactory.create(this.mergerUnderTest.getOutputPort(), this.collector.getInputPort());
 
-		mergerUnderTest.onStarting();
+		// mergerUnderTest.onInitializing();
+		// mergerUnderTest.onStarting();
 	}
 
 	@Test
-	@Ignore
+	// @Ignore
 	public void roundRobinShouldWork() {
 		mergerUnderTest.setStrategy(new RoundRobinStrategy());
 

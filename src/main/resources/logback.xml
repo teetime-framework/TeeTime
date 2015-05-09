@@ -20,6 +20,8 @@
 		</encoder>
 	</appender>
 
+<!-- 	<logger name="teetime.framework" level="TRACE" /> -->
+
 	<logger name="util.TimingsReader" level="TRACE">
 		<appender-ref ref="FILE" />
 	</logger>
