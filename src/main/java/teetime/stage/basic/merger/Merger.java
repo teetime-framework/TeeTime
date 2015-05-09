@@ -40,10 +40,9 @@ import teetime.framework.signal.ISignal;
 public final class Merger<T> extends AbstractStage {
 
 	private final OutputPort<T> outputPort = this.createOutputPort();
+	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
 
 	private IMergerStrategy strategy;
-
-	private final Map<Class<ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<ISignal>, Set<InputPort<?>>>();
 
 	public Merger() {
 		this(new RoundRobinStrategy());
@@ -73,7 +72,6 @@ public final class Merger<T> extends AbstractStage {
 	 * @param inputPort
 	 *            The port which the signal was sent to
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (logger.isTraceEnabled()) {
@@ -87,7 +85,7 @@ public final class Merger<T> extends AbstractStage {
 			inputPorts = signalMap.get(signalClass);
 		} else {
 			inputPorts = new HashSet<InputPort<?>>();
-			signalMap.put((Class<ISignal>) signalClass, inputPorts);
+			signalMap.put(signalClass, inputPorts);
 		}
 
 		if (!inputPorts.add(inputPort)) {
@@ -97,37 +95,7 @@ public final class Merger<T> extends AbstractStage {
 		if (signal.mayBeTriggered(inputPorts, getInputPorts())) {
 			super.onSignal(signal, inputPort);
 		}
-
-		// if (signalMap.containsKey(signalClass)) {
-		// Set<InputPort<?>> set = signalMap.get(signalClass);
-		// if (!set.add(inputPort)) {
-		// this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
-		// }
-		// if (signalMap.get(signalClass).size() == this.getInputPorts().length && signalClass == TerminatingSignal.class) {
-		// triggerAndPassOn(signal);
-		// // signalMap.remove(signalClass);
-		// }
-		// } else {
-		// Set<InputPort<?>> tempSet = new HashSet<InputPort<?>>();
-		// signalMap.put((Class<ISignal>) signalClass, tempSet);
-		// tempSet.add(inputPort);
-		// if (signalClass == InitializingSignal.class || signalClass == StartingSignal.class) {
-		// triggerAndPassOn(signal);
-		// }
-		// }
-
 	}
-
-	// private void triggerAndPassOn(final ISignal signal) {
-	// signal.trigger(this);
-	// sendSignalToOutputPorts(signal);
-	// }
-
-	// private void sendSignalToOutputPorts(final ISignal signal) {
-	// for (OutputPort<?> outputPort : getOutputPorts()) {
-	// outputPort.sendSignal(signal);
-	// }
-	// }
 
 	public IMergerStrategy getMergerStrategy() {
 		return this.strategy;
