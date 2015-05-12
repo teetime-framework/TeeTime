@@ -1,5 +1,9 @@
 # News
 
+### Release 1.1.2 - 12.05.2015
+
+TeeTime is released as 1.1.2. This fixes a bug in TeeTime's merger stage.
+
 ### Release 1.1.1 - 06.05.2015
 
 Today, version 1.1.1 of TeeTime was released. It solves a bug which could lead to a NullPointerException.
