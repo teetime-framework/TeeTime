@@ -238,7 +238,7 @@
 				<version>3.0.1</version>
 				<configuration>
 					<effort>Max</effort>
-					<threshold>Low</threshold>
+					<threshold>Max</threshold>
 					<includeTests>true</includeTests>
 					<failOnError>true</failOnError>
 					<excludeFilterFile>${project.basedir}/conf/quality-config/fb-filter.xml</excludeFilterFile>
