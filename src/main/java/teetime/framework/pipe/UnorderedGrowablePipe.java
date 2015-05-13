@@ -49,9 +49,6 @@ final class UnorderedGrowablePipe extends AbstractIntraThreadPipe {
 
 	@Override
 	public Object removeLast() {
-		// if (this.lastFreeIndex == 0) {
-		// return null;
-		// }
 		final Object element = this.elements[--this.lastFreeIndex];
 		this.elements[this.lastFreeIndex] = null;
 		// T element = this.elements.get(--this.lastFreeIndex);
