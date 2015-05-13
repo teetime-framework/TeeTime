@@ -51,7 +51,7 @@
 
 	<!-- custom adaptations -->
 
-	<rule ref="rulesets/java/basic.xml/EmptyCatchBlock" message="Throw at least an IllegalStateException(e)">
+	<rule ref="rulesets/java/empty.xml/EmptyCatchBlock" message="Throw at least an IllegalStateException(e)">
 		<priority>1</priority>
 	</rule>
 

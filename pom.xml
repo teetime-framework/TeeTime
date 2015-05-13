@@ -238,9 +238,9 @@
 				<version>3.0.1</version>
 				<configuration>
 					<effort>Max</effort>
-					<threshold>Low</threshold>
+					<threshold>High</threshold>
 					<includeTests>true</includeTests>
-					<failOnError>false</failOnError>
+<!-- 					<failOnError>false</failOnError> -->
 					<excludeFilterFile>${project.basedir}/conf/quality-config/fb-filter.xml</excludeFilterFile>
 				</configuration>
 				<executions>
@@ -251,6 +251,18 @@
 						</goals>
 					</execution>
 				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>junit</groupId>
+						<artifactId>junit</artifactId>
+						<version>4.12</version>
+					</dependency>
+					<dependency>
+						<groupId>org.hamcrest</groupId>
+						<artifactId>hamcrest-library</artifactId>
+						<version>1.3</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 
 			<!-- PMD -->
@@ -271,9 +283,11 @@
 					<rulesets>
 						<ruleset>${project.basedir}/conf/quality-config/pmd-ruleset.xml</ruleset>
 					</rulesets>
+					<linkXref>true</linkXref>
 					<includeTests>true</includeTests>
 					<targetJdk>${java.version}</targetJdk>
-					<failOnError>false</failOnError>
+<!-- 					<failurePriority>1</failurePriority> -->
+					<failOnViolation>true</failOnViolation>
 				</configuration>
 				<executions>
 					<execution>
