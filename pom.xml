@@ -238,9 +238,9 @@
 				<version>3.0.1</version>
 				<configuration>
 					<effort>Max</effort>
-					<threshold>High</threshold>
+					<threshold>Low</threshold>
 					<includeTests>true</includeTests>
-<!-- 					<failOnError>false</failOnError> -->
+					<failOnError>true</failOnError>
 					<excludeFilterFile>${project.basedir}/conf/quality-config/fb-filter.xml</excludeFilterFile>
 				</configuration>
 				<executions>

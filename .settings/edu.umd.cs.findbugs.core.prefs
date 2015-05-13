@@ -1,8 +1,8 @@
 #FindBugs User Preferences
-#Wed May 13 14:13:30 CEST 2015
-detector_threshold=1
+#Wed May 13 15:38:40 CEST 2015
+detector_threshold=3
 effort=max
 excludefilter0=.fbExcludeFilterFile|true
-filter_settings=High|BAD_PRACTICE,CORRECTNESS,EXPERIMENTAL,I18N,MALICIOUS_CODE,MT_CORRECTNESS,PERFORMANCE,SECURITY,STYLE|false|15
+filter_settings=Low|BAD_PRACTICE,CORRECTNESS,EXPERIMENTAL,I18N,MALICIOUS_CODE,MT_CORRECTNESS,PERFORMANCE,SECURITY,STYLE|false|15
 filter_settings_neg=NOISE|
 run_at_full_build=true
