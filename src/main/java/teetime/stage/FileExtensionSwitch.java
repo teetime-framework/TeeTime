@@ -16,35 +16,23 @@
 package teetime.stage;
 
 import java.io.File;
-import java.util.Map;
 
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
-import teetime.util.HashMapWithDefault;
-import teetime.util.concurrent.hashmap.ValueFactory;
 
+import com.carrotsearch.hppc.ObjectObjectOpenHashMap;
 import com.google.common.io.Files;
 
 public final class FileExtensionSwitch extends AbstractConsumerStage<File> {
 
 	private final OutputPort<File> unknownFileExtensionOutputPort = createOutputPort(File.class);
 
-	// BETTER use the hppc ObjectObjectMap that provide getOrDefault()
-	private final Map<String, OutputPort<File>> fileExtensions = new HashMapWithDefault<String, OutputPort<File>>(new ValueFactory<OutputPort<File>>() {
-		@Override
-		public OutputPort<File> create() {
-			return unknownFileExtensionOutputPort;
-		}
-	});
+	private final ObjectObjectOpenHashMap<String, OutputPort<File>> fileExtensions = new ObjectObjectOpenHashMap<String, OutputPort<File>>();
 
 	@Override
 	protected void execute(final File file) {
 		String fileExtension = Files.getFileExtension(file.getAbsolutePath());
-		if (logger.isDebugEnabled()) {
-			this.logger.debug("fileExtension: " + fileExtension);
-		}
-
-		OutputPort<File> outputPort = this.fileExtensions.get(fileExtension);
+		OutputPort<File> outputPort = this.fileExtensions.getOrDefault(fileExtension, unknownFileExtensionOutputPort);
 		outputPort.send(file);
 	}
 
@@ -55,7 +43,6 @@ public final class FileExtensionSwitch extends AbstractConsumerStage<File> {
 		}
 		OutputPort<File> outputPort = this.createOutputPort();
 		this.fileExtensions.put(fileExtension, outputPort);
-		this.logger.debug("SUCCESS: Registered output port for '" + fileExtension + "'");
 		return outputPort;
 	}
 
