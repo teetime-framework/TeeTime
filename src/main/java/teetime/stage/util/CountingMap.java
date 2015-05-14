@@ -15,8 +15,8 @@
  */
 package teetime.stage.util;
 
+import com.carrotsearch.hppc.ObjectIntHashMap;
 import com.carrotsearch.hppc.ObjectIntMap;
-import com.carrotsearch.hppc.ObjectIntOpenHashMap;
 import com.carrotsearch.hppc.procedures.ObjectIntProcedure;
 
 /**
@@ -31,7 +31,7 @@ import com.carrotsearch.hppc.procedures.ObjectIntProcedure;
  */
 public final class CountingMap<T> {
 
-	private final ObjectIntMap<T> map = new ObjectIntOpenHashMap<T>();
+	private final ObjectIntMap<T> map = new ObjectIntHashMap<T>();
 
 	/**
 	 * Increments the value of key by one.
