@@ -18,27 +18,27 @@ package teetime.framework;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
-public final class RunnableProducerStage extends AbstractRunnableStage {
+final class RunnableProducerStage extends AbstractRunnableStage {
 
 	public RunnableProducerStage(final Stage stage) {
 		super(stage);
 	}
 
 	@Override
-	protected void beforeStageExecution(final Stage stage) {
+	protected void beforeStageExecution() {
 		final StartingSignal startingSignal = new StartingSignal();
-		stage.onSignal(startingSignal, null);
+		this.stage.onSignal(startingSignal, null);
 	}
 
 	@Override
-	protected void executeStage(final Stage stage) {
-		stage.executeStage();
+	protected void executeStage() {
+		this.stage.executeStage();
 	}
 
 	@Override
-	protected void afterStageExecution(final Stage stage) {
+	protected void afterStageExecution() {
 		final TerminatingSignal terminatingSignal = new TerminatingSignal();
-		stage.onSignal(terminatingSignal, null);
+		this.stage.onSignal(terminatingSignal, null);
 	}
 
 }
