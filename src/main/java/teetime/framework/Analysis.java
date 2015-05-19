@@ -29,6 +29,7 @@ import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.IExceptionListenerFactory;
 import teetime.framework.exceptionHandling.IgnoringExceptionListenerFactory;
 import teetime.framework.signal.InitializingSignal;
+import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.Pair;
@@ -59,7 +60,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 	private final Collection<Pair<Thread, Throwable>> exceptions = new ConcurrentLinkedQueue<Pair<Thread, Throwable>>();
 
-	private boolean initialized;
+	private final List<RunnableProducerStage> producerRunnables = new LinkedList<RunnableProducerStage>();
 
 	/**
 	 * Creates a new {@link Analysis} that skips validating the port connections and uses the default listener.
@@ -116,10 +117,6 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	 *
 	 */
 	private final void init() {
-		if (initialized) {
-			return;
-		}
-		initialized = true;
 
 		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		if (threadableStageJobs.isEmpty()) {
@@ -139,6 +136,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			}
 			case BY_SELF_DECISION: {
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
+				producerRunnables.add(runnable);
 				thread = createThread(runnable, stage.getId());
 				this.finiteProducerThreads.add(thread);
 				InitializingSignal initializingSignal = new InitializingSignal();
@@ -147,6 +145,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			}
 			case BY_INTERRUPT: {
 				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
+				producerRunnables.add(runnable);
 				thread = createThread(runnable, stage.getId());
 				InitializingSignal initializingSignal = new InitializingSignal();
 				stage.onSignal(initializingSignal, null);
@@ -160,6 +159,12 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			final AbstractExceptionListener newListener = factory.createInstance();
 			initializeIntraStages(intraStages, thread, newListener);
 		}
+
+		startThreads(this.consumerThreads);
+		startThreads(this.finiteProducerThreads);
+		startThreads(this.infiniteProducerThreads);
+
+		sendInitializingSignal();
 
 	}
 
@@ -250,14 +255,26 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	 * @since 1.1
 	 */
 	public void executeNonBlocking() {
-		startThreads(this.consumerThreads);
-		startThreads(this.finiteProducerThreads);
-		startThreads(this.infiniteProducerThreads);
+		sendStartingSignal();
 	}
 
 	private void startThreads(final Iterable<Thread> threads) {
 		for (Thread thread : threads) {
 			thread.start();
+		}
+	}
+
+	private void sendInitializingSignal() {
+		for (RunnableProducerStage runnable : producerRunnables) {
+			InitializingSignal signal = new InitializingSignal();
+			runnable.initializeProducer(signal);
+		}
+	}
+
+	private void sendStartingSignal() {
+		for (RunnableProducerStage runnable : producerRunnables) {
+			StartingSignal signal = new StartingSignal();
+			runnable.startProducer(signal);
 		}
 	}
 

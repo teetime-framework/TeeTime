@@ -15,10 +15,13 @@
  */
 package teetime.framework;
 
+import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
 final class RunnableProducerStage extends AbstractRunnableStage {
+
+	private boolean initArrived, startArrived;
 
 	public RunnableProducerStage(final Stage stage) {
 		super(stage);
@@ -26,8 +29,8 @@ final class RunnableProducerStage extends AbstractRunnableStage {
 
 	@Override
 	protected void beforeStageExecution() {
-		final StartingSignal startingSignal = new StartingSignal();
-		this.stage.onSignal(startingSignal, null);
+		waitForInitializingSignal();
+		waitForStartingSignal();
 	}
 
 	@Override
@@ -41,4 +44,25 @@ final class RunnableProducerStage extends AbstractRunnableStage {
 		this.stage.onSignal(terminatingSignal, null);
 	}
 
+	public void initializeProducer(final InitializingSignal signal) {
+		this.stage.onSignal(signal, null);
+		initArrived = true;
+	}
+
+	public void startProducer(final StartingSignal signal) {
+		this.stage.onSignal(signal, null);
+		startArrived = true;
+	}
+
+	public void waitForInitializingSignal() {
+		while (!initArrived) {
+			Thread.yield();
+		}
+	}
+
+	public void waitForStartingSignal() {
+		while (!startArrived) {
+			Thread.yield();
+		}
+	}
 }
