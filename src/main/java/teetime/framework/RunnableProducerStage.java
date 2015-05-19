@@ -15,22 +15,27 @@
  */
 package teetime.framework;
 
+import java.util.concurrent.Semaphore;
+
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
 final class RunnableProducerStage extends AbstractRunnableStage {
 
-	private boolean initArrived, startArrived;
+	private final Semaphore startSemaphore = new Semaphore(0);
+	private final Semaphore initSemaphore = new Semaphore(0);
 
 	public RunnableProducerStage(final Stage stage) {
 		super(stage);
 	}
 
 	@Override
-	protected void beforeStageExecution() {
+	protected void beforeStageExecution() throws InterruptedException {
 		waitForInitializingSignal();
+		this.stage.onSignal(new InitializingSignal(), null);
 		waitForStartingSignal();
+		this.stage.onSignal(new StartingSignal(), null);
 	}
 
 	@Override
@@ -44,25 +49,19 @@ final class RunnableProducerStage extends AbstractRunnableStage {
 		this.stage.onSignal(terminatingSignal, null);
 	}
 
-	public void sendInitializingSignal(final InitializingSignal signal) {
-		this.stage.onSignal(signal, null);
-		initArrived = true;
+	public void sendInitializingSignal() {
+		initSemaphore.release();
 	}
 
-	public void sendStartingSignal(final StartingSignal signal) {
-		this.stage.onSignal(signal, null);
-		startArrived = true;
+	public void sendStartingSignal() {
+		startSemaphore.release();
 	}
 
-	public void waitForInitializingSignal() {
-		while (!initArrived) {
-			Thread.yield();
-		}
+	public void waitForInitializingSignal() throws InterruptedException {
+		initSemaphore.acquire();
 	}
 
-	public void waitForStartingSignal() {
-		while (!startArrived) {
-			Thread.yield();
-		}
+	public void waitForStartingSignal() throws InterruptedException {
+		startSemaphore.acquire();
 	}
 }

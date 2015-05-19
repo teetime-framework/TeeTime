@@ -29,7 +29,6 @@ import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.IExceptionListenerFactory;
 import teetime.framework.exceptionHandling.IgnoringExceptionListenerFactory;
 import teetime.framework.signal.InitializingSignal;
-import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.Pair;
@@ -266,15 +265,13 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 	private void sendInitializingSignal() {
 		for (RunnableProducerStage runnable : producerRunnables) {
-			InitializingSignal signal = new InitializingSignal();
-			runnable.sendInitializingSignal(signal);
+			runnable.sendInitializingSignal();
 		}
 	}
 
 	private void sendStartingSignal() {
 		for (RunnableProducerStage runnable : producerRunnables) {
-			StartingSignal signal = new StartingSignal();
-			runnable.sendStartingSignal(signal);
+			runnable.sendStartingSignal();
 		}
 	}
 
