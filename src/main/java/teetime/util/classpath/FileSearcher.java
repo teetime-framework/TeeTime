@@ -30,12 +30,12 @@ public final class FileSearcher {
 	}
 
 	public static List<URL> loadResources(final String name) throws IOException {
-		final List<URL> list = new ArrayList<URL>();
+		final List<URL> urls = new ArrayList<URL>();
 
 		final Enumeration<URL> systemRes = CLASS_LOADER.getResources(name);
 		while (systemRes.hasMoreElements()) { 
-			list.add(systemRes.nextElement()); 
+			urls.add(systemRes.nextElement()); 
 		}
-		return list;
+		return urls;
 	}
 }

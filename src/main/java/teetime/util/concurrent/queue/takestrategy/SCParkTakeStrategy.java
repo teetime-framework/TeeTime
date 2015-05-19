@@ -26,9 +26,9 @@ public final class SCParkTakeStrategy<E> implements TakeStrategy<E> {
 	private final AtomicReference<Thread> t = new AtomicReference<Thread>(null);
 
 	@Override
+	// Make sure the offer is visible before unpark
 	public void signal()
 	{
-		// Make sure the offer is visible before unpark
 		storeFence = 1; // store barrier
 
 		LockSupport.unpark(t.get()); // t.get() load barrier

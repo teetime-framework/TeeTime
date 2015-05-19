@@ -39,6 +39,7 @@ public final class UntypedCircularWorkStealingDeque {
 	private volatile CircularArray<Object> activeArray = new CircularArray<Object>(LOG_INITIAL_SIZE);
 
 	private boolean casTop(final long oldVal, final long newVal) {
+		return this.top.compareAndSet(oldVal, newVal);
 		// boolean preCond;
 		// synchronized (this) {
 		// preCond = (this.top == oldVal);
@@ -47,7 +48,6 @@ public final class UntypedCircularWorkStealingDeque {
 		// }
 		// }
 		// return preCond;
-		return this.top.compareAndSet(oldVal, newVal);
 	}
 
 	public void pushBottom(final Object o) {

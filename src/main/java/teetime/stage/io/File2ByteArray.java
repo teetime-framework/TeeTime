@@ -30,8 +30,8 @@ public final class File2ByteArray extends AbstractConsumerStage<File> {
 	@Override
 	protected void execute(final File element) {
 		try {
-			byte[] cache = Files.toByteArray(element);
-			outputPort.send(cache);
+			byte[] fileBytes = Files.toByteArray(element);
+			outputPort.send(fileBytes);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}

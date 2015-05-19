@@ -38,8 +38,7 @@ public class TokenizerTest {
 
 	@Test
 	public void executeTest() throws IOException {
-		// Encrypted lorem ipsum
-		final String inputFile = "src/test/resources/data/cipherInput.txt";
+		final String inputFile = "src/test/resources/data/cipherInput.txt"; // Encrypted lorem ipsum
 		final String password = "Password";
 
 		final TokenizerConfiguration configuration = new TokenizerConfiguration(inputFile, password);

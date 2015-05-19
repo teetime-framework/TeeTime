@@ -41,9 +41,9 @@ final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe
 		return pipe;
 	}
 
+	// BETTER introduce a QueueIsFullStrategy
 	@Override
 	public boolean add(final Object element) {
-		// BETTER introduce a QueueIsFullStrategy
 		while (!this.queue.offer(element)) {
 			// Thread.yield();
 			if (this.cachedTargetStage.getCurrentState() == StageState.TERMINATED) {

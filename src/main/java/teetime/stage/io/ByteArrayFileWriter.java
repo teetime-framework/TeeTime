@@ -40,7 +40,6 @@ public final class ByteArrayFileWriter extends AbstractConsumerStage<byte[]> {
 
 	@Override
 	protected void execute(final byte[] element) {
-
 		try {
 			fo.write(element);
 		} catch (Exception e) {

@@ -35,15 +35,15 @@ public class PipeFactoryLoaderTest {
 
 	@Test
 	public void emptyConfig() throws IOException {
-		final List<IPipeFactory> list = PipeFactoryLoader.loadPipeFactoriesFromClasspath("data/empty-test.conf");
-		Assert.assertEquals(true, list.isEmpty());
+		final List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadPipeFactoriesFromClasspath("data/empty-test.conf");
+		Assert.assertEquals(true, pipeFactories.isEmpty());
 	}
 
 	@Test
 	public void singleConfig() throws IOException {
-		final List<IPipeFactory> list = PipeFactoryLoader.loadPipeFactoriesFromClasspath("pipe-factories.conf");
+		final List<IPipeFactory> pipeFactories = PipeFactoryLoader.loadPipeFactoriesFromClasspath("pipe-factories.conf");
 		final int lines = Files.readLines(new File("target/classes/pipe-factories.conf"), Charsets.UTF_8).size();
-		Assert.assertEquals(lines, list.size());
+		Assert.assertEquals(lines, pipeFactories.size());
 	}
 
 	@Test

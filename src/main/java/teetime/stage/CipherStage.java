@@ -82,8 +82,8 @@ public final class CipherStage extends AbstractConsumerStage<byte[]> {
 	@Override
 	protected void execute(final byte[] element) {
 		try {
-			byte[] output = this.cipher.doFinal(element);
-			this.outputPort.send(output);
+			byte[] outputBytes = this.cipher.doFinal(element);
+			this.outputPort.send(outputBytes);
 		} catch (IllegalBlockSizeException e) {
 			throw new IllegalStateException(e);
 		} catch (BadPaddingException e) {

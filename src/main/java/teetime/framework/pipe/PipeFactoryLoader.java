@@ -70,7 +70,6 @@ public final class PipeFactoryLoader {
 	}
 
 	public static List<IPipeFactory> loadPipeFactoriesFromClasspath(final String configFileName) {
-
 		List<URL> files = null;
 
 		try {
