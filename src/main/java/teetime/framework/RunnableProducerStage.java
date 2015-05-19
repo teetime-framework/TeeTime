@@ -44,12 +44,12 @@ final class RunnableProducerStage extends AbstractRunnableStage {
 		this.stage.onSignal(terminatingSignal, null);
 	}
 
-	public void initializeProducer(final InitializingSignal signal) {
+	public void sendInitializingSignal(final InitializingSignal signal) {
 		this.stage.onSignal(signal, null);
 		initArrived = true;
 	}
 
-	public void startProducer(final StartingSignal signal) {
+	public void sendStartingSignal(final StartingSignal signal) {
 		this.stage.onSignal(signal, null);
 		startArrived = true;
 	}

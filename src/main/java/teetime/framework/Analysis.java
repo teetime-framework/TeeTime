@@ -267,14 +267,14 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	private void sendInitializingSignal() {
 		for (RunnableProducerStage runnable : producerRunnables) {
 			InitializingSignal signal = new InitializingSignal();
-			runnable.initializeProducer(signal);
+			runnable.sendInitializingSignal(signal);
 		}
 	}
 
 	private void sendStartingSignal() {
 		for (RunnableProducerStage runnable : producerRunnables) {
 			StartingSignal signal = new StartingSignal();
-			runnable.startProducer(signal);
+			runnable.sendStartingSignal(signal);
 		}
 	}
 
