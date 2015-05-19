@@ -43,14 +43,14 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	@SuppressWarnings("PMD.GuardLogStatement")
 	@Override
 	protected void beforeStageExecution(final Stage stage) throws InterruptedException {
-		logger.trace("Waiting for start signals..." + inputPorts);
+		logger.trace("Waiting for start signals... " + stage);
 		for (InputPort<?> inputPort : inputPorts) {
-			inputPort.waitForStartSignal();
+			inputPort.waitForInitializingSignal();
 		}
 		for (InputPort<?> inputPort : inputPorts) {
 			inputPort.waitForStartSignal();
 		}
-		logger.trace("Starting..." + stage);
+		logger.trace("Starting... " + stage);
 	}
 
 	@Override
