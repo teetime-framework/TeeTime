@@ -49,11 +49,11 @@ final class RunnableProducerStage extends AbstractRunnableStage {
 		this.stage.onSignal(terminatingSignal, null);
 	}
 
-	public void sendInitializingSignal() {
+	public void triggerInitializingSignal() {
 		initSemaphore.release();
 	}
 
-	public void sendStartingSignal() {
+	public void triggerStartingSignal() {
 		startSemaphore.release();
 	}
 

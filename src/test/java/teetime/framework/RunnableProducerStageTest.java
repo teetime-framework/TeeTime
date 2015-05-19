@@ -15,10 +15,10 @@ public class RunnableProducerStageTest {
 		thread.start();
 		// Not running and not initialized
 		assertFalse(testStage.executed && testStage.initialized);
-		runnable.sendInitializingSignal();
+		runnable.triggerInitializingSignal();
 		// Not running, but initialized
 		assertFalse(testStage.executed && !testStage.initialized);
-		runnable.sendStartingSignal();
+		runnable.triggerStartingSignal();
 
 		while (!testStage.shouldBeTerminated()) {
 			Thread.yield();
