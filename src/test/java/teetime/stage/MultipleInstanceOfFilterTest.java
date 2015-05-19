@@ -39,24 +39,24 @@ public class MultipleInstanceOfFilterTest {
 	@SuppressWarnings("unchecked")
 	public void filteringForSingleTypeShouldWork() {
 		final MultipleInstanceOfFilter<Object> filter = new MultipleInstanceOfFilter<Object>();
-		final List<Object> input = new ArrayList<Object>(Arrays.asList("1", 1.5f, "2", 2.5f, "3", 3.5f));
-		final List<String> result = new ArrayList<String>();
+		final List<Object> inputObjects = new ArrayList<Object>(Arrays.asList("1", 1.5f, "2", 2.5f, "3", 3.5f));
+		final List<String> receivedStrings = new ArrayList<String>();
 
-		StageTester.test(filter).and().send(input).to(filter.getInputPort()).and().receive(result).from(filter.getOutputPortForType(String.class)).start();
+		StageTester.test(filter).and().send(inputObjects).to(filter.getInputPort()).and().receive(receivedStrings).from(filter.getOutputPortForType(String.class)).start();
 
-		assertThat(result, is(not(empty())));
-		assertThat(result, contains("1", "2", "3"));
+		assertThat(receivedStrings, is(not(empty())));
+		assertThat(receivedStrings, contains("1", "2", "3"));
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void filteringForMultipleTypesShouldWork() {
 		final MultipleInstanceOfFilter<Number> filter = new MultipleInstanceOfFilter<Number>();
-		final List<Number> input = new ArrayList<Number>(Arrays.asList(1, 1.5f, 2, 2.5f, 3, 3.5f));
+		final List<Number> inputObjects = new ArrayList<Number>(Arrays.asList(1, 1.5f, 2, 2.5f, 3, 3.5f));
 		final List<Integer> integers = new ArrayList<Integer>();
 		final List<Float> floats = new ArrayList<Float>();
 
-		StageTester.test(filter).and().send(input).to(filter.getInputPort()).and().receive(integers).from(filter.getOutputPortForType(Integer.class)).and()
+		StageTester.test(filter).and().send(inputObjects).to(filter.getInputPort()).and().receive(integers).from(filter.getOutputPortForType(Integer.class)).and()
 				.receive(floats).from(filter.getOutputPortForType(Float.class)).start();
 
 		assertThat(integers, contains(1, 2, 3));

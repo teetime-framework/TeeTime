@@ -44,6 +44,10 @@ public final class CyclicListIterator<T> implements Iterator<T> {
 
 	@Override
 	public T next() {
+		this.currentIndex = this.getCurrentIndex();
+		final T element = this.elements.get(this.currentIndex);
+		this.currentIndex++;
+		return element;
 		// if (!this.iterator.hasNext()) {
 		// this.iterator = this.list.iterator();
 		// }
@@ -52,17 +56,13 @@ public final class CyclicListIterator<T> implements Iterator<T> {
 		// the size of the list could have been changed due to
 		// <li>an index overflow (then restart from index 0), or
 		// <li>an add() or a remove(), so update the index
-		this.currentIndex = this.getCurrentIndex();
-		final T element = this.elements.get(this.currentIndex);
-		this.currentIndex++;
-		return element;
 	}
 
 	@Override
 	public void remove() {
-		// this.iterator.remove();
 		this.currentIndex = this.getCurrentIndex();
 		this.elements.remove(this.currentIndex);
+		// this.iterator.remove();
 	}
 
 	private int getCurrentIndex() {

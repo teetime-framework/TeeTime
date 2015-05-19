@@ -32,7 +32,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * @author Nils Christian Ehmke
- * 
+ *
  * @since 1.0
  */
 public class DistributorTest {
@@ -41,58 +41,60 @@ public class DistributorTest {
 	public ExpectedException expectedException = ExpectedException.none();
 
 	private Distributor<Integer> distributor;
-	private List<Integer> fstList;
-	private List<Integer> sndList;
+	private List<Integer> firstIntegers;
+	private List<Integer> secondIntegers;
 
 	@Before
 	public void initializeDistributor() throws Exception {
 		this.distributor = new Distributor<Integer>();
-		this.fstList = new ArrayList<Integer>();
-		this.sndList = new ArrayList<Integer>();
+		this.firstIntegers = new ArrayList<Integer>();
+		this.secondIntegers = new ArrayList<Integer>();
 	}
 
 	@Test
 	public void roundRobinShouldWork() {
 		distributor.setStrategy(new RoundRobinStrategy());
 
-		test(distributor).and().send(1, 2, 3, 4, 5).to(distributor.getInputPort()).and().receive(fstList).from(distributor.getNewOutputPort()).and()
-				.receive(sndList).from(distributor.getNewOutputPort()).start();
+		test(distributor).and().send(1, 2, 3, 4, 5).to(distributor.getInputPort()).and().receive(firstIntegers).from(distributor.getNewOutputPort()).and()
+				.receive(secondIntegers).from(distributor.getNewOutputPort()).start();
 
-		assertThat(this.fstList, contains(1, 3, 5));
-		assertThat(this.sndList, contains(2, 4));
+		assertThat(this.firstIntegers, contains(1, 3, 5));
+		assertThat(this.secondIntegers, contains(2, 4));
 	}
 
 	@Test
 	public void singleElementRoundRobinShouldWork() {
 		distributor.setStrategy(new RoundRobinStrategy());
 
-		test(distributor).and().send(1).to(distributor.getInputPort()).and().receive(fstList).from(distributor.getNewOutputPort()).and().receive(sndList)
+		test(distributor).and().send(1).to(distributor.getInputPort()).and().receive(firstIntegers).from(distributor.getNewOutputPort()).and()
+				.receive(secondIntegers)
 				.from(distributor.getNewOutputPort()).start();
 
-		assertThat(this.fstList, contains(1));
-		assertThat(this.sndList, is(empty()));
+		assertThat(this.firstIntegers, contains(1));
+		assertThat(this.secondIntegers, is(empty()));
 	}
 
 	@Test
 	public void copyByReferenceShouldWork() {
 		distributor.setStrategy(new CopyByReferenceStrategy());
 
-		test(distributor).and().send(1, 2, 3, 4, 5).to(distributor.getInputPort()).and().receive(fstList).from(distributor.getNewOutputPort()).and()
-				.receive(sndList).from(distributor.getNewOutputPort()).start();
+		test(distributor).and().send(1, 2, 3, 4, 5).to(distributor.getInputPort()).and().receive(firstIntegers).from(distributor.getNewOutputPort()).and()
+				.receive(secondIntegers).from(distributor.getNewOutputPort()).start();
 
-		assertThat(this.fstList, contains(1, 2, 3, 4, 5));
-		assertThat(this.sndList, contains(1, 2, 3, 4, 5));
+		assertThat(this.firstIntegers, contains(1, 2, 3, 4, 5));
+		assertThat(this.secondIntegers, contains(1, 2, 3, 4, 5));
 	}
 
 	@Test
 	public void singleElementCopyByReferenceShouldWork() {
 		distributor.setStrategy(new CopyByReferenceStrategy());
 
-		test(distributor).and().send(1).to(distributor.getInputPort()).and().receive(fstList).from(distributor.getNewOutputPort()).and().receive(sndList)
+		test(distributor).and().send(1).to(distributor.getInputPort()).and().receive(firstIntegers).from(distributor.getNewOutputPort()).and()
+				.receive(secondIntegers)
 				.from(distributor.getNewOutputPort()).start();
 
-		assertThat(this.fstList, contains(1));
-		assertThat(this.sndList, contains(1));
+		assertThat(this.firstIntegers, contains(1));
+		assertThat(this.secondIntegers, contains(1));
 	}
 
 	@Test

@@ -59,6 +59,7 @@ public final class CircularWorkStealingDequeWithSentinel<T> {
 	private volatile CircularArray<T> activeArray = new CircularArray<T>(LOG_INITIAL_SIZE);
 
 	private boolean casTop(final long oldVal, final long newVal) {
+		return this.top.compareAndSet(oldVal, newVal);
 		// boolean preCond;
 		// synchronized (this) {
 		// preCond = (this.top == oldVal);
@@ -67,7 +68,6 @@ public final class CircularWorkStealingDequeWithSentinel<T> {
 		// }
 		// }
 		// return preCond;
-		return this.top.compareAndSet(oldVal, newVal);
 	}
 
 	public void pushBottom(final T o) {

@@ -66,15 +66,15 @@ public class InstanceCounterTest {
 
 	@Test
 	public void filterShouldWorkWithMultipleInput() {
-		final List<Object> input = new ArrayList<Object>();
+		final List<Object> inputObjects = new ArrayList<Object>();
 
-		input.add(new Object());
-		input.add(new Clazz());
-		input.add(new Object());
-		input.add(new SubClazz());
-		input.add(new Object());
+		inputObjects.add(new Object());
+		inputObjects.add(new Clazz());
+		inputObjects.add(new Object());
+		inputObjects.add(new SubClazz());
+		inputObjects.add(new Object());
 
-		test(this.filter).and().send(input).to(this.filter.getInputPort()).start();
+		test(this.filter).and().send(inputObjects).to(this.filter.getInputPort()).start();
 
 		assertThat(this.filter.getCounter(), is(2));
 	}
