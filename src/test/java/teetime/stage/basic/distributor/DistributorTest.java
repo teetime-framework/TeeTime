@@ -75,6 +75,29 @@ public class DistributorTest {
 	}
 
 	@Test
+	public void roundRobin2ShouldWork() {
+		distributor.setStrategy(new RoundRobinStrategy2());
+
+		test(distributor).and().send(1, 2, 3, 4, 5).to(distributor.getInputPort()).and().receive(firstIntegers).from(distributor.getNewOutputPort()).and()
+				.receive(secondIntegers).from(distributor.getNewOutputPort()).start();
+
+		assertThat(this.firstIntegers, contains(1, 3, 5));
+		assertThat(this.secondIntegers, contains(2, 4));
+	}
+
+	@Test
+	public void singleElementRoundRobin2ShouldWork() {
+		distributor.setStrategy(new RoundRobinStrategy2());
+
+		test(distributor).and().send(1).to(distributor.getInputPort()).and().receive(firstIntegers).from(distributor.getNewOutputPort()).and()
+				.receive(secondIntegers)
+				.from(distributor.getNewOutputPort()).start();
+
+		assertThat(this.firstIntegers, contains(1));
+		assertThat(this.secondIntegers, is(empty()));
+	}
+
+	@Test
 	public void copyByReferenceShouldWork() {
 		distributor.setStrategy(new CopyByReferenceStrategy());
 
