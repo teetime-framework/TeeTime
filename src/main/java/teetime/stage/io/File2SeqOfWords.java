@@ -47,6 +47,10 @@ public final class File2SeqOfWords extends AbstractConsumerStage<File> {
 		this("UTF-8", 1024);
 	}
 
+	public File2SeqOfWords(final int bufferCapacity) {
+		this("UTF-8", bufferCapacity);
+	}
+
 	public File2SeqOfWords(final String charset, final int bufferCapacity) {
 		super();
 		this.charset = charset;
