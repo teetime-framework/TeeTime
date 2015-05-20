@@ -15,7 +15,7 @@ import teetime.stage.basic.merger.Merger;
 public class PrinterTest {
 
 	@Test
-	public void testOutput() {
+	public void testDefaultUsage() {
 		Printer<Merger<Object>> printer = new Printer<Merger<Object>>();
 		Merger<Object> testStage = new Merger<Object>();
 
