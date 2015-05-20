@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import teetime.util.classpath.FileSearcher;
 
-public final class PipeFactoryLoader {
+final class PipeFactoryLoader {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PipeFactoryLoader.class);
 
