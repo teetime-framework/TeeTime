@@ -15,6 +15,7 @@
  */
 package teetime.framework.pipe;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
@@ -26,28 +27,34 @@ import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
+import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 import teetime.framework.signal.ValidatingSignal;
+import teetime.stage.basic.merger.Merger;
 
 public class SpScPipeTest {
 
 	// @Ignore
 	// ignore as long as this test passes null ports to SpScPipe
-	// @Test
+	@Test
 	public void testSignalOrdering() throws Exception {
-		OutputPort<Object> sourcePort = null;
-		InputPort<Object> targetPort = null;
+		Merger<Object> portSource = new Merger<Object>();
+		OutputPort<Object> sourcePort = portSource.getOutputPort();
+		InputPort<Object> targetPort = portSource.getNewInputPort();
 		AbstractInterThreadPipe pipe = new SpScPipe(sourcePort, targetPort, 1); // IPipe does not provide getSignal method
 
 		List<ISignal> signals = new ArrayList<ISignal>();
 		signals.add(new StartingSignal());
 		signals.add(new TerminatingSignal());
+		signals.add(new InitializingSignal());
 		signals.add(new ValidatingSignal());
 		signals.add(new StartingSignal());
 		signals.add(new TerminatingSignal());
+		signals.add(new InitializingSignal());
 		signals.add(new ValidatingSignal());
 		signals.add(new StartingSignal());
+		signals.add(new InitializingSignal());
 		signals.add(new TerminatingSignal());
 		signals.add(new ValidatingSignal());
 
@@ -63,7 +70,7 @@ public class SpScPipeTest {
 			}
 			secondSignals.add(temp);
 		}
-		// Assert.assertEquals(list, secondList);
+		assertEquals(signals, secondSignals);
 	}
 
 	@Test(expected = NullPointerException.class)

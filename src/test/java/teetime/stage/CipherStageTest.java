@@ -36,14 +36,14 @@ public class CipherStageTest {
 		final CipherStage encryptStage = new CipherStage("somePassword", CipherMode.ENCRYPT);
 		final CipherStage decryptStage = new CipherStage("somePassword", CipherMode.DECRYPT);
 
-		final byte[] input = new byte[] { 1, 2, 3, 4, 5 };
-		final List<byte[]> encryptedResult = new ArrayList<byte[]>();
-		final List<byte[]> decryptedResult = new ArrayList<byte[]>();
+		final byte[] inputBytes = new byte[] { 1, 2, 3, 4, 5 };
+		final List<byte[]> encryptedBytes = new ArrayList<byte[]>();
+		final List<byte[]> decryptedBytes = new ArrayList<byte[]>();
 
-		test(encryptStage).and().send(input).to(encryptStage.getInputPort()).and().receive(encryptedResult).from(encryptStage.getOutputPort()).start();
-		test(decryptStage).and().send(encryptedResult).to(decryptStage.getInputPort()).and().receive(decryptedResult).from(decryptStage.getOutputPort()).start();
+		test(encryptStage).and().send(inputBytes).to(encryptStage.getInputPort()).and().receive(encryptedBytes).from(encryptStage.getOutputPort()).start();
+		test(decryptStage).and().send(encryptedBytes).to(decryptStage.getInputPort()).and().receive(decryptedBytes).from(decryptStage.getOutputPort()).start();
 
-		assertThat(decryptedResult, contains(input));
+		assertThat(decryptedBytes, contains(inputBytes));
 	}
 
 }

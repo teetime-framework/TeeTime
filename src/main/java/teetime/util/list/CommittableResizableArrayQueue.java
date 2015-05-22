@@ -51,16 +51,16 @@ public final class CommittableResizableArrayQueue<T> implements CommittableQueue
 
 	@Override
 	public T removeFromHeadUncommitted() {
+		T element = this.get(--this.lastFreeIndexUncommitted);
 		// if (this.capacity() > this.MIN_CAPACITY && this.lastFreeIndexUncommitted < this.capacity() / 2) { // TODO uncomment
 		// this.shrink();
 		// }
-		T element = this.get(--this.lastFreeIndexUncommitted);
 		return element;
 	}
 
 	@Override
+	// TODO set elements to null to help the gc
 	public void commit() {
-		// TODO set elements to null to help the gc
 		this.lastFreeIndex = this.lastFreeIndexUncommitted;
 	}
 
@@ -109,10 +109,10 @@ public final class CommittableResizableArrayQueue<T> implements CommittableQueue
 	}
 
 	private final void copyArray(final T[] elements, final T[] newElements) {
+		System.arraycopy(elements, 0, newElements, 0, this.lastFreeIndexUncommitted + 1);
 		// for (int i = 0; i < this.lastFreeIndexUncommitted; i++) {
 		// newElements[i] = elements[i];
 		// }
-		System.arraycopy(elements, 0, newElements, 0, this.lastFreeIndexUncommitted + 1);
 	}
 
 	private final void put(final int index, final T element) {

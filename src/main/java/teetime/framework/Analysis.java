@@ -96,8 +96,8 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		init();
 	}
 
+	// BETTER validate concurrently
 	private void validateStages() {
-		// BETTER validate concurrently
 		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		for (Stage stage : threadableStageJobs) {
 			// // portConnectionValidator.validate(stage);
@@ -190,7 +190,6 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	 * @since 1.1
 	 */
 	public void waitForTermination() {
-
 		try {
 			for (Thread thread : this.finiteProducerThreads) {
 				thread.join();

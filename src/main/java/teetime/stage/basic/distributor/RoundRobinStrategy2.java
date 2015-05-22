@@ -38,20 +38,23 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 			success = outputPort.sendNonBlocking(element);
 			if (0 == numLoops) {
 				numWaits++;
-				// Thread.yield();
-				try {
-					Thread.sleep(1);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
+				backoff();
 				numLoops = numOutputPorts;
 			}
 			numLoops--;
 		} while (!success);
 
 		return true;
+	}
+
+	private void backoff() {
+		try {
+			Thread.sleep(1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// Thread.yield();
 	}
 
 	private <T> OutputPort<T> getNextPortInRoundRobinOrder(final OutputPort<T>[] outputPorts) {

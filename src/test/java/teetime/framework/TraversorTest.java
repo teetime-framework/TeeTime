@@ -41,11 +41,11 @@ public class TraversorTest {
 	public void traverse() {
 		TestConfiguration tc = new TestConfiguration();
 		traversor.traverse(tc.init);
-		Set<Stage> comparingSet = new HashSet<Stage>();
-		comparingSet.add(tc.init);
-		comparingSet.add(tc.f2b);
-		comparingSet.add(tc.distributor);
-		assertTrue(comparingSet.equals(traversor.getVisitedStage()));
+		Set<Stage> comparingStages = new HashSet<Stage>();
+		comparingStages.add(tc.init);
+		comparingStages.add(tc.f2b);
+		comparingStages.add(tc.distributor);
+		assertTrue(comparingStages.equals(traversor.getVisitedStage()));
 	}
 
 	// WordCounterConfiguration

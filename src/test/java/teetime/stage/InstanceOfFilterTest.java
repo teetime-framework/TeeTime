@@ -88,16 +88,16 @@ public class InstanceOfFilterTest {
 	@Test
 	public void filterShouldWorkWithMultipleInput() {
 		final List<Clazz> results = new ArrayList<InstanceOfFilterTest.Clazz>();
-		final List<Object> input = new ArrayList<Object>();
+		final List<Object> inputObjects = new ArrayList<Object>();
 
-		input.add(new Object());
-		input.add(new Clazz());
-		input.add(new Object());
-		input.add(new SubClazz());
-		input.add(new Object());
+		inputObjects.add(new Object());
+		inputObjects.add(new Clazz());
+		inputObjects.add(new Object());
+		inputObjects.add(new SubClazz());
+		inputObjects.add(new Object());
 
 		test(filter)
-				.and().send(input).to(filter.getInputPort())
+				.and().send(inputObjects).to(filter.getInputPort())
 				.and().receive(results).from(filter.getMatchedOutputPort())
 				.start();
 

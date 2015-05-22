@@ -31,8 +31,8 @@ public abstract class AbstractIntraThreadPipe extends AbstractPipe {
 	}
 
 	@Override
+	// getTargetPort is always non-null since the framework adds dummy ports if necessary
 	public final void sendSignal(final ISignal signal) {
-		// getTargetPort is always non-null since the framework adds dummy ports if necessary
 		this.cachedTargetStage.onSignal(signal, this.getTargetPort());
 	}
 

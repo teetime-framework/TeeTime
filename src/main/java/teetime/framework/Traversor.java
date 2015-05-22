@@ -24,14 +24,14 @@ import teetime.framework.pipe.IPipe;
 public class Traversor {
 
 	private final IPipeVisitor pipeVisitor;
-	private final Set<Stage> visitedStage = new HashSet<Stage>();
+	private final Set<Stage> visitedStages = new HashSet<Stage>();
 
 	public Traversor(final IPipeVisitor pipeVisitor) {
 		this.pipeVisitor = pipeVisitor;
 	}
 
 	public void traverse(final Stage stage) {
-		if (!visitedStage.add(stage)) {
+		if (!visitedStages.add(stage)) {
 			return;
 		}
 
@@ -46,6 +46,6 @@ public class Traversor {
 	}
 
 	public Set<Stage> getVisitedStage() {
-		return visitedStage;
+		return visitedStages;
 	}
 }

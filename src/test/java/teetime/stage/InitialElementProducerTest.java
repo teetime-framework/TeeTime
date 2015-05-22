@@ -87,11 +87,11 @@ public class InitialElementProducerTest {
 
 	@Test
 	public void instantiateWithIterable() {
-		List<Integer> test = new ArrayList<Integer>();
-		test.add(1);
-		test.add(2);
-		test.add(3);
-		producer = new InitialElementProducer<Integer>(test);
+		List<Integer> testIntegers = new ArrayList<Integer>();
+		testIntegers.add(1);
+		testIntegers.add(2);
+		testIntegers.add(3);
+		producer = new InitialElementProducer<Integer>(testIntegers);
 		List<Integer> results = new ArrayList<Integer>();
 
 		test(producer).and().receive(results).from(producer.getOutputPort()).start();

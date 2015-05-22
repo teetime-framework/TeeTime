@@ -45,17 +45,17 @@ public final class ZipByteArray extends AbstractConsumerStage<byte[]> {
 
 	@Override
 	protected void execute(final byte[] element) {
-		byte[] cache = null;
+		byte[] streamBytes = null;
 		try {
 			if (mode == ZipMode.COMP) {
-				cache = compress(element);
+				streamBytes = compress(element);
 			} else {
-				cache = decompress(element);
+				streamBytes = decompress(element);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		outputPort.send(cache);
+		outputPort.send(streamBytes);
 	}
 
 	private byte[] compress(final byte[] data) throws IOException {
@@ -65,17 +65,17 @@ public final class ZipByteArray extends AbstractConsumerStage<byte[]> {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
 
 		deflater.finish();
-		byte[] buffer = new byte[1024];
+		byte[] buffer = new byte[1024]; // NOPMD
 		while (!deflater.finished()) {
 			int count = deflater.deflate(buffer); // returns the generated code... index
 			outputStream.write(buffer, 0, count);
 		}
 		outputStream.close();
-		byte[] output = outputStream.toByteArray();
+		byte[] outputBytes = outputStream.toByteArray();
 
 		deflater.end();
 
-		return output;
+		return outputBytes;
 	}
 
 	private byte[] decompress(final byte[] data) throws IOException, DataFormatException {
@@ -83,17 +83,17 @@ public final class ZipByteArray extends AbstractConsumerStage<byte[]> {
 		inflater.setInput(data);
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-		byte[] buffer = new byte[1024];
+		byte[] buffer = new byte[1024]; // NOPMD
 		while (!inflater.finished()) {
 			int count = inflater.inflate(buffer);
 			outputStream.write(buffer, 0, count);
 		}
 		outputStream.close();
-		byte[] output = outputStream.toByteArray();
+		byte[] outputBytes = outputStream.toByteArray();
 
 		inflater.end();
 
-		return output;
+		return outputBytes;
 	}
 
 	public OutputPort<? extends byte[]> getOutputPort() {
