@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import teetime.framework.pipe.IPipe;
 import teetime.stage.CountingMapMerger;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.distributor.Distributor;
@@ -67,8 +66,8 @@ public class TraversorTest {
 			// CountingMapMerger (already as field)
 
 			// Connecting the stages of the first part of the config
-			connectIntraThreads(init.getOutputPort(), f2b.getInputPort());
-			connectIntraThreads(f2b.getOutputPort(), distributor.getInputPort());
+			connectStages(init.getOutputPort(), f2b.getInputPort());
+			connectStages(f2b.getOutputPort(), distributor.getInputPort());
 
 			// Middle part... multiple instances of WordCounter are created and connected to the merger and distrubuter stages
 			for (int i = 0; i < threads; i++) {
@@ -76,15 +75,15 @@ public class TraversorTest {
 				final WordCounter wc = new WordCounter();
 				// intraFact.create(inputPortSizePrinter.getOutputPort(), wc.getInputPort());
 
-				final IPipe distributorPipe = connectBoundedInterThreads(distributor.getNewOutputPort(), wc.getInputPort(), 10000);
-				final IPipe mergerPipe = connectBoundedInterThreads(wc.getOutputPort(), merger.getNewInputPort());
+				connectStages(distributor.getNewOutputPort(), wc.getInputPort());
+				connectStages(wc.getOutputPort(), merger.getNewInputPort());
 				// Add WordCounter as a threadable stage, so it runs in its own thread
 				addThreadableStage(wc);
 
 			}
 
 			// Connect the stages of the last part
-			connectIntraThreads(merger.getOutputPort(), result.getInputPort());
+			connectStages(merger.getOutputPort(), result.getInputPort());
 
 			// Add the first and last part to the threadable stages
 			addThreadableStage(init);

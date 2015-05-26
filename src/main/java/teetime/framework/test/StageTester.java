@@ -88,7 +88,7 @@ public final class StageTester {
 		public Configuration(final List<InputHolder<?>> inputHolders, final Stage stage, final List<OutputHolder<?>> outputHolders) {
 			for (InputHolder<?> inputHolder : inputHolders) {
 				final InitialElementProducer<Object> producer = new InitialElementProducer<Object>(inputHolder.getInput());
-				connectBoundedInterThreads(producer.getOutputPort(), inputHolder.getPort());
+				connectStages(producer.getOutputPort(), inputHolder.getPort());
 				addThreadableStage(producer);
 			}
 
@@ -96,7 +96,7 @@ public final class StageTester {
 
 			for (OutputHolder<?> outputHolder : outputHolders) {
 				final CollectorSink<Object> sink = new CollectorSink<Object>(outputHolder.getOutputElements());
-				connectIntraThreads(outputHolder.getPort(), sink.getInputPort());
+				connectStages(outputHolder.getPort(), sink.getInputPort());
 			}
 		}
 	}

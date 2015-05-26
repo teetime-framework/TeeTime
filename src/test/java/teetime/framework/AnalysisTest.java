@@ -71,7 +71,7 @@ public class AnalysisTest {
 		public TestConfig() {
 			final InitialElementProducer<String> init = new InitialElementProducer<String>("Hello");
 			delay = new DelayAndTerminate(DELAY_IN_MS);
-			connectIntraThreads(init.getOutputPort(), delay.getInputPort());
+			connectStages(init.getOutputPort(), delay.getInputPort());
 			addThreadableStage(init);
 		}
 	}
