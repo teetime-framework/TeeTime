@@ -23,9 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.PipeFactoryRegistry;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
+import teetime.framework.pipe.SingleElementPipeFactory;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
@@ -41,8 +39,7 @@ import teetime.framework.validation.InvalidPortConnection;
 @Deprecated
 public abstract class AbstractCompositeStage extends Stage {
 
-	private static final IPipeFactory INTRA_PIPE_FACTORY = PipeFactoryRegistry.INSTANCE
-			.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+	private static final IPipeFactory INTRA_PIPE_FACTORY = new SingleElementPipeFactory();
 
 	private final Set<Stage> containingStages = new HashSet<Stage>();
 	private final Set<Stage> lastStages = new HashSet<Stage>();

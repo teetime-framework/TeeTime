@@ -28,6 +28,9 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.IExceptionListenerFactory;
 import teetime.framework.exceptionHandling.IgnoringExceptionListenerFactory;
+import teetime.framework.pipe.IPipeFactory;
+import teetime.framework.pipe.SingleElementPipeFactory;
+import teetime.framework.pipe.SpScPipeFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
@@ -60,6 +63,9 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	private final Collection<Pair<Thread, Throwable>> exceptions = new ConcurrentLinkedQueue<Pair<Thread, Throwable>>();
 
 	private boolean initialized;
+
+	private final IPipeFactory interThreadPipeFactory = new SpScPipeFactory();
+	private final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
 
 	/**
 	 * Creates a new {@link Analysis} that skips validating the port connections and uses the default listener.
@@ -121,6 +127,8 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		}
 		initialized = true;
 
+		instantiatePipes();
+
 		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		if (threadableStageJobs.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
@@ -161,6 +169,17 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			initializeIntraStages(intraStages, thread, newListener);
 		}
 
+	}
+
+	private void instantiatePipes() {
+		List<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
+		for (Pair<OutputPort, InputPort> connection : configuration.getConnections()) {
+			if (threadableStageJobs.contains(connection.getSecond().getOwningStage())) {
+				interThreadPipeFactory.create(connection.getFirst(), connection.getSecond());
+			} else {
+				intraThreadPipeFactory.create(connection.getFirst(), connection.getSecond());
+			}
+		}
 	}
 
 	private Thread createThread(final AbstractRunnableStage runnable, final String name) {

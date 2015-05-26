@@ -43,12 +43,12 @@ public class TokenizerConfiguration extends AnalysisConfiguration {
 		final Tokenizer tokenizer = new Tokenizer(" ");
 		this.counter = new Counter<String>();
 
-		connectIntraThreads(init.getOutputPort(), f2b.getInputPort());
-		connectIntraThreads(f2b.getOutputPort(), decomp.getInputPort());
-		connectIntraThreads(decomp.getOutputPort(), decrypt.getInputPort());
-		connectIntraThreads(decrypt.getOutputPort(), b2s.getInputPort());
-		connectIntraThreads(b2s.getOutputPort(), tokenizer.getInputPort());
-		connectIntraThreads(tokenizer.getOutputPort(), this.counter.getInputPort());
+		connectStages(init.getOutputPort(), f2b.getInputPort());
+		connectStages(f2b.getOutputPort(), decomp.getInputPort());
+		connectStages(decomp.getOutputPort(), decrypt.getInputPort());
+		connectStages(decrypt.getOutputPort(), b2s.getInputPort());
+		connectStages(b2s.getOutputPort(), tokenizer.getInputPort());
+		connectStages(tokenizer.getOutputPort(), this.counter.getInputPort());
 
 		this.addThreadableStage(init);
 	}
