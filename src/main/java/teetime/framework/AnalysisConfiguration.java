@@ -23,6 +23,7 @@ import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
+import teetime.util.Pair;
 
 /**
  * Represents a configuration of connected stages, which is needed to run a analysis.
@@ -31,7 +32,9 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 public abstract class AnalysisConfiguration {
 
 	private final List<Stage> threadableStageJobs = new LinkedList<Stage>();
+	private final List<Pair<Stage, Stage>> connections = new LinkedList<Pair<Stage, Stage>>();
 
+	@SuppressWarnings("deprecation")
 	private static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
 
 	/**
@@ -68,7 +71,10 @@ public abstract class AnalysisConfiguration {
 	 * @param targetPort
 	 * @return
 	 *         the pipe instance which connects the two given stages
+	 *
+	 * @deprecated since 1.2
 	 */
+	@Deprecated
 	protected static <T> IPipe connectIntraThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return intraThreadFactory.create(sourcePort, targetPort);
 	}
@@ -80,7 +86,10 @@ public abstract class AnalysisConfiguration {
 	 * @param targetPort
 	 * @return
 	 *         the pipe instance which connects the two given stages
+	 *
+	 * @deprecated since 1.2
 	 */
+	@Deprecated
 	protected static <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return interBoundedThreadFactory.create(sourcePort, targetPort);
 	}
@@ -92,7 +101,10 @@ public abstract class AnalysisConfiguration {
 	 * @param targetPort
 	 * @return
 	 *         the pipe instance which connects the two given stages
+	 *
+	 * @deprecated since 1.2
 	 */
+	@Deprecated
 	protected static <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return interUnboundedThreadFactory.create(sourcePort, targetPort);
 	}
@@ -105,7 +117,10 @@ public abstract class AnalysisConfiguration {
 	 * @param capacity
 	 *            capacity of the underlying queue
 	 * @return
+	 *
+	 * @deprecated since 1.2
 	 */
+	@Deprecated
 	protected static <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		return interBoundedThreadFactory.create(sourcePort, targetPort, capacity);
 	}
@@ -118,9 +133,21 @@ public abstract class AnalysisConfiguration {
 	 * @param capacity
 	 *            capacity of the underlying queue
 	 * @return
+	 *
+	 * @deprecated since 1.2
 	 */
+	@Deprecated
 	protected static <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		return interUnboundedThreadFactory.create(sourcePort, targetPort, capacity);
+	}
+
+	/**
+	 * Returns a list of pairs, which describe the connections among all stages.
+	 *
+	 * @return a list of pairs of stages, which are connected
+	 */
+	protected List<Pair<Stage, Stage>> getConnections() {
+		return connections;
 	}
 
 }
