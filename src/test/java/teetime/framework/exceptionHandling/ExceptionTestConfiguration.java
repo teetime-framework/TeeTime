@@ -28,7 +28,7 @@ public class ExceptionTestConfiguration extends AnalysisConfiguration {
 		second = new ExceptionTestConsumerStage();
 		third = new ExceptionTestProducerStage();
 
-		connectStages(first.getOutputPort(), second.getInputPort());
+		connectPorts(first.getOutputPort(), second.getInputPort());
 		// this.addThreadableStage(new ExceptionTestStage());
 
 		this.addThreadableStage(first);

@@ -71,8 +71,8 @@ public class TraversorTest {
 			// CountingMapMerger (already as field)
 
 			// Connecting the stages of the first part of the config
-			connectStages(init.getOutputPort(), f2b.getInputPort());
-			connectStages(f2b.getOutputPort(), distributor.getInputPort());
+			connectPorts(init.getOutputPort(), f2b.getInputPort());
+			connectPorts(f2b.getOutputPort(), distributor.getInputPort());
 
 			// Middle part... multiple instances of WordCounter are created and connected to the merger and distrubuter stages
 			for (int i = 0; i < threads; i++) {
@@ -80,15 +80,15 @@ public class TraversorTest {
 				final WordCounter wc = new WordCounter();
 				// intraFact.create(inputPortSizePrinter.getOutputPort(), wc.getInputPort());
 
-				connectStages(distributor.getNewOutputPort(), wc.getInputPort());
-				connectStages(wc.getOutputPort(), merger.getNewInputPort());
+				connectPorts(distributor.getNewOutputPort(), wc.getInputPort());
+				connectPorts(wc.getOutputPort(), merger.getNewInputPort());
 				// Add WordCounter as a threadable stage, so it runs in its own thread
 				addThreadableStage(wc);
 
 			}
 
 			// Connect the stages of the last part
-			connectStages(merger.getOutputPort(), result.getInputPort());
+			connectPorts(merger.getOutputPort(), result.getInputPort());
 
 			// Add the first and last part to the threadable stages
 			addThreadableStage(init);

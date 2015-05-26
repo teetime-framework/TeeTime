@@ -40,12 +40,12 @@ public class CipherConfiguration extends AnalysisConfiguration {
 		final CipherStage decrypt = new CipherStage(password, CipherMode.DECRYPT);
 		final ByteArrayFileWriter writer = new ByteArrayFileWriter(output);
 
-		connectStages(init.getOutputPort(), f2b.getInputPort());
-		connectStages(f2b.getOutputPort(), enc.getInputPort());
-		connectStages(enc.getOutputPort(), comp.getInputPort());
-		connectStages(comp.getOutputPort(), decomp.getInputPort());
-		connectStages(decomp.getOutputPort(), decrypt.getInputPort());
-		connectStages(decrypt.getOutputPort(), writer.getInputPort());
+		connectPorts(init.getOutputPort(), f2b.getInputPort());
+		connectPorts(f2b.getOutputPort(), enc.getInputPort());
+		connectPorts(enc.getOutputPort(), comp.getInputPort());
+		connectPorts(comp.getOutputPort(), decomp.getInputPort());
+		connectPorts(decomp.getOutputPort(), decrypt.getInputPort());
+		connectPorts(decrypt.getOutputPort(), writer.getInputPort());
 
 		// this.getFiniteProducerStages().add(init);
 		this.addThreadableStage(init);

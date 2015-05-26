@@ -35,7 +35,7 @@ public class RunnableConsumerStageTestConfiguration extends AnalysisConfiguratio
 		CollectorSink<Integer> collectorSink = new CollectorSink<Integer>(collectedElements);
 		addThreadableStage(collectorSink);
 
-		connectStages(producer.getOutputPort(), collectorSink.getInputPort());
+		connectPorts(producer.getOutputPort(), collectorSink.getInputPort());
 
 		this.collectorSink = collectorSink;
 	}

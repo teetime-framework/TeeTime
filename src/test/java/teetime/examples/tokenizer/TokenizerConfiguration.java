@@ -43,12 +43,12 @@ public class TokenizerConfiguration extends AnalysisConfiguration {
 		final Tokenizer tokenizer = new Tokenizer(" ");
 		this.counter = new Counter<String>();
 
-		connectStages(init.getOutputPort(), f2b.getInputPort());
-		connectStages(f2b.getOutputPort(), decomp.getInputPort());
-		connectStages(decomp.getOutputPort(), decrypt.getInputPort());
-		connectStages(decrypt.getOutputPort(), b2s.getInputPort());
-		connectStages(b2s.getOutputPort(), tokenizer.getInputPort());
-		connectStages(tokenizer.getOutputPort(), this.counter.getInputPort());
+		connectPorts(init.getOutputPort(), f2b.getInputPort());
+		connectPorts(f2b.getOutputPort(), decomp.getInputPort());
+		connectPorts(decomp.getOutputPort(), decrypt.getInputPort());
+		connectPorts(decrypt.getOutputPort(), b2s.getInputPort());
+		connectPorts(b2s.getOutputPort(), tokenizer.getInputPort());
+		connectPorts(tokenizer.getOutputPort(), this.counter.getInputPort());
 
 		this.addThreadableStage(init);
 	}

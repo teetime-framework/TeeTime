@@ -73,7 +73,7 @@ public class AnalysisTest {
 		public TestConfig() {
 			final InitialElementProducer<String> init = new InitialElementProducer<String>("Hello");
 			delay = new DelayAndTerminate(DELAY_IN_MS);
-			connectStages(init.getOutputPort(), delay.getInputPort());
+			connectPorts(init.getOutputPort(), delay.getInputPort());
 			addThreadableStage(init);
 		}
 	}
@@ -114,7 +114,7 @@ public class AnalysisTest {
 		public Sink<Object> sink = new Sink<Object>();
 
 		public AnalysisTestConfig(final boolean inter) {
-			connectStages(init.getOutputPort(), sink.getInputPort());
+			connectPorts(init.getOutputPort(), sink.getInputPort());
 			addThreadableStage(init);
 			if (inter) {
 				addThreadableStage(sink);

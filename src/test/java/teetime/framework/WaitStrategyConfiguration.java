@@ -42,7 +42,7 @@ class WaitStrategyConfiguration extends AnalysisConfiguration {
 		Clock clock = new Clock();
 		clock.setInitialDelayInMs(initialDelayInMs);
 
-		connectStages(clock.getOutputPort(), delay.getTimestampTriggerInputPort());
+		connectPorts(clock.getOutputPort(), delay.getTimestampTriggerInputPort());
 
 		return clock;
 	}
@@ -51,7 +51,7 @@ class WaitStrategyConfiguration extends AnalysisConfiguration {
 		InitialElementProducer<Object> initialElementProducer = new InitialElementProducer<Object>(elements);
 		delay = new Delay<Object>();
 
-		connectStages(initialElementProducer.getOutputPort(), delay.getInputPort());
+		connectPorts(initialElementProducer.getOutputPort(), delay.getInputPort());
 
 		return initialElementProducer;
 	}
@@ -62,8 +62,8 @@ class WaitStrategyConfiguration extends AnalysisConfiguration {
 
 		// relay.setIdleStrategy(new WaitStrategy(relay));
 
-		connectStages(delay.getOutputPort(), relay.getInputPort());
-		connectStages(relay.getOutputPort(), collectorSink.getInputPort());
+		connectPorts(delay.getOutputPort(), relay.getInputPort());
+		connectPorts(relay.getOutputPort(), collectorSink.getInputPort());
 
 		this.collectorSink = collectorSink;
 

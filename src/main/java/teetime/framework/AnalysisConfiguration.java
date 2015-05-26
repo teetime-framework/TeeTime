@@ -145,7 +145,7 @@ public abstract class AnalysisConfiguration {
 		return interUnboundedThreadFactory.create(sourcePort, targetPort, capacity);
 	}
 
-	protected <T> void connectStages(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		connections.add(new Pair<OutputPort, InputPort>(sourcePort, targetPort));
 	}
 
