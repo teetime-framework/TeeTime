@@ -61,7 +61,11 @@ public abstract class AnalysisConfiguration {
 	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
 	 */
 	protected void addThreadableStage(final Stage stage) {
-		this.threadableStageJobs.add(stage);
+		if (stage instanceof AbstractCompositeStage) {
+			this.threadableStageJobs.add(((AbstractCompositeStage) stage).getFirstStage());
+		} else {
+			this.threadableStageJobs.add(stage);
+		}
 	}
 
 	/**

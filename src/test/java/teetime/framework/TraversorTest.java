@@ -15,7 +15,10 @@
  */
 package teetime.framework;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.util.HashSet;
@@ -39,12 +42,14 @@ public class TraversorTest {
 	@Test
 	public void traverse() {
 		TestConfiguration tc = new TestConfiguration();
+		new Analysis<TestConfiguration>(tc);
 		traversor.traverse(tc.init);
 		Set<Stage> comparingStages = new HashSet<Stage>();
 		comparingStages.add(tc.init);
 		comparingStages.add(tc.f2b);
 		comparingStages.add(tc.distributor);
-		assertTrue(comparingStages.equals(traversor.getVisitedStage()));
+		assertThat(tc.distributor.getOwningThread(), is(not(tc.distributor.getOutputPorts()[0].pipe.getTargetPort().getOwningStage().getOwningThread())));
+		assertEquals(comparingStages, traversor.getVisitedStage());
 	}
 
 	// WordCounterConfiguration

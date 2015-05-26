@@ -43,6 +43,8 @@ import teetime.util.Pair;
  * To start the analysis {@link #executeBlocking()} needs to be executed.
  * This class will automatically create threads and join them without any further commitment.
  *
+ * @author Christian Wulf, Nelson Tavares de Sousa
+ *
  * @param <T>
  *            the type of the {@link AnalysisConfiguration}
  */
