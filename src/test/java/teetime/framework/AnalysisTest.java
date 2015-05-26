@@ -18,6 +18,7 @@ package teetime.framework;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -26,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import teetime.stage.InitialElementProducer;
+import teetime.stage.basic.Sink;
 import teetime.util.StopWatch;
 
 public class AnalysisTest {
@@ -98,4 +100,25 @@ public class AnalysisTest {
 
 	}
 
+	@Test
+	public void testInstantiatePipes() throws Exception {
+		Analysis<AnalysisTestConfig> interAnalysis = new Analysis<AnalysisTestConfig>(new AnalysisTestConfig(true));
+		assertThat(interAnalysis.getConfiguration().init.getOwningThread(), is(not(interAnalysis.getConfiguration().sink.getOwningThread())));
+
+		Analysis<AnalysisTestConfig> intraAnalysis = new Analysis<AnalysisTestConfig>(new AnalysisTestConfig(false));
+		assertThat(intraAnalysis.getConfiguration().init.getOwningThread(), is(intraAnalysis.getConfiguration().sink.getOwningThread()));
+	}
+
+	private class AnalysisTestConfig extends AnalysisConfiguration {
+		public InitialElementProducer<Object> init = new InitialElementProducer<Object>();
+		public Sink<Object> sink = new Sink<Object>();
+
+		public AnalysisTestConfig(final boolean inter) {
+			connectStages(init.getOutputPort(), sink.getInputPort());
+			addThreadableStage(init);
+			if (inter) {
+				addThreadableStage(sink);
+			}
+		}
+	}
 }
