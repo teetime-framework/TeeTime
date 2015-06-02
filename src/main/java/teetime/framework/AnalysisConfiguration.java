@@ -32,7 +32,7 @@ import teetime.util.Pair;
 public abstract class AnalysisConfiguration {
 
 	private final List<Stage> threadableStageJobs = new LinkedList<Stage>();
-	private final List<Pair<OutputPort, InputPort>> connections = new LinkedList<Pair<OutputPort, InputPort>>();
+	private final List<Pair<Pair<OutputPort, InputPort>, Integer>> connections = new LinkedList<Pair<Pair<OutputPort, InputPort>, Integer>>();
 
 	@SuppressWarnings("deprecation")
 	private static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
@@ -146,7 +146,12 @@ public abstract class AnalysisConfiguration {
 	}
 
 	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		connections.add(new Pair<OutputPort, InputPort>(sourcePort, targetPort));
+		connectPorts(sourcePort, targetPort, 4);
+	}
+
+	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		connections.add(new Pair(new Pair<OutputPort, InputPort>(sourcePort, targetPort), capacity));
+
 	}
 
 	/**
@@ -154,7 +159,7 @@ public abstract class AnalysisConfiguration {
 	 *
 	 * @return a list of pairs of Out- and InputPorts, which are connected
 	 */
-	protected List<Pair<OutputPort, InputPort>> getConnections() {
+	protected List<Pair<Pair<OutputPort, InputPort>, Integer>> getConnections() {
 		return connections;
 	}
 

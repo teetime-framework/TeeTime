@@ -31,6 +31,7 @@ import teetime.framework.exceptionHandling.IgnoringExceptionListenerFactory;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.SingleElementPipeFactory;
 import teetime.framework.pipe.SpScPipeFactory;
+import teetime.framework.pipe.UnboundedSpScPipeFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
@@ -66,7 +67,8 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 	private boolean initialized;
 
-	private final IPipeFactory interThreadPipeFactory = new SpScPipeFactory();
+	private final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
+	private final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
 	private final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
 
 	/**
@@ -175,11 +177,15 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 	private void instantiatePipes() {
 		List<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
-		for (Pair<OutputPort, InputPort> connection : configuration.getConnections()) {
-			if (threadableStageJobs.contains(connection.getSecond().getOwningStage())) {
-				interThreadPipeFactory.create(connection.getFirst(), connection.getSecond());
+		for (Pair<Pair<OutputPort, InputPort>, Integer> connection : configuration.getConnections()) {
+			if (threadableStageJobs.contains(connection.getFirst().getSecond().getOwningStage())) {
+				if (connection.getSecond() != 0) {
+					interBoundedThreadPipeFactory.create(connection.getFirst().getFirst(), connection.getFirst().getSecond(), connection.getSecond());
+				} else {
+					interUnboundedThreadPipeFactory.create(connection.getFirst().getFirst(), connection.getFirst().getSecond(), connection.getSecond());
+				}
 			} else {
-				intraThreadPipeFactory.create(connection.getFirst(), connection.getSecond());
+				intraThreadPipeFactory.create(connection.getFirst().getFirst(), connection.getFirst().getSecond());
 			}
 		}
 	}
