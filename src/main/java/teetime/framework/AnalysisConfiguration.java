@@ -145,10 +145,28 @@ public abstract class AnalysisConfiguration {
 		return interUnboundedThreadFactory.create(sourcePort, targetPort, capacity);
 	}
 
+	/**
+	 * Connects two ports with a pipe.
+	 *
+	 * @param sourcePort
+	 *            port from the sending stage
+	 * @param targetPort
+	 *            port from the receiving stage
+	 */
 	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		connectPorts(sourcePort, targetPort, 4);
 	}
 
+	/**
+	 * Connects to ports with a pipe of a certain capacity
+	 *
+	 * @param sourcePort
+	 *            port from the sending stage
+	 * @param targetPort
+	 *            port from the receiving stage
+	 * @param capacity
+	 *            the pipe is set to this capacity, if the value is greater than 0. If it is 0, than the pipe is unbounded, thus growing of the pipe is enabled.
+	 */
 	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		connections.add(new Connection(sourcePort, targetPort, capacity));
 	}
