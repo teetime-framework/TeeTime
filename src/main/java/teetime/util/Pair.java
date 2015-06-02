@@ -15,6 +15,15 @@
  */
 package teetime.util;
 
+/**
+ *
+ * @param <F>
+ * @param <S>
+ *
+ * @deprecated since 1.2
+ */
+@Deprecated
+// See http://stackoverflow.com/questions/156275/what-is-the-equivalent-of-the-c-pairl-r-in-java
 public final class Pair<F, S> {
 
 	private final F first;

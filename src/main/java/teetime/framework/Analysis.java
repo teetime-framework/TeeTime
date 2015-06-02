@@ -35,6 +35,7 @@ import teetime.framework.pipe.UnboundedSpScPipeFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
+import teetime.util.Connection;
 import teetime.util.Pair;
 
 /**
@@ -177,15 +178,15 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 	private void instantiatePipes() {
 		List<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
-		for (Pair<Pair<OutputPort, InputPort>, Integer> connection : configuration.getConnections()) {
-			if (threadableStageJobs.contains(connection.getFirst().getSecond().getOwningStage())) {
-				if (connection.getSecond() != 0) {
-					interBoundedThreadPipeFactory.create(connection.getFirst().getFirst(), connection.getFirst().getSecond(), connection.getSecond());
+		for (Connection connection : configuration.getConnections()) {
+			if (threadableStageJobs.contains(connection.getTargetPort().getOwningStage())) {
+				if (connection.getCapacity() != 0) {
+					interBoundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), connection.getCapacity());
 				} else {
-					interUnboundedThreadPipeFactory.create(connection.getFirst().getFirst(), connection.getFirst().getSecond(), connection.getSecond());
+					interUnboundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), connection.getCapacity());
 				}
 			} else {
-				intraThreadPipeFactory.create(connection.getFirst().getFirst(), connection.getFirst().getSecond());
+				intraThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort());
 			}
 		}
 	}
