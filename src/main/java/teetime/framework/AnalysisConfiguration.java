@@ -32,7 +32,7 @@ import teetime.util.Connection;
 public abstract class AnalysisConfiguration {
 
 	private final List<Stage> threadableStageJobs = new LinkedList<Stage>();
-	private final List<Connection> connections = new LinkedList<Connection>();
+	private final List<Connection<?>> connections = new LinkedList<Connection<?>>();
 
 	@SuppressWarnings("deprecation")
 	private static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
@@ -61,11 +61,14 @@ public abstract class AnalysisConfiguration {
 	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
 	 */
 	protected void addThreadableStage(final Stage stage) {
-		if (stage instanceof AbstractCompositeStage) {
-			this.threadableStageJobs.add(((AbstractCompositeStage) stage).getFirstStage());
-			this.connections.addAll(((AbstractCompositeStage) stage).getConnections());
-		} else {
-			this.threadableStageJobs.add(stage);
+		this.threadableStageJobs.add(stage);
+	}
+
+	protected void addThreadableStage(final AbstractCompositeStage stage) {
+		this.threadableStageJobs.add(stage.getFirstStage());
+		this.connections.addAll(stage.getConnections());
+		for (Stage threadableStage : stage.getThreadableStageJobs()) {
+			this.addThreadableStage(threadableStage);
 		}
 	}
 
@@ -169,7 +172,7 @@ public abstract class AnalysisConfiguration {
 	 *            the pipe is set to this capacity, if the value is greater than 0. If it is 0, than the pipe is unbounded, thus growing of the pipe is enabled.
 	 */
 	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		connections.add(new Connection(sourcePort, targetPort, capacity));
+		connections.add(new Connection<T>(sourcePort, targetPort, capacity));
 	}
 
 	/**
@@ -177,7 +180,7 @@ public abstract class AnalysisConfiguration {
 	 *
 	 * @return a list of pairs of Out- and InputPorts, which are connected
 	 */
-	protected List<Connection> getConnections() {
+	protected List<Connection<?>> getConnections() {
 		return connections;
 	}
 
