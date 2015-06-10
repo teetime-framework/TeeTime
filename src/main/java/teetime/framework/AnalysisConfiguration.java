@@ -64,6 +64,12 @@ public abstract class AnalysisConfiguration {
 		this.threadableStageJobs.add(stage);
 	}
 
+	/**
+	 * Execute this method, to add a CompositeStage to the configuration, which should be executed in a own thread.
+	 *
+	 * @param stage
+	 *            A arbitrary CompositeStage, which will be added to the configuration and executed in a thread.
+	 */
 	protected void addThreadableStage(final AbstractCompositeStage stage) {
 		this.threadableStageJobs.add(stage.getFirstStage());
 		this.connections.addAll(stage.getConnections());
