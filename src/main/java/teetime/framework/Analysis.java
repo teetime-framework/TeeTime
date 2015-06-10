@@ -109,7 +109,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 	// BETTER validate concurrently
 	private void validateStages() {
-		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
+		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		for (Stage stage : threadableStageJobs) {
 			// // portConnectionValidator.validate(stage);
 			// }
@@ -134,7 +134,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 		instantiatePipes();
 
-		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
+		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		if (threadableStageJobs.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
@@ -177,7 +177,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	}
 
 	private void instantiatePipes() {
-		List<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
+		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
 		for (Connection connection : configuration.getConnections()) {
 			if (threadableStageJobs.contains(connection.getTargetPort().getOwningStage())) {
 				if (connection.getCapacity() != 0) {

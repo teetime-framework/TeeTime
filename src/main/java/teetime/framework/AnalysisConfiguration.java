@@ -15,8 +15,8 @@
  */
 package teetime.framework;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.IPipeFactory;
@@ -31,8 +31,8 @@ import teetime.util.Connection;
  */
 public abstract class AnalysisConfiguration {
 
-	private final List<Stage> threadableStageJobs = new LinkedList<Stage>();
-	private final List<Connection<?>> connections = new LinkedList<Connection<?>>();
+	private final Set<Stage> threadableStageJobs = new HashSet<Stage>();
+	private final Set<Connection<?>> connections = new HashSet<Connection<?>>();
 
 	@SuppressWarnings("deprecation")
 	private static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
@@ -50,7 +50,7 @@ public abstract class AnalysisConfiguration {
 	 */
 	private final static IPipeFactory interUnboundedThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, true);
 
-	List<Stage> getThreadableStageJobs() {
+	Set<Stage> getThreadableStageJobs() {
 		return this.threadableStageJobs;
 	}
 
@@ -180,7 +180,7 @@ public abstract class AnalysisConfiguration {
 	 *
 	 * @return a list of pairs of Out- and InputPorts, which are connected
 	 */
-	protected List<Connection<?>> getConnections() {
+	protected Set<Connection<?>> getConnections() {
 		return connections;
 	}
 
