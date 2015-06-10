@@ -19,6 +19,48 @@ public class Connection<T> {
 		this.capacity = capacity;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + capacity;
+		result = prime * result + ((sourcePort == null) ? 0 : sourcePort.hashCode());
+		result = prime * result + ((targetPort == null) ? 0 : targetPort.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Connection<?> other = (Connection<?>) obj;
+		if (capacity != other.capacity) {
+			return false;
+		}
+		if (sourcePort == null) {
+			if (other.sourcePort != null) {
+				return false;
+			}
+		} else if (!sourcePort.equals(other.sourcePort)) {
+			return false;
+		}
+		if (targetPort == null) {
+			if (other.targetPort != null) {
+				return false;
+			}
+		} else if (!targetPort.equals(other.targetPort)) {
+			return false;
+		}
+		return true;
+	}
+
 	public int getCapacity() {
 		return capacity;
 	}
