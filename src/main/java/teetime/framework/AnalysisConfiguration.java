@@ -63,6 +63,7 @@ public abstract class AnalysisConfiguration {
 	protected void addThreadableStage(final Stage stage) {
 		if (stage instanceof AbstractCompositeStage) {
 			this.threadableStageJobs.add(((AbstractCompositeStage) stage).getFirstStage());
+			this.connections.addAll(((AbstractCompositeStage) stage).getConnections());
 		} else {
 			this.threadableStageJobs.add(stage);
 		}
