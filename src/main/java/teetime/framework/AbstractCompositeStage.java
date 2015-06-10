@@ -25,7 +25,7 @@ import teetime.util.Connection;
 /**
  * Represents a minimal stage that composes several other stages.
  *
- * @since 1.1
+ * @since 1.2
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
  * @deprecated This concept is not yet implemented in a correct way. As soon as the concept is stable, we will remove the deprecated tag.
