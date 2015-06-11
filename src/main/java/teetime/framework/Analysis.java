@@ -140,40 +140,46 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		}
 
 		for (Stage stage : threadableStageJobs) {
-			final Thread thread;
+			final Thread thread = initializeStages(stage);
 
-			final TerminationStrategy terminationStrategy = stage.getTerminationStrategy();
-			switch (terminationStrategy) {
-			case BY_SIGNAL: {
-				final RunnableConsumerStage runnable = new RunnableConsumerStage(stage);
-				thread = createThread(runnable, stage.getId());
-				this.consumerThreads.add(thread);
-				break;
-			}
-			case BY_SELF_DECISION: {
-				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
-				thread = createThread(runnable, stage.getId());
-				this.finiteProducerThreads.add(thread);
-				InitializingSignal initializingSignal = new InitializingSignal();
-				stage.onSignal(initializingSignal, null);
-				break;
-			}
-			case BY_INTERRUPT: {
-				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
-				thread = createThread(runnable, stage.getId());
-				InitializingSignal initializingSignal = new InitializingSignal();
-				stage.onSignal(initializingSignal, null);
-				this.infiniteProducerThreads.add(thread);
-				break;
-			}
-			default:
-				throw new IllegalStateException("Unhandled termination strategy: " + terminationStrategy);
-			}
 			final Set<Stage> intraStages = traverseIntraStages(stage);
 			final AbstractExceptionListener newListener = factory.createInstance();
 			initializeIntraStages(intraStages, thread, newListener);
 		}
 
+	}
+
+	private Thread initializeStages(final Stage stage) {
+		final Thread thread;
+
+		final TerminationStrategy terminationStrategy = stage.getTerminationStrategy();
+		switch (terminationStrategy) {
+		case BY_SIGNAL: {
+			final RunnableConsumerStage runnable = new RunnableConsumerStage(stage);
+			thread = createThread(runnable, stage.getId());
+			this.consumerThreads.add(thread);
+			break;
+		}
+		case BY_SELF_DECISION: {
+			final RunnableProducerStage runnable = new RunnableProducerStage(stage);
+			thread = createThread(runnable, stage.getId());
+			this.finiteProducerThreads.add(thread);
+			InitializingSignal initializingSignal = new InitializingSignal();
+			stage.onSignal(initializingSignal, null);
+			break;
+		}
+		case BY_INTERRUPT: {
+			final RunnableProducerStage runnable = new RunnableProducerStage(stage);
+			thread = createThread(runnable, stage.getId());
+			InitializingSignal initializingSignal = new InitializingSignal();
+			stage.onSignal(initializingSignal, null);
+			this.infiniteProducerThreads.add(thread);
+			break;
+		}
+		default:
+			throw new IllegalStateException("Unhandled termination strategy: " + terminationStrategy);
+		}
+		return thread;
 	}
 
 	private void instantiatePipes() {
