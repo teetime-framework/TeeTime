@@ -17,8 +17,10 @@ package teetime.framework;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -189,11 +191,38 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 				if (connection.getCapacity() != 0) {
 					interBoundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), connection.getCapacity());
 				} else {
-					interUnboundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), connection.getCapacity());
+					interUnboundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), 4);
 				}
 			} else {
 				intraThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort());
 			}
+		}
+	}
+
+	private void prototypeInstantiatePipes() {
+		Integer i = new Integer(0);
+		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
+		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
+		for (Stage threadableStage : threadableStageJobs) {
+			colors.put(threadableStage, i); // Markiere den threadHead
+			for (Connection connection : configuration.getConnections()) {
+				// Die Connection gehört zu der Stage
+				if (connection.getSourcePort().getOwningStage() == threadableStage) {
+					Stage targetStage = connection.getTargetPort().getOwningStage();
+					if (threadableStageJobs.contains(targetStage) /* colors.get(targetStage) == i */) { // Auch auf Farbe prüfen
+						if (connection.getCapacity() != 0) {
+							interBoundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), connection.getCapacity());
+						} else {
+							interUnboundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), 4);
+						}
+					} else {
+						intraThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort());
+						colors.put(targetStage, i);
+					}
+					// configuration.getConnections().remove(connection); remove connection to increase performance
+				}
+			}
+			i++;
 		}
 	}
 
