@@ -31,8 +31,10 @@ public final class Counter<T> extends AbstractConsumerStage<T> {
 		outputPort.send(element);
 	}
 
-	// BETTER find a solution w/o any thread-safe code in this stage
-	public synchronized int getNumElementsPassed() {
+	/**
+	 * <i>Hint:</i> This method may not be invoked by another thread since it is not thread-safe.
+	 */
+	public int getNumElementsPassed() {
 		return this.numElementsPassed;
 	}
 
