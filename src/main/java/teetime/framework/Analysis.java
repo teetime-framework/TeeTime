@@ -73,6 +73,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	private final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
 	private final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
 	private final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
+	private Integer connected = new Integer(0);
 
 	/**
 	 * Creates a new {@link Analysis} that skips validating the port connections and uses the default listener.
@@ -208,6 +209,9 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			colors.put(threadableStage, i); // Markiere den threadHead
 			colorAndConnectStages(i, colors, threadableStage);
 		}
+		if (configuration.getConnections().size() != connected) {
+			throw new IllegalStateException("remaining " + (configuration.getConnections().size() - connected) + " connections");
+		}
 	}
 
 	public void colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage) {
@@ -228,11 +232,14 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 					}
 				} else {
 					if (colors.containsKey(targetStage)) {
-						throw new IllegalStateException("Crossing threads");
+						if (colors.get(targetStage).equals(i)) {
+							throw new IllegalStateException("Crossing threads"); // One stage is connected to a stage of another thread (not the "headstage")
+						}
 					}
 					intraThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort());
 					colors.put(targetStage, i);
 				}
+				connected++;
 				// configuration.getConnections().remove(connection); remove connection to increase performance
 				colorAndConnectStages(i, colors, targetStage);
 			}
