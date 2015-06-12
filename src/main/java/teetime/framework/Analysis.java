@@ -134,7 +134,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		}
 		initialized = true;
 
-		instantiatePipes();
+		prototypeInstantiatePipes();
 
 		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		if (threadableStageJobs.isEmpty()) {
@@ -204,25 +204,38 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
 		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
 		for (Stage threadableStage : threadableStageJobs) {
-			colors.put(threadableStage, i); // Markiere den threadHead
-			for (Connection connection : configuration.getConnections()) {
-				// Die Connection gehört zu der Stage
-				if (connection.getSourcePort().getOwningStage() == threadableStage) {
-					Stage targetStage = connection.getTargetPort().getOwningStage();
-					if (threadableStageJobs.contains(targetStage) /* colors.get(targetStage) == i */) { // Auch auf Farbe prüfen
-						if (connection.getCapacity() != 0) {
-							interBoundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), connection.getCapacity());
-						} else {
-							interUnboundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), 4);
-						}
-					} else {
-						intraThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort());
-						colors.put(targetStage, i);
-					}
-					// configuration.getConnections().remove(connection); remove connection to increase performance
-				}
-			}
 			i++;
+			colors.put(threadableStage, i); // Markiere den threadHead
+			colorAndConnectStages(i, colors, threadableStage);
+		}
+	}
+
+	public void colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage) {
+		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
+		for (Connection connection : configuration.getConnections()) {
+			// Die Connection gehört zu der Stage
+			if (connection.getSourcePort().getOwningStage() == threadableStage) {
+				Stage targetStage = connection.getTargetPort().getOwningStage();
+				Integer targetColor = new Integer(0);
+				if (colors.containsKey(targetStage)) {
+					targetColor = colors.get(targetStage);
+				}
+				if (threadableStageJobs.contains(targetStage) && targetColor.compareTo(i) != 0) { // Auch auf Farbe prüfen
+					if (connection.getCapacity() != 0) {
+						interBoundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), connection.getCapacity());
+					} else {
+						interUnboundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), 4);
+					}
+				} else {
+					if (colors.containsKey(targetStage)) {
+						throw new IllegalStateException("Crossing threads");
+					}
+					intraThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort());
+					colors.put(targetStage, i);
+				}
+				// configuration.getConnections().remove(connection); remove connection to increase performance
+				colorAndConnectStages(i, colors, targetStage);
+			}
 		}
 	}
 
