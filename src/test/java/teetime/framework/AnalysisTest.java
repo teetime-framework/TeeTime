@@ -24,7 +24,9 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.Sink;
@@ -121,4 +123,14 @@ public class AnalysisTest {
 			}
 		}
 	}
+
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+
+	@Test
+	public void testInstantiatePipesIncorrectConfiguration() {
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("Crossing threads");
+	}
+
 }
