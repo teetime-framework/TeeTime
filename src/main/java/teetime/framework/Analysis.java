@@ -238,10 +238,10 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 					}
 					intraThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort());
 					colors.put(targetStage, i);
+					colorAndConnectStages(i, colors, targetStage);
 				}
 				connected++;
 				// configuration.getConnections().remove(connection); remove connection to increase performance
-				colorAndConnectStages(i, colors, targetStage);
 			}
 		}
 	}
