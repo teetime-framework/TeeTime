@@ -5,71 +5,88 @@
 		<title>Release Notes</title>
 	</properties>
 	<body>
-		<release version="Snapshot" date="Daily basis" description="Unstable preview of oncoming versions">
+		<release version="Snapshot" date="Daily basis"
+			description="Unstable preview of oncoming versions">
 			<action dev="ntd" type="add" issue="33">
-				TeeTime automatically chooses the correct type of pipe for all connections. 
+				TeeTime automatically
+				chooses the correct type of pipe for all connections.
 			</action>
 			<action dev="ntd" type="fix" issue="93">
-				Introduced a new concept for composing stages.
+				Introduced a new concept
+				for composing stages.
 			</action>
 			<action dev="ntd" type="remove">
 				Marked Pair class as deprecated.
 			</action>
+			<action dev="ntd" type="add" issue="154">
+				All stages will be
+				initialized before starting the analysis.
+			</action>
 
 		</release>
-		
+
 		<release version="1.1.2" date="12.05.2015" description="Minor bugfixes for 1.1">
 			<action dev="chw" due-to="Nils C. Ehmke" type="fix" issue="151">
 				Solved a bug in the merger stage.
 			</action>
 		</release>
-		
+
 		<release version="1.1.1" date="06.05.2015" description="Minor bugfixes for 1.1">
 			<action dev="ntd" due-to="Nils C. Ehmke" type="fix" issue="151">
 				Solved a bug which led to a NullPointerExceptions.
 			</action>
 			<action dev="ntd" type="update" issue="102">
-				Removed deprecated methods.
+				Removed deprecated
+				methods.
 			</action>
-			
+
 		</release>
-		
+
 		<release version="1.1" date="30.04.2015" description="Second release">
 			<action dev="ntd" type="add" issue="32">
-				New concept: exception handling incl. Wiki tutorial.
+				New concept: exception
+				handling incl. Wiki tutorial.
 			</action>
 			<action due-to="Nils C. Ehmke" type="add" issue="107">
-				New concept: unit test framework for testing a single stage.
+				New concept:
+				unit test framework for testing a single stage.
 			</action>
 			<action dev="chw" type="add">
-				New class: AbstractTransformation; 
+				New class: AbstractTransformation;
 				Represents a stage with a single input and a single output port.
 			</action>
 			<action dev="chw" type="add">
 				New class: AbstractFilter;
-				Represents a stage with a single input and a single output port of the same type.
+				Represents a
+				stage with a single input and a single output port of the same type.
 			</action>
-			
-			
+
+
 			<action dev="ntd" type="update" issue="92">
-				Analysis.start() is now deprecated. Use Analysis.execute() instead.
+				Analysis.start() is now
+				deprecated. Use Analysis.execute() instead.
 			</action>
 			<action due-to="Arne J. Salveter" type="update" issue="120">
-				Renamed Stage.executeWithPorts() to Stage.executeStage().
+				Renamed
+				Stage.executeWithPorts() to Stage.executeStage().
 			</action>
 			<action dev="ntd" type="update" issue="112">
-				Removed IterableProducer. Use InitialElementProducer instead.
+				Removed
+				IterableProducer. Use InitialElementProducer instead.
 			</action>
-			
-			
+
+
 			<action dev="chw" type="fix" issue="143">
-				#143 Null values can block the analysis.
+				#143 Null values can block
+				the analysis.
 			</action>
 			<action dev="ntd" type="fix" issue="109">
-				#109 Minor bug in ObjectProducer stage.
+				#109 Minor bug in
+				ObjectProducer stage.
 			</action>
 			<action dev="ntd" type="fix" issue="75">
-				#75 Signal passing is incorrect.
+				#75 Signal passing is
+				incorrect.
 			</action>
 
 
@@ -77,10 +94,12 @@
 				Updated dependencies.
 			</action>
 			<action dev="ntd" type="update" issue="72">
-				Jar is not only published via the Central Maven Repository, but also via our CI server Jenkins.
+				Jar is not only
+				published via the Central Maven Repository, but also via our CI
+				server Jenkins.
 			</action>
 		</release>
-		
+
 		<release version="1.0" date="19.12.2014" description="Initial release">
 			<action dev="ntd" type="add" issue="66">
 				Created a new site to

@@ -25,7 +25,7 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	private static final String TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION = "Terminating thread due to the following exception: ";
 
-	private final Stage stage;
+	protected final Stage stage;
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
@@ -39,16 +39,16 @@ abstract class AbstractRunnableStage implements Runnable {
 		this.logger.debug("Executing runnable stage...");
 		boolean failed = false;
 		try {
-			beforeStageExecution(stage);
+			beforeStageExecution();
 			try {
 				do {
-					executeStage(stage);
+					executeStage();
 				} while (!stage.shouldBeTerminated());
 			} catch (StageException e) {
 				this.stage.terminate();
 				failed = true;
 			}
-			afterStageExecution(stage);
+			afterStageExecution();
 
 		} catch (RuntimeException e) {
 			this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
@@ -72,10 +72,10 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	}
 
-	protected abstract void beforeStageExecution(Stage stage) throws InterruptedException;
+	protected abstract void beforeStageExecution() throws InterruptedException;
 
-	protected abstract void executeStage(Stage stage);
+	protected abstract void executeStage();
 
-	protected abstract void afterStageExecution(Stage stage);
+	protected abstract void afterStageExecution();
 
 }

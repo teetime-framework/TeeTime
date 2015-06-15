@@ -92,6 +92,8 @@ public interface IPipe {
 
 	void waitForStartSignal() throws InterruptedException;
 
+	void waitForInitializingSignal() throws InterruptedException;
+
 	void close();
 
 }
