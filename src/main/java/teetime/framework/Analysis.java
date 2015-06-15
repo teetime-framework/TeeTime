@@ -73,7 +73,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	private final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
 	private final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
 	private final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
-	private Integer createdConnections = new Integer(0);
+	private int createdConnections = 0;
 
 	/**
 	 * Creates a new {@link Analysis} that skips validating the port connections and uses the default listener.
@@ -135,7 +135,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		}
 		initialized = true;
 
-		prototypeInstantiatePipes();
+		instantiatePipes();
 
 		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		if (threadableStageJobs.isEmpty()) {
@@ -186,21 +186,6 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	}
 
 	private void instantiatePipes() {
-		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
-		for (Connection connection : configuration.getConnections()) {
-			if (threadableStageJobs.contains(connection.getTargetPort().getOwningStage())) {
-				if (connection.getCapacity() != 0) {
-					interBoundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), connection.getCapacity());
-				} else {
-					interUnboundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), 4);
-				}
-			} else {
-				intraThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort());
-			}
-		}
-	}
-
-	private void prototypeInstantiatePipes() {
 		Integer i = new Integer(0);
 		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
 		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
