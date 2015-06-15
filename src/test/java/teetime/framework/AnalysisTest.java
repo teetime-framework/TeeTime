@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import teetime.stage.InitialElementProducer;
+import teetime.stage.InstanceOfFilter;
 import teetime.stage.basic.Sink;
 import teetime.util.StopWatch;
 
@@ -131,6 +132,22 @@ public class AnalysisTest {
 	public void testInstantiatePipesIncorrectConfiguration() {
 		thrown.expect(IllegalStateException.class);
 		thrown.expectMessage("Crossing threads");
+		InvalidTestConfig configuration = new InvalidTestConfig();
+		new Analysis<InvalidTestConfig>(configuration);
+	}
+
+	private class InvalidTestConfig extends AnalysisConfiguration {
+		public InitialElementProducer<Object> init = new InitialElementProducer<Object>();
+		public InstanceOfFilter<Object, Object> iof = new InstanceOfFilter<Object, Object>(Object.class);
+		public Sink<Object> sink = new Sink<Object>();
+
+		public InvalidTestConfig() {
+			connectPorts(init.getOutputPort(), iof.getInputPort());
+			connectPorts(iof.getMatchedOutputPort(), sink.getInputPort());
+			connectPorts(init.createOutputPort(), sink.createInputPort());
+			addThreadableStage(init);
+			addThreadableStage(iof);
+		}
 	}
 
 }

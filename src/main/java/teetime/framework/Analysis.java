@@ -210,9 +210,6 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			colorAndConnectStages(i, colors, threadableStage);
 		}
 		if (configuration.getConnections().size() != createdConnections) {
-			for (Connection<?> conn : configuration.getConnections()) {
-				System.out.println(conn.getSourcePort().getOwningStage().getId() + " connects with " + conn.getTargetPort().getOwningStage().getId());
-			}
 			throw new IllegalStateException("Remaining " + (configuration.getConnections().size() - createdConnections) + " connection(s)");
 		}
 	}
@@ -235,7 +232,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 					}
 				} else {
 					if (colors.containsKey(targetStage)) {
-						if (colors.get(targetStage).equals(i)) {
+						if (!colors.get(targetStage).equals(i)) {
 							throw new IllegalStateException("Crossing threads"); // One stage is connected to a stage of another thread (but not its "headstage")
 						}
 					}

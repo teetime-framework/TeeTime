@@ -86,7 +86,7 @@ public abstract class AnalysisConfiguration {
 	 * @return
 	 *         the pipe instance which connects the two given stages
 	 *
-	 * @deprecated since 1.2
+	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
 	 */
 	@Deprecated
 	protected static <T> IPipe connectIntraThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
@@ -101,7 +101,7 @@ public abstract class AnalysisConfiguration {
 	 * @return
 	 *         the pipe instance which connects the two given stages
 	 *
-	 * @deprecated since 1.2
+	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
 	 */
 	@Deprecated
 	protected static <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
@@ -116,7 +116,7 @@ public abstract class AnalysisConfiguration {
 	 * @return
 	 *         the pipe instance which connects the two given stages
 	 *
-	 * @deprecated since 1.2
+	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
 	 */
 	@Deprecated
 	protected static <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
@@ -132,7 +132,7 @@ public abstract class AnalysisConfiguration {
 	 *            capacity of the underlying queue
 	 * @return
 	 *
-	 * @deprecated since 1.2
+	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
 	 */
 	@Deprecated
 	protected static <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
@@ -148,7 +148,7 @@ public abstract class AnalysisConfiguration {
 	 *            capacity of the underlying queue
 	 * @return
 	 *
-	 * @deprecated since 1.2
+	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
 	 */
 	@Deprecated
 	protected static <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
