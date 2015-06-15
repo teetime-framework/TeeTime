@@ -185,6 +185,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.10.3</version>
+				<configuration>
+					<failOnError>false</failOnError>
+				</configuration>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -286,7 +289,7 @@
 					<linkXref>true</linkXref>
 					<includeTests>true</includeTests>
 					<targetJdk>${java.version}</targetJdk>
-<!-- 					<failurePriority>1</failurePriority> -->
+					<!-- <failurePriority>1</failurePriority> -->
 					<failOnViolation>true</failOnViolation>
 				</configuration>
 				<executions>
