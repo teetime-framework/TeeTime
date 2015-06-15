@@ -44,8 +44,8 @@ class YieldStrategyConfiguration extends AnalysisConfiguration {
 
 		// relay.setIdleStrategy(new YieldStrategy());
 
-		connectBoundedInterThreads(producer.getOutputPort(), relay.getInputPort());
-		connectIntraThreads(relay.getOutputPort(), collectorSink.getInputPort());
+		connectPorts(producer.getOutputPort(), relay.getInputPort());
+		connectPorts(relay.getOutputPort(), collectorSink.getInputPort());
 
 		this.collectorSink = collectorSink;
 

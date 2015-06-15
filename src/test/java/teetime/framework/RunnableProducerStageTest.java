@@ -19,8 +19,7 @@ public class RunnableProducerStageTest {
 		// Not running, but initialized
 		assertFalse(testStage.executed && !testStage.initialized);
 		runnable.triggerStartingSignal();
-
-		while (!testStage.shouldBeTerminated()) {
+		while (!(testStage.getCurrentState() == StageState.TERMINATED)) {
 			Thread.yield();
 		}
 		assertTrue(testStage.executed);

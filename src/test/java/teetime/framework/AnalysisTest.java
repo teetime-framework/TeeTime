@@ -18,14 +18,19 @@ package teetime.framework;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import teetime.stage.InitialElementProducer;
+import teetime.stage.InstanceOfFilter;
+import teetime.stage.basic.Sink;
 import teetime.util.StopWatch;
 
 public class AnalysisTest {
@@ -71,7 +76,7 @@ public class AnalysisTest {
 		public TestConfig() {
 			final InitialElementProducer<String> init = new InitialElementProducer<String>("Hello");
 			delay = new DelayAndTerminate(DELAY_IN_MS);
-			connectIntraThreads(init.getOutputPort(), delay.getInputPort());
+			connectPorts(init.getOutputPort(), delay.getInputPort());
 			addThreadableStage(init);
 		}
 	}
@@ -96,6 +101,53 @@ public class AnalysisTest {
 			finished = true;
 		}
 
+	}
+
+	@Test
+	public void testInstantiatePipes() throws Exception {
+		Analysis<AnalysisTestConfig> interAnalysis = new Analysis<AnalysisTestConfig>(new AnalysisTestConfig(true));
+		assertThat(interAnalysis.getConfiguration().init.getOwningThread(), is(not(interAnalysis.getConfiguration().sink.getOwningThread())));
+
+		Analysis<AnalysisTestConfig> intraAnalysis = new Analysis<AnalysisTestConfig>(new AnalysisTestConfig(false));
+		assertThat(intraAnalysis.getConfiguration().init.getOwningThread(), is(intraAnalysis.getConfiguration().sink.getOwningThread()));
+	}
+
+	private class AnalysisTestConfig extends AnalysisConfiguration {
+		public InitialElementProducer<Object> init = new InitialElementProducer<Object>();
+		public Sink<Object> sink = new Sink<Object>();
+
+		public AnalysisTestConfig(final boolean inter) {
+			connectPorts(init.getOutputPort(), sink.getInputPort());
+			addThreadableStage(init);
+			if (inter) {
+				addThreadableStage(sink);
+			}
+		}
+	}
+
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+
+	@Test
+	public void testInstantiatePipesIncorrectConfiguration() {
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("Crossing threads");
+		InvalidTestConfig configuration = new InvalidTestConfig();
+		new Analysis<InvalidTestConfig>(configuration);
+	}
+
+	private class InvalidTestConfig extends AnalysisConfiguration {
+		public InitialElementProducer<Object> init = new InitialElementProducer<Object>();
+		public InstanceOfFilter<Object, Object> iof = new InstanceOfFilter<Object, Object>(Object.class);
+		public Sink<Object> sink = new Sink<Object>();
+
+		public InvalidTestConfig() {
+			connectPorts(init.getOutputPort(), iof.getInputPort());
+			connectPorts(iof.getMatchedOutputPort(), sink.getInputPort());
+			connectPorts(init.createOutputPort(), sink.createInputPort());
+			addThreadableStage(init);
+			addThreadableStage(iof);
+		}
 	}
 
 }

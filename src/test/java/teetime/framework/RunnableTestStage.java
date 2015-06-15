@@ -1,6 +1,5 @@
 package teetime.framework;
 
-
 class RunnableTestStage extends AbstractProducerStage<Object> {
 
 	boolean executed, initialized;

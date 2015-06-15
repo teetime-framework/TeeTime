@@ -15,14 +15,15 @@
  */
 package teetime.framework;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
+import teetime.util.Connection;
 
 /**
  * Represents a configuration of connected stages, which is needed to run a analysis.
@@ -30,8 +31,10 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
  */
 public abstract class AnalysisConfiguration {
 
-	private final List<Stage> threadableStageJobs = new LinkedList<Stage>();
+	private final Set<Stage> threadableStageJobs = new HashSet<Stage>();
+	private final Set<Connection<?>> connections = new HashSet<Connection<?>>();
 
+	@SuppressWarnings("deprecation")
 	private static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
 
 	/**
@@ -47,7 +50,7 @@ public abstract class AnalysisConfiguration {
 	 */
 	private final static IPipeFactory interUnboundedThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, true);
 
-	List<Stage> getThreadableStageJobs() {
+	Set<Stage> getThreadableStageJobs() {
 		return this.threadableStageJobs;
 	}
 
@@ -62,13 +65,30 @@ public abstract class AnalysisConfiguration {
 	}
 
 	/**
+	 * Execute this method, to add a CompositeStage to the configuration, which should be executed in a own thread.
+	 *
+	 * @param stage
+	 *            A arbitrary CompositeStage, which will be added to the configuration and executed in a thread.
+	 */
+	protected void addThreadableStage(final AbstractCompositeStage stage) {
+		this.threadableStageJobs.add(stage.getFirstStage());
+		this.connections.addAll(stage.getConnections());
+		for (Stage threadableStage : stage.getThreadableStageJobs()) {
+			this.addThreadableStage(threadableStage);
+		}
+	}
+
+	/**
 	 * Connects two stages with a pipe within the same thread.
 	 *
 	 * @param sourcePort
 	 * @param targetPort
 	 * @return
 	 *         the pipe instance which connects the two given stages
+	 *
+	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
 	 */
+	@Deprecated
 	protected static <T> IPipe connectIntraThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return intraThreadFactory.create(sourcePort, targetPort);
 	}
@@ -80,7 +100,10 @@ public abstract class AnalysisConfiguration {
 	 * @param targetPort
 	 * @return
 	 *         the pipe instance which connects the two given stages
+	 *
+	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
 	 */
+	@Deprecated
 	protected static <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return interBoundedThreadFactory.create(sourcePort, targetPort);
 	}
@@ -92,7 +115,10 @@ public abstract class AnalysisConfiguration {
 	 * @param targetPort
 	 * @return
 	 *         the pipe instance which connects the two given stages
+	 *
+	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
 	 */
+	@Deprecated
 	protected static <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return interUnboundedThreadFactory.create(sourcePort, targetPort);
 	}
@@ -105,7 +131,10 @@ public abstract class AnalysisConfiguration {
 	 * @param capacity
 	 *            capacity of the underlying queue
 	 * @return
+	 *
+	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
 	 */
+	@Deprecated
 	protected static <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		return interBoundedThreadFactory.create(sourcePort, targetPort, capacity);
 	}
@@ -118,9 +147,47 @@ public abstract class AnalysisConfiguration {
 	 * @param capacity
 	 *            capacity of the underlying queue
 	 * @return
+	 *
+	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
 	 */
+	@Deprecated
 	protected static <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		return interUnboundedThreadFactory.create(sourcePort, targetPort, capacity);
+	}
+
+	/**
+	 * Connects two ports with a pipe.
+	 *
+	 * @param sourcePort
+	 *            port from the sending stage
+	 * @param targetPort
+	 *            port from the receiving stage
+	 */
+	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		connectPorts(sourcePort, targetPort, 4);
+	}
+
+	/**
+	 * Connects to ports with a pipe of a certain capacity
+	 *
+	 * @param sourcePort
+	 *            port from the sending stage
+	 * @param targetPort
+	 *            port from the receiving stage
+	 * @param capacity
+	 *            the pipe is set to this capacity, if the value is greater than 0. If it is 0, than the pipe is unbounded, thus growing of the pipe is enabled.
+	 */
+	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		connections.add(new Connection<T>(sourcePort, targetPort, capacity));
+	}
+
+	/**
+	 * Returns a list of pairs, which describe the connections among all stages.
+	 *
+	 * @return a list of pairs of Out- and InputPorts, which are connected
+	 */
+	protected Set<Connection<?>> getConnections() {
+		return connections;
 	}
 
 }

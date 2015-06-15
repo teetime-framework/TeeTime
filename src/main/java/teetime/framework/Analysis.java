@@ -17,8 +17,10 @@ package teetime.framework;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -28,9 +30,14 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.IExceptionListenerFactory;
 import teetime.framework.exceptionHandling.IgnoringExceptionListenerFactory;
+import teetime.framework.pipe.IPipeFactory;
+import teetime.framework.pipe.SingleElementPipeFactory;
+import teetime.framework.pipe.SpScPipeFactory;
+import teetime.framework.pipe.UnboundedSpScPipeFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
+import teetime.util.Connection;
 import teetime.util.Pair;
 
 /**
@@ -39,6 +46,8 @@ import teetime.util.Pair;
  * in which the adding and configuring of stages takes place.
  * To start the analysis {@link #executeBlocking()} needs to be executed.
  * This class will automatically create threads and join them without any further commitment.
+ *
+ * @author Christian Wulf, Nelson Tavares de Sousa
  *
  * @param <T>
  *            the type of the {@link AnalysisConfiguration}
@@ -58,6 +67,13 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	private final List<Thread> infiniteProducerThreads = new LinkedList<Thread>();
 
 	private final Collection<Pair<Thread, Throwable>> exceptions = new ConcurrentLinkedQueue<Pair<Thread, Throwable>>();
+
+	private boolean initialized;
+
+	private final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
+	private final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
+	private final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
+	private int createdConnections = 0;
 
 	private final List<RunnableProducerStage> producerRunnables = new LinkedList<RunnableProducerStage>();
 
@@ -98,7 +114,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 	// BETTER validate concurrently
 	private void validateStages() {
-		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
+		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		for (Stage stage : threadableStageJobs) {
 			// // portConnectionValidator.validate(stage);
 			// }
@@ -117,43 +133,16 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	 */
 	private final void init() {
 
-		final List<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
+		instantiatePipes();
+
+		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
 		if (threadableStageJobs.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
 
 		for (Stage stage : threadableStageJobs) {
-			final Thread thread;
+			final Thread thread = initializeThreadableStages(stage);
 
-			final TerminationStrategy terminationStrategy = stage.getTerminationStrategy();
-			switch (terminationStrategy) {
-			case BY_SIGNAL: {
-				final RunnableConsumerStage runnable = new RunnableConsumerStage(stage);
-				thread = createThread(runnable, stage.getId());
-				this.consumerThreads.add(thread);
-				break;
-			}
-			case BY_SELF_DECISION: {
-				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
-				producerRunnables.add(runnable);
-				thread = createThread(runnable, stage.getId());
-				this.finiteProducerThreads.add(thread);
-				InitializingSignal initializingSignal = new InitializingSignal();
-				stage.onSignal(initializingSignal, null);
-				break;
-			}
-			case BY_INTERRUPT: {
-				final RunnableProducerStage runnable = new RunnableProducerStage(stage);
-				producerRunnables.add(runnable);
-				thread = createThread(runnable, stage.getId());
-				InitializingSignal initializingSignal = new InitializingSignal();
-				stage.onSignal(initializingSignal, null);
-				this.infiniteProducerThreads.add(thread);
-				break;
-			}
-			default:
-				throw new IllegalStateException("Unhandled termination strategy: " + terminationStrategy);
-			}
 			final Set<Stage> intraStages = traverseIntraStages(stage);
 			final AbstractExceptionListener newListener = factory.createInstance();
 			initializeIntraStages(intraStages, thread, newListener);
@@ -165,6 +154,85 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 		sendInitializingSignal();
 
+	}
+
+	private Thread initializeThreadableStages(final Stage stage) {
+		final Thread thread;
+
+		final TerminationStrategy terminationStrategy = stage.getTerminationStrategy();
+		switch (terminationStrategy) {
+		case BY_SIGNAL: {
+			final RunnableConsumerStage runnable = new RunnableConsumerStage(stage);
+			thread = createThread(runnable, stage.getId());
+			this.consumerThreads.add(thread);
+			break;
+		}
+		case BY_SELF_DECISION: {
+			final RunnableProducerStage runnable = new RunnableProducerStage(stage);
+			producerRunnables.add(runnable);
+			thread = createThread(runnable, stage.getId());
+			this.finiteProducerThreads.add(thread);
+			InitializingSignal initializingSignal = new InitializingSignal();
+			stage.onSignal(initializingSignal, null);
+			break;
+		}
+		case BY_INTERRUPT: {
+			final RunnableProducerStage runnable = new RunnableProducerStage(stage);
+			producerRunnables.add(runnable);
+			thread = createThread(runnable, stage.getId());
+			InitializingSignal initializingSignal = new InitializingSignal();
+			stage.onSignal(initializingSignal, null);
+			this.infiniteProducerThreads.add(thread);
+			break;
+		}
+		default:
+			throw new IllegalStateException("Unhandled termination strategy: " + terminationStrategy);
+		}
+		return thread;
+	}
+
+	private void instantiatePipes() {
+		Integer i = new Integer(0);
+		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
+		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
+		for (Stage threadableStage : threadableStageJobs) {
+			i++;
+			colors.put(threadableStage, i); // Markiere den threadHead
+			colorAndConnectStages(i, colors, threadableStage);
+		}
+		if (configuration.getConnections().size() != createdConnections) {
+			throw new IllegalStateException("Remaining " + (configuration.getConnections().size() - createdConnections) + " connection(s)");
+		}
+	}
+
+	public void colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage) {
+		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
+		for (Connection connection : configuration.getConnections()) {
+			if (connection.getSourcePort().getOwningStage() == threadableStage) {
+				Stage targetStage = connection.getTargetPort().getOwningStage();
+				Integer targetColor = new Integer(0);
+				if (colors.containsKey(targetStage)) {
+					targetColor = colors.get(targetStage);
+				}
+				if (threadableStageJobs.contains(targetStage) && targetColor.compareTo(i) != 0) {
+					if (connection.getCapacity() != 0) {
+						interBoundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), connection.getCapacity());
+					} else {
+						interUnboundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), 4);
+					}
+				} else {
+					if (colors.containsKey(targetStage)) {
+						if (!colors.get(targetStage).equals(i)) {
+							throw new IllegalStateException("Crossing threads"); // One stage is connected to a stage of another thread (but not its "headstage")
+						}
+					}
+					intraThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort());
+					colors.put(targetStage, i);
+					colorAndConnectStages(i, colors, targetStage);
+				}
+				createdConnections++;
+			}
+		}
 	}
 
 	private Thread createThread(final AbstractRunnableStage runnable, final String name) {

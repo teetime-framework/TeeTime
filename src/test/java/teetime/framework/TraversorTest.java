@@ -15,7 +15,10 @@
  */
 package teetime.framework;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.util.HashSet;
@@ -23,7 +26,6 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import teetime.framework.pipe.IPipe;
 import teetime.stage.CountingMapMerger;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.distributor.Distributor;
@@ -40,12 +42,14 @@ public class TraversorTest {
 	@Test
 	public void traverse() {
 		TestConfiguration tc = new TestConfiguration();
+		new Analysis<TestConfiguration>(tc);
 		traversor.traverse(tc.init);
 		Set<Stage> comparingStages = new HashSet<Stage>();
 		comparingStages.add(tc.init);
 		comparingStages.add(tc.f2b);
 		comparingStages.add(tc.distributor);
-		assertTrue(comparingStages.equals(traversor.getVisitedStage()));
+		assertThat(tc.distributor.getOwningThread(), is(not(tc.distributor.getOutputPorts()[0].pipe.getTargetPort().getOwningStage().getOwningThread())));
+		assertEquals(comparingStages, traversor.getVisitedStage());
 	}
 
 	// WordCounterConfiguration
@@ -67,8 +71,8 @@ public class TraversorTest {
 			// CountingMapMerger (already as field)
 
 			// Connecting the stages of the first part of the config
-			connectIntraThreads(init.getOutputPort(), f2b.getInputPort());
-			connectIntraThreads(f2b.getOutputPort(), distributor.getInputPort());
+			connectPorts(init.getOutputPort(), f2b.getInputPort());
+			connectPorts(f2b.getOutputPort(), distributor.getInputPort());
 
 			// Middle part... multiple instances of WordCounter are created and connected to the merger and distrubuter stages
 			for (int i = 0; i < threads; i++) {
@@ -76,15 +80,15 @@ public class TraversorTest {
 				final WordCounter wc = new WordCounter();
 				// intraFact.create(inputPortSizePrinter.getOutputPort(), wc.getInputPort());
 
-				final IPipe distributorPipe = connectBoundedInterThreads(distributor.getNewOutputPort(), wc.getInputPort(), 10000);
-				final IPipe mergerPipe = connectBoundedInterThreads(wc.getOutputPort(), merger.getNewInputPort());
+				connectPorts(distributor.getNewOutputPort(), wc.getInputPort());
+				connectPorts(wc.getOutputPort(), merger.getNewInputPort());
 				// Add WordCounter as a threadable stage, so it runs in its own thread
 				addThreadableStage(wc);
 
 			}
 
 			// Connect the stages of the last part
-			connectIntraThreads(merger.getOutputPort(), result.getInputPort());
+			connectPorts(merger.getOutputPort(), result.getInputPort());
 
 			// Add the first and last part to the threadable stages
 			addThreadableStage(init);

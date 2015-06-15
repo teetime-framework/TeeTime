@@ -130,9 +130,9 @@ public class InstanceOfFilterTest {
 			CollectorSink<Clazz> clazzCollector = new CollectorSink<Clazz>();
 			CollectorSink<Object> mismatchedCollector = new CollectorSink<Object>();
 
-			connectIntraThreads(elementProducer.getOutputPort(), instanceOfFilter.getInputPort());
-			connectIntraThreads(instanceOfFilter.getMatchedOutputPort(), clazzCollector.getInputPort());
-			connectIntraThreads(instanceOfFilter.getMismatchedOutputPort(), mismatchedCollector.getInputPort());
+			connectPorts(elementProducer.getOutputPort(), instanceOfFilter.getInputPort());
+			connectPorts(instanceOfFilter.getMatchedOutputPort(), clazzCollector.getInputPort());
+			connectPorts(instanceOfFilter.getMismatchedOutputPort(), mismatchedCollector.getInputPort());
 
 			addThreadableStage(elementProducer);
 		}
