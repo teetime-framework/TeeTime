@@ -202,14 +202,13 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	public void colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage) {
 		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
 		for (Connection connection : configuration.getConnections()) {
-			// Die Connection gehört zu der Stage
 			if (connection.getSourcePort().getOwningStage() == threadableStage) {
 				Stage targetStage = connection.getTargetPort().getOwningStage();
 				Integer targetColor = new Integer(0);
 				if (colors.containsKey(targetStage)) {
 					targetColor = colors.get(targetStage);
 				}
-				if (threadableStageJobs.contains(targetStage) && targetColor.compareTo(i) != 0) { // Auch auf Farbe prüfen
+				if (threadableStageJobs.contains(targetStage) && targetColor.compareTo(i) != 0) {
 					if (connection.getCapacity() != 0) {
 						interBoundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), connection.getCapacity());
 					} else {
