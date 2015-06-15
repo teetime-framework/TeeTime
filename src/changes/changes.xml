@@ -6,7 +6,9 @@
 	</properties>
 	<body>
 		<release version="Snapshot" date="Daily basis" description="Unstable preview of oncoming versions">
-			
+			<action dev="ntd" type="add" issue="154">
+				All stages will be initialized before starting the analysis.
+			</action>
 
 		</release>
 		

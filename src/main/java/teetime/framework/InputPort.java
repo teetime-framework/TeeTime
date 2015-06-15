@@ -38,4 +38,8 @@ public final class InputPort<T> extends AbstractPort<T> {
 		pipe.waitForStartSignal();
 	}
 
+	public void waitForInitializingSignal() throws InterruptedException {
+		pipe.waitForInitializingSignal();
+	};
+
 }
