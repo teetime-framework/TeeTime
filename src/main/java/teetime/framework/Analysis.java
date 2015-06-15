@@ -31,6 +31,7 @@ import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.IExceptionListenerFactory;
 import teetime.framework.exceptionHandling.IgnoringExceptionListenerFactory;
 import teetime.framework.pipe.IPipeFactory;
+import teetime.framework.pipe.InstantiationPipe;
 import teetime.framework.pipe.SingleElementPipeFactory;
 import teetime.framework.pipe.SpScPipeFactory;
 import teetime.framework.pipe.UnboundedSpScPipeFactory;
@@ -200,38 +201,44 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			colors.put(threadableStage, i); // Markiere den threadHead
 			colorAndConnectStages(i, colors, threadableStage);
 		}
-		if (configuration.getConnections().size() != createdConnections) {
-			throw new IllegalStateException("Remaining " + (configuration.getConnections().size() - createdConnections) + " connection(s)");
-		}
+		// if (configuration.getConnections().size() != createdConnections) {
+		// throw new IllegalStateException("Remaining " + (configuration.getConnections().size() - createdConnections) + " connection(s)");
+		// }
 	}
 
 	public void colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage) {
 		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
-		for (Connection connection : configuration.getConnections()) {
-			if (connection.getSourcePort().getOwningStage() == threadableStage) {
-				Stage targetStage = connection.getTargetPort().getOwningStage();
-				Integer targetColor = new Integer(0);
-				if (colors.containsKey(targetStage)) {
-					targetColor = colors.get(targetStage);
-				}
-				if (threadableStageJobs.contains(targetStage) && targetColor.compareTo(i) != 0) {
-					if (connection.getCapacity() != 0) {
-						interBoundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), connection.getCapacity());
-					} else {
-						interUnboundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), 4);
-					}
-				} else {
+		for (OutputPort outputPort : threadableStage.getOutputPorts()) {
+			if (outputPort.pipe != null) {
+				InstantiationPipe pipe;
+				if (outputPort.pipe instanceof InstantiationPipe) {
+					pipe = (InstantiationPipe) outputPort.pipe;
+					Connection connection = new Connection(outputPort, pipe.getTargetPort(), pipe.getCapacity());
+					Stage targetStage = pipe.getTargetPort().getOwningStage();
+					Integer targetColor = new Integer(0);
 					if (colors.containsKey(targetStage)) {
-						if (!colors.get(targetStage).equals(i)) {
-							throw new IllegalStateException("Crossing threads"); // One stage is connected to a stage of another thread (but not its "headstage")
-						}
+						targetColor = colors.get(targetStage);
 					}
-					intraThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort());
-					colors.put(targetStage, i);
-					colorAndConnectStages(i, colors, targetStage);
+					if (threadableStageJobs.contains(targetStage) && targetColor.compareTo(i) != 0) {
+						if (pipe.getCapacity() != 0) {
+							interBoundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), connection.getCapacity());
+						} else {
+							interUnboundedThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort(), 4);
+						}
+					} else {
+						if (colors.containsKey(targetStage)) {
+							if (!colors.get(targetStage).equals(i)) {
+								throw new IllegalStateException("Crossing threads"); // One stage is connected to a stage of another thread (but not its "headstage")
+							}
+						}
+						intraThreadPipeFactory.create(connection.getSourcePort(), connection.getTargetPort());
+						colors.put(targetStage, i);
+						colorAndConnectStages(i, colors, targetStage);
+					}
+					createdConnections++;
 				}
-				createdConnections++;
 			}
+
 		}
 	}
 
