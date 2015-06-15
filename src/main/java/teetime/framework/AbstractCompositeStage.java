@@ -15,17 +15,14 @@
  */
 package teetime.framework;
 
-
 /**
  * Represents a minimal stage that composes several other stages.
  *
  * @since 1.2
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
- * @deprecated This concept is not yet implemented in a correct way. As soon as the concept is stable, we will remove the deprecated tag.
  *
  */
-@Deprecated
 public abstract class AbstractCompositeStage extends AnalysisConfiguration {
 
 	protected abstract Stage getFirstStage();
