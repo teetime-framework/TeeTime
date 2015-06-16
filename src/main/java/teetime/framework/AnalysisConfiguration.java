@@ -82,7 +82,11 @@ public abstract class AnalysisConfiguration {
 	 * Connects two stages with a pipe within the same thread.
 	 *
 	 * @param sourcePort
+	 *            {@link OutputPort} of the sending stage
 	 * @param targetPort
+	 *            {@link InputPort} of the sending stage
+	 * @param <T>
+	 *            the type of elements to be sent
 	 * @return
 	 *         the pipe instance which connects the two given stages
 	 *
@@ -97,7 +101,11 @@ public abstract class AnalysisConfiguration {
 	 * Connects two stages with a bounded pipe within two separate threads.
 	 *
 	 * @param sourcePort
+	 *            {@link OutputPort} of the sending stage
 	 * @param targetPort
+	 *            {@link InputPort} of the sending stage
+	 * @param <T>
+	 *            the type of elements to be sent
 	 * @return
 	 *         the pipe instance which connects the two given stages
 	 *
@@ -112,7 +120,11 @@ public abstract class AnalysisConfiguration {
 	 * Connects two stages with a unbounded pipe within two separate threads.
 	 *
 	 * @param sourcePort
+	 *            {@link OutputPort} of the sending stage
 	 * @param targetPort
+	 *            {@link InputPort} of the sending stage
+	 * @param <T>
+	 *            the type of elements to be sent
 	 * @return
 	 *         the pipe instance which connects the two given stages
 	 *
@@ -127,10 +139,15 @@ public abstract class AnalysisConfiguration {
 	 * Connects two stages with a bounded pipe within two separate threads.
 	 *
 	 * @param sourcePort
+	 *            {@link OutputPort} of the sending stage
 	 * @param targetPort
+	 *            {@link InputPort} of the sending stage
 	 * @param capacity
 	 *            capacity of the underlying queue
+	 * @param <T>
+	 *            the type of elements to be sent
 	 * @return
+	 *         the pipe instance which connects the two given stages
 	 *
 	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
 	 */
@@ -143,10 +160,15 @@ public abstract class AnalysisConfiguration {
 	 * Connects two stages with a unbounded pipe within two separate threads.
 	 *
 	 * @param sourcePort
+	 *            {@link OutputPort} of the sending stage
 	 * @param targetPort
+	 *            {@link InputPort} of the sending stage
 	 * @param capacity
 	 *            capacity of the underlying queue
+	 * @param <T>
+	 *            the type of elements to be sent
 	 * @return
+	 *         the pipe instance which connects the two given stages
 	 *
 	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
 	 */
@@ -156,12 +178,14 @@ public abstract class AnalysisConfiguration {
 	}
 
 	/**
-	 * Connects two ports with a pipe.
+	 * Connects two ports with a pipe with a default capacity of currently 4
 	 *
 	 * @param sourcePort
-	 *            port from the sending stage
+	 *            {@link OutputPort} of the sending stage
 	 * @param targetPort
-	 *            port from the receiving stage
+	 *            {@link InputPort} of the sending stage
+	 * @param <T>
+	 *            the type of elements to be sent
 	 */
 	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		connectPorts(sourcePort, targetPort, 4);
@@ -171,11 +195,13 @@ public abstract class AnalysisConfiguration {
 	 * Connects to ports with a pipe of a certain capacity
 	 *
 	 * @param sourcePort
-	 *            port from the sending stage
+	 *            {@link OutputPort} of the sending stage
 	 * @param targetPort
-	 *            port from the receiving stage
+	 *            {@link InputPort} of the sending stage
 	 * @param capacity
 	 *            the pipe is set to this capacity, if the value is greater than 0. If it is 0, than the pipe is unbounded, thus growing of the pipe is enabled.
+	 * @param <T>
+	 *            the type of elements to be sent
 	 */
 	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		connections.add(new Connection<T>(sourcePort, targetPort, capacity));

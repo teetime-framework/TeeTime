@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * To get a PipeFactory instance, call {@link #getPipeFactory(ThreadCommunication, PipeOrdering, boolean)}.
  *
- * @Deprecated since 1.2
+ * @deprecated since 1.2
  */
 @Deprecated
 public final class PipeFactoryRegistry {

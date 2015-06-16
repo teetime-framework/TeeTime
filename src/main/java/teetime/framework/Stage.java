@@ -131,6 +131,9 @@ public abstract class Stage {
 	/**
 	 * Event that is triggered within the initialization phase of the analysis.
 	 * It does not count to the execution time.
+	 *
+	 * @throws Exception
+	 *             an arbitrary exception if an error occurs during the initialization
 	 */
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public abstract void onInitializing() throws Exception;

@@ -21,8 +21,9 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.Stage;
 
 /**
- * Represent a minimalistic StageExceptionListener. Listener which extend from this one, must a least implement this functionality.
- * This abstract class provides a Logger {@link #logger} and a method to terminate the threads execution {@link #terminateExecution()}.
+ * Represents a minimalistic StageExceptionListener.
+ * Listener which extend from this one, must a least implement this functionality.
+ * This abstract class provides a Logger {@link #logger} and the method {@link #onStageException(Exception, Stage)} which is called on every raised exception.
  */
 public abstract class AbstractExceptionListener {
 

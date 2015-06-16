@@ -15,6 +15,15 @@
  */
 package teetime.framework;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ * @param <T>
+ *            the type of elements to be sent
+ *
+ * @since 1.0
+ */
 public final class InputPort<T> extends AbstractPort<T> {
 
 	InputPort(final Class<T> type, final Stage owningStage) {
