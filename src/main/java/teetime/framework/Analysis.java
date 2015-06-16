@@ -17,10 +17,8 @@ package teetime.framework;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -30,11 +28,6 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.IExceptionListenerFactory;
 import teetime.framework.exceptionHandling.IgnoringExceptionListenerFactory;
-import teetime.framework.pipe.IPipeFactory;
-import teetime.framework.pipe.InstantiationPipe;
-import teetime.framework.pipe.SingleElementPipeFactory;
-import teetime.framework.pipe.SpScPipeFactory;
-import teetime.framework.pipe.UnboundedSpScPipeFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
@@ -67,11 +60,6 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	private final List<Thread> infiniteProducerThreads = new LinkedList<Thread>();
 
 	private final Collection<Pair<Thread, Throwable>> exceptions = new ConcurrentLinkedQueue<Pair<Thread, Throwable>>();
-
-	private final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
-	private final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
-	private final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
-	private int createdConnections = 0;
 
 	private final List<RunnableProducerStage> producerRunnables = new LinkedList<RunnableProducerStage>();
 
@@ -112,7 +100,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 	// BETTER validate concurrently
 	private void validateStages() {
-		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
+		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStages();
 		for (Stage stage : threadableStageJobs) {
 			// // portConnectionValidator.validate(stage);
 			// }
@@ -131,9 +119,9 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	 */
 	private final void init() {
 
-		instantiatePipes();
+		AnalysisInstantiation.instantiatePipes(configuration);
 
-		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStageJobs();
+		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStages();
 		if (threadableStageJobs.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
@@ -187,53 +175,6 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 			throw new IllegalStateException("Unhandled termination strategy: " + terminationStrategy);
 		}
 		return thread;
-	}
-
-	private void instantiatePipes() {
-		Integer i = new Integer(0);
-		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
-		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
-		for (Stage threadableStage : threadableStageJobs) {
-			i++;
-			colors.put(threadableStage, i);
-			colorAndConnectStages(i, colors, threadableStage);
-		}
-		LOGGER.debug("Created " + createdConnections + "connections");
-	}
-
-	@SuppressWarnings("rawtypes")
-	private void colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage) {
-		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
-		for (OutputPort outputPort : threadableStage.getOutputPorts()) {
-			if (outputPort.pipe != null) {
-				if (outputPort.pipe instanceof InstantiationPipe) {
-					InstantiationPipe pipe = (InstantiationPipe) outputPort.pipe;
-					Stage targetStage = pipe.getTargetPort().getOwningStage();
-					Integer targetColor = new Integer(0);
-					if (colors.containsKey(targetStage)) {
-						targetColor = colors.get(targetStage);
-					}
-					if (threadableStageJobs.contains(targetStage) && targetColor.compareTo(i) != 0) {
-						if (pipe.getCapacity() != 0) {
-							interBoundedThreadPipeFactory.create(outputPort, pipe.getTarget(), pipe.getCapacity());
-						} else {
-							interUnboundedThreadPipeFactory.create(outputPort, pipe.getTarget(), 4);
-						}
-					} else {
-						if (colors.containsKey(targetStage)) {
-							if (!colors.get(targetStage).equals(i)) {
-								throw new IllegalStateException("Crossing threads"); // One stage is connected to a stage of another thread (but not its "headstage")
-							}
-						}
-						intraThreadPipeFactory.create(outputPort, pipe.getTarget());
-						colors.put(targetStage, i);
-						colorAndConnectStages(i, colors, targetStage);
-					}
-					createdConnections++;
-				}
-			}
-
-		}
 	}
 
 	private Thread createThread(final AbstractRunnableStage runnable, final String name) {
@@ -357,7 +298,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		if (!executionInterrupted) {
 			executionInterrupted = true;
 			LOGGER.warn("Thread " + thread + " was interrupted. Terminating analysis now.");
-			for (Stage stage : configuration.getThreadableStageJobs()) {
+			for (Stage stage : configuration.getThreadableStages()) {
 				if (stage.getOwningThread() != thread) {
 					if (stage.getTerminationStrategy() == TerminationStrategy.BY_SELF_DECISION) {
 						stage.terminate();

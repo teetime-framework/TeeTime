@@ -49,7 +49,7 @@ public abstract class AnalysisConfiguration {
 	 */
 	private final static IPipeFactory interUnboundedThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, true);
 
-	Set<Stage> getThreadableStageJobs() {
+	Set<Stage> getThreadableStages() {
 		return this.threadableStageJobs;
 	}
 
@@ -71,7 +71,7 @@ public abstract class AnalysisConfiguration {
 	 */
 	protected final void addThreadableStage(final AbstractCompositeStage stage) {
 		this.threadableStageJobs.add(stage.getFirstStage());
-		for (Stage threadableStage : stage.getThreadableStageJobs()) {
+		for (Stage threadableStage : stage.getThreadableStages()) {
 			this.addThreadableStage(threadableStage);
 		}
 	}

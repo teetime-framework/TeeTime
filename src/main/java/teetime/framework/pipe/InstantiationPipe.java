@@ -15,17 +15,16 @@
  */
 package teetime.framework.pipe;
 
-import teetime.framework.AbstractIntraThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.signal.ISignal;
 
-public class InstantiationPipe<T> extends AbstractIntraThreadPipe {
+public class InstantiationPipe<T> implements IPipe {
 
 	private final InputPort<T> target;
 	private final int capacity;
 
 	public InstantiationPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		super(sourcePort, targetPort);
 		this.target = targetPort;
 		this.capacity = capacity;
 		sourcePort.setPipe(this);
@@ -35,28 +34,88 @@ public class InstantiationPipe<T> extends AbstractIntraThreadPipe {
 		return capacity;
 	}
 
-	public InputPort<T> getTarget() {
-		return target;
+	@Override
+	public boolean add(final Object element) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
-	public boolean add(final Object element) {
-		throw new IllegalStateException("Should not be called");
+	public boolean addNonBlocking(final Object element) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		throw new IllegalStateException("Should not be called");
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
 	public int size() {
-		throw new IllegalStateException("Should not be called");
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
 	public Object removeLast() {
-		throw new IllegalStateException("Should not be called");
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InputPort<?> getTargetPort() {
+		// TODO Auto-generated method stub
+		return this.target;
+	}
+
+	@Override
+	public void sendSignal(final ISignal signal) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void reportNewElement() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean isClosed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean hasMore() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void waitForStartSignal() throws InterruptedException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void waitForInitializingSignal() throws InterruptedException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+
 	}
 
 }
