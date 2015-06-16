@@ -146,6 +146,9 @@ public abstract class AbstractStage extends Stage {
 	/**
 	 * Creates and adds an InputPort to the stage
 	 *
+	 * @param type
+	 *            class of elements to be received
+	 *
 	 * @param <T>
 	 *            the type of elements to be received
 	 *
@@ -176,9 +179,12 @@ public abstract class AbstractStage extends Stage {
 	/**
 	 * Creates and adds an OutputPort to the stage
 	 *
+	 * @param type
+	 *            class of elements to be sent
+	 *
 	 * @param <T>
 	 *            the type of elements to be sent
-	 * 
+	 *
 	 * @return Newly added OutputPort
 	 */
 	protected <T> OutputPort<T> createOutputPort(final Class<T> type) {

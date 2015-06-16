@@ -23,11 +23,6 @@ import java.util.Comparator;
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
-/**
- * @author Christian Wulf
- * 
- * @since 1.10
- */
 public final class Directory2FilesFilter extends AbstractConsumerStage<File> {
 
 	private final OutputPort<File> outputPort = this.createOutputPort();
@@ -35,31 +30,19 @@ public final class Directory2FilesFilter extends AbstractConsumerStage<File> {
 	private FileFilter filter;
 	private Comparator<File> fileComparator;
 
-	/**
-	 * @since 1.10
-	 */
 	public Directory2FilesFilter(final FileFilter fileFilter) {
 		this.setFilter(fileFilter);
 	}
 
-	/**
-	 * @since 1.10
-	 */
 	public Directory2FilesFilter(final Comparator<File> fileComparator) {
 		this.setFileComparator(fileComparator);
 	}
 
-	/**
-	 * @since 1.10
-	 */
 	public Directory2FilesFilter(final FileFilter fileFilter, final Comparator<File> fileComparator) {
 		this.setFilter(fileFilter);
 		this.setFileComparator(fileComparator);
 	}
 
-	/**
-	 * @since 1.10
-	 */
 	public Directory2FilesFilter() {
 		super();
 	}

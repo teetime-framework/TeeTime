@@ -38,6 +38,7 @@ public final class ClassForNameResolver<T> {
 	 *
 	 * @return A {@link Class} instance corresponding to the given name, if it exists.
 	 * @throws ClassNotFoundException
+	 *             thrown iff no class was found for the given <b>classname</b>
 	 *
 	 */
 	public final Class<? extends T> classForName(final String classname) throws ClassNotFoundException {

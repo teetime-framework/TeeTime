@@ -32,6 +32,9 @@ public interface IPipeFactory {
 	 *            OutputPort of the stage, which produces data.
 	 * @param targetPort
 	 *            Input port of the receiving stage.
+	 * @param <T>
+	 *            type of elements which traverse this pipe
+	 *
 	 * @return The connecting pipe.
 	 */
 	<T> IPipe create(OutputPort<? extends T> sourcePort, InputPort<T> targetPort);
@@ -45,6 +48,8 @@ public interface IPipeFactory {
 	 *            Input port of the receiving stage.
 	 * @param capacity
 	 *            Number of elements the pipe can carry.
+	 * @param <T>
+	 *            type of elements which traverse this pipe
 	 * @return The connecting pipe.
 	 */
 	<T> IPipe create(OutputPort<? extends T> sourcePort, InputPort<T> targetPort, int capacity);
@@ -60,7 +65,7 @@ public interface IPipeFactory {
 	PipeOrdering getOrdering();
 
 	/**
-	 * @return Wether or not the created pipes are growable
+	 * @return Whether or not the created pipes are growable
 	 */
 	boolean isGrowable();
 

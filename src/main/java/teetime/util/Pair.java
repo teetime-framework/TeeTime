@@ -16,10 +16,6 @@
 package teetime.util;
 
 /**
- *
- * @param <F>
- * @param <S>
- *
  * @deprecated since 1.2
  */
 @Deprecated

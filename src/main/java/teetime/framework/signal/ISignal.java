@@ -24,13 +24,6 @@ public interface ISignal {
 
 	void trigger(Stage stage);
 
-	/**
-	 * Used by the merger only (so far)
-	 *
-	 * @param receivedInputPorts
-	 * @param allInputPorts
-	 * @param stageState
-	 * @return <code>true</code> iff the signal may be triggered, <code>false</code> otherwise.
-	 */
+	// Only used by the merger so far
 	boolean mayBeTriggered(Set<InputPort<?>> receivedInputPorts, InputPort<?>[] allInputPorts);
 }

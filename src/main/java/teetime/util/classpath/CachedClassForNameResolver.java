@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentMap;
  *            the type that is used to cast a type that was found in the class path
  *
  * @author Christian Wulf
- * @since 1.11
  */
 public final class CachedClassForNameResolver<T> {
 
@@ -43,6 +42,7 @@ public final class CachedClassForNameResolver<T> {
 	 * @return A {@link Class} instance corresponding to the given name, if it exists.
 	 *
 	 * @throws ClassNotFoundException
+	 *             thrown iff no class was found for the given <b>classname</b>
 	 */
 	public final Class<? extends T> classForName(final String classname) throws ClassNotFoundException {
 		Class<? extends T> clazz = this.cachedClasses.get(classname);

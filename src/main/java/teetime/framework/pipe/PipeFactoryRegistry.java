@@ -93,7 +93,7 @@ public final class PipeFactoryRegistry {
 	}
 
 	/**
-	 * Adds a new PipeFactory to the registry.<br />
+	 * Adds a new PipeFactory to the registry.
 	 * The new PipeFactory will be automatically selected by the Registry, if it is the most suitable Factory
 	 * corresponding to the requirements.
 	 *

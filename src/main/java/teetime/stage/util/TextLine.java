@@ -19,17 +19,12 @@ import java.io.File;
 
 /**
  * @author Christian Wulf
- *
- * @since 1.10
  */
 public final class TextLine {
 
 	private final File textFile;
 	private final String textLine;
 
-	/**
-	 * @since 1.10
-	 */
 	public TextLine(final File textFile, final String textLine) {
 		this.textFile = textFile;
 		this.textLine = textLine;

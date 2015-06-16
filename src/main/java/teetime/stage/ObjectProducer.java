@@ -29,6 +29,10 @@ public final class ObjectProducer<T> extends AbstractProducerStage<T> {
 	private ConstructorClosure<T> inputObjectCreator;
 
 	/**
+	 * @param numInputObjects
+	 *            number of objects which should be instantiated and sent
+	 * @param inputObjectCreator
+	 *            a {@link ConstructorClosure} which creates the new instances
 	 * @since 1.0
 	 */
 	public ObjectProducer(final long numInputObjects, final ConstructorClosure<T> inputObjectCreator) {

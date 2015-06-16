@@ -33,6 +33,8 @@ public final class Counter<T> extends AbstractConsumerStage<T> {
 
 	/**
 	 * <i>Hint:</i> This method may not be invoked by another thread since it is not thread-safe.
+	 *
+	 * @return the number of passed elements
 	 */
 	public int getNumElementsPassed() {
 		return this.numElementsPassed;

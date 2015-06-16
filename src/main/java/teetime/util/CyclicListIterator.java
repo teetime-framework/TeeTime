@@ -24,6 +24,7 @@ import java.util.List;
  * @author Christian Wulf
  *
  * @param <T>
+ *            type of the elements contained in the list
  */
 public final class CyclicListIterator<T> implements Iterator<T> {
 
