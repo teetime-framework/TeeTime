@@ -20,7 +20,7 @@ import teetime.framework.idle.YieldStrategy;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
-final class RunnableConsumerStage extends AbstractRunnableStage {
+public final class RunnableConsumerStage extends AbstractRunnableStage {
 
 	// cache the input ports here since getInputPorts() always returns a new copy
 	private final InputPort<?>[] inputPorts;

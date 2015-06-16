@@ -19,14 +19,14 @@ import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.merger.Merger;
 
 @SuppressWarnings("deprecation")
-public class TaskFarmStage<T> extends AbstractCompositeStage {
+public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 
 	// creates SpScPipes (monitorable)
 	private static final IPipeFactory INTER_PIPE_FACTORY = PipeFactoryRegistry.INSTANCE
 			.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
 
-	private final Distributor<T> distributor = new Distributor<T>();
-	private final Merger<T> merger = new Merger<T>();
+	private final Distributor<I> distributor = new Distributor<I>();
+	private final Merger<O> merger = new Merger<O>();
 
 	private final Map<Integer, AbstractCompositeStage> includedStages = new HashMap<Integer, AbstractCompositeStage>();
 	private final Map<Integer, IMonitorablePipe> inputPipes = new HashMap<Integer, IMonitorablePipe>();
@@ -39,18 +39,16 @@ public class TaskFarmStage<T> extends AbstractCompositeStage {
 		checkIfValidAsIncludedStage(includedStage);
 
 		@SuppressWarnings("unchecked")
-		InputPort<T> stageInputPort = (InputPort<T>) includedStage.getInputPorts()[0];
+		InputPort<I> stageInputPort = (InputPort<I>) includedStage.getInputPorts()[0];
 		IPipe inputPipe = connectPortsWithReturnValue(this.distributor.getNewOutputPort(), stageInputPort);
 		checkIfPipeIsMonitorable(inputPipe);
 		this.inputPipes.put(0, (IMonitorablePipe) inputPipe);
 
 		@SuppressWarnings("unchecked")
-		OutputPort<T> stageOutputPort = (OutputPort<T>) includedStage.getOutputPorts()[0];
+		OutputPort<O> stageOutputPort = (OutputPort<O>) includedStage.getOutputPorts()[0];
 		IPipe outputPipe = connectPortsWithReturnValue(stageOutputPort, this.merger.getNewInputPort());
 		checkIfPipeIsMonitorable(outputPipe);
 		this.outputPipes.put(0, (IMonitorablePipe) outputPipe);
-
-		// TODO Do simple test analysis...
 	}
 
 	private void checkIfPipeIsMonitorable(final IPipe pipe) {
@@ -76,7 +74,7 @@ public class TaskFarmStage<T> extends AbstractCompositeStage {
 
 		try {
 			@SuppressWarnings("all")
-			OutputPort<T> _ = (OutputPort<T>) stageOutputPorts[0];
+			OutputPort<O> _ = (OutputPort<O>) stageOutputPorts[0];
 		} catch (Exception _) {
 			throw new TaskFarmInvalidStageException("Output port of included stage does not have the same type as the Task Farm.");
 		}
@@ -94,7 +92,7 @@ public class TaskFarmStage<T> extends AbstractCompositeStage {
 
 		try {
 			@SuppressWarnings("all")
-			InputPort<T> _ = (InputPort<T>) stageInputPorts[0];
+			InputPort<I> _ = (InputPort<I>) stageInputPorts[0];
 		} catch (Exception _) {
 			throw new TaskFarmInvalidStageException("Input port of included stage does not have the same type as the Task Farm.");
 		}
@@ -105,12 +103,24 @@ public class TaskFarmStage<T> extends AbstractCompositeStage {
 		return this.distributor;
 	}
 
-	protected IPipe connectPortsWithReturnValue(final OutputPort<? extends T> out, final InputPort<T> in) {
-		// TODO return exception if connectPorts is called within TaskFarmStage
+	@Override
+	protected <T> void connectPorts(final OutputPort<? extends T> out, final InputPort<T> in) {
+		throw new RuntimeException("\"connectPorts\" should not be called inside a Task Farm. Use \"connectPortsWithReturnValue\" instead.");
+	}
+
+	protected <T> IPipe connectPortsWithReturnValue(final OutputPort<? extends T> out, final InputPort<T> in) {
 		IPipe pipe = INTER_PIPE_FACTORY.create(out, in);
 		containingStages.add(out.getOwningStage());
 		containingStages.add(in.getOwningStage());
 		return pipe;
+	}
+
+	public InputPort<I> getInputPort() {
+		return this.distributor.getInputPort();
+	}
+
+	public OutputPort<O> getOutputPort() {
+		return this.merger.getOutputPort();
 	}
 
 }
