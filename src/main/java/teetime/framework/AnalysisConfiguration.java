@@ -31,7 +31,7 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
  */
 public abstract class AnalysisConfiguration {
 
-	private final Set<Stage> threadableStageJobs = new HashSet<Stage>();
+	private final Set<Stage> threadableStages = new HashSet<Stage>();
 
 	@SuppressWarnings("deprecation")
 	private static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
@@ -50,7 +50,7 @@ public abstract class AnalysisConfiguration {
 	private final static IPipeFactory interUnboundedThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, true);
 
 	Set<Stage> getThreadableStages() {
-		return this.threadableStageJobs;
+		return this.threadableStages;
 	}
 
 	/**
@@ -60,7 +60,7 @@ public abstract class AnalysisConfiguration {
 	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
 	 */
 	protected final void addThreadableStage(final Stage stage) {
-		this.threadableStageJobs.add(stage);
+		this.threadableStages.add(stage);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public abstract class AnalysisConfiguration {
 	 *            A arbitrary CompositeStage, which will be added to the configuration and executed in a thread.
 	 */
 	protected final void addThreadableStage(final AbstractCompositeStage stage) {
-		this.threadableStageJobs.add(stage.getFirstStage());
+		this.threadableStages.add(stage.getFirstStage());
 		for (Stage threadableStage : stage.getThreadableStages()) {
 			this.addThreadableStage(threadableStage);
 		}
