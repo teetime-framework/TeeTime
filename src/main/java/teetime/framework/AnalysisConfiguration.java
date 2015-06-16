@@ -24,7 +24,6 @@ import teetime.framework.pipe.InstantiationPipe;
 import teetime.framework.pipe.PipeFactoryRegistry;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
-import teetime.util.Connection;
 
 /**
  * Represents a configuration of connected stages, which is needed to run a analysis.
@@ -33,7 +32,6 @@ import teetime.util.Connection;
 public abstract class AnalysisConfiguration {
 
 	private final Set<Stage> threadableStageJobs = new HashSet<Stage>();
-	private final Set<Connection<?>> connections = new HashSet<Connection<?>>();
 
 	@SuppressWarnings("deprecation")
 	private static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
@@ -73,7 +71,6 @@ public abstract class AnalysisConfiguration {
 	 */
 	protected void addThreadableStage(final AbstractCompositeStage stage) {
 		this.threadableStageJobs.add(stage.getFirstStage());
-		this.connections.addAll(stage.getConnections());
 		for (Stage threadableStage : stage.getThreadableStageJobs()) {
 			this.addThreadableStage(threadableStage);
 		}
@@ -181,15 +178,6 @@ public abstract class AnalysisConfiguration {
 	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		new InstantiationPipe<T>(sourcePort, targetPort, capacity);
 		// connections.add(new Connection<T>(sourcePort, targetPort, capacity));
-	}
-
-	/**
-	 * Returns a list of pairs, which describe the connections among all stages.
-	 *
-	 * @return a list of pairs of Out- and InputPorts, which are connected
-	 */
-	protected Set<Connection<?>> getConnections() {
-		return connections;
 	}
 
 }
