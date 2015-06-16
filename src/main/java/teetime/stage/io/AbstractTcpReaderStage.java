@@ -24,12 +24,12 @@ import java.nio.channels.SocketChannel;
 
 import teetime.framework.AbstractProducerStage;
 
-public abstract class AbstractTcpReader<T> extends AbstractProducerStage<T> {
+public abstract class AbstractTcpReaderStage<T> extends AbstractProducerStage<T> {
 
 	private final int port;
 	private final int bufferCapacity;
 
-	public AbstractTcpReader(final int port, final int bufferCapacity) {
+	public AbstractTcpReaderStage(final int port, final int bufferCapacity) {
 		super();
 		this.port = port;
 		this.bufferCapacity = bufferCapacity;
