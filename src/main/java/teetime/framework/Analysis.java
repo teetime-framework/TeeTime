@@ -203,6 +203,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		LOGGER.debug("Created " + createdConnections + "connections");
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage) {
 		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
 		for (OutputPort outputPort : threadableStage.getOutputPorts()) {
