@@ -30,12 +30,7 @@ public abstract class AbstractCompositeStage {
 	 */
 	private static final int DEFAULT_CAPACITY = 4;
 
-<<<<<<< Upstream, based on origin/master
 	private final ConfigurationContext context;
-=======
-	protected final Set<Stage> containingStages = new HashSet<Stage>();
-	protected final Set<Stage> lastStages = new HashSet<Stage>();
->>>>>>> c88f7bf Checks added to TaskFarmStage
 
 	public AbstractCompositeStage(final ConfigurationContext context) {
 		if (null == context) {

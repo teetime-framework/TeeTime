@@ -18,7 +18,7 @@ package teetime.framework;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
-final class RunnableConsumerStage extends AbstractRunnableStage {
+public final class RunnableConsumerStage extends AbstractRunnableStage {
 
 	/**
 	 * Creates a new instance.
