@@ -45,7 +45,7 @@ public abstract class AbstractCompositeStage extends Stage {
 			.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
 
 	protected final Set<Stage> containingStages = new HashSet<Stage>();
-	public final Set<Stage> lastStages = new HashSet<Stage>();
+	protected final Set<Stage> lastStages = new HashSet<Stage>();
 
 	protected abstract Stage getFirstStage();
 
