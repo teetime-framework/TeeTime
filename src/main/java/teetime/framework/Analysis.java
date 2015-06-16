@@ -204,7 +204,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage) {
+	private void colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage) {
 		Set<Stage> threadableStageJobs = configuration.getThreadableStageJobs();
 		for (OutputPort outputPort : threadableStage.getOutputPorts()) {
 			if (outputPort.pipe != null) {

@@ -59,7 +59,7 @@ public abstract class AnalysisConfiguration {
 	 * @param stage
 	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
 	 */
-	protected void addThreadableStage(final Stage stage) {
+	protected final void addThreadableStage(final Stage stage) {
 		this.threadableStageJobs.add(stage);
 	}
 
@@ -69,7 +69,7 @@ public abstract class AnalysisConfiguration {
 	 * @param stage
 	 *            A arbitrary CompositeStage, which will be added to the configuration and executed in a thread.
 	 */
-	protected void addThreadableStage(final AbstractCompositeStage stage) {
+	protected final void addThreadableStage(final AbstractCompositeStage stage) {
 		this.threadableStageJobs.add(stage.getFirstStage());
 		for (Stage threadableStage : stage.getThreadableStageJobs()) {
 			this.addThreadableStage(threadableStage);
@@ -161,7 +161,7 @@ public abstract class AnalysisConfiguration {
 	 * @param targetPort
 	 *            port from the receiving stage
 	 */
-	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		connectPorts(sourcePort, targetPort, 4);
 	}
 
@@ -175,7 +175,7 @@ public abstract class AnalysisConfiguration {
 	 * @param capacity
 	 *            the pipe is set to this capacity, if the value is greater than 0. If it is 0, than the pipe is unbounded, thus growing of the pipe is enabled.
 	 */
-	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		new InstantiationPipe<T>(sourcePort, targetPort, capacity);
 		// connections.add(new Connection<T>(sourcePort, targetPort, capacity));
 	}
