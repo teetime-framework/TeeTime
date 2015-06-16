@@ -20,10 +20,10 @@ import java.util.Set;
 
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.IPipeFactory;
+import teetime.framework.pipe.InstantiationPipe;
 import teetime.framework.pipe.PipeFactoryRegistry;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
-import teetime.util.Connection;
 
 /**
  * Represents a configuration of connected stages, which is needed to run a analysis.
@@ -31,8 +31,7 @@ import teetime.util.Connection;
  */
 public abstract class AnalysisConfiguration {
 
-	private final Set<Stage> threadableStageJobs = new HashSet<Stage>();
-	private final Set<Connection<?>> connections = new HashSet<Connection<?>>();
+	private final Set<Stage> threadableStages = new HashSet<Stage>();
 
 	@SuppressWarnings("deprecation")
 	private static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
@@ -50,8 +49,8 @@ public abstract class AnalysisConfiguration {
 	 */
 	private final static IPipeFactory interUnboundedThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, true);
 
-	Set<Stage> getThreadableStageJobs() {
-		return this.threadableStageJobs;
+	Set<Stage> getThreadableStages() {
+		return this.threadableStages;
 	}
 
 	/**
@@ -60,8 +59,8 @@ public abstract class AnalysisConfiguration {
 	 * @param stage
 	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
 	 */
-	protected void addThreadableStage(final Stage stage) {
-		this.threadableStageJobs.add(stage);
+	protected final void addThreadableStage(final Stage stage) {
+		this.threadableStages.add(stage);
 	}
 
 	/**
@@ -70,10 +69,9 @@ public abstract class AnalysisConfiguration {
 	 * @param stage
 	 *            A arbitrary CompositeStage, which will be added to the configuration and executed in a thread.
 	 */
-	protected void addThreadableStage(final AbstractCompositeStage stage) {
-		this.threadableStageJobs.add(stage.getFirstStage());
-		this.connections.addAll(stage.getConnections());
-		for (Stage threadableStage : stage.getThreadableStageJobs()) {
+	protected final void addThreadableStage(final AbstractCompositeStage stage) {
+		this.threadableStages.add(stage.getFirstStage());
+		for (Stage threadableStage : stage.getThreadableStages()) {
 			this.addThreadableStage(threadableStage);
 		}
 	}
@@ -187,7 +185,7 @@ public abstract class AnalysisConfiguration {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
-	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		connectPorts(sourcePort, targetPort, 4);
 	}
 
@@ -203,17 +201,8 @@ public abstract class AnalysisConfiguration {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
-	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		connections.add(new Connection<T>(sourcePort, targetPort, capacity));
-	}
-
-	/**
-	 * Returns a list of pairs, which describe the connections among all stages.
-	 *
-	 * @return a list of pairs of Out- and InputPorts, which are connected
-	 */
-	protected Set<Connection<?>> getConnections() {
-		return connections;
+	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		new InstantiationPipe(sourcePort, targetPort, capacity);
 	}
 
 }
