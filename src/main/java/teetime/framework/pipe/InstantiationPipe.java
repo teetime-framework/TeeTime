@@ -19,12 +19,12 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
 
-public class InstantiationPipe<T> implements IPipe {
+public class InstantiationPipe implements IPipe {
 
-	private final InputPort<T> target;
+	private final InputPort target;
 	private final int capacity;
 
-	public InstantiationPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	public <T> InstantiationPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		this.target = targetPort;
 		this.capacity = capacity;
 		sourcePort.setPipe(this);

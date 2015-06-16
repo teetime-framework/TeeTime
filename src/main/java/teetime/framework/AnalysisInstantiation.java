@@ -17,12 +17,18 @@ class AnalysisInstantiation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AnalysisInstantiation.class);
 
-	private static final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
-	private static final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
-	private static final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
+	private final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
+	private final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
+	private final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
+
+	private final AnalysisConfiguration configuration;
+
+	public AnalysisInstantiation(final AnalysisConfiguration configuration) {
+		this.configuration = configuration;
+	}
 
 	@SuppressWarnings("rawtypes")
-	static Integer colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage, final AnalysisConfiguration configuration) {
+	Integer colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage, final AnalysisConfiguration configuration) {
 		Integer createdConnections = new Integer(0);
 		Set<Stage> threadableStageJobs = configuration.getThreadableStages();
 		for (OutputPort outputPort : threadableStage.getOutputPorts()) {
@@ -58,7 +64,7 @@ class AnalysisInstantiation {
 		return createdConnections;
 	}
 
-	static void instantiatePipes(final AnalysisConfiguration configuration) {
+	void instantiatePipes() {
 		Integer i = new Integer(0);
 		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
 		Set<Stage> threadableStageJobs = configuration.getThreadableStages();
@@ -66,7 +72,7 @@ class AnalysisInstantiation {
 		for (Stage threadableStage : threadableStageJobs) {
 			i++;
 			colors.put(threadableStage, i);
-			createdConnections = AnalysisInstantiation.colorAndConnectStages(i, colors, threadableStage, configuration);
+			createdConnections = colorAndConnectStages(i, colors, threadableStage, configuration);
 		}
 		LOGGER.debug("Created " + createdConnections + "connections");
 	}

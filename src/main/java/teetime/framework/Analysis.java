@@ -118,8 +118,8 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	 *
 	 */
 	private final void init() {
-
-		AnalysisInstantiation.instantiatePipes(configuration);
+		AnalysisInstantiation analysisInstantiation = new AnalysisInstantiation(configuration);
+		analysisInstantiation.instantiatePipes();
 
 		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStages();
 		if (threadableStageJobs.isEmpty()) {

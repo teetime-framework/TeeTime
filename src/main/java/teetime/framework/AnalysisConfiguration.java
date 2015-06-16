@@ -176,8 +176,7 @@ public abstract class AnalysisConfiguration {
 	 *            the pipe is set to this capacity, if the value is greater than 0. If it is 0, than the pipe is unbounded, thus growing of the pipe is enabled.
 	 */
 	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		new InstantiationPipe<T>(sourcePort, targetPort, capacity);
-		// connections.add(new Connection<T>(sourcePort, targetPort, capacity));
+		new InstantiationPipe(sourcePort, targetPort, capacity);
 	}
 
 }
