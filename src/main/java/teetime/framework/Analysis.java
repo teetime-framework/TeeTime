@@ -68,8 +68,6 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 
 	private final Collection<Pair<Thread, Throwable>> exceptions = new ConcurrentLinkedQueue<Pair<Thread, Throwable>>();
 
-	private boolean initialized;
-
 	private final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
 	private final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
 	private final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
