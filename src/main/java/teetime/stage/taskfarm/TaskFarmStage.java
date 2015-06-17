@@ -37,43 +37,14 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 	private final NoopFilter<I> noopI = new NoopFilter<I>();
 	private final NoopFilter<O> noopO = new NoopFilter<O>();
 
-	private final Map<Integer, AbstractCompositeStage> includedStages = new HashMap<Integer, AbstractCompositeStage>();
-	private final Map<Integer, IMonitorablePipe> inputPipes = new HashMap<Integer, IMonitorablePipe>();
-	private final Map<Integer, IMonitorablePipe> outputPipes = new HashMap<Integer, IMonitorablePipe>();
+	private final Map<Integer, TaskFarmTriple> triples = new HashMap<Integer, TaskFarmTriple>();
 
 	private final List<Thread> threads = new LinkedList<Thread>();
 
 	public TaskFarmStage(final AbstractCompositeStage includedStage) {
-		this.includedStages.put(0, includedStage);
-		this.lastStages.add(this.merger);
+		this.lastStages.add(this.noopO);
 
-		checkIfValidAsIncludedStage(includedStage);
-
-		connectPortsWithReturnValue(noopI.getOutputPort(), distributor.getInputPort(), INTER_PIPE_FACTORY);
-		connectPortsWithReturnValue(merger.getOutputPort(), noopO.getInputPort(), INTRA_PIPE_FACTORY);
-
-		@SuppressWarnings("unchecked")
-		InputPort<I> stageInputPort = (InputPort<I>) includedStage.getInputPorts()[0];
-		IPipe inputPipe = connectPortsWithReturnValue(this.distributor.getNewOutputPort(), stageInputPort, INTER_PIPE_FACTORY);
-		checkIfPipeIsMonitorable(inputPipe);
-		this.inputPipes.put(0, (IMonitorablePipe) inputPipe);
-
-		@SuppressWarnings("unchecked")
-		OutputPort<O> stageOutputPort = (OutputPort<O>) includedStage.getOutputPorts()[0];
-		IPipe outputPipe = connectPortsWithReturnValue(stageOutputPort, this.merger.getNewInputPort(), INTER_PIPE_FACTORY);
-		checkIfPipeIsMonitorable(outputPipe);
-		this.outputPipes.put(0, (IMonitorablePipe) outputPipe);
-
-		startThread(distributor);
-		startThread(merger);
-		startThread(includedStage);
-	}
-
-	private void startThread(final Stage stage) {
-		RunnableConsumerStage runnableTaskFarmStage = new RunnableConsumerStage(stage);
-		Thread thread = new Thread(runnableTaskFarmStage);
-		threads.add(thread);
-		thread.start();
+		init(includedStage);
 	}
 
 	@Override
@@ -90,10 +61,58 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 		}
 	}
 
-	private void checkIfPipeIsMonitorable(final IPipe pipe) {
-		if (!(pipe instanceof IMonitorablePipe)) {
-			throw new TaskFarmInvalidPipeException("Pipe is not monitorable, which is required for a Task Farm.");
-		}
+	public InputPort<I> getInputPort() {
+		return this.noopI.getInputPort();
+	}
+
+	public OutputPort<O> getOutputPort() {
+		return this.noopO.getOutputPort();
+	}
+
+	protected <T> IPipe connectPortsWithReturnValue(final OutputPort<? extends T> out, final InputPort<T> in, final IPipeFactory factory) {
+		IPipe pipe = factory.create(out, in);
+		containingStages.add(out.getOwningStage());
+		containingStages.add(in.getOwningStage());
+		return pipe;
+	}
+
+	@Override
+	protected <T> void connectPorts(final OutputPort<? extends T> out, final InputPort<T> in) {
+		connectPortsWithReturnValue(out, in, INTRA_PIPE_FACTORY);
+	}
+
+	@Override
+	protected Stage getFirstStage() {
+		return this.noopI;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void init(final AbstractCompositeStage includedStage) {
+		checkIfValidAsIncludedStage(includedStage);
+
+		connectPortsWithReturnValue(noopI.getOutputPort(), distributor.getInputPort(), INTER_PIPE_FACTORY);
+		connectPortsWithReturnValue(merger.getOutputPort(), noopO.getInputPort(), INTRA_PIPE_FACTORY);
+
+		InputPort<I> stageInputPort = (InputPort<I>) includedStage.getInputPorts()[0];
+		IPipe inputPipe = connectPortsWithReturnValue(this.distributor.getNewOutputPort(), stageInputPort, INTER_PIPE_FACTORY);
+
+		OutputPort<O> stageOutputPort = (OutputPort<O>) includedStage.getOutputPorts()[0];
+		IPipe outputPipe = connectPortsWithReturnValue(stageOutputPort, this.merger.getNewInputPort(), INTER_PIPE_FACTORY);
+
+		checkIfPipeIsMonitorable(inputPipe);
+		checkIfPipeIsMonitorable(outputPipe);
+		this.triples.put(0, new TaskFarmTriple((IMonitorablePipe) inputPipe, (IMonitorablePipe) outputPipe, includedStage));
+
+		startThread(distributor);
+		startThread(merger);
+		startThread(includedStage);
+	}
+
+	private void startThread(final Stage stage) {
+		RunnableConsumerStage runnableTaskFarmStage = new RunnableConsumerStage(stage);
+		Thread thread = new Thread(runnableTaskFarmStage);
+		threads.add(thread);
+		thread.start();
 	}
 
 	private void checkIfValidAsIncludedStage(final AbstractCompositeStage includedStage) {
@@ -101,21 +120,9 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 		checkOutputPorts(includedStage);
 	}
 
-	private void checkOutputPorts(final AbstractCompositeStage includedStage) {
-		OutputPort<?>[] stageOutputPorts = includedStage.getOutputPorts();
-
-		if (stageOutputPorts.length > 1) {
-			throw new TaskFarmInvalidStageException("Included stage has more than one output port.");
-		}
-		if (stageOutputPorts.length < 1) {
-			throw new TaskFarmInvalidStageException("Included stage has no output ports.");
-		}
-
-		try {
-			@SuppressWarnings("all")
-			OutputPort<O> _ = (OutputPort<O>) stageOutputPorts[0];
-		} catch (Exception _) {
-			throw new TaskFarmInvalidStageException("Output port of included stage does not have the same type as the Task Farm.");
+	private void checkIfPipeIsMonitorable(final IPipe pipe) {
+		if (!(pipe instanceof IMonitorablePipe)) {
+			throw new TaskFarmInvalidPipeException("Pipe is not monitorable, which is required for a Task Farm.");
 		}
 	}
 
@@ -137,29 +144,22 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 		}
 	}
 
-	@Override
-	protected Stage getFirstStage() {
-		return this.noopI;
-	}
+	private void checkOutputPorts(final AbstractCompositeStage includedStage) {
+		OutputPort<?>[] stageOutputPorts = includedStage.getOutputPorts();
 
-	@Override
-	protected <T> void connectPorts(final OutputPort<? extends T> out, final InputPort<T> in) {
-		connectPortsWithReturnValue(out, in, INTRA_PIPE_FACTORY);
-	}
+		if (stageOutputPorts.length > 1) {
+			throw new TaskFarmInvalidStageException("Included stage has more than one output port.");
+		}
+		if (stageOutputPorts.length < 1) {
+			throw new TaskFarmInvalidStageException("Included stage has no output ports.");
+		}
 
-	protected <T> IPipe connectPortsWithReturnValue(final OutputPort<? extends T> out, final InputPort<T> in, final IPipeFactory factory) {
-		IPipe pipe = factory.create(out, in);
-		containingStages.add(out.getOwningStage());
-		containingStages.add(in.getOwningStage());
-		return pipe;
-	}
-
-	public InputPort<I> getInputPort() {
-		return this.noopI.getInputPort();
-	}
-
-	public OutputPort<O> getOutputPort() {
-		return this.noopO.getOutputPort();
+		try {
+			@SuppressWarnings("all")
+			OutputPort<O> _ = (OutputPort<O>) stageOutputPorts[0];
+		} catch (Exception _) {
+			throw new TaskFarmInvalidStageException("Output port of included stage does not have the same type as the Task Farm.");
+		}
 	}
 
 }
