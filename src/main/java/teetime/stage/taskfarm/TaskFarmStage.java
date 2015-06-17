@@ -1,11 +1,14 @@
 package teetime.stage.taskfarm;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import teetime.framework.AbstractCompositeStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.RunnableConsumerStage;
 import teetime.framework.Stage;
 import teetime.framework.exceptionHandling.TaskFarmInvalidPipeException;
 import teetime.framework.exceptionHandling.TaskFarmInvalidStageException;
@@ -15,6 +18,7 @@ import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.PipeFactoryRegistry;
 import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
 import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
+import teetime.stage.NoopFilter;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.merger.Merger;
 
@@ -25,12 +29,19 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 	private static final IPipeFactory INTER_PIPE_FACTORY = PipeFactoryRegistry.INSTANCE
 			.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
 
+	private static final IPipeFactory INTRA_PIPE_FACTORY = PipeFactoryRegistry.INSTANCE
+			.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
+
 	private final Distributor<I> distributor = new Distributor<I>();
 	private final Merger<O> merger = new Merger<O>();
+	private final NoopFilter<I> noopI = new NoopFilter<I>();
+	private final NoopFilter<O> noopO = new NoopFilter<O>();
 
 	private final Map<Integer, AbstractCompositeStage> includedStages = new HashMap<Integer, AbstractCompositeStage>();
 	private final Map<Integer, IMonitorablePipe> inputPipes = new HashMap<Integer, IMonitorablePipe>();
 	private final Map<Integer, IMonitorablePipe> outputPipes = new HashMap<Integer, IMonitorablePipe>();
+
+	private final List<Thread> threads = new LinkedList<Thread>();
 
 	public TaskFarmStage(final AbstractCompositeStage includedStage) {
 		this.includedStages.put(0, includedStage);
@@ -38,17 +49,44 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 
 		checkIfValidAsIncludedStage(includedStage);
 
+		connectPortsWithReturnValue(noopI.getOutputPort(), distributor.getInputPort(), INTER_PIPE_FACTORY);
+		connectPortsWithReturnValue(merger.getOutputPort(), noopO.getInputPort(), INTRA_PIPE_FACTORY);
+
 		@SuppressWarnings("unchecked")
 		InputPort<I> stageInputPort = (InputPort<I>) includedStage.getInputPorts()[0];
-		IPipe inputPipe = connectPortsWithReturnValue(this.distributor.getNewOutputPort(), stageInputPort);
+		IPipe inputPipe = connectPortsWithReturnValue(this.distributor.getNewOutputPort(), stageInputPort, INTER_PIPE_FACTORY);
 		checkIfPipeIsMonitorable(inputPipe);
 		this.inputPipes.put(0, (IMonitorablePipe) inputPipe);
 
 		@SuppressWarnings("unchecked")
 		OutputPort<O> stageOutputPort = (OutputPort<O>) includedStage.getOutputPorts()[0];
-		IPipe outputPipe = connectPortsWithReturnValue(stageOutputPort, this.merger.getNewInputPort());
+		IPipe outputPipe = connectPortsWithReturnValue(stageOutputPort, this.merger.getNewInputPort(), INTER_PIPE_FACTORY);
 		checkIfPipeIsMonitorable(outputPipe);
 		this.outputPipes.put(0, (IMonitorablePipe) outputPipe);
+
+		startThread(distributor);
+		startThread(merger);
+		startThread(includedStage);
+	}
+
+	private void startThread(final Stage stage) {
+		RunnableConsumerStage runnableTaskFarmStage = new RunnableConsumerStage(stage);
+		Thread thread = new Thread(runnableTaskFarmStage);
+		thread.start();
+	}
+
+	@Override
+	public void terminate() {
+		super.terminate();
+		try {
+			for (Thread thread : this.threads) {
+				thread.join();
+			}
+		} catch (InterruptedException e) {
+			for (Thread thread : this.threads) {
+				thread.interrupt();
+			}
+		}
 	}
 
 	private void checkIfPipeIsMonitorable(final IPipe pipe) {
@@ -100,27 +138,27 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 
 	@Override
 	protected Stage getFirstStage() {
-		return this.distributor;
+		return this.noopI;
 	}
 
 	@Override
 	protected <T> void connectPorts(final OutputPort<? extends T> out, final InputPort<T> in) {
-		throw new RuntimeException("\"connectPorts\" should not be called inside a Task Farm. Use \"connectPortsWithReturnValue\" instead.");
+		connectPortsWithReturnValue(out, in, INTRA_PIPE_FACTORY);
 	}
 
-	protected <T> IPipe connectPortsWithReturnValue(final OutputPort<? extends T> out, final InputPort<T> in) {
-		IPipe pipe = INTER_PIPE_FACTORY.create(out, in);
+	protected <T> IPipe connectPortsWithReturnValue(final OutputPort<? extends T> out, final InputPort<T> in, final IPipeFactory factory) {
+		IPipe pipe = factory.create(out, in);
 		containingStages.add(out.getOwningStage());
 		containingStages.add(in.getOwningStage());
 		return pipe;
 	}
 
 	public InputPort<I> getInputPort() {
-		return this.distributor.getInputPort();
+		return this.noopI.getInputPort();
 	}
 
 	public OutputPort<O> getOutputPort() {
-		return this.merger.getOutputPort();
+		return this.noopO.getOutputPort();
 	}
 
 }

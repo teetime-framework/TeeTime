@@ -59,7 +59,7 @@ public abstract class AbstractCompositeStage extends Stage {
 	}
 
 	@Override
-	public final void onSignal(final ISignal signal, final InputPort<?> inputPort) {
+	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		getFirstStage().onSignal(signal, inputPort);
 	}
 
@@ -69,7 +69,7 @@ public abstract class AbstractCompositeStage extends Stage {
 	}
 
 	@Override
-	protected final void terminate() {
+	protected void terminate() {
 		getFirstStage().terminate();
 	}
 
