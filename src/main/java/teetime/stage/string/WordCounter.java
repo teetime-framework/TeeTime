@@ -18,6 +18,7 @@ package teetime.stage.string;
 import java.util.ArrayList;
 
 import teetime.framework.AbstractCompositeStage;
+import teetime.framework.AnalysisConfiguration;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.Stage;
@@ -41,7 +42,8 @@ public final class WordCounter extends AbstractCompositeStage {
 	private final ArrayList<Stage> lastStages = new ArrayList<Stage>();
 
 	// The connection of the different stages is realized within the construction of a instance of this class.
-	public WordCounter() {
+	public WordCounter(final AnalysisConfiguration context) {
+		super(context);
 		this.lastStages.add(this.mapCounter);
 		final ToLowerCase toLowerCase = new ToLowerCase();
 
@@ -51,7 +53,7 @@ public final class WordCounter extends AbstractCompositeStage {
 	}
 
 	@Override
-	protected Stage getFirstStage() {
+	public Stage getFirstStage() {
 		return this.tokenizer;
 	}
 

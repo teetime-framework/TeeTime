@@ -29,7 +29,7 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
  * Represents a configuration of connected stages, which is needed to run a analysis.
  * Stages can be added by executing {@link #addThreadableStage(Stage)}.
  */
-public abstract class AnalysisConfiguration {
+public abstract class AnalysisConfiguration extends Network {
 
 	private final Set<Stage> threadableStages = new HashSet<Stage>();
 
@@ -59,21 +59,9 @@ public abstract class AnalysisConfiguration {
 	 * @param stage
 	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
 	 */
+	@Override
 	protected final void addThreadableStage(final Stage stage) {
 		this.threadableStages.add(stage);
-	}
-
-	/**
-	 * Execute this method, to add a CompositeStage to the configuration, which should be executed in a own thread.
-	 *
-	 * @param stage
-	 *            A arbitrary CompositeStage, which will be added to the configuration and executed in a thread.
-	 */
-	protected final void addThreadableStage(final AbstractCompositeStage stage) {
-		this.threadableStages.add(stage.getFirstStage());
-		for (Stage threadableStage : stage.getThreadableStages()) {
-			this.addThreadableStage(threadableStage);
-		}
 	}
 
 	/**
@@ -185,6 +173,7 @@ public abstract class AnalysisConfiguration {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
+	@Override
 	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		connectPorts(sourcePort, targetPort, 4);
 	}
@@ -201,6 +190,7 @@ public abstract class AnalysisConfiguration {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
+	@Override
 	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		new InstantiationPipe(sourcePort, targetPort, capacity);
 	}

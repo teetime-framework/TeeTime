@@ -23,8 +23,33 @@ package teetime.framework;
  *
  *
  */
-public abstract class AbstractCompositeStage extends AnalysisConfiguration {
+public abstract class AbstractCompositeStage extends Network {
 
-	protected abstract Stage getFirstStage();
+	private final AnalysisConfiguration context;
+
+	public abstract Stage getFirstStage();
+
+	public AbstractCompositeStage(final AnalysisConfiguration context) {
+		this.context = context;
+	}
+
+	@Override
+	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		context.connectPorts(sourcePort, targetPort, capacity);
+	}
+
+	@Override
+	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		connectPorts(sourcePort, targetPort, 4);
+	}
+
+	@Override
+	protected void addThreadableStage(final Stage stage) {
+		context.addThreadableStage(stage);
+	}
+
+	AnalysisConfiguration getContext() {
+		return context;
+	}
 
 }
