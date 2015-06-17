@@ -72,6 +72,7 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 	private void startThread(final Stage stage) {
 		RunnableConsumerStage runnableTaskFarmStage = new RunnableConsumerStage(stage);
 		Thread thread = new Thread(runnableTaskFarmStage);
+		threads.add(thread);
 		thread.start();
 	}
 
