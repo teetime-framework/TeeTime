@@ -16,7 +16,10 @@ import teetime.framework.Stage;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 
+@SuppressWarnings("deprecation")
 public class TaskFarmStageTest {
+
+	private final static int NUMBER_OF_TEST_ELEMENTS = 10000;
 
 	private class PlusOneInStringStage extends AbstractConsumerStage<Integer> {
 
@@ -43,7 +46,6 @@ public class TaskFarmStageTest {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private class CompositeTestStage extends AbstractCompositeStage {
 		PlusOneInStringStage pOne = new PlusOneInStringStage();
 		StringDuplicationStage sDup = new StringDuplicationStage();
@@ -72,10 +74,15 @@ public class TaskFarmStageTest {
 		}
 
 		private Stage buildProducerPipeline() {
-			InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(1, 2, 3, 4, 5);
-			CompositeTestStage compositeTestStage = new CompositeTestStage();
+			List<Integer> values = new LinkedList<Integer>();
+			for (int i = 1; i <= NUMBER_OF_TEST_ELEMENTS; i++) {
+				values.add(i);
+			}
+			final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(values);
+			final CompositeTestStage compositeTestStage = new CompositeTestStage();
+			final CollectorSink<String> collectorSink = new CollectorSink<String>(collection);
+
 			TaskFarmStage<Integer, String> taskFarmStage = new TaskFarmStage<Integer, String>(compositeTestStage);
-			CollectorSink<String> collectorSink = new CollectorSink<String>(collection);
 
 			connectIntraThreads(initialElementProducer.getOutputPort(), taskFarmStage.getInputPort());
 			connectIntraThreads(taskFarmStage.getOutputPort(), collectorSink.getInputPort());
@@ -102,5 +109,11 @@ public class TaskFarmStageTest {
 		assertTrue(result.contains("44"));
 		assertTrue(result.contains("55"));
 		assertTrue(result.contains("66"));
+		for (int i = 1; i <= NUMBER_OF_TEST_ELEMENTS; i++) {
+			int n = i + 1;
+			String s = Integer.toString(n) + Integer.toString(n);
+			assertTrue(s, result.contains(s));
+		}
+		assertTrue(Integer.toString(result.size()), result.size() == NUMBER_OF_TEST_ELEMENTS);
 	}
 }
