@@ -55,6 +55,6 @@ public class DynamicDistributor<T> extends Distributor<T> {
 			break;
 		}
 
-		this.strategy.distribute((OutputPort<T>[]) this.getOutputPorts(), element);
+		super.execute(element);
 	}
 }
