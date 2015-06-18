@@ -27,7 +27,7 @@ import teetime.framework.validation.InvalidPortConnection;
 
 public abstract class AbstractStage extends Stage {
 
-	private static final IPipe DUMMY_PORT = new DummyPipe();
+	private static final IPipe DUMMY_PIPE = new DummyPipe();
 
 	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
 
@@ -115,7 +115,7 @@ public abstract class AbstractStage extends Stage {
 				if (logger.isInfoEnabled()) {
 					this.logger.info("Unconnected output port: " + outputPort + ". Connecting with a dummy output port.");
 				}
-				outputPort.setPipe(DUMMY_PORT);
+				outputPort.setPipe(DUMMY_PIPE);
 			}
 		}
 	}
