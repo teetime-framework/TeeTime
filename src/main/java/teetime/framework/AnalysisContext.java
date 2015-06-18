@@ -192,6 +192,9 @@ public abstract class AnalysisContext extends Network {
 	 */
 	@Override
 	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		if (sourcePort.getOwningStage().getInputPorts().length == 0) {
+			addThreadableStage(sourcePort.getOwningStage());
+		}
 		new InstantiationPipe(sourcePort, targetPort, capacity);
 	}
 

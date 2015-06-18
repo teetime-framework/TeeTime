@@ -150,4 +150,33 @@ public class AnalysisTest {
 		}
 	}
 
+	@Test
+	public void automaticallyAddHeadStages() {
+		AutomaticallyConfig context = new AutomaticallyConfig();
+		new Analysis<AnalysisContext>(context).executeBlocking();
+		assertTrue(context.executed);
+	}
+
+	private class AutomaticallyConfig extends AnalysisContext {
+
+		public boolean executed;
+
+		public AutomaticallyConfig() {
+			AutomaticallyAddedStage aas = new AutomaticallyAddedStage();
+			Sink<Object> sink = new Sink<Object>();
+			connectPorts(aas.getOutputPort(), sink.getInputPort());
+		}
+
+		private class AutomaticallyAddedStage extends AbstractProducerStage<Object> {
+
+			@Override
+			protected void execute() {
+				executed = true;
+				terminate();
+			}
+
+		}
+
+	}
+
 }
