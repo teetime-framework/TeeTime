@@ -26,34 +26,28 @@ public abstract class AbstractPipe implements IPipe {
 	 * this.getPipe().getTargetPort().getOwningStage()
 	 * </pre>
 	 */
-	protected Stage cachedTargetStage;
+	protected final Stage cachedTargetStage;
 
-	private InputPort<?> targetPort;
+	private final InputPort<?> targetPort;
 
 	protected <T> AbstractPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		if (sourcePort == null) {
+			throw new IllegalArgumentException("sourcePort may not be null");
+		}
+		if (targetPort == null) {
+			throw new IllegalArgumentException("targetPort may not be null");
+		}
+
+		sourcePort.setPipe(this);
+		targetPort.setPipe(this);
+
 		this.targetPort = targetPort;
-		if (null != targetPort) { // BETTER remove this check if migration is completed
-			this.cachedTargetStage = targetPort.getOwningStage();
-		}
-		if (null != sourcePort) { // BETTER remove this check if migration is completed
-			sourcePort.setPipe(this);
-		}
-		if (null != targetPort) { // BETTER remove this check if migration is completed
-			targetPort.setPipe(this);
-		}
+		this.cachedTargetStage = targetPort.getOwningStage();
 	}
 
 	@Override
 	public InputPort<?> getTargetPort() {
 		return this.targetPort;
-	}
-
-	@Override
-	public <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		sourcePort.setPipe(this);
-		targetPort.setPipe(this);
-		this.targetPort = targetPort;
-		this.cachedTargetStage = targetPort.getOwningStage();
 	}
 
 	@Override

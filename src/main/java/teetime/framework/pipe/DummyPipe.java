@@ -16,7 +16,6 @@
 package teetime.framework.pipe;
 
 import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
 
 /**
@@ -25,10 +24,7 @@ import teetime.framework.signal.ISignal;
  * @author Christian Wulf
  *
  */
-@SuppressWarnings("rawtypes")
 public final class DummyPipe implements IPipe {
-
-	public DummyPipe() {}
 
 	@Override
 	public boolean add(final Object element) {
@@ -62,9 +58,6 @@ public final class DummyPipe implements IPipe {
 
 	@Override
 	public void sendSignal(final ISignal signal) {}
-
-	@Override
-	public void connectPorts(final OutputPort sourcePort, final InputPort targetPort) {}
 
 	@Override
 	public void reportNewElement() {

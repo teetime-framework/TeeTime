@@ -34,13 +34,6 @@ final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe
 		this.queue = new ObservableSpScArrayQueue<Object>(capacity);
 	}
 
-	@Deprecated
-	public static <T> IMonitorablePipe connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		final SpScPipe pipe = new SpScPipe(sourcePort, targetPort, capacity);
-		pipe.connectPorts(sourcePort, targetPort);
-		return pipe;
-	}
-
 	// BETTER introduce a QueueIsFullStrategy
 	@Override
 	public boolean add(final Object element) {

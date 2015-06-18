@@ -21,7 +21,7 @@ import teetime.framework.signal.ISignal;
 
 public class InstantiationPipe implements IPipe {
 
-	private final InputPort target;
+	private final InputPort<?> target;
 	private final int capacity;
 
 	public <T> InstantiationPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
@@ -72,12 +72,6 @@ public class InstantiationPipe implements IPipe {
 
 	@Override
 	public void sendSignal(final ISignal signal) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		// TODO Auto-generated method stub
 
 	}
