@@ -22,7 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import teetime.framework.Analysis;
-import teetime.framework.AnalysisConfiguration;
+import teetime.framework.AnalysisContext;
 
 import com.google.common.io.Files;
 
@@ -43,7 +43,7 @@ public class CipherTest {
 		final String outputFile = "src/test/resources/data/output.txt";
 		final String password = "Password";
 
-		final AnalysisConfiguration configuration = new CipherConfiguration(inputFile, outputFile, password);
+		final AnalysisContext configuration = new CipherConfiguration(inputFile, outputFile, password);
 		final Analysis analysis = new Analysis(configuration);
 		analysis.executeBlocking();
 

@@ -70,7 +70,7 @@ public class AnalysisTest {
 		assertThat(watch.getDurationInMs() + ABSOLUTE_MAX_ERROR_IN_MS, is(greaterThanOrEqualTo(DELAY_IN_MS)));
 	}
 
-	private static class TestConfig extends AnalysisConfiguration {
+	private static class TestConfig extends AnalysisContext {
 		public final DelayAndTerminate delay;
 
 		public TestConfig() {
@@ -112,7 +112,7 @@ public class AnalysisTest {
 		assertThat(intraAnalysis.getConfiguration().init.getOwningThread(), is(intraAnalysis.getConfiguration().sink.getOwningThread()));
 	}
 
-	private class AnalysisTestConfig extends AnalysisConfiguration {
+	private class AnalysisTestConfig extends AnalysisContext {
 		public InitialElementProducer<Object> init = new InitialElementProducer<Object>();
 		public Sink<Object> sink = new Sink<Object>();
 
@@ -136,7 +136,7 @@ public class AnalysisTest {
 		new Analysis<InvalidTestConfig>(configuration);
 	}
 
-	private class InvalidTestConfig extends AnalysisConfiguration {
+	private class InvalidTestConfig extends AnalysisContext {
 		public InitialElementProducer<Object> init = new InitialElementProducer<Object>();
 		public InstanceOfFilter<Object, Object> iof = new InstanceOfFilter<Object, Object>(Object.class);
 		public Sink<Object> sink = new Sink<Object>();

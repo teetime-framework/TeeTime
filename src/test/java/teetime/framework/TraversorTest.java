@@ -53,7 +53,7 @@ public class TraversorTest {
 	}
 
 	// WordCounterConfiguration
-	private class TestConfiguration extends AnalysisConfiguration {
+	private class TestConfiguration extends AnalysisContext {
 
 		public final CountingMapMerger<String> result = new CountingMapMerger<String>();
 		public final InitialElementProducer<File> init;

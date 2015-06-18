@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import teetime.framework.Analysis;
-import teetime.framework.AnalysisConfiguration;
+import teetime.framework.AnalysisContext;
 import teetime.framework.AnalysisException;
 import teetime.framework.Stage;
 import teetime.framework.StageState;
@@ -78,12 +78,12 @@ public final class StageTester {
 	 *
 	 */
 	public void start() {
-		final AnalysisConfiguration configuration = new Configuration(inputHolders, stage, outputHolders);
-		final Analysis<AnalysisConfiguration> analysis = new Analysis<AnalysisConfiguration>(configuration);
+		final AnalysisContext configuration = new Configuration(inputHolders, stage, outputHolders);
+		final Analysis<AnalysisContext> analysis = new Analysis<AnalysisContext>(configuration);
 		analysis.executeBlocking();
 	}
 
-	private final class Configuration extends AnalysisConfiguration {
+	private final class Configuration extends AnalysisContext {
 
 		public Configuration(final List<InputHolder<?>> inputHolders, final Stage stage, final List<OutputHolder<?>> outputHolders) {
 			for (InputHolder<?> inputHolder : inputHolders) {

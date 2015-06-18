@@ -36,14 +36,14 @@ class AnalysisInstantiation {
 	private final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
 	private final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
 
-	private final AnalysisConfiguration configuration;
+	private final AnalysisContext configuration;
 
-	public AnalysisInstantiation(final AnalysisConfiguration configuration) {
+	public AnalysisInstantiation(final AnalysisContext configuration) {
 		this.configuration = configuration;
 	}
 
 	@SuppressWarnings("rawtypes")
-	Integer colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage, final AnalysisConfiguration configuration) {
+	Integer colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage, final AnalysisContext configuration) {
 		Integer createdConnections = new Integer(0);
 		Set<Stage> threadableStageJobs = configuration.getThreadableStages();
 		for (OutputPort outputPort : threadableStage.getOutputPorts()) {

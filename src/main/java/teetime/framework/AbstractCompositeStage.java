@@ -25,11 +25,9 @@ package teetime.framework;
  */
 public abstract class AbstractCompositeStage extends Network {
 
-	private final AnalysisConfiguration context;
+	private final AnalysisContext context;
 
-	public abstract Stage getFirstStage();
-
-	public AbstractCompositeStage(final AnalysisConfiguration context) {
+	public AbstractCompositeStage(final AnalysisContext context) {
 		this.context = context;
 	}
 
@@ -48,7 +46,7 @@ public abstract class AbstractCompositeStage extends Network {
 		context.addThreadableStage(stage);
 	}
 
-	AnalysisConfiguration getContext() {
+	protected AnalysisContext getContext() {
 		return context;
 	}
 

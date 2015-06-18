@@ -15,9 +15,9 @@
  */
 package teetime.framework.exceptionHandling;
 
-import teetime.framework.AnalysisConfiguration;
+import teetime.framework.AnalysisContext;
 
-public class ExceptionTestConfiguration extends AnalysisConfiguration {
+public class ExceptionTestConfiguration extends AnalysisContext {
 
 	ExceptionTestProducerStage first;
 	ExceptionTestConsumerStage second;
