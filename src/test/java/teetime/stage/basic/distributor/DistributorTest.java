@@ -131,7 +131,7 @@ public class DistributorTest {
 	}
 
 	@Test
-	public void cloneForSimpleBeanShoulWork() throws Exception {
+	public void cloneForSimpleBeanShouldWork() throws Exception {
 		final Distributor<SimpleBean> distributor = new Distributor<SimpleBean>(new CloneStrategy());
 		final List<SimpleBean> results = new ArrayList<SimpleBean>();
 		final SimpleBean originalBean = new SimpleBean(42);

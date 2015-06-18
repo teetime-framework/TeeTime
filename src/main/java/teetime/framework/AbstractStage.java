@@ -90,22 +90,7 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	public void onInitializing() throws Exception {
 		this.connectUnconnectedOutputPorts();
-		currentState = StageState.INITIALIZED;
-		logger.trace("Initialized.");
-	}
-
-	@Override
-	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
-		this.validateOutputPorts(invalidPortConnections);
-		currentState = StageState.VALIDATED;
-		logger.trace("Validated.");
-	}
-
-	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
-	@Override
-	public void onStarting() throws Exception {
-		currentState = StageState.STARTED;
-		logger.trace("Started.");
+		changeState(StageState.INITIALIZED);
 	}
 
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
@@ -120,11 +105,27 @@ public abstract class AbstractStage extends Stage {
 		}
 	}
 
+	private void changeState(final StageState newState) {
+		currentState = newState;
+		logger.trace(newState.toString());
+	}
+
+	@Override
+	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
+		this.validateOutputPorts(invalidPortConnections);
+		changeState(StageState.VALIDATED);
+	}
+
+	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
+	@Override
+	public void onStarting() throws Exception {
+		changeState(StageState.STARTED);
+	}
+
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	@Override
 	public void onTerminating() throws Exception {
-		currentState = StageState.TERMINATED;
-		logger.trace("Terminated.");
+		changeState(StageState.TERMINATED);
 	}
 
 	/**
