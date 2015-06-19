@@ -148,4 +148,6 @@ public abstract class Stage {
 		this.exceptionHandler = exceptionHandler;
 	}
 
+	protected abstract void removeDynamicPort(DynamicOutputPort<?> dynamicOutputPort);
+
 }

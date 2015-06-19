@@ -194,7 +194,7 @@ public abstract class AbstractStage extends Stage {
 		return outputPort;
 	}
 
-	private <T> T[] addElementToArray(final T element, final T[] srcArray) {
+	private <T, E extends T> T[] addElementToArray(final E element, final T[] srcArray) {
 		T[] newOutputPorts = Arrays.copyOf(srcArray, srcArray.length + 1);
 		newOutputPorts[srcArray.length] = element;
 		return newOutputPorts;
@@ -228,6 +228,26 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	protected TerminationStrategy getTerminationStrategy() {
 		return TerminationStrategy.BY_SIGNAL;
+	}
+
+	protected <T> DynamicOutputPort<T> createDynamicOutputPort() {
+		final DynamicOutputPort<T> outputPort = new DynamicOutputPort<T>(null, this, outputPorts.length);
+		outputPorts = addElementToArray(outputPort, outputPorts);
+		return outputPort;
+	}
+
+	@Override
+	protected void removeDynamicPort(final DynamicOutputPort<?> dynamicOutputPort) {
+		int index = dynamicOutputPort.getIndex();
+		List<OutputPort<?>> tempOutputPorts = Arrays.asList(outputPorts);
+		tempOutputPorts.remove(index);
+		for (int i = index; i < tempOutputPorts.size(); i++) {
+			OutputPort<?> outputPort = tempOutputPorts.get(i);
+			if (outputPort instanceof DynamicOutputPort) {
+				((DynamicOutputPort<?>) outputPort).setIndex(i);
+			}
+		}
+		outputPorts = tempOutputPorts.toArray(new OutputPort[0]);
 	}
 
 }
