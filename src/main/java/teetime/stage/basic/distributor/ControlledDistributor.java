@@ -9,13 +9,15 @@ import org.jctools.queues.spec.Ordering;
 import org.jctools.queues.spec.Preference;
 
 import teetime.framework.AbstractStage;
+import teetime.framework.DynamicActuator;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.Stage;
 import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExecution;
 import teetime.framework.exceptionHandling.StageException;
-import teetime.framework.pipe.SingleElementPipeFactory;
 import teetime.framework.pipe.SpScPipeFactory;
+import teetime.framework.signal.InitializingSignal;
+import teetime.framework.signal.StartingSignal;
 import teetime.stage.basic.distributor.DynamicPortActionContainer.DynamicPortAction;
 import teetime.util.concurrent.queue.PCBlockingQueue;
 import teetime.util.concurrent.queue.putstrategy.PutStrategy;
@@ -26,7 +28,6 @@ import teetime.util.concurrent.queue.takestrategy.TakeStrategy;
 public class ControlledDistributor<T> extends AbstractStage {
 
 	private static final SpScPipeFactory spScPipeFactory = new SpScPipeFactory();
-	private static final SingleElementPipeFactory intraPipeFactory = new SingleElementPipeFactory();
 
 	// private final InputPort<DynamicPortActionContainer<T>> dynamicPortActionInputPort = createInputPort();
 	private final InputPort<T> inputPort = createInputPort();
@@ -76,6 +77,8 @@ public class ControlledDistributor<T> extends AbstractStage {
 		}
 	}
 
+	private final DynamicActuator dynamicActuator = new DynamicActuator();
+
 	private void checkForOutputPortChange(final DynamicPortActionContainer<T> dynamicPortAction) {
 		System.out.println("" + dynamicPortAction.getDynamicPortAction());
 
@@ -84,8 +87,16 @@ public class ControlledDistributor<T> extends AbstractStage {
 			Distributor<T> distributor = getDistributor(outputPort);
 			OutputPort<T> newOutputPort = distributor.getNewOutputPort();
 			InputPort<T> newInputPort = dynamicPortAction.getInputPort();
-			// spScPipeFactory.create(newOutputPort, newInputPort);
-			intraPipeFactory.create(newOutputPort, newInputPort); // FIXME should be inter, but requires sending init and start signal
+			spScPipeFactory.create(newOutputPort, newInputPort);
+
+			Runnable runnable = dynamicActuator.wrap(newInputPort.getOwningStage());
+			Thread thread = new Thread(runnable);
+			thread.start();
+
+			newOutputPort.sendSignal(new InitializingSignal());
+			newOutputPort.sendSignal(new StartingSignal());
+
+			// FIXME pass the new thread to the analysis so that it can terminate the thread at the end
 			break;
 		case REMOVE:
 			// TODO implement "remove port at runtime"
