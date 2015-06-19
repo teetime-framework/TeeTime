@@ -25,6 +25,7 @@ import org.jctools.queues.spec.Preference;
 
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.InitializingSignal;
+import teetime.framework.signal.StartingSignal;
 import teetime.util.concurrent.queue.PCBlockingQueue;
 import teetime.util.concurrent.queue.putstrategy.PutStrategy;
 import teetime.util.concurrent.queue.putstrategy.YieldPutStrategy;
@@ -65,16 +66,19 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 	}
 
 	@Override
-	public final void waitForStartSignal() throws InterruptedException {
+	public final void waitForInitializingSignal() throws InterruptedException {
 		final ISignal signal = signalQueue.take();
+		if (!(signal instanceof InitializingSignal)) {
+			throw new IllegalStateException("Expected InitializingSignal, but was " + signal.getClass().getSimpleName());
+		}
 		cachedTargetStage.onSignal(signal, getTargetPort());
 	}
 
 	@Override
-	public final void waitForInitializingSignal() throws InterruptedException {
+	public final void waitForStartSignal() throws InterruptedException {
 		final ISignal signal = signalQueue.take();
-		if (!(signal instanceof InitializingSignal)) {
-			throw new IllegalStateException("Expected InitializingSignal, but was not the first arriving signal");
+		if (!(signal instanceof StartingSignal)) {
+			throw new IllegalStateException("Expected StartingSignal, but was " + signal.getClass().getSimpleName());
 		}
 		cachedTargetStage.onSignal(signal, getTargetPort());
 	}
