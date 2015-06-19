@@ -29,7 +29,7 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
  * Represents a configuration of connected stages, which is needed to run a analysis.
  * Stages can be added by executing {@link #addThreadableStage(Stage)}.
  */
-public abstract class AnalysisContext extends Network {
+public abstract class ConfigurationContext extends Configuration {
 
 	private final Set<Stage> threadableStages = new HashSet<Stage>();
 

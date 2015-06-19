@@ -53,7 +53,7 @@ public class StageTest {
 		assertEquals(tc.init.exceptionHandler, tc.delay.exceptionHandler);
 	}
 
-	private static class TestConfig extends AnalysisContext {
+	private static class TestConfig extends ConfigurationContext {
 		public final DelayAndTerminate delay;
 		public InitialElementProducer<String> init;
 

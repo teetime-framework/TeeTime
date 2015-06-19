@@ -1,6 +1,6 @@
 package teetime.framework;
 
-public abstract class Network {
+public abstract class Configuration {
 
 	protected abstract <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity);
 

@@ -35,7 +35,7 @@ import teetime.util.Pair;
 
 /**
  * Represents an Analysis to which stages can be added and executed later.
- * This needs a {@link AnalysisContext},
+ * This needs a {@link ConfigurationContext},
  * in which the adding and configuring of stages takes place.
  * To start the analysis {@link #executeBlocking()} needs to be executed.
  * This class will automatically create threads and join them without any further commitment.
@@ -43,9 +43,9 @@ import teetime.util.Pair;
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
  * @param <T>
- *            the type of the {@link AnalysisContext}
+ *            the type of the {@link ConfigurationContext}
  */
-public final class Analysis<T extends AnalysisContext> implements UncaughtExceptionHandler {
+public final class Analysis<T extends ConfigurationContext> implements UncaughtExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Analysis.class);
 

@@ -18,8 +18,8 @@ package teetime.stage.io;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.AbstractCompositeStage;
-import teetime.framework.AnalysisContext;
+import teetime.framework.AbstractStageComposition;
+import teetime.framework.ConfigurationContext;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.Stage;
@@ -27,12 +27,12 @@ import teetime.stage.EveryXthStage;
 import teetime.stage.basic.distributor.CopyByReferenceStrategy;
 import teetime.stage.basic.distributor.Distributor;
 
-public final class EveryXthPrinter<T> extends AbstractCompositeStage {
+public final class EveryXthPrinter<T> extends AbstractStageComposition {
 
 	private final Distributor<T> distributor;
 	private final List<Stage> lastStages = new ArrayList<Stage>();
 
-	public EveryXthPrinter(final int threshold, final AnalysisContext context) {
+	public EveryXthPrinter(final int threshold, final ConfigurationContext context) {
 		super(context);
 		distributor = new Distributor<T>(new CopyByReferenceStrategy());
 		EveryXthStage<T> everyXthStage = new EveryXthStage<T>(threshold);

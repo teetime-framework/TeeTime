@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import teetime.framework.Analysis;
-import teetime.framework.AnalysisContext;
+import teetime.framework.ConfigurationContext;
 import teetime.framework.AnalysisException;
 import teetime.util.Pair;
 
@@ -122,7 +122,7 @@ public class InstanceOfFilterTest {
 		}
 	}
 
-	private static class InstanceOfFilterTestConfig extends AnalysisContext {
+	private static class InstanceOfFilterTestConfig extends ConfigurationContext {
 
 		public InstanceOfFilterTestConfig() {
 			InitialElementProducer<Object> elementProducer = new InitialElementProducer<Object>();

@@ -17,7 +17,7 @@ package teetime.examples.cipher;
 
 import java.io.File;
 
-import teetime.framework.AnalysisContext;
+import teetime.framework.ConfigurationContext;
 import teetime.stage.CipherStage;
 import teetime.stage.CipherStage.CipherMode;
 import teetime.stage.InitialElementProducer;
@@ -26,7 +26,7 @@ import teetime.stage.ZipByteArray.ZipMode;
 import teetime.stage.io.ByteArrayFileWriter;
 import teetime.stage.io.File2ByteArray;
 
-public class CipherConfiguration extends AnalysisContext {
+public class CipherConfiguration extends ConfigurationContext {
 
 	public CipherConfiguration(final String inputFile, final String outputFile, final String password) {
 		final File input = new File(inputFile);

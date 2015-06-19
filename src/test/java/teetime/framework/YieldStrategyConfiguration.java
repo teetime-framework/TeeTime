@@ -19,7 +19,7 @@ import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.Relay;
 
-class YieldStrategyConfiguration extends AnalysisContext {
+class YieldStrategyConfiguration extends ConfigurationContext {
 
 	private CollectorSink<Object> collectorSink;
 
