@@ -1,26 +1,44 @@
 package teetime.stage.basic.distributor;
 
-import teetime.framework.InputPort;
+import java.util.Queue;
+
+import org.jctools.queues.QueueFactory;
+import org.jctools.queues.spec.ConcurrentQueueSpec;
+import org.jctools.queues.spec.Ordering;
+import org.jctools.queues.spec.Preference;
+
 import teetime.framework.OutputPort;
-import teetime.framework.pipe.SpScPipeFactory;
 import teetime.stage.basic.distributor.DynamicPortActionContainer.DynamicPortAction;
+import teetime.util.concurrent.queue.PCBlockingQueue;
+import teetime.util.concurrent.queue.putstrategy.PutStrategy;
+import teetime.util.concurrent.queue.putstrategy.YieldPutStrategy;
+import teetime.util.concurrent.queue.takestrategy.SCParkTakeStrategy;
+import teetime.util.concurrent.queue.takestrategy.TakeStrategy;
 
 public class DynamicDistributor<T> extends Distributor<T> {
 
-	private static final SpScPipeFactory spScPipeFactory = new SpScPipeFactory();
+	private final PCBlockingQueue<DynamicPortActionContainer<T>> actions;
 
-	@SuppressWarnings("rawtypes")
-	private final InputPort<DynamicPortActionContainer> dynamicPortActionInputPort = createInputPort(DynamicPortActionContainer.class);
+	public DynamicDistributor() {
+		final Queue<DynamicPortActionContainer<T>> localQueue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT));
+		final PutStrategy<DynamicPortActionContainer<T>> putStrategy = new YieldPutStrategy<DynamicPortActionContainer<T>>();
+		final TakeStrategy<DynamicPortActionContainer<T>> takeStrategy = new SCParkTakeStrategy<DynamicPortActionContainer<T>>();
+		actions = new PCBlockingQueue<DynamicPortActionContainer<T>>(localQueue, putStrategy, takeStrategy);
+	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void execute(final T element) {
-		DynamicPortActionContainer<T> dynamicPortAction = dynamicPortActionInputPort.receive();
+		checkForPendingPortActionRequest();
+
+		super.execute(element);
+	}
+
+	private void checkForPendingPortActionRequest() {
+		DynamicPortActionContainer<T> dynamicPortAction = actions.poll();
 		switch (dynamicPortAction.getDynamicPortAction()) {
 		case CREATE:
 			OutputPort<T> newOutputPort = createOutputPort();
-			InputPort<T> newInputPort = dynamicPortAction.getInputPort();
-			spScPipeFactory.create(newOutputPort, newInputPort);
+			dynamicPortAction.execute(newOutputPort);
 			break;
 		case REMOVE:
 			// TODO implement "remove port at runtime"
@@ -31,7 +49,5 @@ public class DynamicDistributor<T> extends Distributor<T> {
 			}
 			break;
 		}
-
-		super.execute(element);
 	}
 }

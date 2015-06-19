@@ -1,8 +1,17 @@
 package teetime.stage.basic.distributor;
 
+import teetime.framework.DynamicActuator;
 import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
+import teetime.framework.pipe.SpScPipeFactory;
+import teetime.framework.signal.InitializingSignal;
+import teetime.framework.signal.StartingSignal;
 
 public class DynamicPortActionContainer<T> {
+
+	private static final SpScPipeFactory INTER_THREAD_PIPE_FACTORY = new SpScPipeFactory();
+
+	private final DynamicActuator dynamicActuator = new DynamicActuator();
 
 	public enum DynamicPortAction {
 		CREATE, REMOVE;
@@ -23,6 +32,19 @@ public class DynamicPortActionContainer<T> {
 
 	public InputPort<T> getInputPort() {
 		return inputPort;
+	}
+
+	public void execute(final OutputPort<T> newOutputPort) {
+		INTER_THREAD_PIPE_FACTORY.create(newOutputPort, inputPort);
+
+		Runnable runnable = dynamicActuator.wrap(inputPort.getOwningStage());
+		Thread thread = new Thread(runnable);
+		thread.start();
+
+		newOutputPort.sendSignal(new InitializingSignal());
+		newOutputPort.sendSignal(new StartingSignal());
+
+		// FIXME pass the new thread to the analysis so that it can terminate the thread at the end
 	}
 
 }
