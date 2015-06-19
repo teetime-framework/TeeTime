@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import teetime.framework.Analysis;
 import teetime.framework.AnalysisConfiguration;
-import teetime.framework.DynamicActuator;
 import teetime.framework.Stage;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
@@ -22,7 +21,6 @@ import teetime.stage.basic.distributor.DynamicPortActionContainer.DynamicPortAct
 public class ControlledDistributorTest {
 
 	// private ControlledDistributor<Integer> controlledDistributor;
-	private final DynamicActuator dynamicActuator = new DynamicActuator();
 
 	@Before
 	public void setUp() throws Exception {
