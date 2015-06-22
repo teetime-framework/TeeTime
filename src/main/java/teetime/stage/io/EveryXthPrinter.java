@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import teetime.framework.AbstractCompositeStage;
+import teetime.framework.ConfigurationContext;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.Stage;
@@ -31,7 +32,8 @@ public final class EveryXthPrinter<T> extends AbstractCompositeStage {
 	private final Distributor<T> distributor;
 	private final List<Stage> lastStages = new ArrayList<Stage>();
 
-	public EveryXthPrinter(final int threshold) {
+	public EveryXthPrinter(final int threshold, final ConfigurationContext context) {
+		super(context);
 		distributor = new Distributor<T>(new CopyByReferenceStrategy());
 		EveryXthStage<T> everyXthStage = new EveryXthStage<T>(threshold);
 		Printer<Integer> printer = new Printer<Integer>();
@@ -50,8 +52,7 @@ public final class EveryXthPrinter<T> extends AbstractCompositeStage {
 		return distributor.getNewOutputPort();
 	}
 
-	@Override
-	protected Stage getFirstStage() {
+	public Stage getFirstStage() {
 		return distributor;
 	}
 

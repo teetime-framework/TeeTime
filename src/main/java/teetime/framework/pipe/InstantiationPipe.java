@@ -21,13 +21,16 @@ import teetime.framework.signal.ISignal;
 
 public class InstantiationPipe implements IPipe {
 
-	private final InputPort<?> target;
+	private static final String ERROR_MESSAGE = "This must not be called while executing the configuration";
+
+	private final InputPort<?> targetPort;
 	private final int capacity;
 
 	public <T> InstantiationPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		this.target = targetPort;
+		this.targetPort = targetPort;
 		this.capacity = capacity;
 		sourcePort.setPipe(this);
+		targetPort.setPipe(this);
 	}
 
 	public int getCapacity() {
@@ -35,81 +38,68 @@ public class InstantiationPipe implements IPipe {
 	}
 
 	@Override
+	public InputPort<?> getTargetPort() {
+		return this.targetPort;
+	}
+
+	@Override
 	public boolean add(final Object element) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public boolean addNonBlocking(final Object element) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public Object removeLast() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public InputPort<?> getTargetPort() {
-		// TODO Auto-generated method stub
-		return this.target;
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public void sendSignal(final ISignal signal) {
-		// TODO Auto-generated method stub
-
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public void reportNewElement() {
-		// TODO Auto-generated method stub
-
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public boolean isClosed() {
-		// TODO Auto-generated method stub
-		return false;
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public boolean hasMore() {
-		// TODO Auto-generated method stub
-		return false;
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public void waitForStartSignal() throws InterruptedException {
-		// TODO Auto-generated method stub
-
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public void waitForInitializingSignal() throws InterruptedException {
-		// TODO Auto-generated method stub
-
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
-
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 }

@@ -34,8 +34,8 @@ import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.Pair;
 
 /**
- * Represents an Analysis to which stages can be added and executed later.
- * This needs a {@link AnalysisConfiguration},
+ * Represents an Execution to which stages can be added and executed later.
+ * This needs a {@link ConfigurationContext},
  * in which the adding and configuring of stages takes place.
  * To start the analysis {@link #executeBlocking()} needs to be executed.
  * This class will automatically create threads and join them without any further commitment.
@@ -43,11 +43,11 @@ import teetime.util.Pair;
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
  * @param <T>
- *            the type of the {@link AnalysisConfiguration}
+ *            the type of the {@link ConfigurationContext}
  */
-public final class Analysis<T extends AnalysisConfiguration> implements UncaughtExceptionHandler {
+public final class Execution<T extends ConfigurationContext> implements UncaughtExceptionHandler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Analysis.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
 
 	private final T configuration;
 
@@ -64,32 +64,32 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	private final List<RunnableProducerStage> producerRunnables = new LinkedList<RunnableProducerStage>();
 
 	/**
-	 * Creates a new {@link Analysis} that skips validating the port connections and uses the default listener.
+	 * Creates a new {@link Execution} that skips validating the port connections and uses the default listener.
 	 *
 	 * @param configuration
 	 *            to be used for the analysis
 	 */
-	public Analysis(final T configuration) {
+	public Execution(final T configuration) {
 		this(configuration, false, new IgnoringExceptionListenerFactory());
 	}
 
-	public Analysis(final T configuration, final boolean validationEnabled) {
+	public Execution(final T configuration, final boolean validationEnabled) {
 		this(configuration, validationEnabled, new IgnoringExceptionListenerFactory());
 	}
 
 	/**
-	 * Creates a new {@link Analysis} that skips validating the port connections and uses a specific listener.
+	 * Creates a new {@link Execution} that skips validating the port connections and uses a specific listener.
 	 *
 	 * @param configuration
 	 *            to be used for the analysis
 	 * @param factory
 	 *            specific listener for the exception handling
 	 */
-	public Analysis(final T configuration, final IExceptionListenerFactory factory) {
+	public Execution(final T configuration, final IExceptionListenerFactory factory) {
 		this(configuration, false, factory);
 	}
 
-	public Analysis(final T configuration, final boolean validationEnabled, final IExceptionListenerFactory factory) {
+	public Execution(final T configuration, final boolean validationEnabled, final IExceptionListenerFactory factory) {
 		this.configuration = configuration;
 		this.factory = factory;
 		if (validationEnabled) {
@@ -118,8 +118,8 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	 *
 	 */
 	private final void init() {
-		AnalysisInstantiation analysisInstantiation = new AnalysisInstantiation(configuration);
-		analysisInstantiation.instantiatePipes();
+		ExecutionInstantiation executionInstantiation = new ExecutionInstantiation(configuration);
+		executionInstantiation.instantiatePipes();
 
 		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStages();
 		if (threadableStageJobs.isEmpty()) {
@@ -194,7 +194,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	/**
 	 * Calling this method will block the current thread, until the analysis terminates.
 	 *
-	 * @throws AnalysisException
+	 * @throws ExecutionException
 	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable
 	 *
 	 * @since 1.1
@@ -209,7 +209,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 				thread.join();
 			}
 		} catch (InterruptedException e) {
-			LOGGER.error("Analysis has stopped unexpectedly", e);
+			LOGGER.error("Execution has stopped unexpectedly", e);
 			for (Thread thread : this.finiteProducerThreads) {
 				thread.interrupt();
 			}
@@ -224,7 +224,7 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 		}
 
 		if (!exceptions.isEmpty()) {
-			throw new AnalysisException(exceptions);
+			throw new ExecutionException(exceptions);
 		}
 	}
 
@@ -244,9 +244,9 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	}
 
 	/**
-	 * This method will start the Analysis and block until it is finished.
+	 * This method will start the Execution and block until it is finished.
 	 *
-	 * @throws AnalysisException
+	 * @throws ExecutionException
 	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable.
 	 *
 	 * @since 1.1
@@ -285,9 +285,9 @@ public final class Analysis<T extends AnalysisConfiguration> implements Uncaught
 	}
 
 	/**
-	 * Retrieves the Configuration which was used to add and arrange all stages needed for the Analysis
+	 * Retrieves the Configuration which was used to add and arrange all stages needed for the Execution
 	 *
-	 * @return the configuration used for the Analysis
+	 * @return the configuration used for the Execution
 	 */
 	public T getConfiguration() {
 		return this.configuration;

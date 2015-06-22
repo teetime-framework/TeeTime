@@ -42,7 +42,7 @@ public class TraversorTest {
 	@Test
 	public void traverse() {
 		TestConfiguration tc = new TestConfiguration();
-		new Analysis<TestConfiguration>(tc);
+		new Execution<TestConfiguration>(tc);
 		traversor.traverse(tc.init);
 		Set<Stage> comparingStages = new HashSet<Stage>();
 		comparingStages.add(tc.init);
@@ -53,7 +53,7 @@ public class TraversorTest {
 	}
 
 	// WordCounterConfiguration
-	private class TestConfiguration extends AnalysisConfiguration {
+	private class TestConfiguration extends ConfigurationContext {
 
 		public final CountingMapMerger<String> result = new CountingMapMerger<String>();
 		public final InitialElementProducer<File> init;
@@ -77,13 +77,13 @@ public class TraversorTest {
 			// Middle part... multiple instances of WordCounter are created and connected to the merger and distrubuter stages
 			for (int i = 0; i < threads; i++) {
 				// final InputPortSizePrinter<String> inputPortSizePrinter = new InputPortSizePrinter<String>();
-				final WordCounter wc = new WordCounter();
+				final WordCounter wc = new WordCounter(this);
 				// intraFact.create(inputPortSizePrinter.getOutputPort(), wc.getInputPort());
 
 				connectPorts(distributor.getNewOutputPort(), wc.getInputPort());
 				connectPorts(wc.getOutputPort(), merger.getNewInputPort());
 				// Add WordCounter as a threadable stage, so it runs in its own thread
-				addThreadableStage(wc);
+				addThreadableStage(wc.getFirstStage());
 
 			}
 
@@ -91,7 +91,6 @@ public class TraversorTest {
 			connectPorts(merger.getOutputPort(), result.getInputPort());
 
 			// Add the first and last part to the threadable stages
-			addThreadableStage(init);
 			addThreadableStage(merger);
 		}
 

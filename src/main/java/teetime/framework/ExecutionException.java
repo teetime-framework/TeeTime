@@ -25,7 +25,7 @@ import teetime.util.Pair;
  *
  * @since 1.1
  */
-public class AnalysisException extends RuntimeException {
+public class ExecutionException extends RuntimeException {
 
 	/**
 	 *
@@ -34,7 +34,7 @@ public class AnalysisException extends RuntimeException {
 
 	private final Collection<Pair<Thread, Throwable>> exceptions;
 
-	public AnalysisException(final Collection<Pair<Thread, Throwable>> exceptions) {
+	public ExecutionException(final Collection<Pair<Thread, Throwable>> exceptions) {
 		super("Error(s) while running analysis. Check thrown exceptions.");
 		this.exceptions = exceptions;
 	}

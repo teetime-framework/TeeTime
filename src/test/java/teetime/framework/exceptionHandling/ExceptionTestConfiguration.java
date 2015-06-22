@@ -15,9 +15,9 @@
  */
 package teetime.framework.exceptionHandling;
 
-import teetime.framework.AnalysisConfiguration;
+import teetime.framework.ConfigurationContext;
 
-public class ExceptionTestConfiguration extends AnalysisConfiguration {
+public class ExceptionTestConfiguration extends ConfigurationContext {
 
 	ExceptionTestProducerStage first;
 	ExceptionTestConsumerStage second;
@@ -31,7 +31,6 @@ public class ExceptionTestConfiguration extends AnalysisConfiguration {
 		connectPorts(first.getOutputPort(), second.getInputPort());
 		// this.addThreadableStage(new ExceptionTestStage());
 
-		this.addThreadableStage(first);
 		this.addThreadableStage(second);
 		this.addThreadableStage(third);
 	}

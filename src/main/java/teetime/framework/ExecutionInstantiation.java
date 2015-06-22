@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package teetime.framework;
 
 import java.util.HashMap;
@@ -13,22 +28,22 @@ import teetime.framework.pipe.SingleElementPipeFactory;
 import teetime.framework.pipe.SpScPipeFactory;
 import teetime.framework.pipe.UnboundedSpScPipeFactory;
 
-class AnalysisInstantiation {
+class ExecutionInstantiation {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AnalysisInstantiation.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionInstantiation.class);
 
 	private final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
 	private final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
 	private final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
 
-	private final AnalysisConfiguration configuration;
+	private final ConfigurationContext configuration;
 
-	public AnalysisInstantiation(final AnalysisConfiguration configuration) {
+	public ExecutionInstantiation(final ConfigurationContext configuration) {
 		this.configuration = configuration;
 	}
 
 	@SuppressWarnings("rawtypes")
-	Integer colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage, final AnalysisConfiguration configuration) {
+	Integer colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage, final ConfigurationContext configuration) {
 		Integer createdConnections = new Integer(0);
 		Set<Stage> threadableStageJobs = configuration.getThreadableStages();
 		for (OutputPort outputPort : threadableStage.getOutputPorts()) {
@@ -74,7 +89,7 @@ class AnalysisInstantiation {
 			colors.put(threadableStage, i);
 			createdConnections = colorAndConnectStages(i, colors, threadableStage, configuration);
 		}
-		LOGGER.debug("Created " + createdConnections + "connections");
+		LOGGER.debug("Created " + createdConnections + " connections");
 	}
 
 }
