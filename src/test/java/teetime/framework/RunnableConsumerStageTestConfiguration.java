@@ -21,7 +21,7 @@ import java.util.List;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 
-public class RunnableConsumerStageTestConfiguration extends AnalysisConfiguration {
+public class RunnableConsumerStageTestConfiguration extends ConfigurationContext {
 
 	private final List<Integer> collectedElements = new ArrayList<Integer>();
 	private final CollectorSink<Integer> collectorSink;

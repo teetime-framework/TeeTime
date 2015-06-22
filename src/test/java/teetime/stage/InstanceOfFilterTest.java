@@ -29,9 +29,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.framework.Analysis;
-import teetime.framework.AnalysisConfiguration;
-import teetime.framework.AnalysisException;
+import teetime.framework.ConfigurationContext;
+import teetime.framework.Execution;
+import teetime.framework.ExecutionException;
 import teetime.util.Pair;
 
 /**
@@ -113,16 +113,16 @@ public class InstanceOfFilterTest {
 	@Test
 	public void filterShouldSendToBothOutputPorts() throws Exception {
 		InstanceOfFilterTestConfig config = new InstanceOfFilterTestConfig();
-		Analysis analysis = new Analysis(config);
+		Execution execution = new Execution(config);
 		try {
-			analysis.executeBlocking();
-		} catch (AnalysisException e) {
+			execution.executeBlocking();
+		} catch (ExecutionException e) {
 			Collection<Pair<Thread, Throwable>> thrownExceptions = e.getThrownExceptions();
 			// TODO: handle exception
 		}
 	}
 
-	private static class InstanceOfFilterTestConfig extends AnalysisConfiguration {
+	private static class InstanceOfFilterTestConfig extends ConfigurationContext {
 
 		public InstanceOfFilterTestConfig() {
 			InitialElementProducer<Object> elementProducer = new InitialElementProducer<Object>();
@@ -134,7 +134,6 @@ public class InstanceOfFilterTest {
 			connectPorts(instanceOfFilter.getMatchedOutputPort(), clazzCollector.getInputPort());
 			connectPorts(instanceOfFilter.getMismatchedOutputPort(), mismatchedCollector.getInputPort());
 
-			addThreadableStage(elementProducer);
 		}
 	}
 

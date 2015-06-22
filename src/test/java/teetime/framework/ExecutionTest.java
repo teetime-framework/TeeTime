@@ -33,51 +33,50 @@ import teetime.stage.InstanceOfFilter;
 import teetime.stage.basic.Sink;
 import teetime.util.StopWatch;
 
-public class AnalysisTest {
+public class ExecutionTest {
 
 	private static final long DELAY_IN_MS = 500;
 	private static final long ABSOLUTE_MAX_ERROR_IN_MS = 2;
 
-	private Analysis<TestConfig> analysis;
+	private Execution<TestConfig> execution;
 
 	@Before
 	public void before() {
 		TestConfig configuration = new TestConfig();
-		analysis = new Analysis<TestConfig>(configuration);
+		execution = new Execution<TestConfig>(configuration);
 	}
 
 	@Test
 	public void testExecuteNonBlocking() throws Exception {
 		StopWatch watch = new StopWatch();
 		watch.start();
-		analysis.executeNonBlocking();
+		execution.executeNonBlocking();
 		watch.end();
 
 		assertThat(watch.getDurationInMs(), is(lessThan(DELAY_IN_MS)));
-		assertFalse(analysis.getConfiguration().delay.finished);
+		assertFalse(execution.getConfiguration().delay.finished);
 
-		analysis.waitForTermination();
-		assertTrue(analysis.getConfiguration().delay.finished);
+		execution.waitForTermination();
+		assertTrue(execution.getConfiguration().delay.finished);
 	}
 
 	@Test
 	public void testExecuteBlocking() {
 		StopWatch watch = new StopWatch();
 		watch.start();
-		analysis.executeBlocking();
+		execution.executeBlocking();
 		watch.end();
 
 		assertThat(watch.getDurationInMs() + ABSOLUTE_MAX_ERROR_IN_MS, is(greaterThanOrEqualTo(DELAY_IN_MS)));
 	}
 
-	private static class TestConfig extends AnalysisConfiguration {
+	private static class TestConfig extends ConfigurationContext {
 		public final DelayAndTerminate delay;
 
 		public TestConfig() {
 			final InitialElementProducer<String> init = new InitialElementProducer<String>("Hello");
 			delay = new DelayAndTerminate(DELAY_IN_MS);
 			connectPorts(init.getOutputPort(), delay.getInputPort());
-			addThreadableStage(init);
 		}
 	}
 
@@ -105,20 +104,19 @@ public class AnalysisTest {
 
 	@Test
 	public void testInstantiatePipes() throws Exception {
-		Analysis<AnalysisTestConfig> interAnalysis = new Analysis<AnalysisTestConfig>(new AnalysisTestConfig(true));
+		Execution<AnalysisTestConfig> interAnalysis = new Execution<AnalysisTestConfig>(new AnalysisTestConfig(true));
 		assertThat(interAnalysis.getConfiguration().init.getOwningThread(), is(not(interAnalysis.getConfiguration().sink.getOwningThread())));
 
-		Analysis<AnalysisTestConfig> intraAnalysis = new Analysis<AnalysisTestConfig>(new AnalysisTestConfig(false));
+		Execution<AnalysisTestConfig> intraAnalysis = new Execution<AnalysisTestConfig>(new AnalysisTestConfig(false));
 		assertThat(intraAnalysis.getConfiguration().init.getOwningThread(), is(intraAnalysis.getConfiguration().sink.getOwningThread()));
 	}
 
-	private class AnalysisTestConfig extends AnalysisConfiguration {
+	private class AnalysisTestConfig extends ConfigurationContext {
 		public InitialElementProducer<Object> init = new InitialElementProducer<Object>();
 		public Sink<Object> sink = new Sink<Object>();
 
 		public AnalysisTestConfig(final boolean inter) {
 			connectPorts(init.getOutputPort(), sink.getInputPort());
-			addThreadableStage(init);
 			if (inter) {
 				addThreadableStage(sink);
 			}
@@ -133,10 +131,10 @@ public class AnalysisTest {
 		thrown.expect(IllegalStateException.class);
 		thrown.expectMessage("Crossing threads");
 		InvalidTestConfig configuration = new InvalidTestConfig();
-		new Analysis<InvalidTestConfig>(configuration);
+		new Execution<InvalidTestConfig>(configuration);
 	}
 
-	private class InvalidTestConfig extends AnalysisConfiguration {
+	private class InvalidTestConfig extends ConfigurationContext {
 		public InitialElementProducer<Object> init = new InitialElementProducer<Object>();
 		public InstanceOfFilter<Object, Object> iof = new InstanceOfFilter<Object, Object>(Object.class);
 		public Sink<Object> sink = new Sink<Object>();
@@ -145,9 +143,37 @@ public class AnalysisTest {
 			connectPorts(init.getOutputPort(), iof.getInputPort());
 			connectPorts(iof.getMatchedOutputPort(), sink.getInputPort());
 			connectPorts(init.createOutputPort(), sink.createInputPort());
-			addThreadableStage(init);
 			addThreadableStage(iof);
 		}
+	}
+
+	@Test
+	public void automaticallyAddHeadStages() {
+		AutomaticallyConfig context = new AutomaticallyConfig();
+		new Execution<ConfigurationContext>(context).executeBlocking();
+		assertTrue(context.executed);
+	}
+
+	private class AutomaticallyConfig extends ConfigurationContext {
+
+		public boolean executed;
+
+		public AutomaticallyConfig() {
+			AutomaticallyAddedStage aas = new AutomaticallyAddedStage();
+			Sink<Object> sink = new Sink<Object>();
+			connectPorts(aas.getOutputPort(), sink.getInputPort());
+		}
+
+		private class AutomaticallyAddedStage extends AbstractProducerStage<Object> {
+
+			@Override
+			protected void execute() {
+				executed = true;
+				terminate();
+			}
+
+		}
+
 	}
 
 }

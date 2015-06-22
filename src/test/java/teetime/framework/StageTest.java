@@ -47,13 +47,13 @@ public class StageTest {
 	@Test
 	public void testSetOwningThread() throws Exception {
 		TestConfig tc = new TestConfig();
-		new Analysis<TestConfig>(tc);
+		new Execution<TestConfig>(tc);
 		assertEquals(tc.init.owningThread, tc.delay.owningThread);
 		assertThat(tc.delay.exceptionHandler, is(notNullValue()));
 		assertEquals(tc.init.exceptionHandler, tc.delay.exceptionHandler);
 	}
 
-	private static class TestConfig extends AnalysisConfiguration {
+	private static class TestConfig extends ConfigurationContext {
 		public final DelayAndTerminate delay;
 		public InitialElementProducer<String> init;
 
@@ -61,7 +61,6 @@ public class StageTest {
 			init = new InitialElementProducer<String>("Hello");
 			delay = new DelayAndTerminate(0);
 			connectPorts(init.getOutputPort(), delay.getInputPort());
-			addThreadableStage(init);
 		}
 	}
 

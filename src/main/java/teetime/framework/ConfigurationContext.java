@@ -18,6 +18,9 @@ package teetime.framework;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.InstantiationPipe;
@@ -29,7 +32,9 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
  * Represents a configuration of connected stages, which is needed to run a analysis.
  * Stages can be added by executing {@link #addThreadableStage(Stage)}.
  */
-public abstract class AnalysisConfiguration {
+public abstract class ConfigurationContext extends Configuration {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
 	private final Set<Stage> threadableStages = new HashSet<Stage>();
 
@@ -59,20 +64,10 @@ public abstract class AnalysisConfiguration {
 	 * @param stage
 	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
 	 */
+	@Override
 	protected final void addThreadableStage(final Stage stage) {
-		this.threadableStages.add(stage);
-	}
-
-	/**
-	 * Execute this method, to add a CompositeStage to the configuration, which should be executed in a own thread.
-	 *
-	 * @param stage
-	 *            A arbitrary CompositeStage, which will be added to the configuration and executed in a thread.
-	 */
-	protected final void addThreadableStage(final AbstractCompositeStage stage) {
-		this.threadableStages.add(stage.getFirstStage());
-		for (Stage threadableStage : stage.getThreadableStages()) {
-			this.addThreadableStage(threadableStage);
+		if (!this.threadableStages.add(stage)) {
+			LOGGER.warn("Stage " + stage.getId() + " was already marked as threadable stage.");
 		}
 	}
 
@@ -185,6 +180,7 @@ public abstract class AnalysisConfiguration {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
+	@Override
 	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		connectPorts(sourcePort, targetPort, 4);
 	}
@@ -201,7 +197,15 @@ public abstract class AnalysisConfiguration {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
+	@Override
 	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		if (sourcePort.getOwningStage().getInputPorts().length == 0 && !threadableStages.contains(sourcePort.getOwningStage())) {
+			addThreadableStage(sourcePort.getOwningStage());
+		}
+		if (sourcePort.getPipe() != null || targetPort.getPipe() != null) {
+			LOGGER.warn("Overwriting existing pipe while connecting stages " +
+					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
+		}
 		new InstantiationPipe(sourcePort, targetPort, capacity);
 	}
 

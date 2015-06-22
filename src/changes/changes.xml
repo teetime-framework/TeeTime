@@ -11,9 +11,20 @@
 				TeeTime automatically
 				chooses the correct type of pipe for all connections.
 			</action>
+			<action dev="ntd" type="add">
+				Stages without any input port are
+				automatically executed in a dedicated thread.
+			</action>
 			<action dev="ntd" type="fix" issue="93">
 				Introduced a new concept
 				for composing stages.
+			</action>
+			<action dev="ntd" type="add" issue="171">
+				Configurations are now
+				built within an AnalysisContext which is passed on to nested
+				CompositeStages.
+				This removes any constraints on CompositeStages and
+				enables therefore multiple connections and multithreading.
 			</action>
 			<action dev="ntd" type="remove">
 				Marked Pair class as deprecated.
