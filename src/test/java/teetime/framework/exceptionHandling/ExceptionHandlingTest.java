@@ -22,29 +22,29 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import teetime.framework.Analysis;
-import teetime.framework.AnalysisException;
+import teetime.framework.Execution;
+import teetime.framework.ExecutionException;
 import teetime.framework.StageState;
 
 public class ExceptionHandlingTest {
 
-	private Analysis<ExceptionTestConfiguration> analysis;
+	private Execution<ExceptionTestConfiguration> execution;
 
 	public ExceptionTestConfiguration newInstances() {
 		ExceptionTestConfiguration configuration = new ExceptionTestConfiguration();
-		analysis = new Analysis<ExceptionTestConfiguration>(configuration, new TestListenerFactory());
+		execution = new Execution<ExceptionTestConfiguration>(configuration, new TestListenerFactory());
 		return configuration;
 	}
 
 	public void exceptionPassingAndTermination() {
 		newInstances();
-		analysis.executeBlocking();
+		execution.executeBlocking();
 		assertEquals(TestListener.exceptionInvoked, 2); // listener did not kill thread too early
 	}
 
 	public void terminatesAllStages() {
 		ExceptionTestConfiguration config = newInstances();
-		analysis.executeBlocking();
+		execution.executeBlocking();
 		assertThat(config.first.getCurrentState(), is(StageState.TERMINATED));
 		assertThat(config.second.getCurrentState(), is(StageState.TERMINATED));
 		assertThat(config.third.getCurrentState(), is(StageState.TERMINATED));
@@ -56,7 +56,7 @@ public class ExceptionHandlingTest {
 			boolean exceptionArised = false;
 			try {
 				exceptionPassingAndTermination();
-			} catch (AnalysisException e) {
+			} catch (ExecutionException e) {
 				exceptionArised = true;
 			}
 			assertTrue(exceptionArised);
@@ -64,7 +64,7 @@ public class ExceptionHandlingTest {
 			exceptionArised = false;
 			try {
 				terminatesAllStages();
-			} catch (AnalysisException e) {
+			} catch (ExecutionException e) {
 				exceptionArised = true;
 			}
 			assertTrue(exceptionArised);

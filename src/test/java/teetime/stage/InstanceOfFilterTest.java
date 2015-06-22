@@ -29,9 +29,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.framework.Analysis;
+import teetime.framework.Execution;
 import teetime.framework.ConfigurationContext;
-import teetime.framework.AnalysisException;
+import teetime.framework.ExecutionException;
 import teetime.util.Pair;
 
 /**
@@ -113,10 +113,10 @@ public class InstanceOfFilterTest {
 	@Test
 	public void filterShouldSendToBothOutputPorts() throws Exception {
 		InstanceOfFilterTestConfig config = new InstanceOfFilterTestConfig();
-		Analysis analysis = new Analysis(config);
+		Execution execution = new Execution(config);
 		try {
-			analysis.executeBlocking();
-		} catch (AnalysisException e) {
+			execution.executeBlocking();
+		} catch (ExecutionException e) {
 			Collection<Pair<Thread, Throwable>> thrownExceptions = e.getThrownExceptions();
 			// TODO: handle exception
 		}

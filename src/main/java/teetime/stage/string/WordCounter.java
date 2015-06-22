@@ -17,7 +17,7 @@ package teetime.stage.string;
 
 import java.util.ArrayList;
 
-import teetime.framework.AbstractStageComposition;
+import teetime.framework.AbstractCompositeStage;
 import teetime.framework.ConfigurationContext;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
@@ -34,7 +34,7 @@ import teetime.stage.util.CountingMap;
  * @author Nelson Tavares de Sousa
  *
  */
-public final class WordCounter extends AbstractStageComposition {
+public final class WordCounter extends AbstractCompositeStage {
 
 	// This fields are needed for the methods to work.
 	private final Tokenizer tokenizer = new Tokenizer(" ");

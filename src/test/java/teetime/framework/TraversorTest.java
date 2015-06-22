@@ -42,7 +42,7 @@ public class TraversorTest {
 	@Test
 	public void traverse() {
 		TestConfiguration tc = new TestConfiguration();
-		new Analysis<TestConfiguration>(tc);
+		new Execution<TestConfiguration>(tc);
 		traversor.traverse(tc.init);
 		Set<Stage> comparingStages = new HashSet<Stage>();
 		comparingStages.add(tc.init);

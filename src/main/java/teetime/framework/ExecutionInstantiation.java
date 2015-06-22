@@ -28,9 +28,9 @@ import teetime.framework.pipe.SingleElementPipeFactory;
 import teetime.framework.pipe.SpScPipeFactory;
 import teetime.framework.pipe.UnboundedSpScPipeFactory;
 
-class AnalysisInstantiation {
+class ExecutionInstantiation {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AnalysisInstantiation.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionInstantiation.class);
 
 	private final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
 	private final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
@@ -38,7 +38,7 @@ class AnalysisInstantiation {
 
 	private final ConfigurationContext configuration;
 
-	public AnalysisInstantiation(final ConfigurationContext configuration) {
+	public ExecutionInstantiation(final ConfigurationContext configuration) {
 		this.configuration = configuration;
 	}
 

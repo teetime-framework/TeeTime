@@ -23,11 +23,11 @@ package teetime.framework;
  *
  *
  */
-public abstract class AbstractStageComposition extends Configuration {
+public abstract class AbstractCompositeStage extends Configuration {
 
 	private final ConfigurationContext context;
 
-	public AbstractStageComposition(final ConfigurationContext context) {
+	public AbstractCompositeStage(final ConfigurationContext context) {
 		this.context = context;
 	}
 

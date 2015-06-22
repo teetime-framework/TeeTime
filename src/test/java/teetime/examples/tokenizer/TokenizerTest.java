@@ -22,7 +22,7 @@ import java.nio.charset.Charset;
 import org.junit.Assert;
 import org.junit.Test;
 
-import teetime.framework.Analysis;
+import teetime.framework.Execution;
 
 import com.google.common.io.Files;
 
@@ -42,8 +42,8 @@ public class TokenizerTest {
 		final String password = "Password";
 
 		final TokenizerConfiguration configuration = new TokenizerConfiguration(inputFile, password);
-		final Analysis analysis = new Analysis(configuration);
-		analysis.executeBlocking();
+		final Execution execution = new Execution(configuration);
+		execution.executeBlocking();
 
 		final String string = Files.toString(new File("src/test/resources/data/input.txt"), Charset.forName("UTF-8"));
 

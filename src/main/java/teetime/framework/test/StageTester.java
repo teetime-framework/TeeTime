@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import teetime.framework.Analysis;
 import teetime.framework.ConfigurationContext;
-import teetime.framework.AnalysisException;
+import teetime.framework.Execution;
+import teetime.framework.ExecutionException;
 import teetime.framework.Stage;
 import teetime.framework.StageState;
 import teetime.stage.CollectorSink;
@@ -72,14 +72,14 @@ public final class StageTester {
 	/**
 	 * This method will start the test and block until it is finished.
 	 *
-	 * @throws AnalysisException
+	 * @throws ExecutionException
 	 *             if at least one exception in one thread has occurred within the analysis.
 	 *             The exception contains the pairs of thread and throwable.
 	 *
 	 */
 	public void start() {
 		final ConfigurationContext configuration = new Configuration(inputHolders, stage, outputHolders);
-		final Analysis<ConfigurationContext> analysis = new Analysis<ConfigurationContext>(configuration);
+		final Execution<ConfigurationContext> analysis = new Execution<ConfigurationContext>(configuration);
 		analysis.executeBlocking();
 	}
 
@@ -89,7 +89,6 @@ public final class StageTester {
 			for (InputHolder<?> inputHolder : inputHolders) {
 				final InitialElementProducer<Object> producer = new InitialElementProducer<Object>(inputHolder.getInput());
 				connectPorts(producer.getOutputPort(), inputHolder.getPort());
-				addThreadableStage(producer);
 			}
 
 			addThreadableStage(stage);

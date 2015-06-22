@@ -34,11 +34,11 @@ public class RunnableConsumerStageTest {
 	public void testWaitingInfinitely() throws Exception {
 		RunnableConsumerStageTestConfiguration configuration = new RunnableConsumerStageTestConfiguration();
 
-		final Analysis analysis = new Analysis(configuration);
+		final Execution execution = new Execution(configuration);
 		final Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				start(analysis);
+				start(execution);
 			}
 		});
 		thread.start();
@@ -59,8 +59,8 @@ public class RunnableConsumerStageTest {
 	public void testCorrectStartAndTerminatation() throws Exception {
 		RunnableConsumerStageTestConfiguration configuration = new RunnableConsumerStageTestConfiguration(0, 1, 2, 3, 5);
 
-		final Analysis analysis = new Analysis(configuration);
-		start(analysis);
+		final Execution execution = new Execution(configuration);
+		start(execution);
 
 		assertEquals(5, configuration.getCollectedElements().size());
 	}
@@ -69,7 +69,7 @@ public class RunnableConsumerStageTest {
 	// public void testWaitingInfinitely() throws Exception {
 	// WaitStrategyConfiguration waitStrategyConfiguration = new WaitStrategyConfiguration(300, 42);
 	//
-	// final Analysis analysis = new Analysis(waitStrategyConfiguration);
+	// final Execution analysis = new Execution(waitStrategyConfiguration);
 	// Thread thread = new Thread(new Runnable() {
 	// @Override
 	// public void run() {
@@ -88,7 +88,7 @@ public class RunnableConsumerStageTest {
 	// public void testWaitingFinitely() throws Exception {
 	// WaitStrategyConfiguration waitStrategyConfiguration = new WaitStrategyConfiguration(300, 42);
 	//
-	// final Analysis analysis = new Analysis(waitStrategyConfiguration);
+	// final Execution analysis = new Execution(waitStrategyConfiguration);
 	// Thread thread = new Thread(new Runnable() {
 	// @Override
 	// public void run() {
@@ -109,19 +109,19 @@ public class RunnableConsumerStageTest {
 	public void testYieldRun() throws Exception {
 		YieldStrategyConfiguration waitStrategyConfiguration = new YieldStrategyConfiguration(42);
 
-		final Analysis analysis = new Analysis(waitStrategyConfiguration);
+		final Execution execution = new Execution(waitStrategyConfiguration);
 
-		start(analysis);
+		start(execution);
 
 		assertEquals(42, waitStrategyConfiguration.getCollectorSink().getElements().get(0));
 		assertEquals(1, waitStrategyConfiguration.getCollectorSink().getElements().size());
 	}
 
-	private void start(final Analysis analysis) {
+	private void start(final Execution execution) {
 		Collection<Pair<Thread, Throwable>> exceptions = new ArrayList<Pair<Thread, Throwable>>();
 		try {
-			analysis.executeBlocking();
-		} catch (AnalysisException e) {
+			execution.executeBlocking();
+		} catch (ExecutionException e) {
 			exceptions = e.getThrownExceptions();
 		}
 		for (Pair<Thread, Throwable> pair : exceptions) {
