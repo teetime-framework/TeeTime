@@ -3,11 +3,11 @@ package teetime.stage.taskfarm.history;
 public class ThroughputEntry {
 
 	private long timestamp;
-	private int throughput;
+	private double throughput;
 
 	public ThroughputEntry() {};
 
-	public ThroughputEntry(final long timestamp, final int throughput) {
+	public ThroughputEntry(final long timestamp, final double throughput) {
 		this.timestamp = timestamp;
 		this.throughput = throughput;
 	}
@@ -20,11 +20,11 @@ public class ThroughputEntry {
 		this.timestamp = timestamp;
 	}
 
-	public int getThroughput() {
+	public double getThroughput() {
 		return throughput;
 	}
 
-	public void setThroughput(final int throughput) {
+	public void setThroughput(final double throughput) {
 		this.throughput = throughput;
 	}
 }
