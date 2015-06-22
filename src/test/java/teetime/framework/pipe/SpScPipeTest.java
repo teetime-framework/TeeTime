@@ -73,7 +73,7 @@ public class SpScPipeTest {
 		assertEquals(signals, secondSignals);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testAdd() throws Exception {
 		SpScPipe pipe = new SpScPipe(null, null, 4);
 		assertFalse(pipe.add(null));

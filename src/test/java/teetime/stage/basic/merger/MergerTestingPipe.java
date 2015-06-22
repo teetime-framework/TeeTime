@@ -16,7 +16,6 @@
 package teetime.stage.basic.merger;
 
 import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.StartingSignal;
@@ -77,11 +76,6 @@ class MergerTestingPipe implements IPipe {
 	@Override
 	public InputPort<?> getTargetPort() {
 		return null;
-	}
-
-	@Override
-	public <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-
 	}
 
 	@Override

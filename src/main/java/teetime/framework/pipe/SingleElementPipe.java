@@ -27,12 +27,6 @@ final class SingleElementPipe extends AbstractIntraThreadPipe {
 		super(sourcePort, targetPort);
 	}
 
-	@Deprecated
-	public static <T> void connect(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		final IPipe pipe = new SingleElementPipe(null, null);
-		pipe.connectPorts(sourcePort, targetPort);
-	}
-
 	@Override
 	public boolean add(final Object element) {
 		if (null == element) {

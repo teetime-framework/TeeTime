@@ -16,7 +16,6 @@
 package teetime.framework.pipe;
 
 import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
 
 /**
@@ -75,9 +74,6 @@ public interface IPipe {
 	 *            The signal which needs to be passed on.
 	 */
 	void sendSignal(ISignal signal);
-
-	@Deprecated
-	<T> void connectPorts(OutputPort<? extends T> sourcePort, InputPort<T> targetPort);
 
 	/**
 	 * Stages report new elements with this method.
