@@ -1,5 +1,5 @@
 package teetime.stage.taskfarm.analysis;
 
-public class TaskFarmScheduler {
+public class TaskFarmAnalyzer {
 
 }
