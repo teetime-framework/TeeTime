@@ -35,87 +35,73 @@ public class InstantiationPipe implements IPipe {
 	}
 
 	@Override
-	public boolean add(final Object element) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean addNonBlocking(final Object element) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public Object removeLast() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public InputPort<?> getTargetPort() {
-		// TODO Auto-generated method stub
 		return this.target;
 	}
 
 	@Override
-	public void sendSignal(final ISignal signal) {
-		// TODO Auto-generated method stub
+	public boolean add(final Object element) {
+		throw new IllegalStateException("This must not be called while executing the configuration");
+	}
 
+	@Override
+	public boolean addNonBlocking(final Object element) {
+		throw new IllegalStateException("This must not be called while executing the configuration");
+	}
+
+	@Override
+	public boolean isEmpty() {
+		throw new IllegalStateException("This must not be called while executing the configuration");
+	}
+
+	@Override
+	public int size() {
+		throw new IllegalStateException("This must not be called while executing the configuration");
+	}
+
+	@Override
+	public Object removeLast() {
+		throw new IllegalStateException("This must not be called while executing the configuration");
+	}
+
+	@Override
+	public void sendSignal(final ISignal signal) {
+		throw new IllegalStateException("This must not be called while executing the configuration");
 	}
 
 	@Override
 	public <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		// TODO Auto-generated method stub
-
+		throw new IllegalStateException("This must not be called while executing the configuration");
 	}
 
 	@Override
 	public void reportNewElement() {
-		// TODO Auto-generated method stub
-
+		throw new IllegalStateException("This must not be called while executing the configuration");
 	}
 
 	@Override
 	public boolean isClosed() {
-		// TODO Auto-generated method stub
-		return false;
+		throw new IllegalStateException("This must not be called while executing the configuration");
 	}
 
 	@Override
 	public boolean hasMore() {
-		// TODO Auto-generated method stub
-		return false;
+		throw new IllegalStateException("This must not be called while executing the configuration");
 	}
 
 	@Override
 	public void waitForStartSignal() throws InterruptedException {
-		// TODO Auto-generated method stub
-
+		throw new IllegalStateException("This must not be called while executing the configuration");
 	}
 
 	@Override
 	public void waitForInitializingSignal() throws InterruptedException {
-		// TODO Auto-generated method stub
-
+		throw new IllegalStateException("This must not be called while executing the configuration");
 	}
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
-
+		throw new IllegalStateException("This must not be called while executing the configuration");
 	}
 
 }
