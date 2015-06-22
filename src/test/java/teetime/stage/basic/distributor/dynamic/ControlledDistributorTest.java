@@ -1,4 +1,4 @@
-package teetime.stage.basic.distributor;
+package teetime.stage.basic.distributor.dynamic;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
