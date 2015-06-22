@@ -15,6 +15,7 @@
  */
 package teetime.framework;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +35,8 @@ public abstract class AbstractStage extends Stage {
 	private InputPort<?>[] inputPorts = new InputPort<?>[0];
 	private OutputPort<?>[] outputPorts = new OutputPort<?>[0];
 	private StageState currentState = StageState.CREATED;
+
+	private final Set<OutputPortRemovedListener> outputPortRemovedListeners = new HashSet<OutputPortRemovedListener>();
 
 	@Override
 	public InputPort<?>[] getInputPorts() {
@@ -311,8 +314,8 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	protected void removeDynamicPort(final DynamicOutputPort<?> dynamicOutputPort) {
 		int index = dynamicOutputPort.getIndex();
-		List<OutputPort<?>> tempOutputPorts = Arrays.asList(outputPorts);
-		tempOutputPorts.remove(index);
+		List<OutputPort<?>> tempOutputPorts = new ArrayList<OutputPort<?>>(Arrays.asList(outputPorts));
+		OutputPort<?> removedOutputPort = tempOutputPorts.remove(index);
 		for (int i = index; i < tempOutputPorts.size(); i++) {
 			OutputPort<?> outputPort = tempOutputPorts.get(i);
 			if (outputPort instanceof DynamicOutputPort) {
@@ -320,6 +323,18 @@ public abstract class AbstractStage extends Stage {
 			}
 		}
 		outputPorts = tempOutputPorts.toArray(new OutputPort[0]);
+
+		fireOutputPortRemoved(removedOutputPort);
+	}
+
+	private void fireOutputPortRemoved(final OutputPort<?> removedOutputPort) {
+		for (OutputPortRemovedListener listener : outputPortRemovedListeners) {
+			listener.onOutputPortRemoved(this, removedOutputPort);
+		}
+	}
+
+	protected void addOutputPortRemovedListener(final OutputPortRemovedListener outputPortRemovedListener) {
+		outputPortRemovedListeners.add(outputPortRemovedListener);
 	}
 
 }

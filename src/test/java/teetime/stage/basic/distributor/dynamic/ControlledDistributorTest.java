@@ -14,13 +14,9 @@ import org.junit.Test;
 import teetime.framework.Analysis;
 import teetime.framework.AnalysisConfiguration;
 import teetime.framework.Stage;
+import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
-import teetime.stage.basic.distributor.dynamic.ControlledDynamicDistributor;
-import teetime.stage.basic.distributor.dynamic.CreatePortAction;
-import teetime.stage.basic.distributor.dynamic.DoNothingPortAction;
-import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
-import teetime.stage.basic.distributor.dynamic.PortAction;
 
 public class ControlledDistributorTest {
 
@@ -40,7 +36,8 @@ public class ControlledDistributorTest {
 		List<PortAction<Integer>> inputActions = Arrays.asList(createAction, createAction, createAction, createAction, createAction);
 
 		ControlledDistributorTestConfig<Integer> config = new ControlledDistributorTestConfig<Integer>(inputNumbers, inputActions);
-		Analysis<ControlledDistributorTestConfig<Integer>> analysis = new Analysis<ControlledDistributorTestConfig<Integer>>(config);
+		Analysis<ControlledDistributorTestConfig<Integer>> analysis = new Analysis<ControlledDistributorTestConfig<Integer>>(config,
+				new TerminatingExceptionListenerFactory());
 
 		analysis.executeBlocking();
 
@@ -48,33 +45,21 @@ public class ControlledDistributorTest {
 	}
 
 	@Test
-	public void shouldWorkWithActionTriggers() throws Exception {
+	public void shouldWorkWithCreateActionTriggers() throws Exception {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4);
 
 		@SuppressWarnings("unchecked")
 		PortAction<Integer>[] inputActions = new PortAction[5];
 		for (int i = 0; i < inputActions.length; i++) {
-			CollectorSink<Integer> newStage = new CollectorSink<Integer>();
-
-			// Runnable runnable = dynamicActuator.wrap(newStage);
-			// Thread thread = new Thread(runnable);
-			// thread.start();
-
-			PortAction<Integer> createAction = new CreatePortAction<Integer>(newStage.getInputPort());
+			PortAction<Integer> createAction = createPortCreateAction();
 			inputActions[i] = createAction;
 		}
 
 		ControlledDistributorTestConfig<Integer> config = new ControlledDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Analysis<ControlledDistributorTestConfig<Integer>> analysis = new Analysis<ControlledDistributorTestConfig<Integer>>(config);
+		Analysis<ControlledDistributorTestConfig<Integer>> analysis = new Analysis<ControlledDistributorTestConfig<Integer>>(config,
+				new TerminatingExceptionListenerFactory());
 
 		analysis.executeBlocking();
-
-		for (PortAction<Integer> ia : inputActions) {
-			Stage stage = ((CreatePortAction<Integer>) ia).getInputPort().getOwningStage();
-			@SuppressWarnings("unchecked")
-			CollectorSink<Integer> collectorSink = (CollectorSink<Integer>) stage;
-			System.out.println("collectorSink: " + collectorSink.getElements());
-		}
 
 		assertThat(config.getOutputElements(), contains(0));
 		assertValuesForIndex(inputActions, Arrays.asList(1), 0);
@@ -82,6 +67,37 @@ public class ControlledDistributorTest {
 		assertValuesForIndex(inputActions, Arrays.asList(3), 2);
 		assertValuesForIndex(inputActions, Arrays.asList(4), 3);
 		assertValuesForIndex(inputActions, Collections.<Integer> emptyList(), 4);
+	}
+
+	@Test
+	public void shouldWorkWithRemoveActionTriggers() throws Exception {
+		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4, 5);
+
+		@SuppressWarnings("unchecked")
+		PortAction<Integer>[] inputActions = new PortAction[6];
+		inputActions[0] = createPortCreateAction();
+		inputActions[1] = new RemovePortAction<Integer>(null);
+		inputActions[2] = createPortCreateAction();
+		inputActions[3] = createPortCreateAction();
+		inputActions[4] = new RemovePortAction<Integer>(null);
+		inputActions[5] = new RemovePortAction<Integer>(null);
+
+		ControlledDistributorTestConfig<Integer> config = new ControlledDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
+		Analysis<ControlledDistributorTestConfig<Integer>> analysis = new Analysis<ControlledDistributorTestConfig<Integer>>(config,
+				new TerminatingExceptionListenerFactory());
+
+		analysis.executeBlocking();
+
+		assertThat(config.getOutputElements(), contains(0, 1, 2, 4, 5));
+		assertValuesForIndex(inputActions, Collections.<Integer> emptyList(), 0);
+		assertValuesForIndex(inputActions, Arrays.asList(3), 2);
+		assertValuesForIndex(inputActions, Collections.<Integer> emptyList(), 3);
+	}
+
+	private PortAction<Integer> createPortCreateAction() {
+		CollectorSink<Integer> newStage = new CollectorSink<Integer>();
+		PortAction<Integer> portAction = new CreatePortAction<Integer>(newStage.getInputPort());
+		return portAction;
 	}
 
 	private void assertValuesForIndex(final PortAction<Integer>[] inputActions,
@@ -99,16 +115,13 @@ public class ControlledDistributorTest {
 
 		public ControlledDistributorTestConfig(final List<T> elements, final List<PortAction<T>> portActions) {
 			InitialElementProducer<T> initialElementProducer = new InitialElementProducer<T>(elements);
-			// InitialElementProducer<PortAction<T>> initialActionProducer = new InitialElementProducer<PortAction<T>>(actions);
 			DynamicDistributor<T> distributor = new ControlledDynamicDistributor<T>();
 			collectorSink = new CollectorSink<T>();
 
 			connectPorts(initialElementProducer.getOutputPort(), distributor.getInputPort());
-			// connectPorts(initialActionProducer.getOutputPort(), controlledDistributor.getDynamicPortActionInputPort());
 			connectPorts(distributor.getNewOutputPort(), collectorSink.getInputPort());
 
 			addThreadableStage(initialElementProducer);
-			// addThreadableStage(initialActionProducer); // simulates the AdaptationThread
 			addThreadableStage(distributor);
 			addThreadableStage(collectorSink);
 

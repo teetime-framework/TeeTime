@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import teetime.framework.OutputPort;
+import teetime.framework.Stage;
 
 /**
  * @author Nils Christian Ehmke
@@ -109,6 +110,11 @@ public final class CloneStrategy implements IDistributorStrategy {
 		}
 
 		return null;
+	}
+
+	@Override
+	public void onOutputPortRemoved(final Stage stage, final OutputPort<?> removedOutputPort) {
+		// do nothing
 	}
 
 }

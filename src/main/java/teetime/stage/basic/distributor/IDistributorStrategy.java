@@ -16,13 +16,14 @@
 package teetime.stage.basic.distributor;
 
 import teetime.framework.OutputPort;
+import teetime.framework.OutputPortRemovedListener;
 
 /**
  * @author Nils Christian Ehmke
  *
  * @since 1.0
  */
-public interface IDistributorStrategy {
+public interface IDistributorStrategy extends OutputPortRemovedListener {
 
 	public <T> boolean distribute(final OutputPort<T>[] allOutputPorts, final T element);
 

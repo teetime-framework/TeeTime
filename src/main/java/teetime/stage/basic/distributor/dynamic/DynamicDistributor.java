@@ -40,7 +40,7 @@ public class DynamicDistributor<T> extends Distributor<T> {
 
 	private void checkForPendingPortActionRequest() throws InterruptedException {
 		PortAction<T> dynamicPortAction = getPortAction();
-		if (null != dynamicPortAction) {
+		if (null != dynamicPortAction) { // check if getPortAction() uses polling
 			dynamicPortAction.execute(this);
 		}
 	}
