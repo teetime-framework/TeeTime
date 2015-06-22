@@ -31,8 +31,7 @@ public class ExceptionTestConfiguration extends ConfigurationContext {
 		connectPorts(first.getOutputPort(), second.getInputPort());
 		// this.addThreadableStage(new ExceptionTestStage());
 
-		this.addThreadableStage(first);
 		this.addThreadableStage(second);
-		this.addThreadableStage(third);
+		// this.addThreadableStage(third);
 	}
 }
