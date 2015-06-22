@@ -11,8 +11,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.framework.Analysis;
-import teetime.framework.AnalysisConfiguration;
+import teetime.framework.ConfigurationContext;
+import teetime.framework.Execution;
 import teetime.framework.Stage;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.stage.CollectorSink;
@@ -36,7 +36,7 @@ public class ControlledDistributorTest {
 		List<PortAction<Integer>> inputActions = Arrays.asList(createAction, createAction, createAction, createAction, createAction);
 
 		ControlledDistributorTestConfig<Integer> config = new ControlledDistributorTestConfig<Integer>(inputNumbers, inputActions);
-		Analysis<ControlledDistributorTestConfig<Integer>> analysis = new Analysis<ControlledDistributorTestConfig<Integer>>(config,
+		Execution<ControlledDistributorTestConfig<Integer>> analysis = new Execution<ControlledDistributorTestConfig<Integer>>(config,
 				new TerminatingExceptionListenerFactory());
 
 		analysis.executeBlocking();
@@ -56,7 +56,7 @@ public class ControlledDistributorTest {
 		}
 
 		ControlledDistributorTestConfig<Integer> config = new ControlledDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Analysis<ControlledDistributorTestConfig<Integer>> analysis = new Analysis<ControlledDistributorTestConfig<Integer>>(config,
+		Execution<ControlledDistributorTestConfig<Integer>> analysis = new Execution<ControlledDistributorTestConfig<Integer>>(config,
 				new TerminatingExceptionListenerFactory());
 
 		analysis.executeBlocking();
@@ -83,7 +83,7 @@ public class ControlledDistributorTest {
 		inputActions[5] = new RemovePortAction<Integer>(null);
 
 		ControlledDistributorTestConfig<Integer> config = new ControlledDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Analysis<ControlledDistributorTestConfig<Integer>> analysis = new Analysis<ControlledDistributorTestConfig<Integer>>(config,
+		Execution<ControlledDistributorTestConfig<Integer>> analysis = new Execution<ControlledDistributorTestConfig<Integer>>(config,
 				new TerminatingExceptionListenerFactory());
 
 		analysis.executeBlocking();
@@ -109,7 +109,7 @@ public class ControlledDistributorTest {
 		assertThat(collectorSink.getElements(), is(values));
 	}
 
-	private static class ControlledDistributorTestConfig<T> extends AnalysisConfiguration {
+	private static class ControlledDistributorTestConfig<T> extends ConfigurationContext {
 
 		private final CollectorSink<T> collectorSink;
 
@@ -121,7 +121,6 @@ public class ControlledDistributorTest {
 			connectPorts(initialElementProducer.getOutputPort(), distributor.getInputPort());
 			connectPorts(distributor.getNewOutputPort(), collectorSink.getInputPort());
 
-			addThreadableStage(initialElementProducer);
 			addThreadableStage(distributor);
 			addThreadableStage(collectorSink);
 
