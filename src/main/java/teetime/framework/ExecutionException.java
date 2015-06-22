@@ -17,7 +17,7 @@ package teetime.framework;
 
 import java.util.Collection;
 
-import teetime.util.Pair;
+import teetime.util.ThreadThrowableContainer;
 
 /**
  * Represents a exception, which is thrown by an analysis, if any problems occured within its execution.
@@ -32,9 +32,9 @@ public class ExecutionException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 7486086437171884298L;
 
-	private final Collection<Pair<Thread, Throwable>> exceptions;
+	private final Collection<ThreadThrowableContainer<Thread, Throwable>> exceptions;
 
-	public ExecutionException(final Collection<Pair<Thread, Throwable>> exceptions) {
+	public ExecutionException(final Collection<ThreadThrowableContainer<Thread, Throwable>> exceptions) {
 		super("Error(s) while running analysis. Check thrown exceptions.");
 		this.exceptions = exceptions;
 	}
@@ -45,7 +45,7 @@ public class ExecutionException extends RuntimeException {
 	 *
 	 * @return a collection of pairs
 	 */
-	public Collection<Pair<Thread, Throwable>> getThrownExceptions() {
+	public Collection<ThreadThrowableContainer<Thread, Throwable>> getThrownExceptions() {
 		return exceptions;
 	}
 

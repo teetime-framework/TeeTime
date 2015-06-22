@@ -20,18 +20,18 @@ package teetime.util;
  */
 @Deprecated
 // See http://stackoverflow.com/questions/156275/what-is-the-equivalent-of-the-c-pairl-r-in-java
-public final class Pair<F, S> {
+public final class ThreadThrowableContainer<F, S> {
 
 	private final F first;
 	private final S second;
 
-	public Pair(final F first, final S second) {
+	public ThreadThrowableContainer(final F first, final S second) {
 		this.first = first;
 		this.second = second;
 	}
 
-	public static <F, S> Pair<F, S> of(final F first, final S second) {
-		return new Pair<F, S>(first, second);
+	public static <F, S> ThreadThrowableContainer<F, S> of(final F first, final S second) {
+		return new ThreadThrowableContainer<F, S>(first, second);
 	}
 
 	public F getFirst() {

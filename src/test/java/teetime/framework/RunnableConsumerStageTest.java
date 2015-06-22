@@ -24,7 +24,7 @@ import java.util.Collection;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import teetime.util.Pair;
+import teetime.util.ThreadThrowableContainer;
 
 import com.google.common.base.Joiner;
 
@@ -118,13 +118,13 @@ public class RunnableConsumerStageTest {
 	}
 
 	private void start(final Execution execution) {
-		Collection<Pair<Thread, Throwable>> exceptions = new ArrayList<Pair<Thread, Throwable>>();
+		Collection<ThreadThrowableContainer<Thread, Throwable>> exceptions = new ArrayList<ThreadThrowableContainer<Thread, Throwable>>();
 		try {
 			execution.executeBlocking();
 		} catch (ExecutionException e) {
 			exceptions = e.getThrownExceptions();
 		}
-		for (Pair<Thread, Throwable> pair : exceptions) {
+		for (ThreadThrowableContainer<Thread, Throwable> pair : exceptions) {
 			System.err.println(pair.getSecond());
 			System.err.println(Joiner.on("\n").join(pair.getSecond().getStackTrace()));
 			throw new AssertionError(pair.getSecond());
