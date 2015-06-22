@@ -25,6 +25,7 @@ public class CreatePortAction<T> implements PortAction<T> {
 
 	@Override
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
+		System.out.println("Creating...");
 		OutputPort<? extends T> newOutputPort = dynamicDistributor.getNewOutputPort();
 
 		INTER_THREAD_PIPE_FACTORY.create(newOutputPort, inputPort);
@@ -37,5 +38,6 @@ public class CreatePortAction<T> implements PortAction<T> {
 		newOutputPort.sendSignal(new StartingSignal());
 
 		// FIXME pass the new thread to the analysis so that it can terminate the thread at the end
+		System.out.println("Created.");
 	}
 }

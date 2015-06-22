@@ -36,6 +36,7 @@ public class Distributor<T> extends AbstractConsumerStage<T> {
 
 	public Distributor(final IDistributorStrategy strategy) {
 		this.strategy = strategy;
+		addOutputPortRemovedListener(strategy);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -45,7 +46,7 @@ public class Distributor<T> extends AbstractConsumerStage<T> {
 	}
 
 	public OutputPort<T> getNewOutputPort() {
-		return this.createOutputPort();
+		return this.createDynamicOutputPort();
 	}
 
 	public IDistributorStrategy getStrategy() {
@@ -54,6 +55,11 @@ public class Distributor<T> extends AbstractConsumerStage<T> {
 
 	public void setStrategy(final IDistributorStrategy strategy) {
 		this.strategy = strategy;
+	}
+
+	@Override
+	public OutputPort<?>[] getOutputPorts() {
+		return super.getOutputPorts();
 	}
 
 }

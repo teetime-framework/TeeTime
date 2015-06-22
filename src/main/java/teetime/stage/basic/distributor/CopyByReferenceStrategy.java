@@ -16,6 +16,7 @@
 package teetime.stage.basic.distributor;
 
 import teetime.framework.OutputPort;
+import teetime.framework.Stage;
 
 /**
  * @author Nils Christian Ehmke
@@ -33,4 +34,8 @@ public final class CopyByReferenceStrategy implements IDistributorStrategy {
 		return true;
 	}
 
+	@Override
+	public void onOutputPortRemoved(final Stage stage, final OutputPort<?> removedOutputPort) {
+		// do nothing
+	}
 }

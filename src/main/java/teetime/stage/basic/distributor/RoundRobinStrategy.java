@@ -16,6 +16,7 @@
 package teetime.stage.basic.distributor;
 
 import teetime.framework.OutputPort;
+import teetime.framework.Stage;
 
 /**
  * @author Nils Christian Ehmke
@@ -41,6 +42,13 @@ public final class RoundRobinStrategy implements IDistributorStrategy {
 		this.index = (this.index + 1) % outputPorts.length;
 
 		return outputPort;
+	}
+
+	@Override
+	public void onOutputPortRemoved(final Stage stage, final OutputPort<?> removedOutputPort) {
+		Distributor<?> distributor = (Distributor<?>) stage;
+		// correct the index if it is out-of-bounds
+		this.index = this.index % distributor.getOutputPorts().length;
 	}
 
 }
