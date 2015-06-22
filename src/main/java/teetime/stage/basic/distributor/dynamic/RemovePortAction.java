@@ -13,22 +13,20 @@ public class RemovePortAction<T> implements PortAction<T> {
 		this.outputPort = outputPort;
 	}
 
-	// public DynamicOutputPort<T> getOutputPort() {
-	// return outputPort;
-	// }
-
 	@Override
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
-		System.out.println("Removing...");
+		OutputPort<?> outputPortToRemove;
+
 		if (dynamicDistributor instanceof ControlledDynamicDistributor) {
+			// for testing purposes only
 			OutputPort<?>[] outputPorts = ((ControlledDynamicDistributor<?>) dynamicDistributor).getOutputPorts();
-			OutputPort<?> outputPortToRemove = outputPorts[outputPorts.length - 1];
-			// outputPortToRemove = outputPort;
-
-			outputPortToRemove.sendSignal(new TerminatingSignal());
-
-			dynamicDistributor.removeDynamicPort((DynamicOutputPort<?>) outputPortToRemove);
+			outputPortToRemove = outputPorts[outputPorts.length - 1];
+		} else {
+			outputPortToRemove = outputPort;
 		}
-		System.out.println("Removed.");
+
+		outputPortToRemove.sendSignal(new TerminatingSignal());
+
+		dynamicDistributor.removeDynamicPort((DynamicOutputPort<?>) outputPortToRemove);
 	}
 }

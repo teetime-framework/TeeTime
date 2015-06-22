@@ -25,7 +25,7 @@ import teetime.framework.Stage;
  */
 public final class RoundRobinStrategy2 implements IDistributorStrategy {
 
-	private int index = 0;
+	private int index;
 	private int numWaits;
 
 	@Override
@@ -45,8 +45,6 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 			}
 			numLoops--;
 		} while (!success);
-
-		System.out.println("Sent " + element + " via " + outputPort);
 
 		return true;
 	}
