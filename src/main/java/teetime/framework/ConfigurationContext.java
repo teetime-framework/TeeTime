@@ -82,9 +82,9 @@ public abstract class ConfigurationContext extends Configuration {
 		if (sourcePort.getOwningStage().getInputPorts().length == 0 && !threadableStages.contains(sourcePort.getOwningStage())) {
 			addThreadableStage(sourcePort.getOwningStage());
 		}
-		if (sourcePort.pipe != null) {
-			LOGGER.warn("Overwritting existing pipe while connecting stages " + sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId()
-					+ ".");
+		if (sourcePort.getPipe() != null || targetPort.getPipe() != null) {
+			LOGGER.warn("Overwriting existing pipe while connecting stages " +
+					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
 		}
 		new InstantiationPipe(sourcePort, targetPort, capacity);
 	}

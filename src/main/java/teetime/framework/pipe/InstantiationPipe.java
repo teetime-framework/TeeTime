@@ -21,13 +21,16 @@ import teetime.framework.signal.ISignal;
 
 public class InstantiationPipe implements IPipe {
 
-	private final InputPort<?> target;
+	private static final String ERROR_MESSAGE = "This must not be called while executing the configuration";
+
+	private final InputPort<?> targetPort;
 	private final int capacity;
 
 	public <T> InstantiationPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		this.target = targetPort;
+		this.targetPort = targetPort;
 		this.capacity = capacity;
 		sourcePort.setPipe(this);
+		targetPort.setPipe(this);
 	}
 
 	public int getCapacity() {
@@ -36,67 +39,67 @@ public class InstantiationPipe implements IPipe {
 
 	@Override
 	public InputPort<?> getTargetPort() {
-		return this.target;
+		return this.targetPort;
 	}
 
 	@Override
 	public boolean add(final Object element) {
-		throw new IllegalStateException("This must not be called while executing the configuration");
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public boolean addNonBlocking(final Object element) {
-		throw new IllegalStateException("This must not be called while executing the configuration");
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		throw new IllegalStateException("This must not be called while executing the configuration");
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public int size() {
-		throw new IllegalStateException("This must not be called while executing the configuration");
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public Object removeLast() {
-		throw new IllegalStateException("This must not be called while executing the configuration");
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public void sendSignal(final ISignal signal) {
-		throw new IllegalStateException("This must not be called while executing the configuration");
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public void reportNewElement() {
-		throw new IllegalStateException("This must not be called while executing the configuration");
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public boolean isClosed() {
-		throw new IllegalStateException("This must not be called while executing the configuration");
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public boolean hasMore() {
-		throw new IllegalStateException("This must not be called while executing the configuration");
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public void waitForStartSignal() throws InterruptedException {
-		throw new IllegalStateException("This must not be called while executing the configuration");
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public void waitForInitializingSignal() throws InterruptedException {
-		throw new IllegalStateException("This must not be called while executing the configuration");
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 	@Override
 	public void close() {
-		throw new IllegalStateException("This must not be called while executing the configuration");
+		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 
 }

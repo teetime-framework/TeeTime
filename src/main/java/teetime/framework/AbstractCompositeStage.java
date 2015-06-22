@@ -28,6 +28,9 @@ public abstract class AbstractCompositeStage extends Configuration {
 	private final ConfigurationContext context;
 
 	public AbstractCompositeStage(final ConfigurationContext context) {
+		if (null == context) {
+			throw new IllegalArgumentException("Context may not be null.");
+		}
 		this.context = context;
 	}
 
