@@ -25,7 +25,7 @@ import teetime.framework.Stage;
  */
 public final class RoundRobinStrategy implements IDistributorStrategy {
 
-	private int index = 0;
+	private int index;
 
 	@Override
 	public <T> boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
