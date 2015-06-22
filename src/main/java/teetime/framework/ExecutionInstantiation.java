@@ -89,7 +89,7 @@ class ExecutionInstantiation {
 			colors.put(threadableStage, i);
 			createdConnections = colorAndConnectStages(i, colors, threadableStage, configuration);
 		}
-		LOGGER.debug("Created " + createdConnections + "connections");
+		LOGGER.debug("Created " + createdConnections + " connections");
 	}
 
 }
