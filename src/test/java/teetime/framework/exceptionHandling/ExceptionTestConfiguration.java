@@ -32,6 +32,6 @@ public class ExceptionTestConfiguration extends ConfigurationContext {
 		// this.addThreadableStage(new ExceptionTestStage());
 
 		this.addThreadableStage(second);
-		// this.addThreadableStage(third);
+		this.addThreadableStage(third);
 	}
 }

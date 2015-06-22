@@ -66,7 +66,7 @@ public abstract class ConfigurationContext extends Configuration {
 	 */
 	@Override
 	protected final void addThreadableStage(final Stage stage) {
-		if (this.threadableStages.add(stage)) {
+		if (!this.threadableStages.add(stage)) {
 			LOGGER.warn("Stage " + stage.getId() + " was already marked as threadable stage.");
 		}
 	}

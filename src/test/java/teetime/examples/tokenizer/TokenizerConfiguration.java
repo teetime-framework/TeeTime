@@ -50,7 +50,6 @@ public class TokenizerConfiguration extends ConfigurationContext {
 		connectPorts(b2s.getOutputPort(), tokenizer.getInputPort());
 		connectPorts(tokenizer.getOutputPort(), this.counter.getInputPort());
 
-		this.addThreadableStage(init);
 	}
 
 	public int getTokenCount() {

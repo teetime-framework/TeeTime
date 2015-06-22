@@ -77,7 +77,6 @@ public class ExecutionTest {
 			final InitialElementProducer<String> init = new InitialElementProducer<String>("Hello");
 			delay = new DelayAndTerminate(DELAY_IN_MS);
 			connectPorts(init.getOutputPort(), delay.getInputPort());
-			addThreadableStage(init);
 		}
 	}
 
@@ -118,7 +117,6 @@ public class ExecutionTest {
 
 		public AnalysisTestConfig(final boolean inter) {
 			connectPorts(init.getOutputPort(), sink.getInputPort());
-			addThreadableStage(init);
 			if (inter) {
 				addThreadableStage(sink);
 			}
@@ -145,7 +143,6 @@ public class ExecutionTest {
 			connectPorts(init.getOutputPort(), iof.getInputPort());
 			connectPorts(iof.getMatchedOutputPort(), sink.getInputPort());
 			connectPorts(init.createOutputPort(), sink.createInputPort());
-			addThreadableStage(init);
 			addThreadableStage(iof);
 		}
 	}

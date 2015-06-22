@@ -61,7 +61,6 @@ public class StageTest {
 			init = new InitialElementProducer<String>("Hello");
 			delay = new DelayAndTerminate(0);
 			connectPorts(init.getOutputPort(), delay.getInputPort());
-			addThreadableStage(init);
 		}
 	}
 

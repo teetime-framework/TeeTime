@@ -29,8 +29,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.framework.Execution;
 import teetime.framework.ConfigurationContext;
+import teetime.framework.Execution;
 import teetime.framework.ExecutionException;
 import teetime.util.Pair;
 
@@ -134,7 +134,6 @@ public class InstanceOfFilterTest {
 			connectPorts(instanceOfFilter.getMatchedOutputPort(), clazzCollector.getInputPort());
 			connectPorts(instanceOfFilter.getMismatchedOutputPort(), mismatchedCollector.getInputPort());
 
-			addThreadableStage(elementProducer);
 		}
 	}
 

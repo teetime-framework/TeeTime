@@ -91,7 +91,6 @@ public class TraversorTest {
 			connectPorts(merger.getOutputPort(), result.getInputPort());
 
 			// Add the first and last part to the threadable stages
-			addThreadableStage(init);
 			addThreadableStage(merger);
 		}
 

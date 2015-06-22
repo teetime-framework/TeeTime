@@ -47,8 +47,5 @@ public class CipherConfiguration extends ConfigurationContext {
 		connectPorts(decomp.getOutputPort(), decrypt.getInputPort());
 		connectPorts(decrypt.getOutputPort(), writer.getInputPort());
 
-		// this.getFiniteProducerStages().add(init);
-		this.addThreadableStage(init);
-
 	}
 }
