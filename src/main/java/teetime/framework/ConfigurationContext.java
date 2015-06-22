@@ -203,7 +203,8 @@ public abstract class ConfigurationContext extends Configuration {
 			addThreadableStage(sourcePort.getOwningStage());
 		}
 		if (sourcePort.pipe != null) {
-			LOGGER.warn("Overwritting existing pipe connecting stages " + sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
+			LOGGER.warn("Overwritting existing pipe while connecting stages " + sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId()
+					+ ".");
 		}
 		new InstantiationPipe(sourcePort, targetPort, capacity);
 	}
