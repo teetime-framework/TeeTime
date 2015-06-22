@@ -70,7 +70,7 @@ public class ExecutionTest {
 		assertThat(watch.getDurationInMs() + ABSOLUTE_MAX_ERROR_IN_MS, is(greaterThanOrEqualTo(DELAY_IN_MS)));
 	}
 
-	private static class TestConfig extends ConfigurationContext {
+	private static class TestConfig extends Configuration {
 		public final DelayAndTerminate delay;
 
 		public TestConfig() {
@@ -111,7 +111,7 @@ public class ExecutionTest {
 		assertThat(intraAnalysis.getConfiguration().init.getOwningThread(), is(intraAnalysis.getConfiguration().sink.getOwningThread()));
 	}
 
-	private class AnalysisTestConfig extends ConfigurationContext {
+	private class AnalysisTestConfig extends Configuration {
 		public InitialElementProducer<Object> init = new InitialElementProducer<Object>();
 		public Sink<Object> sink = new Sink<Object>();
 
@@ -134,7 +134,7 @@ public class ExecutionTest {
 		new Execution<InvalidTestConfig>(configuration);
 	}
 
-	private class InvalidTestConfig extends ConfigurationContext {
+	private class InvalidTestConfig extends Configuration {
 		public InitialElementProducer<Object> init = new InitialElementProducer<Object>();
 		public InstanceOfFilter<Object, Object> iof = new InstanceOfFilter<Object, Object>(Object.class);
 		public Sink<Object> sink = new Sink<Object>();
@@ -150,11 +150,11 @@ public class ExecutionTest {
 	@Test
 	public void automaticallyAddHeadStages() {
 		AutomaticallyConfig context = new AutomaticallyConfig();
-		new Execution<ConfigurationContext>(context).executeBlocking();
+		new Execution<Configuration>(context).executeBlocking();
 		assertTrue(context.executed);
 	}
 
-	private class AutomaticallyConfig extends ConfigurationContext {
+	private class AutomaticallyConfig extends Configuration {
 
 		public boolean executed;
 

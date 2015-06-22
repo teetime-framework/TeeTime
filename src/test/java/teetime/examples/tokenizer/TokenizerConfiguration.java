@@ -17,7 +17,7 @@ package teetime.examples.tokenizer;
 
 import java.io.File;
 
-import teetime.framework.ConfigurationContext;
+import teetime.framework.Configuration;
 import teetime.stage.ByteArray2String;
 import teetime.stage.CipherStage;
 import teetime.stage.CipherStage.CipherMode;
@@ -28,7 +28,7 @@ import teetime.stage.ZipByteArray.ZipMode;
 import teetime.stage.io.File2ByteArray;
 import teetime.stage.string.Tokenizer;
 
-public class TokenizerConfiguration extends ConfigurationContext {
+public class TokenizerConfiguration extends Configuration {
 
 	private final Counter<String> counter;
 

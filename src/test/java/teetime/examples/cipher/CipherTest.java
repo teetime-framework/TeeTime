@@ -22,7 +22,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import teetime.framework.Execution;
-import teetime.framework.ConfigurationContext;
 
 import com.google.common.io.Files;
 
@@ -43,8 +42,8 @@ public class CipherTest {
 		final String outputFile = "src/test/resources/data/output.txt";
 		final String password = "Password";
 
-		final ConfigurationContext configuration = new CipherConfiguration(inputFile, outputFile, password);
-		final Execution execution = new Execution(configuration);
+		final CipherConfiguration configuration = new CipherConfiguration(inputFile, outputFile, password);
+		final Execution<CipherConfiguration> execution = new Execution<CipherConfiguration>(configuration);
 		execution.executeBlocking();
 
 		Assert.assertTrue(Files.equal(new File(inputFile), new File(outputFile)));

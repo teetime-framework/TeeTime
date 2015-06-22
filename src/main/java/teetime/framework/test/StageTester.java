@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import teetime.framework.ConfigurationContext;
+import teetime.framework.Configuration;
 import teetime.framework.Execution;
 import teetime.framework.ExecutionException;
 import teetime.framework.Stage;
@@ -78,14 +78,14 @@ public final class StageTester {
 	 *
 	 */
 	public void start() {
-		final ConfigurationContext configuration = new Configuration(inputHolders, stage, outputHolders);
-		final Execution<ConfigurationContext> analysis = new Execution<ConfigurationContext>(configuration);
+		final Configuration configuration = new TestConfiguration(inputHolders, stage, outputHolders);
+		final Execution<Configuration> analysis = new Execution<Configuration>(configuration);
 		analysis.executeBlocking();
 	}
 
-	private final class Configuration extends ConfigurationContext {
+	private final class TestConfiguration extends Configuration {
 
-		public Configuration(final List<InputHolder<?>> inputHolders, final Stage stage, final List<OutputHolder<?>> outputHolders) {
+		public TestConfiguration(final List<InputHolder<?>> inputHolders, final Stage stage, final List<OutputHolder<?>> outputHolders) {
 			for (InputHolder<?> inputHolder : inputHolders) {
 				final InitialElementProducer<Object> producer = new InitialElementProducer<Object>(inputHolder.getInput());
 				connectPorts(producer.getOutputPort(), inputHolder.getPort());

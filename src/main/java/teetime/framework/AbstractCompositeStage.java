@@ -23,7 +23,7 @@ package teetime.framework;
  *
  *
  */
-public abstract class AbstractCompositeStage extends Configuration {
+public abstract class AbstractCompositeStage {
 
 	private final ConfigurationContext context;
 
@@ -34,23 +34,27 @@ public abstract class AbstractCompositeStage extends Configuration {
 		this.context = context;
 	}
 
-	@Override
-	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		context.connectPorts(sourcePort, targetPort, capacity);
-	}
-
-	@Override
-	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		connectPorts(sourcePort, targetPort, 4);
-	}
-
-	@Override
-	protected void addThreadableStage(final Stage stage) {
-		context.addThreadableStage(stage);
-	}
-
 	protected ConfigurationContext getContext() {
 		return context;
 	}
 
+	protected final void addThreadableStage(final Stage stage) {
+		context.addThreadableStage(stage);
+	}
+
+	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		context.connectPorts(sourcePort, targetPort);
+	}
+
+	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		context.connectPorts(sourcePort, targetPort, capacity);
+	}
+
+	protected final <T> void connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		ConfigurationContext.connectBoundedInterThreads(sourcePort, targetPort);
+	}
+
+	protected final <T> void connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		ConfigurationContext.connectBoundedInterThreads(sourcePort, targetPort, capacity);
+	}
 }

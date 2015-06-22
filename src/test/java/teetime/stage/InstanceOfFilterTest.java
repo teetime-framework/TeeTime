@@ -29,7 +29,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.framework.ConfigurationContext;
+import teetime.framework.Configuration;
 import teetime.framework.Execution;
 import teetime.framework.ExecutionException;
 import teetime.util.Pair;
@@ -113,7 +113,7 @@ public class InstanceOfFilterTest {
 	@Test
 	public void filterShouldSendToBothOutputPorts() throws Exception {
 		InstanceOfFilterTestConfig config = new InstanceOfFilterTestConfig();
-		Execution execution = new Execution(config);
+		Execution<InstanceOfFilterTestConfig> execution = new Execution<InstanceOfFilterTestConfig>(config);
 		try {
 			execution.executeBlocking();
 		} catch (ExecutionException e) {
@@ -122,7 +122,7 @@ public class InstanceOfFilterTest {
 		}
 	}
 
-	private static class InstanceOfFilterTestConfig extends ConfigurationContext {
+	private static class InstanceOfFilterTestConfig extends Configuration {
 
 		public InstanceOfFilterTestConfig() {
 			InitialElementProducer<Object> elementProducer = new InitialElementProducer<Object>();
