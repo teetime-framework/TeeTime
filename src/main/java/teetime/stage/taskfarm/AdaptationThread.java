@@ -3,21 +3,21 @@ package teetime.stage.taskfarm;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.stage.taskfarm.analysis.TaskFarmScheduler;
+import teetime.stage.taskfarm.analysis.TaskFarmAnalyzer;
 import teetime.stage.taskfarm.execution.TaskFarmController;
 
-final public class MonitoringThread extends Thread {
+final public class AdaptationThread extends Thread {
 
 	private final static int sampleRate = 200;
 
 	private class ScheduledTaskFarm {
 		private final TaskFarmStage<?, ?> taskFarmStage;
-		private final TaskFarmScheduler scheduler;
+		private final TaskFarmAnalyzer analyzer;
 		private final TaskFarmController controller;
 
-		public ScheduledTaskFarm(final TaskFarmStage<?, ?> taskFarmStage, final TaskFarmScheduler scheduler, final TaskFarmController controller) {
+		public ScheduledTaskFarm(final TaskFarmStage<?, ?> taskFarmStage, final TaskFarmAnalyzer analyzer, final TaskFarmController controller) {
 			this.taskFarmStage = taskFarmStage;
-			this.scheduler = scheduler;
+			this.analyzer = analyzer;
 			this.controller = controller;
 		}
 	}
@@ -25,9 +25,9 @@ final public class MonitoringThread extends Thread {
 	private final List<ScheduledTaskFarm> monitoredTaskFarms = new LinkedList<ScheduledTaskFarm>();
 
 	protected void addTaskFarm(final TaskFarmStage<?, ?> taskFarmStage) {
-		TaskFarmScheduler scheduler = new TaskFarmScheduler();
+		TaskFarmAnalyzer analyzer = new TaskFarmAnalyzer();
 		TaskFarmController controller = new TaskFarmController();
-		this.monitoredTaskFarms.add(new ScheduledTaskFarm(taskFarmStage, scheduler, controller));
+		this.monitoredTaskFarms.add(new ScheduledTaskFarm(taskFarmStage, analyzer, controller));
 	}
 
 }

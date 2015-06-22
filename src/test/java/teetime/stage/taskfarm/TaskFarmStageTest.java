@@ -19,7 +19,7 @@ import teetime.stage.InitialElementProducer;
 @SuppressWarnings("deprecation")
 public class TaskFarmStageTest {
 
-	private final static int NUMBER_OF_TEST_ELEMENTS = 10000;
+	private final static int NUMBER_OF_TEST_ELEMENTS = 1000;
 
 	private class PlusOneInStringStage extends AbstractConsumerStage<Integer> {
 

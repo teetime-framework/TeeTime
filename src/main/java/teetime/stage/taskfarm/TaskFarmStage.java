@@ -35,14 +35,13 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 	private final Distributor<I> distributor = new Distributor<I>();
 	private final Merger<O> merger = new Merger<O>();
 	private final NoopFilter<I> noopI = new NoopFilter<I>();
-	private final NoopFilter<O> noopO = new NoopFilter<O>();
 
 	private final Map<Integer, TaskFarmTriple> triples = new HashMap<Integer, TaskFarmTriple>();
 
 	private final List<Thread> threads = new LinkedList<Thread>();
 
 	public TaskFarmStage(final AbstractCompositeStage includedStage) {
-		this.lastStages.add(this.noopO);
+		this.lastStages.add(this.merger);
 
 		init(includedStage);
 	}
@@ -66,7 +65,7 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 	}
 
 	public OutputPort<O> getOutputPort() {
-		return this.noopO.getOutputPort();
+		return this.merger.getOutputPort();
 	}
 
 	protected <T> IPipe connectPortsWithReturnValue(final OutputPort<? extends T> out, final InputPort<T> in, final IPipeFactory factory) {
@@ -90,8 +89,7 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 	private void init(final AbstractCompositeStage includedStage) {
 		checkIfValidAsIncludedStage(includedStage);
 
-		connectPortsWithReturnValue(noopI.getOutputPort(), distributor.getInputPort(), INTER_PIPE_FACTORY);
-		connectPortsWithReturnValue(merger.getOutputPort(), noopO.getInputPort(), INTRA_PIPE_FACTORY);
+		connectPortsWithReturnValue(noopI.getOutputPort(), distributor.getInputPort(), INTRA_PIPE_FACTORY);
 
 		InputPort<I> stageInputPort = (InputPort<I>) includedStage.getInputPorts()[0];
 		IPipe inputPipe = connectPortsWithReturnValue(this.distributor.getNewOutputPort(), stageInputPort, INTER_PIPE_FACTORY);
@@ -103,7 +101,6 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 		checkIfPipeIsMonitorable(outputPipe);
 		this.triples.put(0, new TaskFarmTriple((IMonitorablePipe) inputPipe, (IMonitorablePipe) outputPipe, includedStage));
 
-		startThread(distributor);
 		startThread(merger);
 		startThread(includedStage);
 	}
@@ -135,13 +132,6 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 		if (stageInputPorts.length < 1) {
 			throw new TaskFarmInvalidStageException("Included stage has no input ports.");
 		}
-
-		try {
-			@SuppressWarnings("all")
-			InputPort<I> _ = (InputPort<I>) stageInputPorts[0];
-		} catch (Exception _) {
-			throw new TaskFarmInvalidStageException("Input port of included stage does not have the same type as the Task Farm.");
-		}
 	}
 
 	private void checkOutputPorts(final AbstractCompositeStage includedStage) {
@@ -152,13 +142,6 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 		}
 		if (stageOutputPorts.length < 1) {
 			throw new TaskFarmInvalidStageException("Included stage has no output ports.");
-		}
-
-		try {
-			@SuppressWarnings("all")
-			OutputPort<O> _ = (OutputPort<O>) stageOutputPorts[0];
-		} catch (Exception _) {
-			throw new TaskFarmInvalidStageException("Output port of included stage does not have the same type as the Task Farm.");
 		}
 	}
 
