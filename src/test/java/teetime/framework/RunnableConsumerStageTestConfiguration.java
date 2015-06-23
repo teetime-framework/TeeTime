@@ -18,6 +18,7 @@ package teetime.framework;
 import java.util.ArrayList;
 import java.util.List;
 
+import teetime.framework.pipe.SpScPipeFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 
@@ -36,7 +37,7 @@ public class RunnableConsumerStageTestConfiguration extends Configuration {
 		addThreadableStage(collectorSink);
 
 		// Can not use createPorts, as the if condition above will lead to an exception
-		ConfigurationContext.connectBoundedInterThreads(producer.getOutputPort(), collectorSink.getInputPort());
+		new SpScPipeFactory().create(producer.getOutputPort(), collectorSink.getInputPort());
 
 		this.collectorSink = collectorSink;
 	}

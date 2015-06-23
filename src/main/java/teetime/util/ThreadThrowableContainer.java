@@ -13,29 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.util.classpath;
+package teetime.util;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+public final class ThreadThrowableContainer {
 
-public final class FileSearcher {
+	private final Thread first;
+	private final Throwable second;
 
-	private static final ClassLoader CLASS_LOADER = ClassLoader.getSystemClassLoader();
-
-	private FileSearcher() {
-		// utility class
+	public ThreadThrowableContainer(final Thread first, final Throwable second) {
+		this.first = first;
+		this.second = second;
 	}
 
-	public static List<URL> loadResources(final String name) throws IOException {
-		final List<URL> urls = new ArrayList<URL>();
-
-		final Enumeration<URL> systemRes = CLASS_LOADER.getResources(name);
-		while (systemRes.hasMoreElements()) { 
-			urls.add(systemRes.nextElement()); 
-		}
-		return urls;
+	public static ThreadThrowableContainer of(final Thread first, final Throwable second) {
+		return new ThreadThrowableContainer(first, second);
 	}
+
+	public Thread getThread() {
+		return this.first;
+	}
+
+	public Throwable getThrowable() {
+		return this.second;
+	}
+
 }

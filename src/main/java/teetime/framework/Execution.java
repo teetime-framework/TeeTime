@@ -31,7 +31,7 @@ import teetime.framework.exceptionHandling.IgnoringExceptionListenerFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
-import teetime.util.Pair;
+import teetime.util.ThreadThrowableContainer;
 
 /**
  * Represents an Execution to which stages can be added and executed later.
@@ -44,7 +44,7 @@ import teetime.util.Pair;
  *
  * @param <T>
  *            the type of the {@link Configuration}
- * 
+ *
  * @since 2.0
  */
 public final class Execution<T extends Configuration> implements UncaughtExceptionHandler {
@@ -61,7 +61,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	private final List<Thread> finiteProducerThreads = new LinkedList<Thread>();
 	private final List<Thread> infiniteProducerThreads = new LinkedList<Thread>();
 
-	private final Collection<Pair<Thread, Throwable>> exceptions = new ConcurrentLinkedQueue<Pair<Thread, Throwable>>();
+	private final Collection<ThreadThrowableContainer> exceptions = new ConcurrentLinkedQueue<ThreadThrowableContainer>();
 
 	private final List<RunnableProducerStage> producerRunnables = new LinkedList<RunnableProducerStage>();
 
@@ -308,7 +308,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 				}
 			}
 		}
-		this.exceptions.add(Pair.of(thread, throwable));
+		this.exceptions.add(ThreadThrowableContainer.of(thread, throwable));
 	}
 
 	private Set<Stage> traverseIntraStages(final Stage stage) {

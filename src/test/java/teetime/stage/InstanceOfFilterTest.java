@@ -32,7 +32,7 @@ import org.junit.Test;
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
 import teetime.framework.ExecutionException;
-import teetime.util.Pair;
+import teetime.util.ThreadThrowableContainer;
 
 /**
  * @author Nils Christian Ehmke
@@ -117,7 +117,7 @@ public class InstanceOfFilterTest {
 		try {
 			execution.executeBlocking();
 		} catch (ExecutionException e) {
-			Collection<Pair<Thread, Throwable>> thrownExceptions = e.getThrownExceptions();
+			Collection<ThreadThrowableContainer> thrownExceptions = e.getThrownExceptions();
 			// TODO: handle exception
 		}
 	}

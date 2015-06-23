@@ -55,7 +55,7 @@ To download these builds, add following lines to your project's ``pom.xml``:
 <dependency>
 	<groupId>net.sourceforge.teetime</groupId>
   	<artifactId>teetime</artifactId>
-  	<version>1.2-SNAPSHOT</version>
+  	<version>2.0-SNAPSHOT</version>
 </dependency>
 ```
 

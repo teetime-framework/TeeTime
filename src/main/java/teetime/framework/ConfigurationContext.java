@@ -21,12 +21,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.pipe.IPipe;
-import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.InstantiationPipe;
-import teetime.framework.pipe.PipeFactoryRegistry;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 
 /**
  * Represents a context that is used by a configuration and composite stages to connect ports, for example.
@@ -36,25 +31,13 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
  */
 public final class ConfigurationContext {
 
+	private static final int DEFAULT_CAPACITY = 4;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
 	private final Set<Stage> threadableStages = new HashSet<Stage>();
 
-	@SuppressWarnings("deprecation")
-	private static final PipeFactoryRegistry PIPE_FACTORY_REGISTRY = PipeFactoryRegistry.INSTANCE;
-
-	/**
-	 * Can be used by subclasses, to connect stages
-	 */
-	private final static IPipeFactory intraThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTRA, PipeOrdering.ARBITRARY, false);
-	/**
-	 * Can be used by subclasses, to connect stages
-	 */
-	private final static IPipeFactory interBoundedThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, false);
-	/**
-	 * Can be used by subclasses, to connect stages
-	 */
-	private final static IPipeFactory interUnboundedThreadFactory = PIPE_FACTORY_REGISTRY.getPipeFactory(ThreadCommunication.INTER, PipeOrdering.QUEUE_BASED, true);
+	ConfigurationContext() {}
 
 	Set<Stage> getThreadableStages() {
 		return this.threadableStages;
@@ -66,113 +49,14 @@ public final class ConfigurationContext {
 	 * @param stage
 	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
 	 */
-	protected final void addThreadableStage(final Stage stage) {
+	final void addThreadableStage(final Stage stage) {
 		if (!this.threadableStages.add(stage)) {
 			LOGGER.warn("Stage " + stage.getId() + " was already marked as threadable stage.");
 		}
 	}
 
 	/**
-	 * Connects two stages with a pipe within the same thread.
-	 *
-	 * @param sourcePort
-	 *            {@link OutputPort} of the sending stage
-	 * @param targetPort
-	 *            {@link InputPort} of the sending stage
-	 * @param <T>
-	 *            the type of elements to be sent
-	 * @return
-	 *         the pipe instance which connects the two given stages
-	 *
-	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
-	 */
-	@Deprecated
-	protected static <T> IPipe connectIntraThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		return intraThreadFactory.create(sourcePort, targetPort);
-	}
-
-	/**
-	 * Connects two stages with a bounded pipe within two separate threads.
-	 *
-	 * @param sourcePort
-	 *            {@link OutputPort} of the sending stage
-	 * @param targetPort
-	 *            {@link InputPort} of the sending stage
-	 * @param <T>
-	 *            the type of elements to be sent
-	 * @return
-	 *         the pipe instance which connects the two given stages
-	 *
-	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
-	 */
-	@Deprecated
-	protected static <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		return interBoundedThreadFactory.create(sourcePort, targetPort);
-	}
-
-	/**
-	 * Connects two stages with a unbounded pipe within two separate threads.
-	 *
-	 * @param sourcePort
-	 *            {@link OutputPort} of the sending stage
-	 * @param targetPort
-	 *            {@link InputPort} of the sending stage
-	 * @param <T>
-	 *            the type of elements to be sent
-	 * @return
-	 *         the pipe instance which connects the two given stages
-	 *
-	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
-	 */
-	@Deprecated
-	protected static <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		return interUnboundedThreadFactory.create(sourcePort, targetPort);
-	}
-
-	/**
-	 * Connects two stages with a bounded pipe within two separate threads.
-	 *
-	 * @param sourcePort
-	 *            {@link OutputPort} of the sending stage
-	 * @param targetPort
-	 *            {@link InputPort} of the sending stage
-	 * @param capacity
-	 *            capacity of the underlying queue
-	 * @param <T>
-	 *            the type of elements to be sent
-	 * @return
-	 *         the pipe instance which connects the two given stages
-	 *
-	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
-	 */
-	@Deprecated
-	protected static <T> IPipe connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		return interBoundedThreadFactory.create(sourcePort, targetPort, capacity);
-	}
-
-	/**
-	 * Connects two stages with a unbounded pipe within two separate threads.
-	 *
-	 * @param sourcePort
-	 *            {@link OutputPort} of the sending stage
-	 * @param targetPort
-	 *            {@link InputPort} of the sending stage
-	 * @param capacity
-	 *            capacity of the underlying queue
-	 * @param <T>
-	 *            the type of elements to be sent
-	 * @return
-	 *         the pipe instance which connects the two given stages
-	 *
-	 * @deprecated since 1.2. Use {@link #connectPorts(OutputPort, InputPort)} instead.
-	 */
-	@Deprecated
-	protected static <T> IPipe connectUnboundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		return interUnboundedThreadFactory.create(sourcePort, targetPort, capacity);
-	}
-
-	/**
-	 * Connects two ports with a pipe with a default capacity of currently 4
+	 * Connects two ports with a pipe with a default capacity of currently {@value #DEFAULT_CAPACITY}.
 	 *
 	 * @param sourcePort
 	 *            {@link OutputPort} of the sending stage
@@ -181,8 +65,8 @@ public final class ConfigurationContext {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
-	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		connectPorts(sourcePort, targetPort, 4);
+	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		connectPorts(sourcePort, targetPort, DEFAULT_CAPACITY);
 	}
 
 	/**
@@ -197,7 +81,7 @@ public final class ConfigurationContext {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
-	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort.getOwningStage().getInputPorts().length == 0 && !threadableStages.contains(sourcePort.getOwningStage())) {
 			addThreadableStage(sourcePort.getOwningStage());
 		}
