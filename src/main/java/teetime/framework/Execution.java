@@ -35,7 +35,7 @@ import teetime.util.ThreadThrowableContainer;
 
 /**
  * Represents an Execution to which stages can be added and executed later.
- * This needs a {@link ConfigurationContext},
+ * This needs a {@link Configuration},
  * in which the adding and configuring of stages takes place.
  * To start the analysis {@link #executeBlocking()} needs to be executed.
  * This class will automatically create threads and join them without any further commitment.
@@ -43,9 +43,11 @@ import teetime.util.ThreadThrowableContainer;
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
  * @param <T>
- *            the type of the {@link ConfigurationContext}
+ *            the type of the {@link Configuration}
+ * 
+ * @since 2.0
  */
-public final class Execution<T extends ConfigurationContext> implements UncaughtExceptionHandler {
+public final class Execution<T extends Configuration> implements UncaughtExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
 
@@ -100,7 +102,7 @@ public final class Execution<T extends ConfigurationContext> implements Uncaught
 
 	// BETTER validate concurrently
 	private void validateStages() {
-		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStages();
+		final Set<Stage> threadableStageJobs = this.configuration.getContext().getThreadableStages();
 		for (Stage stage : threadableStageJobs) {
 			// // portConnectionValidator.validate(stage);
 			// }
@@ -118,10 +120,10 @@ public final class Execution<T extends ConfigurationContext> implements Uncaught
 	 *
 	 */
 	private final void init() {
-		ExecutionInstantiation executionInstantiation = new ExecutionInstantiation(configuration);
+		ExecutionInstantiation executionInstantiation = new ExecutionInstantiation(configuration.getContext());
 		executionInstantiation.instantiatePipes();
 
-		final Set<Stage> threadableStageJobs = this.configuration.getThreadableStages();
+		final Set<Stage> threadableStageJobs = this.configuration.getContext().getThreadableStages();
 		if (threadableStageJobs.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
@@ -298,7 +300,7 @@ public final class Execution<T extends ConfigurationContext> implements Uncaught
 		if (!executionInterrupted) {
 			executionInterrupted = true;
 			LOGGER.warn("Thread " + thread + " was interrupted. Terminating analysis now.");
-			for (Stage stage : configuration.getThreadableStages()) {
+			for (Stage stage : configuration.getContext().getThreadableStages()) {
 				if (stage.getOwningThread() != thread) {
 					if (stage.getTerminationStrategy() == TerminationStrategy.BY_SELF_DECISION) {
 						stage.terminate();

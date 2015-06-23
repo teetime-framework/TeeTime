@@ -18,12 +18,12 @@ package teetime.framework;
 /**
  * Represents a minimal stage that composes several other stages.
  *
- * @since 1.2
+ * @since 2.0
+ *
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
- *
  */
-public abstract class AbstractCompositeStage extends Configuration {
+public abstract class AbstractCompositeStage {
 
 	private final ConfigurationContext context;
 
@@ -34,23 +34,20 @@ public abstract class AbstractCompositeStage extends Configuration {
 		this.context = context;
 	}
 
-	@Override
-	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		context.connectPorts(sourcePort, targetPort, capacity);
+	protected ConfigurationContext getContext() {
+		return context;
 	}
 
-	@Override
-	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		connectPorts(sourcePort, targetPort, 4);
-	}
-
-	@Override
-	protected void addThreadableStage(final Stage stage) {
+	protected final void addThreadableStage(final Stage stage) {
 		context.addThreadableStage(stage);
 	}
 
-	protected ConfigurationContext getContext() {
-		return context;
+	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		context.connectPorts(sourcePort, targetPort);
+	}
+
+	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		context.connectPorts(sourcePort, targetPort, capacity);
 	}
 
 }

@@ -21,7 +21,7 @@ import teetime.stage.InitialElementProducer;
 import teetime.stage.Relay;
 import teetime.stage.basic.Delay;
 
-class WaitStrategyConfiguration extends ConfigurationContext {
+class WaitStrategyConfiguration extends Configuration {
 
 	private Delay<Object> delay;
 	private CollectorSink<Object> collectorSink;

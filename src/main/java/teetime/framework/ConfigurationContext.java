@@ -24,10 +24,12 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.pipe.InstantiationPipe;
 
 /**
- * Represents a configuration of connected stages, which is needed to run a analysis.
+ * Represents a context that is used by a configuration and composite stages to connect ports, for example.
  * Stages can be added by executing {@link #addThreadableStage(Stage)}.
+ *
+ * @since 2.0
  */
-public abstract class ConfigurationContext extends Configuration {
+public final class ConfigurationContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
@@ -43,7 +45,6 @@ public abstract class ConfigurationContext extends Configuration {
 	 * @param stage
 	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
 	 */
-	@Override
 	protected final void addThreadableStage(final Stage stage) {
 		if (!this.threadableStages.add(stage)) {
 			LOGGER.warn("Stage " + stage.getId() + " was already marked as threadable stage.");
@@ -60,7 +61,6 @@ public abstract class ConfigurationContext extends Configuration {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
-	@Override
 	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		connectPorts(sourcePort, targetPort, 4);
 	}
@@ -77,7 +77,6 @@ public abstract class ConfigurationContext extends Configuration {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
-	@Override
 	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort.getOwningStage().getInputPorts().length == 0 && !threadableStages.contains(sourcePort.getOwningStage())) {
 			addThreadableStage(sourcePort.getOwningStage());
