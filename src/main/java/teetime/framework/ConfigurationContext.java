@@ -31,8 +31,6 @@ import teetime.framework.pipe.InstantiationPipe;
  */
 public final class ConfigurationContext {
 
-	private static final int DEFAULT_CAPACITY = 4;
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
 	private final Set<Stage> threadableStages = new HashSet<Stage>();
@@ -44,10 +42,7 @@ public final class ConfigurationContext {
 	}
 
 	/**
-	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
-	 *
-	 * @param stage
-	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
+	 * @see AbstractCompositeStage#addThreadableStage(Stage)
 	 */
 	final void addThreadableStage(final Stage stage) {
 		if (!this.threadableStages.add(stage)) {
@@ -56,30 +51,7 @@ public final class ConfigurationContext {
 	}
 
 	/**
-	 * Connects two ports with a pipe with a default capacity of currently {@value #DEFAULT_CAPACITY}.
-	 *
-	 * @param sourcePort
-	 *            {@link OutputPort} of the sending stage
-	 * @param targetPort
-	 *            {@link InputPort} of the sending stage
-	 * @param <T>
-	 *            the type of elements to be sent
-	 */
-	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		connectPorts(sourcePort, targetPort, DEFAULT_CAPACITY);
-	}
-
-	/**
-	 * Connects to ports with a pipe of a certain capacity
-	 *
-	 * @param sourcePort
-	 *            {@link OutputPort} of the sending stage
-	 * @param targetPort
-	 *            {@link InputPort} of the sending stage
-	 * @param capacity
-	 *            the pipe is set to this capacity, if the value is greater than 0. If it is 0, than the pipe is unbounded, thus growing of the pipe is enabled.
-	 * @param <T>
-	 *            the type of elements to be sent
+	 * @see AbstractCompositeStage#connectPorts(OutputPort, InputPort, int)
 	 */
 	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort.getOwningStage().getInputPorts().length == 0 && !threadableStages.contains(sourcePort.getOwningStage())) {
