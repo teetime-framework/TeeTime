@@ -44,6 +44,8 @@ import teetime.util.Pair;
  *
  * @param <T>
  *            the type of the {@link Configuration}
+ * 
+ * @since 2.0
  */
 public final class Execution<T extends Configuration> implements UncaughtExceptionHandler {
 

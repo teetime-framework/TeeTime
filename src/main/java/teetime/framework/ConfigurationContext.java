@@ -31,6 +31,8 @@ import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 /**
  * Represents a context that is used by a configuration and composite stages to connect ports, for example.
  * Stages can be added by executing {@link #addThreadableStage(Stage)}.
+ *
+ * @since 2.0
  */
 public final class ConfigurationContext {
 

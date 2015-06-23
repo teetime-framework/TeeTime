@@ -18,7 +18,7 @@ package teetime.framework;
 /**
  * Represents a minimal stage that composes several other stages.
  *
- * @since 1.2
+ * @since 2.0
  *
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
