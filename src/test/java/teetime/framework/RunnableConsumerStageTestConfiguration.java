@@ -36,7 +36,7 @@ public class RunnableConsumerStageTestConfiguration extends Configuration {
 		addThreadableStage(collectorSink);
 
 		// Can not use createPorts, as the if condition above will lead to an exception
-		connectBoundedInterThreads(producer.getOutputPort(), collectorSink.getInputPort());
+		ConfigurationContext.connectBoundedInterThreads(producer.getOutputPort(), collectorSink.getInputPort());
 
 		this.collectorSink = collectorSink;
 	}

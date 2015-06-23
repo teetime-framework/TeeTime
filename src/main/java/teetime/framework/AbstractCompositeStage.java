@@ -19,8 +19,8 @@ package teetime.framework;
  * Represents a minimal stage that composes several other stages.
  *
  * @since 1.2
- * @author Christian Wulf, Nelson Tavares de Sousa
  *
+ * @author Christian Wulf, Nelson Tavares de Sousa
  *
  */
 public abstract class AbstractCompositeStage {
@@ -50,11 +50,4 @@ public abstract class AbstractCompositeStage {
 		context.connectPorts(sourcePort, targetPort, capacity);
 	}
 
-	protected final <T> void connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		ConfigurationContext.connectBoundedInterThreads(sourcePort, targetPort);
-	}
-
-	protected final <T> void connectBoundedInterThreads(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		ConfigurationContext.connectBoundedInterThreads(sourcePort, targetPort, capacity);
-	}
 }
