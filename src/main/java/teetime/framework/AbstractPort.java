@@ -19,6 +19,8 @@ import teetime.framework.pipe.IPipe;
 
 public abstract class AbstractPort<T> {
 
+	private final String portName;
+
 	protected IPipe pipe;
 	/**
 	 * The type of this port.
@@ -29,8 +31,9 @@ public abstract class AbstractPort<T> {
 	protected final Class<T> type;
 	private final Stage owningStage;
 
-	public AbstractPort(final Class<T> type, final Stage owningStage) {
+	public AbstractPort(final Class<T> type, final Stage owningStage, final String portName) {
 		super();
+		this.portName = portName;
 		this.type = type;
 		this.owningStage = owningStage;
 	}
@@ -49,5 +52,14 @@ public abstract class AbstractPort<T> {
 
 	public final Stage getOwningStage() {
 		return owningStage;
+	}
+
+	@Override
+	public final String toString() {
+		if (portName == null) {
+			return super.toString();
+		} else {
+			return portName;
+		}
 	}
 }
