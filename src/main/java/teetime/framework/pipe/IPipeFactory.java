@@ -17,8 +17,6 @@ package teetime.framework.pipe;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.pipe.PipeFactoryRegistry.PipeOrdering;
-import teetime.framework.pipe.PipeFactoryRegistry.ThreadCommunication;
 
 /**
  * Represents the interface, which is must be defined in every PipeFactory
@@ -53,16 +51,6 @@ public interface IPipeFactory {
 	 * @return The connecting pipe.
 	 */
 	<T> IPipe create(OutputPort<? extends T> sourcePort, InputPort<T> targetPort, int capacity);
-
-	/**
-	 * @return Type of ThreadCommunication, which is used by the created pipes.
-	 */
-	ThreadCommunication getThreadCommunication();
-
-	/**
-	 * @return Ordering type, which is used by the created pipes.
-	 */
-	PipeOrdering getOrdering();
 
 	/**
 	 * @return Whether or not the created pipes are growable
