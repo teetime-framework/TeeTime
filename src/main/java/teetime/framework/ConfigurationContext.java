@@ -31,6 +31,8 @@ import teetime.framework.pipe.InstantiationPipe;
  */
 public final class ConfigurationContext {
 
+	private static final int DEFAULT_CAPACITY = 4;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
 	private final Set<Stage> threadableStages = new HashSet<Stage>();
@@ -54,7 +56,7 @@ public final class ConfigurationContext {
 	}
 
 	/**
-	 * Connects two ports with a pipe with a default capacity of currently 4
+	 * Connects two ports with a pipe with a default capacity of currently {@value #DEFAULT_CAPACITY}.
 	 *
 	 * @param sourcePort
 	 *            {@link OutputPort} of the sending stage
@@ -64,7 +66,7 @@ public final class ConfigurationContext {
 	 *            the type of elements to be sent
 	 */
 	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		connectPorts(sourcePort, targetPort, 4);
+		connectPorts(sourcePort, targetPort, DEFAULT_CAPACITY);
 	}
 
 	/**
