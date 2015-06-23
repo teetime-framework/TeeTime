@@ -47,7 +47,7 @@ public final class ConfigurationContext {
 	 * @param stage
 	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
 	 */
-	protected final void addThreadableStage(final Stage stage) {
+	final void addThreadableStage(final Stage stage) {
 		if (!this.threadableStages.add(stage)) {
 			LOGGER.warn("Stage " + stage.getId() + " was already marked as threadable stage.");
 		}
@@ -63,7 +63,7 @@ public final class ConfigurationContext {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
-	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		connectPorts(sourcePort, targetPort, 4);
 	}
 
@@ -79,7 +79,7 @@ public final class ConfigurationContext {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
-	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort.getOwningStage().getInputPorts().length == 0 && !threadableStages.contains(sourcePort.getOwningStage())) {
 			addThreadableStage(sourcePort.getOwningStage());
 		}
