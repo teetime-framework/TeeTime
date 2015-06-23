@@ -16,7 +16,7 @@
 package teetime.util;
 
 /**
- * @deprecated since 1.2
+ * @deprecated since 2.0
  */
 @Deprecated
 // See http://stackoverflow.com/questions/156275/what-is-the-equivalent-of-the-c-pairl-r-in-java
