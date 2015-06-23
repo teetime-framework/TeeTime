@@ -32,9 +32,9 @@ public class ExecutionException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 7486086437171884298L;
 
-	private final Collection<ThreadThrowableContainer<Thread, Throwable>> exceptions;
+	private final Collection<ThreadThrowableContainer> exceptions;
 
-	public ExecutionException(final Collection<ThreadThrowableContainer<Thread, Throwable>> exceptions) {
+	public ExecutionException(final Collection<ThreadThrowableContainer> exceptions) {
 		super("Error(s) while running analysis. Check thrown exceptions.");
 		this.exceptions = exceptions;
 	}
@@ -45,7 +45,7 @@ public class ExecutionException extends RuntimeException {
 	 *
 	 * @return a collection of pairs
 	 */
-	public Collection<ThreadThrowableContainer<Thread, Throwable>> getThrownExceptions() {
+	public Collection<ThreadThrowableContainer> getThrownExceptions() {
 		return exceptions;
 	}
 

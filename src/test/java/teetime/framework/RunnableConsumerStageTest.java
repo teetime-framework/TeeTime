@@ -118,16 +118,16 @@ public class RunnableConsumerStageTest {
 	}
 
 	private void start(final Execution execution) {
-		Collection<ThreadThrowableContainer<Thread, Throwable>> exceptions = new ArrayList<ThreadThrowableContainer<Thread, Throwable>>();
+		Collection<ThreadThrowableContainer> exceptions = new ArrayList<ThreadThrowableContainer>();
 		try {
 			execution.executeBlocking();
 		} catch (ExecutionException e) {
 			exceptions = e.getThrownExceptions();
 		}
-		for (ThreadThrowableContainer<Thread, Throwable> pair : exceptions) {
-			System.err.println(pair.getSecond());
-			System.err.println(Joiner.on("\n").join(pair.getSecond().getStackTrace()));
-			throw new AssertionError(pair.getSecond());
+		for (ThreadThrowableContainer pair : exceptions) {
+			System.err.println(pair.getThrowable());
+			System.err.println(Joiner.on("\n").join(pair.getThrowable().getStackTrace()));
+			throw new AssertionError(pair.getThrowable());
 		}
 		assertEquals(0, exceptions.size());
 	}

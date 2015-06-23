@@ -44,7 +44,7 @@ import teetime.util.ThreadThrowableContainer;
  *
  * @param <T>
  *            the type of the {@link Configuration}
- * 
+ *
  * @since 2.0
  */
 public final class Execution<T extends Configuration> implements UncaughtExceptionHandler {
@@ -61,7 +61,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	private final List<Thread> finiteProducerThreads = new LinkedList<Thread>();
 	private final List<Thread> infiniteProducerThreads = new LinkedList<Thread>();
 
-	private final Collection<ThreadThrowableContainer<Thread, Throwable>> exceptions = new ConcurrentLinkedQueue<ThreadThrowableContainer<Thread, Throwable>>();
+	private final Collection<ThreadThrowableContainer> exceptions = new ConcurrentLinkedQueue<ThreadThrowableContainer>();
 
 	private final List<RunnableProducerStage> producerRunnables = new LinkedList<RunnableProducerStage>();
 

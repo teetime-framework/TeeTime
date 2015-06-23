@@ -35,6 +35,8 @@ public final class ConfigurationContext {
 
 	private final Set<Stage> threadableStages = new HashSet<Stage>();
 
+	ConfigurationContext() {}
+
 	Set<Stage> getThreadableStages() {
 		return this.threadableStages;
 	}

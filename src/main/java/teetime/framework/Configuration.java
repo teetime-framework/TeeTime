@@ -1,7 +1,7 @@
 package teetime.framework;
 
 /**
- *
+ * Represents a configuration of connected stages.
  *
  * @author Christian Wulf, Nelson Tavares de Sousa
  *

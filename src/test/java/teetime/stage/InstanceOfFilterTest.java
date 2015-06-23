@@ -117,7 +117,7 @@ public class InstanceOfFilterTest {
 		try {
 			execution.executeBlocking();
 		} catch (ExecutionException e) {
-			Collection<ThreadThrowableContainer<Thread, Throwable>> thrownExceptions = e.getThrownExceptions();
+			Collection<ThreadThrowableContainer> thrownExceptions = e.getThrownExceptions();
 			// TODO: handle exception
 		}
 	}

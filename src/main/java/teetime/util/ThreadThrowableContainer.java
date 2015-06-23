@@ -15,30 +15,25 @@
  */
 package teetime.util;
 
-/**
- * @deprecated since 2.0
- */
-@Deprecated
-// See http://stackoverflow.com/questions/156275/what-is-the-equivalent-of-the-c-pairl-r-in-java
-public final class ThreadThrowableContainer<F, S> {
+public final class ThreadThrowableContainer {
 
-	private final F first;
-	private final S second;
+	private final Thread first;
+	private final Throwable second;
 
-	public ThreadThrowableContainer(final F first, final S second) {
+	public ThreadThrowableContainer(final Thread first, final Throwable second) {
 		this.first = first;
 		this.second = second;
 	}
 
-	public static <F, S> ThreadThrowableContainer<F, S> of(final F first, final S second) {
-		return new ThreadThrowableContainer<F, S>(first, second);
+	public static ThreadThrowableContainer of(final Thread first, final Throwable second) {
+		return new ThreadThrowableContainer(first, second);
 	}
 
-	public F getFirst() {
+	public Thread getThread() {
 		return this.first;
 	}
 
-	public S getSecond() {
+	public Throwable getThrowable() {
 		return this.second;
 	}
 
