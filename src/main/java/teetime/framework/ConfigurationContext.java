@@ -15,8 +15,8 @@
  */
 package teetime.framework;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,19 +33,19 @@ public final class ConfigurationContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
-	private final Set<Stage> threadableStages = new HashSet<Stage>();
+	private final Map<Stage, String> threadableStages = new HashMap<Stage, String>();
 
 	ConfigurationContext() {}
 
-	Set<Stage> getThreadableStages() {
+	Map<Stage, String> getThreadableStages() {
 		return this.threadableStages;
 	}
 
 	/**
 	 * @see AbstractCompositeStage#addThreadableStage(Stage)
 	 */
-	final void addThreadableStage(final Stage stage) {
-		if (!this.threadableStages.add(stage)) {
+	final void addThreadableStage(final Stage stage, final String threadName) {
+		if (this.threadableStages.put(stage, threadName) != null) {
 			LOGGER.warn("Stage " + stage.getId() + " was already marked as threadable stage.");
 		}
 	}
@@ -54,8 +54,8 @@ public final class ConfigurationContext {
 	 * @see AbstractCompositeStage#connectPorts(OutputPort, InputPort, int)
 	 */
 	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		if (sourcePort.getOwningStage().getInputPorts().length == 0 && !threadableStages.contains(sourcePort.getOwningStage())) {
-			addThreadableStage(sourcePort.getOwningStage());
+		if (sourcePort.getOwningStage().getInputPorts().length == 0) {
+			addThreadableStage(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
 		}
 		if (sourcePort.getPipe() != null || targetPort.getPipe() != null) {
 			LOGGER.warn("Overwriting existing pipe while connecting stages " +

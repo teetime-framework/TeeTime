@@ -45,7 +45,7 @@ class ExecutionInstantiation {
 	@SuppressWarnings("rawtypes")
 	Integer colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage, final ConfigurationContext configuration) {
 		Integer createdConnections = new Integer(0);
-		Set<Stage> threadableStageJobs = configuration.getThreadableStages();
+		Set<Stage> threadableStageJobs = configuration.getThreadableStages().keySet();
 		for (OutputPort outputPort : threadableStage.getOutputPorts()) {
 			if (outputPort.pipe != null) {
 				if (outputPort.pipe instanceof InstantiationPipe) {
@@ -82,7 +82,7 @@ class ExecutionInstantiation {
 	void instantiatePipes() {
 		Integer i = new Integer(0);
 		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
-		Set<Stage> threadableStageJobs = configuration.getThreadableStages();
+		Set<Stage> threadableStageJobs = configuration.getThreadableStages().keySet();
 		Integer createdConnections = 0;
 		for (Stage threadableStage : threadableStageJobs) {
 			i++;
