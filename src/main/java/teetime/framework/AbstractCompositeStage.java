@@ -25,6 +25,11 @@ package teetime.framework;
  */
 public abstract class AbstractCompositeStage {
 
+	/**
+	 * Default capacity for pipes
+	 */
+	private static final int DEFAULT_CAPACITY = 4;
+
 	private final ConfigurationContext context;
 
 	public AbstractCompositeStage(final ConfigurationContext context) {
@@ -38,14 +43,42 @@ public abstract class AbstractCompositeStage {
 		return context;
 	}
 
+	/**
+	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
+	 *
+	 * @param stage
+	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
+	 */
 	protected final void addThreadableStage(final Stage stage) {
 		context.addThreadableStage(stage);
 	}
 
+	/**
+	 * Connects two ports with a pipe with a default capacity of currently {@value #DEFAULT_CAPACITY}.
+	 *
+	 * @param sourcePort
+	 *            {@link OutputPort} of the sending stage
+	 * @param targetPort
+	 *            {@link InputPort} of the sending stage
+	 * @param <T>
+	 *            the type of elements to be sent
+	 */
 	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		context.connectPorts(sourcePort, targetPort);
+		context.connectPorts(sourcePort, targetPort, DEFAULT_CAPACITY);
 	}
 
+	/**
+	 * Connects to ports with a pipe of a certain capacity
+	 *
+	 * @param sourcePort
+	 *            {@link OutputPort} of the sending stage
+	 * @param targetPort
+	 *            {@link InputPort} of the sending stage
+	 * @param capacity
+	 *            the pipe is set to this capacity, if the value is greater than 0. If it is 0, than the pipe is unbounded, thus growing of the pipe is enabled.
+	 * @param <T>
+	 *            the type of elements to be sent
+	 */
 	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		context.connectPorts(sourcePort, targetPort, capacity);
 	}
