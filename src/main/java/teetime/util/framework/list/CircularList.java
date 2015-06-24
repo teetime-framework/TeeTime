@@ -13,27 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.util.list;
+package teetime.util.framework.list;
 
-import java.util.HashMap;
-import java.util.Map;
+public final class CircularList<T> {
 
-public final class ArrayPool<T> {
+	private static final class Node<T> {
+		T value;
+		Node<T> next;
+	}
 
-	// BETTER use a map with int as key due to performance
-	private final Map<Integer, T[]> cache = new HashMap<Integer, T[]>();
+	private Node<T> headNode;
+	private Node<T> lastNode;
 
-	@SuppressWarnings("unchecked")
-	public T[] acquire(final int capacity) {
-		T[] array = this.cache.get(capacity);
-		if (array == null) {
-			array = (T[]) new Object[capacity];
+	private Node<T> currentNode;
+
+	public void add(final T value) {
+		Node<T> newNode = new Node<T>();
+		newNode.value = value;
+
+		if (this.headNode == null) { // newNode is the first node
+			this.headNode = this.lastNode = newNode;
+			this.currentNode = newNode;
 		}
-		return array;
+
+		this.lastNode.next = newNode;
+		newNode.next = this.headNode;
 	}
 
-	public void release(final T[] array) {
-		this.cache.put(array.length, array);
+	public T getNext() {
+		T value = this.currentNode.value;
+		this.currentNode = this.currentNode.next;
+		return value;
 	}
-
 }

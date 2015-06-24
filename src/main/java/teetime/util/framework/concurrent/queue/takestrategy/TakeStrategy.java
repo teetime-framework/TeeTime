@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.util.list;
+package teetime.util.framework.concurrent.queue.takestrategy;
 
-public interface ObjectPool<T> {
+import java.util.Queue;
 
-	T acquire();
+public interface TakeStrategy<E>
+{
+	void signal();
 
-	void release(T element);
-
+	E waitPoll(Queue<E> q) throws InterruptedException;
 }

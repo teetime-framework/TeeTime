@@ -37,6 +37,7 @@ public abstract class AbstractStage extends Stage {
 	private StageState currentState = StageState.CREATED;
 
 	private final Set<OutputPortRemovedListener> outputPortRemovedListeners = new HashSet<OutputPortRemovedListener>();
+	private final Set<InputPortRemovedListener> inputPortsRemovedListeners = new HashSet<InputPortRemovedListener>();
 
 	@Override
 	public InputPort<?>[] getInputPorts() {
@@ -252,17 +253,43 @@ public abstract class AbstractStage extends Stage {
 		}
 		outputPorts = tempOutputPorts.toArray(new OutputPort[0]);
 
-		fireOutputPortRemoved(removedOutputPort);
+		firePortRemoved(removedOutputPort);
 	}
 
-	private void fireOutputPortRemoved(final OutputPort<?> removedOutputPort) {
+	private void firePortRemoved(final OutputPort<?> removedOutputPort) {
 		for (OutputPortRemovedListener listener : outputPortRemovedListeners) {
 			listener.onOutputPortRemoved(this, removedOutputPort);
 		}
 	}
 
-	protected void addOutputPortRemovedListener(final OutputPortRemovedListener outputPortRemovedListener) {
+	protected final void addOutputPortRemovedListener(final OutputPortRemovedListener outputPortRemovedListener) {
 		outputPortRemovedListeners.add(outputPortRemovedListener);
+	}
+
+	@Override
+	protected void removeDynamicPort(final DynamicInputPort<?> dynamicInputPort) {
+		int index = dynamicInputPort.getIndex();
+		List<InputPort<?>> tempInputPorts = new ArrayList<InputPort<?>>(Arrays.asList(inputPorts));
+		InputPort<?> removedInputPort = tempInputPorts.remove(index);
+		for (int i = index; i < tempInputPorts.size(); i++) {
+			InputPort<?> inputPort = tempInputPorts.get(i);
+			if (inputPort instanceof DynamicInputPort) {
+				((DynamicInputPort<?>) inputPort).setIndex(i);
+			}
+		}
+		inputPorts = tempInputPorts.toArray(new InputPort[0]);
+
+		firePortRemoved(removedInputPort);
+	}
+
+	private void firePortRemoved(final InputPort<?> removedInputPort) {
+		for (InputPortRemovedListener listener : inputPortsRemovedListeners) {
+			listener.onInputPortRemoved(this, removedInputPort);
+		}
+	}
+
+	protected final void addInputPortRemovedListener(final InputPortRemovedListener outputPortRemovedListener) {
+		inputPortsRemovedListeners.add(outputPortRemovedListener);
 	}
 
 }

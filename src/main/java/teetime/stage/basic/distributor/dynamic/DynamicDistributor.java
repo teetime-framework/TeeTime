@@ -1,60 +1,47 @@
 package teetime.stage.basic.distributor.dynamic;
 
-import java.util.Queue;
-
-import org.jctools.queues.QueueFactory;
-import org.jctools.queues.spec.ConcurrentQueueSpec;
-import org.jctools.queues.spec.Ordering;
-import org.jctools.queues.spec.Preference;
+import java.util.concurrent.BlockingQueue;
 
 import teetime.framework.DynamicOutputPort;
+import teetime.framework.OutputPort;
+import teetime.framework.OutputPortRemovedListener;
+import teetime.framework.Stage;
+import teetime.framework.signal.TerminatingSignal;
 import teetime.stage.basic.distributor.Distributor;
-import teetime.util.concurrent.queue.PCBlockingQueue;
-import teetime.util.concurrent.queue.putstrategy.PutStrategy;
-import teetime.util.concurrent.queue.putstrategy.YieldPutStrategy;
-import teetime.util.concurrent.queue.takestrategy.SCParkTakeStrategy;
-import teetime.util.concurrent.queue.takestrategy.TakeStrategy;
+import teetime.util.framework.port.PortAction;
+import teetime.util.framework.port.PortActionHelper;
 
-public class DynamicDistributor<T> extends Distributor<T> {
+public class DynamicDistributor<T> extends Distributor<T> implements OutputPortRemovedListener {
 
-	protected final PCBlockingQueue<PortAction<T>> portActions;
+	protected final BlockingQueue<PortAction<DynamicDistributor<T>>> portActions;
 
 	public DynamicDistributor() {
-		final Queue<PortAction<T>> localQueue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT));
-		final PutStrategy<PortAction<T>> putStrategy = new YieldPutStrategy<PortAction<T>>();
-		final TakeStrategy<PortAction<T>> takeStrategy = new SCParkTakeStrategy<PortAction<T>>();
-		portActions = new PCBlockingQueue<PortAction<T>>(localQueue, putStrategy, takeStrategy);
+		portActions = PortActionHelper.createPortActionQueue();
+		addOutputPortRemovedListener(this);
 	}
 
 	@Override
 	protected void execute(final T element) {
-		try {
-			checkForPendingPortActionRequest();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		checkForPendingPortActionRequest();
 
 		super.execute(element);
 	}
 
-	private void checkForPendingPortActionRequest() throws InterruptedException {
-		PortAction<T> dynamicPortAction = getPortAction();
-		if (null != dynamicPortAction) { // check if getPortAction() uses polling
-			dynamicPortAction.execute(this);
-		}
-	}
-
-	protected PortAction<T> getPortAction() throws InterruptedException {
-		return portActions.poll();
+	protected void checkForPendingPortActionRequest() {
+		PortActionHelper.checkForPendingPortActionRequest(this, portActions);
 	}
 
 	@Override
-	public void removeDynamicPort(final DynamicOutputPort<?> dynamicOutputPort) {
+	public void removeDynamicPort(final DynamicOutputPort<?> dynamicOutputPort) { // make public
 		super.removeDynamicPort(dynamicOutputPort);
 	}
 
-	public boolean addPortActionRequest(final PortAction<T> newPortActionRequest) {
+	public boolean addPortActionRequest(final PortAction<DynamicDistributor<T>> newPortActionRequest) {
 		return portActions.offer(newPortActionRequest);
+	}
+
+	@Override
+	public void onOutputPortRemoved(final Stage stage, final OutputPort<?> removedOutputPort) {
+		removedOutputPort.sendSignal(new TerminatingSignal());
 	}
 }
