@@ -138,14 +138,11 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be received
 	 *
-	 * @return Newly added InputPort
+	 * @return the newly added InputPort
 	 *
 	 */
-	// * @deprecated Since 1.1. Use {@link #createInputPort(Class)} instead.
-	@SuppressWarnings("unchecked")
-	// @Deprecated
 	protected <T> InputPort<T> createInputPort() {
-		return (InputPort<T>) createInputPort(null, null);
+		return createInputPort(null, null);
 	}
 
 	/**
@@ -157,7 +154,7 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be received
 	 *
-	 * @return Newly added InputPort
+	 * @return the newly added InputPort
 	 */
 	protected <T> InputPort<T> createInputPort(final Class<T> type) {
 		return createInputPort(type, null);
@@ -171,14 +168,11 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be received
 	 *
-	 * @return Newly added InputPort
+	 * @return the newly added InputPort
 	 *
 	 */
-	// * @deprecated Since 1.1. Use {@link #createInputPort(Class)} instead.
-	@SuppressWarnings("unchecked")
-	// @Deprecated
 	protected <T> InputPort<T> createInputPort(final String name) {
-		return (InputPort<T>) createInputPort(null, name);
+		return createInputPort(null, name);
 	}
 
 	/**
@@ -191,7 +185,7 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be received
 	 *
-	 * @return Newly added InputPort
+	 * @return the newly added InputPort
 	 */
 	protected <T> InputPort<T> createInputPort(final Class<T> type, final String name) {
 		final InputPort<T> inputPort = new InputPort<T>(type, this, name);
@@ -205,14 +199,11 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 *
-	 * @return Newly added OutputPort
+	 * @return the newly added OutputPort
 	 *
 	 */
-	// * @deprecated Since 1.1. Use {@link #createOutputPort(Class)} instead.
-	@SuppressWarnings("unchecked")
-	// @Deprecated
 	protected <T> OutputPort<T> createOutputPort() {
-		return (OutputPort<T>) createOutputPort(null, null);
+		return createOutputPort(null, null);
 	}
 
 	/**
@@ -224,12 +215,10 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 *
-	 * @return Newly added OutputPort
+	 * @return the newly added OutputPort
 	 */
 	protected <T> OutputPort<T> createOutputPort(final Class<T> type) {
-		final OutputPort<T> outputPort = new OutputPort<T>(type, this, null);
-		outputPorts = addElementToArray(outputPort, outputPorts);
-		return outputPort;
+		return createOutputPort(type, null);
 	}
 
 	/**
@@ -241,14 +230,11 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 *
-	 * @return Newly added OutputPort
+	 * @return the newly added OutputPort
 	 *
 	 */
-	// * @deprecated Since 1.1. Use {@link #createOutputPort(Class)} instead.
-	@SuppressWarnings("unchecked")
-	// @Deprecated
 	protected <T> OutputPort<T> createOutputPort(final String name) {
-		return (OutputPort<T>) createOutputPort(null, name);
+		return createOutputPort(null, name);
 	}
 
 	/**
@@ -262,7 +248,7 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 *
-	 * @return Newly added OutputPort
+	 * @return the newly added OutputPort
 	 */
 	protected <T> OutputPort<T> createOutputPort(final Class<T> type, final String name) {
 		final OutputPort<T> outputPort = new OutputPort<T>(type, this, name);

@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import teetime.framework.ConfigurationContext;
+import teetime.framework.Configuration;
 import teetime.framework.DynamicActuator;
 import teetime.framework.Execution;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
@@ -99,7 +99,7 @@ public class ControlledMergerTest {
 		return portAction;
 	}
 
-	private static class ControlledMergerTestConfig<T> extends ConfigurationContext {
+	private static class ControlledMergerTestConfig<T> extends Configuration {
 
 		private final CollectorSink<T> collectorSink;
 

@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import teetime.framework.ConfigurationContext;
+import teetime.framework.Configuration;
 import teetime.framework.Execution;
 import teetime.framework.Stage;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
@@ -102,7 +102,7 @@ public class ControlledDistributorTest {
 		assertThat(collectorSink.getElements(), is(values));
 	}
 
-	private static class ControlledDistributorTestConfig<T> extends ConfigurationContext {
+	private static class ControlledDistributorTestConfig<T> extends Configuration {
 
 		private final CollectorSink<T> collectorSink;
 

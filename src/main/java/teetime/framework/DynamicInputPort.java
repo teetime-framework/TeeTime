@@ -14,7 +14,7 @@ public final class DynamicInputPort<T> extends InputPort<T> {
 	private int index;
 
 	DynamicInputPort(final Class<T> type, final Stage owningStage, final int index) {
-		super(type, owningStage);
+		super(type, owningStage, null);
 		this.index = index;
 	}
 
