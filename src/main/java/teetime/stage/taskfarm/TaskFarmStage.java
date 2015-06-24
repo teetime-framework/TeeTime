@@ -11,7 +11,6 @@ import teetime.framework.OutputPort;
 import teetime.framework.RunnableConsumerStage;
 import teetime.framework.Stage;
 import teetime.framework.exceptionHandling.TaskFarmInvalidPipeException;
-import teetime.framework.exceptionHandling.TaskFarmInvalidStageException;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.IPipeFactory;
@@ -23,7 +22,7 @@ import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.merger.Merger;
 
 @SuppressWarnings("deprecation")
-public class TaskFarmStage<I, O> extends AbstractCompositeStage {
+public class TaskFarmStage<I, O, TFS extends Stage & TaskFarmDuplicable<I, O>> extends AbstractCompositeStage {
 
 	// creates SpScPipes (monitorable)
 	private static final IPipeFactory INTER_PIPE_FACTORY = PipeFactoryRegistry.INSTANCE
@@ -36,14 +35,15 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 	private final Merger<O> merger = new Merger<O>();
 	private final NoopFilter<I> noopI = new NoopFilter<I>();
 
-	private final Map<Integer, TaskFarmTriple> triples = new HashMap<Integer, TaskFarmTriple>();
-
+	private final Map<Integer, TaskFarmTriple<?, ?, ?>> triples = new HashMap<Integer, TaskFarmTriple<?, ?, ?>>();
 	private final List<Thread> threads = new LinkedList<Thread>();
+	private final TFS workerStage;
 
-	public TaskFarmStage(final AbstractCompositeStage includedStage) {
+	public TaskFarmStage(final TFS workerStage) {
+		this.workerStage = workerStage;
 		this.lastStages.add(this.merger);
 
-		init(includedStage);
+		init(workerStage);
 	}
 
 	@Override
@@ -85,21 +85,20 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 		return this.noopI;
 	}
 
-	@SuppressWarnings("unchecked")
-	private void init(final AbstractCompositeStage includedStage) {
-		checkIfValidAsIncludedStage(includedStage);
+	private void init(final TFS includedStage) {
+		// checkIfValidAsIncludedStage(includedStage);
 
 		connectPortsWithReturnValue(noopI.getOutputPort(), distributor.getInputPort(), INTRA_PIPE_FACTORY);
 
-		InputPort<I> stageInputPort = (InputPort<I>) includedStage.getInputPorts()[0];
+		InputPort<I> stageInputPort = includedStage.getInputPort();
 		IPipe inputPipe = connectPortsWithReturnValue(this.distributor.getNewOutputPort(), stageInputPort, INTER_PIPE_FACTORY);
 
-		OutputPort<O> stageOutputPort = (OutputPort<O>) includedStage.getOutputPorts()[0];
+		OutputPort<O> stageOutputPort = includedStage.getOutputPort();
 		IPipe outputPipe = connectPortsWithReturnValue(stageOutputPort, this.merger.getNewInputPort(), INTER_PIPE_FACTORY);
 
 		checkIfPipeIsMonitorable(inputPipe);
 		checkIfPipeIsMonitorable(outputPipe);
-		this.triples.put(0, new TaskFarmTriple((IMonitorablePipe) inputPipe, (IMonitorablePipe) outputPipe, includedStage));
+		this.triples.put(0, new TaskFarmTriple<I, O, TFS>((IMonitorablePipe) inputPipe, (IMonitorablePipe) outputPipe, includedStage));
 
 		startThread(merger);
 		startThread(includedStage);
@@ -112,10 +111,10 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 		thread.start();
 	}
 
-	private void checkIfValidAsIncludedStage(final AbstractCompositeStage includedStage) {
-		checkInputPorts(includedStage);
-		checkOutputPorts(includedStage);
-	}
+	// private void checkIfValidAsIncludedStage(final AbstractCompositeStage includedStage) {
+	// checkInputPorts(includedStage);
+	// checkOutputPorts(includedStage);
+	// }
 
 	private void checkIfPipeIsMonitorable(final IPipe pipe) {
 		if (!(pipe instanceof IMonitorablePipe)) {
@@ -123,26 +122,26 @@ public class TaskFarmStage<I, O> extends AbstractCompositeStage {
 		}
 	}
 
-	private void checkInputPorts(final AbstractCompositeStage includedStage) {
-		InputPort<?>[] stageInputPorts = includedStage.getInputPorts();
-
-		if (stageInputPorts.length > 1) {
-			throw new TaskFarmInvalidStageException("Included stage has more than one input port.");
-		}
-		if (stageInputPorts.length < 1) {
-			throw new TaskFarmInvalidStageException("Included stage has no input ports.");
-		}
-	}
-
-	private void checkOutputPorts(final AbstractCompositeStage includedStage) {
-		OutputPort<?>[] stageOutputPorts = includedStage.getOutputPorts();
-
-		if (stageOutputPorts.length > 1) {
-			throw new TaskFarmInvalidStageException("Included stage has more than one output port.");
-		}
-		if (stageOutputPorts.length < 1) {
-			throw new TaskFarmInvalidStageException("Included stage has no output ports.");
-		}
-	}
+	// private void checkInputPorts(final AbstractCompositeStage includedStage) {
+	// InputPort<?>[] stageInputPorts = includedStage.getInputPorts();
+	//
+	// if (stageInputPorts.length > 1) {
+	// throw new TaskFarmInvalidStageException("Included stage has more than one input port.");
+	// }
+	// if (stageInputPorts.length < 1) {
+	// throw new TaskFarmInvalidStageException("Included stage has no input ports.");
+	// }
+	// }
+	//
+	// private void checkOutputPorts(final AbstractCompositeStage includedStage) {
+	// OutputPort<?>[] stageOutputPorts = includedStage.getOutputPorts();
+	//
+	// if (stageOutputPorts.length > 1) {
+	// throw new TaskFarmInvalidStageException("Included stage has more than one output port.");
+	// }
+	// if (stageOutputPorts.length < 1) {
+	// throw new TaskFarmInvalidStageException("Included stage has no output ports.");
+	// }
+	// }
 
 }
