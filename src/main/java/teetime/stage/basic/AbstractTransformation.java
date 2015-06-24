@@ -18,7 +18,7 @@ package teetime.stage.basic;
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
-public abstract class AbstractTransformation<I, O> extends AbstractConsumerStage<I> {
+public abstract class AbstractTransformation<I, O> extends AbstractConsumerStage<I> implements ITransformation<I, O> {
 
 	private final OutputPort<O> outputPort = createOutputPort();
 
@@ -26,6 +26,7 @@ public abstract class AbstractTransformation<I, O> extends AbstractConsumerStage
 		super();
 	}
 
+	@Override
 	public OutputPort<O> getOutputPort() {
 		return outputPort;
 	}
