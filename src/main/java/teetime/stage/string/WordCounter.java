@@ -22,6 +22,7 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.Stage;
 import teetime.stage.MappingCounter;
+import teetime.stage.taskfarm.TaskFarmDuplicable;
 import teetime.stage.util.CountingMap;
 
 /**
@@ -33,7 +34,7 @@ import teetime.stage.util.CountingMap;
  * @author Nelson Tavares de Sousa
  *
  */
-public final class WordCounter extends AbstractCompositeStage {
+public final class WordCounter extends AbstractCompositeStage implements TaskFarmDuplicable<String, CountingMap<String>> {
 
 	// This fields are needed for the methods to work.
 	private final Tokenizer tokenizer = new Tokenizer(" ");
@@ -55,12 +56,19 @@ public final class WordCounter extends AbstractCompositeStage {
 		return this.tokenizer;
 	}
 
+	@Override
 	public InputPort<String> getInputPort() {
 		return this.tokenizer.getInputPort();
 	}
 
+	@Override
 	public OutputPort<CountingMap<String>> getOutputPort() {
 		return this.mapCounter.getOutputPort();
+	}
+
+	@Override
+	public TaskFarmDuplicable<String, CountingMap<String>> duplicate() {
+		return new WordCounter();
 	}
 
 }

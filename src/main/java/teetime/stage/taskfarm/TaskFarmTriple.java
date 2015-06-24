@@ -1,16 +1,15 @@
 package teetime.stage.taskfarm;
 
-import teetime.framework.AbstractCompositeStage;
+import teetime.framework.Stage;
 import teetime.framework.pipe.IMonitorablePipe;
 
-@SuppressWarnings("deprecation")
-public class TaskFarmTriple {
+public class TaskFarmTriple<I, O, TFS extends Stage & TaskFarmDuplicable<I, O>> {
 
 	private final IMonitorablePipe inputPipe;
 	private final IMonitorablePipe outputPipe;
-	private final AbstractCompositeStage stage;
+	private final TFS stage;
 
-	public TaskFarmTriple(final IMonitorablePipe inputPipe, final IMonitorablePipe outputPipe, final AbstractCompositeStage stage) {
+	public TaskFarmTriple(final IMonitorablePipe inputPipe, final IMonitorablePipe outputPipe, final TFS stage) {
 		this.inputPipe = inputPipe;
 		this.outputPipe = outputPipe;
 		this.stage = stage;
@@ -24,7 +23,7 @@ public class TaskFarmTriple {
 		return outputPipe;
 	}
 
-	public AbstractCompositeStage getStage() {
+	public TFS getStage() {
 		return stage;
 	}
 }

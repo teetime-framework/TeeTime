@@ -11,6 +11,7 @@ import teetime.framework.AbstractCompositeStage;
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.Analysis;
 import teetime.framework.AnalysisConfiguration;
+import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.Stage;
 import teetime.stage.CollectorSink;
@@ -44,9 +45,13 @@ public class TaskFarmStageTest {
 		protected void execute(final String element) {
 			this.outputPort.send(element + element);
 		}
+
+		public OutputPort<String> getOutputPort() {
+			return outputPort;
+		}
 	}
 
-	private class CompositeTestStage extends AbstractCompositeStage {
+	private class CompositeTestStage extends AbstractCompositeStage implements TaskFarmDuplicable<Integer, String> {
 		PlusOneInStringStage pOne = new PlusOneInStringStage();
 		StringDuplicationStage sDup = new StringDuplicationStage();
 
@@ -59,6 +64,22 @@ public class TaskFarmStageTest {
 		protected Stage getFirstStage() {
 			return pOne;
 		}
+
+		@Override
+		public InputPort<Integer> getInputPort() {
+			return pOne.getInputPort();
+		}
+
+		@Override
+		public OutputPort<String> getOutputPort() {
+			return sDup.getOutputPort();
+		}
+
+		@Override
+		public TaskFarmDuplicable<Integer, String> duplicate() {
+			return new CompositeTestStage();
+		}
+
 	}
 
 	private class TestConfiguration extends AnalysisConfiguration {
@@ -82,7 +103,7 @@ public class TaskFarmStageTest {
 			final CompositeTestStage compositeTestStage = new CompositeTestStage();
 			final CollectorSink<String> collectorSink = new CollectorSink<String>(collection);
 
-			TaskFarmStage<Integer, String> taskFarmStage = new TaskFarmStage<Integer, String>(compositeTestStage);
+			TaskFarmStage<Integer, String, CompositeTestStage> taskFarmStage = new TaskFarmStage<Integer, String, CompositeTestStage>(compositeTestStage);
 
 			connectIntraThreads(initialElementProducer.getOutputPort(), taskFarmStage.getInputPort());
 			connectIntraThreads(taskFarmStage.getOutputPort(), collectorSink.getInputPort());
@@ -99,7 +120,7 @@ public class TaskFarmStageTest {
 	public void simpleTaskFarmStageTest() {
 		TestConfiguration configuration = new TestConfiguration();
 
-		final Analysis<AnalysisConfiguration> analysis = new Analysis<AnalysisConfiguration>(configuration);
+		final Analysis<TestConfiguration> analysis = new Analysis<TestConfiguration>(configuration);
 
 		analysis.executeBlocking();
 
