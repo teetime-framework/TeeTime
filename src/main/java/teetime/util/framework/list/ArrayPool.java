@@ -13,32 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.util.list;
+package teetime.util.framework.list;
 
-public interface CommittableQueue<T> {
+import java.util.HashMap;
+import java.util.Map;
 
-	// basic methods
-	T get(int index);
+public final class ArrayPool<T> {
 
-	void addToTailUncommitted(T element);
+	// BETTER use a map with int as key due to performance
+	private final Map<Integer, T[]> cache = new HashMap<Integer, T[]>();
 
-	T removeFromHeadUncommitted();
+	@SuppressWarnings("unchecked")
+	public T[] acquire(final int capacity) {
+		T[] array = this.cache.get(capacity);
+		if (array == null) {
+			array = (T[]) new Object[capacity];
+		}
+		return array;
+	}
 
-	void commit();
-
-	void rollback();
-
-	int size();
-
-	boolean isEmpty();
-
-	void clear();
-
-	// convenient methods
-	// T removeFromHeadUncommitted(int count);
-
-	T getTail();
-
-	T removeFromHead();
+	public void release(final T[] array) {
+		this.cache.put(array.length, array);
+	}
 
 }

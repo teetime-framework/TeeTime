@@ -6,8 +6,9 @@ import teetime.framework.OutputPort;
 import teetime.framework.pipe.SpScPipeFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
+import teetime.util.framework.port.PortAction;
 
-public class CreatePortAction<T> implements PortAction<T> {
+public class CreatePortAction<T> implements PortAction<DynamicDistributor<T>> {
 
 	private static final SpScPipeFactory INTER_THREAD_PIPE_FACTORY = new SpScPipeFactory();
 	private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();
@@ -15,7 +16,6 @@ public class CreatePortAction<T> implements PortAction<T> {
 	private final InputPort<T> inputPort;
 
 	public CreatePortAction(final InputPort<T> inputPort) {
-		super();
 		this.inputPort = inputPort;
 	}
 
@@ -23,11 +23,13 @@ public class CreatePortAction<T> implements PortAction<T> {
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
 		OutputPort<? extends T> newOutputPort = dynamicDistributor.getNewOutputPort();
 
+		onOutputPortCreated(newOutputPort);
+	}
+
+	private void onOutputPortCreated(final OutputPort<? extends T> newOutputPort) {
 		INTER_THREAD_PIPE_FACTORY.create(newOutputPort, inputPort);
 
-		Runnable runnable = DYNAMIC_ACTUATOR.wrap(inputPort.getOwningStage());
-		Thread thread = new Thread(runnable);
-		thread.start();
+		DYNAMIC_ACTUATOR.startWithinNewThread(inputPort.getOwningStage());
 
 		newOutputPort.sendSignal(new InitializingSignal());
 		newOutputPort.sendSignal(new StartingSignal());

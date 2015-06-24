@@ -13,11 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.util.list;
+package teetime.util.framework.concurrent.queue.putstrategy;
 
-public final class ListContainer<T> {
+import java.util.Queue;
 
-	public T value;
-	public ListContainer<T> previous;
+public class YieldPutStrategy<E> implements PutStrategy<E>
+{
+	@Override
+	public void backoffOffer(final Queue<E> q, final E e)
+	{
+		while (!q.offer(e))
+		{
+			Thread.yield();
+		}
+	}
 
+	@Override
+	public void signal()
+	{
+		// Nothing
+	}
 }

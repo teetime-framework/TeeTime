@@ -26,11 +26,11 @@ import org.jctools.queues.spec.Preference;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
-import teetime.util.concurrent.queue.PCBlockingQueue;
-import teetime.util.concurrent.queue.putstrategy.PutStrategy;
-import teetime.util.concurrent.queue.putstrategy.YieldPutStrategy;
-import teetime.util.concurrent.queue.takestrategy.SCParkTakeStrategy;
-import teetime.util.concurrent.queue.takestrategy.TakeStrategy;
+import teetime.util.framework.concurrent.queue.PCBlockingQueue;
+import teetime.util.framework.concurrent.queue.putstrategy.PutStrategy;
+import teetime.util.framework.concurrent.queue.putstrategy.YieldPutStrategy;
+import teetime.util.framework.concurrent.queue.takestrategy.SCParkTakeStrategy;
+import teetime.util.framework.concurrent.queue.takestrategy.TakeStrategy;
 
 public abstract class AbstractInterThreadPipe extends AbstractPipe {
 

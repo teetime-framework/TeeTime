@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.util.concurrent.queue;
+package teetime.util.framework.concurrent.queue;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -21,8 +21,8 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import teetime.util.concurrent.queue.putstrategy.PutStrategy;
-import teetime.util.concurrent.queue.takestrategy.TakeStrategy;
+import teetime.util.framework.concurrent.queue.putstrategy.PutStrategy;
+import teetime.util.framework.concurrent.queue.takestrategy.TakeStrategy;
 
 public final class PCBlockingQueue<E> implements BlockingQueue<E> {
 

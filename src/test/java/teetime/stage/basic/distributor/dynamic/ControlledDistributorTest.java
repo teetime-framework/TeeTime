@@ -1,14 +1,13 @@
 package teetime.stage.basic.distributor.dynamic;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import teetime.framework.ConfigurationContext;
@@ -17,23 +16,17 @@ import teetime.framework.Stage;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
+import teetime.util.framework.port.PortAction;
 
 public class ControlledDistributorTest {
 
-	// private ControlledDistributor<Integer> controlledDistributor;
-
-	@Before
-	public void setUp() throws Exception {
-		// controlledDistributor = new ControlledDistributor<Integer>();
-	}
-
 	@Test
 	public void shouldWorkWithoutActionTriggers() throws Exception {
-		PortAction<Integer> createAction = new DoNothingPortAction<Integer>();
+		PortAction<DynamicDistributor<Integer>> createAction = new DoNothingPortAction<Integer>();
 
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4);
 		@SuppressWarnings("unchecked")
-		List<PortAction<Integer>> inputActions = Arrays.asList(createAction, createAction, createAction, createAction, createAction);
+		List<PortAction<DynamicDistributor<Integer>>> inputActions = Arrays.asList(createAction, createAction, createAction, createAction, createAction);
 
 		ControlledDistributorTestConfig<Integer> config = new ControlledDistributorTestConfig<Integer>(inputNumbers, inputActions);
 		Execution<ControlledDistributorTestConfig<Integer>> analysis = new Execution<ControlledDistributorTestConfig<Integer>>(config,
@@ -49,9 +42,9 @@ public class ControlledDistributorTest {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4);
 
 		@SuppressWarnings("unchecked")
-		PortAction<Integer>[] inputActions = new PortAction[5];
+		PortAction<DynamicDistributor<Integer>>[] inputActions = new PortAction[5];
 		for (int i = 0; i < inputActions.length; i++) {
-			PortAction<Integer> createAction = createPortCreateAction();
+			PortAction<DynamicDistributor<Integer>> createAction = createPortCreateAction();
 			inputActions[i] = createAction;
 		}
 
@@ -74,7 +67,7 @@ public class ControlledDistributorTest {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4, 5);
 
 		@SuppressWarnings("unchecked")
-		PortAction<Integer>[] inputActions = new PortAction[6];
+		PortAction<DynamicDistributor<Integer>>[] inputActions = new PortAction[6];
 		inputActions[0] = createPortCreateAction();
 		inputActions[1] = new RemovePortAction<Integer>(null);
 		inputActions[2] = createPortCreateAction();
@@ -94,15 +87,15 @@ public class ControlledDistributorTest {
 		assertValuesForIndex(inputActions, Collections.<Integer> emptyList(), 3);
 	}
 
-	private PortAction<Integer> createPortCreateAction() {
+	private PortAction<DynamicDistributor<Integer>> createPortCreateAction() {
 		CollectorSink<Integer> newStage = new CollectorSink<Integer>();
-		PortAction<Integer> portAction = new CreatePortAction<Integer>(newStage.getInputPort());
+		PortAction<DynamicDistributor<Integer>> portAction = new CreatePortAction<Integer>(newStage.getInputPort());
 		return portAction;
 	}
 
-	private void assertValuesForIndex(final PortAction<Integer>[] inputActions,
+	private void assertValuesForIndex(final PortAction<DynamicDistributor<Integer>>[] inputActions,
 			final List<Integer> values, final int index) {
-		PortAction<Integer> ia = inputActions[index];
+		PortAction<DynamicDistributor<Integer>> ia = inputActions[index];
 		Stage stage = ((CreatePortAction<Integer>) ia).getInputPort().getOwningStage();
 		@SuppressWarnings("unchecked")
 		CollectorSink<Integer> collectorSink = (CollectorSink<Integer>) stage;
@@ -113,7 +106,7 @@ public class ControlledDistributorTest {
 
 		private final CollectorSink<T> collectorSink;
 
-		public ControlledDistributorTestConfig(final List<T> elements, final List<PortAction<T>> portActions) {
+		public ControlledDistributorTestConfig(final List<T> elements, final List<PortAction<DynamicDistributor<T>>> inputActions) {
 			InitialElementProducer<T> initialElementProducer = new InitialElementProducer<T>(elements);
 			DynamicDistributor<T> distributor = new ControlledDynamicDistributor<T>();
 			collectorSink = new CollectorSink<T>();
@@ -124,7 +117,7 @@ public class ControlledDistributorTest {
 			addThreadableStage(distributor);
 			addThreadableStage(collectorSink);
 
-			for (PortAction<T> a : portActions) {
+			for (PortAction<DynamicDistributor<T>> a : inputActions) {
 				distributor.addPortActionRequest(a);
 			}
 		}

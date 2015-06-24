@@ -150,4 +150,6 @@ public abstract class Stage {
 
 	protected abstract void removeDynamicPort(DynamicOutputPort<?> dynamicOutputPort);
 
+	protected abstract void removeDynamicPort(DynamicInputPort<?> dynamicInputPort);
+
 }

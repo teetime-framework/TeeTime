@@ -2,9 +2,9 @@ package teetime.stage.basic.distributor.dynamic;
 
 import teetime.framework.DynamicOutputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.signal.TerminatingSignal;
+import teetime.util.framework.port.PortAction;
 
-public class RemovePortAction<T> implements PortAction<T> {
+public class RemovePortAction<T> implements PortAction<DynamicDistributor<T>> {
 
 	private final DynamicOutputPort<T> outputPort;
 
@@ -24,8 +24,6 @@ public class RemovePortAction<T> implements PortAction<T> {
 		} else {
 			outputPortToRemove = outputPort;
 		}
-
-		outputPortToRemove.sendSignal(new TerminatingSignal());
 
 		dynamicDistributor.removeDynamicPort((DynamicOutputPort<?>) outputPortToRemove);
 	}

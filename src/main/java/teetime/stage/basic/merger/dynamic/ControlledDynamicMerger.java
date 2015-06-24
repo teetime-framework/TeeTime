@@ -1,8 +1,8 @@
-package teetime.stage.basic.distributor.dynamic;
+package teetime.stage.basic.merger.dynamic;
 
 import teetime.util.framework.port.PortActionHelper;
 
-class ControlledDynamicDistributor<T> extends DynamicDistributor<T> {
+public class ControlledDynamicMerger<T> extends DynamicMerger<T> {
 
 	@Override
 	protected void checkForPendingPortActionRequest() {
@@ -12,10 +12,4 @@ class ControlledDynamicDistributor<T> extends DynamicDistributor<T> {
 			throw new IllegalStateException(e);
 		}
 	}
-
-	// @Override
-	// protected OutputPort<?>[] getOutputPorts() { // repeated declaration for testing purposes
-	// return super.getOutputPorts();
-	// }
-
 }

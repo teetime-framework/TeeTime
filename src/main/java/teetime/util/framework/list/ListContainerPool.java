@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.util.list;
+package teetime.util.framework.list;
 
 import java.util.ArrayList;
 import java.util.List;

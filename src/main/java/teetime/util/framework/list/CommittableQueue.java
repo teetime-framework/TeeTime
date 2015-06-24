@@ -13,36 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.util.list;
+package teetime.util.framework.list;
 
-public final class CircularList<T> {
+public interface CommittableQueue<T> {
 
-	private static final class Node<T> {
-		T value;
-		Node<T> next;
-	}
+	// basic methods
+	T get(int index);
 
-	private Node<T> headNode;
-	private Node<T> lastNode;
+	void addToTailUncommitted(T element);
 
-	private Node<T> currentNode;
+	T removeFromHeadUncommitted();
 
-	public void add(final T value) {
-		Node<T> newNode = new Node<T>();
-		newNode.value = value;
+	void commit();
 
-		if (this.headNode == null) { // newNode is the first node
-			this.headNode = this.lastNode = newNode;
-			this.currentNode = newNode;
-		}
+	void rollback();
 
-		this.lastNode.next = newNode;
-		newNode.next = this.headNode;
-	}
+	int size();
 
-	public T getNext() {
-		T value = this.currentNode.value;
-		this.currentNode = this.currentNode.next;
-		return value;
-	}
+	boolean isEmpty();
+
+	void clear();
+
+	// convenient methods
+	// T removeFromHeadUncommitted(int count);
+
+	T getTail();
+
+	T removeFromHead();
+
 }

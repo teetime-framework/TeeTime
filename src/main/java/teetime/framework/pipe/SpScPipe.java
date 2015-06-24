@@ -19,7 +19,7 @@ import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.StageState;
-import teetime.util.concurrent.queue.ObservableSpScArrayQueue;
+import teetime.util.framework.concurrent.queue.ObservableSpScArrayQueue;
 
 final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe {
 

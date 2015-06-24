@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.util.concurrent.queue.putstrategy;
+package teetime.util.framework.list;
 
-import java.util.Queue;
+public interface ObjectPool<T> {
 
-public interface PutStrategy<E>
-{
-	void backoffOffer(Queue<E> q, E e);
+	T acquire();
 
-	void signal();
+	void release(T element);
+
 }

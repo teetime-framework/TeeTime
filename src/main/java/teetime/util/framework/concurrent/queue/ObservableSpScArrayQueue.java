@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.util.concurrent.queue;
+package teetime.util.framework.concurrent.queue;
 
 import org.jctools.queues.SpscArrayQueue;
 
