@@ -83,8 +83,7 @@ public class TraversorTest {
 				connectPorts(distributor.getNewOutputPort(), wc.getInputPort());
 				connectPorts(wc.getOutputPort(), merger.getNewInputPort());
 				// Add WordCounter as a threadable stage, so it runs in its own thread
-				addThreadableStage(wc.getFirstStage());
-
+				addThreadableStage(wc.getInputPort().getOwningStage());
 			}
 
 			// Connect the stages of the last part
