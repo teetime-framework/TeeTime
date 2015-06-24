@@ -27,7 +27,7 @@ public abstract class AbstractTransformation<I, O> extends AbstractConsumerStage
 	}
 
 	@Override
-	public OutputPort<O> getOutputPort() {
+	public final OutputPort<O> getOutputPort() {
 		return outputPort;
 	}
 }
