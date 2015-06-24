@@ -1,5 +1,8 @@
 package teetime.stage.taskfarm.analysis;
 
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -40,7 +43,7 @@ public class WeightedAlgorithmTest {
 	public void logarithmicTest() {
 		ThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LOGARITHMIC);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
-		assertTrue(thoughputScore > 0.63);
+		assertThat(thoughputScore, is(greaterThan(0.63)));
 	}
 
 }
