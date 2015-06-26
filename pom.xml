@@ -310,12 +310,6 @@
 						<artifactId>doxia-module-markdown-teetime</artifactId>
 						<version>1.6</version>
 					</dependency>
-					<!-- add support for ssh/scp -->
-					<dependency>
-						<groupId>org.apache.maven.wagon</groupId>
-						<artifactId>wagon-ssh</artifactId>
-						<version>2.9-SNAPSHOT</version>
-					</dependency>
 					<!-- skin -->
 					<dependency>
 						<groupId>lt.velykis.maven.skins</groupId>
