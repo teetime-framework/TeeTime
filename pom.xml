@@ -9,13 +9,13 @@
 
 	<name>TeeTime</name>
 	<description>TeeTime is a Pipe-and-Filter framework for Java</description>
-	<url>http://teetime.sourceforge.org</url>
+	<url>http://christianwulf.github.io/teetime/</url>
 	<inceptionYear>2015</inceptionYear>
 
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
-			<url>http://teetime.sourceforge.net/LICENSE.txt</url>
+			<url>http://christianwulf.github.io/teetime/LICENSE.txt</url>
 		</license>
 	</licenses>
 
