@@ -6,7 +6,7 @@
 	</properties>
 	<body>
 		<release version="Snapshot" date="Daily basis"
-			description="Unstable preview of oncoming versions">
+			description="Unstable preview of oncoming versions - 2.0-SNAPSHOT">
 			<action dev="ntd" type="add" issue="33">
 				TeeTime automatically
 				chooses the correct type of pipe for all connections.
@@ -21,19 +21,24 @@
 			</action>
 			<action dev="ntd" type="add" issue="171">
 				Configurations are now
-				built within an AnalysisContext which is passed on to nested
+				built within the Configuration class which is passed on to nested
 				CompositeStages.
 				This removes any constraints on CompositeStages and
 				enables therefore multiple connections and multithreading.
 			</action>
+			<action dev="ntd" type="update">
+				Renamed Analysis to Execution
+			</action>
 			<action dev="ntd" type="remove">
-				Marked Pair class as deprecated.
+				Removed pair class.
 			</action>
 			<action dev="ntd" type="add" issue="154">
 				All stages will be
 				initialized before starting the analysis.
 			</action>
-
+			<action dev="ntd" type="add" issue="122">
+				Threads can be named for better debugging.
+			</action>
 		</release>
 
 		<release version="1.1.2" date="12.05.2015" description="Minor bugfixes for 1.1">
