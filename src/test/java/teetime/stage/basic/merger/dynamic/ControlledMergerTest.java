@@ -25,13 +25,15 @@ public class ControlledMergerTest {
 
 	@Test
 	public void shouldWorkWithoutActionTriggers() throws Exception {
-		PortAction<DynamicMerger<Integer>> createAction = new DoNothingPortAction<Integer>();
-
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4);
-		@SuppressWarnings("unchecked")
-		List<PortAction<DynamicMerger<Integer>>> inputActions = Arrays.asList(createAction, createAction, createAction, createAction, createAction);
 
-		ControlledMergerTestConfig<Integer> config = new ControlledMergerTestConfig<Integer>(inputNumbers, inputActions);
+		@SuppressWarnings("unchecked")
+		PortAction<DynamicMerger<Integer>>[] inputActions = new PortAction[5];
+		for (int i = 0; i < inputActions.length; i++) {
+			inputActions[i] = new DoNothingPortAction<Integer>();
+		}
+
+		ControlledMergerTestConfig<Integer> config = new ControlledMergerTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
 		Execution<ControlledMergerTestConfig<Integer>> analysis = new Execution<ControlledMergerTestConfig<Integer>>(config,
 				new TerminatingExceptionListenerFactory());
 

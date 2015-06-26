@@ -16,7 +16,7 @@ public class DynamicDistributor<T> extends Distributor<T> implements OutputPortR
 	protected final BlockingQueue<PortAction<DynamicDistributor<T>>> portActions;
 
 	public DynamicDistributor() {
-		portActions = PortActionHelper.createPortActionQueue();
+		this.portActions = PortActionHelper.createPortActionQueue();
 		addOutputPortRemovedListener(this);
 	}
 
