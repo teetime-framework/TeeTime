@@ -3,6 +3,7 @@ package teetime.stage.basic.merger.dynamic;
 import java.util.concurrent.BlockingQueue;
 
 import teetime.framework.DynamicInputPort;
+import teetime.stage.basic.merger.IMergerStrategy;
 import teetime.stage.basic.merger.Merger;
 import teetime.util.framework.port.PortAction;
 import teetime.util.framework.port.PortActionHelper;
@@ -11,15 +12,15 @@ public class DynamicMerger<T> extends Merger<T> {
 
 	protected final BlockingQueue<PortAction<DynamicMerger<T>>> portActions;
 
-	public DynamicMerger() {
+	public DynamicMerger(final IMergerStrategy strategy) {
+		super(strategy);
 		portActions = PortActionHelper.createPortActionQueue();
 	}
 
 	@Override
 	public void executeStage() {
+		super.executeStage(); // must be first, to throw NotEnoughInputException before checking
 		checkForPendingPortActionRequest();
-
-		super.executeStage();
 	}
 
 	protected void checkForPendingPortActionRequest() {

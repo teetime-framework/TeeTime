@@ -102,9 +102,10 @@ public class Merger<T> extends AbstractStage {
 		return this.strategy;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public InputPort<?>[] getInputPorts() { // make public
-		return super.getInputPorts();
+	public InputPort<T>[] getInputPorts() { // make public
+		return (InputPort<T>[]) super.getInputPorts();
 	}
 
 	public InputPort<T> getNewInputPort() {

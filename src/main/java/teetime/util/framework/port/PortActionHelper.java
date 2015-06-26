@@ -31,7 +31,7 @@ public final class PortActionHelper {
 
 	public static <T extends Stage> void checkForPendingPortActionRequest(final T stage, final BlockingQueue<PortAction<T>> portActions) {
 		PortAction<T> dynamicPortAction = portActions.poll();
-		if (null != dynamicPortAction) { // check if getPortAction() uses polling
+		if (null != dynamicPortAction) {
 			dynamicPortAction.execute(stage);
 		}
 	}

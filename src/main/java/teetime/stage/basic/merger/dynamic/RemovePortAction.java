@@ -17,13 +17,13 @@ public class RemovePortAction<T> implements PortAction<DynamicMerger<T>> {
 	public void execute(final DynamicMerger<T> dynamicMerger) {
 		InputPort<?> inputPortsToRemove;
 
-		if (dynamicMerger instanceof ControlledDynamicMerger) {
-			// for testing purposes only
-			InputPort<?>[] inputPorts = ((ControlledDynamicMerger<?>) dynamicMerger).getInputPorts();
-			inputPortsToRemove = inputPorts[inputPorts.length - 1];
-		} else {
-			inputPortsToRemove = inputPort;
-		}
+		// if (dynamicMerger instanceof ControlledDynamicMerger) {
+		// // for testing purposes only
+		// InputPort<?>[] inputPorts = ((ControlledDynamicMerger<?>) dynamicMerger).getInputPorts();
+		// inputPortsToRemove = inputPorts[inputPorts.length - 1];
+		// } else {
+		inputPortsToRemove = inputPort;
+		// }
 
 		dynamicMerger.removeDynamicPort((DynamicInputPort<?>) inputPortsToRemove);
 	}

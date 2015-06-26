@@ -16,35 +16,41 @@
 package teetime.stage.basic.merger;
 
 import teetime.framework.InputPort;
+import teetime.framework.NotEnoughInputException;
 
 /**
- * @author Nils Christian Ehmke
+ * @author Christian Wulf
  *
- * @since 1.0
+ * @since 2.0
  */
-public final class RoundRobinStrategy implements IMergerStrategy {
+public final class BusyWaitingRoundRobinStrategy implements IMergerStrategy {
 
 	private int index = 0;
 
 	@Override
 	public <T> T getNextInput(final Merger<T> merger) {
 		final InputPort<T>[] inputPorts = merger.getInputPorts();
-		int size = inputPorts.length;
-		// check each port at most once to avoid a potentially infinite loop
-		while (size-- > 0) {
-			InputPort<T> inputPort = this.getNextPortInRoundRobinOrder(inputPorts);
-			final T token = inputPort.receive();
-			if (token != null) {
-				return token;
-			}
+		final InputPort<T> inputPort = getOpenInputPort(inputPorts);
+
+		final T token = inputPort.receive();
+		if (null != token) {
+			this.index = (this.index + 1) % inputPorts.length;
 		}
-		return null;
+
+		return token;
 	}
 
-	private <T> InputPort<T> getNextPortInRoundRobinOrder(final InputPort<T>[] inputPorts) {
-		InputPort<T> inputPort = inputPorts[this.index];
+	private <T> InputPort<T> getOpenInputPort(final InputPort<T>[] inputPorts) {
+		final int startedIndex = index;
 
-		this.index = (this.index + 1) % inputPorts.length;
+		InputPort<T> inputPort = inputPorts[this.index];
+		while (inputPort.isClosed()) {
+			this.index = (this.index + 1) % inputPorts.length;
+			if (index == startedIndex) {
+				throw new NotEnoughInputException();
+			}
+			inputPort = inputPorts[this.index];
+		}
 
 		return inputPort;
 	}

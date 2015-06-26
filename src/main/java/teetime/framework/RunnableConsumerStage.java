@@ -22,9 +22,6 @@ import teetime.framework.signal.TerminatingSignal;
 
 final class RunnableConsumerStage extends AbstractRunnableStage {
 
-	// cache the input ports here since getInputPorts() always returns a new copy
-	private final InputPort<?>[] inputPorts;
-
 	/**
 	 * Creates a new instance with the {@link YieldStrategy} as default idle strategy.
 	 *
@@ -37,17 +34,17 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 
 	public RunnableConsumerStage(final Stage stage, final IdleStrategy idleStrategy) {
 		super(stage);
-		this.inputPorts = stage.getInputPorts(); // FIXME should getInputPorts() really be defined in Stage?
 	}
 
 	@SuppressWarnings("PMD.GuardLogStatement")
 	@Override
 	protected void beforeStageExecution() throws InterruptedException {
-		logger.trace("Waiting for start signals... " + stage);
-		for (InputPort<?> inputPort : inputPorts) {
+		logger.trace("Waiting for init signals... " + stage);
+		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			inputPort.waitForInitializingSignal();
 		}
-		for (InputPort<?> inputPort : inputPorts) {
+		logger.trace("Waiting for start signals... " + stage);
+		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			inputPort.waitForStartSignal();
 		}
 		logger.trace("Starting... " + stage);
@@ -63,7 +60,10 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	}
 
 	private void checkForTerminationSignal(final Stage stage) {
-		for (InputPort<?> inputPort : inputPorts) {
+		System.out.println("checkForTerminationSignal: " + stage);
+		// FIXME should getInputPorts() really be defined in Stage?
+		for (InputPort<?> inputPort : stage.getInputPorts()) {
+			System.out.println("\tclosed: " + inputPort.isClosed() + " (" + inputPort);
 			if (!inputPort.isClosed()) {
 				return;
 			}
@@ -75,7 +75,7 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	@Override
 	protected void afterStageExecution() {
 		final ISignal signal = new TerminatingSignal();
-		for (InputPort<?> inputPort : inputPorts) {
+		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			stage.onSignal(signal, inputPort);
 		}
 	}

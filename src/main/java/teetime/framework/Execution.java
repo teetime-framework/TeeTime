@@ -203,10 +203,12 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 */
 	public void waitForTermination() {
 		try {
+			LOGGER.debug("Waiting for finiteProducerThreads");
 			for (Thread thread : this.finiteProducerThreads) {
 				thread.join();
 			}
 
+			LOGGER.debug("Waiting for consumerThreads");
 			for (Thread thread : this.consumerThreads) {
 				thread.join();
 			}
@@ -221,6 +223,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 			}
 		}
 
+		LOGGER.debug("Interrupting infiniteProducerThreads...");
 		for (Thread thread : this.infiniteProducerThreads) {
 			thread.interrupt();
 		}
