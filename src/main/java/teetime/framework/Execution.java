@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.IExceptionListenerFactory;
-import teetime.framework.exceptionHandling.IgnoringExceptionListenerFactory;
+import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
@@ -73,11 +73,11 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 *            to be used for the analysis
 	 */
 	public Execution(final T configuration) {
-		this(configuration, false, new IgnoringExceptionListenerFactory());
+		this(configuration, false, new TerminatingExceptionListenerFactory());
 	}
 
 	public Execution(final T configuration, final boolean validationEnabled) {
-		this(configuration, validationEnabled, new IgnoringExceptionListenerFactory());
+		this(configuration, validationEnabled, new TerminatingExceptionListenerFactory());
 	}
 
 	/**

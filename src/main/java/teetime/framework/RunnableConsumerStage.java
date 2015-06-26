@@ -15,8 +15,6 @@
  */
 package teetime.framework;
 
-import teetime.framework.idle.IdleStrategy;
-import teetime.framework.idle.YieldStrategy;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
@@ -26,16 +24,12 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	private final InputPort<?>[] inputPorts;
 
 	/**
-	 * Creates a new instance with the {@link YieldStrategy} as default idle strategy.
+	 * Creates a new instance.
 	 *
 	 * @param stage
 	 *            to execute within an own thread
 	 */
 	public RunnableConsumerStage(final Stage stage) {
-		this(stage, new YieldStrategy());
-	}
-
-	public RunnableConsumerStage(final Stage stage, final IdleStrategy idleStrategy) {
 		super(stage);
 		this.inputPorts = stage.getInputPorts(); // FIXME should getInputPorts() really be defined in Stage?
 	}
