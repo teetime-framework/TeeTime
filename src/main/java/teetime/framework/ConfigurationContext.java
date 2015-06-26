@@ -55,7 +55,9 @@ public final class ConfigurationContext {
 	 */
 	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort.getOwningStage().getInputPorts().length == 0) {
-			addThreadableStage(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
+			if (!threadableStages.containsKey(sourcePort.getOwningStage())) {
+				addThreadableStage(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
+			}
 		}
 		if (sourcePort.getPipe() != null || targetPort.getPipe() != null) {
 			LOGGER.warn("Overwriting existing pipe while connecting stages " +

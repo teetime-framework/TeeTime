@@ -176,4 +176,23 @@ public class ExecutionTest {
 
 	}
 
+	@Test
+	public void threadNameing() {
+		NameConfig configuration = new NameConfig();
+		Execution<NameConfig> execution = new Execution<NameConfig>(configuration);
+		assertThat(configuration.stageWithNamedThread.getOwningThread().getName(), is("TestName"));
+	}
+
+	private class NameConfig extends Configuration {
+
+		public InitialElementProducer<Object> stageWithNamedThread;
+
+		public NameConfig() {
+			stageWithNamedThread = new InitialElementProducer<Object>(new Object());
+			addThreadableStage(stageWithNamedThread, "TestName");
+			connectPorts(stageWithNamedThread.getOutputPort(), new Sink().getInputPort());
+		}
+
+	}
+
 }
