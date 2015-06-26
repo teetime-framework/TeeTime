@@ -21,13 +21,16 @@
 			</action>
 			<action dev="ntd" type="add" issue="171">
 				Configurations are now
-				built within an AnalysisContext which is passed on to nested
+				built within the Configuration class which is passed on to nested
 				CompositeStages.
 				This removes any constraints on CompositeStages and
 				enables therefore multiple connections and multithreading.
 			</action>
+			<action dev="ntd" type="update">
+				Renamed Analysis to Execution
+			</action>
 			<action dev="ntd" type="remove">
-				Marked Pair class as deprecated.
+				Removed pair class.
 			</action>
 			<action dev="ntd" type="add" issue="154">
 				All stages will be
