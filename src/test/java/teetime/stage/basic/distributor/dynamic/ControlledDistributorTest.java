@@ -28,8 +28,8 @@ public class ControlledDistributorTest {
 		@SuppressWarnings("unchecked")
 		List<PortAction<DynamicDistributor<Integer>>> inputActions = Arrays.asList(createAction, createAction, createAction, createAction, createAction);
 
-		ControlledDistributorTestConfig<Integer> config = new ControlledDistributorTestConfig<Integer>(inputNumbers, inputActions);
-		Execution<ControlledDistributorTestConfig<Integer>> analysis = new Execution<ControlledDistributorTestConfig<Integer>>(config,
+		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, inputActions);
+		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config,
 				new TerminatingExceptionListenerFactory());
 
 		analysis.executeBlocking();
@@ -48,8 +48,8 @@ public class ControlledDistributorTest {
 			inputActions[i] = createAction;
 		}
 
-		ControlledDistributorTestConfig<Integer> config = new ControlledDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<ControlledDistributorTestConfig<Integer>> analysis = new Execution<ControlledDistributorTestConfig<Integer>>(config,
+		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
+		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config,
 				new TerminatingExceptionListenerFactory());
 
 		analysis.executeBlocking();
@@ -75,8 +75,8 @@ public class ControlledDistributorTest {
 		inputActions[4] = new RemovePortAction<Integer>(null);
 		inputActions[5] = new RemovePortAction<Integer>(null);
 
-		ControlledDistributorTestConfig<Integer> config = new ControlledDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<ControlledDistributorTestConfig<Integer>> analysis = new Execution<ControlledDistributorTestConfig<Integer>>(config,
+		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
+		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config,
 				new TerminatingExceptionListenerFactory());
 
 		analysis.executeBlocking();
@@ -102,13 +102,13 @@ public class ControlledDistributorTest {
 		assertThat(collectorSink.getElements(), is(values));
 	}
 
-	private static class ControlledDistributorTestConfig<T> extends Configuration {
+	private static class DynamicDistributorTestConfig<T> extends Configuration {
 
 		private final CollectorSink<T> collectorSink;
 
-		public ControlledDistributorTestConfig(final List<T> elements, final List<PortAction<DynamicDistributor<T>>> inputActions) {
+		public DynamicDistributorTestConfig(final List<T> elements, final List<PortAction<DynamicDistributor<T>>> inputActions) {
 			InitialElementProducer<T> initialElementProducer = new InitialElementProducer<T>(elements);
-			DynamicDistributor<T> distributor = new ControlledDynamicDistributor<T>();
+			DynamicDistributor<T> distributor = new DynamicDistributor<T>();
 			collectorSink = new CollectorSink<T>();
 
 			connectPorts(initialElementProducer.getOutputPort(), distributor.getInputPort());

@@ -17,9 +17,9 @@ public class RemovePortAction<T> implements PortAction<DynamicDistributor<T>> {
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
 		OutputPort<?> outputPortToRemove;
 
-		if (dynamicDistributor instanceof ControlledDynamicDistributor) {
+		if (null == outputPort) {
 			// for testing purposes only
-			OutputPort<?>[] outputPorts = ((ControlledDynamicDistributor<?>) dynamicDistributor).getOutputPorts();
+			OutputPort<?>[] outputPorts = ((DynamicDistributor<?>) dynamicDistributor).getOutputPorts();
 			outputPortToRemove = outputPorts[outputPorts.length - 1];
 		} else {
 			outputPortToRemove = outputPort;

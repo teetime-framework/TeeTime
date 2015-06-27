@@ -8,6 +8,8 @@ import teetime.framework.OutputPortRemovedListener;
 import teetime.framework.Stage;
 import teetime.framework.signal.TerminatingSignal;
 import teetime.stage.basic.distributor.Distributor;
+import teetime.stage.basic.distributor.IDistributorStrategy;
+import teetime.stage.basic.distributor.RoundRobinStrategy2;
 import teetime.util.framework.port.PortAction;
 import teetime.util.framework.port.PortActionHelper;
 
@@ -15,7 +17,15 @@ public class DynamicDistributor<T> extends Distributor<T> implements OutputPortR
 
 	protected final BlockingQueue<PortAction<DynamicDistributor<T>>> portActions;
 
+	/**
+	 * Uses {@link RoundRobinStrategy2} as default distributor strategy.
+	 */
 	public DynamicDistributor() {
+		this(new RoundRobinStrategy2());
+	}
+
+	public DynamicDistributor(final IDistributorStrategy strategy) {
+		super(strategy);
 		this.portActions = PortActionHelper.createPortActionQueue();
 		addOutputPortRemovedListener(this);
 	}
