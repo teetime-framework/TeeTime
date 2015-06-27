@@ -16,6 +16,7 @@
 package teetime.stage.basic.merger;
 
 import teetime.framework.InputPort;
+import teetime.framework.Stage;
 
 /**
  * @author Nils Christian Ehmke
@@ -47,6 +48,13 @@ public final class RoundRobinStrategy implements IMergerStrategy {
 		this.index = (this.index + 1) % inputPorts.length;
 
 		return inputPort;
+	}
+
+	@Override
+	public void onInputPortRemoved(final Stage stage, final InputPort<?> removedInputPort) {
+		Merger<?> merger = (Merger<?>) stage;
+		// correct the index if it is out-of-bounds
+		this.index = (this.index + 1) % merger.getInputPorts().length;
 	}
 
 }

@@ -35,4 +35,5 @@ public class DynamicMerger<T> extends Merger<T> {
 	public boolean addPortActionRequest(final PortAction<DynamicMerger<T>> newPortActionRequest) {
 		return portActions.offer(newPortActionRequest);
 	}
+
 }

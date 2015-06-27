@@ -16,7 +16,7 @@
 package teetime.stage.basic.merger;
 
 import teetime.framework.InputPort;
-import teetime.framework.NotEnoughInputException;
+import teetime.framework.Stage;
 
 /**
  * @author Christian Wulf
@@ -31,6 +31,9 @@ public final class BusyWaitingRoundRobinStrategy implements IMergerStrategy {
 	public <T> T getNextInput(final Merger<T> merger) {
 		final InputPort<T>[] inputPorts = merger.getInputPorts();
 		final InputPort<T> inputPort = getOpenInputPort(inputPorts);
+		if (null == inputPort) {
+			return null;
+		}
 
 		final T token = inputPort.receive();
 		if (null != token) {
@@ -47,7 +50,7 @@ public final class BusyWaitingRoundRobinStrategy implements IMergerStrategy {
 		while (inputPort.isClosed()) {
 			this.index = (this.index + 1) % inputPorts.length;
 			if (index == startedIndex) {
-				throw new NotEnoughInputException();
+				return null;
 			}
 			inputPort = inputPorts[this.index];
 		}
@@ -55,4 +58,10 @@ public final class BusyWaitingRoundRobinStrategy implements IMergerStrategy {
 		return inputPort;
 	}
 
+	@Override
+	public void onInputPortRemoved(final Stage stage, final InputPort<?> removedInputPort) {
+		Merger<?> merger = (Merger<?>) stage;
+		// correct the index if it is out-of-bounds
+		this.index = (this.index + 1) % merger.getInputPorts().length;
+	}
 }

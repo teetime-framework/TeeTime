@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import teetime.framework.AbstractStage;
+import teetime.framework.DynamicInputPort;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
@@ -51,6 +52,7 @@ public class Merger<T> extends AbstractStage {
 	public Merger(final IMergerStrategy strategy) {
 		this.signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
 		this.strategy = strategy;
+		addInputPortRemovedListener(strategy);
 	}
 
 	@Override
@@ -108,8 +110,8 @@ public class Merger<T> extends AbstractStage {
 		return (InputPort<T>[]) super.getInputPorts();
 	}
 
-	public InputPort<T> getNewInputPort() {
-		return this.createInputPort();
+	public DynamicInputPort<T> getNewInputPort() {
+		return this.createDynamicInputPort();
 	}
 
 	public OutputPort<T> getOutputPort() {

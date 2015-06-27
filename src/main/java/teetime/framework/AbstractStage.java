@@ -298,6 +298,12 @@ public abstract class AbstractStage extends Stage {
 		return outputPort;
 	}
 
+	protected <T> DynamicInputPort<T> createDynamicInputPort() {
+		final DynamicInputPort<T> inputPort = new DynamicInputPort<T>(null, this, inputPorts.length);
+		inputPorts = addElementToArray(inputPort, inputPorts);
+		return inputPort;
+	}
+
 	@Override
 	protected void removeDynamicPort(final DynamicOutputPort<?> dynamicOutputPort) {
 		int index = dynamicOutputPort.getIndex();

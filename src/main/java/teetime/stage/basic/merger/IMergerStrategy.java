@@ -15,12 +15,14 @@
  */
 package teetime.stage.basic.merger;
 
+import teetime.framework.InputPortRemovedListener;
+
 /**
  * @author Nils Christian Ehmke
  *
  * @since 1.0
  */
-public interface IMergerStrategy {
+public interface IMergerStrategy extends InputPortRemovedListener {
 
 	public <T> T getNextInput(Merger<T> merger);
 

@@ -1,7 +1,6 @@
 package teetime.stage.basic.merger.dynamic;
 
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -59,32 +58,29 @@ public class DynamicMergerTest {
 
 		analysis.executeBlocking();
 
-		assertThat(config.getOutputElements(), containsInAnyOrder(0, 1, 2, 3, 4, 5, 6));
+		assertThat(config.getOutputElements(), contains(0, 1, 2, 3, 4, 5, 6));
 	}
 
 	@Test
 	public void shouldWorkWithRemoveActionTriggers() throws Exception {
-		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4, 5);
+		List<Integer> inputNumbers = Arrays.asList(0, 1, 2);
 
 		@SuppressWarnings("unchecked")
 		PortAction<DynamicMerger<Integer>>[] inputActions = new PortAction[6];
-		// inputActions[0] = createPortCreateAction();
-		// inputActions[1] = new RemovePortAction<Integer>(null);
-		// inputActions[2] = createPortCreateAction();
-		// inputActions[3] = createPortCreateAction();
-		// inputActions[4] = new RemovePortAction<Integer>(null);
-		// inputActions[5] = new RemovePortAction<Integer>(null);
-		//
-		// ControlledMergerTestConfig<Integer> config = new ControlledMergerTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		// Execution<ControlledMergerTestConfig<Integer>> analysis = new Execution<ControlledMergerTestConfig<Integer>>(config,
-		// new TerminatingExceptionListenerFactory());
-		//
-		// analysis.executeBlocking();
-		//
-		// assertThat(config.getOutputElements(), contains(0, 1, 2, 4, 5));
-		// assertValuesForIndex(inputActions, Collections.<Integer> emptyList(), 0);
-		// assertValuesForIndex(inputActions, Arrays.asList(3), 2);
-		// assertValuesForIndex(inputActions, Collections.<Integer> emptyList(), 3);
+		inputActions[0] = createPortCreateAction(3);
+		inputActions[1] = new RemovePortAction<Integer>(null);
+		inputActions[2] = createPortCreateAction(4);
+		inputActions[3] = createPortCreateAction(5);
+		inputActions[4] = new RemovePortAction<Integer>(null);
+		inputActions[5] = new RemovePortAction<Integer>(null);
+
+		DynamicMergerTestConfig<Integer> config = new DynamicMergerTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
+		Execution<DynamicMergerTestConfig<Integer>> analysis = new Execution<DynamicMergerTestConfig<Integer>>(config,
+				new TerminatingExceptionListenerFactory());
+
+		analysis.executeBlocking();
+
+		assertThat(config.getOutputElements(), contains(0, 1, 2, 4, 5));
 	}
 
 	private PortAction<DynamicMerger<Integer>> createPortCreateAction(final Integer number) {
