@@ -20,7 +20,7 @@ import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.merger.BusyWaitingRoundRobinStrategy;
 import teetime.util.framework.port.PortAction;
 
-public class ControlledMergerTest {
+public class DynamicMergerTest {
 
 	private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();
 
@@ -34,8 +34,8 @@ public class ControlledMergerTest {
 			inputActions[i] = new DoNothingPortAction<Integer>();
 		}
 
-		ControlledMergerTestConfig<Integer> config = new ControlledMergerTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<ControlledMergerTestConfig<Integer>> analysis = new Execution<ControlledMergerTestConfig<Integer>>(config,
+		DynamicMergerTestConfig<Integer> config = new DynamicMergerTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
+		Execution<DynamicMergerTestConfig<Integer>> analysis = new Execution<DynamicMergerTestConfig<Integer>>(config,
 				new TerminatingExceptionListenerFactory());
 
 		analysis.executeBlocking();
@@ -53,8 +53,8 @@ public class ControlledMergerTest {
 			inputActions[i] = createPortCreateAction(i + 1);
 		}
 
-		ControlledMergerTestConfig<Integer> config = new ControlledMergerTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<ControlledMergerTestConfig<Integer>> analysis = new Execution<ControlledMergerTestConfig<Integer>>(config,
+		DynamicMergerTestConfig<Integer> config = new DynamicMergerTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
+		Execution<DynamicMergerTestConfig<Integer>> analysis = new Execution<DynamicMergerTestConfig<Integer>>(config,
 				new TerminatingExceptionListenerFactory());
 
 		analysis.executeBlocking();
@@ -103,11 +103,11 @@ public class ControlledMergerTest {
 		return portAction;
 	}
 
-	private static class ControlledMergerTestConfig<T> extends Configuration {
+	private static class DynamicMergerTestConfig<T> extends Configuration {
 
 		private final CollectorSink<T> collectorSink;
 
-		public ControlledMergerTestConfig(final List<T> elements, final List<PortAction<DynamicMerger<T>>> inputActions) {
+		public DynamicMergerTestConfig(final List<T> elements, final List<PortAction<DynamicMerger<T>>> inputActions) {
 			InitialElementProducer<T> initialElementProducer = new InitialElementProducer<T>(elements);
 			DynamicMerger<T> merger = new DynamicMerger<T>(new BusyWaitingRoundRobinStrategy());
 			collectorSink = new CollectorSink<T>();
