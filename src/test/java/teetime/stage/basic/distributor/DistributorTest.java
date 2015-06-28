@@ -131,7 +131,7 @@ public class DistributorTest {
 		this.distributor.getNewOutputPort();
 		this.distributor.onStarting();
 
-		expectedException.expect(UnsupportedOperationException.class);
+		expectedException.expect(IllegalStateException.class);
 		this.distributor.execute(1);
 	}
 
