@@ -30,6 +30,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import teetime.stage.basic.distributor.strategy.CloneStrategy;
+import teetime.stage.basic.distributor.strategy.CopyByReferenceStrategy;
+import teetime.stage.basic.distributor.strategy.RoundRobinStrategy;
+import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
+
 /**
  * @author Nils Christian Ehmke
  *
@@ -136,19 +141,23 @@ public class DistributorTest {
 		final List<SimpleBean> results = new ArrayList<SimpleBean>();
 		final SimpleBean originalBean = new SimpleBean(42);
 
-		test(distributor).and().send(originalBean).to(distributor.getInputPort()).and().receive(results).from(distributor.getNewOutputPort()).start();
+		test(distributor).and()
+				.send(originalBean).to(distributor.getInputPort()).and()
+				.receive(results).from(distributor.getNewOutputPort()).start();
 
 		final SimpleBean clonedBean = results.get(0);
 		assertThat(originalBean, is(not(clonedBean)));
 		assertThat(originalBean.getValue(), is(clonedBean.getValue()));
 	}
 
-	private static class SimpleBean {
+	// set to "public" to instantiate it via reflection
+	public static class SimpleBean {
 
 		private int value;
 
-		@SuppressWarnings("unused")
-		public SimpleBean() {}
+		public SimpleBean() {
+			// necessary to instantiate it via reflection
+		}
 
 		public SimpleBean(final int value) {
 			this.setValue(value);

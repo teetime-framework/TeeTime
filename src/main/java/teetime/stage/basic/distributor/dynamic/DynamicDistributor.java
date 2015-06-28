@@ -8,8 +8,8 @@ import teetime.framework.OutputPortRemovedListener;
 import teetime.framework.Stage;
 import teetime.framework.signal.TerminatingSignal;
 import teetime.stage.basic.distributor.Distributor;
-import teetime.stage.basic.distributor.IDistributorStrategy;
-import teetime.stage.basic.distributor.RoundRobinStrategy2;
+import teetime.stage.basic.distributor.strategy.IDistributorStrategy;
+import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
 import teetime.util.framework.port.PortAction;
 import teetime.util.framework.port.PortActionHelper;
 

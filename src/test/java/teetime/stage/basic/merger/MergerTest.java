@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
+
 /**
  * @author Nils Christian Ehmke
  *

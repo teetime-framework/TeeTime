@@ -16,7 +16,7 @@ import teetime.framework.RunnableProducerStage;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
-import teetime.stage.basic.merger.BusyWaitingRoundRobinStrategy;
+import teetime.stage.basic.merger.strategy.BusyWaitingRoundRobinStrategy;
 import teetime.util.framework.port.PortAction;
 
 public class DynamicMergerTest {

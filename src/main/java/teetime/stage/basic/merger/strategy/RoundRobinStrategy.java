@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage.basic.merger;
+package teetime.stage.basic.merger.strategy;
 
 import teetime.framework.InputPort;
 import teetime.framework.Stage;
+import teetime.stage.basic.merger.Merger;
 
 /**
  * @author Nils Christian Ehmke

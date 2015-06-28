@@ -3,8 +3,8 @@ package teetime.stage.basic.merger.dynamic;
 import java.util.concurrent.BlockingQueue;
 
 import teetime.framework.DynamicInputPort;
-import teetime.stage.basic.merger.IMergerStrategy;
 import teetime.stage.basic.merger.Merger;
+import teetime.stage.basic.merger.strategy.IMergerStrategy;
 import teetime.util.framework.port.PortAction;
 import teetime.util.framework.port.PortActionHelper;
 

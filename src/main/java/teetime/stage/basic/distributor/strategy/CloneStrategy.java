@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage.basic.distributor;
+package teetime.stage.basic.distributor.strategy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -57,13 +57,11 @@ public final class CloneStrategy implements IDistributorStrategy {
 
 			return newInstance;
 		} catch (InstantiationException e) {
-			throw new UnsupportedOperationException();
+			throw new IllegalStateException(e);
 		} catch (IllegalAccessException e) {
-			throw new UnsupportedOperationException();
-		} catch (IllegalArgumentException e) {
-			throw new UnsupportedOperationException();
+			throw new IllegalStateException(e);
 		} catch (InvocationTargetException e) {
-			throw new UnsupportedOperationException();
+			throw new IllegalStateException(e);
 		}
 	}
 

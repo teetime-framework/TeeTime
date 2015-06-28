@@ -13,29 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage.basic.distributor;
+package teetime.stage.basic.distributor.strategy;
 
 import teetime.framework.OutputPort;
-import teetime.framework.Stage;
+import teetime.framework.OutputPortRemovedListener;
 
 /**
  * @author Nils Christian Ehmke
  *
  * @since 1.0
  */
-public final class CopyByReferenceStrategy implements IDistributorStrategy {
+public interface IDistributorStrategy extends OutputPortRemovedListener {
 
-	@Override
-	public <T> boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
-		for (final OutputPort<T> outputPort : outputPorts) {
-			outputPort.send(element);
-		}
+	public <T> boolean distribute(final OutputPort<T>[] allOutputPorts, final T element);
 
-		return true;
-	}
-
-	@Override
-	public void onOutputPortRemoved(final Stage stage, final OutputPort<?> removedOutputPort) {
-		// do nothing
-	}
 }

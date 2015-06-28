@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage.basic.distributor;
+package teetime.stage.basic.distributor.strategy;
 
 import teetime.framework.OutputPort;
 import teetime.framework.Stage;
+import teetime.stage.basic.distributor.Distributor;
 
 /**
  * @author Christian Wulf

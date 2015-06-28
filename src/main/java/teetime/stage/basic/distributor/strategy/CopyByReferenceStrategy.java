@@ -13,17 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage.basic.merger;
+package teetime.stage.basic.distributor.strategy;
 
-import teetime.framework.InputPortRemovedListener;
+import teetime.framework.OutputPort;
+import teetime.framework.Stage;
 
 /**
  * @author Nils Christian Ehmke
  *
  * @since 1.0
  */
-public interface IMergerStrategy extends InputPortRemovedListener {
+public final class CopyByReferenceStrategy implements IDistributorStrategy {
 
-	public <T> T getNextInput(Merger<T> merger);
+	@Override
+	public <T> boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
+		for (final OutputPort<T> outputPort : outputPorts) {
+			outputPort.send(element);
+		}
 
+		return true;
+	}
+
+	@Override
+	public void onOutputPortRemoved(final Stage stage, final OutputPort<?> removedOutputPort) {
+		// do nothing
+	}
 }

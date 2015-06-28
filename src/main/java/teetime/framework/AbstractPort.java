@@ -31,11 +31,11 @@ public abstract class AbstractPort<T> {
 
 	protected IPipe pipe;
 
-	public AbstractPort(final Class<T> type, final Stage owningStage, final String name) {
+	protected AbstractPort(final Class<T> type, final Stage owningStage, final String name) {
 		super();
 		this.type = type;
 		this.owningStage = owningStage;
-		this.name = (name != null) ? name : super.toString();
+		this.name = name;
 	}
 
 	public Class<T> getType() {
@@ -56,6 +56,6 @@ public abstract class AbstractPort<T> {
 
 	@Override
 	public String toString() {
-		return name;
+		return (name != null) ? name : super.toString();
 	}
 }
