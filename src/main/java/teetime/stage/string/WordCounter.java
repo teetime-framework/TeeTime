@@ -15,13 +15,10 @@
  */
 package teetime.stage.string;
 
-import java.util.ArrayList;
-
 import teetime.framework.AbstractCompositeStage;
 import teetime.framework.ConfigurationContext;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.Stage;
 import teetime.stage.MappingCounter;
 import teetime.stage.util.CountingMap;
 
@@ -36,24 +33,18 @@ import teetime.stage.util.CountingMap;
  */
 public final class WordCounter extends AbstractCompositeStage {
 
-	// This fields are needed for the methods to work.
-	private final Tokenizer tokenizer = new Tokenizer(" ");
-	private final MappingCounter<String> mapCounter = new MappingCounter<String>();
-	private final ArrayList<Stage> lastStages = new ArrayList<Stage>();
+	private final Tokenizer tokenizer;
+	private final MappingCounter<String> mapCounter;
 
-	// The connection of the different stages is realized within the construction of a instance of this class.
 	public WordCounter(final ConfigurationContext context) {
 		super(context);
-		this.lastStages.add(this.mapCounter);
+
+		this.tokenizer = new Tokenizer(" ");
 		final ToLowerCase toLowerCase = new ToLowerCase();
+		this.mapCounter = new MappingCounter<String>();
 
 		connectPorts(this.tokenizer.getOutputPort(), toLowerCase.getInputPort());
 		connectPorts(toLowerCase.getOutputPort(), this.mapCounter.getInputPort());
-		// connectStages(wordcharacterFilter.getOutputPort(), this.mapCounter.getInputPort());
-	}
-
-	public Stage getFirstStage() {
-		return this.tokenizer;
 	}
 
 	public InputPort<String> getInputPort() {

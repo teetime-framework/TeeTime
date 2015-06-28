@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.idle;
+package teetime.stage.basic;
 
-/**
- *
- * @author Christian Wulf
- *
- * @deprecated since 1.1
- */
-@Deprecated
-public interface IdleStrategy {
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 
-	void execute() throws InterruptedException;
+public interface ITransformation<I, O> {
+
+	public abstract InputPort<I> getInputPort();
+
+	public abstract OutputPort<O> getOutputPort();
+
 }
