@@ -61,6 +61,7 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 		return this.rightOutputPort;
 	}
 
+	// TODO Too fixed? should it be more generic?
 	@Override
 	protected final void executeStage() {
 		final I element = this.getInputPort().receive();
@@ -70,25 +71,24 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 		if (null != element) {
 			if (splitCondition(element)) {
 
-				// divide the input
-				divide(element);
-
 				// create two new instances of this stage
 				createCopies();
 
-				// send results from split
-				leftOutputPort.send(eLeft);
-				rightOutputPort.send(eRight);
+				// divide the input
+				divide(element);
 
-				// send signals init start
+				// send signals init, start
 				leftOutputPort.sendSignal(new InitializingSignal());
 				leftOutputPort.sendSignal(new StartingSignal());
 				rightOutputPort.sendSignal(new InitializingSignal());
 				rightOutputPort.sendSignal(new StartingSignal());
+			} else {
+				// received an unsplittable element
+				outputPort.send(element);
 			}
-		} else if (eLeft != null && eRight != null) {
 
-			outputPort.send(element);
+		} else if (eLeft != null && eRight != null) {
+			conquer(eLeft, eRight);
 		} else {
 			returnNoElement();
 		}
@@ -126,7 +126,7 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 	}
 
 	/**
-	 * Method to divide the given input.
+	 * Method to divide the given input and send to the left and right output ports.
 	 *
 	 * @param element
 	 *            An element to be split and further processed
@@ -134,7 +134,7 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 	protected abstract void divide(final I element);
 
 	/**
-	 * Method to join the given inputs together.
+	 * Method to join the given inputs together and send to the output port.
 	 *
 	 * @param eLeft
 	 *            First half of the resulting element.
