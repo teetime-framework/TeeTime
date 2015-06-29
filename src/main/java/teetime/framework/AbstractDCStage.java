@@ -3,9 +3,15 @@ package teetime.framework;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 
+/**
+ * Represents a stage to provide functionality for the divide and conquer paradigm
+ *
+ * @since 2.x
+ *
+ * @author Christian Wulf, Nelson Tavares de Sousa, Robin Mohr
+ *
+ */
 public abstract class AbstractDCStage<I> extends AbstractStage {
-
-	// private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();
 
 	private final ConfigurationContext context;
 
@@ -17,8 +23,18 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 	protected final OutputPort<I> leftOutputPort = this.createOutputPort();
 	protected final OutputPort<I> rightOutputPort = this.createOutputPort();
 
-	protected AbstractDCStage() {
-		this.context = new ConfigurationContext();
+	/**
+	 * Divide and Conquer stages need the configuration context upon creation
+	 *
+	 */
+	public AbstractDCStage(final ConfigurationContext context) {
+		if (null == context) {
+			throw new IllegalArgumentException("Context may not be null.");
+		}
+		this.context = context;
+		// connect to self instead of dummy pipe upon creation
+		context.connectPorts(leftOutputPort, leftInputPort, 1);
+		context.connectPorts(rightOutputPort, rightInputPort, 1);
 	}
 
 	public final InputPort<I> getInputPort() {
@@ -53,41 +69,85 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 
 		if (null != element) {
 			if (splitCondition(element)) {
-				I[] elements = divide(element);
-				AbstractDCStage<I>[] stages = null;
-				stages = this.createCopies();
-				// connect with copies
-				// execute copy in new thread
+
+				// divide the input
+				divide(element);
+
+				// create two new instances of this stage
+				createCopies();
+
+				// send results from split
+				leftOutputPort.send(eLeft);
+				rightOutputPort.send(eRight);
+
 				// send signals init start
-
-				context.connectPorts(leftOutputPort, stages[0].getInputPort(), 1);
-				context.connectPorts(rightOutputPort, stages[1].getInputPort(), 1);
-
-				leftOutputPort.send(elements[0]);
-				rightOutputPort.send(elements[1]);
-
-				// Runnable runnable =
-				// DYNAMIC_ACTUATOR.wrap(inputPort.getOwningStage());
-				// Thread thread = new Thread(runnable);
-				// thread.start();
-
 				leftOutputPort.sendSignal(new InitializingSignal());
 				leftOutputPort.sendSignal(new StartingSignal());
 				rightOutputPort.sendSignal(new InitializingSignal());
 				rightOutputPort.sendSignal(new StartingSignal());
 			}
 		} else if (eLeft != null && eRight != null) {
-			outputPort.send(conquer(eLeft, eRight));
+
+			outputPort.send(element);
 		} else {
 			returnNoElement();
 		}
 	}
 
-	protected abstract I conquer(I eLeft, I eRight);
+	/**
+	 * A method to add two copies (new instances) of this stage to the configuration, which should be executed in a own thread.
+	 *
+	 */
+	@SuppressWarnings("unchecked")
+	protected void createCopies() {
+		try {
+			// this creates an instance of the subclass
 
-	protected abstract boolean splitCondition(I element);
+			// FIXME temporary solution
+			final AbstractDCStage<I> newStage1 = this.getClass().newInstance();
+			final AbstractDCStage<I> newStage2 = this.getClass().newInstance();
 
-	protected abstract AbstractDCStage<I>[] createCopies(); // FIXME Should be in this class, need to find elegant way to write it generic
+			// connect with copies
+			context.connectPorts(leftOutputPort, newStage1.getInputPort(), 1);
+			context.connectPorts(newStage1.getOutputPort(), leftInputPort, 1);
 
-	protected abstract I[] divide(I element);
+			context.connectPorts(rightOutputPort, newStage2.getInputPort(), 1);
+			context.connectPorts(newStage2.getOutputPort(), rightInputPort, 1);
+
+			// make stages executable
+			context.addThreadableStage(newStage1);
+			context.addThreadableStage(newStage2);
+
+		} catch (InstantiationException ie) {
+			throw new RuntimeException(ie);
+		} catch (IllegalAccessException iae) {
+			throw new RuntimeException(iae);
+		}
+	}
+
+	/**
+	 * Method to divide the given input.
+	 *
+	 * @param element
+	 *            An element to be split and further processed
+	 */
+	protected abstract void divide(final I element);
+
+	/**
+	 * Method to join the given inputs together.
+	 *
+	 * @param eLeft
+	 *            First half of the resulting element.
+	 * @param eRight
+	 *            Second half of the resulting element.
+	 */
+	protected abstract void conquer(final I eLeft, final I eRight);
+
+	/**
+	 * Determines whether or not to split the input problem by examining the given element
+	 *
+	 * @param element
+	 *            The element whose properties determine the split condition
+	 */
+	protected abstract boolean splitCondition(final I element);
 }
