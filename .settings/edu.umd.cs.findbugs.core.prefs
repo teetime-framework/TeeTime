@@ -1,8 +1,11 @@
 #FindBugs User Preferences
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/master
 #Thu Jun 25 14:06:30 CEST 2015
 detector_threshold=2
 =======
+=======
+>>>>>>> branch 'ccw' of http://build.se.informatik.uni-kiel.de/gitlab/chw/teetime.git
 #Wed Jun 24 14:05:03 CEST 2015
 detector_threshold=3
 >>>>>>> 73c50f5 added TaskFarmDuplicable
