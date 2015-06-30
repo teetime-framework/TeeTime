@@ -1,9 +1,8 @@
 package teetime.stage.taskfarm;
 
-import teetime.framework.Stage;
 import teetime.framework.pipe.IMonitorablePipe;
 
-public class TaskFarmTriple<I, O, TFS extends Stage & TaskFarmDuplicable<I, O>> {
+public class TaskFarmTriple<I, O, TFS extends TaskFarmDuplicable<I, O>> {
 
 	private final IMonitorablePipe inputPipe;
 	private final IMonitorablePipe outputPipe;

@@ -32,53 +32,9 @@ public abstract class AbstractCompositeStage {
 
 	private final ConfigurationContext context;
 
-<<<<<<< Upstream, based on origin/master
 	public AbstractCompositeStage(final ConfigurationContext context) {
 		if (null == context) {
 			throw new IllegalArgumentException("Context may not be null.");
-=======
-	protected abstract Stage getFirstStage();
-
-	protected final Collection<? extends Stage> getLastStages() {
-		return lastStages;
-	}
-
-	@Override
-	protected final void executeStage() {
-		getFirstStage().executeStage();
-	}
-
-	@Override
-	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
-		getFirstStage().onSignal(signal, inputPort);
-	}
-
-	@Override
-	protected final TerminationStrategy getTerminationStrategy() {
-		return getFirstStage().getTerminationStrategy();
-	}
-
-	@Override
-	protected void terminate() {
-		getFirstStage().terminate();
-	}
-
-	@Override
-	protected final boolean shouldBeTerminated() {
-		return getFirstStage().shouldBeTerminated();
-	}
-
-	@Override
-	public final InputPort<?>[] getInputPorts() {
-		return getFirstStage().getInputPorts();
-	}
-
-	@Override
-	public OutputPort<?>[] getOutputPorts() {
-		List<OutputPort<?>> outputPorts = new ArrayList<OutputPort<?>>();
-		for (final Stage s : getLastStages()) {
-			outputPorts.addAll(Arrays.asList(s.getOutputPorts()));
->>>>>>> 0840fe3 Test works now :)
 		}
 		this.context = context;
 	}
