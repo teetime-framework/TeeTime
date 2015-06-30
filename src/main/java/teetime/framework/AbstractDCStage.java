@@ -64,13 +64,14 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 	// TODO Too fixed? should it be more generic?
 	@Override
 	protected final void executeStage() {
+		this.logger.debug("[DC]" + this.getId() + "_" + "init");
 		final I element = this.getInputPort().receive();
 		final I eLeft = this.getLeftInputPort().receive();
 		final I eRight = this.getRightInputPort().receive();
 
 		if (null != element) {
 			if (splitCondition(element)) {
-
+				this.logger.debug("[DC]" + this.getId() + "_" + "passed splitcondition_" + element.toString());
 				// create two new instances of this stage
 				createCopies();
 
@@ -84,12 +85,15 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 				rightOutputPort.sendSignal(new StartingSignal());
 			} else {
 				// received an unsplittable element
+				this.logger.debug("[DC]" + this.getId() + "_" + "sending_" + element.toString());
 				outputPort.send(element);
 			}
 
 		} else if (eLeft != null && eRight != null) {
+			this.logger.debug("[DC]" + this.getId() + "_" + "conquering_" + eLeft.toString() + eRight.toString());
 			conquer(eLeft, eRight);
 		} else {
+			this.logger.debug("[DC]" + this.getId() + "_" + "return no element:");
 			returnNoElement();
 		}
 	}
@@ -102,11 +106,11 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 	protected void createCopies() {
 		try {
 			// this creates an instance of the subclass
-
+			this.logger.debug("[DC]" + this.getId() + "_" + "createCopies");
 			// FIXME temporary solution
 			final AbstractDCStage<I> newStage1 = this.getClass().newInstance();
 			final AbstractDCStage<I> newStage2 = this.getClass().newInstance();
-
+			this.logger.debug("[DC]" + this.getId() + "_" + "Instantiated!");
 			// connect with copies
 			context.connectPorts(leftOutputPort, newStage1.getInputPort(), 1);
 			context.connectPorts(newStage1.getOutputPort(), leftInputPort, 1);
@@ -115,6 +119,7 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 			context.connectPorts(newStage2.getOutputPort(), rightInputPort, 1);
 
 			// make stages executable
+			this.logger.debug("[DC]" + this.getId() + "_" + "added stages");
 			context.addThreadableStage(newStage1);
 			context.addThreadableStage(newStage2);
 
@@ -123,6 +128,7 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 		} catch (IllegalAccessException iae) {
 			throw new RuntimeException(iae);
 		}
+		this.logger.debug("[DC]" + this.getId() + "_" + "copies created");
 	}
 
 	/**

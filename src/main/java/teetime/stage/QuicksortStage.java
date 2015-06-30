@@ -1,68 +1,54 @@
 package teetime.stage;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import teetime.framework.AbstractDCStage;
 import teetime.framework.ConfigurationContext;
 
-public final class QuicksortStage extends AbstractDCStage<int[]> {
-
-	private final int[] array;
-	private final int pivotElement;
+public final class QuicksortStage extends AbstractDCStage<List<Integer>> {
 
 	public QuicksortStage(final ConfigurationContext context) {
 		super(context);
-		array = null;
-		pivotElement = 0;
 	}
 
 	@Override
-	protected boolean splitCondition(final int[] arr) {
-		return (arr.length >= 2) ? true : false;
+	protected boolean splitCondition(final List<Integer> lis) {
+		return (lis.size() >= 2) ? true : false;
 	}
 
 	@Override
-	protected void divide(final int[] element) {
-		final int low = 0;
-		final int high = element.length - 1;
+	protected void divide(final List<Integer> element) {
 
-		// pick the pivot
-		int middle = low + (high - low) / 2;
-		int pivot = element[middle];
+		final int middle = (int) Math.ceil((double) element.size() / 2);
+		final int pivot = element.get(middle);
 
-		// make left < pivot and right > pivot
-		int i = low, j = high;
-		while (i <= j) {
-			while (element[i] < pivot) {
-				i++;
+		List<Integer> left = new ArrayList<Integer>();
+		List<Integer> right = new ArrayList<Integer>();
+		this.logger.debug("[DC]" + this.getId() + "_" + "dividing: " + element.toString());
+		for (int i = 0; i < element.size(); i++) {
+			if (element.get(i) <= pivot) {
+				if (i == middle) {
+					continue;
+				}
+
+				left.add(element.get(i));
 			}
-
-			while (element[j] > pivot) {
-				j--;
-			}
-
-			if (i <= j) {
-				final int temp = element[i];
-				element[i] = element[j];
-				element[j] = temp;
-				i++;
-				j--;
+			else {
+				right.add(element.get(i));
 			}
 		}
+		left.add(pivot);
+		this.logger.debug("[DC]" + this.getId() + "_" + "successfully divided... pivot:" + pivot);
 
 		// recursively sort two sub parts
-		if (low < j) {
-			final int[] left = Arrays.copyOfRange(element, low, j);
-			leftOutputPort.send(left);
-		}
-		if (high > i) {
-			final int[] right = Arrays.copyOfRange(element, i, high);
-			rightOutputPort.send(right);
-		}
+		leftOutputPort.send(left);
+		rightOutputPort.send(right);
 	}
 
 	@Override
-	protected void conquer(final int[] eLeft, final int[] eRight) {
-		outputPort.send(array);
+	protected void conquer(final List<Integer> eLeft, final List<Integer> eRight) {
+		eLeft.addAll(eRight);
+		outputPort.send(eLeft);
 	}
 }
