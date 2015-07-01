@@ -24,7 +24,7 @@ package teetime.framework;
  *
  * @since 1.0
  */
-public final class InputPort<T> extends AbstractPort<T> {
+public class InputPort<T> extends AbstractPort<T> {
 
 	InputPort(final Class<T> type, final Stage owningStage, final String portName) {
 		super(type, owningStage, portName);

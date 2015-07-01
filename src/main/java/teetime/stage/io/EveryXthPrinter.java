@@ -24,8 +24,8 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.Stage;
 import teetime.stage.EveryXthStage;
-import teetime.stage.basic.distributor.CopyByReferenceStrategy;
 import teetime.stage.basic.distributor.Distributor;
+import teetime.stage.basic.distributor.strategy.CopyByReferenceStrategy;
 
 public final class EveryXthPrinter<T> extends AbstractCompositeStage {
 

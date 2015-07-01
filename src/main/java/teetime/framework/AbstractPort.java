@@ -19,23 +19,31 @@ import teetime.framework.pipe.IPipe;
 
 public abstract class AbstractPort<T> {
 
-	private final String portName;
-
-	protected IPipe pipe;
 	/**
 	 * The type of this port.
 	 * <p>
 	 * <i>Used to validate the connection between two ports at runtime.</i>
 	 * </p>
 	 */
-	protected final Class<T> type;
+	private final Class<T> type;
 	private final Stage owningStage;
+	private final String name;
 
-	public AbstractPort(final Class<T> type, final Stage owningStage, final String portName) {
+	protected IPipe pipe;
+
+	protected AbstractPort(final Class<T> type, final Stage owningStage, final String name) {
 		super();
-		this.portName = portName;
 		this.type = type;
 		this.owningStage = owningStage;
+		this.name = name;
+	}
+
+	public Class<T> getType() {
+		return this.type;
+	}
+
+	public Stage getOwningStage() {
+		return owningStage;
 	}
 
 	public IPipe getPipe() {
@@ -46,20 +54,8 @@ public abstract class AbstractPort<T> {
 		this.pipe = pipe;
 	}
 
-	public Class<T> getType() {
-		return this.type;
-	}
-
-	public final Stage getOwningStage() {
-		return owningStage;
-	}
-
 	@Override
-	public final String toString() {
-		if (portName == null) {
-			return super.toString();
-		} else {
-			return portName;
-		}
+	public String toString() {
+		return (name != null) ? name : super.toString();
 	}
 }

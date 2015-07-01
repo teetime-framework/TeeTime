@@ -9,13 +9,13 @@
 
 	<name>TeeTime</name>
 	<description>TeeTime is a Pipe-and-Filter framework for Java</description>
-	<url>http://teetime.sourceforge.org</url>
+	<url>http://christianwulf.github.io/teetime/</url>
 	<inceptionYear>2015</inceptionYear>
 
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
-			<url>http://teetime.sourceforge.net/LICENSE.txt</url>
+			<url>http://christianwulf.github.io/teetime/LICENSE.txt</url>
 		</license>
 	</licenses>
 
@@ -309,12 +309,6 @@
 						<groupId>org.apache.maven.doxia</groupId>
 						<artifactId>doxia-module-markdown-teetime</artifactId>
 						<version>1.6</version>
-					</dependency>
-					<!-- add support for ssh/scp -->
-					<dependency>
-						<groupId>org.apache.maven.wagon</groupId>
-						<artifactId>wagon-ssh</artifactId>
-						<version>2.9-SNAPSHOT</version>
 					</dependency>
 					<!-- skin -->
 					<dependency>

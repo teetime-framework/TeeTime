@@ -15,6 +15,7 @@
  */
 package teetime.framework;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +35,9 @@ public abstract class AbstractStage extends Stage {
 	private InputPort<?>[] inputPorts = new InputPort<?>[0];
 	private OutputPort<?>[] outputPorts = new OutputPort<?>[0];
 	private StageState currentState = StageState.CREATED;
+
+	private final Set<OutputPortRemovedListener> outputPortRemovedListeners = new HashSet<OutputPortRemovedListener>();
+	private final Set<InputPortRemovedListener> inputPortsRemovedListeners = new HashSet<InputPortRemovedListener>();
 
 	@Override
 	public InputPort<?>[] getInputPorts() {
@@ -134,14 +138,11 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be received
 	 *
-	 * @return Newly added InputPort
+	 * @return the newly added InputPort
 	 *
 	 */
-	// * @deprecated Since 1.1. Use {@link #createInputPort(Class)} instead.
-	@SuppressWarnings("unchecked")
-	// @Deprecated
 	protected <T> InputPort<T> createInputPort() {
-		return (InputPort<T>) createInputPort(null, null);
+		return createInputPort(null, null);
 	}
 
 	/**
@@ -153,7 +154,7 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be received
 	 *
-	 * @return Newly added InputPort
+	 * @return the newly added InputPort
 	 */
 	protected <T> InputPort<T> createInputPort(final Class<T> type) {
 		return createInputPort(type, null);
@@ -167,14 +168,11 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be received
 	 *
-	 * @return Newly added InputPort
+	 * @return the newly added InputPort
 	 *
 	 */
-	// * @deprecated Since 1.1. Use {@link #createInputPort(Class)} instead.
-	@SuppressWarnings("unchecked")
-	// @Deprecated
 	protected <T> InputPort<T> createInputPort(final String name) {
-		return (InputPort<T>) createInputPort(null, name);
+		return createInputPort(null, name);
 	}
 
 	/**
@@ -187,7 +185,7 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be received
 	 *
-	 * @return Newly added InputPort
+	 * @return the newly added InputPort
 	 */
 	protected <T> InputPort<T> createInputPort(final Class<T> type, final String name) {
 		final InputPort<T> inputPort = new InputPort<T>(type, this, name);
@@ -201,14 +199,11 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 *
-	 * @return Newly added OutputPort
+	 * @return the newly added OutputPort
 	 *
 	 */
-	// * @deprecated Since 1.1. Use {@link #createOutputPort(Class)} instead.
-	@SuppressWarnings("unchecked")
-	// @Deprecated
 	protected <T> OutputPort<T> createOutputPort() {
-		return (OutputPort<T>) createOutputPort(null, null);
+		return createOutputPort(null, null);
 	}
 
 	/**
@@ -220,12 +215,10 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 *
-	 * @return Newly added OutputPort
+	 * @return the newly added OutputPort
 	 */
 	protected <T> OutputPort<T> createOutputPort(final Class<T> type) {
-		final OutputPort<T> outputPort = new OutputPort<T>(type, this, null);
-		outputPorts = addElementToArray(outputPort, outputPorts);
-		return outputPort;
+		return createOutputPort(type, null);
 	}
 
 	/**
@@ -237,14 +230,11 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 *
-	 * @return Newly added OutputPort
+	 * @return the newly added OutputPort
 	 *
 	 */
-	// * @deprecated Since 1.1. Use {@link #createOutputPort(Class)} instead.
-	@SuppressWarnings("unchecked")
-	// @Deprecated
 	protected <T> OutputPort<T> createOutputPort(final String name) {
-		return (OutputPort<T>) createOutputPort(null, name);
+		return createOutputPort(null, name);
 	}
 
 	/**
@@ -258,7 +248,7 @@ public abstract class AbstractStage extends Stage {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 *
-	 * @return Newly added OutputPort
+	 * @return the newly added OutputPort
 	 */
 	protected <T> OutputPort<T> createOutputPort(final Class<T> type, final String name) {
 		final OutputPort<T> outputPort = new OutputPort<T>(type, this, name);
@@ -266,7 +256,7 @@ public abstract class AbstractStage extends Stage {
 		return outputPort;
 	}
 
-	private <T> T[] addElementToArray(final T element, final T[] srcArray) {
+	private <T, E extends T> T[] addElementToArray(final E element, final T[] srcArray) {
 		T[] newOutputPorts = Arrays.copyOf(srcArray, srcArray.length + 1);
 		newOutputPorts[srcArray.length] = element;
 		return newOutputPorts;
@@ -300,6 +290,70 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	protected TerminationStrategy getTerminationStrategy() {
 		return TerminationStrategy.BY_SIGNAL;
+	}
+
+	protected <T> DynamicOutputPort<T> createDynamicOutputPort() {
+		final DynamicOutputPort<T> outputPort = new DynamicOutputPort<T>(null, this, outputPorts.length);
+		outputPorts = addElementToArray(outputPort, outputPorts);
+		return outputPort;
+	}
+
+	protected <T> DynamicInputPort<T> createDynamicInputPort() {
+		final DynamicInputPort<T> inputPort = new DynamicInputPort<T>(null, this, inputPorts.length);
+		inputPorts = addElementToArray(inputPort, inputPorts);
+		return inputPort;
+	}
+
+	@Override
+	protected void removeDynamicPort(final DynamicOutputPort<?> dynamicOutputPort) {
+		int index = dynamicOutputPort.getIndex();
+		List<OutputPort<?>> tempOutputPorts = new ArrayList<OutputPort<?>>(Arrays.asList(outputPorts));
+		OutputPort<?> removedOutputPort = tempOutputPorts.remove(index);
+		for (int i = index; i < tempOutputPorts.size(); i++) {
+			OutputPort<?> outputPort = tempOutputPorts.get(i);
+			if (outputPort instanceof DynamicOutputPort) {
+				((DynamicOutputPort<?>) outputPort).setIndex(i);
+			}
+		}
+		outputPorts = tempOutputPorts.toArray(new OutputPort[0]);
+
+		firePortRemoved(removedOutputPort);
+	}
+
+	private void firePortRemoved(final OutputPort<?> removedOutputPort) {
+		for (OutputPortRemovedListener listener : outputPortRemovedListeners) {
+			listener.onOutputPortRemoved(this, removedOutputPort);
+		}
+	}
+
+	protected final void addOutputPortRemovedListener(final OutputPortRemovedListener outputPortRemovedListener) {
+		outputPortRemovedListeners.add(outputPortRemovedListener);
+	}
+
+	@Override
+	protected void removeDynamicPort(final DynamicInputPort<?> dynamicInputPort) {
+		int index = dynamicInputPort.getIndex();
+		List<InputPort<?>> tempInputPorts = new ArrayList<InputPort<?>>(Arrays.asList(inputPorts));
+		InputPort<?> removedInputPort = tempInputPorts.remove(index);
+		for (int i = index; i < tempInputPorts.size(); i++) {
+			InputPort<?> inputPort = tempInputPorts.get(i);
+			if (inputPort instanceof DynamicInputPort) {
+				((DynamicInputPort<?>) inputPort).setIndex(i);
+			}
+		}
+		inputPorts = tempInputPorts.toArray(new InputPort[0]);
+
+		firePortRemoved(removedInputPort);
+	}
+
+	private void firePortRemoved(final InputPort<?> removedInputPort) {
+		for (InputPortRemovedListener listener : inputPortsRemovedListeners) {
+			listener.onInputPortRemoved(this, removedInputPort);
+		}
+	}
+
+	protected final void addInputPortRemovedListener(final InputPortRemovedListener outputPortRemovedListener) {
+		inputPortsRemovedListeners.add(outputPortRemovedListener);
 	}
 
 }

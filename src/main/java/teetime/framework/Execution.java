@@ -19,6 +19,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -27,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.IExceptionListenerFactory;
-import teetime.framework.exceptionHandling.IgnoringExceptionListenerFactory;
+import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
@@ -72,11 +73,11 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 *            to be used for the analysis
 	 */
 	public Execution(final T configuration) {
-		this(configuration, false, new IgnoringExceptionListenerFactory());
+		this(configuration, false, new TerminatingExceptionListenerFactory());
 	}
 
 	public Execution(final T configuration, final boolean validationEnabled) {
-		this(configuration, validationEnabled, new IgnoringExceptionListenerFactory());
+		this(configuration, validationEnabled, new TerminatingExceptionListenerFactory());
 	}
 
 	/**
@@ -102,8 +103,8 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 
 	// BETTER validate concurrently
 	private void validateStages() {
-		final Set<Stage> threadableStageJobs = this.configuration.getContext().getThreadableStages();
-		for (Stage stage : threadableStageJobs) {
+		final Map<Stage, String> threadableStageJobs = this.configuration.getContext().getThreadableStages();
+		for (Stage stage : threadableStageJobs.keySet()) {
 			// // portConnectionValidator.validate(stage);
 			// }
 
@@ -123,7 +124,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 		ExecutionInstantiation executionInstantiation = new ExecutionInstantiation(configuration.getContext());
 		executionInstantiation.instantiatePipes();
 
-		final Set<Stage> threadableStageJobs = this.configuration.getContext().getThreadableStages();
+		final Set<Stage> threadableStageJobs = this.configuration.getContext().getThreadableStages().keySet();
 		if (threadableStageJobs.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
@@ -182,7 +183,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	private Thread createThread(final AbstractRunnableStage runnable, final String name) {
 		final Thread thread = new Thread(runnable);
 		thread.setUncaughtExceptionHandler(this);
-		thread.setName(name);
+		thread.setName(configuration.getContext().getThreadableStages().get(runnable.stage));
 		return thread;
 	}
 
@@ -203,10 +204,12 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 */
 	public void waitForTermination() {
 		try {
+			LOGGER.debug("Waiting for finiteProducerThreads");
 			for (Thread thread : this.finiteProducerThreads) {
 				thread.join();
 			}
 
+			LOGGER.debug("Waiting for consumerThreads");
 			for (Thread thread : this.consumerThreads) {
 				thread.join();
 			}
@@ -221,6 +224,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 			}
 		}
 
+		LOGGER.debug("Interrupting infiniteProducerThreads...");
 		for (Thread thread : this.infiniteProducerThreads) {
 			thread.interrupt();
 		}
@@ -300,7 +304,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 		if (!executionInterrupted) {
 			executionInterrupted = true;
 			LOGGER.warn("Thread " + thread + " was interrupted. Terminating analysis now.");
-			for (Stage stage : configuration.getContext().getThreadableStages()) {
+			for (Stage stage : configuration.getContext().getThreadableStages().keySet()) {
 				if (stage.getOwningThread() != thread) {
 					if (stage.getTerminationStrategy() == TerminationStrategy.BY_SELF_DECISION) {
 						stage.terminate();

@@ -17,6 +17,8 @@ package teetime.stage.basic.distributor;
 
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
+import teetime.stage.basic.distributor.strategy.IDistributorStrategy;
+import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
 
 /**
  * @author Christian Wulf
@@ -36,6 +38,7 @@ public class Distributor<T> extends AbstractConsumerStage<T> {
 
 	public Distributor(final IDistributorStrategy strategy) {
 		this.strategy = strategy;
+		addOutputPortRemovedListener(strategy);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -45,7 +48,7 @@ public class Distributor<T> extends AbstractConsumerStage<T> {
 	}
 
 	public OutputPort<T> getNewOutputPort() {
-		return this.createOutputPort();
+		return this.createDynamicOutputPort();
 	}
 
 	public IDistributorStrategy getStrategy() {
@@ -54,6 +57,11 @@ public class Distributor<T> extends AbstractConsumerStage<T> {
 
 	public void setStrategy(final IDistributorStrategy strategy) {
 		this.strategy = strategy;
+	}
+
+	@Override
+	public OutputPort<?>[] getOutputPorts() {
+		return super.getOutputPorts();
 	}
 
 }

@@ -21,9 +21,12 @@ import java.util.Map;
 import java.util.Set;
 
 import teetime.framework.AbstractStage;
+import teetime.framework.DynamicInputPort;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
+import teetime.stage.basic.merger.strategy.IMergerStrategy;
+import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
 
 /**
  *
@@ -37,19 +40,21 @@ import teetime.framework.signal.ISignal;
  * @param <T>
  *            the type of both the input and output ports
  */
-public final class Merger<T> extends AbstractStage {
+public class Merger<T> extends AbstractStage {
 
 	private final OutputPort<T> outputPort = this.createOutputPort();
-	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
 
-	private IMergerStrategy strategy;
+	private final IMergerStrategy strategy;
+	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap;
 
 	public Merger() {
 		this(new RoundRobinStrategy());
 	}
 
 	public Merger(final IMergerStrategy strategy) {
+		this.signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
 		this.strategy = strategy;
+		addInputPortRemovedListener(strategy);
 	}
 
 	@Override
@@ -80,19 +85,19 @@ public final class Merger<T> extends AbstractStage {
 
 		Class<? extends ISignal> signalClass = signal.getClass();
 
-		Set<InputPort<?>> inputPorts;
+		Set<InputPort<?>> signalReceivedInputPorts;
 		if (signalMap.containsKey(signalClass)) {
-			inputPorts = signalMap.get(signalClass);
+			signalReceivedInputPorts = signalMap.get(signalClass);
 		} else {
-			inputPorts = new HashSet<InputPort<?>>();
-			signalMap.put(signalClass, inputPorts);
+			signalReceivedInputPorts = new HashSet<InputPort<?>>();
+			signalMap.put(signalClass, signalReceivedInputPorts);
 		}
 
-		if (!inputPorts.add(inputPort)) {
+		if (!signalReceivedInputPorts.add(inputPort)) {
 			this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
 		}
 
-		if (signal.mayBeTriggered(inputPorts, getInputPorts())) {
+		if (signal.mayBeTriggered(signalReceivedInputPorts, getInputPorts())) {
 			super.onSignal(signal, inputPort);
 		}
 	}
@@ -101,17 +106,14 @@ public final class Merger<T> extends AbstractStage {
 		return this.strategy;
 	}
 
-	public void setStrategy(final IMergerStrategy strategy) {
-		this.strategy = strategy;
-	}
-
+	@SuppressWarnings("unchecked")
 	@Override
-	public InputPort<?>[] getInputPorts() {
-		return super.getInputPorts();
+	public InputPort<T>[] getInputPorts() { // make public
+		return (InputPort<T>[]) super.getInputPorts();
 	}
 
-	public InputPort<T> getNewInputPort() {
-		return this.createInputPort();
+	public DynamicInputPort<T> getNewInputPort() {
+		return this.createDynamicInputPort();
 	}
 
 	public OutputPort<T> getOutputPort() {

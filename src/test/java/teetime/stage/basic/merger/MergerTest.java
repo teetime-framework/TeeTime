@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
+
 /**
  * @author Nils Christian Ehmke
  *
@@ -34,8 +36,7 @@ public class MergerTest {
 
 	@Test
 	public void roundRobinShouldWork() {
-		Merger<Integer> mergerUnderTest = new Merger<Integer>();
-		mergerUnderTest.setStrategy(new RoundRobinStrategy());
+		Merger<Integer> mergerUnderTest = new Merger<Integer>(new RoundRobinStrategy());
 
 		List<Integer> mergedElements = new ArrayList<Integer>();
 
@@ -50,8 +51,7 @@ public class MergerTest {
 
 	@Test
 	public void roundRobinWithSingleProducerShouldWork() {
-		Merger<Integer> mergerUnderTest = new Merger<Integer>();
-		mergerUnderTest.setStrategy(new RoundRobinStrategy());
+		Merger<Integer> mergerUnderTest = new Merger<Integer>(new RoundRobinStrategy());
 
 		List<Integer> mergedElements = new ArrayList<Integer>();
 
