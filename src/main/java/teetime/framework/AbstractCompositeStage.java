@@ -31,6 +31,8 @@ public abstract class AbstractCompositeStage {
 	private static final int DEFAULT_CAPACITY = 4;
 
 	private final ConfigurationContext context;
+	// FIXME should we pass this context by ctor, too?
+	private final DynamicConfigurationContext dynamicContext = new DynamicConfigurationContext();
 
 	public AbstractCompositeStage(final ConfigurationContext context) {
 		if (null == context) {
@@ -41,6 +43,10 @@ public abstract class AbstractCompositeStage {
 
 	protected ConfigurationContext getContext() {
 		return context;
+	}
+
+	protected DynamicConfigurationContext getDynamicContext() {
+		return dynamicContext;
 	}
 
 	/**

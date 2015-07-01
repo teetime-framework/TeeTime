@@ -13,7 +13,7 @@ import teetime.framework.signal.StartingSignal;
  */
 public abstract class AbstractDCStage<I> extends AbstractStage {
 
-	private final ConfigurationContext context;
+	private final DynamicConfigurationContext context;
 
 	protected final InputPort<I> inputPort = this.createInputPort();
 	protected final InputPort<I> leftInputPort = this.createInputPort();
@@ -27,14 +27,14 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 	 * Divide and Conquer stages need the configuration context upon creation
 	 *
 	 */
-	public AbstractDCStage(final ConfigurationContext context) {
+	public AbstractDCStage(final DynamicConfigurationContext context) {
 		if (null == context) {
 			throw new IllegalArgumentException("Context may not be null.");
 		}
 		this.context = context;
 		// connect to self instead of dummy pipe upon creation
-		context.connectPorts(leftOutputPort, leftInputPort, 1);
-		context.connectPorts(rightOutputPort, rightInputPort, 1);
+		context.connectPorts(leftOutputPort, leftInputPort);
+		context.connectPorts(rightOutputPort, rightInputPort);
 	}
 
 	public final InputPort<I> getInputPort() {
@@ -104,24 +104,20 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 	 */
 	@SuppressWarnings("unchecked")
 	protected void createCopies() {
+		this.logger.debug("[DC]" + this.getId() + "_" + "createCopies");
+
 		try {
-			// this creates an instance of the subclass
-			this.logger.debug("[DC]" + this.getId() + "_" + "createCopies");
-			// FIXME temporary solution
+			// do you see similarities? ;) Please, modularize both blocks into a single, common private method.
+
 			final AbstractDCStage<I> newStage1 = this.getClass().newInstance();
+			context.connectPorts(leftOutputPort, newStage1.getInputPort());
+			context.connectPorts(newStage1.getOutputPort(), leftInputPort);
+			context.beginThread(newStage1);
+
 			final AbstractDCStage<I> newStage2 = this.getClass().newInstance();
-			this.logger.debug("[DC]" + this.getId() + "_" + "Instantiated!");
-			// connect with copies
-			context.connectPorts(leftOutputPort, newStage1.getInputPort(), 1);
-			context.connectPorts(newStage1.getOutputPort(), leftInputPort, 1);
-
-			context.connectPorts(rightOutputPort, newStage2.getInputPort(), 1);
-			context.connectPorts(newStage2.getOutputPort(), rightInputPort, 1);
-
-			// make stages executable
-			this.logger.debug("[DC]" + this.getId() + "_" + "added stages");
-			context.addThreadableStage(newStage1);
-			context.addThreadableStage(newStage2);
+			context.connectPorts(rightOutputPort, newStage2.getInputPort());
+			context.connectPorts(newStage2.getOutputPort(), rightInputPort);
+			context.beginThread(newStage2);
 
 		} catch (InstantiationException ie) {
 			throw new RuntimeException(ie);
