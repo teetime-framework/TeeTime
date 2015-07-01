@@ -1,8 +1,5 @@
 package teetime.framework;
 
-import teetime.framework.signal.InitializingSignal;
-import teetime.framework.signal.StartingSignal;
-
 /**
  * Represents a stage to provide functionality for the divide and conquer paradigm
  *
@@ -79,10 +76,8 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 				divide(element);
 
 				// send signals init, start
-				leftOutputPort.sendSignal(new InitializingSignal());
-				leftOutputPort.sendSignal(new StartingSignal());
-				rightOutputPort.sendSignal(new InitializingSignal());
-				rightOutputPort.sendSignal(new StartingSignal());
+				context.sendSignals(leftOutputPort); // you could also move this line(s) into the common private method
+				context.sendSignals(rightOutputPort);
 			} else {
 				// received an unsplittable element
 				this.logger.debug("[DC]" + this.getId() + "_" + "sending_" + element.toString());

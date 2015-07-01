@@ -4,14 +4,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.pipe.SpScPipeFactory;
+import teetime.framework.signal.InitializingSignal;
+import teetime.framework.signal.StartingSignal;
 
 public class DynamicConfigurationContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicConfigurationContext.class);
 	private static final SpScPipeFactory PIPE_FACTORY = new SpScPipeFactory();
+	private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();
 
 	public void beginThread(final Stage stage) {
-		// TODO
+		DYNAMIC_ACTUATOR.startWithinNewThread(stage);
+	}
+
+	public void sendSignals(final OutputPort<?> outputPort) {
+		outputPort.sendSignal(new InitializingSignal());
+		outputPort.sendSignal(new StartingSignal());
 	}
 
 	/**
