@@ -17,6 +17,11 @@ public class DynamicConfigurationContext {
 		DYNAMIC_ACTUATOR.startWithinNewThread(stage);
 	}
 
+	/**
+	 * Sends the {@linkInitializingSignal} and the {@link StartingSignal}.
+	 *
+	 * @param outputPort
+	 */
 	public void sendSignals(final OutputPort<?> outputPort) {
 		outputPort.sendSignal(new InitializingSignal());
 		outputPort.sendSignal(new StartingSignal());
