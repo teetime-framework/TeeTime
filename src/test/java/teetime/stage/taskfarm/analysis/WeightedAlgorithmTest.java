@@ -3,7 +3,6 @@ package teetime.stage.taskfarm.analysis;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,14 +31,14 @@ public class WeightedAlgorithmTest {
 	public void exponentialTest() {
 		ThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.EXPONENTIAL, configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
-		assertTrue(thoughputScore > 0.52);
+		assertThat(thoughputScore, is(greaterThan(0.52)));
 	}
 
 	@Test
 	public void linearTest() {
 		ThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LINEAR, configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
-		assertTrue(thoughputScore > 0.59);
+		assertThat(thoughputScore, is(greaterThan(0.59)));
 	}
 
 	@Test

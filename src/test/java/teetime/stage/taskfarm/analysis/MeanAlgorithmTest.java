@@ -1,6 +1,9 @@
 package teetime.stage.taskfarm.analysis;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
@@ -9,7 +12,7 @@ import teetime.stage.taskfarm.monitoring.ThroughputHistory;
 
 public class MeanAlgorithmTest {
 
-	private static final double DELTA = 0.00001;
+	private static final double EPSILON = 0.00001;
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private final TaskFarmConfiguration configuration = new TaskFarmConfiguration(null);
 
@@ -25,7 +28,7 @@ public class MeanAlgorithmTest {
 		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 
-		assertTrue(thoughputScore > 0.1);
+		assertThat(thoughputScore, is(greaterThan(0.1)));
 	}
 
 	@Test
@@ -40,7 +43,7 @@ public class MeanAlgorithmTest {
 		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 
-		assertTrue(isAbout(thoughputScore, 0));
+		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
 	}
 
 	@Test
@@ -55,7 +58,7 @@ public class MeanAlgorithmTest {
 		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 
-		assertTrue(thoughputScore > 0.1);
+		assertThat(thoughputScore, is(greaterThan(0.1)));
 	}
 
 	@Test
@@ -70,7 +73,7 @@ public class MeanAlgorithmTest {
 		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 
-		assertTrue(isAbout(thoughputScore, 0.25));
+		assertThat(thoughputScore, is(closeTo(0.25d, EPSILON)));
 	}
 
 	@Test
@@ -85,11 +88,6 @@ public class MeanAlgorithmTest {
 		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 
-		assertTrue(thoughputScore > 0.7);
-	}
-
-	private boolean isAbout(final double is, final double should) {
-		double difference = Math.abs(is - should);
-		return difference < DELTA;
+		assertThat(thoughputScore, is(greaterThan(0.7)));
 	}
 }
