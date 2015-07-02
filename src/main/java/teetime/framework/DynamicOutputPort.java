@@ -24,11 +24,11 @@ package teetime.framework;
  *
  * @since 1.2
  */
-public final class DynamicOutputPort<T> extends OutputPort<T> {
+public class DynamicOutputPort<T> extends OutputPort<T> {
 
 	private int index;
 
-	DynamicOutputPort(final Class<T> type, final Stage owningStage, final int index) {
+	protected DynamicOutputPort(final Class<T> type, final Stage owningStage, final int index) {
 		super(type, owningStage, null);
 		this.index = index;
 	}

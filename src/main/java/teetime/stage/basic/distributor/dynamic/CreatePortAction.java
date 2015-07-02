@@ -15,9 +15,12 @@
  */
 package teetime.stage.basic.distributor.dynamic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import teetime.framework.DynamicActuator;
+import teetime.framework.DynamicOutputPort;
 import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
 import teetime.framework.pipe.SpScPipeFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
@@ -30,18 +33,21 @@ public class CreatePortAction<T> implements PortAction<DynamicDistributor<T>> {
 
 	private final InputPort<T> inputPort;
 
+	private final List<PortActionListener<T>> listeners = new ArrayList<PortActionListener<T>>();
+
 	public CreatePortAction(final InputPort<T> inputPort) {
 		this.inputPort = inputPort;
 	}
 
 	@Override
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
-		OutputPort<? extends T> newOutputPort = dynamicDistributor.getNewOutputPort();
+		DynamicOutputPort<T> newOutputPort = dynamicDistributor.getNewOutputPort();
 
-		onOutputPortCreated(newOutputPort);
+		processOutputPort(newOutputPort);
+		onOutputPortCreated(dynamicDistributor, newOutputPort);
 	}
 
-	private void onOutputPortCreated(final OutputPort<? extends T> newOutputPort) {
+	private void processOutputPort(final DynamicOutputPort<T> newOutputPort) {
 		INTER_THREAD_PIPE_FACTORY.create(newOutputPort, inputPort);
 
 		DYNAMIC_ACTUATOR.startWithinNewThread(inputPort.getOwningStage());
@@ -52,7 +58,17 @@ public class CreatePortAction<T> implements PortAction<DynamicDistributor<T>> {
 		// FIXME pass the new thread to the analysis so that it can terminate the thread at the end
 	}
 
+	private void onOutputPortCreated(final DynamicDistributor<T> dynamicDistributor, final DynamicOutputPort<T> newOutputPort) {
+		for (PortActionListener<T> listener : listeners) {
+			listener.onOutputPortCreated(dynamicDistributor, newOutputPort);
+		}
+	}
+
 	InputPort<T> getInputPort() { // for testing purposes only
 		return inputPort;
+	}
+
+	public void addPortActionListener(final PortActionListener<T> listener) {
+		listeners.add(listener);
 	}
 }

@@ -26,6 +26,7 @@ import java.util.List;
 import org.junit.Test;
 
 import teetime.framework.Configuration;
+import teetime.framework.DynamicOutputPort;
 import teetime.framework.Execution;
 import teetime.framework.Stage;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
@@ -59,7 +60,7 @@ public class DynamicDistributorTest {
 		@SuppressWarnings("unchecked")
 		PortAction<DynamicDistributor<Integer>>[] inputActions = new PortAction[5];
 		for (int i = 0; i < inputActions.length; i++) {
-			PortAction<DynamicDistributor<Integer>> createAction = createPortCreateAction();
+			PortAction<DynamicDistributor<Integer>> createAction = createPortCreateAction(new PortContainer<Integer>());
 			inputActions[i] = createAction;
 		}
 
@@ -83,12 +84,17 @@ public class DynamicDistributorTest {
 
 		@SuppressWarnings("unchecked")
 		PortAction<DynamicDistributor<Integer>>[] inputActions = new PortAction[6];
-		inputActions[0] = createPortCreateAction();
-		inputActions[1] = new RemovePortAction<Integer>(null);
-		inputActions[2] = createPortCreateAction();
-		inputActions[3] = createPortCreateAction();
-		inputActions[4] = new RemovePortAction<Integer>(null);
-		inputActions[5] = new RemovePortAction<Integer>(null);
+
+		final PortContainer<Integer> portContainer0 = new PortContainer<Integer>();
+		final PortContainer<Integer> portContainer1 = new PortContainer<Integer>();
+		final PortContainer<Integer> portContainer2 = new PortContainer<Integer>();
+
+		inputActions[0] = createPortCreateAction(portContainer0);
+		inputActions[1] = new RemovePortAction<Integer>(portContainer0);
+		inputActions[2] = createPortCreateAction(portContainer1);
+		inputActions[3] = createPortCreateAction(portContainer2);
+		inputActions[4] = new RemovePortAction<Integer>(portContainer1);
+		inputActions[5] = new RemovePortAction<Integer>(portContainer2);
 
 		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
 		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config,
@@ -102,9 +108,15 @@ public class DynamicDistributorTest {
 		assertValuesForIndex(inputActions, Collections.<Integer> emptyList(), 3);
 	}
 
-	private PortAction<DynamicDistributor<Integer>> createPortCreateAction() {
+	private CreatePortAction<Integer> createPortCreateAction(final PortContainer<Integer> portContainer) {
 		CollectorSink<Integer> newStage = new CollectorSink<Integer>();
-		PortAction<DynamicDistributor<Integer>> portAction = new CreatePortAction<Integer>(newStage.getInputPort());
+		CreatePortAction<Integer> portAction = new CreatePortAction<Integer>(newStage.getInputPort());
+		portAction.addPortActionListener(new PortActionListener<Integer>() {
+			@Override
+			public void onOutputPortCreated(final DynamicDistributor<Integer> distributor, final DynamicOutputPort<Integer> port) {
+				portContainer.setPort(port);
+			}
+		});
 		return portAction;
 	}
 
