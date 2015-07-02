@@ -8,9 +8,9 @@ public class MeanAlgorithm extends ThroughputAnalysisAlgorithm {
 	protected double doAnalysis(final ThroughputHistory history) {
 		double sumOfHistoryValues = 0;
 
-		for (int i = 0; i < WINDOW; i++)
+		for (int i = 1; i <= WINDOW; i++)
 		{
-			double currentHistoryValue = history.getEntries().get(i + 1).getThroughput();
+			double currentHistoryValue = history.getEntries().get(i).getThroughput();
 			sumOfHistoryValues += currentHistoryValue;
 		}
 
