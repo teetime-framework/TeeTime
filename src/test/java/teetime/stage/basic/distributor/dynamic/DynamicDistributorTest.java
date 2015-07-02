@@ -33,7 +33,7 @@ import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.util.framework.port.PortAction;
 
-public class ControlledDistributorTest {
+public class DynamicDistributorTest {
 
 	@Test
 	public void shouldWorkWithoutActionTriggers() throws Exception {
