@@ -26,7 +26,7 @@ final public class AdaptationThread extends Thread {
 
 	protected void addTaskFarm(final TaskFarmStage<?, ?, ?> taskFarmStage) {
 		TaskFarmAnalyzer analyzer = new TaskFarmAnalyzer();
-		TaskFarmController controller = new TaskFarmController();
+		TaskFarmController controller = new TaskFarmController(taskFarmStage.getConfiguration());
 		this.monitoredTaskFarms.add(new ScheduledTaskFarm(taskFarmStage, analyzer, controller));
 	}
 

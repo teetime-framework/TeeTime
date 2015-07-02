@@ -1,61 +1,49 @@
 package teetime.stage.taskfarm;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import teetime.framework.AbstractCompositeStage;
+import teetime.framework.ConfigurationContext;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.exceptionHandling.TaskFarmInvalidPipeException;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.pipe.IPipe;
-import teetime.stage.NoopFilter;
-import teetime.stage.basic.distributor.Distributor;
-import teetime.stage.basic.merger.Merger;
 
-@SuppressWarnings("deprecation")
 public class TaskFarmStage<I, O, TFS extends TaskFarmDuplicable<I, O>> extends AbstractCompositeStage {
 
-	private final Distributor<I> distributor = new Distributor<I>();
-	private final Merger<O> merger = new Merger<O>();
-	private final NoopFilter<I> noopI = new NoopFilter<I>();
+	private final TaskFarmConfiguration<I, O, TFS> configuration;
 
-	private final Map<Integer, TaskFarmTriple<I, O, TFS>> triples = new HashMap<Integer, TaskFarmTriple<I, O, TFS>>();
-	private final TFS workerStage;
-
-	public TaskFarmStage(final TFS workerStage) {
-		super(null); // FIXME add context
-		this.workerStage = workerStage;
+	public TaskFarmStage(final TFS workerStage, final ConfigurationContext context) {
+		super(context);
+		configuration = new TaskFarmConfiguration<I, O, TFS>(workerStage);
 
 		init(workerStage);
 	}
 
 	public InputPort<I> getInputPort() {
-		return this.noopI.getInputPort();
+		return configuration.getDistributor().getInputPort();
 	}
 
 	public OutputPort<O> getOutputPort() {
-		return this.merger.getOutputPort();
+		return configuration.getMerger().getOutputPort();
 	}
 
 	private void init(final TFS includedStage) {
-		connectPorts(noopI.getOutputPort(), distributor.getInputPort());
 
 		InputPort<I> stageInputPort = includedStage.getInputPort();
-		connectPorts(this.distributor.getNewOutputPort(), stageInputPort);
+		connectPorts(configuration.getDistributor().getNewOutputPort(), stageInputPort);
 
 		OutputPort<O> stageOutputPort = includedStage.getOutputPort();
-		connectPorts(stageOutputPort, this.merger.getNewInputPort());
+		connectPorts(stageOutputPort, configuration.getMerger().getNewInputPort());
 
 		checkIfPipeIsMonitorable(stageInputPort.getPipe());
 		checkIfPipeIsMonitorable(stageOutputPort.getPipe());
-		this.triples.put(0, new TaskFarmTriple<I, O, TFS>(
+		configuration.getTriples().put(0, new TaskFarmTriple<I, O, TFS>(
 				(IMonitorablePipe) stageInputPort.getPipe(),
 				(IMonitorablePipe) stageOutputPort.getPipe(),
 				includedStage));
 
-		addThreadableStage(merger);
-		addThreadableStage(workerStage.getInputPort().getOwningStage());
+		addThreadableStage(configuration.getMerger());
+		addThreadableStage(configuration.getFirstStage().getInputPort().getOwningStage());
 	}
 
 	private void checkIfPipeIsMonitorable(final IPipe pipe) {
@@ -64,4 +52,7 @@ public class TaskFarmStage<I, O, TFS extends TaskFarmDuplicable<I, O>> extends A
 		}
 	}
 
+	public TaskFarmConfiguration<?, ?, ?> getConfiguration() {
+		return this.configuration;
+	}
 }

@@ -60,7 +60,7 @@ public final class WordCounter extends AbstractCompositeStage implements TaskFar
 
 	@Override
 	public TaskFarmDuplicable<String, CountingMap<String>> duplicate() {
-		return new WordCounter(null); // FIXME add context
+		return new WordCounter(this.getContext());
 	}
 
 }

@@ -2,7 +2,6 @@ package teetime.stage.taskfarm;
 
 import org.junit.Test;
 
-@SuppressWarnings("deprecation")
 public class TaskFarmStageTest {
 
 	// private final static int NUMBER_OF_TEST_ELEMENTS = 1000;
