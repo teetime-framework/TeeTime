@@ -73,7 +73,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 *            to be used for the analysis
 	 */
 	public Execution(final T configuration) {
-		this(configuration, false, new TerminatingExceptionListenerFactory());
+		this(configuration, false);
 	}
 
 	public Execution(final T configuration, final boolean validationEnabled) {
