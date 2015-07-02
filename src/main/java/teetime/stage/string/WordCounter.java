@@ -16,7 +16,6 @@
 package teetime.stage.string;
 
 import teetime.framework.AbstractCompositeStage;
-import teetime.framework.ConfigurationContext;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.stage.MappingCounter;
@@ -36,7 +35,7 @@ public final class WordCounter extends AbstractCompositeStage {
 	private final Tokenizer tokenizer;
 	private final MappingCounter<String> mapCounter;
 
-	public WordCounter(final ConfigurationContext context) {
+	public WordCounter() {
 
 		this.tokenizer = new Tokenizer(" ");
 		final ToLowerCase toLowerCase = new ToLowerCase();

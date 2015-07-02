@@ -29,7 +29,9 @@ import teetime.framework.pipe.InstantiationPipe;
  *
  * @since 2.0
  */
-public class ConfigurationContext {
+final class ConfigurationContext {
+
+	public static final ConfigurationContext EMPTY_CONTEXT = new ConfigurationContext();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
@@ -70,7 +72,7 @@ public class ConfigurationContext {
 	}
 
 	final void mergeContexts(final Stage stage) {
-		if (!stage.owningContext.equals(EmptyContext.getInstance())) {
+		if (!stage.owningContext.equals(EMPTY_CONTEXT)) {
 			if (stage.owningContext != this) { // Performance
 				this.threadableStages.putAll(stage.owningContext.threadableStages);
 				stage.owningContext.threadableStages = this.threadableStages;
