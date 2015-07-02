@@ -45,6 +45,7 @@ public class ConfigurationContext {
 	 * @see AbstractCompositeStage#addThreadableStage(Stage)
 	 */
 	final void addThreadableStage(final Stage stage, final String threadName) {
+		mergeContexts(stage);
 		if (this.threadableStages.put(stage, threadName) != null) {
 			LOGGER.warn("Stage " + stage.getId() + " was already marked as threadable stage.");
 		}
