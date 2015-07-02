@@ -1,6 +1,6 @@
 package teetime.stage.taskfarm.analysis;
 
-import teetime.stage.taskfarm.history.ThroughputHistory;
+import teetime.stage.taskfarm.monitoring.ThroughputHistory;
 
 public abstract class ThroughputAnalysisAlgorithm {
 

@@ -1,4 +1,4 @@
-package teetime.stage.taskfarm.history;
+package teetime.stage.taskfarm.monitoring;
 
 public class ThroughputEntry {
 

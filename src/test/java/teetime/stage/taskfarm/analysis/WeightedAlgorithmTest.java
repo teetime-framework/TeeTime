@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import teetime.stage.taskfarm.analysis.WeightedAlgorithm.WeightMethod;
-import teetime.stage.taskfarm.history.ThroughputHistory;
+import teetime.stage.taskfarm.monitoring.ThroughputHistory;
 
 public class WeightedAlgorithmTest {
 

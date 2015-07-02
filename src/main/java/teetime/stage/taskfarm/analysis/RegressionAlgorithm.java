@@ -2,7 +2,7 @@ package teetime.stage.taskfarm.analysis;
 
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
-import teetime.stage.taskfarm.history.ThroughputHistory;
+import teetime.stage.taskfarm.monitoring.ThroughputHistory;
 
 public class RegressionAlgorithm extends ThroughputAnalysisAlgorithm {
 
