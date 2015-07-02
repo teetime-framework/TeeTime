@@ -334,7 +334,7 @@
 					<header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
 					<properties>
 						<owner>Christian Wulf, Nelson Tavares de Sousa</owner>
-						<email>http://teetime.sourceforge.net</email>
+						<email>http://christianwulf.github.io/teetime</email>
 					</properties>
 					<includes>
 						<include>**/*.java</include>
