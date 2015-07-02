@@ -29,7 +29,7 @@ import teetime.framework.pipe.InstantiationPipe;
  *
  * @since 2.0
  */
-public final class ConfigurationContext {
+public class ConfigurationContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
@@ -63,7 +63,21 @@ public final class ConfigurationContext {
 			LOGGER.warn("Overwriting existing pipe while connecting stages " +
 					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
 		}
+		mergeContexts(sourcePort.getOwningStage(), targetPort.getOwningStage());
 		new InstantiationPipe(sourcePort, targetPort, capacity);
+	}
+
+	final void mergeContexts(final Stage sourceStage, final Stage targetStage) {
+		if (!sourceStage.owningContext.equals(EmptyContext.getInstance())) {
+			this.threadableStages.putAll(sourceStage.owningContext.threadableStages);
+		} else {
+			sourceStage.owningContext = this;
+		}
+		if (!targetStage.owningContext.equals(EmptyContext.getInstance())) {
+			this.threadableStages.putAll(targetStage.owningContext.threadableStages);
+		} else {
+			targetStage.owningContext = this;
+		}
 	}
 
 }

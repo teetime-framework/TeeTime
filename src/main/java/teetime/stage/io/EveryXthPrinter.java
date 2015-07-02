@@ -33,7 +33,6 @@ public final class EveryXthPrinter<T> extends AbstractCompositeStage {
 	private final List<Stage> lastStages = new ArrayList<Stage>();
 
 	public EveryXthPrinter(final int threshold, final ConfigurationContext context) {
-		super(context);
 		distributor = new Distributor<T>(new CopyByReferenceStrategy());
 		EveryXthStage<T> everyXthStage = new EveryXthStage<T>(threshold);
 		Printer<Integer> printer = new Printer<Integer>();

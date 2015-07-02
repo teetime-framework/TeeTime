@@ -37,7 +37,6 @@ public final class WordCounter extends AbstractCompositeStage {
 	private final MappingCounter<String> mapCounter;
 
 	public WordCounter(final ConfigurationContext context) {
-		super(context);
 
 		this.tokenizer = new Tokenizer(" ");
 		final ToLowerCase toLowerCase = new ToLowerCase();
