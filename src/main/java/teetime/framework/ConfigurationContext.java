@@ -29,11 +29,13 @@ import teetime.framework.pipe.InstantiationPipe;
  *
  * @since 2.0
  */
-public final class ConfigurationContext {
+final class ConfigurationContext {
+
+	public static final ConfigurationContext EMPTY_CONTEXT = new ConfigurationContext();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
-	private final Map<Stage, String> threadableStages = new HashMap<Stage, String>();
+	private Map<Stage, String> threadableStages = new HashMap<Stage, String>();
 
 	ConfigurationContext() {}
 
@@ -45,6 +47,7 @@ public final class ConfigurationContext {
 	 * @see AbstractCompositeStage#addThreadableStage(Stage)
 	 */
 	final void addThreadableStage(final Stage stage, final String threadName) {
+		mergeContexts(stage);
 		if (this.threadableStages.put(stage, threadName) != null) {
 			LOGGER.warn("Stage " + stage.getId() + " was already marked as threadable stage.");
 		}
@@ -63,7 +66,21 @@ public final class ConfigurationContext {
 			LOGGER.warn("Overwriting existing pipe while connecting stages " +
 					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
 		}
+		mergeContexts(sourcePort.getOwningStage());
+		mergeContexts(targetPort.getOwningStage());
 		new InstantiationPipe(sourcePort, targetPort, capacity);
+	}
+
+	final void mergeContexts(final Stage stage) {
+		if (!stage.owningContext.equals(EMPTY_CONTEXT)) {
+			if (stage.owningContext != this) { // Performance
+				this.threadableStages.putAll(stage.owningContext.threadableStages);
+				stage.owningContext.threadableStages = this.threadableStages;
+			}
+		} else {
+			stage.owningContext = this;
+		}
+
 	}
 
 }

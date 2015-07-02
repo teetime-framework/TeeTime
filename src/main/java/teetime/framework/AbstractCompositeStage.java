@@ -32,14 +32,11 @@ public abstract class AbstractCompositeStage {
 
 	private final ConfigurationContext context;
 
-	public AbstractCompositeStage(final ConfigurationContext context) {
-		if (null == context) {
-			throw new IllegalArgumentException("Context may not be null.");
-		}
-		this.context = context;
+	public AbstractCompositeStage() {
+		this.context = new ConfigurationContext();
 	}
 
-	protected ConfigurationContext getContext() {
+	ConfigurationContext getContext() {
 		return context;
 	}
 

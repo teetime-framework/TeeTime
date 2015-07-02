@@ -48,6 +48,8 @@ public abstract class Stage {
 	/** The owning thread of this stage if this stage is directly executed by a {@link AbstractRunnableStage}, <code>null</code> otherwise. */
 	protected Thread owningThread;
 
+	ConfigurationContext owningContext = ConfigurationContext.EMPTY_CONTEXT;
+
 	protected Stage() {
 		this.id = this.createId();
 		this.logger = LoggerFactory.getLogger(this.getClass().getCanonicalName() + ":" + id);
