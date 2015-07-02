@@ -21,8 +21,7 @@
 			</action>
 			<action dev="ntd" type="add" issue="171">
 				Configurations are now
-				built within the Configuration class which is passed on to nested
-				CompositeStages.
+				built within the Configuration class.
 				This removes any constraints on CompositeStages and
 				enables therefore multiple connections and multithreading.
 			</action>
