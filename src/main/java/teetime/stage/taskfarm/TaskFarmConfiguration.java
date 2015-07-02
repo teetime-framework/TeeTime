@@ -1,16 +1,14 @@
 package teetime.stage.taskfarm;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
-import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
-import teetime.stage.basic.merger.Merger;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
 
 public class TaskFarmConfiguration<I, O, TFS extends TaskFarmDuplicable<I, O>> {
 
-	private final Map<Integer, TaskFarmTriple<I, O, TFS>> triples = new HashMap<Integer, TaskFarmTriple<I, O, TFS>>();
+	private final List<TaskFarmTriple<I, O, TFS>> triples = new LinkedList<TaskFarmTriple<I, O, TFS>>();
 
 	private final DynamicDistributor<I> distributor = new DynamicDistributor<I>();
 	private final DynamicMerger<O> merger = new DynamicMerger<O>();
@@ -21,15 +19,15 @@ public class TaskFarmConfiguration<I, O, TFS extends TaskFarmDuplicable<I, O>> {
 		this.firstStage = firstStage;
 	}
 
-	public Map<Integer, TaskFarmTriple<I, O, TFS>> getTriples() {
+	public List<TaskFarmTriple<I, O, TFS>> getTriples() {
 		return triples;
 	}
 
-	public Distributor<I> getDistributor() {
+	public DynamicDistributor<I> getDistributor() {
 		return distributor;
 	}
 
-	public Merger<O> getMerger() {
+	public DynamicMerger<O> getMerger() {
 		return merger;
 	}
 

@@ -28,7 +28,6 @@ public class TaskFarmStage<I, O, TFS extends TaskFarmDuplicable<I, O>> extends A
 	}
 
 	private void init(final TFS includedStage) {
-
 		InputPort<I> stageInputPort = includedStage.getInputPort();
 		connectPorts(configuration.getDistributor().getNewOutputPort(), stageInputPort);
 
@@ -37,7 +36,7 @@ public class TaskFarmStage<I, O, TFS extends TaskFarmDuplicable<I, O>> extends A
 
 		checkIfPipeIsMonitorable(stageInputPort.getPipe());
 		checkIfPipeIsMonitorable(stageOutputPort.getPipe());
-		configuration.getTriples().put(0, new TaskFarmTriple<I, O, TFS>(
+		configuration.getTriples().add(new TaskFarmTriple<I, O, TFS>(
 				(IMonitorablePipe) stageInputPort.getPipe(),
 				(IMonitorablePipe) stageOutputPort.getPipe(),
 				includedStage));
