@@ -4,11 +4,14 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.monitoring.ThroughputHistory;
 
 public class MeanAlgorithmTest {
 
 	private static final double DELTA = 0.00001;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private final TaskFarmConfiguration configuration = new TaskFarmConfiguration(null);
 
 	@Test
 	public void constantThoughputTestAnomaly() {
@@ -19,7 +22,7 @@ public class MeanAlgorithmTest {
 		history.add(40.8);
 		history.add(60);
 
-		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm();
+		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertTrue(thoughputScore > 0.1);
@@ -34,7 +37,7 @@ public class MeanAlgorithmTest {
 		history.add(4.8);
 		history.add(4.7);
 
-		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm();
+		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertTrue(isAbout(thoughputScore, 0));
@@ -49,7 +52,7 @@ public class MeanAlgorithmTest {
 		history.add(6);
 		history.add(7);
 
-		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm();
+		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertTrue(thoughputScore > 0.1);
@@ -64,7 +67,7 @@ public class MeanAlgorithmTest {
 		history.add(6);
 		history.add(3);
 
-		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm();
+		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertTrue(isAbout(thoughputScore, 0.25));
@@ -79,7 +82,7 @@ public class MeanAlgorithmTest {
 		history.add(8);
 		history.add(1);
 
-		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm();
+		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertTrue(thoughputScore > 0.7);

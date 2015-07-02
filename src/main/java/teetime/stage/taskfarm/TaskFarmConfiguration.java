@@ -15,6 +15,8 @@ public class TaskFarmConfiguration<I, O, TFS extends TaskFarmDuplicable<I, O>> {
 
 	private final TFS firstStage;
 
+	private final int analysisWindow = 3;
+
 	public TaskFarmConfiguration(final TFS firstStage) {
 		this.firstStage = firstStage;
 	}
@@ -33,5 +35,13 @@ public class TaskFarmConfiguration<I, O, TFS extends TaskFarmDuplicable<I, O>> {
 
 	public TFS getFirstStage() {
 		return firstStage;
+	}
+
+	public int getAnalysisWindow() {
+		return analysisWindow;
+	}
+
+	public void setAnalysisWindow(int analysisWindow) {
+		analysisWindow = analysisWindow;
 	}
 }

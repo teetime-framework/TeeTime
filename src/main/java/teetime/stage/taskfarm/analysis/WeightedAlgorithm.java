@@ -1,5 +1,6 @@
 package teetime.stage.taskfarm.analysis;
 
+import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.monitoring.ThroughputHistory;
 
 public class WeightedAlgorithm extends ThroughputAnalysisAlgorithm {
@@ -12,7 +13,8 @@ public class WeightedAlgorithm extends ThroughputAnalysisAlgorithm {
 
 	private final WeightMethod weightMethod;
 
-	public WeightedAlgorithm(final WeightMethod weightMethod) {
+	public WeightedAlgorithm(final WeightMethod weightMethod, final TaskFarmConfiguration<?, ?, ?> configuration) {
+		super(configuration);
 		this.weightMethod = weightMethod;
 	}
 

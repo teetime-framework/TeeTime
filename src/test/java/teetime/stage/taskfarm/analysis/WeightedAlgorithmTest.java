@@ -8,12 +8,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.analysis.WeightedAlgorithm.WeightMethod;
 import teetime.stage.taskfarm.monitoring.ThroughputHistory;
 
 public class WeightedAlgorithmTest {
 
 	ThroughputHistory history;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private final TaskFarmConfiguration configuration = new TaskFarmConfiguration(null);
 
 	@Before
 	public void prepareHistory() {
@@ -27,21 +30,21 @@ public class WeightedAlgorithmTest {
 
 	@Test
 	public void exponentialTest() {
-		ThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.EXPONENTIAL);
+		ThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.EXPONENTIAL, configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertTrue(thoughputScore > 0.52);
 	}
 
 	@Test
 	public void linearTest() {
-		ThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LINEAR);
+		ThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LINEAR, configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertTrue(thoughputScore > 0.59);
 	}
 
 	@Test
 	public void logarithmicTest() {
-		ThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LOGARITHMIC);
+		ThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LOGARITHMIC, configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertThat(thoughputScore, is(greaterThan(0.63)));
 	}

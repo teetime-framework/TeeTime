@@ -1,12 +1,17 @@
 package teetime.stage.taskfarm.analysis;
 
+import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.monitoring.ThroughputHistory;
 
 public abstract class ThroughputAnalysisAlgorithm {
 
-	protected final static int WINDOW = 3;
+	protected final int WINDOW;
 
 	protected abstract double doAnalysis(ThroughputHistory history);
+
+	public ThroughputAnalysisAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
+		WINDOW = configuration.getAnalysisWindow();
+	}
 
 	public double getTroughputAnalysis(final ThroughputHistory history) {
 		if (!isHistoryLargeEnough(history)) {

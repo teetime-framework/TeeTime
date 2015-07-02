@@ -7,11 +7,14 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
+import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.monitoring.ThroughputHistory;
 
 public class RegressionAlgorithmTest {
 
 	private static final double EPSILON = 0.1d;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private final TaskFarmConfiguration configuration = new TaskFarmConfiguration(null);
 
 	@Test
 	public void positiveRegression() throws InterruptedException {
@@ -27,7 +30,7 @@ public class RegressionAlgorithmTest {
 		Thread.sleep(100);
 		history.add(5);
 
-		ThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm();
+		ThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
 	}
@@ -46,7 +49,7 @@ public class RegressionAlgorithmTest {
 		Thread.sleep(100);
 		history.add(2);
 
-		ThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm();
+		ThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
 	}
@@ -65,7 +68,7 @@ public class RegressionAlgorithmTest {
 		Thread.sleep(100);
 		history.add(0);
 
-		ThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm();
+		ThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
 	}
@@ -84,7 +87,7 @@ public class RegressionAlgorithmTest {
 		Thread.sleep(100);
 		history.add(13);
 
-		ThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm();
+		ThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(configuration);
 		double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertThat(thoughputScore, is(greaterThan(0.3d)));
 	}

@@ -1,8 +1,13 @@
 package teetime.stage.taskfarm.analysis;
 
+import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.monitoring.ThroughputHistory;
 
 public class MeanAlgorithm extends ThroughputAnalysisAlgorithm {
+
+	public MeanAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
+		super(configuration);
+	}
 
 	@Override
 	protected double doAnalysis(final ThroughputHistory history) {
