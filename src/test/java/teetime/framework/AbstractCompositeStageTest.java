@@ -48,12 +48,22 @@ public class AbstractCompositeStageTest {
 		}
 	}
 
-	private class TestCompositeStage extends AbstractCompositeStage {
+	private class TestCompositeOneStage extends AbstractCompositeStage {
+
+		private final Counter firstCounter = new Counter();
+
+		public TestCompositeOneStage() {
+			addThreadableStage(firstCounter);
+		}
+
+	}
+
+	private class TestCompositeTwoStage extends AbstractCompositeStage {
 
 		private final Counter firstCounter = new Counter();
 		private final Counter secondCounter = new Counter();
 
-		public TestCompositeStage() {
+		public TestCompositeTwoStage() {
 			addThreadableStage(firstCounter);
 			connectPorts(firstCounter.getOutputPort(), secondCounter.getInputPort());
 		}
@@ -62,13 +72,13 @@ public class AbstractCompositeStageTest {
 
 	private class TestNestingCompositeStage extends AbstractCompositeStage {
 
-		public TestCompositeStage firstCompositeStage;
-		public TestCompositeStage secondCompositeStage;
+		public TestCompositeOneStage firstCompositeStage;
+		public TestCompositeTwoStage secondCompositeStage;
 
 		public TestNestingCompositeStage() {
-			firstCompositeStage = new TestCompositeStage();
-			secondCompositeStage = new TestCompositeStage();
-			connectPorts(firstCompositeStage.secondCounter.getOutputPort(), secondCompositeStage.firstCounter.getInputPort());
+			firstCompositeStage = new TestCompositeOneStage();
+			secondCompositeStage = new TestCompositeTwoStage();
+			connectPorts(firstCompositeStage.firstCounter.getOutputPort(), secondCompositeStage.firstCounter.getInputPort());
 		}
 
 	}
