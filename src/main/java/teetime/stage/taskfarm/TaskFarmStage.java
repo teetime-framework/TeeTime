@@ -40,10 +40,11 @@ public class TaskFarmStage<I, O, TFS extends TaskFarmDuplicable<I, O>> extends A
 		// TODO: Check pipes at start somehow... Here, it would only be an InstantiationPipe.
 		// checkIfPipeIsMonitorable(stageInputPort.getPipe());
 		// checkIfPipeIsMonitorable(stageOutputPort.getPipe());
-		// configuration.getTriples().add(new TaskFarmTriple<I, O, TFS>(
-		// (IMonitorablePipe) stageInputPort.getPipe(),
-		// (IMonitorablePipe) stageOutputPort.getPipe(),
-		// includedStage));
+
+		configuration.getTriples().add(new TaskFarmTriple<I, O, TFS>(
+				stageInputPort.getPipe(),
+				stageOutputPort.getPipe(),
+				includedStage));
 	}
 
 	private void checkIfPipeIsMonitorable(final IPipe pipe) {
