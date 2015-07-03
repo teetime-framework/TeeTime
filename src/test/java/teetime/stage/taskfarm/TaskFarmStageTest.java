@@ -24,6 +24,22 @@ public class TaskFarmStageTest {
 
 	private final static int NUMBER_OF_TEST_ELEMENTS = 1000;
 
+	@Test
+	public void simpleTaskFarmStageTest() {
+		TestConfiguration configuration = new TestConfiguration();
+		final Execution<TestConfiguration> execution = new Execution<TestConfiguration>(configuration);
+	
+		execution.executeBlocking();
+	
+		List<String> result = configuration.getCollection();
+		for (int i = 1; i <= NUMBER_OF_TEST_ELEMENTS; i++) {
+			int n = i + 1;
+			String s = Integer.toString(n) + Integer.toString(n) + Integer.toString(n) + Integer.toString(n);
+			assertTrue("Does not contain: " + s, result.contains(s));
+		}
+		assertThat(result.size(), is(equalTo(NUMBER_OF_TEST_ELEMENTS)));
+	}
+
 	private class PlusOneInStringStage extends AbstractConsumerStage<Integer> {
 
 		private final OutputPort<String> outputPort = this.createOutputPort();
@@ -116,21 +132,5 @@ public class TaskFarmStageTest {
 		public List<String> getCollection() {
 			return this.collection;
 		}
-	}
-
-	@Test
-	public void simpleTaskFarmStageTest() {
-		TestConfiguration configuration = new TestConfiguration();
-		final Execution<TestConfiguration> execution = new Execution<TestConfiguration>(configuration);
-
-		execution.executeBlocking();
-
-		List<String> result = configuration.getCollection();
-		for (int i = 1; i <= NUMBER_OF_TEST_ELEMENTS; i++) {
-			int n = i + 1;
-			String s = Integer.toString(n) + Integer.toString(n) + Integer.toString(n) + Integer.toString(n);
-			assertTrue("Does not contain: " + s, result.contains(s));
-		}
-		assertThat(result.size(), is(equalTo(NUMBER_OF_TEST_ELEMENTS)));
 	}
 }

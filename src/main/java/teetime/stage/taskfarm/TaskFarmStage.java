@@ -53,7 +53,7 @@ public class TaskFarmStage<I, O, TFS extends TaskFarmDuplicable<I, O>> extends A
 		}
 	}
 
-	public TaskFarmConfiguration<?, ?, ?> getConfiguration() {
+	public TaskFarmConfiguration<I, O, TFS> getConfiguration() {
 		return this.configuration;
 	}
 }
