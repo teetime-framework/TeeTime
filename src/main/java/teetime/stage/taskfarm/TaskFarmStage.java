@@ -28,26 +28,28 @@ public class TaskFarmStage<I, O, TFS extends TaskFarmDuplicable<I, O>> extends A
 	}
 
 	private void init(final TFS includedStage) {
+		addThreadableStage(configuration.getMerger());
+		addThreadableStage(configuration.getFirstStage().getInputPort().getOwningStage());
+
 		InputPort<I> stageInputPort = includedStage.getInputPort();
 		connectPorts(configuration.getDistributor().getNewOutputPort(), stageInputPort);
 
 		OutputPort<O> stageOutputPort = includedStage.getOutputPort();
 		connectPorts(stageOutputPort, configuration.getMerger().getNewInputPort());
 
-		checkIfPipeIsMonitorable(stageInputPort.getPipe());
-		checkIfPipeIsMonitorable(stageOutputPort.getPipe());
-		configuration.getTriples().add(new TaskFarmTriple<I, O, TFS>(
-				(IMonitorablePipe) stageInputPort.getPipe(),
-				(IMonitorablePipe) stageOutputPort.getPipe(),
-				includedStage));
-
-		addThreadableStage(configuration.getMerger());
-		addThreadableStage(configuration.getFirstStage().getInputPort().getOwningStage());
+		// TODO: Check pipes at start somehow... Here, it would only be an InstantiationPipe.
+		// checkIfPipeIsMonitorable(stageInputPort.getPipe());
+		// checkIfPipeIsMonitorable(stageOutputPort.getPipe());
+		// configuration.getTriples().add(new TaskFarmTriple<I, O, TFS>(
+		// (IMonitorablePipe) stageInputPort.getPipe(),
+		// (IMonitorablePipe) stageOutputPort.getPipe(),
+		// includedStage));
 	}
 
 	private void checkIfPipeIsMonitorable(final IPipe pipe) {
 		if (!(pipe instanceof IMonitorablePipe)) {
-			throw new TaskFarmInvalidPipeException("Pipe is not monitorable, which is required for a Task Farm.");
+			throw new TaskFarmInvalidPipeException("Pipe is not monitorable, which is required for a Task Farm. Instead \"" + pipe.getClass().getSimpleName()
+					+ "\" was used.");
 		}
 	}
 
