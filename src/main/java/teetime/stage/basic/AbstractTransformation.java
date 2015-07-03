@@ -20,7 +20,7 @@ import teetime.framework.OutputPort;
 
 public abstract class AbstractTransformation<I, O> extends AbstractConsumerStage<I> implements ITransformation<I, O> {
 
-	private final OutputPort<O> outputPort = createOutputPort();
+	protected final OutputPort<O> outputPort = createOutputPort();
 
 	protected AbstractTransformation() {
 		super();

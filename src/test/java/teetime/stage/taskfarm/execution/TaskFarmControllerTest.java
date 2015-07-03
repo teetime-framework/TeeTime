@@ -7,9 +7,8 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import teetime.framework.AbstractConsumerStage;
 import teetime.framework.Execution;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractFilter;
 import teetime.stage.taskfarm.TaskFarmDuplicable;
 
 import com.google.common.collect.ListMultimap;
@@ -34,9 +33,7 @@ public class TaskFarmControllerTest {
 		assertThat(monitoredValues.size(), is(equalTo(NUMBER_OF_ITEMS)));
 	}
 
-	static class SelfMonitoringPlusOneStage extends AbstractConsumerStage<Integer> implements TaskFarmDuplicable<Integer, Integer> {
-
-		private final OutputPort<Integer> outputPort = this.createOutputPort();
+	static class SelfMonitoringPlusOneStage extends AbstractFilter<Integer> implements TaskFarmDuplicable<Integer, Integer> {
 
 		private final ListMultimap<Integer, Integer> monitoredValues;
 		private final int myNumber;
@@ -55,19 +52,13 @@ public class TaskFarmControllerTest {
 		}
 
 		@Override
-		public OutputPort<Integer> getOutputPort() {
-			return this.outputPort;
-		}
-
-		@Override
 		public TaskFarmDuplicable<Integer, Integer> duplicate() {
 			return new SelfMonitoringPlusOneStage(monitoredValues);
 		}
 	}
 
-	static class TaskFarmControllerControllerStage extends AbstractConsumerStage<Integer> {
+	static class TaskFarmControllerControllerStage extends AbstractFilter<Integer> {
 
-		private final OutputPort<Integer> outputPort = this.createOutputPort();
 		private final TaskFarmController<?, ?, ?> controller;
 		private int numberOfElements = 0;
 
@@ -97,9 +88,6 @@ public class TaskFarmControllerTest {
 			numberOfElements++;
 		}
 
-		public OutputPort<Integer> getOutputPort() {
-			return this.outputPort;
-		}
 	}
 
 }
