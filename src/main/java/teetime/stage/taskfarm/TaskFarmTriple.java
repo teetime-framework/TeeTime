@@ -1,24 +1,24 @@
 package teetime.stage.taskfarm;
 
-import teetime.framework.pipe.IMonitorablePipe;
+import teetime.framework.pipe.IPipe;
 
 public class TaskFarmTriple<I, O, TFS extends TaskFarmDuplicable<I, O>> {
 
-	private final IMonitorablePipe inputPipe;
-	private final IMonitorablePipe outputPipe;
+	private final IPipe inputPipe;
+	private final IPipe outputPipe;
 	private final TFS stage;
 
-	public TaskFarmTriple(final IMonitorablePipe inputPipe, final IMonitorablePipe outputPipe, final TFS stage) {
+	public TaskFarmTriple(final IPipe inputPipe, final IPipe outputPipe, final TFS newStage) {
 		this.inputPipe = inputPipe;
 		this.outputPipe = outputPipe;
-		this.stage = stage;
+		this.stage = newStage;
 	}
 
-	public IMonitorablePipe getInputPipe() {
+	public IPipe getInputPipe() {
 		return inputPipe;
 	}
 
-	public IMonitorablePipe getOutputPipe() {
+	public IPipe getOutputPipe() {
 		return outputPipe;
 	}
 

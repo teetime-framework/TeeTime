@@ -21,7 +21,8 @@ public class TaskFarmController<I, O, TFS extends TaskFarmDuplicable<I, O>> {
 	}
 
 	public void addStageToTaskFarm() {
-		TaskFarmDuplicable<I, O> newStage = configuration.getFirstStage().duplicate();
+		@SuppressWarnings("unchecked")
+		TFS newStage = (TFS) configuration.getFirstStage().duplicate();
 
 		PortAction<DynamicMerger<O>> mergerPortAction =
 				new teetime.stage.basic.merger.dynamic.CreatePortAction<O>(newStage.getOutputPort());
@@ -30,6 +31,17 @@ public class TaskFarmController<I, O, TFS extends TaskFarmDuplicable<I, O>> {
 		PortAction<DynamicDistributor<I>> distributorPortAction =
 				new teetime.stage.basic.distributor.dynamic.CreatePortAction<I>(newStage.getInputPort());
 		configuration.getDistributor().addPortActionRequest(distributorPortAction);
+
+		addNewTaskFarmTriple(newStage);
+	}
+
+	private void addNewTaskFarmTriple(TFS newStage) {
+		TaskFarmTriple<I, O, TFS> newTriple =
+				new TaskFarmTriple<I, O, TFS>(
+						newStage.getInputPort().getPipe(),
+						newStage.getOutputPort().getPipe(),
+						newStage);
+		configuration.getTriples().add(newTriple);
 	}
 
 	public void removeStageFromTaskFarm() {
