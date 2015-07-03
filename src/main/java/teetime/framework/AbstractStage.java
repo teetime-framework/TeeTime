@@ -102,7 +102,7 @@ public abstract class AbstractStage extends Stage {
 		for (OutputPort<?> outputPort : this.outputPorts) {
 			if (null == outputPort.getPipe()) { // if port is unconnected
 				if (logger.isInfoEnabled()) {
-					this.logger.info("Unconnected output port: " + outputPort + ". Connecting with a dummy output port.");
+					this.logger.info("Unconnected output port: " + outputPort + ". Connecting with a dummy pipe.");
 				}
 				outputPort.setPipe(DUMMY_PIPE);
 			}

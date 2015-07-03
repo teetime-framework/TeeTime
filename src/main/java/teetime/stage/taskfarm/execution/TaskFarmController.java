@@ -6,6 +6,7 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.IPipe;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
+import teetime.stage.basic.merger.dynamic.CreatePortActionMerger;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.TaskFarmDuplicable;
@@ -24,9 +25,10 @@ public class TaskFarmController<I, O, TFS extends TaskFarmDuplicable<I, O>> {
 		@SuppressWarnings("unchecked")
 		TFS newStage = (TFS) configuration.getFirstStage().duplicate();
 
-		PortAction<DynamicMerger<O>> mergerPortAction =
-				new teetime.stage.basic.merger.dynamic.CreatePortAction<O>(newStage.getOutputPort());
+		CreatePortActionMerger<O> mergerPortAction =
+				new CreatePortActionMerger<O>(newStage.getOutputPort());
 		configuration.getMerger().addPortActionRequest(mergerPortAction);
+		mergerPortAction.waitForCompletion();
 
 		PortAction<DynamicDistributor<I>> distributorPortAction =
 				new teetime.stage.basic.distributor.dynamic.CreatePortAction<I>(newStage.getInputPort());

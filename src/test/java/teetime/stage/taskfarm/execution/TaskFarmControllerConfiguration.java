@@ -30,15 +30,16 @@ class TaskFarmControllerConfiguration extends Configuration {
 			numbers.add(i);
 		}
 
-		final InitialElementProducer<Integer> initialElementProducer =
-				new InitialElementProducer<Integer>(numbers);
+		final InitialElementProducer<Integer> initialElementProducer;
+		final TaskFarmStage<Integer, Integer, SelfMonitoringPlusOneStage> taskFarmStage;
+		final TaskFarmController<Integer, Integer, SelfMonitoringPlusOneStage> controller;
+
+		initialElementProducer = new InitialElementProducer<Integer>(numbers);
 
 		SelfMonitoringPlusOneStage workerStage = new SelfMonitoringPlusOneStage(monitoredValues);
-		TaskFarmStage<Integer, Integer, SelfMonitoringPlusOneStage> taskFarmStage =
-				new TaskFarmStage<Integer, Integer, SelfMonitoringPlusOneStage>(workerStage, this.getContext());
+		taskFarmStage = new TaskFarmStage<Integer, Integer, SelfMonitoringPlusOneStage>(workerStage, this.getContext());
 
-		TaskFarmController<Integer, Integer, SelfMonitoringPlusOneStage> controller =
-				new TaskFarmController<Integer, Integer, SelfMonitoringPlusOneStage>(taskFarmStage.getConfiguration());
+		controller = new TaskFarmController<Integer, Integer, SelfMonitoringPlusOneStage>(taskFarmStage.getConfiguration());
 		TaskFarmControllerControllerStage taskFarmControllerControllerStage = new TaskFarmControllerControllerStage(controller);
 
 		Sink<Integer> sink = new Sink<Integer>();
