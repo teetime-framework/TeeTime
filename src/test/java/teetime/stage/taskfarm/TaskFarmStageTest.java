@@ -22,7 +22,7 @@ import teetime.stage.InitialElementProducer;
 
 public class TaskFarmStageTest {
 
-	private final static int NUMBER_OF_TEST_ELEMENTS = 10000;
+	private final static int NUMBER_OF_TEST_ELEMENTS = 1000;
 
 	private class PlusOneInStringStage extends AbstractConsumerStage<Integer> {
 
@@ -39,7 +39,7 @@ public class TaskFarmStageTest {
 		}
 	}
 
-	private class StringDuplicationStage extends AbstractConsumerStage<String> {
+	private class StringDuplicationStage extends AbstractConsumerStage<String> implements TaskFarmDuplicable<String, String> {
 
 		private final OutputPort<String> outputPort = this.createOutputPort();
 
@@ -48,8 +48,14 @@ public class TaskFarmStageTest {
 			this.outputPort.send(element + element);
 		}
 
+		@Override
 		public OutputPort<String> getOutputPort() {
 			return outputPort;
+		}
+
+		@Override
+		public TaskFarmDuplicable<String, String> duplicate() {
+			return new StringDuplicationStage();
 		}
 	}
 
@@ -95,11 +101,16 @@ public class TaskFarmStageTest {
 			final CompositeTestStage compositeTestStage = new CompositeTestStage(this.getContext());
 			final CollectorSink<String> collectorSink = new CollectorSink<String>(collection);
 
-			TaskFarmStage<Integer, String, CompositeTestStage> taskFarmStage = new TaskFarmStage<Integer, String, CompositeTestStage>(compositeTestStage,
-					this.getContext());
+			TaskFarmStage<Integer, String, CompositeTestStage> taskFarmStage =
+					new TaskFarmStage<Integer, String, CompositeTestStage>(compositeTestStage, this.getContext());
+
+			final StringDuplicationStage additionalDuplication = new StringDuplicationStage();
+			TaskFarmStage<String, String, StringDuplicationStage> secondTaskFarmStage =
+					new TaskFarmStage<String, String, StringDuplicationStage>(additionalDuplication, this.getContext());
 
 			connectPorts(initialElementProducer.getOutputPort(), taskFarmStage.getInputPort());
-			connectPorts(taskFarmStage.getOutputPort(), collectorSink.getInputPort());
+			connectPorts(taskFarmStage.getOutputPort(), secondTaskFarmStage.getInputPort());
+			connectPorts(secondTaskFarmStage.getOutputPort(), collectorSink.getInputPort());
 		}
 
 		public List<String> getCollection() {
@@ -117,7 +128,7 @@ public class TaskFarmStageTest {
 		List<String> result = configuration.getCollection();
 		for (int i = 1; i <= NUMBER_OF_TEST_ELEMENTS; i++) {
 			int n = i + 1;
-			String s = Integer.toString(n) + Integer.toString(n);
+			String s = Integer.toString(n) + Integer.toString(n) + Integer.toString(n) + Integer.toString(n);
 			assertTrue("Does not contain: " + s, result.contains(s));
 		}
 		assertThat(result.size(), is(equalTo(NUMBER_OF_TEST_ELEMENTS)));
