@@ -26,11 +26,11 @@ public class TaskFarmStageTest {
 
 	@Test
 	public void simpleTaskFarmStageTest() {
-		TestConfiguration configuration = new TestConfiguration();
+		final TestConfiguration configuration = new TestConfiguration();
 		final Execution<TestConfiguration> execution = new Execution<TestConfiguration>(configuration);
-	
+
 		execution.executeBlocking();
-	
+
 		List<String> result = configuration.getCollection();
 		for (int i = 1; i <= NUMBER_OF_TEST_ELEMENTS; i++) {
 			int n = i + 1;

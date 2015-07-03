@@ -35,7 +35,7 @@ public class TaskFarmController<I, O, TFS extends TaskFarmDuplicable<I, O>> {
 		addNewTaskFarmTriple(newStage);
 	}
 
-	private void addNewTaskFarmTriple(TFS newStage) {
+	private void addNewTaskFarmTriple(final TFS newStage) {
 		TaskFarmTriple<I, O, TFS> newTriple =
 				new TaskFarmTriple<I, O, TFS>(
 						newStage.getInputPort().getPipe(),
