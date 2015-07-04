@@ -4,80 +4,105 @@ import teetime.framework.DynamicInputPort;
 import teetime.framework.DynamicOutputPort;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.exceptionHandling.TaskFarmControllerException;
 import teetime.framework.pipe.IPipe;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.merger.dynamic.CreatePortActionMerger;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
-import teetime.stage.taskfarm.TaskFarmDuplicable;
+import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmTriple;
 import teetime.util.framework.port.PortAction;
 
-public class TaskFarmController<I, O, TFS extends TaskFarmDuplicable<I, O>> {
+/**
+ * The TaskFarmController is able to dynamically add stages to and remove
+ * stages from a Task Farm with the same type at runtime.
+ *
+ * @author Christian Claus Wiechmann
+ *
+ * @param <I>
+ *            Input type of Task Farm
+ * @param <O>
+ *            Output type of Task Farm
+ * @param <T>
+ *            Type of enclosed Stage (must extend {@link ITaskFarmDuplicable})
+ */
+public class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
-	final private TaskFarmConfiguration<I, O, TFS> configuration;
+	private final TaskFarmConfiguration<I, O, T> configuration;
 
-	public TaskFarmController(final TaskFarmConfiguration<I, O, TFS> taskFarmConfiguration) {
+	/**
+	 * Constructor.
+	 *
+	 * @param configuration
+	 *            TaskFarmConfiguration of the Task Farm which
+	 *            this controller is used for
+	 */
+	public TaskFarmController(final TaskFarmConfiguration<I, O, T> taskFarmConfiguration) {
 		this.configuration = taskFarmConfiguration;
 	}
 
+	/**
+	 * Dynamically adds a stage to the controlled task farm.
+	 */
 	public void addStageToTaskFarm() {
 		@SuppressWarnings("unchecked")
-		TFS newStage = (TFS) configuration.getFirstStage().duplicate();
+		final T newStage = (T) this.configuration.getFirstStage().duplicate();
 
-		CreatePortActionMerger<O> mergerPortAction =
+		final CreatePortActionMerger<O> mergerPortAction =
 				new CreatePortActionMerger<O>(newStage.getOutputPort());
-		configuration.getMerger().addPortActionRequest(mergerPortAction);
+		this.configuration.getMerger().addPortActionRequest(mergerPortAction);
 		mergerPortAction.waitForCompletion();
 
-		PortAction<DynamicDistributor<I>> distributorPortAction =
+		final PortAction<DynamicDistributor<I>> distributorPortAction =
 				new teetime.stage.basic.distributor.dynamic.CreatePortAction<I>(newStage.getInputPort());
-		configuration.getDistributor().addPortActionRequest(distributorPortAction);
+		this.configuration.getDistributor().addPortActionRequest(distributorPortAction);
 
-		addNewTaskFarmTriple(newStage);
+		this.addNewTaskFarmTriple(newStage);
 	}
 
-	private void addNewTaskFarmTriple(final TFS newStage) {
-		TaskFarmTriple<I, O, TFS> newTriple =
-				new TaskFarmTriple<I, O, TFS>(
+	private void addNewTaskFarmTriple(final T newStage) {
+		final TaskFarmTriple<I, O, T> newTriple =
+				new TaskFarmTriple<I, O, T>(
 						newStage.getInputPort().getPipe(),
 						newStage.getOutputPort().getPipe(),
 						newStage);
-		configuration.getTriples().add(newTriple);
+		this.configuration.getTriples().add(newTriple);
 	}
 
+	/**
+	 * Dynamically removes a stage from the controlled task farm.
+	 */
 	public void removeStageFromTaskFarm() {
-		// FIXME: Do not remove if number of stages == 1
-
-		TaskFarmDuplicable<I, O> stageToBeRemoved = getStageToBeRemoved();
-		OutputPort<?> distributorOutputPort = getRemoveableDistributorOutputPort(stageToBeRemoved);
-		InputPort<?> mergerInputPort = getRemoveableMergerInputPort(stageToBeRemoved);
+		final ITaskFarmDuplicable<I, O> stageToBeRemoved = this.getStageToBeRemoved();
+		final OutputPort<?> distributorOutputPort = this.getRemoveableDistributorOutputPort(stageToBeRemoved);
+		final InputPort<?> mergerInputPort = this.getRemoveableMergerInputPort(stageToBeRemoved);
 
 		try {
 			@SuppressWarnings("unchecked")
-			PortAction<DynamicDistributor<I>> distributorPortAction =
+			final PortAction<DynamicDistributor<I>> distributorPortAction =
 					new teetime.stage.basic.distributor.dynamic.RemovePortAction<I>((DynamicOutputPort<I>) distributorOutputPort);
-			configuration.getDistributor().addPortActionRequest(distributorPortAction);
+			this.configuration.getDistributor().addPortActionRequest(distributorPortAction);
 
 			@SuppressWarnings("unchecked")
-			PortAction<DynamicMerger<O>> mergerPortAction =
+			final PortAction<DynamicMerger<O>> mergerPortAction =
 					new teetime.stage.basic.merger.dynamic.RemovePortAction<O>((DynamicInputPort<O>) mergerInputPort);
-			configuration.getMerger().addPortActionRequest(mergerPortAction);
+			this.configuration.getMerger().addPortActionRequest(mergerPortAction);
 		} catch (ClassCastException e) {
-			// TODO: Exception thrown because of wrong types. Should not happen, theoretically.
+			throw new TaskFarmControllerException("Merger and Distributor have a different type than the Task Farm or the Task Farm Controller.");
 		}
 	}
 
-	private InputPort<?> getRemoveableMergerInputPort(final TaskFarmDuplicable<I, O> stageToBeRemoved) {
-		InputPort<?> mergerInputPort = stageToBeRemoved.getOutputPort().getPipe().getTargetPort();
+	private InputPort<?> getRemoveableMergerInputPort(final ITaskFarmDuplicable<I, O> stageToBeRemoved) {
+		final InputPort<?> mergerInputPort = stageToBeRemoved.getOutputPort().getPipe().getTargetPort();
 		return mergerInputPort;
 	}
 
-	private OutputPort<?> getRemoveableDistributorOutputPort(final TaskFarmDuplicable<I, O> stageToBeRemoved) {
-		OutputPort<?>[] potentialDistributorOutputPorts = configuration.getDistributor().getOutputPorts();
+	private OutputPort<?> getRemoveableDistributorOutputPort(final ITaskFarmDuplicable<I, O> stageToBeRemoved) {
+		final OutputPort<?>[] potentialDistributorOutputPorts = this.configuration.getDistributor().getOutputPorts();
 		OutputPort<?> distributorOutputPort = null;
 		for (int i = 0; i < potentialDistributorOutputPorts.length; i++) {
-			IPipe pipe = potentialDistributorOutputPorts[i].getPipe();
+			final IPipe pipe = potentialDistributorOutputPorts[i].getPipe();
 			if (pipe.equals(stageToBeRemoved.getInputPort().getPipe())) {
 				distributorOutputPort = potentialDistributorOutputPorts[i];
 				break;
@@ -85,16 +110,15 @@ public class TaskFarmController<I, O, TFS extends TaskFarmDuplicable<I, O>> {
 		}
 
 		if (distributorOutputPort == null) {
-			// TODO: Better exception
-			throw new RuntimeException();
+			throw new TaskFarmControllerException("The pipe between Distributor and enclosed Stage to be removed does not exist.");
 		}
 
 		return distributorOutputPort;
 	}
 
-	private TaskFarmDuplicable<I, O> getStageToBeRemoved() {
-		// just get last added stage
-		TaskFarmTriple<I, O, TFS> triple = configuration.getTriples().get(configuration.getTriples().size() - 1);
+	private ITaskFarmDuplicable<I, O> getStageToBeRemoved() {
+		final TaskFarmTriple<I, O, T> triple =
+				this.configuration.getTriples().get(this.configuration.getTriples().size() - 1);
 		return triple.getStage();
 	}
 }

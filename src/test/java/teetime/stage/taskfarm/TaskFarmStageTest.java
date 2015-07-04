@@ -22,7 +22,7 @@ import teetime.stage.InitialElementProducer;
 
 public class TaskFarmStageTest {
 
-	private final static int NUMBER_OF_TEST_ELEMENTS = 1000;
+	private static final int NUMBER_OF_TEST_ELEMENTS = 1000;
 
 	@Test
 	public void simpleTaskFarmStageTest() {
@@ -31,13 +31,13 @@ public class TaskFarmStageTest {
 
 		execution.executeBlocking();
 
-		List<String> result = configuration.getCollection();
+		final List<String> results = configuration.getCollection();
 		for (int i = 1; i <= NUMBER_OF_TEST_ELEMENTS; i++) {
-			int n = i + 1;
-			String s = Integer.toString(n) + Integer.toString(n) + Integer.toString(n) + Integer.toString(n);
-			assertTrue("Does not contain: " + s, result.contains(s));
+			final int n = i + 1;
+			final String s = Integer.toString(n) + Integer.toString(n) + Integer.toString(n) + Integer.toString(n);
+			assertTrue("Does not contain: " + s, results.contains(s));
 		}
-		assertThat(result.size(), is(equalTo(NUMBER_OF_TEST_ELEMENTS)));
+		assertThat(results.size(), is(equalTo(NUMBER_OF_TEST_ELEMENTS)));
 	}
 
 	private class PlusOneInStringStage extends AbstractConsumerStage<Integer> {
@@ -46,7 +46,7 @@ public class TaskFarmStageTest {
 
 		@Override
 		protected void execute(final Integer element) {
-			Integer x = element + 1;
+			final Integer x = element + 1;
 			this.outputPort.send(x.toString());
 		}
 
@@ -55,7 +55,7 @@ public class TaskFarmStageTest {
 		}
 	}
 
-	private class StringDuplicationStage extends AbstractConsumerStage<String> implements TaskFarmDuplicable<String, String> {
+	private class StringDuplicationStage extends AbstractConsumerStage<String> implements ITaskFarmDuplicable<String, String> {
 
 		private final OutputPort<String> outputPort = this.createOutputPort();
 
@@ -70,58 +70,58 @@ public class TaskFarmStageTest {
 		}
 
 		@Override
-		public TaskFarmDuplicable<String, String> duplicate() {
+		public ITaskFarmDuplicable<String, String> duplicate() {
 			return new StringDuplicationStage();
 		}
 	}
 
-	private class CompositeTestStage extends AbstractCompositeStage implements TaskFarmDuplicable<Integer, String> {
-		PlusOneInStringStage pOne = new PlusOneInStringStage();
-		StringDuplicationStage sDup = new StringDuplicationStage();
+	private class CompositeTestStage extends AbstractCompositeStage implements ITaskFarmDuplicable<Integer, String> {
+		private final PlusOneInStringStage pOne = new PlusOneInStringStage();
+		private final StringDuplicationStage sDup = new StringDuplicationStage();
 
 		public CompositeTestStage(final ConfigurationContext context) {
 			super(context);
-			connectPorts(pOne.getOutputPort(), sDup.getInputPort());
+			connectPorts(this.pOne.getOutputPort(), this.sDup.getInputPort());
 		}
 
 		@Override
 		public InputPort<Integer> getInputPort() {
-			return pOne.getInputPort();
+			return this.pOne.getInputPort();
 		}
 
 		@Override
 		public OutputPort<String> getOutputPort() {
-			return sDup.getOutputPort();
+			return this.sDup.getOutputPort();
 		}
 
 		@Override
-		public TaskFarmDuplicable<Integer, String> duplicate() {
+		public ITaskFarmDuplicable<Integer, String> duplicate() {
 			return new CompositeTestStage(this.getContext());
 		}
 
 	}
 
 	private class TestConfiguration extends Configuration {
-		private final List<String> collection = new LinkedList<String>();
+		private final List<String> results = new LinkedList<String>();
 
 		public TestConfiguration() {
 			this.buildConfiguration();
 		}
 
 		private void buildConfiguration() {
-			List<Integer> values = new LinkedList<Integer>();
+			final List<Integer> values = new LinkedList<Integer>();
 			for (int i = 1; i <= NUMBER_OF_TEST_ELEMENTS; i++) {
 				values.add(i);
 			}
 			final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(values);
 			final CompositeTestStage compositeTestStage = new CompositeTestStage(this.getContext());
-			final CollectorSink<String> collectorSink = new CollectorSink<String>(collection);
+			final CollectorSink<String> collectorSink = new CollectorSink<String>(this.results);
 
-			TaskFarmStage<Integer, String, CompositeTestStage> taskFarmStage =
+			final TaskFarmStage<Integer, String, CompositeTestStage> taskFarmStage =
 					new TaskFarmStage<Integer, String, CompositeTestStage>(compositeTestStage, this.getContext());
 
 			final StringDuplicationStage additionalDuplication = new StringDuplicationStage();
-			TaskFarmStage<String, String, StringDuplicationStage> secondTaskFarmStage =
+			final TaskFarmStage<String, String, StringDuplicationStage> secondTaskFarmStage =
 					new TaskFarmStage<String, String, StringDuplicationStage>(additionalDuplication, this.getContext());
 
 			connectPorts(initialElementProducer.getOutputPort(), taskFarmStage.getInputPort());
@@ -130,7 +130,7 @@ public class TaskFarmStageTest {
 		}
 
 		public List<String> getCollection() {
-			return this.collection;
+			return this.results;
 		}
 	}
 }

@@ -4,57 +4,76 @@ import teetime.framework.AbstractCompositeStage;
 import teetime.framework.ConfigurationContext;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.exceptionHandling.TaskFarmInvalidPipeException;
-import teetime.framework.pipe.IMonitorablePipe;
-import teetime.framework.pipe.IPipe;
 
-public class TaskFarmStage<I, O, TFS extends TaskFarmDuplicable<I, O>> extends AbstractCompositeStage {
+/**
+ * The TaskFarmStage implements the task farm parallelization pattern in
+ * TeeTime. It dynamically adds CPU resources at runtime depending on
+ * the current CPU load and the behavior of the enclosed stage.
+ *
+ * @author Christian Claus Wiechmann
+ *
+ * @param <I>
+ *            Input type of Task Farm
+ * @param <O>
+ *            Output type of Task Farm
+ * @param <T>
+ *            Type of enclosed stage
+ */
+public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends AbstractCompositeStage {
 
-	private final TaskFarmConfiguration<I, O, TFS> configuration;
+	private final TaskFarmConfiguration<I, O, T> configuration;
 
-	public TaskFarmStage(final TFS workerStage, final ConfigurationContext context) {
+	/**
+	 * Constructor.
+	 *
+	 * @param workerStage
+	 *            instance of enclosed stage
+	 * @param context
+	 *            current execution context
+	 */
+	public TaskFarmStage(final T workerStage, final ConfigurationContext context) {
 		super(context);
-		configuration = new TaskFarmConfiguration<I, O, TFS>(workerStage);
+		this.configuration = new TaskFarmConfiguration<I, O, T>(workerStage);
 
-		init(workerStage);
+		this.init(workerStage);
 	}
 
 	public InputPort<I> getInputPort() {
-		return configuration.getDistributor().getInputPort();
+		return this.configuration.getDistributor().getInputPort();
 	}
 
 	public OutputPort<O> getOutputPort() {
-		return configuration.getMerger().getOutputPort();
+		return this.configuration.getMerger().getOutputPort();
 	}
 
-	private void init(final TFS includedStage) {
-		addThreadableStage(configuration.getMerger());
-		addThreadableStage(configuration.getFirstStage().getInputPort().getOwningStage());
+	private void init(final T includedStage) {
+		addThreadableStage(this.configuration.getMerger());
+		addThreadableStage(this.configuration.getFirstStage().getInputPort().getOwningStage());
 
-		InputPort<I> stageInputPort = includedStage.getInputPort();
-		connectPorts(configuration.getDistributor().getNewOutputPort(), stageInputPort);
+		final InputPort<I> stageInputPort = includedStage.getInputPort();
+		connectPorts(this.configuration.getDistributor().getNewOutputPort(), stageInputPort);
 
-		OutputPort<O> stageOutputPort = includedStage.getOutputPort();
-		connectPorts(stageOutputPort, configuration.getMerger().getNewInputPort());
+		final OutputPort<O> stageOutputPort = includedStage.getOutputPort();
+		connectPorts(stageOutputPort, this.configuration.getMerger().getNewInputPort());
 
 		// TODO: Check pipes at start somehow... Here, it would only be an InstantiationPipe.
 		// checkIfPipeIsMonitorable(stageInputPort.getPipe());
 		// checkIfPipeIsMonitorable(stageOutputPort.getPipe());
 
-		configuration.getTriples().add(new TaskFarmTriple<I, O, TFS>(
+		this.configuration.getTriples().add(new TaskFarmTriple<I, O, T>(
 				stageInputPort.getPipe(),
 				stageOutputPort.getPipe(),
 				includedStage));
 	}
 
-	private void checkIfPipeIsMonitorable(final IPipe pipe) {
-		if (!(pipe instanceof IMonitorablePipe)) {
-			throw new TaskFarmInvalidPipeException("Pipe is not monitorable, which is required for a Task Farm. Instead \"" + pipe.getClass().getSimpleName()
-					+ "\" was used.");
-		}
-	}
+	// private void checkIfPipeIsMonitorable(final IPipe pipe) {
+	// if (!(pipe instanceof IMonitorablePipe)) {
+	// throw new TaskFarmInvalidPipeException("Pipe is not monitorable, which is required for a Task Farm. Instead \"" + pipe.getClass().getSimpleName()
+	// + "\" was used.");
+	// }
+	// }
 
-	public TaskFarmConfiguration<I, O, TFS> getConfiguration() {
+	public TaskFarmConfiguration<I, O, T> getConfiguration() {
 		return this.configuration;
 	}
 }

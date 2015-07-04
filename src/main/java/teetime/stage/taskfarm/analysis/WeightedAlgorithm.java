@@ -3,8 +3,23 @@ package teetime.stage.taskfarm.analysis;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.monitoring.ThroughputHistory;
 
-public class WeightedAlgorithm extends ThroughputAnalysisAlgorithm {
+/**
+ * WeightedAlgorithm analyzes the throughput of a certain amount of items
+ * while giving more weight to more recent items. The weighting can
+ * be calculated either logarithmically, linearly or exponentially.
+ *
+ * @author Christian Claus Wiechmann
+ *
+ */
+public class WeightedAlgorithm extends AbstractThroughputAnalysisAlgorithm {
 
+	/**
+	 * This enumeration contains values for logarithmic, exponential
+	 * or linear weighting.
+	 *
+	 * @author Christian Claus Wiechmann
+	 *
+	 */
 	enum WeightMethod {
 		LOGARITHMIC,
 		LINEAR,
@@ -13,6 +28,15 @@ public class WeightedAlgorithm extends ThroughputAnalysisAlgorithm {
 
 	private final WeightMethod weightMethod;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param weightMethod
+	 *            weighting method to be used (see {@link WeightedAlgorithm.WeightMethod})
+	 * @param configuration
+	 *            TaskFarmConfiguration of the Task Farm which
+	 *            this algorithm is used for
+	 */
 	public WeightedAlgorithm(final WeightMethod weightMethod, final TaskFarmConfiguration<?, ?, ?> configuration) {
 		super(configuration);
 		this.weightMethod = weightMethod;
@@ -24,27 +48,34 @@ public class WeightedAlgorithm extends ThroughputAnalysisAlgorithm {
 		double totalWeights = 0;
 
 		// more recent entry means more weight
-		for (int i = WINDOW; i > 0; i--) {
-			double weight = getWeight(i - 1);
+		for (int i = window; i > 0; i--) {
+			final double weight = this.getWeight(i - 1);
 			totalWeights += weight;
-			weightedSum += history.getEntries().get(i).getThroughput() * weight;
+			weightedSum += history.getThroughputOfEntry(i) * weight;
 		}
 
-		double prediction = weightedSum / totalWeights;
-		return prediction;
+		return weightedSum / totalWeights;
 	}
 
 	private double getWeight(final double distance) {
-		double tempWeight = WINDOW - distance;
-		switch (weightMethod) {
+		final double tempWeight = window - distance;
+		double finalWeight;
+
+		switch (this.weightMethod) {
 		case LOGARITHMIC:
-			return Math.log(tempWeight);
+			finalWeight = Math.log(tempWeight);
+			break;
 		case LINEAR:
-			return tempWeight;
+			finalWeight = tempWeight;
+			break;
 		case EXPONENTIAL:
-			return Math.exp(tempWeight);
+			finalWeight = Math.exp(tempWeight);
+			break;
 		default:
-			return tempWeight;
+			finalWeight = tempWeight;
+			break;
 		}
+
+		return finalWeight;
 	}
 }

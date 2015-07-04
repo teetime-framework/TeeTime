@@ -11,40 +11,43 @@ import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.analysis.WeightedAlgorithm.WeightMethod;
 import teetime.stage.taskfarm.monitoring.ThroughputHistory;
 
+/**
+ * @author Christian Claus Wiechmann
+ */
 public class WeightedAlgorithmTest {
 
-	ThroughputHistory history;
+	private ThroughputHistory history;
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private final TaskFarmConfiguration configuration = new TaskFarmConfiguration(null);
 
 	@Before
 	public void prepareHistory() {
-		history = new ThroughputHistory();
+		this.history = new ThroughputHistory();
 
-		history.add(1);
-		history.add(10);
-		history.add(1);
-		history.add(1);
+		this.history.add(1);
+		this.history.add(10);
+		this.history.add(1);
+		this.history.add(1);
 	}
 
 	@Test
 	public void exponentialTest() {
-		ThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.EXPONENTIAL, configuration);
-		double thoughputScore = algorithm.getTroughputAnalysis(history);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.EXPONENTIAL, this.configuration);
+		final double thoughputScore = algorithm.getTroughputAnalysis(this.history);
 		assertThat(thoughputScore, is(greaterThan(0.52)));
 	}
 
 	@Test
 	public void linearTest() {
-		ThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LINEAR, configuration);
-		double thoughputScore = algorithm.getTroughputAnalysis(history);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LINEAR, this.configuration);
+		final double thoughputScore = algorithm.getTroughputAnalysis(this.history);
 		assertThat(thoughputScore, is(greaterThan(0.59)));
 	}
 
 	@Test
 	public void logarithmicTest() {
-		ThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LOGARITHMIC, configuration);
-		double thoughputScore = algorithm.getTroughputAnalysis(history);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LOGARITHMIC, this.configuration);
+		final double thoughputScore = algorithm.getTroughputAnalysis(this.history);
 		assertThat(thoughputScore, is(greaterThan(0.63)));
 	}
 

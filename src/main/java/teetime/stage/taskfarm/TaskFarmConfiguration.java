@@ -6,42 +6,60 @@ import java.util.List;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
 
-public class TaskFarmConfiguration<I, O, TFS extends TaskFarmDuplicable<I, O>> {
+/**
+ * This class contains the configuration of a single Task Farm.
+ *
+ * @author Christian Claus Wiechmann
+ *
+ * @param <I>
+ *            Input type of Task Farm
+ * @param <O>
+ *            Output type of Task Farm
+ * @param <T>
+ *            Type of enclosed stage
+ */
+public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
-	private final List<TaskFarmTriple<I, O, TFS>> triples = new LinkedList<TaskFarmTriple<I, O, TFS>>();
+	private final List<TaskFarmTriple<I, O, T>> triples = new LinkedList<TaskFarmTriple<I, O, T>>();
 
 	private final DynamicDistributor<I> distributor = new DynamicDistributor<I>();
 	private final DynamicMerger<O> merger = new DynamicMerger<O>();
 
-	private final TFS firstStage;
+	private final T firstStage;
 
-	private final int analysisWindow = 3;
+	private int analysisWindow = 3;
 
-	public TaskFarmConfiguration(final TFS firstStage) {
+	/**
+	 * Constructor.
+	 *
+	 * @param firstStage
+	 *            first instance of the enclosed stage given to the task farm itself
+	 */
+	public TaskFarmConfiguration(final T firstStage) {
 		this.firstStage = firstStage;
 	}
 
-	public List<TaskFarmTriple<I, O, TFS>> getTriples() {
-		return triples;
+	public List<TaskFarmTriple<I, O, T>> getTriples() {
+		return this.triples;
 	}
 
 	public DynamicDistributor<I> getDistributor() {
-		return distributor;
+		return this.distributor;
 	}
 
 	public DynamicMerger<O> getMerger() {
-		return merger;
+		return this.merger;
 	}
 
-	public TFS getFirstStage() {
-		return firstStage;
+	public T getFirstStage() {
+		return this.firstStage;
 	}
 
 	public int getAnalysisWindow() {
-		return analysisWindow;
+		return this.analysisWindow;
 	}
 
-	public void setAnalysisWindow(int analysisWindow) {
-		analysisWindow = analysisWindow;
+	public void setAnalysisWindow(final int analysisWindow) {
+		this.analysisWindow = analysisWindow;
 	}
 }

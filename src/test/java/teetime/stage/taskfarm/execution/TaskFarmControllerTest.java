@@ -9,13 +9,16 @@ import org.junit.Test;
 
 import teetime.framework.Execution;
 import teetime.stage.basic.AbstractFilter;
-import teetime.stage.taskfarm.TaskFarmDuplicable;
+import teetime.stage.taskfarm.ITaskFarmDuplicable;
 
 import com.google.common.collect.ListMultimap;
 
+/**
+ * @author Christian Claus Wiechmann
+ */
 public class TaskFarmControllerTest {
 
-	final static int NUMBER_OF_ITEMS = 1000;
+	static final int NUMBER_OF_ITEMS = 1000;
 
 	private static int numberOfEnclosedStage = 0;
 
@@ -26,14 +29,17 @@ public class TaskFarmControllerTest {
 
 		execution.executeBlocking();
 
-		ListMultimap<Integer, Integer> monitoredValues = configuration.getMonitoredValues();
+		final ListMultimap<Integer, Integer> monitoredValues = configuration.getMonitoredValues();
 		assertThat(monitoredValues.get(0).size(), is(greaterThan(0)));
 		assertThat(monitoredValues.get(1).size(), is(greaterThan(0)));
 		assertThat(monitoredValues.get(2).size(), is(greaterThan(0)));
 		assertThat(monitoredValues.size(), is(equalTo(NUMBER_OF_ITEMS)));
 	}
 
-	static class SelfMonitoringPlusOneStage extends AbstractFilter<Integer> implements TaskFarmDuplicable<Integer, Integer> {
+	/**
+	 * @author Christian Claus Wiechmann
+	 */
+	static class SelfMonitoringPlusOneStage extends AbstractFilter<Integer> implements ITaskFarmDuplicable<Integer, Integer> {
 
 		private final ListMultimap<Integer, Integer> monitoredValues;
 		private final int myNumber;
@@ -46,17 +52,20 @@ public class TaskFarmControllerTest {
 
 		@Override
 		protected void execute(final Integer element) {
-			monitoredValues.put(myNumber, element);
-			Integer x = element + 1;
+			this.monitoredValues.put(this.myNumber, element);
+			final Integer x = element + 1;
 			this.outputPort.send(x);
 		}
 
 		@Override
-		public TaskFarmDuplicable<Integer, Integer> duplicate() {
+		public ITaskFarmDuplicable<Integer, Integer> duplicate() {
 			return new SelfMonitoringPlusOneStage(monitoredValues);
 		}
 	}
 
+	/**
+	 * @author Christian Claus Wiechmann
+	 */
 	static class TaskFarmControllerControllerStage extends AbstractFilter<Integer> {
 
 		private final TaskFarmController<?, ?, ?> controller;
@@ -68,24 +77,24 @@ public class TaskFarmControllerTest {
 
 		@Override
 		protected void execute(final Integer element) {
-			if (numberOfElements == NUMBER_OF_ITEMS * 0.3) {
+			if (this.numberOfElements == NUMBER_OF_ITEMS * 0.3) {
 				System.out.println("Thread added");
-				controller.addStageToTaskFarm();
+				this.controller.addStageToTaskFarm();
 			}
 
-			if (numberOfElements == NUMBER_OF_ITEMS * 0.5) {
+			if (this.numberOfElements == NUMBER_OF_ITEMS * 0.5) {
 				System.out.println("Thread added");
-				controller.addStageToTaskFarm();
+				this.controller.addStageToTaskFarm();
 			}
 
-			if (numberOfElements == NUMBER_OF_ITEMS * 0.7) {
+			if (this.numberOfElements == NUMBER_OF_ITEMS * 0.7) {
 				System.out.println("Thread removed");
-				controller.removeStageFromTaskFarm();
+				this.controller.removeStageFromTaskFarm();
 			}
 
 			this.outputPort.send(element);
 
-			numberOfElements++;
+			this.numberOfElements++;
 		}
 
 	}

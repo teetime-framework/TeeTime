@@ -18,75 +18,75 @@ public class MeanAlgorithmTest {
 
 	@Test
 	public void constantThoughputTestAnomaly() {
-		ThroughputHistory history = new ThroughputHistory();
+		final ThroughputHistory history = new ThroughputHistory();
 
 		history.add(40.5);
 		history.add(40.8);
 		history.add(40.8);
 		history.add(60);
 
-		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
-		double thoughputScore = algorithm.getTroughputAnalysis(history);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(this.configuration);
+		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertThat(thoughputScore, is(greaterThan(0.1)));
 	}
 
 	@Test
 	public void constantThoughputTestNoAnomaly() {
-		ThroughputHistory history = new ThroughputHistory();
+		final ThroughputHistory history = new ThroughputHistory();
 
 		history.add(4.5);
 		history.add(4.8);
 		history.add(4.8);
 		history.add(4.7);
 
-		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
-		double thoughputScore = algorithm.getTroughputAnalysis(history);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(this.configuration);
+		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
 	}
 
 	@Test
 	public void risingThoughputTestNoAnomaly() {
-		ThroughputHistory history = new ThroughputHistory();
+		final ThroughputHistory history = new ThroughputHistory();
 
 		history.add(4);
 		history.add(5);
 		history.add(6);
 		history.add(7);
 
-		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
-		double thoughputScore = algorithm.getTroughputAnalysis(history);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(this.configuration);
+		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertThat(thoughputScore, is(greaterThan(0.1)));
 	}
 
 	@Test
 	public void risingThoughputTestAnomaly() {
-		ThroughputHistory history = new ThroughputHistory();
+		final ThroughputHistory history = new ThroughputHistory();
 
 		history.add(4);
 		history.add(5);
 		history.add(6);
 		history.add(3);
 
-		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
-		double thoughputScore = algorithm.getTroughputAnalysis(history);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(this.configuration);
+		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertThat(thoughputScore, is(closeTo(0.25d, EPSILON)));
 	}
 
 	@Test
 	public void irregularThoughputTest() {
-		ThroughputHistory history = new ThroughputHistory();
+		final ThroughputHistory history = new ThroughputHistory();
 
 		history.add(4);
 		history.add(10);
 		history.add(8);
 		history.add(1);
 
-		ThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(configuration);
-		double thoughputScore = algorithm.getTroughputAnalysis(history);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(this.configuration);
+		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertThat(thoughputScore, is(greaterThan(0.7)));
 	}

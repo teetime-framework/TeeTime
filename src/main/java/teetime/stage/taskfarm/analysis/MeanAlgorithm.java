@@ -3,23 +3,35 @@ package teetime.stage.taskfarm.analysis;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.monitoring.ThroughputHistory;
 
-public class MeanAlgorithm extends ThroughputAnalysisAlgorithm {
+/**
+ * MeanAlgorithm analyzes the throughput of a certain amount of
+ * items and predicts the next value based on the mean value.
+ *
+ * @author Christian Claus Wiechmann
+ *
+ */
+public class MeanAlgorithm extends AbstractThroughputAnalysisAlgorithm {
 
+	/**
+	 * Constructor.
+	 *
+	 * @param configuration
+	 *            TaskFarmConfiguration of the Task Farm which
+	 *            this algorithm is used for
+	 */
 	public MeanAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
 		super(configuration);
 	}
 
 	@Override
 	protected double doAnalysis(final ThroughputHistory history) {
-		double sumOfHistoryValues = 0;
+		double sum = 0;
 
-		for (int i = 1; i <= WINDOW; i++)
-		{
-			double currentHistoryValue = history.getEntries().get(i).getThroughput();
-			sumOfHistoryValues += currentHistoryValue;
+		for (int i = 1; i <= window; i++) {
+			final double current = history.getThroughputOfEntry(i);
+			sum += current;
 		}
 
-		double prediction = sumOfHistoryValues / WINDOW;
-		return prediction;
+		return sum / window;
 	}
 }

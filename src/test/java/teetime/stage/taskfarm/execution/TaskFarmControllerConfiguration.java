@@ -14,18 +14,21 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
+/**
+ * @author Christian Claus Wiechmann
+ */
 class TaskFarmControllerConfiguration extends Configuration {
 
 	private final ListMultimap<Integer, Integer> monitoredValues;
 
 	public TaskFarmControllerConfiguration() {
-		ListMultimap<Integer, Integer> multimapNotSynchronized = LinkedListMultimap.create();
-		monitoredValues = Multimaps.synchronizedListMultimap(multimapNotSynchronized);
+		final ListMultimap<Integer, Integer> multimapNotSynchronized = LinkedListMultimap.create();
+		this.monitoredValues = Multimaps.synchronizedListMultimap(multimapNotSynchronized);
 		this.buildConfiguration();
 	}
 
 	private void buildConfiguration() {
-		List<Integer> numbers = new LinkedList<Integer>();
+		final List<Integer> numbers = new LinkedList<Integer>();
 		for (int i = 0; i < TaskFarmControllerTest.NUMBER_OF_ITEMS; i++) {
 			numbers.add(i);
 		}
@@ -36,13 +39,13 @@ class TaskFarmControllerConfiguration extends Configuration {
 
 		initialElementProducer = new InitialElementProducer<Integer>(numbers);
 
-		SelfMonitoringPlusOneStage workerStage = new SelfMonitoringPlusOneStage(monitoredValues);
+		final SelfMonitoringPlusOneStage workerStage = new SelfMonitoringPlusOneStage(this.monitoredValues);
 		taskFarmStage = new TaskFarmStage<Integer, Integer, SelfMonitoringPlusOneStage>(workerStage, this.getContext());
 
 		controller = new TaskFarmController<Integer, Integer, SelfMonitoringPlusOneStage>(taskFarmStage.getConfiguration());
-		TaskFarmControllerControllerStage taskFarmControllerControllerStage = new TaskFarmControllerControllerStage(controller);
+		final TaskFarmControllerControllerStage taskFarmControllerControllerStage = new TaskFarmControllerControllerStage(controller);
 
-		Sink<Integer> sink = new Sink<Integer>();
+		final Sink<Integer> sink = new Sink<Integer>();
 
 		connectPorts(initialElementProducer.getOutputPort(), taskFarmControllerControllerStage.getInputPort());
 		connectPorts(taskFarmControllerControllerStage.getOutputPort(), taskFarmStage.getInputPort());
@@ -50,6 +53,6 @@ class TaskFarmControllerConfiguration extends Configuration {
 	}
 
 	public ListMultimap<Integer, Integer> getMonitoredValues() {
-		return monitoredValues;
+		return this.monitoredValues;
 	}
 }

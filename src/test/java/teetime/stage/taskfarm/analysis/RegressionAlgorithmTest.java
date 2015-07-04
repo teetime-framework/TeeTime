@@ -18,7 +18,7 @@ public class RegressionAlgorithmTest {
 
 	@Test
 	public void positiveRegression() throws InterruptedException {
-		ThroughputHistory history = new ThroughputHistory();
+		final ThroughputHistory history = new ThroughputHistory();
 
 		history.add(1);
 		Thread.sleep(100);
@@ -30,14 +30,14 @@ public class RegressionAlgorithmTest {
 		Thread.sleep(100);
 		history.add(5);
 
-		ThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(configuration);
-		double thoughputScore = algorithm.getTroughputAnalysis(history);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(this.configuration);
+		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
 	}
 
 	@Test
 	public void negativeRegression() throws InterruptedException {
-		ThroughputHistory history = new ThroughputHistory();
+		final ThroughputHistory history = new ThroughputHistory();
 
 		history.add(10);
 		Thread.sleep(100);
@@ -49,14 +49,14 @@ public class RegressionAlgorithmTest {
 		Thread.sleep(100);
 		history.add(2);
 
-		ThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(configuration);
-		double thoughputScore = algorithm.getTroughputAnalysis(history);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(this.configuration);
+		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
 	}
 
 	@Test
 	public void boundedRegression() throws InterruptedException {
-		ThroughputHistory history = new ThroughputHistory();
+		final ThroughputHistory history = new ThroughputHistory();
 
 		history.add(10);
 		Thread.sleep(100);
@@ -68,14 +68,14 @@ public class RegressionAlgorithmTest {
 		Thread.sleep(100);
 		history.add(0);
 
-		ThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(configuration);
-		double thoughputScore = algorithm.getTroughputAnalysis(history);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(this.configuration);
+		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
 	}
 
 	@Test
 	public void falseRegression() throws InterruptedException {
-		ThroughputHistory history = new ThroughputHistory();
+		final ThroughputHistory history = new ThroughputHistory();
 
 		history.add(10);
 		Thread.sleep(100);
@@ -87,8 +87,8 @@ public class RegressionAlgorithmTest {
 		Thread.sleep(100);
 		history.add(13);
 
-		ThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(configuration);
-		double thoughputScore = algorithm.getTroughputAnalysis(history);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(this.configuration);
+		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertThat(thoughputScore, is(greaterThan(0.3d)));
 	}
 
