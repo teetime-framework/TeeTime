@@ -23,7 +23,7 @@ public class DynamicMerger<T> extends Merger<T> {
 	}
 
 	@Override
-	public void executeStage() {
+	protected void executeStage() {
 		checkForPendingPortActionRequest(); // must be first to remove closed input ports
 		super.executeStage();
 	}

@@ -58,7 +58,7 @@ public class Merger<T> extends AbstractStage {
 	}
 
 	@Override
-	public void executeStage() {
+	protected void executeStage() {
 		final T token = this.strategy.getNextInput(this);
 		if (token == null) {
 			returnNoElement();
