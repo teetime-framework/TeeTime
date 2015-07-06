@@ -8,14 +8,14 @@ import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.util.framework.port.PortAction;
 
-public class CreatePortAction<T> implements PortAction<DynamicDistributor<T>> {
+public class CreatePortActionDistributor<T> implements PortAction<DynamicDistributor<T>> {
 
 	private static final SpScPipeFactory INTER_THREAD_PIPE_FACTORY = new SpScPipeFactory();
 	private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();
 
 	private final InputPort<T> inputPort;
 
-	public CreatePortAction(final InputPort<T> inputPort) {
+	public CreatePortActionDistributor(final InputPort<T> inputPort) {
 		this.inputPort = inputPort;
 	}
 

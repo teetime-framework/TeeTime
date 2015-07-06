@@ -43,17 +43,17 @@ public class TaskFarmControllerTest {
 	static class SelfMonitoringPlusOneStage extends AbstractFilter<Integer> implements ITaskFarmDuplicable<Integer, Integer> {
 
 		private final ListMultimap<Integer, Integer> monitoredValues;
-		private final int myNumber;
+		private final int stageId;
 
 		public SelfMonitoringPlusOneStage(final ListMultimap<Integer, Integer> monitoredValues) {
 			this.monitoredValues = monitoredValues;
-			this.myNumber = numberOfEnclosedStage;
+			this.stageId = numberOfEnclosedStage;
 			numberOfEnclosedStage++;
 		}
 
 		@Override
 		protected void execute(final Integer element) {
-			this.monitoredValues.put(this.myNumber, element);
+			this.monitoredValues.put(this.stageId, element);
 			final Integer x = element + 1;
 			this.outputPort.send(x);
 		}

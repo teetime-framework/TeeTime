@@ -1,14 +1,13 @@
 package teetime.stage.taskfarm.adaptation.execution;
 
-import teetime.framework.DynamicInputPort;
 import teetime.framework.DynamicOutputPort;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.exceptionHandling.TaskFarmControllerException;
 import teetime.framework.pipe.IPipe;
+import teetime.stage.basic.distributor.dynamic.CreatePortActionDistributor;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.merger.dynamic.CreatePortActionMerger;
-import teetime.stage.basic.merger.dynamic.DynamicMerger;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.TaskFarmTriple;
@@ -55,7 +54,7 @@ public class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		mergerPortAction.waitForCompletion();
 
 		final PortAction<DynamicDistributor<I>> distributorPortAction =
-				new teetime.stage.basic.distributor.dynamic.CreatePortAction<I>(newStage.getInputPort());
+				new CreatePortActionDistributor<I>(newStage.getInputPort());
 		this.configuration.getDistributor().addPortActionRequest(distributorPortAction);
 
 		this.addNewTaskFarmTriple(newStage);
@@ -76,7 +75,7 @@ public class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	public void removeStageFromTaskFarm() {
 		final ITaskFarmDuplicable<I, O> stageToBeRemoved = this.getStageToBeRemoved();
 		final OutputPort<?> distributorOutputPort = this.getRemoveableDistributorOutputPort(stageToBeRemoved);
-		final InputPort<?> mergerInputPort = this.getRemoveableMergerInputPort(stageToBeRemoved);
+		// final InputPort<?> mergerInputPort = this.getRemoveableMergerInputPort(stageToBeRemoved);
 
 		try {
 			@SuppressWarnings("unchecked")
@@ -84,10 +83,10 @@ public class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 					new teetime.stage.basic.distributor.dynamic.RemovePortAction<I>((DynamicOutputPort<I>) distributorOutputPort);
 			this.configuration.getDistributor().addPortActionRequest(distributorPortAction);
 
-			@SuppressWarnings("unchecked")
-			final PortAction<DynamicMerger<O>> mergerPortAction =
-					new teetime.stage.basic.merger.dynamic.RemovePortAction<O>((DynamicInputPort<O>) mergerInputPort);
-			this.configuration.getMerger().addPortActionRequest(mergerPortAction);
+			// @SuppressWarnings("unchecked")
+			// final PortAction<DynamicMerger<O>> mergerPortAction =
+			// new teetime.stage.basic.merger.dynamic.RemovePortAction<O>((DynamicInputPort<O>) mergerInputPort);
+			// this.configuration.getMerger().addPortActionRequest(mergerPortAction);
 		} catch (ClassCastException e) {
 			throw new TaskFarmControllerException("Merger and Distributor have a different type than the Task Farm or the Task Farm Controller.");
 		}

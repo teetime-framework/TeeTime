@@ -89,14 +89,14 @@ public class ControlledDistributorTest {
 
 	private PortAction<DynamicDistributor<Integer>> createPortCreateAction() {
 		CollectorSink<Integer> newStage = new CollectorSink<Integer>();
-		PortAction<DynamicDistributor<Integer>> portAction = new CreatePortAction<Integer>(newStage.getInputPort());
+		PortAction<DynamicDistributor<Integer>> portAction = new CreatePortActionDistributor<Integer>(newStage.getInputPort());
 		return portAction;
 	}
 
 	private void assertValuesForIndex(final PortAction<DynamicDistributor<Integer>>[] inputActions,
 			final List<Integer> values, final int index) {
 		PortAction<DynamicDistributor<Integer>> ia = inputActions[index];
-		Stage stage = ((CreatePortAction<Integer>) ia).getInputPort().getOwningStage();
+		Stage stage = ((CreatePortActionDistributor<Integer>) ia).getInputPort().getOwningStage();
 		@SuppressWarnings("unchecked")
 		CollectorSink<Integer> collectorSink = (CollectorSink<Integer>) stage;
 		assertThat(collectorSink.getElements(), is(values));
