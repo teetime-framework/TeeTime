@@ -71,11 +71,11 @@ public class DynamicDistributorTest {
 		analysis.executeBlocking();
 
 		assertThat(config.getOutputElements(), contains(0));
-		assertValuesForIndex(inputActions, Arrays.asList(1), 0);
-		assertValuesForIndex(inputActions, Arrays.asList(2), 1);
-		assertValuesForIndex(inputActions, Arrays.asList(3), 2);
-		assertValuesForIndex(inputActions, Arrays.asList(4), 3);
-		assertValuesForIndex(inputActions, Collections.<Integer> emptyList(), 4);
+		assertValuesForIndex(inputActions[0], Arrays.asList(1));
+		assertValuesForIndex(inputActions[1], Arrays.asList(2));
+		assertValuesForIndex(inputActions[2], Arrays.asList(3));
+		assertValuesForIndex(inputActions[3], Arrays.asList(4));
+		assertValuesForIndex(inputActions[4], Collections.<Integer> emptyList());
 	}
 
 	@Test
@@ -103,9 +103,9 @@ public class DynamicDistributorTest {
 		analysis.executeBlocking();
 
 		assertThat(config.getOutputElements(), contains(0, 1, 2, 4, 5));
-		assertValuesForIndex(inputActions, Collections.<Integer> emptyList(), 0);
-		assertValuesForIndex(inputActions, Arrays.asList(3), 2);
-		assertValuesForIndex(inputActions, Collections.<Integer> emptyList(), 3);
+		assertValuesForIndex(inputActions[0], Collections.<Integer> emptyList());
+		assertValuesForIndex(inputActions[2], Arrays.asList(3));
+		assertValuesForIndex(inputActions[3], Collections.<Integer> emptyList());
 	}
 
 	private CreatePortAction<Integer> createPortCreateAction(final PortContainer<Integer> portContainer) {
@@ -120,12 +120,12 @@ public class DynamicDistributorTest {
 		return portAction;
 	}
 
-	private void assertValuesForIndex(final PortAction<DynamicDistributor<Integer>>[] inputActions,
-			final List<Integer> values, final int index) {
-		PortAction<DynamicDistributor<Integer>> ia = inputActions[index];
+	private void assertValuesForIndex(final PortAction<DynamicDistributor<Integer>> ia, final List<Integer> values) {
 		Stage stage = ((CreatePortAction<Integer>) ia).getInputPort().getOwningStage();
+
 		@SuppressWarnings("unchecked")
 		CollectorSink<Integer> collectorSink = (CollectorSink<Integer>) stage;
+
 		assertThat(collectorSink.getElements(), is(values));
 	}
 
