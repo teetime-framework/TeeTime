@@ -36,7 +36,7 @@ import teetime.util.StopWatch;
 public class ExecutionTest {
 
 	private static final long DELAY_IN_MS = 500;
-	private static final long ABSOLUTE_MAX_ERROR_IN_MS = 2;
+	private static final long ABSOLUTE_MAX_ERROR_IN_MS = 6;
 
 	private Execution<TestConfig> execution;
 
@@ -67,7 +67,7 @@ public class ExecutionTest {
 		execution.executeBlocking();
 		watch.end();
 
-		assertThat(watch.getDurationInMs() + ABSOLUTE_MAX_ERROR_IN_MS, is(greaterThanOrEqualTo(DELAY_IN_MS)));
+		assertThat(watch.getDurationInMs(), is(greaterThanOrEqualTo(DELAY_IN_MS - ABSOLUTE_MAX_ERROR_IN_MS)));
 	}
 
 	private static class TestConfig extends Configuration {
@@ -179,18 +179,21 @@ public class ExecutionTest {
 	@Test
 	public void threadNameing() {
 		NameConfig configuration = new NameConfig();
-		Execution<NameConfig> execution = new Execution<NameConfig>(configuration);
+		new Execution<NameConfig>(configuration); // do not execute, but just initialize the execution
 		assertThat(configuration.stageWithNamedThread.getOwningThread().getName(), is("TestName"));
 	}
 
 	private class NameConfig extends Configuration {
 
-		public InitialElementProducer<Object> stageWithNamedThread;
+		InitialElementProducer<Object> stageWithNamedThread;
 
 		public NameConfig() {
 			stageWithNamedThread = new InitialElementProducer<Object>(new Object());
+			Sink<Object> sink = new Sink<Object>();
+
 			addThreadableStage(stageWithNamedThread, "TestName");
-			connectPorts(stageWithNamedThread.getOutputPort(), new Sink().getInputPort());
+
+			connectPorts(stageWithNamedThread.getOutputPort(), sink.getInputPort());
 		}
 
 	}

@@ -320,4 +320,8 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 		traversor.traverse(stage);
 		return traversor.getVisitedStage();
 	}
+
+	public IExceptionListenerFactory getFactory() {
+		return factory;
+	}
 }

@@ -34,4 +34,5 @@ public class ExceptionTestConfiguration extends Configuration {
 		this.addThreadableStage(second);
 		this.addThreadableStage(third);
 	}
+
 }

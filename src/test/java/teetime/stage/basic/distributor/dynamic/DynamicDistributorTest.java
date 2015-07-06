@@ -29,7 +29,6 @@ import teetime.framework.Configuration;
 import teetime.framework.DynamicOutputPort;
 import teetime.framework.Execution;
 import teetime.framework.Stage;
-import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.util.framework.port.PortAction;
@@ -45,8 +44,7 @@ public class DynamicDistributorTest {
 		List<PortAction<DynamicDistributor<Integer>>> inputActions = Arrays.asList(createAction, createAction, createAction, createAction, createAction);
 
 		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, inputActions);
-		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config,
-				new TerminatingExceptionListenerFactory());
+		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config);
 
 		analysis.executeBlocking();
 
@@ -65,8 +63,7 @@ public class DynamicDistributorTest {
 		}
 
 		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config,
-				new TerminatingExceptionListenerFactory());
+		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config);
 
 		analysis.executeBlocking();
 
@@ -97,8 +94,7 @@ public class DynamicDistributorTest {
 		inputActions[5] = new RemovePortAction<Integer>(portContainer2);
 
 		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config,
-				new TerminatingExceptionListenerFactory());
+		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config);
 
 		analysis.executeBlocking();
 

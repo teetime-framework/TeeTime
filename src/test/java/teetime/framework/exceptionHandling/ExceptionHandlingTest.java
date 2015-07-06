@@ -15,40 +15,15 @@
  */
 package teetime.framework.exceptionHandling;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
 import teetime.framework.Execution;
 import teetime.framework.ExecutionException;
-import teetime.framework.StageState;
 
 public class ExceptionHandlingTest {
-
-	private Execution<ExceptionTestConfiguration> execution;
-
-	public ExceptionTestConfiguration newInstances() {
-		ExceptionTestConfiguration configuration = new ExceptionTestConfiguration();
-		execution = new Execution<ExceptionTestConfiguration>(configuration, new TestListenerFactory());
-		return configuration;
-	}
-
-	public void exceptionPassingAndTermination() {
-		newInstances();
-		execution.executeBlocking();
-		assertEquals(TestListener.exceptionInvoked, 2); // listener did not kill thread too early
-	}
-
-	public void terminatesAllStages() {
-		ExceptionTestConfiguration config = newInstances();
-		execution.executeBlocking();
-		assertThat(config.first.getCurrentState(), is(StageState.TERMINATED));
-		assertThat(config.second.getCurrentState(), is(StageState.TERMINATED));
-		assertThat(config.third.getCurrentState(), is(StageState.TERMINATED));
-	}
 
 	@Test
 	public void forAFewTimes() {
@@ -69,5 +44,34 @@ public class ExceptionHandlingTest {
 			}
 			assertTrue(exceptionArised);
 		}
+	}
+
+	public void exceptionPassingAndTermination() {
+		Execution<ExceptionTestConfiguration> execution = newInstances();
+
+		execution.executeBlocking();
+
+		fail();
+		// TestListenerFactory factory = (TestListenerFactory) execution.getFactory();
+		// assertThat(factory.getInstances(), hasSize(2));
+		// assertEquals(factory.getInstances().get(0).getNumExceptionsInvoked(), 2); // listener did not kill thread too early
+	}
+
+	public Execution<ExceptionTestConfiguration> newInstances() {
+		ExceptionTestConfiguration configuration = new ExceptionTestConfiguration();
+		TestListenerFactory factory = new TestListenerFactory();
+		return new Execution<ExceptionTestConfiguration>(configuration, factory);
+	}
+
+	public void terminatesAllStages() {
+		Execution<ExceptionTestConfiguration> execution = newInstances();
+
+		execution.executeBlocking();
+
+		fail();
+		// ExceptionTestConfiguration config = execution.getConfiguration();
+		// assertThat(config.first.getCurrentState(), is(StageState.TERMINATED));
+		// assertThat(config.second.getCurrentState(), is(StageState.TERMINATED));
+		// assertThat(config.third.getCurrentState(), is(StageState.TERMINATED));
 	}
 }

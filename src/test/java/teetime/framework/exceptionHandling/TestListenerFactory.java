@@ -15,11 +15,22 @@
  */
 package teetime.framework.exceptionHandling;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TestListenerFactory implements IExceptionListenerFactory {
+
+	private final List<TestListener> instances = new ArrayList<TestListener>();
 
 	@Override
 	public AbstractExceptionListener createInstance() {
-		return new TestListener();
+		TestListener listener = new TestListener();
+		instances.add(listener);
+		return listener;
+	}
+
+	public List<TestListener> getInstances() {
+		return instances;
 	}
 
 }
