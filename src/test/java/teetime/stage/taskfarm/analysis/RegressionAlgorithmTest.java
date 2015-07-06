@@ -8,7 +8,9 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import teetime.stage.taskfarm.TaskFarmConfiguration;
-import teetime.stage.taskfarm.monitoring.ThroughputHistory;
+import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAnalysisAlgorithm;
+import teetime.stage.taskfarm.adaptation.analysis.RegressionAlgorithm;
+import teetime.stage.taskfarm.adaptation.monitoring.ThroughputHistory;
 
 public class RegressionAlgorithmTest {
 

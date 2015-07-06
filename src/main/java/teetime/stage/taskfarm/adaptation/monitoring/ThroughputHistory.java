@@ -1,4 +1,4 @@
-package teetime.stage.taskfarm.monitoring;
+package teetime.stage.taskfarm.adaptation.monitoring;
 
 import java.util.LinkedList;
 import java.util.List;

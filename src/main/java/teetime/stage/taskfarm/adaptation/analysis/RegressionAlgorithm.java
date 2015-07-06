@@ -1,9 +1,9 @@
-package teetime.stage.taskfarm.analysis;
+package teetime.stage.taskfarm.adaptation.analysis;
 
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import teetime.stage.taskfarm.TaskFarmConfiguration;
-import teetime.stage.taskfarm.monitoring.ThroughputHistory;
+import teetime.stage.taskfarm.adaptation.monitoring.ThroughputHistory;
 
 /**
  * RegressionAlgorithm analyzes the throughput of a certain amount of

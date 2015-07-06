@@ -1,4 +1,4 @@
-package teetime.stage.taskfarm.execution;
+package teetime.stage.taskfarm.adaptation.execution;
 
 import teetime.framework.DynamicInputPort;
 import teetime.framework.DynamicOutputPort;
@@ -9,8 +9,8 @@ import teetime.framework.pipe.IPipe;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.merger.dynamic.CreatePortActionMerger;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
-import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
+import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.TaskFarmTriple;
 import teetime.util.framework.port.PortAction;
 

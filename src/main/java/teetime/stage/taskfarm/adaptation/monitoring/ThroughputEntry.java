@@ -1,4 +1,4 @@
-package teetime.stage.taskfarm.monitoring;
+package teetime.stage.taskfarm.adaptation.monitoring;
 
 /**
  * A ThroughputEntry is a measured throughput value with its timestamp.

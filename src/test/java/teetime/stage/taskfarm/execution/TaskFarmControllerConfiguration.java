@@ -7,6 +7,7 @@ import teetime.framework.Configuration;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.Sink;
 import teetime.stage.taskfarm.TaskFarmStage;
+import teetime.stage.taskfarm.adaptation.execution.TaskFarmController;
 import teetime.stage.taskfarm.execution.TaskFarmControllerTest.SelfMonitoringPlusOneStage;
 import teetime.stage.taskfarm.execution.TaskFarmControllerTest.TaskFarmControllerControllerStage;
 

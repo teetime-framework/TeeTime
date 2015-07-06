@@ -1,10 +1,12 @@
-package teetime.stage.taskfarm;
+package teetime.stage.taskfarm.adaptation;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.stage.taskfarm.analysis.TaskFarmAnalyzer;
-import teetime.stage.taskfarm.execution.TaskFarmController;
+import teetime.stage.taskfarm.ITaskFarmDuplicable;
+import teetime.stage.taskfarm.TaskFarmStage;
+import teetime.stage.taskfarm.adaptation.analysis.TaskFarmAnalyzer;
+import teetime.stage.taskfarm.adaptation.execution.TaskFarmController;
 
 final public class AdaptationThread extends Thread {
 

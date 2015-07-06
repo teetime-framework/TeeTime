@@ -1,7 +1,7 @@
-package teetime.stage.taskfarm.analysis;
+package teetime.stage.taskfarm.adaptation.analysis;
 
 import teetime.stage.taskfarm.TaskFarmConfiguration;
-import teetime.stage.taskfarm.monitoring.ThroughputHistory;
+import teetime.stage.taskfarm.adaptation.monitoring.ThroughputHistory;
 
 /**
  * WeightedAlgorithm analyzes the throughput of a certain amount of items
@@ -20,7 +20,7 @@ public class WeightedAlgorithm extends AbstractThroughputAnalysisAlgorithm {
 	 * @author Christian Claus Wiechmann
 	 *
 	 */
-	enum WeightMethod {
+	public enum WeightMethod {
 		LOGARITHMIC,
 		LINEAR,
 		EXPONENTIAL

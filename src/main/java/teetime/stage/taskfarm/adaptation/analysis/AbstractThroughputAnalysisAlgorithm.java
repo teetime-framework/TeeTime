@@ -1,7 +1,7 @@
-package teetime.stage.taskfarm.analysis;
+package teetime.stage.taskfarm.adaptation.analysis;
 
 import teetime.stage.taskfarm.TaskFarmConfiguration;
-import teetime.stage.taskfarm.monitoring.ThroughputHistory;
+import teetime.stage.taskfarm.adaptation.monitoring.ThroughputHistory;
 
 /**
  * This abstract class calculates the Throughput analysis score
