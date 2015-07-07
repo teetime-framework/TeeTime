@@ -14,7 +14,7 @@ public class QuicksortConfiguration extends Configuration {
 
 		final RandomIntegerGenerator rig = new RandomIntegerGenerator(upperBound);
 		final ElementsToList<Integer> itl = new ElementsToList<Integer>(size);
-		final QuicksortStage qsort = new QuicksortStage(this.getContext());
+		final QuicksortStage qsort = new QuicksortStage(this.getDynamicContext());
 		final Printer<List<Integer>> printer = new Printer<List<Integer>>();
 		printer.setStreamName(mode);
 

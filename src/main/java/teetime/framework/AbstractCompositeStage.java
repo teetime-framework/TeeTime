@@ -31,6 +31,8 @@ public abstract class AbstractCompositeStage {
 	private static final int DEFAULT_CAPACITY = 4;
 
 	private final ConfigurationContext context;
+	// FIXME should we pass this context by ctor, too?
+	private final DynamicConfigurationContext dynamicContext = new DynamicConfigurationContext();
 
 	public AbstractCompositeStage(final ConfigurationContext context) {
 		if (null == context) {
@@ -43,6 +45,22 @@ public abstract class AbstractCompositeStage {
 		return context;
 	}
 
+	protected DynamicConfigurationContext getDynamicContext() {
+		return dynamicContext;
+	}
+
+	/**
+	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
+	 *
+	 * @param stage
+	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
+	 * @param threadName
+	 *            A string which can be used for debugging.
+	 */
+	protected final void addThreadableStage(final Stage stage, final String threadName) {
+		context.addThreadableStage(stage, threadName);
+	}
+
 	/**
 	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
 	 *
@@ -50,7 +68,7 @@ public abstract class AbstractCompositeStage {
 	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
 	 */
 	protected final void addThreadableStage(final Stage stage) {
-		context.addThreadableStage(stage);
+		this.addThreadableStage(stage, stage.getId());
 	}
 
 	/**

@@ -21,12 +21,12 @@ import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
-final class RunnableProducerStage extends AbstractRunnableStage {
+public final class RunnableProducerStage extends AbstractRunnableStage {
 
 	private final Semaphore startSemaphore = new Semaphore(0);
 	private final Semaphore initSemaphore = new Semaphore(0);
 
-	public RunnableProducerStage(final Stage stage) {
+	RunnableProducerStage(final Stage stage) {
 		super(stage);
 	}
 
@@ -57,11 +57,13 @@ final class RunnableProducerStage extends AbstractRunnableStage {
 		startSemaphore.release();
 	}
 
-	public void waitForInitializingSignal() throws InterruptedException {
+	private void waitForInitializingSignal() throws InterruptedException {
+		logger.trace("waitForInitializingSignal");
 		initSemaphore.acquire();
 	}
 
-	public void waitForStartingSignal() throws InterruptedException {
+	private void waitForStartingSignal() throws InterruptedException {
+		logger.trace("waitForStartingSignal");
 		startSemaphore.acquire();
 	}
 }

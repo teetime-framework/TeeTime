@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import teetime.framework.AbstractDCStage;
-import teetime.framework.ConfigurationContext;
+import teetime.framework.DynamicConfigurationContext;
 
 public final class QuicksortStage extends AbstractDCStage<List<Integer>> {
 
-	public QuicksortStage(final ConfigurationContext context) {
+	public QuicksortStage(final DynamicConfigurationContext context) {
 		super(context);
 	}
 

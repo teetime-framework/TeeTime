@@ -29,7 +29,7 @@ import org.junit.Test;
 import teetime.stage.CountingMapMerger;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.distributor.Distributor;
-import teetime.stage.basic.distributor.RoundRobinStrategy2;
+import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
 import teetime.stage.basic.merger.Merger;
 import teetime.stage.io.File2SeqOfWords;
 import teetime.stage.string.WordCounter;
