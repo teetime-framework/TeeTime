@@ -16,13 +16,16 @@
 package teetime.framework;
 
 /**
- * Represents a configuration of connected stages.
+ * Represents a configuration of connected stages. Available to be extended.
  *
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
  * @since 2.0
  *
  */
-public abstract class Configuration extends AbstractCompositeStage {
+public class Configuration extends AbstractCompositeStage {
 
+	protected Configuration() {
+		// protected ctor to prevent direct instantiation.
+	}
 }
