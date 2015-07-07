@@ -32,6 +32,8 @@ abstract class AbstractRunnableStage implements Runnable {
 	public AbstractRunnableStage(final Stage stage) {
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
+
+		// stage.owningContext.getThreadCounter().inc();
 	}
 
 	@Override
@@ -70,6 +72,8 @@ abstract class AbstractRunnableStage implements Runnable {
 			throw new IllegalStateException("Terminated by StageExceptionListener");
 		}
 
+		// normal and exceptional termination
+		// stage.owningContext.getThreadCounter().dec();
 	}
 
 	protected abstract void beforeStageExecution() throws InterruptedException;
