@@ -16,6 +16,7 @@
 package teetime.framework.pipe;
 
 import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
 
 /**
@@ -61,9 +62,12 @@ public interface IPipe {
 	Object removeLast();
 
 	/**
-	 * Retrieves the receiving port.
-	 *
-	 * @return InputPort which is connected to the pipe.
+	 * @return the output port that is connected to the pipe.
+	 */
+	OutputPort<?> getSourcePort();
+
+	/**
+	 * @return the input port that is connected to the pipe.
 	 */
 	InputPort<?> getTargetPort();
 

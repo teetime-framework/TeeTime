@@ -16,6 +16,7 @@
 package teetime.framework.pipe;
 
 import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
 
 /**
@@ -49,6 +50,11 @@ public final class DummyPipe implements IPipe {
 	@Override
 	public int size() {
 		return 0;
+	}
+
+	@Override
+	public OutputPort<?> getSourcePort() {
+		return null;
 	}
 
 	@Override

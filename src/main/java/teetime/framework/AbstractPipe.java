@@ -28,6 +28,7 @@ public abstract class AbstractPipe implements IPipe {
 	 */
 	protected final Stage cachedTargetStage;
 
+	private final OutputPort<?> sourcePort;
 	private final InputPort<?> targetPort;
 
 	protected <T> AbstractPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
@@ -41,13 +42,19 @@ public abstract class AbstractPipe implements IPipe {
 		sourcePort.setPipe(this);
 		targetPort.setPipe(this);
 
+		this.sourcePort = sourcePort;
 		this.targetPort = targetPort;
 		this.cachedTargetStage = targetPort.getOwningStage();
 	}
 
 	@Override
+	public OutputPort<?> getSourcePort() {
+		return sourcePort;
+	}
+
+	@Override
 	public InputPort<?> getTargetPort() {
-		return this.targetPort;
+		return targetPort;
 	}
 
 	@Override
