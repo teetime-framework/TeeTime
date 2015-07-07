@@ -204,6 +204,8 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 */
 	public void waitForTermination() {
 		try {
+			// stage.owningContext.getThreadCounter().await(0);
+
 			LOGGER.debug("Waiting for finiteProducerThreads");
 			for (Thread thread : this.finiteProducerThreads) {
 				thread.join();
