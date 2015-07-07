@@ -25,12 +25,33 @@ import teetime.framework.ExecutionException;
 
 public class ExceptionHandlingTest {
 
+	private Execution<ExceptionTestConfiguration> execution;
+
+	public ExceptionTestConfiguration newInstances() {
+		ExceptionTestConfiguration configuration = new ExceptionTestConfiguration();
+		execution = new Execution<ExceptionTestConfiguration>(configuration, new TestListenerFactory());
+		return configuration;
+	}
+
+	public void exceptionPassingAndTermination() {
+		newInstances();
+		execution.executeBlocking();
+		fail(); // Should never be executed
+	}
+
+	public void terminatesAllStages() {
+		ExceptionTestConfiguration config = newInstances();
+		execution.executeBlocking();
+		fail(); // Should never be executed
+	}
+
 	@Test
 	public void forAFewTimes() {
 		for (int i = 0; i < 100; i++) {
 			boolean exceptionArised = false;
 			try {
-				exceptionPassingAndTermination();
+
+				exceptionPassingAndTermination(); // listener did not kill thread too early;
 			} catch (ExecutionException e) {
 				exceptionArised = true;
 			}
@@ -44,34 +65,5 @@ public class ExceptionHandlingTest {
 			}
 			assertTrue(exceptionArised);
 		}
-	}
-
-	public void exceptionPassingAndTermination() {
-		Execution<ExceptionTestConfiguration> execution = newInstances();
-
-		execution.executeBlocking();
-
-		fail();
-		// TestListenerFactory factory = (TestListenerFactory) execution.getFactory();
-		// assertThat(factory.getInstances(), hasSize(2));
-		// assertEquals(factory.getInstances().get(0).getNumExceptionsInvoked(), 2); // listener did not kill thread too early
-	}
-
-	public Execution<ExceptionTestConfiguration> newInstances() {
-		ExceptionTestConfiguration configuration = new ExceptionTestConfiguration();
-		TestListenerFactory factory = new TestListenerFactory();
-		return new Execution<ExceptionTestConfiguration>(configuration, factory);
-	}
-
-	public void terminatesAllStages() {
-		Execution<ExceptionTestConfiguration> execution = newInstances();
-
-		execution.executeBlocking();
-
-		fail();
-		// ExceptionTestConfiguration config = execution.getConfiguration();
-		// assertThat(config.first.getCurrentState(), is(StageState.TERMINATED));
-		// assertThat(config.second.getCurrentState(), is(StageState.TERMINATED));
-		// assertThat(config.third.getCurrentState(), is(StageState.TERMINATED));
 	}
 }
