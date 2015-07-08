@@ -7,14 +7,11 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.adaptation.monitoring.ThroughputHistory;
 
 public class MeanAlgorithmTest {
 
 	private static final double EPSILON = 0.00001;
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private final TaskFarmConfiguration configuration = new TaskFarmConfiguration(null);
 
 	@Test
 	public void constantThoughputTestAnomaly() {
@@ -25,7 +22,7 @@ public class MeanAlgorithmTest {
 		history.add(40.8);
 		history.add(60);
 
-		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(this.configuration);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertThat(thoughputScore, is(greaterThan(0.1)));
@@ -40,7 +37,7 @@ public class MeanAlgorithmTest {
 		history.add(4.8);
 		history.add(4.7);
 
-		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(this.configuration);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
@@ -55,7 +52,7 @@ public class MeanAlgorithmTest {
 		history.add(6);
 		history.add(7);
 
-		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(this.configuration);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertThat(thoughputScore, is(greaterThan(0.1)));
@@ -70,7 +67,7 @@ public class MeanAlgorithmTest {
 		history.add(6);
 		history.add(3);
 
-		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(this.configuration);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertThat(thoughputScore, is(closeTo(0.25d, EPSILON)));
@@ -85,7 +82,7 @@ public class MeanAlgorithmTest {
 		history.add(8);
 		history.add(1);
 
-		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(this.configuration);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 
 		assertThat(thoughputScore, is(greaterThan(0.7)));

@@ -1,8 +1,13 @@
 package teetime.stage.taskfarm;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import teetime.framework.AbstractCompositeStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
+import teetime.stage.basic.merger.dynamic.DynamicMerger;
 
 /**
  * The TaskFarmStage implements the task farm parallelization pattern in
@@ -20,6 +25,11 @@ import teetime.framework.OutputPort;
  */
 public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends AbstractCompositeStage {
 
+	private final List<ITaskFarmDuplicable<I, O>> enclosedStageInstances = new LinkedList<ITaskFarmDuplicable<I, O>>();
+
+	private final DynamicDistributor<I> distributor = new DynamicDistributor<I>();
+	private final DynamicMerger<O> merger = new DynamicMerger<O>();
+
 	private final TaskFarmConfiguration<I, O, T> configuration;
 
 	/**
@@ -32,47 +42,49 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	 */
 	public TaskFarmStage(final T workerStage) {
 		super();
-		this.configuration = new TaskFarmConfiguration<I, O, T>(workerStage);
+		this.configuration = new TaskFarmConfiguration<I, O, T>();
 
 		this.init(workerStage);
 	}
 
 	public InputPort<I> getInputPort() {
-		return this.configuration.getDistributor().getInputPort();
+		return this.distributor.getInputPort();
 	}
 
 	public OutputPort<O> getOutputPort() {
-		return this.configuration.getMerger().getOutputPort();
+		return this.merger.getOutputPort();
 	}
 
 	private void init(final T includedStage) {
-		addThreadableStage(this.configuration.getMerger());
-		addThreadableStage(this.configuration.getFirstStage().getInputPort().getOwningStage());
+		addThreadableStage(this.merger);
+		addThreadableStage(includedStage.getInputPort().getOwningStage());
 
 		final InputPort<I> stageInputPort = includedStage.getInputPort();
-		connectPorts(this.configuration.getDistributor().getNewOutputPort(), stageInputPort);
+		connectPorts(this.distributor.getNewOutputPort(), stageInputPort);
 
 		final OutputPort<O> stageOutputPort = includedStage.getOutputPort();
-		connectPorts(stageOutputPort, this.configuration.getMerger().getNewInputPort());
+		connectPorts(stageOutputPort, this.merger.getNewInputPort());
 
-		// TODO: Check pipes at start somehow... Here, it would only be an InstantiationPipe.
-		// checkIfPipeIsMonitorable(stageInputPort.getPipe());
-		// checkIfPipeIsMonitorable(stageOutputPort.getPipe());
-
-		this.configuration.getTriples().add(new TaskFarmTriple<I, O, T>(
-				stageInputPort.getPipe(),
-				stageOutputPort.getPipe(),
-				includedStage));
+		enclosedStageInstances.add(includedStage);
 	}
-
-	// private void checkIfPipeIsMonitorable(final IPipe pipe) {
-	// if (!(pipe instanceof IMonitorablePipe)) {
-	// throw new TaskFarmInvalidPipeException("Pipe is not monitorable, which is required for a Task Farm. Instead \"" + pipe.getClass().getSimpleName()
-	// + "\" was used.");
-	// }
-	// }
 
 	public TaskFarmConfiguration<I, O, T> getConfiguration() {
 		return this.configuration;
+	}
+
+	public ITaskFarmDuplicable<I, O> getBasicEnclosedStage() {
+		return enclosedStageInstances.get(0);
+	}
+
+	public List<ITaskFarmDuplicable<I, O>> getEnclosedStageInstances() {
+		return enclosedStageInstances;
+	}
+
+	public DynamicDistributor<I> getDistributor() {
+		return distributor;
+	}
+
+	public DynamicMerger<O> getMerger() {
+		return merger;
 	}
 }

@@ -31,7 +31,7 @@ final public class AdaptationThread extends Thread {
 
 	protected <I, O, TFS extends ITaskFarmDuplicable<I, O>> void addTaskFarm(final TaskFarmStage<I, O, TFS> taskFarmStage) {
 		TaskFarmAnalyzer analyzer = new TaskFarmAnalyzer();
-		TaskFarmController<I, O, TFS> controller = new TaskFarmController<I, O, TFS>(taskFarmStage.getConfiguration());
+		TaskFarmController<I, O, TFS> controller = new TaskFarmController<I, O, TFS>(taskFarmStage);
 		this.monitoredTaskFarms.add(new ScheduledTaskFarm(taskFarmStage, analyzer, controller));
 	}
 

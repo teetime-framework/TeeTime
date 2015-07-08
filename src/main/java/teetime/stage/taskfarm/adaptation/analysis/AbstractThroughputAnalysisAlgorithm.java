@@ -26,7 +26,12 @@ public abstract class AbstractThroughputAnalysisAlgorithm {
 	 *            this algorithm is used for
 	 */
 	public AbstractThroughputAnalysisAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
-		this.window = configuration.getAnalysisWindow();
+		if (configuration == null) {
+			// for testing purposes
+			window = 3;
+		} else {
+			this.window = configuration.getAnalysisWindow();
+		}
 	}
 
 	/**
