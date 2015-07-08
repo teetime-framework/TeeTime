@@ -25,6 +25,16 @@ package teetime.framework;
  */
 public class Configuration extends AbstractCompositeStage {
 
+	private boolean executed;
+
+	boolean isExecuted() {
+		return executed;
+	}
+
+	void setExecuted(final boolean executed) {
+		this.executed = executed;
+	}
+
 	protected Configuration() {
 		// protected ctor to prevent direct instantiation.
 	}

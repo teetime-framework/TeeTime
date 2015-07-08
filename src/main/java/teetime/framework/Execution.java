@@ -113,6 +113,10 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	public Execution(final T configuration, final boolean validationEnabled, final IExceptionListenerFactory factory) {
 		this.configuration = configuration;
 		this.factory = factory;
+		if (configuration.isExecuted()) {
+			throw new IllegalStateException("Configuration was already executed");
+		}
+		configuration.setExecuted(true);
 		if (validationEnabled) {
 			validateStages();
 		}
@@ -346,7 +350,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 *
 	 * @return
 	 *         a given ExceptionListenerFactory instance
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public IExceptionListenerFactory getFactory() {
