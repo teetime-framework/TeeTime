@@ -18,6 +18,7 @@ package teetime.stage.basic.distributor.strategy;
 import teetime.framework.OutputPort;
 import teetime.framework.Stage;
 import teetime.stage.basic.distributor.Distributor;
+import teetime.util.stage.basic.CyclicIndex;
 
 /**
  * @author Christian Wulf
@@ -26,7 +27,8 @@ import teetime.stage.basic.distributor.Distributor;
  */
 public final class RoundRobinStrategy2 implements IDistributorStrategy {
 
-	private int index;
+	private final CyclicIndex cyclicIndex = new CyclicIndex();
+
 	private int numWaits;
 
 	@Override
@@ -37,7 +39,7 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 		boolean success;
 		OutputPort<T> outputPort;
 		do {
-			outputPort = getNextPortInRoundRobinOrder(outputPorts);
+			outputPort = cyclicIndex.getNextElement(outputPorts);
 			success = outputPort.sendNonBlocking(element);
 			if (0 == numLoops) {
 				numWaits++;
@@ -60,14 +62,6 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 		// Thread.yield();
 	}
 
-	private <T> OutputPort<T> getNextPortInRoundRobinOrder(final OutputPort<T>[] outputPorts) {
-		final OutputPort<T> outputPort = outputPorts[this.index];
-
-		this.index = (this.index + 1) % outputPorts.length;
-
-		return outputPort;
-	}
-
 	public int getNumWaits() {
 		return numWaits;
 	}
@@ -75,8 +69,8 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 	@Override
 	public void onOutputPortRemoved(final Stage stage, final OutputPort<?> removedOutputPort) {
 		Distributor<?> distributor = (Distributor<?>) stage;
-		// correct the index if it is out-of-bounds
-		this.index = this.index % distributor.getOutputPorts().length;
+		// for the case if it is out-of-bounds
+		cyclicIndex.ensureWithinBounds(distributor.getOutputPorts());
 	}
 
 }

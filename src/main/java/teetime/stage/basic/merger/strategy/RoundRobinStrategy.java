@@ -18,6 +18,7 @@ package teetime.stage.basic.merger.strategy;
 import teetime.framework.InputPort;
 import teetime.framework.Stage;
 import teetime.stage.basic.merger.Merger;
+import teetime.util.stage.basic.CyclicIndex;
 
 /**
  * @author Nils Christian Ehmke
@@ -26,7 +27,7 @@ import teetime.stage.basic.merger.Merger;
  */
 public final class RoundRobinStrategy implements IMergerStrategy {
 
-	private int index = 0;
+	private final CyclicIndex cyclicIndex = new CyclicIndex();
 
 	@Override
 	public <T> T getNextInput(final Merger<T> merger) {
@@ -34,7 +35,7 @@ public final class RoundRobinStrategy implements IMergerStrategy {
 		int size = inputPorts.length;
 		// check each port at most once to avoid a potentially infinite loop
 		while (size-- > 0) {
-			InputPort<T> inputPort = this.getNextPortInRoundRobinOrder(inputPorts);
+			InputPort<T> inputPort = cyclicIndex.getNextElement(inputPorts);
 			final T token = inputPort.receive();
 			if (token != null) {
 				return token;
@@ -43,19 +44,11 @@ public final class RoundRobinStrategy implements IMergerStrategy {
 		return null;
 	}
 
-	private <T> InputPort<T> getNextPortInRoundRobinOrder(final InputPort<T>[] inputPorts) {
-		InputPort<T> inputPort = inputPorts[this.index];
-
-		this.index = (this.index + 1) % inputPorts.length;
-
-		return inputPort;
-	}
-
 	@Override
 	public void onInputPortRemoved(final Stage stage, final InputPort<?> removedInputPort) {
 		Merger<?> merger = (Merger<?>) stage;
 		// correct the index if it is out-of-bounds
-		this.index = (this.index + 1) % merger.getInputPorts().length;
+		cyclicIndex.ensureWithinBounds(merger.getInputPorts());
 	}
 
 }

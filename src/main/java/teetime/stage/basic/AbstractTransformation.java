@@ -18,6 +18,17 @@ package teetime.stage.basic;
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ * @param <I>
+ *            the type of the input port
+ * @param <O>
+ *            the type of the output port
+ *
+ * @since 2.0
+ */
 public abstract class AbstractTransformation<I, O> extends AbstractConsumerStage<I> implements ITransformation<I, O> {
 
 	protected final OutputPort<O> outputPort = createOutputPort();
