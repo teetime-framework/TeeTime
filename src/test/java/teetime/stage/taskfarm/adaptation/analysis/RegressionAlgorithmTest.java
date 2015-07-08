@@ -1,4 +1,4 @@
-package teetime.stage.taskfarm.analysis;
+package teetime.stage.taskfarm.adaptation.analysis;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.greaterThan;
@@ -8,8 +8,6 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import teetime.stage.taskfarm.TaskFarmConfiguration;
-import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAnalysisAlgorithm;
-import teetime.stage.taskfarm.adaptation.analysis.RegressionAlgorithm;
 import teetime.stage.taskfarm.adaptation.monitoring.ThroughputHistory;
 
 public class RegressionAlgorithmTest {

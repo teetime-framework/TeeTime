@@ -1,4 +1,4 @@
-package teetime.stage.taskfarm.execution;
+package teetime.stage.taskfarm.adaptation.execution;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -7,9 +7,8 @@ import teetime.framework.Configuration;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.Sink;
 import teetime.stage.taskfarm.TaskFarmStage;
-import teetime.stage.taskfarm.adaptation.execution.TaskFarmController;
-import teetime.stage.taskfarm.execution.TaskFarmControllerTest.SelfMonitoringPlusOneStage;
-import teetime.stage.taskfarm.execution.TaskFarmControllerTest.TaskFarmControllerControllerStage;
+import teetime.stage.taskfarm.adaptation.execution.TaskFarmControllerTest.SelfMonitoringPlusOneStage;
+import teetime.stage.taskfarm.adaptation.execution.TaskFarmControllerTest.TaskFarmControllerControllerStage;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;

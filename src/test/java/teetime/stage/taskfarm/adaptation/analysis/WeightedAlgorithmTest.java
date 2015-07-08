@@ -1,4 +1,4 @@
-package teetime.stage.taskfarm.analysis;
+package teetime.stage.taskfarm.adaptation.analysis;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
@@ -8,8 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import teetime.stage.taskfarm.TaskFarmConfiguration;
-import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAnalysisAlgorithm;
-import teetime.stage.taskfarm.adaptation.analysis.WeightedAlgorithm;
 import teetime.stage.taskfarm.adaptation.analysis.WeightedAlgorithm.WeightMethod;
 import teetime.stage.taskfarm.adaptation.monitoring.ThroughputHistory;
 

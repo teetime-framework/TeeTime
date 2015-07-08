@@ -1,4 +1,4 @@
-package teetime.stage.taskfarm.execution;
+package teetime.stage.taskfarm.adaptation.execution;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
@@ -10,7 +10,6 @@ import org.junit.Test;
 import teetime.framework.Execution;
 import teetime.stage.basic.AbstractFilter;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
-import teetime.stage.taskfarm.adaptation.execution.TaskFarmController;
 
 import com.google.common.collect.ListMultimap;
 
