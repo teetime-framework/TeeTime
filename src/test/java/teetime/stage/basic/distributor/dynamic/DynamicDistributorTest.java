@@ -87,11 +87,11 @@ public class DynamicDistributorTest {
 		final PortContainer<Integer> portContainer2 = new PortContainer<Integer>();
 
 		inputActions[0] = createPortCreateAction(portContainer0);
-		inputActions[1] = new RemovePortAction<Integer>(portContainer0);
+		inputActions[1] = new RemovePortActionDistributor<Integer>(portContainer0);
 		inputActions[2] = createPortCreateAction(portContainer1);
 		inputActions[3] = createPortCreateAction(portContainer2);
-		inputActions[4] = new RemovePortAction<Integer>(portContainer1);
-		inputActions[5] = new RemovePortAction<Integer>(portContainer2);
+		inputActions[4] = new RemovePortActionDistributor<Integer>(portContainer1);
+		inputActions[5] = new RemovePortActionDistributor<Integer>(portContainer2);
 
 		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
 		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config);

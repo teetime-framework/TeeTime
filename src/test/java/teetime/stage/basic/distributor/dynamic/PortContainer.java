@@ -3,7 +3,7 @@ package teetime.stage.basic.distributor.dynamic;
 import teetime.framework.DynamicOutputPort;
 
 /**
- * Represents a container that eventually holds the output port that a {@link RemovePortAction} can use.
+ * Represents a container that eventually holds the output port that a {@link RemovePortActionDistributor} can use.
  *
  * @author Christian Wulf
  *

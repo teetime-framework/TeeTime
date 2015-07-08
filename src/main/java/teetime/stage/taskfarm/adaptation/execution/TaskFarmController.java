@@ -10,6 +10,7 @@ import teetime.framework.exceptionHandling.TaskFarmInvalidPipeException;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.stage.basic.distributor.dynamic.CreatePortActionDistributor;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
+import teetime.stage.basic.distributor.dynamic.RemovePortActionDistributor;
 import teetime.stage.basic.merger.dynamic.CreatePortActionMerger;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
@@ -62,10 +63,6 @@ public class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		this.addNewEnclosedStageInstance(newStage);
 	}
 
-	private void addNewEnclosedStageInstance(final T newStage) {
-		this.taskFarmStage.getEnclosedStageInstances().add(newStage);
-	}
-
 	/**
 	 * Dynamically removes a stage from the controlled task farm.
 	 */
@@ -76,11 +73,15 @@ public class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		try {
 			@SuppressWarnings("unchecked")
 			final PortAction<DynamicDistributor<I>> distributorPortAction =
-					new teetime.stage.basic.distributor.dynamic.RemovePortAction<I>((DynamicOutputPort<I>) distributorOutputPort);
+					new RemovePortActionDistributor<I>((DynamicOutputPort<I>) distributorOutputPort);
 			this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 		} catch (ClassCastException e) {
 			throw new TaskFarmControllerException("Merger and Distributor have a different type than the Task Farm or the Task Farm Controller.");
 		}
+	}
+
+	private void addNewEnclosedStageInstance(final T newStage) {
+		this.taskFarmStage.getEnclosedStageInstances().add(newStage);
 	}
 
 	private OutputPort<?> getRemoveableDistributorOutputPort(final ITaskFarmDuplicable<I, O> stageToBeRemoved) {

@@ -47,25 +47,25 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 		this.init(workerStage);
 	}
 
+	private void init(final T includedStage) {
+		addThreadableStage(this.merger);
+		addThreadableStage(includedStage.getInputPort().getOwningStage());
+	
+		final InputPort<I> stageInputPort = includedStage.getInputPort();
+		connectPorts(this.distributor.getNewOutputPort(), stageInputPort);
+	
+		final OutputPort<O> stageOutputPort = includedStage.getOutputPort();
+		connectPorts(stageOutputPort, this.merger.getNewInputPort());
+	
+		enclosedStageInstances.add(includedStage);
+	}
+
 	public InputPort<I> getInputPort() {
 		return this.distributor.getInputPort();
 	}
 
 	public OutputPort<O> getOutputPort() {
 		return this.merger.getOutputPort();
-	}
-
-	private void init(final T includedStage) {
-		addThreadableStage(this.merger);
-		addThreadableStage(includedStage.getInputPort().getOwningStage());
-
-		final InputPort<I> stageInputPort = includedStage.getInputPort();
-		connectPorts(this.distributor.getNewOutputPort(), stageInputPort);
-
-		final OutputPort<O> stageOutputPort = includedStage.getOutputPort();
-		connectPorts(stageOutputPort, this.merger.getNewInputPort());
-
-		enclosedStageInstances.add(includedStage);
 	}
 
 	public TaskFarmConfiguration<I, O, T> getConfiguration() {
