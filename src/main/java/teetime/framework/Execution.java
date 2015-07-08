@@ -76,6 +76,14 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 		this(configuration, false);
 	}
 
+	/**
+	 * Creates a new {@link Execution} that uses the default listener.
+	 *
+	 * @param configuration
+	 *            to be used for the analysis
+	 * @param validationEnabled
+	 *            whether or not the validation should be executed
+	 */
 	public Execution(final T configuration, final boolean validationEnabled) {
 		this(configuration, validationEnabled, new TerminatingExceptionListenerFactory());
 	}
@@ -92,6 +100,16 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 		this(configuration, false, factory);
 	}
 
+	/**
+	 * Creates a new {@link Execution} that uses a specific listener.
+	 *
+	 * @param configuration
+	 *            to be used for the analysis
+	 * @param validationEnabled
+	 *            whether or not the validation should be executed
+	 * @param factory
+	 *            specific listener for the exception handling
+	 */
 	public Execution(final T configuration, final boolean validationEnabled, final IExceptionListenerFactory factory) {
 		this.configuration = configuration;
 		this.factory = factory;
@@ -200,7 +218,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 * @throws ExecutionException
 	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable
 	 *
-	 * @since 1.1
+	 * @since 2.0
 	 */
 	public void waitForTermination() {
 		try {
@@ -257,7 +275,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 * @throws ExecutionException
 	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable.
 	 *
-	 * @since 1.1
+	 * @since 2.0
 	 */
 	public void executeBlocking() {
 		executeNonBlocking();
@@ -268,7 +286,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 * This method starts the analysis without waiting for its termination. The method {@link #waitForTermination()} must be called to unsure a correct termination
 	 * of the analysis.
 	 *
-	 * @since 1.1
+	 * @since 2.0
 	 */
 	public void executeNonBlocking() {
 		sendStartingSignal();
@@ -323,6 +341,14 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 		return traversor.getVisitedStage();
 	}
 
+	/**
+	 * Returns the specified ExceptionListenerFactory
+	 *
+	 * @return
+	 *         a given ExceptionListenerFactory instance
+	 * 
+	 * @since 2.0
+	 */
 	public IExceptionListenerFactory getFactory() {
 		return factory;
 	}
