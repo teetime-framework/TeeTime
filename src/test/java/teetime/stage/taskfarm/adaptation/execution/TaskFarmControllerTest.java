@@ -78,17 +78,14 @@ public class TaskFarmControllerTest {
 		@Override
 		protected void execute(final Integer element) {
 			if (this.numberOfElements == NUMBER_OF_ITEMS * 0.3) {
-				System.out.println("Thread added");
 				this.controller.addStageToTaskFarm();
 			}
 
 			if (this.numberOfElements == NUMBER_OF_ITEMS * 0.5) {
-				System.out.println("Thread added");
 				this.controller.addStageToTaskFarm();
 			}
 
 			if (this.numberOfElements == NUMBER_OF_ITEMS * 0.7) {
-				System.out.println("Thread removed");
 				this.controller.removeStageFromTaskFarm();
 			}
 

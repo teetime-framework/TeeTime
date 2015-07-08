@@ -1,8 +1,13 @@
 package teetime.stage.taskfarm.adaptation.execution;
 
+import java.util.List;
+
 import teetime.framework.DynamicOutputPort;
+import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.exceptionHandling.TaskFarmControllerException;
+import teetime.framework.exceptionHandling.TaskFarmInvalidPipeException;
+import teetime.framework.pipe.IMonitorablePipe;
 import teetime.stage.basic.distributor.dynamic.CreatePortActionDistributor;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.merger.dynamic.CreatePortActionMerger;
@@ -54,10 +59,10 @@ public class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 				new CreatePortActionDistributor<I>(newStage.getInputPort());
 		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 
-		this.addNewTaskFarmTriple(newStage);
+		this.addNewEnclosedStageInstance(newStage);
 	}
 
-	private void addNewTaskFarmTriple(final T newStage) {
+	private void addNewEnclosedStageInstance(final T newStage) {
 		this.taskFarmStage.getEnclosedStageInstances().add(newStage);
 	}
 
@@ -84,7 +89,34 @@ public class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	}
 
 	private ITaskFarmDuplicable<I, O> getStageToBeRemoved() {
-		return this.taskFarmStage.getEnclosedStageInstances().get(this.taskFarmStage.getEnclosedStageInstances().size() - 1);
+		List<ITaskFarmDuplicable<I, O>> stageInstances = this.taskFarmStage.getEnclosedStageInstances();
+		return stageInstances.get(getStageIndexWithLeastRemainingInput());
 	}
 
+	private int getStageIndexWithLeastRemainingInput() {
+		int currentMinimum = Integer.MAX_VALUE;
+		int currentMinumumStageIndex = taskFarmStage.getEnclosedStageInstances().size() - 1;
+
+		for (int i = 0; i < taskFarmStage.getEnclosedStageInstances().size(); i++) {
+			ITaskFarmDuplicable<I, O> instance = taskFarmStage.getEnclosedStageInstances().get(i);
+			InputPort<I> port = instance.getInputPort();
+			IMonitorablePipe monitorablePipe = null;
+
+			try {
+				monitorablePipe = (IMonitorablePipe) port.getPipe();
+			} catch (ClassCastException e) {
+				throw new TaskFarmInvalidPipeException(
+						"The input pipe of an enclosed stage instance inside a Task Farm"
+								+ " does not implement IMonitorablePipe, which is required. Instead, the type is "
+								+ port.getPipe().getClass().getSimpleName() + ".");
+			}
+
+			if (monitorablePipe.size() < currentMinimum) {
+				currentMinimum = monitorablePipe.size();
+				currentMinumumStageIndex = i;
+			}
+		}
+
+		return currentMinumumStageIndex;
+	}
 }
