@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package teetime.stage.basic.distributor;
 
 import teetime.framework.AbstractConsumerStage;
+import teetime.framework.DynamicOutputPort;
 import teetime.framework.OutputPort;
 import teetime.stage.basic.distributor.strategy.IDistributorStrategy;
 import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
@@ -47,7 +48,7 @@ public class Distributor<T> extends AbstractConsumerStage<T> {
 		this.strategy.distribute((OutputPort<T>[]) this.getOutputPorts(), element);
 	}
 
-	public OutputPort<T> getNewOutputPort() {
+	public DynamicOutputPort<T> getNewOutputPort() {
 		return this.createDynamicOutputPort();
 	}
 

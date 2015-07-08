@@ -13,7 +13,6 @@ import org.junit.Test;
 import teetime.framework.AbstractCompositeStage;
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.Configuration;
-import teetime.framework.ConfigurationContext;
 import teetime.framework.Execution;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
@@ -79,8 +78,8 @@ public class TaskFarmStageTest {
 		private final PlusOneInStringStage pOne = new PlusOneInStringStage();
 		private final StringDuplicationStage sDup = new StringDuplicationStage();
 
-		public CompositeTestStage(final ConfigurationContext context) {
-			super(context);
+		public CompositeTestStage() {
+			super();
 			connectPorts(this.pOne.getOutputPort(), this.sDup.getInputPort());
 		}
 
@@ -96,7 +95,7 @@ public class TaskFarmStageTest {
 
 		@Override
 		public ITaskFarmDuplicable<Integer, String> duplicate() {
-			return new CompositeTestStage(this.getContext());
+			return new CompositeTestStage();
 		}
 
 	}
@@ -114,15 +113,15 @@ public class TaskFarmStageTest {
 				values.add(i);
 			}
 			final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(values);
-			final CompositeTestStage compositeTestStage = new CompositeTestStage(this.getContext());
+			final CompositeTestStage compositeTestStage = new CompositeTestStage();
 			final CollectorSink<String> collectorSink = new CollectorSink<String>(this.results);
 
 			final TaskFarmStage<Integer, String, CompositeTestStage> taskFarmStage =
-					new TaskFarmStage<Integer, String, CompositeTestStage>(compositeTestStage, this.getContext());
+					new TaskFarmStage<Integer, String, CompositeTestStage>(compositeTestStage);
 
 			final StringDuplicationStage additionalDuplication = new StringDuplicationStage();
 			final TaskFarmStage<String, String, StringDuplicationStage> secondTaskFarmStage =
-					new TaskFarmStage<String, String, StringDuplicationStage>(additionalDuplication, this.getContext());
+					new TaskFarmStage<String, String, StringDuplicationStage>(additionalDuplication);
 
 			connectPorts(initialElementProducer.getOutputPort(), taskFarmStage.getInputPort());
 			connectPorts(taskFarmStage.getOutputPort(), secondTaskFarmStage.getInputPort());

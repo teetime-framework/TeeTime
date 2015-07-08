@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,26 @@
 package teetime.framework;
 
 /**
- * Represents a configuration of connected stages.
+ * Represents a configuration of connected stages. Available to be extended.
  *
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
  * @since 2.0
  *
  */
-public abstract class Configuration extends AbstractCompositeStage {
+public class Configuration extends AbstractCompositeStage {
 
-	public Configuration() {
-		super(new ConfigurationContext());
+	private boolean executed;
+
+	boolean isExecuted() {
+		return executed;
 	}
 
+	void setExecuted(final boolean executed) {
+		this.executed = executed;
+	}
+
+	protected Configuration() {
+		// protected ctor to prevent direct instantiation.
+	}
 }

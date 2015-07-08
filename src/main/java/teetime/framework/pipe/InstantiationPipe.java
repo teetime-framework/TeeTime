@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,12 @@ public class InstantiationPipe implements IPipe {
 
 	private static final String ERROR_MESSAGE = "This must not be called while executing the configuration";
 
+	private final OutputPort<?> sourcePort;
 	private final InputPort<?> targetPort;
 	private final int capacity;
 
 	public <T> InstantiationPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		this.sourcePort = sourcePort;
 		this.targetPort = targetPort;
 		this.capacity = capacity;
 		sourcePort.setPipe(this);
@@ -38,8 +40,13 @@ public class InstantiationPipe implements IPipe {
 	}
 
 	@Override
+	public OutputPort<?> getSourcePort() {
+		return sourcePort;
+	}
+
+	@Override
 	public InputPort<?> getTargetPort() {
-		return this.targetPort;
+		return targetPort;
 	}
 
 	@Override

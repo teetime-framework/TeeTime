@@ -1,7 +1,6 @@
 package teetime.stage.taskfarm;
 
 import teetime.framework.AbstractCompositeStage;
-import teetime.framework.ConfigurationContext;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
@@ -31,8 +30,8 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	 * @param context
 	 *            current execution context
 	 */
-	public TaskFarmStage(final T workerStage, final ConfigurationContext context) {
-		super(context);
+	public TaskFarmStage(final T workerStage) {
+		super();
 		this.configuration = new TaskFarmConfiguration<I, O, T>(workerStage);
 
 		this.init(workerStage);

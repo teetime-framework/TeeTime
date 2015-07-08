@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,8 @@ abstract class AbstractRunnableStage implements Runnable {
 	public AbstractRunnableStage(final Stage stage) {
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
+
+		// stage.owningContext.getThreadCounter().inc();
 	}
 
 	@Override
@@ -70,6 +72,8 @@ abstract class AbstractRunnableStage implements Runnable {
 			throw new IllegalStateException("Terminated by StageExceptionListener");
 		}
 
+		// normal and exceptional termination
+		// stage.owningContext.getThreadCounter().dec();
 	}
 
 	protected abstract void beforeStageExecution() throws InterruptedException;

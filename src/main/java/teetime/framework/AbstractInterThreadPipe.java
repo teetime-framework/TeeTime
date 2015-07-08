@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 
 	private final BlockingQueue<ISignal> signalQueue;
 
-	private volatile boolean isClosed;
+	private volatile boolean closed;
 
 	protected <T> AbstractInterThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
@@ -85,11 +85,11 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 
 	@Override
 	public final boolean isClosed() {
-		return isClosed;
+		return closed;
 	}
 
 	@Override
 	public final void close() {
-		isClosed = true;
+		closed = true;
 	}
 }

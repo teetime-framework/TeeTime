@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,72 @@
  */
 package teetime.framework;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
+
+import teetime.stage.Counter;
+import teetime.stage.InitialElementProducer;
+import teetime.stage.basic.Sink;
 
 public class AbstractCompositeStageTest {
+
+	@Test
+	public void testNestedStages() {
+		Execution<NestesConfig> exec = new Execution<NestesConfig>(new NestesConfig());
+		assertThat(exec.getConfiguration().getContext().getThreadableStages().size(), is(3));
+	}
+
+	private class NestesConfig extends Configuration {
+
+		private final InitialElementProducer<Object> init;
+		private final Sink sink;
+		private final TestNestingCompositeStage compositeStage;
+
+		public NestesConfig() {
+			init = new InitialElementProducer<Object>(new Object());
+			sink = new Sink();
+			compositeStage = new TestNestingCompositeStage();
+			connectPorts(init.getOutputPort(), compositeStage.firstCompositeStage.firstCounter.getInputPort());
+			connectPorts(compositeStage.secondCompositeStage.secondCounter.getOutputPort(), sink.getInputPort());
+
+		}
+	}
+
+	private class TestCompositeOneStage extends AbstractCompositeStage {
+
+		private final Counter firstCounter = new Counter();
+
+		public TestCompositeOneStage() {
+			addThreadableStage(firstCounter);
+		}
+
+	}
+
+	private class TestCompositeTwoStage extends AbstractCompositeStage {
+
+		private final Counter firstCounter = new Counter();
+		private final Counter secondCounter = new Counter();
+
+		public TestCompositeTwoStage() {
+			addThreadableStage(firstCounter);
+			connectPorts(firstCounter.getOutputPort(), secondCounter.getInputPort());
+		}
+
+	}
+
+	private class TestNestingCompositeStage extends AbstractCompositeStage {
+
+		public TestCompositeOneStage firstCompositeStage;
+		public TestCompositeTwoStage secondCompositeStage;
+
+		public TestNestingCompositeStage() {
+			firstCompositeStage = new TestCompositeOneStage();
+			secondCompositeStage = new TestCompositeTwoStage();
+			connectPorts(firstCompositeStage.firstCounter.getOutputPort(), secondCompositeStage.firstCounter.getInputPort());
+		}
+
+	}
 
 }

@@ -41,7 +41,7 @@ class TaskFarmControllerConfiguration extends Configuration {
 		initialElementProducer = new InitialElementProducer<Integer>(numbers);
 
 		final SelfMonitoringPlusOneStage workerStage = new SelfMonitoringPlusOneStage(this.monitoredValues);
-		taskFarmStage = new TaskFarmStage<Integer, Integer, SelfMonitoringPlusOneStage>(workerStage, this.getContext());
+		taskFarmStage = new TaskFarmStage<Integer, Integer, SelfMonitoringPlusOneStage>(workerStage);
 
 		controller = new TaskFarmController<Integer, Integer, SelfMonitoringPlusOneStage>(taskFarmStage.getConfiguration());
 		final TaskFarmControllerControllerStage taskFarmControllerControllerStage = new TaskFarmControllerControllerStage(controller);

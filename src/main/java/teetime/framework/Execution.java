@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,9 +73,17 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 *            to be used for the analysis
 	 */
 	public Execution(final T configuration) {
-		this(configuration, false, new TerminatingExceptionListenerFactory());
+		this(configuration, false);
 	}
 
+	/**
+	 * Creates a new {@link Execution} that uses the default listener.
+	 *
+	 * @param configuration
+	 *            to be used for the analysis
+	 * @param validationEnabled
+	 *            whether or not the validation should be executed
+	 */
 	public Execution(final T configuration, final boolean validationEnabled) {
 		this(configuration, validationEnabled, new TerminatingExceptionListenerFactory());
 	}
@@ -92,9 +100,23 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 		this(configuration, false, factory);
 	}
 
+	/**
+	 * Creates a new {@link Execution} that uses a specific listener.
+	 *
+	 * @param configuration
+	 *            to be used for the analysis
+	 * @param validationEnabled
+	 *            whether or not the validation should be executed
+	 * @param factory
+	 *            specific listener for the exception handling
+	 */
 	public Execution(final T configuration, final boolean validationEnabled, final IExceptionListenerFactory factory) {
 		this.configuration = configuration;
 		this.factory = factory;
+		if (configuration.isExecuted()) {
+			throw new IllegalStateException("Configuration was already executed");
+		}
+		configuration.setExecuted(true);
 		if (validationEnabled) {
 			validateStages();
 		}
@@ -200,10 +222,12 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 * @throws ExecutionException
 	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable
 	 *
-	 * @since 1.1
+	 * @since 2.0
 	 */
 	public void waitForTermination() {
 		try {
+			// stage.owningContext.getThreadCounter().await(0);
+
 			LOGGER.debug("Waiting for finiteProducerThreads");
 			for (Thread thread : this.finiteProducerThreads) {
 				thread.join();
@@ -255,7 +279,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 * @throws ExecutionException
 	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable.
 	 *
-	 * @since 1.1
+	 * @since 2.0
 	 */
 	public void executeBlocking() {
 		executeNonBlocking();
@@ -266,7 +290,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 * This method starts the analysis without waiting for its termination. The method {@link #waitForTermination()} must be called to unsure a correct termination
 	 * of the analysis.
 	 *
-	 * @since 1.1
+	 * @since 2.0
 	 */
 	public void executeNonBlocking() {
 		sendStartingSignal();
@@ -319,5 +343,17 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 		final Traversor traversor = new Traversor(new IntraStageCollector());
 		traversor.traverse(stage);
 		return traversor.getVisitedStage();
+	}
+
+	/**
+	 * Returns the specified ExceptionListenerFactory
+	 *
+	 * @return
+	 *         a given ExceptionListenerFactory instance
+	 *
+	 * @since 2.0
+	 */
+	public IExceptionListenerFactory getFactory() {
+		return factory;
 	}
 }

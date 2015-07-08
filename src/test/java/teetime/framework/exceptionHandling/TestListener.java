@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,20 +19,20 @@ import teetime.framework.Stage;
 
 public class TestListener extends AbstractExceptionListener {
 
-	public static int exceptionInvoked = 0;
-
-	public TestListener() {
-		TestListener.exceptionInvoked = 0;
-	}
+	private int numExceptionsInvoked;
 
 	@Override
 	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {
-		exceptionInvoked++;
-		if (exceptionInvoked == 2) {
+		numExceptionsInvoked++;
+		if (numExceptionsInvoked == 2) {
 			return FurtherExecution.TERMINATE;
 		} else {
 			return FurtherExecution.CONTINUE;
 		}
+	}
+
+	public int getNumExceptionsInvoked() {
+		return numExceptionsInvoked;
 	}
 
 }

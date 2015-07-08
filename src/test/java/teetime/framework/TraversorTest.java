@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ public class TraversorTest {
 			// Middle part... multiple instances of WordCounter are created and connected to the merger and distrubuter stages
 			for (int i = 0; i < threads; i++) {
 				// final InputPortSizePrinter<String> inputPortSizePrinter = new InputPortSizePrinter<String>();
-				final WordCounter wc = new WordCounter(this.getContext());
+				final WordCounter wc = new WordCounter();
 				// intraFact.create(inputPortSizePrinter.getOutputPort(), wc.getInputPort());
 
 				connectPorts(distributor.getNewOutputPort(), wc.getInputPort());

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package teetime.stage.string;
 
 import teetime.framework.AbstractCompositeStage;
-import teetime.framework.ConfigurationContext;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.stage.MappingCounter;
@@ -37,8 +36,7 @@ public final class WordCounter extends AbstractCompositeStage implements ITaskFa
 	private final Tokenizer tokenizer;
 	private final MappingCounter<String> mapCounter;
 
-	public WordCounter(final ConfigurationContext context) {
-		super(context);
+	public WordCounter() {
 
 		this.tokenizer = new Tokenizer(" ");
 		final ToLowerCase toLowerCase = new ToLowerCase();
@@ -60,7 +58,7 @@ public final class WordCounter extends AbstractCompositeStage implements ITaskFa
 
 	@Override
 	public ITaskFarmDuplicable<String, CountingMap<String>> duplicate() {
-		return new WordCounter(this.getContext());
+		return new WordCounter();
 	}
 
 }

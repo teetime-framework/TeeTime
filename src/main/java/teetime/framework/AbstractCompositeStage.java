@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,14 +32,11 @@ public abstract class AbstractCompositeStage {
 
 	private final ConfigurationContext context;
 
-	public AbstractCompositeStage(final ConfigurationContext context) {
-		if (null == context) {
-			throw new IllegalArgumentException("Context may not be null.");
-		}
-		this.context = context;
+	public AbstractCompositeStage() {
+		this.context = new ConfigurationContext();
 	}
 
-	protected ConfigurationContext getContext() {
+	ConfigurationContext getContext() {
 		return context;
 	}
 

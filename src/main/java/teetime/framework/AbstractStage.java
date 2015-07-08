@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -315,7 +315,7 @@ public abstract class AbstractStage extends Stage {
 				((DynamicOutputPort<?>) outputPort).setIndex(i);
 			}
 		}
-		outputPorts = tempOutputPorts.toArray(new OutputPort[0]);
+		outputPorts = tempOutputPorts.toArray(new OutputPort[tempOutputPorts.size()]);
 
 		firePortRemoved(removedOutputPort);
 	}

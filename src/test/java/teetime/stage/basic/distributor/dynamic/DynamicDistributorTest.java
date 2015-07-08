@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package teetime.stage.basic.distributor.dynamic;
 
 import static org.hamcrest.Matchers.contains;
@@ -11,14 +26,14 @@ import java.util.List;
 import org.junit.Test;
 
 import teetime.framework.Configuration;
+import teetime.framework.DynamicOutputPort;
 import teetime.framework.Execution;
 import teetime.framework.Stage;
-import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.util.framework.port.PortAction;
 
-public class ControlledDistributorTest {
+public class DynamicDistributorTest {
 
 	@Test
 	public void shouldWorkWithoutActionTriggers() throws Exception {
@@ -29,8 +44,7 @@ public class ControlledDistributorTest {
 		List<PortAction<DynamicDistributor<Integer>>> inputActions = Arrays.asList(createAction, createAction, createAction, createAction, createAction);
 
 		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, inputActions);
-		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config,
-				new TerminatingExceptionListenerFactory());
+		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config);
 
 		analysis.executeBlocking();
 
@@ -44,22 +58,21 @@ public class ControlledDistributorTest {
 		@SuppressWarnings("unchecked")
 		PortAction<DynamicDistributor<Integer>>[] inputActions = new PortAction[5];
 		for (int i = 0; i < inputActions.length; i++) {
-			PortAction<DynamicDistributor<Integer>> createAction = createPortCreateAction();
+			PortAction<DynamicDistributor<Integer>> createAction = createPortCreateAction(new PortContainer<Integer>());
 			inputActions[i] = createAction;
 		}
 
 		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config,
-				new TerminatingExceptionListenerFactory());
+		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config);
 
 		analysis.executeBlocking();
 
 		assertThat(config.getOutputElements(), contains(0));
-		assertValuesForIndex(inputActions, Arrays.asList(1), 0);
-		assertValuesForIndex(inputActions, Arrays.asList(2), 1);
-		assertValuesForIndex(inputActions, Arrays.asList(3), 2);
-		assertValuesForIndex(inputActions, Arrays.asList(4), 3);
-		assertValuesForIndex(inputActions, Collections.<Integer> emptyList(), 4);
+		assertValuesForIndex(inputActions[0], Arrays.asList(1));
+		assertValuesForIndex(inputActions[1], Arrays.asList(2));
+		assertValuesForIndex(inputActions[2], Arrays.asList(3));
+		assertValuesForIndex(inputActions[3], Arrays.asList(4));
+		assertValuesForIndex(inputActions[4], Collections.<Integer> emptyList());
 	}
 
 	@Test
@@ -68,37 +81,47 @@ public class ControlledDistributorTest {
 
 		@SuppressWarnings("unchecked")
 		PortAction<DynamicDistributor<Integer>>[] inputActions = new PortAction[6];
-		inputActions[0] = createPortCreateAction();
-		inputActions[1] = new RemovePortAction<Integer>(null);
-		inputActions[2] = createPortCreateAction();
-		inputActions[3] = createPortCreateAction();
-		inputActions[4] = new RemovePortAction<Integer>(null);
-		inputActions[5] = new RemovePortAction<Integer>(null);
+
+		final PortContainer<Integer> portContainer0 = new PortContainer<Integer>();
+		final PortContainer<Integer> portContainer1 = new PortContainer<Integer>();
+		final PortContainer<Integer> portContainer2 = new PortContainer<Integer>();
+
+		inputActions[0] = createPortCreateAction(portContainer0);
+		inputActions[1] = new RemovePortAction<Integer>(portContainer0);
+		inputActions[2] = createPortCreateAction(portContainer1);
+		inputActions[3] = createPortCreateAction(portContainer2);
+		inputActions[4] = new RemovePortAction<Integer>(portContainer1);
+		inputActions[5] = new RemovePortAction<Integer>(portContainer2);
 
 		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config,
-				new TerminatingExceptionListenerFactory());
+		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config);
 
 		analysis.executeBlocking();
 
 		assertThat(config.getOutputElements(), contains(0, 1, 2, 4, 5));
-		assertValuesForIndex(inputActions, Collections.<Integer> emptyList(), 0);
-		assertValuesForIndex(inputActions, Arrays.asList(3), 2);
-		assertValuesForIndex(inputActions, Collections.<Integer> emptyList(), 3);
+		assertValuesForIndex(inputActions[0], Collections.<Integer> emptyList());
+		assertValuesForIndex(inputActions[2], Arrays.asList(3));
+		assertValuesForIndex(inputActions[3], Collections.<Integer> emptyList());
 	}
 
-	private PortAction<DynamicDistributor<Integer>> createPortCreateAction() {
+	private CreatePortActionDistributor<Integer> createPortCreateAction(final PortContainer<Integer> portContainer) {
 		CollectorSink<Integer> newStage = new CollectorSink<Integer>();
-		PortAction<DynamicDistributor<Integer>> portAction = new CreatePortActionDistributor<Integer>(newStage.getInputPort());
+		CreatePortActionDistributor<Integer> portAction = new CreatePortActionDistributor<Integer>(newStage.getInputPort());
+		portAction.addPortActionListener(new PortActionListener<Integer>() {
+			@Override
+			public void onOutputPortCreated(final DynamicDistributor<Integer> distributor, final DynamicOutputPort<Integer> port) {
+				portContainer.setPort(port);
+			}
+		});
 		return portAction;
 	}
 
-	private void assertValuesForIndex(final PortAction<DynamicDistributor<Integer>>[] inputActions,
-			final List<Integer> values, final int index) {
-		PortAction<DynamicDistributor<Integer>> ia = inputActions[index];
+	private void assertValuesForIndex(final PortAction<DynamicDistributor<Integer>> ia, final List<Integer> values) {
 		Stage stage = ((CreatePortActionDistributor<Integer>) ia).getInputPort().getOwningStage();
+
 		@SuppressWarnings("unchecked")
 		CollectorSink<Integer> collectorSink = (CollectorSink<Integer>) stage;
+
 		assertThat(collectorSink.getElements(), is(values));
 	}
 
