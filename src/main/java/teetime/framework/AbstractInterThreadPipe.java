@@ -36,7 +36,7 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 
 	private final BlockingQueue<ISignal> signalQueue;
 
-	private volatile boolean isClosed;
+	private volatile boolean closed;
 
 	protected <T> AbstractInterThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
@@ -85,11 +85,11 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 
 	@Override
 	public final boolean isClosed() {
-		return isClosed;
+		return closed;
 	}
 
 	@Override
 	public final void close() {
-		isClosed = true;
+		closed = true;
 	}
 }

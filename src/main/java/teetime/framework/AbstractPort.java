@@ -54,6 +54,7 @@ public abstract class AbstractPort<T> {
 		this.pipe = pipe;
 	}
 
+	@SuppressWarnings("PMD.ConfusingTernary")
 	@Override
 	public String toString() {
 		return (name != null) ? name : super.toString();

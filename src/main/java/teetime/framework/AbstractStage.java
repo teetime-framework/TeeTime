@@ -315,7 +315,7 @@ public abstract class AbstractStage extends Stage {
 				((DynamicOutputPort<?>) outputPort).setIndex(i);
 			}
 		}
-		outputPorts = tempOutputPorts.toArray(new OutputPort[0]);
+		outputPorts = tempOutputPorts.toArray(new OutputPort[tempOutputPorts.size()]);
 
 		firePortRemoved(removedOutputPort);
 	}

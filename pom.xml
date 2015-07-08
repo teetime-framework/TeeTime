@@ -269,14 +269,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.4</version>
+				<version>3.5</version>
 				<dependencies>
 					<dependency>
 						<groupId>de.chw</groupId>
 						<artifactId>pmd.ruleset</artifactId>
 						<version>0.0.1-SNAPSHOT</version>
 						<scope>system</scope>
-						<systemPath>${project.basedir}/conf/quality-config/pmd/CustomPmdRules_1.0.0.201505130542.jar</systemPath>
+						<systemPath>${project.basedir}/conf/quality-config/pmd/CustomPmdRules_1.0.0.201507080630.jar</systemPath>
 					</dependency>
 				</dependencies>
 				<configuration>
