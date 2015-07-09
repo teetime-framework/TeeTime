@@ -16,5 +16,6 @@ public final class RandomIntegerGenerator extends AbstractProducerStage<Integer>
 	@Override
 	protected void execute() {
 		this.getOutputPort().send(random.nextInt(i));
+
 	}
 }

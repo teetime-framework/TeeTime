@@ -7,8 +7,15 @@ package teetime.framework;
  *
  * @author Christian Wulf, Nelson Tavares de Sousa, Robin Mohr
  *
+ * @param <I>
+ *            type of elements to be processed.
+ *
  */
 public abstract class AbstractDCStage<I> extends AbstractStage {
+
+	// BETTER private final I[] buffer but see next TODO (l38)
+	private I leftBuffer = null;
+	private I rightBuffer = null;
 
 	private final DynamicConfigurationContext context;
 
@@ -28,6 +35,7 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 		if (null == context) {
 			throw new IllegalArgumentException("Context may not be null.");
 		}
+		// TODO this.buffer = (I[]) new Object[size]; but can't figure out 'size'
 		this.context = context;
 		// connect to self instead of dummy pipe upon creation
 		context.connectPorts(leftOutputPort, leftInputPort);
@@ -58,69 +66,64 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 		return this.rightOutputPort;
 	}
 
-	// TODO Too fixed? should it be more generic?
 	@Override
 	protected final void executeStage() {
-		this.logger.debug("[DC]" + this.getId() + "_" + "init");
 		final I element = this.getInputPort().receive();
 		final I eLeft = this.getLeftInputPort().receive();
 		final I eRight = this.getRightInputPort().receive();
 
-		if (null != element) {
+		if (eLeft != null) {
+			this.logger.debug("Left " + eLeft.toString());
+			if (eRight != null) {
+				this.logger.debug("Right " + eRight.toString());
+				conquer(eLeft, eRight);
+			} else {
+				if (rightBuffer != null) {
+					this.logger.debug("RightB " + rightBuffer.toString());
+					conquer(eLeft, rightBuffer);
+				} else {
+					leftBuffer = eLeft;
+				}
+			}
+		} else if (eRight != null) {
+			if (leftBuffer != null) {
+				this.logger.debug("LeftB " + leftBuffer.toString());
+				conquer(leftBuffer, eRight);
+			} else {
+				rightBuffer = eRight;
+			}
+		} else if (element != null) {
+			this.logger.debug("E " + element.toString());
 			if (splitCondition(element)) {
 				this.logger.debug("[DC]" + this.getId() + "_" + "passed splitcondition_" + element.toString());
-				// create two new instances of this stage
-				createCopies();
-
-				// divide the input
+				makeCopy(leftOutputPort, leftInputPort);
+				makeCopy(rightOutputPort, rightInputPort);
+				this.logger.debug("[DC]" + this.getId() + "_" + "DIVIDING_" + element.toString());
 				divide(element);
-
-				// send signals init, start
-				context.sendSignals(leftOutputPort); // you could also move this line(s) into the common private method
-				context.sendSignals(rightOutputPort);
 			} else {
-				// received an unsplittable element
-				this.logger.debug("[DC]" + this.getId() + "_" + "sending_" + element.toString());
-				outputPort.send(element);
+				this.logger.debug("[DC]" + this.getId() + "_" + "SOLVING_" + element.toString());
+				solve(element);
 			}
-
-		} else if (eLeft != null && eRight != null) {
-			this.logger.debug("[DC]" + this.getId() + "_" + "conquering_" + eLeft.toString() + eRight.toString());
-			conquer(eLeft, eRight);
 		} else {
-			this.logger.debug("[DC]" + this.getId() + "_" + "return no element:");
+			this.logger.debug("NO ELEMENT RECEIVED!");
 			returnNoElement();
 		}
 	}
 
 	/**
-	 * A method to add two copies (new instances) of this stage to the configuration, which should be executed in a own thread.
+	 * A method to add a new copy (new instance) of this stage to the configuration, which should be executed in a own thread.
 	 *
 	 */
-	@SuppressWarnings("unchecked")
-	protected void createCopies() {
-		this.logger.debug("[DC]" + this.getId() + "_" + "createCopies");
-
-		try {
-			// do you see similarities? ;) Please, modularize both blocks into a single, common private method.
-
-			final AbstractDCStage<I> newStage1 = this.getClass().newInstance();
-			context.connectPorts(leftOutputPort, newStage1.getInputPort());
-			context.connectPorts(newStage1.getOutputPort(), leftInputPort);
-			context.beginThread(newStage1);
-
-			final AbstractDCStage<I> newStage2 = this.getClass().newInstance();
-			context.connectPorts(rightOutputPort, newStage2.getInputPort());
-			context.connectPorts(newStage2.getOutputPort(), rightInputPort);
-			context.beginThread(newStage2);
-
-		} catch (InstantiationException ie) {
-			throw new RuntimeException(ie);
-		} catch (IllegalAccessException iae) {
-			throw new RuntimeException(iae);
-		}
-		this.logger.debug("[DC]" + this.getId() + "_" + "copies created");
+	private void makeCopy(final OutputPort<I> out, final InputPort<I> in) {
+		final AbstractDCStage<I> newStage = debugCreateMethod();
+		context.connectPorts(out, newStage.getInputPort());
+		context.connectPorts(newStage.getOutputPort(), in);
+		context.beginThread(newStage);
+		context.sendSignals(out);
 	}
+
+	// BETTER Write the function code in this class instead
+	protected abstract AbstractDCStage<I> debugCreateMethod();
 
 	/**
 	 * Method to divide the given input and send to the left and right output ports.
@@ -129,6 +132,14 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 	 *            An element to be split and further processed
 	 */
 	protected abstract void divide(final I element);
+
+	/**
+	 * Method to process the given input and send to the output port.
+	 *
+	 * @param element
+	 *            An element to be processed
+	 */
+	protected abstract void solve(final I element);
 
 	/**
 	 * Method to join the given inputs together and send to the output port.
@@ -147,4 +158,10 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 	 *            The element whose properties determine the split condition
 	 */
 	protected abstract boolean splitCondition(final I element);
+
+	// TODO get rid of this
+	public DynamicConfigurationContext getContext() {
+		// TODO Auto-generated method stub
+		return this.context;
+	}
 }

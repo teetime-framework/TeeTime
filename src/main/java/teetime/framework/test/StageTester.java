@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import teetime.framework.Configuration;
+import teetime.framework.DynamicConfigurationContext;
 import teetime.framework.Execution;
 import teetime.framework.ExecutionException;
 import teetime.framework.Stage;
@@ -97,6 +98,12 @@ public final class StageTester {
 				final CollectorSink<Object> sink = new CollectorSink<Object>(outputHolder.getOutputElements());
 				connectPorts(outputHolder.getPort(), sink.getInputPort());
 			}
+		}
+
+		@Override
+		public DynamicConfigurationContext getDynamicContext() {
+			return this.getDynamicContext();
+
 		}
 	}
 }
