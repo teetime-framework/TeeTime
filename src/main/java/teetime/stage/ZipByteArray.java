@@ -65,7 +65,7 @@ public final class ZipByteArray extends AbstractConsumerStage<byte[]> {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
 
 		deflater.finish();
-		byte[] buffer = new byte[1024]; // NOPMD
+		byte[] buffer = new byte[1024]; 
 		while (!deflater.finished()) {
 			int count = deflater.deflate(buffer); // returns the generated code... index
 			outputStream.write(buffer, 0, count);
@@ -83,7 +83,7 @@ public final class ZipByteArray extends AbstractConsumerStage<byte[]> {
 		inflater.setInput(data);
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-		byte[] buffer = new byte[1024]; // NOPMD
+		byte[] buffer = new byte[1024]; 
 		while (!inflater.finished()) {
 			int count = inflater.inflate(buffer);
 			outputStream.write(buffer, 0, count);
