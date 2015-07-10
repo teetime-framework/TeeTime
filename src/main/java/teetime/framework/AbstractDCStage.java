@@ -11,8 +11,9 @@ package teetime.framework;
  *            type of elements to be processed.
  *
  */
-public abstract class AbstractDCStage<I> extends AbstractStage {
+public abstract class AbstractDCStage<I> extends AbstractStage { // IMPLEMENTS IDUPLICABLE (anderer Branch)
 
+	// TODO arraylist!
 	// BETTER private final I[] buffer but see next TODO (l38)
 	private I leftBuffer = null;
 	private I rightBuffer = null;
@@ -68,6 +69,8 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 
 	@Override
 	protected final void executeStage() {
+
+		// TODO STRUKTUR!
 		final I element = this.getInputPort().receive();
 		final I eLeft = this.getLeftInputPort().receive();
 		final I eRight = this.getRightInputPort().receive();
@@ -96,6 +99,8 @@ public abstract class AbstractDCStage<I> extends AbstractStage {
 			this.logger.debug("E " + element.toString());
 			if (splitCondition(element)) {
 				this.logger.debug("[DC]" + this.getId() + "_" + "passed splitcondition_" + element.toString());
+
+				// SPLITCOUNT THREASHHOLD NUMTHREADS
 				makeCopy(leftOutputPort, leftInputPort);
 				makeCopy(rightOutputPort, rightInputPort);
 				this.logger.debug("[DC]" + this.getId() + "_" + "DIVIDING_" + element.toString());

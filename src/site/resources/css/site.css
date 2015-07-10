@@ -1,0 +1,14 @@
+@import url(http://fonts.googleapis.com/css?family=Pinyon+Script);
+
+body {
+	background-image:url(../images/bg.png);
+}
+
+#logo {
+	width: 4.7em;
+}
+
+.slogan {
+	color: #7E7E7E;
+	margin-top: 0.5em;
+}
