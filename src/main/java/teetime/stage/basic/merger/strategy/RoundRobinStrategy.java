@@ -15,8 +15,9 @@
  */
 package teetime.stage.basic.merger.strategy;
 
+import java.util.List;
+
 import teetime.framework.InputPort;
-import teetime.framework.Stage;
 import teetime.stage.basic.merger.Merger;
 
 /**
@@ -30,12 +31,13 @@ public final class RoundRobinStrategy implements IMergerStrategy {
 
 	@Override
 	public <T> T getNextInput(final Merger<T> merger) {
-		final InputPort<T>[] inputPorts = merger.getInputPorts();
-		int size = inputPorts.length;
+		final List<InputPort<?>> inputPorts = merger.getInputPorts();
+		int size = inputPorts.size();
 		// check each port at most once to avoid a potentially infinite loop
 		while (size-- > 0) {
-			InputPort<T> inputPort = this.getNextPortInRoundRobinOrder(inputPorts);
-			final T token = inputPort.receive();
+			InputPort<?> inputPort = this.getNextPortInRoundRobinOrder(inputPorts);
+			@SuppressWarnings("unchecked")
+			final T token = (T) inputPort.receive();
 			if (token != null) {
 				return token;
 			}
@@ -43,19 +45,19 @@ public final class RoundRobinStrategy implements IMergerStrategy {
 		return null;
 	}
 
-	private <T> InputPort<T> getNextPortInRoundRobinOrder(final InputPort<T>[] inputPorts) {
-		InputPort<T> inputPort = inputPorts[this.index];
+	private InputPort<?> getNextPortInRoundRobinOrder(final List<InputPort<?>> inputPorts) {
+		InputPort<?> inputPort = inputPorts.get(this.index);
 
-		this.index = (this.index + 1) % inputPorts.length;
+		this.index = (this.index + 1) % inputPorts.size();
 
 		return inputPort;
 	}
 
 	@Override
-	public void onInputPortRemoved(final Stage stage, final InputPort<?> removedInputPort) {
-		Merger<?> merger = (Merger<?>) stage;
+	public void onPortRemoved(final InputPort<?> removedInputPort) {
+		Merger<?> merger = (Merger<?>) removedInputPort.getOwningStage();
 		// correct the index if it is out-of-bounds
-		this.index = (this.index + 1) % merger.getInputPorts().length;
+		this.index = (this.index + 1) % merger.getInputPorts().size();
 	}
 
 }

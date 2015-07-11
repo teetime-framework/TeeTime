@@ -57,7 +57,7 @@ final class ConfigurationContext {
 	 * @see AbstractCompositeStage#connectPorts(OutputPort, InputPort, int)
 	 */
 	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		if (sourcePort.getOwningStage().getInputPorts().length == 0) {
+		if (sourcePort.getOwningStage().getInputPorts().size() == 0) {
 			if (!threadableStages.containsKey(sourcePort.getOwningStage())) {
 				addThreadableStage(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
 			}

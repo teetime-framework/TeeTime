@@ -15,8 +15,9 @@
  */
 package teetime.stage.basic.distributor.strategy;
 
+import java.util.List;
+
 import teetime.framework.OutputPort;
-import teetime.framework.Stage;
 import teetime.stage.basic.distributor.Distributor;
 
 /**
@@ -29,15 +30,16 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 	private int index;
 	private int numWaits;
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public <T> boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
-		final int numOutputPorts = outputPorts.length;
+	public <T> boolean distribute(final List<OutputPort<?>> outputPorts, final T element) {
+		final int numOutputPorts = outputPorts.size();
 		int numLoops = numOutputPorts;
 
 		boolean success;
 		OutputPort<T> outputPort;
 		do {
-			outputPort = getNextPortInRoundRobinOrder(outputPorts);
+			outputPort = (OutputPort<T>) getNextPortInRoundRobinOrder(outputPorts);
 			success = outputPort.sendNonBlocking(element);
 			if (0 == numLoops) {
 				numWaits++;
@@ -60,10 +62,10 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 		// Thread.yield();
 	}
 
-	private <T> OutputPort<T> getNextPortInRoundRobinOrder(final OutputPort<T>[] outputPorts) {
-		final OutputPort<T> outputPort = outputPorts[this.index];
+	private OutputPort<?> getNextPortInRoundRobinOrder(final List<OutputPort<?>> outputPorts) {
+		final OutputPort<?> outputPort = outputPorts.get(this.index);
 
-		this.index = (this.index + 1) % outputPorts.length;
+		this.index = (this.index + 1) % outputPorts.size();
 
 		return outputPort;
 	}
@@ -73,10 +75,10 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 	}
 
 	@Override
-	public void onOutputPortRemoved(final Stage stage, final OutputPort<?> removedOutputPort) {
-		Distributor<?> distributor = (Distributor<?>) stage;
+	public void onPortRemoved(final OutputPort<?> removedOutputPort) {
+		Distributor<?> distributor = (Distributor<?>) removedOutputPort.getOwningStage();
 		// correct the index if it is out-of-bounds
-		this.index = this.index % distributor.getOutputPorts().length;
+		this.index = this.index % distributor.getOutputPorts().size();
 	}
 
 }

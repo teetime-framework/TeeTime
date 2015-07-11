@@ -1,0 +1,62 @@
+package teetime.util.framework.port;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import teetime.framework.AbstractPort;
+
+public class PortList<T extends AbstractPort<?>> {
+
+	private final List<T> openedPorts = new ArrayList<T>();
+
+	// private final List<T> closedPorts = new ArrayList<T>();
+
+	private final Set<PortRemovedListener<T>> portsRemovedListeners = new HashSet<PortRemovedListener<T>>();
+
+	public List<T> getOpenedPorts() {
+		return openedPorts;
+	}
+
+	// public List<T> getClosedPorts() {
+	// return closedPorts;
+	// }
+
+	public boolean add(final T port) {
+		return openedPorts.add(port);
+	}
+
+	public boolean remove(final T port) {
+		boolean removed = openedPorts.remove(port); // BETTER remove by index for performance reasons
+		firePortRemoved(port);
+		return removed;
+	}
+
+	public boolean close(final T port) {
+		boolean removed = remove(port);
+		// if (removed) {
+		// boolean added = closedPorts.add(port);
+		// if (added) {
+		// return true;
+		// }
+		// openedPorts.add(port);
+		// }
+		return removed;
+	}
+
+	public int size() {
+		return openedPorts.size();
+	}
+
+	private void firePortRemoved(final T removedPort) {
+		for (PortRemovedListener<T> listener : portsRemovedListeners) {
+			listener.onPortRemoved(removedPort);
+		}
+	}
+
+	public void addPortRemovedListener(final PortRemovedListener<T> listener) {
+		portsRemovedListeners.add(listener);
+	}
+
+}

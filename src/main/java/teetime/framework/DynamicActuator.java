@@ -22,7 +22,7 @@ public class DynamicActuator {
 	 */
 	@Deprecated
 	public AbstractRunnableStage wrap(final Stage stage) {
-		if (stage.getInputPorts().length > 0) {
+		if (stage.getInputPorts().size() > 0) {
 			return new RunnableConsumerStage(stage);
 		}
 		return new RunnableProducerStage(stage);

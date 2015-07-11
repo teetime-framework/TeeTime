@@ -61,19 +61,22 @@ abstract class AbstractRunnableStage implements Runnable {
 
 		this.logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
 		if (failed) {
-			if (stage.getTerminationStrategy() == TerminationStrategy.BY_SIGNAL) {
-				TerminatingSignal signal = new TerminatingSignal();
-				// TODO: Check if this is really needed... it seems like signals are passed on after their first arrival
-				InputPort<?>[] inputPorts = stage.getInputPorts();
-				for (int i = 0; i < inputPorts.length; i++) {
-					stage.onSignal(signal, inputPorts[i]);
-				}
-			}
+			sendTerminatingSignal();
 			throw new IllegalStateException("Terminated by StageExceptionListener");
 		}
 
 		// normal and exceptional termination
 		// stage.owningContext.getThreadCounter().dec();
+	}
+
+	private void sendTerminatingSignal() {
+		if (stage.getTerminationStrategy() == TerminationStrategy.BY_SIGNAL) {
+			TerminatingSignal signal = new TerminatingSignal();
+			// TODO: Check if this is really needed... it seems like signals are passed on after their first arrival
+			for (InputPort<?> inputPort : stage.getInputPorts()) {
+				stage.onSignal(signal, inputPort);
+			}
+		}
 	}
 
 	protected abstract void beforeStageExecution() throws InterruptedException;

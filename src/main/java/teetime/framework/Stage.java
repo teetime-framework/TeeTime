@@ -122,9 +122,9 @@ public abstract class Stage {
 		this.owningThread = owningThread;
 	}
 
-	protected abstract InputPort<?>[] getInputPorts();
+	protected abstract List<InputPort<?>> getInputPorts();
 
-	protected abstract OutputPort<?>[] getOutputPorts();
+	protected abstract List<OutputPort<?>> getOutputPorts();
 
 	// events
 

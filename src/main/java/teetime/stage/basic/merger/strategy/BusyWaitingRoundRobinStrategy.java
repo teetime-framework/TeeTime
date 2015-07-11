@@ -15,8 +15,9 @@
  */
 package teetime.stage.basic.merger.strategy;
 
+import java.util.List;
+
 import teetime.framework.InputPort;
-import teetime.framework.Stage;
 import teetime.stage.basic.merger.Merger;
 
 /**
@@ -30,39 +31,40 @@ public final class BusyWaitingRoundRobinStrategy implements IMergerStrategy {
 
 	@Override
 	public <T> T getNextInput(final Merger<T> merger) {
-		final InputPort<T>[] inputPorts = merger.getInputPorts();
-		final InputPort<T> inputPort = getOpenInputPort(inputPorts);
+		final List<InputPort<?>> inputPorts = merger.getInputPorts();
+		final InputPort<?> inputPort = getOpenInputPort(inputPorts);
 		if (null == inputPort) {
 			return null;
 		}
 
-		final T token = inputPort.receive();
+		@SuppressWarnings("unchecked")
+		final T token = (T) inputPort.receive();
 		if (null != token) {
-			this.index = (this.index + 1) % inputPorts.length;
+			this.index = (this.index + 1) % inputPorts.size();
 		}
 
 		return token;
 	}
 
-	private <T> InputPort<T> getOpenInputPort(final InputPort<T>[] inputPorts) {
+	private InputPort<?> getOpenInputPort(final List<InputPort<?>> inputPorts) {
 		final int startedIndex = index;
 
-		InputPort<T> inputPort = inputPorts[this.index];
+		InputPort<?> inputPort = inputPorts.get(this.index);
 		while (inputPort.isClosed()) {
-			this.index = (this.index + 1) % inputPorts.length;
+			this.index = (this.index + 1) % inputPorts.size();
 			if (index == startedIndex) {
 				return null;
 			}
-			inputPort = inputPorts[this.index];
+			inputPort = inputPorts.get(this.index);
 		}
 
 		return inputPort;
 	}
 
 	@Override
-	public void onInputPortRemoved(final Stage stage, final InputPort<?> removedInputPort) {
-		Merger<?> merger = (Merger<?>) stage;
+	public void onPortRemoved(final InputPort<?> removedInputPort) {
+		Merger<?> merger = (Merger<?>) removedInputPort.getOwningStage();
 		// correct the index if it is out-of-bounds
-		this.index = (this.index + 1) % merger.getInputPorts().length;
+		this.index = (this.index + 1) % merger.getInputPorts().size();
 	}
 }

@@ -19,16 +19,15 @@ import java.util.concurrent.BlockingQueue;
 
 import teetime.framework.DynamicOutputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.OutputPortRemovedListener;
-import teetime.framework.Stage;
 import teetime.framework.signal.TerminatingSignal;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.distributor.strategy.IDistributorStrategy;
 import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
 import teetime.util.framework.port.PortAction;
 import teetime.util.framework.port.PortActionHelper;
+import teetime.util.framework.port.PortRemovedListener;
 
-public class DynamicDistributor<T> extends Distributor<T> implements OutputPortRemovedListener {
+public class DynamicDistributor<T> extends Distributor<T> implements PortRemovedListener<OutputPort<?>> {
 
 	protected final BlockingQueue<PortAction<DynamicDistributor<T>>> portActions;
 
@@ -66,7 +65,7 @@ public class DynamicDistributor<T> extends Distributor<T> implements OutputPortR
 	}
 
 	@Override
-	public void onOutputPortRemoved(final Stage stage, final OutputPort<?> removedOutputPort) {
+	public void onPortRemoved(final OutputPort<?> removedOutputPort) {
 		removedOutputPort.sendSignal(new TerminatingSignal());
 	}
 }

@@ -35,8 +35,7 @@ public class Traversor {
 			return;
 		}
 
-		OutputPort<?>[] outputPorts = stage.getOutputPorts();
-		for (OutputPort<?> outputPort : outputPorts) {
+		for (OutputPort<?> outputPort : stage.getOutputPorts()) {
 			IPipe pipe = outputPort.getPipe();
 			if (null != pipe && pipeVisitor.visit(pipe) == VisitorBehavior.CONTINUE) {
 				Stage owningStage = pipe.getTargetPort().getOwningStage();
