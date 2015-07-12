@@ -30,14 +30,16 @@ public class SignalingCounter {
 		}
 	}
 
-	public synchronized void waitFor(final int number) throws InterruptedException {
-		if (!conditions.containsKey(number)) {
-			conditions.put(number, new Object());
+	public void waitFor(final int number) throws InterruptedException {
+		synchronized (this) {
+			if (!conditions.containsKey(number)) {
+				conditions.put(number, new Object());
+			}
 		}
 
 		final Object cond = conditions.get(number);
-		synchronized (cond) {
-			while (counter != number) {
+		while (counter != number) {
+			synchronized (cond) {
 				cond.wait();
 			}
 		}
