@@ -32,55 +32,43 @@ abstract class AbstractRunnableStage implements Runnable {
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
 
-		// stage.owningContext.getThreadCounter().inc();
+		if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
+			stage.owningContext.getRunnableCounter().inc();
+		}
 	}
 
 	@Override
 	public final void run() {
 		this.logger.debug("Executing runnable stage...");
-		// StageException failedException = null;
-		try {
-			beforeStageExecution();
-			try {
-				do {
-					executeStage();
-				} while (!stage.shouldBeTerminated());
-			} catch (StageException e) {
-				this.stage.terminate();
-				// failedException = e;
-				throw e;
-			} finally {
-				afterStageExecution();
-			}
 
-		} catch (RuntimeException e) {
-			this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
-			throw e;
-		} catch (InterruptedException e) {
-			this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
+		try {
+			try {
+				beforeStageExecution();
+				try {
+					do {
+						executeStage();
+					} while (!stage.shouldBeTerminated());
+				} catch (StageException e) {
+					this.stage.terminate();
+					throw e;
+				} finally {
+					afterStageExecution();
+				}
+
+			} catch (RuntimeException e) {
+				this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
+				throw e;
+			} catch (InterruptedException e) {
+				this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
+			}
+		} finally {
+			if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
+				stage.owningContext.getRunnableCounter().dec();
+			}
 		}
 
-		this.logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
-		// if (failedException != null) {
-		// sendTerminatingSignal();
-		// // throw new IllegalStateException("Terminated by StageExceptionListener", failedException);
-		// throw failedException;
-		// }
-
-		// normal and exceptional termination
-		// stage.owningContext.getThreadCounter().dec();
+		logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
 	}
-
-	//
-	// private void sendTerminatingSignal() {
-	// if (stage.getTerminationStrategy() == TerminationStrategy.BY_SIGNAL) {
-	// TerminatingSignal signal = new TerminatingSignal();
-	// // TODO: Check if this is really needed... it seems like signals are passed on after their first arrival
-	// for (InputPort<?> inputPort : stage.getInputPorts()) {
-	// stage.onSignal(signal, inputPort);
-	// }
-	// }
-	// }
 
 	protected abstract void beforeStageExecution() throws InterruptedException;
 

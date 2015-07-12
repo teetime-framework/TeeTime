@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.pipe.InstantiationPipe;
+import teetime.util.framework.concurrent.SignalingCounter;
 
 /**
  * Represents a context that is used by a configuration and composite stages to connect ports, for example.
@@ -37,10 +38,16 @@ final class ConfigurationContext {
 
 	private Map<Stage, String> threadableStages = new HashMap<Stage, String>();
 
+	private final SignalingCounter runnableCounter = new SignalingCounter();
+
 	ConfigurationContext() {}
 
 	Map<Stage, String> getThreadableStages() {
 		return this.threadableStages;
+	}
+
+	SignalingCounter getRunnableCounter() {
+		return runnableCounter;
 	}
 
 	/**

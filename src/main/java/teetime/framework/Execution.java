@@ -226,17 +226,17 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	 */
 	public void waitForTermination() {
 		try {
-			// stage.owningContext.getThreadCounter().await(0);
+			getConfiguration().getContext().getRunnableCounter().waitFor(0);
 
-			LOGGER.debug("Waiting for finiteProducerThreads");
-			for (Thread thread : this.finiteProducerThreads) {
-				thread.join();
-			}
-
-			LOGGER.debug("Waiting for consumerThreads");
-			for (Thread thread : this.consumerThreads) {
-				thread.join();
-			}
+			// LOGGER.debug("Waiting for finiteProducerThreads");
+			// for (Thread thread : this.finiteProducerThreads) {
+			// thread.join();
+			// }
+			//
+			// LOGGER.debug("Waiting for consumerThreads");
+			// for (Thread thread : this.consumerThreads) {
+			// thread.join();
+			// }
 		} catch (InterruptedException e) {
 			LOGGER.error("Execution has stopped unexpectedly", e);
 			for (Thread thread : this.finiteProducerThreads) {
