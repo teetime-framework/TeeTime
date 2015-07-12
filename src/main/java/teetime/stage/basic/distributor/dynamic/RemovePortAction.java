@@ -31,11 +31,6 @@ public class RemovePortAction<T> implements PortAction<DynamicDistributor<T>> {
 
 	@Override
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
-		DynamicOutputPort<T> realOutputPort = outputPort;
-		if (outputPort instanceof PortContainer) { // BETTER replace test-specific code and abstract appropriately
-			realOutputPort = ((PortContainer<T>) outputPort).getPort();
-		}
-
-		dynamicDistributor.removeDynamicPort(realOutputPort);
+		dynamicDistributor.removeDynamicPort(outputPort);
 	}
 }
