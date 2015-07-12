@@ -27,15 +27,12 @@ import teetime.util.ThreadThrowableContainer;
  */
 public class ExecutionException extends RuntimeException {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 7486086437171884298L;
 
 	private final Collection<ThreadThrowableContainer> exceptions;
 
 	public ExecutionException(final Collection<ThreadThrowableContainer> exceptions) {
-		super("Error(s) while running analysis. Check thrown exceptions.");
+		super("Error(s) while execution. Check thrown exception(s).");
 		this.exceptions = exceptions;
 	}
 
