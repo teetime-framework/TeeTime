@@ -26,4 +26,8 @@ class PortContainer<T> extends DynamicOutputPort<T> {
 		this.port = port;
 	}
 
+	public DynamicOutputPort<T> getPort() {
+		return port;
+	}
+
 }

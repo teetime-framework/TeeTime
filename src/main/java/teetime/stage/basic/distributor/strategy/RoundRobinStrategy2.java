@@ -78,7 +78,8 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 	public void onPortRemoved(final OutputPort<?> removedOutputPort) {
 		Distributor<?> distributor = (Distributor<?>) removedOutputPort.getOwningStage();
 		// correct the index if it is out-of-bounds
-		this.index = this.index % distributor.getOutputPorts().size();
+		List<OutputPort<?>> outputPorts = distributor.getOutputPorts();
+		this.index = this.index % outputPorts.size();
 	}
 
 }

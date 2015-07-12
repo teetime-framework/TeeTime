@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.StageException;
-import teetime.framework.signal.TerminatingSignal;
 
 abstract class AbstractRunnableStage implements Runnable {
 
@@ -39,7 +38,7 @@ abstract class AbstractRunnableStage implements Runnable {
 	@Override
 	public final void run() {
 		this.logger.debug("Executing runnable stage...");
-		boolean failed = false;
+		// StageException failedException = null;
 		try {
 			beforeStageExecution();
 			try {
@@ -48,9 +47,11 @@ abstract class AbstractRunnableStage implements Runnable {
 				} while (!stage.shouldBeTerminated());
 			} catch (StageException e) {
 				this.stage.terminate();
-				failed = true;
+				// failedException = e;
+				throw e;
+			} finally {
+				afterStageExecution();
 			}
-			afterStageExecution();
 
 		} catch (RuntimeException e) {
 			this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
@@ -60,24 +61,26 @@ abstract class AbstractRunnableStage implements Runnable {
 		}
 
 		this.logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
-		if (failed) {
-			sendTerminatingSignal();
-			throw new IllegalStateException("Terminated by StageExceptionListener");
-		}
+		// if (failedException != null) {
+		// sendTerminatingSignal();
+		// // throw new IllegalStateException("Terminated by StageExceptionListener", failedException);
+		// throw failedException;
+		// }
 
 		// normal and exceptional termination
 		// stage.owningContext.getThreadCounter().dec();
 	}
 
-	private void sendTerminatingSignal() {
-		if (stage.getTerminationStrategy() == TerminationStrategy.BY_SIGNAL) {
-			TerminatingSignal signal = new TerminatingSignal();
-			// TODO: Check if this is really needed... it seems like signals are passed on after their first arrival
-			for (InputPort<?> inputPort : stage.getInputPorts()) {
-				stage.onSignal(signal, inputPort);
-			}
-		}
-	}
+	//
+	// private void sendTerminatingSignal() {
+	// if (stage.getTerminationStrategy() == TerminationStrategy.BY_SIGNAL) {
+	// TerminatingSignal signal = new TerminatingSignal();
+	// // TODO: Check if this is really needed... it seems like signals are passed on after their first arrival
+	// for (InputPort<?> inputPort : stage.getInputPorts()) {
+	// stage.onSignal(signal, inputPort);
+	// }
+	// }
+	// }
 
 	protected abstract void beforeStageExecution() throws InterruptedException;
 

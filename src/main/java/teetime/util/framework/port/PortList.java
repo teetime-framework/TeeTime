@@ -30,6 +30,9 @@ public class PortList<T extends AbstractPort<?>> {
 	public boolean remove(final T port) {
 		boolean removed = openedPorts.remove(port); // BETTER remove by index for performance reasons
 		firePortRemoved(port);
+		if (!removed) {
+			throw new IllegalStateException();
+		}
 		return removed;
 	}
 
