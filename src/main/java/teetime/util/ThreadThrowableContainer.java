@@ -37,4 +37,9 @@ public final class ThreadThrowableContainer {
 		return this.second;
 	}
 
+	@Override
+	public String toString() {
+		return second.getClass().getName() + " in " + getThread() + ": " + second.getLocalizedMessage();
+	}
+
 }
