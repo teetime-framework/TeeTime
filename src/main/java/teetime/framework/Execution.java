@@ -217,10 +217,10 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	}
 
 	/**
-	 * Calling this method will block the current thread, until the analysis terminates.
+	 * Calling this method will block the current thread until the execution terminates.
 	 *
 	 * @throws ExecutionException
-	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable
+	 *             if at least one exception in one thread has occurred within the execution. The exception contains the pairs of thread and throwable
 	 *
 	 * @since 2.0
 	 */
@@ -274,10 +274,10 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	}
 
 	/**
-	 * This method will start the Execution and block until it is finished.
+	 * This method will start this execution and block until it is finished.
 	 *
 	 * @throws ExecutionException
-	 *             if at least one exception in one thread has occurred within the analysis. The exception contains the pairs of thread and throwable.
+	 *             if at least one exception in one thread has occurred within the execution. The exception contains the pairs of thread and throwable.
 	 *
 	 * @since 2.0
 	 */
@@ -287,8 +287,8 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	}
 
 	/**
-	 * This method starts the analysis without waiting for its termination. The method {@link #waitForTermination()} must be called to unsure a correct termination
-	 * of the analysis.
+	 * This method starts this execution without waiting for its termination. The method {@link #waitForTermination()} must be called to unsure a correct termination
+	 * of the execution.
 	 *
 	 * @since 2.0
 	 */
@@ -315,9 +315,9 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	}
 
 	/**
-	 * Retrieves the Configuration which was used to add and arrange all stages needed for the Execution
+	 * Retrieves the Configuration which was used to add and arrange all stages needed for this execution.
 	 *
-	 * @return the configuration used for the Execution
+	 * @return the configuration used for this execution
 	 */
 	public T getConfiguration() {
 		return this.configuration;
@@ -346,10 +346,8 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	}
 
 	/**
-	 * Returns the specified ExceptionListenerFactory
-	 *
 	 * @return
-	 *         a given ExceptionListenerFactory instance
+	 *         the given ExceptionListenerFactory instance
 	 *
 	 * @since 2.0
 	 */
