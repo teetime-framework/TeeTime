@@ -15,7 +15,7 @@
  */
 package teetime.stage.basic.distributor.dynamic;
 
-import teetime.framework.DynamicOutputPort;
+import teetime.framework.OutputPort;
 import teetime.util.framework.port.PortAction;
 
 /**
@@ -35,8 +35,8 @@ public class RemovePortActionDelegation<T> implements PortAction<DynamicDistribu
 
 	@Override
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
-		DynamicOutputPort<?> dynamicOutputPort = portContainer.getPort();
-		dynamicDistributor.removeDynamicPort(dynamicOutputPort);
+		OutputPort<?> outputPort = portContainer.getPort();
+		dynamicDistributor.removeDynamicPort(outputPort);
 	}
 
 }

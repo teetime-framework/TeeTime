@@ -150,8 +150,8 @@ public abstract class Stage {
 		this.exceptionHandler = exceptionHandler;
 	}
 
-	protected abstract void removeDynamicPort(DynamicOutputPort<?> dynamicOutputPort);
+	protected abstract void removeDynamicPort(OutputPort<?> outputPort);
 
-	protected abstract void removeDynamicPort(DynamicInputPort<?> dynamicInputPort);
+	protected abstract void removeDynamicPort(InputPort<?> inputPort);
 
 }

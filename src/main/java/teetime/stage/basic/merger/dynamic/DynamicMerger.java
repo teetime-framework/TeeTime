@@ -17,7 +17,7 @@ package teetime.stage.basic.merger.dynamic;
 
 import java.util.concurrent.BlockingQueue;
 
-import teetime.framework.DynamicInputPort;
+import teetime.framework.InputPort;
 import teetime.stage.basic.merger.Merger;
 import teetime.stage.basic.merger.strategy.IMergerStrategy;
 import teetime.util.framework.port.PortAction;
@@ -43,8 +43,8 @@ public class DynamicMerger<T> extends Merger<T> {
 	}
 
 	@Override
-	public void removeDynamicPort(final DynamicInputPort<?> dynamicInputPort) { // make public
-		super.removeDynamicPort(dynamicInputPort);
+	public void removeDynamicPort(final InputPort<?> inputPort) { // make public
+		super.removeDynamicPort(inputPort);
 	}
 
 	public boolean addPortActionRequest(final PortAction<DynamicMerger<T>> newPortActionRequest) {

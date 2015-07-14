@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 
 import teetime.framework.AbstractStage;
-import teetime.framework.DynamicInputPort;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
@@ -112,8 +111,8 @@ public class Merger<T> extends AbstractStage {
 		return super.getInputPorts();
 	}
 
-	public DynamicInputPort<T> getNewInputPort() {
-		return this.createDynamicInputPort();
+	public InputPort<T> getNewInputPort() {
+		return this.createInputPort();
 	}
 
 	public OutputPort<T> getOutputPort() {

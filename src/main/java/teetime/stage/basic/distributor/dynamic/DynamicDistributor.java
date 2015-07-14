@@ -17,7 +17,6 @@ package teetime.stage.basic.distributor.dynamic;
 
 import java.util.concurrent.BlockingQueue;
 
-import teetime.framework.DynamicOutputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.TerminatingSignal;
 import teetime.stage.basic.distributor.Distributor;
@@ -56,8 +55,8 @@ public class DynamicDistributor<T> extends Distributor<T> implements PortRemoved
 	}
 
 	@Override
-	public void removeDynamicPort(final DynamicOutputPort<?> dynamicOutputPort) { // make public
-		super.removeDynamicPort(dynamicOutputPort);
+	public void removeDynamicPort(final OutputPort<?> outputPort) { // make public
+		super.removeDynamicPort(outputPort);
 	}
 
 	public boolean addPortActionRequest(final PortAction<DynamicDistributor<T>> newPortActionRequest) {

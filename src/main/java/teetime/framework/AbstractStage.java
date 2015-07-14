@@ -283,21 +283,21 @@ public abstract class AbstractStage extends Stage {
 		return TerminationStrategy.BY_SIGNAL;
 	}
 
-	protected <T> DynamicOutputPort<T> createDynamicOutputPort() {
-		final DynamicOutputPort<T> outputPort = new DynamicOutputPort<T>(null, this, outputPorts.size());
-		outputPorts.add(outputPort);
-		return outputPort;
-	}
+	// protected <T> DynamicOutputPort<T> createDynamicOutputPort() {
+	// final DynamicOutputPort<T> outputPort = new DynamicOutputPort<T>(null, this, outputPorts.size());
+	// outputPorts.add(outputPort);
+	// return outputPort;
+	// }
 
-	protected <T> DynamicInputPort<T> createDynamicInputPort() {
-		final DynamicInputPort<T> inputPort = new DynamicInputPort<T>(null, this, inputPorts.size());
-		inputPorts.add(inputPort);
-		return inputPort;
-	}
+	// protected <T> DynamicInputPort<T> createDynamicInputPort() {
+	// final DynamicInputPort<T> inputPort = new DynamicInputPort<T>(null, this, inputPorts.size());
+	// inputPorts.add(inputPort);
+	// return inputPort;
+	// }
 
 	@Override
-	protected void removeDynamicPort(final DynamicOutputPort<?> dynamicOutputPort) {
-		outputPorts.remove(dynamicOutputPort); // TODO update setIndex IF it is still used
+	protected void removeDynamicPort(final OutputPort<?> outputPort) {
+		outputPorts.remove(outputPort); // TODO update setIndex IF it is still used
 	}
 
 	protected final void addOutputPortRemovedListener(final PortRemovedListener<OutputPort<?>> outputPortRemovedListener) {
@@ -305,8 +305,8 @@ public abstract class AbstractStage extends Stage {
 	}
 
 	@Override
-	protected void removeDynamicPort(final DynamicInputPort<?> dynamicInputPort) {
-		inputPorts.remove(dynamicInputPort); // TODO update setIndex IF it is still used
+	protected void removeDynamicPort(final InputPort<?> inputPort) {
+		inputPorts.remove(inputPort); // TODO update setIndex IF it is still used
 	}
 
 	protected final void addInputPortRemovedListener(final PortRemovedListener<InputPort<?>> inputPortRemovedListener) {

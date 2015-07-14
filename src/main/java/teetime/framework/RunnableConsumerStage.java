@@ -54,11 +54,11 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	}
 
 	private void checkForTerminationSignal(final Stage stage) {
-		System.out.println("checkForTerminationSignal: " + stage);
 		// FIXME should getInputPorts() really be defined in Stage?
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
-			System.out.println("\tclosed: " + inputPort.isClosed() + " (" + inputPort);
-			if (!inputPort.isClosed()) {
+			if (inputPort.isClosed()) {
+				// stage.removeDynamicPort(inputPort);
+			} else {
 				return;
 			}
 		}

@@ -26,8 +26,8 @@ import java.util.List;
 import org.junit.Test;
 
 import teetime.framework.Configuration;
-import teetime.framework.DynamicOutputPort;
 import teetime.framework.Execution;
+import teetime.framework.OutputPort;
 import teetime.framework.Stage;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
@@ -100,7 +100,7 @@ public class DynamicDistributorTest {
 
 		assertThat(config.getOutputElements(), contains(0, 1, 2, 4, 5));
 		assertValuesForIndex(inputActions[0], Collections.<Integer> emptyList());
-		assertValuesForIndex(inputActions[2], Arrays.asList(3));
+		assertValuesForIndex(inputActions[2], Arrays.asList(3)); // FIXME fails sometimes
 		assertValuesForIndex(inputActions[3], Collections.<Integer> emptyList());
 	}
 
@@ -109,7 +109,7 @@ public class DynamicDistributorTest {
 		CreatePortAction<Integer> portAction = new CreatePortAction<Integer>(newStage.getInputPort());
 		portAction.addPortActionListener(new PortActionListener<Integer>() {
 			@Override
-			public void onOutputPortCreated(final DynamicDistributor<Integer> distributor, final DynamicOutputPort<Integer> port) {
+			public void onOutputPortCreated(final DynamicDistributor<Integer> distributor, final OutputPort<Integer> port) {
 				portContainer.setPort(port);
 			}
 		});
@@ -122,7 +122,7 @@ public class DynamicDistributorTest {
 		@SuppressWarnings("unchecked")
 		CollectorSink<Integer> collectorSink = (CollectorSink<Integer>) stage;
 
-		assertThat(collectorSink.getElements(), is(values));
+		assertThat(collectorSink.getElements(), is(values)); // FIXME fails sometimes with a ConcurrentModificationException
 	}
 
 	private static class DynamicDistributorTestConfig<T> extends Configuration {
