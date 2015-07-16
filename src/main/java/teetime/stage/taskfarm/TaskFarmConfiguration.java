@@ -15,6 +15,9 @@
  */
 package teetime.stage.taskfarm;
 
+import teetime.stage.taskfarm.adaptation.analysis.ThroughputAlgorithm;
+import teetime.stage.taskfarm.adaptation.analysis.WeightedAlgorithm.WeightMethod;
+
 /**
  * This class contains the configuration of a single Task Farm.
  *
@@ -29,7 +32,15 @@ package teetime.stage.taskfarm;
  */
 public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
+	public static final int INIT_SAMPLES_UNTIL_REMOVE = -1;
+
 	private int analysisWindow = 3;
+	private ThroughputAlgorithm throughputAlgorithm = ThroughputAlgorithm.REGRESSION;
+	private WeightMethod weightedAlgorithmMethod = WeightMethod.EXPONENTIAL;
+	private int maxSamplesUntilRemove = 5;
+	private double throughputScoreBoundary = 0.2d;
+
+	private boolean stillParallelizable = true;
 
 	TaskFarmConfiguration() {}
 
@@ -39,5 +50,45 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	public void setAnalysisWindow(final int analysisWindow) {
 		this.analysisWindow = analysisWindow;
+	}
+
+	public ThroughputAlgorithm getThroughputAlgorithm() {
+		return throughputAlgorithm;
+	}
+
+	public void setThroughputAlgorithm(final ThroughputAlgorithm throughputAlgorithm) {
+		this.throughputAlgorithm = throughputAlgorithm;
+	}
+
+	public WeightMethod getWeightedAlgorithmMethod() {
+		return weightedAlgorithmMethod;
+	}
+
+	public void setWeightedAlgorithmMethod(final WeightMethod weightedAlgorithmMethod) {
+		this.weightedAlgorithmMethod = weightedAlgorithmMethod;
+	}
+
+	public int getMaxSamplesUntilRemove() {
+		return maxSamplesUntilRemove;
+	}
+
+	public void setMaxSamplesUntilRemove(final int maxSamplesUntilRemove) {
+		this.maxSamplesUntilRemove = maxSamplesUntilRemove;
+	}
+
+	public double getThroughputScoreBoundary() {
+		return throughputScoreBoundary;
+	}
+
+	public void setThroughputScoreBoundary(final double throughputScoreBoundary) {
+		this.throughputScoreBoundary = throughputScoreBoundary;
+	}
+
+	public boolean isStillParallelizable() {
+		return stillParallelizable;
+	}
+
+	public void setStillParallelizable(final boolean stillParallelizable) {
+		this.stillParallelizable = stillParallelizable;
 	}
 }

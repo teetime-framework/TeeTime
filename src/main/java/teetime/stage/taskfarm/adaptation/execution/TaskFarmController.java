@@ -55,7 +55,7 @@ public class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 *            TaskFarmConfiguration of the Task Farm which
 	 *            this controller is used for
 	 */
-	public TaskFarmController(final TaskFarmStage<I, O, T> taskFarmStage) {
+	TaskFarmController(final TaskFarmStage<I, O, T> taskFarmStage) {
 		this.taskFarmStage = taskFarmStage;
 	}
 

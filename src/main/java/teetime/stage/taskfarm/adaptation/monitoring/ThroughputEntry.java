@@ -34,7 +34,7 @@ public class ThroughputEntry {
 	 * @param throughput
 	 *            measured throughput value
 	 */
-	public ThroughputEntry(final long timestamp, final double throughput) {
+	ThroughputEntry(final long timestamp, final double throughput) {
 		this.timestamp = timestamp;
 		this.throughput = throughput;
 	}

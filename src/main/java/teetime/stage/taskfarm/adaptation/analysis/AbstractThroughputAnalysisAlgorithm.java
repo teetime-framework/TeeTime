@@ -40,7 +40,7 @@ public abstract class AbstractThroughputAnalysisAlgorithm {
 	 *            TaskFarmConfiguration of the Task Farm which
 	 *            this algorithm is used for
 	 */
-	public AbstractThroughputAnalysisAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
+	AbstractThroughputAnalysisAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
 		if (configuration == null) {
 			// for testing purposes
 			window = 3;
@@ -80,7 +80,7 @@ public abstract class AbstractThroughputAnalysisAlgorithm {
 		if (sum == 0) {
 			return 0;
 		} else {
-			return Math.abs(difference / sum);
+			return difference / sum;
 		}
 	}
 

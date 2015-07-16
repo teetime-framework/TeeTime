@@ -15,6 +15,44 @@
  */
 package teetime.stage.taskfarm.adaptation.analysis;
 
-public class TaskFarmAnalyzer {
+import teetime.stage.taskfarm.ITaskFarmDuplicable;
+import teetime.stage.taskfarm.TaskFarmConfiguration;
+import teetime.stage.taskfarm.adaptation.monitoring.ThroughputHistory;
+
+public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
+
+	private final TaskFarmConfiguration<I, O, T> configuration;
+	private double throughputScore;
+
+	public TaskFarmAnalyzer(final TaskFarmConfiguration<I, O, T> configuration) {
+		this.configuration = configuration;
+	}
+
+	public void analyze(final ThroughputHistory history) {
+
+		AbstractThroughputAnalysisAlgorithm algorithm = null;
+
+		switch (configuration.getThroughputAlgorithm()) {
+		case MEAN:
+			algorithm = new MeanAlgorithm(configuration);
+			break;
+		case WEIGHTED:
+			algorithm = new WeightedAlgorithm(configuration);
+			break;
+		case REGRESSION:
+			algorithm = new RegressionAlgorithm(configuration);
+			break;
+		default:
+			algorithm = new RegressionAlgorithm(configuration);
+			break;
+		}
+
+		throughputScore = algorithm.doAnalysis(history);
+
+	}
+
+	public double getThroughputScore() {
+		return throughputScore;
+	}
 
 }

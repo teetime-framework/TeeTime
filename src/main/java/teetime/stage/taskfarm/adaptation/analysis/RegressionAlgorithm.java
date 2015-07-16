@@ -39,7 +39,7 @@ public class RegressionAlgorithm extends AbstractThroughputAnalysisAlgorithm {
 	 *            TaskFarmConfiguration of the Task Farm which
 	 *            this algorithm is used for
 	 */
-	public RegressionAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
+	RegressionAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
 		super(configuration);
 	}
 

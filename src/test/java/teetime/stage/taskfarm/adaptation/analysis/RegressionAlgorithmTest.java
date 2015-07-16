@@ -16,8 +16,8 @@
 package teetime.stage.taskfarm.adaptation.analysis;
 
 import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -101,7 +101,7 @@ public class RegressionAlgorithmTest {
 
 		final AbstractThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(history);
-		assertThat(thoughputScore, is(greaterThan(0.3d)));
+		assertThat(thoughputScore, is(lessThan(-0.3d)));
 	}
 
 }

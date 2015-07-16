@@ -46,13 +46,16 @@ public class WeightedAlgorithm extends AbstractThroughputAnalysisAlgorithm {
 	/**
 	 * Constructor.
 	 *
-	 * @param weightMethod
-	 *            weighting method to be used (see {@link WeightedAlgorithm.WeightMethod})
 	 * @param configuration
 	 *            TaskFarmConfiguration of the Task Farm which
 	 *            this algorithm is used for
 	 */
-	public WeightedAlgorithm(final WeightMethod weightMethod, final TaskFarmConfiguration<?, ?, ?> configuration) {
+	WeightedAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
+		super(configuration);
+		this.weightMethod = configuration.getWeightedAlgorithmMethod();
+	}
+
+	WeightedAlgorithm(final WeightMethod weightMethod, final TaskFarmConfiguration<?, ?, ?> configuration) {
 		super(configuration);
 		this.weightMethod = weightMethod;
 	}

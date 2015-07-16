@@ -34,7 +34,7 @@ public class MeanAlgorithm extends AbstractThroughputAnalysisAlgorithm {
 	 *            TaskFarmConfiguration of the Task Farm which
 	 *            this algorithm is used for
 	 */
-	public MeanAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
+	MeanAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
 		super(configuration);
 	}
 
