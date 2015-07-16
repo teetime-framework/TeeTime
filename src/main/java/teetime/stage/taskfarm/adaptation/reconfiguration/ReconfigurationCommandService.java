@@ -1,23 +1,23 @@
-package teetime.stage.taskfarm.adaptation.execution;
+package teetime.stage.taskfarm.adaptation.reconfiguration;
 
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
 
-public class ExecutionCommandService<I, O, T extends ITaskFarmDuplicable<I, O>> {
+public class ReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	private final TaskFarmConfiguration<I, O, T> configuration;
 	private int samplesUntilRemove;
 
-	ExecutionCommandService(final TaskFarmConfiguration<I, O, T> configuration) {
+	ReconfigurationCommandService(final TaskFarmConfiguration<I, O, T> configuration) {
 		this.configuration = configuration;
 		this.samplesUntilRemove = TaskFarmConfiguration.INIT_SAMPLES_UNTIL_REMOVE;
 	}
 
-	public TaskFarmExecutionCommand decideExecutionPlan(final double throughputScore) {
+	public TaskFarmReconfigurationCommand decideExecutionPlan(final double throughputScore) {
 		if (samplesUntilRemove == -1) {
 			// new execution, start adding stages
 			samplesUntilRemove = configuration.getMaxSamplesUntilRemove();
-			return TaskFarmExecutionCommand.ADD;
+			return TaskFarmReconfigurationCommand.ADD;
 		}
 
 		if (samplesUntilRemove > 0) {
@@ -26,16 +26,16 @@ public class ExecutionCommandService<I, O, T extends ITaskFarmDuplicable<I, O>> 
 			if (throughputScore > configuration.getThroughputScoreBoundary()) {
 				// we could find a performance increase, add another stage
 				samplesUntilRemove = configuration.getMaxSamplesUntilRemove();
-				return TaskFarmExecutionCommand.ADD;
+				return TaskFarmReconfigurationCommand.ADD;
 			} else {
 				// we did not find a performance increase, wait a bit longer
 				samplesUntilRemove--;
-				return TaskFarmExecutionCommand.NONE;
+				return TaskFarmReconfigurationCommand.NONE;
 			}
 		} else {
 			// we found a boundary where new stages will not increase performance
 			configuration.setStillParallelizable(false);
-			return TaskFarmExecutionCommand.REMOVE;
+			return TaskFarmReconfigurationCommand.REMOVE;
 		}
 	}
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage.taskfarm.adaptation.execution;
+package teetime.stage.taskfarm.adaptation.reconfiguration;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,8 +22,8 @@ import teetime.framework.Configuration;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.Sink;
 import teetime.stage.taskfarm.TaskFarmStage;
-import teetime.stage.taskfarm.adaptation.execution.TaskFarmControllerTest.SelfMonitoringPlusOneStage;
-import teetime.stage.taskfarm.adaptation.execution.TaskFarmControllerTest.TaskFarmControllerControllerStage;
+import teetime.stage.taskfarm.adaptation.reconfiguration.TaskFarmControllerTest.SelfMonitoringPlusOneStage;
+import teetime.stage.taskfarm.adaptation.reconfiguration.TaskFarmControllerTest.TaskFarmControllerControllerStage;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;

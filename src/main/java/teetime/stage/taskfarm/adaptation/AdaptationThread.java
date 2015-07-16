@@ -21,7 +21,7 @@ import java.util.List;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
 import teetime.stage.taskfarm.adaptation.analysis.TaskFarmAnalyzer;
-import teetime.stage.taskfarm.adaptation.execution.TaskFarmController;
+import teetime.stage.taskfarm.adaptation.reconfiguration.TaskFarmController;
 
 final public class AdaptationThread extends Thread {
 

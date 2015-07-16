@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage.taskfarm.adaptation.execution;
+package teetime.stage.taskfarm.adaptation.reconfiguration;
 
 import java.util.List;
 

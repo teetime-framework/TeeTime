@@ -1,23 +1,23 @@
-package teetime.stage.taskfarm.adaptation.execution;
+package teetime.stage.taskfarm.adaptation.reconfiguration;
 
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
 
-public class TaskFarmExecutionService<I, O, T extends ITaskFarmDuplicable<I, O>> {
+public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	private final TaskFarmStage<I, O, T> taskFarmStage;
-	private final ExecutionCommandService<I, O, T> executionCommandService;
+	private final ReconfigurationCommandService<I, O, T> reconfigurationCommandService;
 	private final TaskFarmController<I, O, T> controller;
 
-	public TaskFarmExecutionService(final TaskFarmStage<I, O, T> taskFarmStage) {
+	public TaskFarmReconfigurationService(final TaskFarmStage<I, O, T> taskFarmStage) {
 		this.taskFarmStage = taskFarmStage;
-		this.executionCommandService = new ExecutionCommandService<I, O, T>(taskFarmStage.getConfiguration());
+		this.reconfigurationCommandService = new ReconfigurationCommandService<I, O, T>(taskFarmStage.getConfiguration());
 		this.controller = new TaskFarmController<I, O, T>(taskFarmStage);
 	}
 
 	public void execute(final double throughputScore) {
 
-		TaskFarmExecutionCommand command = executionCommandService.decideExecutionPlan(throughputScore);
+		TaskFarmReconfigurationCommand command = reconfigurationCommandService.decideExecutionPlan(throughputScore);
 
 		switch (command) {
 		case ADD:
