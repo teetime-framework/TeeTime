@@ -17,7 +17,7 @@ package teetime.stage.taskfarm.adaptation.analysis;
 
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
-import teetime.stage.taskfarm.adaptation.monitoring.ThroughputHistory;
+import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
 

@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import teetime.stage.taskfarm.adaptation.analysis.WeightedAlgorithm.WeightMethod;
-import teetime.stage.taskfarm.adaptation.monitoring.ThroughputHistory;
+import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 /**
  * @author Christian Claus Wiechmann

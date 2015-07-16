@@ -1,16 +1,16 @@
-package teetime.stage.taskfarm.adaptation.monitoring;
+package teetime.stage.taskfarm.adaptation.history;
 
 import teetime.framework.exceptionHandling.TaskFarmInvalidPipeException;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
 
-public class TaskFarmMonitoringService<I, O, T extends ITaskFarmDuplicable<I, O>> {
+public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	private final TaskFarmStage<I, O, T> taskFarmStage;
 	private final ThroughputHistory history = new ThroughputHistory();
 
-	public TaskFarmMonitoringService(final TaskFarmStage<I, O, T> taskFarmStage) {
+	public TaskFarmHistoryService(final TaskFarmStage<I, O, T> taskFarmStage) {
 		this.taskFarmStage = taskFarmStage;
 	}
 
@@ -27,6 +27,11 @@ public class TaskFarmMonitoringService<I, O, T extends ITaskFarmDuplicable<I, O>
 				IMonitorablePipe inputPipe = (IMonitorablePipe) enclosedStage.getInputPort().getPipe();
 				sum += inputPipe.getPushThroughput();
 				count++;
+				// inputPipe.getPushThroughput();
+				// inputPipe.getPullThroughput();
+				// inputPipe.size();
+				// inputPipe.capacity();
+				// FIXME MonitoringService or ProtocolService
 			}
 		} catch (ClassCastException e) {
 			throw new TaskFarmInvalidPipeException(

@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import teetime.stage.taskfarm.adaptation.monitoring.ThroughputHistory;
+import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 public class MeanAlgorithmTest {
 
