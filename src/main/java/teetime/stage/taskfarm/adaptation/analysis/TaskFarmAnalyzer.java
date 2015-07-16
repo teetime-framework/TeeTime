@@ -32,6 +32,10 @@ public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 		AbstractThroughputAnalysisAlgorithm algorithm = null;
 
+		// FIXME
+		// ThroughputAlgorithm throughputAlgorithm = configuration.getThroughputAlgorithm();
+		// algorithm = throughputAlgorithm.create(configuration);
+
 		switch (configuration.getThroughputAlgorithm()) {
 		case MEAN:
 			algorithm = new MeanAlgorithm(configuration);
