@@ -16,7 +16,6 @@ public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<
 	}
 
 	public void execute(final double throughputScore) {
-
 		TaskFarmReconfigurationCommand command = reconfigurationCommandService.decideExecutionPlan(throughputScore);
 
 		switch (command) {

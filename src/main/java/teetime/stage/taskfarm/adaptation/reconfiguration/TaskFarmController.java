@@ -17,7 +17,6 @@ package teetime.stage.taskfarm.adaptation.reconfiguration;
 
 import java.util.List;
 
-import teetime.framework.DynamicOutputPort;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.exceptionHandling.TaskFarmControllerException;
@@ -88,7 +87,7 @@ public class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		try {
 			@SuppressWarnings("unchecked")
 			final PortAction<DynamicDistributor<I>> distributorPortAction =
-					new RemovePortActionDistributor<I>((DynamicOutputPort<I>) distributorOutputPort);
+					new RemovePortActionDistributor<I>((OutputPort<I>) distributorOutputPort);
 			this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 		} catch (ClassCastException e) {
 			throw new TaskFarmControllerException("Merger and Distributor have a different type than the Task Farm or the Task Farm Controller.");

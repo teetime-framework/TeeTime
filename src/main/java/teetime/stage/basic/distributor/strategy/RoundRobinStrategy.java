@@ -19,7 +19,6 @@ import java.util.List;
 
 import teetime.framework.OutputPort;
 import teetime.stage.basic.distributor.Distributor;
-import teetime.util.stage.basic.CyclicIndex;
 
 /**
  * @author Nils Christian Ehmke
@@ -28,7 +27,7 @@ import teetime.util.stage.basic.CyclicIndex;
  */
 public final class RoundRobinStrategy implements IDistributorStrategy {
 
-	private final CyclicIndex cyclicIndex = new CyclicIndex();
+	private int index;
 
 	@SuppressWarnings("unchecked")
 	@Override

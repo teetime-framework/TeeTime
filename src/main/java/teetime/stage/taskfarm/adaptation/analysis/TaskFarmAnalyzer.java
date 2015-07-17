@@ -29,7 +29,6 @@ public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	}
 
 	public void analyze(final ThroughputHistory history) {
-
 		AbstractThroughputAnalysisAlgorithm algorithm = null;
 
 		// FIXME
@@ -52,7 +51,6 @@ public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		}
 
 		throughputScore = algorithm.doAnalysis(history);
-
 	}
 
 	public double getThroughputScore() {

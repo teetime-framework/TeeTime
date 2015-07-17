@@ -22,7 +22,7 @@ public class RemovePortActionDistributor<T> implements PortAction<DynamicDistrib
 
 	private final OutputPort<T> outputPort;
 
-	public RemovePortAction(final OutputPort<T> outputPort) {
+	public RemovePortActionDistributor(final OutputPort<T> outputPort) {
 		if (null == outputPort) {
 			throw new IllegalArgumentException("outputPort may not be null");
 		}

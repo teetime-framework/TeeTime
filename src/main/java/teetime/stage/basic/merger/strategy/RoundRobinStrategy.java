@@ -19,7 +19,6 @@ import java.util.List;
 
 import teetime.framework.InputPort;
 import teetime.stage.basic.merger.Merger;
-import teetime.util.stage.basic.CyclicIndex;
 
 /**
  * @author Nils Christian Ehmke
@@ -28,7 +27,7 @@ import teetime.util.stage.basic.CyclicIndex;
  */
 public final class RoundRobinStrategy implements IMergerStrategy {
 
-	private final CyclicIndex cyclicIndex = new CyclicIndex();
+	private int index = 0;
 
 	@Override
 	public <T> T getNextInput(final Merger<T> merger) {
@@ -60,5 +59,4 @@ public final class RoundRobinStrategy implements IMergerStrategy {
 		// correct the index if it is out-of-bounds
 		this.index = (this.index + 1) % merger.getInputPorts().size();
 	}
-
 }
