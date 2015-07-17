@@ -24,7 +24,7 @@ final class SingleElementPipe extends AbstractIntraThreadPipe {
 	private Object element;
 
 	<T> SingleElementPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		super(sourcePort, targetPort);
+		super(sourcePort, targetPort, 1);
 	}
 
 	@Override

@@ -38,8 +38,8 @@ public abstract class AbstractInterThreadPipe extends AbstractPipe {
 
 	private volatile boolean closed;
 
-	protected <T> AbstractInterThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		super(sourcePort, targetPort);
+	protected <T> AbstractInterThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		super(sourcePort, targetPort, capacity);
 		final Queue<ISignal> localSignalQueue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT));
 		final PutStrategy<ISignal> putStrategy = new YieldPutStrategy<ISignal>();
 		final TakeStrategy<ISignal> takeStrategy = new SCParkTakeStrategy<ISignal>();

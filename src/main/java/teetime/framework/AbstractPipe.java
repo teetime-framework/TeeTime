@@ -30,8 +30,10 @@ public abstract class AbstractPipe implements IPipe {
 
 	private final OutputPort<?> sourcePort;
 	private final InputPort<?> targetPort;
+	@SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+	private final int capacity;
 
-	protected <T> AbstractPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	protected <T> AbstractPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort == null) {
 			throw new IllegalArgumentException("sourcePort may not be null");
 		}
@@ -44,21 +46,27 @@ public abstract class AbstractPipe implements IPipe {
 
 		this.sourcePort = sourcePort;
 		this.targetPort = targetPort;
+		this.capacity = capacity;
 		this.cachedTargetStage = targetPort.getOwningStage();
 	}
 
 	@Override
-	public OutputPort<?> getSourcePort() {
+	public final OutputPort<?> getSourcePort() {
 		return sourcePort;
 	}
 
 	@Override
-	public InputPort<?> getTargetPort() {
+	public final InputPort<?> getTargetPort() {
 		return targetPort;
 	}
 
 	@Override
 	public final boolean hasMore() {
 		return !isEmpty();
+	}
+
+	@Override
+	public final int capacity() {
+		return capacity;
 	}
 }

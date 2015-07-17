@@ -30,7 +30,7 @@ final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe
 	private int numWaits;
 
 	<T> SpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		super(sourcePort, targetPort);
+		super(sourcePort, targetPort, capacity);
 		this.queue = new ObservableSpScArrayQueue<Object>(capacity);
 	}
 

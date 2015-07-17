@@ -23,6 +23,8 @@ public interface IMonitorablePipe {
 
 	int size();
 
+	int capacity();
+
 	long getPushThroughput();
 
 	long getPullThroughput();

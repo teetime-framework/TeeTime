@@ -21,8 +21,8 @@ public abstract class AbstractIntraThreadPipe extends AbstractPipe {
 
 	private boolean closed;
 
-	protected <T> AbstractIntraThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		super(sourcePort, targetPort);
+	protected <T> AbstractIntraThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		super(sourcePort, targetPort, capacity);
 	}
 
 	@Override

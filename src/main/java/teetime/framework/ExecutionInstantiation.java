@@ -72,8 +72,8 @@ class ExecutionInstantiation {
 		}
 
 		if (threadableStages.contains(targetStage) && targetColor != color) {
-			if (pipe.getCapacity() != 0) {
-				interBoundedThreadPipeFactory.create(outputPort, pipe.getTargetPort(), pipe.getCapacity());
+			if (pipe.capacity() != 0) {
+				interBoundedThreadPipeFactory.create(outputPort, pipe.getTargetPort(), pipe.capacity());
 			} else {
 				interUnboundedThreadPipeFactory.create(outputPort, pipe.getTargetPort(), 4);
 			}

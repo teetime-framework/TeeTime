@@ -70,6 +70,11 @@ class MergerTestingPipe implements IPipe {
 	}
 
 	@Override
+	public int capacity() {
+		return 0;
+	}
+
+	@Override
 	public Object removeLast() {
 		return null;
 	}
