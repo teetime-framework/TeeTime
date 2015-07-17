@@ -35,7 +35,8 @@ public class InstantiationPipe implements IPipe {
 		targetPort.setPipe(this);
 	}
 
-	public int getCapacity() {
+	@Override
+	public int capacity() {
 		return capacity;
 	}
 

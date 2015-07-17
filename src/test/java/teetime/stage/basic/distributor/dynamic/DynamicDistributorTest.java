@@ -26,8 +26,8 @@ import java.util.List;
 import org.junit.Test;
 
 import teetime.framework.Configuration;
-import teetime.framework.DynamicOutputPort;
 import teetime.framework.Execution;
+import teetime.framework.OutputPort;
 import teetime.framework.Stage;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
@@ -86,11 +86,11 @@ public class DynamicDistributorTest {
 		final PortContainer<Integer> portContainer2 = new PortContainer<Integer>();
 
 		inputActions[0] = createPortCreateAction(portContainer0);
-		inputActions[1] = new RemovePortActionDistributor<Integer>(portContainer0);
+		inputActions[1] = new RemovePortActionDelegation<Integer>(portContainer0);
 		inputActions[2] = createPortCreateAction(portContainer1);
 		inputActions[3] = createPortCreateAction(portContainer2);
-		inputActions[4] = new RemovePortActionDistributor<Integer>(portContainer1);
-		inputActions[5] = new RemovePortActionDistributor<Integer>(portContainer2);
+		inputActions[4] = new RemovePortActionDelegation<Integer>(portContainer1);
+		inputActions[5] = new RemovePortActionDelegation<Integer>(portContainer2);
 
 		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
 		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config);
@@ -99,7 +99,7 @@ public class DynamicDistributorTest {
 
 		assertThat(config.getOutputElements(), contains(0, 1, 2, 4, 5));
 		assertValuesForIndex(inputActions[0], Collections.<Integer> emptyList());
-		assertValuesForIndex(inputActions[2], Arrays.asList(3));
+		assertValuesForIndex(inputActions[2], Arrays.asList(3)); // FIXME fails sometimes
 		assertValuesForIndex(inputActions[3], Collections.<Integer> emptyList());
 	}
 
@@ -108,7 +108,7 @@ public class DynamicDistributorTest {
 		CreatePortActionDistributor<Integer> portAction = new CreatePortActionDistributor<Integer>(newStage.getInputPort());
 		portAction.addPortActionListener(new PortActionListener<Integer>() {
 			@Override
-			public void onOutputPortCreated(final DynamicDistributor<Integer> distributor, final DynamicOutputPort<Integer> port) {
+			public void onOutputPortCreated(final DynamicDistributor<Integer> distributor, final OutputPort<Integer> port) {
 				portContainer.setPort(port);
 			}
 		});
@@ -121,7 +121,7 @@ public class DynamicDistributorTest {
 		@SuppressWarnings("unchecked")
 		CollectorSink<Integer> collectorSink = (CollectorSink<Integer>) stage;
 
-		assertThat(collectorSink.getElements(), is(values));
+		assertThat(collectorSink.getElements(), is(values)); // FIXME fails sometimes with a ConcurrentModificationException
 	}
 
 	private static class DynamicDistributorTestConfig<T> extends Configuration {

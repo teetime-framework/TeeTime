@@ -15,6 +15,7 @@
  */
 package teetime.framework.signal;
 
+import java.util.List;
 import java.util.Set;
 
 import teetime.framework.InputPort;
@@ -33,8 +34,8 @@ public final class TerminatingSignal extends AbstractSignal {
 	}
 
 	@Override
-	public boolean mayBeTriggered(final Set<InputPort<?>> receivedInputPorts, final InputPort<?>[] allInputPorts) {
-		return receivedInputPorts.size() == allInputPorts.length;
+	public boolean mayBeTriggered(final Set<InputPort<?>> receivedInputPorts, final List<InputPort<?>> allInputPorts) {
+		return receivedInputPorts.size() == allInputPorts.size();
 	}
 
 }

@@ -17,12 +17,12 @@ package teetime.util;
 
 public final class ThreadThrowableContainer {
 
-	private final Thread first;
-	private final Throwable second;
+	private final Thread thread;
+	private final Throwable throwable;
 
 	public ThreadThrowableContainer(final Thread first, final Throwable second) {
-		this.first = first;
-		this.second = second;
+		this.thread = first;
+		this.throwable = second;
 	}
 
 	public static ThreadThrowableContainer of(final Thread first, final Throwable second) {
@@ -30,11 +30,16 @@ public final class ThreadThrowableContainer {
 	}
 
 	public Thread getThread() {
-		return this.first;
+		return this.thread;
 	}
 
 	public Throwable getThrowable() {
-		return this.second;
+		return this.throwable;
+	}
+
+	@Override
+	public String toString() {
+		return throwable + " in " + thread;
 	}
 
 }

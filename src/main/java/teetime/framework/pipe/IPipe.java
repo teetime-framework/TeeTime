@@ -50,9 +50,14 @@ public interface IPipe {
 	boolean isEmpty();
 
 	/**
-	 * @return the current number of elements
+	 * @return the current number of elements held by this pipe instance
 	 */
 	int size();
+
+	/**
+	 * @return the maximum number of elements possible to hold by this pipe instance
+	 */
+	int capacity();
 
 	/**
 	 * Retrieves the last element of the pipe and deletes it.

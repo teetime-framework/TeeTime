@@ -15,14 +15,14 @@
  */
 package teetime.stage.basic.distributor.dynamic;
 
-import teetime.framework.DynamicOutputPort;
+import teetime.framework.OutputPort;
 import teetime.util.framework.port.PortAction;
 
 public class RemovePortActionDistributor<T> implements PortAction<DynamicDistributor<T>> {
 
-	private final DynamicOutputPort<T> outputPort;
+	private final OutputPort<T> outputPort;
 
-	public RemovePortActionDistributor(final DynamicOutputPort<T> outputPort) {
+	public RemovePortAction(final OutputPort<T> outputPort) {
 		if (null == outputPort) {
 			throw new IllegalArgumentException("outputPort may not be null");
 		}

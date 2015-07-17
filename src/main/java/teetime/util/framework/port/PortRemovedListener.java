@@ -13,32 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.util.framework.port;
 
-/**
- *
- * @author Christian Wulf
- *
- * @param <T>
- *            the type of elements to be sent
- *
- * @since 1.2
- */
-public class DynamicOutputPort<T> extends OutputPort<T> {
+import teetime.framework.AbstractPort;
 
-	private int index;
+public interface PortRemovedListener<T extends AbstractPort<?>> {
 
-	protected DynamicOutputPort(final Class<T> type, final Stage owningStage, final int index) {
-		super(type, owningStage, null);
-		this.index = index;
-	}
-
-	public int getIndex() {
-		return index;
-	}
-
-	public void setIndex(final int index) {
-		this.index = index;
-	}
-
+	void onPortRemoved(T removedPort);
 }

@@ -24,7 +24,7 @@ final class RelayTestPipe<T> extends AbstractInterThreadPipe {
 	private final ConstructorClosure<T> inputObjectCreator;
 
 	public RelayTestPipe(final int numInputObjects, final ConstructorClosure<T> inputObjectCreator) {
-		super(null, null);
+		super(null, null, Integer.MAX_VALUE);
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;
 	}

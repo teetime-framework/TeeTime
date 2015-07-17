@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 
 import teetime.framework.OutputPort;
-import teetime.framework.Stage;
 
 /**
  * @author Nils Christian Ehmke
@@ -31,10 +30,12 @@ import teetime.framework.Stage;
  */
 public final class CloneStrategy implements IDistributorStrategy {
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public <T> boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
-		for (final OutputPort<T> outputPort : outputPorts) {
-			outputPort.send(clone(element));
+	public <T> boolean distribute(final List<OutputPort<?>> outputPorts, final T element) {
+		for (final OutputPort<?> outputPort : outputPorts) {
+			T clonedElement = clone(element);
+			((OutputPort<T>) outputPort).send(clonedElement);
 		}
 
 		return true;
@@ -111,7 +112,7 @@ public final class CloneStrategy implements IDistributorStrategy {
 	}
 
 	@Override
-	public void onOutputPortRemoved(final Stage stage, final OutputPort<?> removedOutputPort) {
+	public void onPortRemoved(final OutputPort<?> removedOutputPort) {
 		// do nothing
 	}
 

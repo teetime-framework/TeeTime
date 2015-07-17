@@ -13,32 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.stage.basic.distributor.dynamic;
+
+import teetime.framework.OutputPort;
+import teetime.util.framework.port.PortAction;
 
 /**
+ * Simulates a {@link RemovePortAction} by means of a {@link PortContainer} instead of an {@link DynamicOutputPort}.
  *
  * @author Christian Wulf
  *
  * @param <T>
- *            the type of elements to be received
- *
- * @since 1.2
  */
-public final class DynamicInputPort<T> extends InputPort<T> {
+public class RemovePortActionDelegation<T> implements PortAction<DynamicDistributor<T>> {
 
-	private int index;
+	private final PortContainer<T> portContainer;
 
-	DynamicInputPort(final Class<T> type, final Stage owningStage, final int index) {
-		super(type, owningStage, null);
-		this.index = index;
+	public RemovePortActionDelegation(final PortContainer<T> portContainer) {
+		this.portContainer = portContainer;
 	}
 
-	public int getIndex() {
-		return index;
-	}
-
-	public void setIndex(final int index) {
-		this.index = index;
+	@Override
+	public void execute(final DynamicDistributor<T> dynamicDistributor) {
+		OutputPort<?> outputPort = portContainer.getPort();
+		dynamicDistributor.removeDynamicPort(outputPort);
 	}
 
 }

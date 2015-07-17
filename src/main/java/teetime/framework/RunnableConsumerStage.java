@@ -55,8 +55,9 @@ public final class RunnableConsumerStage extends AbstractRunnableStage {
 
 	private void checkForTerminationSignal(final Stage stage) {
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
-			// System.out.println("\tclosed: " + inputPort.isClosed() + " (" + inputPort);
-			if (!inputPort.isClosed()) {
+			if (inputPort.isClosed()) {
+				// stage.removeDynamicPort(inputPort);
+			} else {
 				return;
 			}
 		}

@@ -15,9 +15,9 @@
  */
 package teetime.stage.basic.distributor.dynamic;
 
-import teetime.framework.DynamicOutputPort;
+import teetime.framework.OutputPort;
 
 public interface PortActionListener<T> {
 
-	void onOutputPortCreated(DynamicDistributor<T> distributor, DynamicOutputPort<T> port);
+	void onOutputPortCreated(DynamicDistributor<T> distributor, OutputPort<T> port);
 }

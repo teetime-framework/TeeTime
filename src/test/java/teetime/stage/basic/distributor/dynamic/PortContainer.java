@@ -15,7 +15,7 @@
  */
 package teetime.stage.basic.distributor.dynamic;
 
-import teetime.framework.DynamicOutputPort;
+import teetime.framework.OutputPort;
 
 /**
  * Represents a container that eventually holds the output port that a {@link RemovePortActionDistributor} can use.
@@ -24,21 +24,18 @@ import teetime.framework.DynamicOutputPort;
  *
  * @param <T>
  */
-class PortContainer<T> extends DynamicOutputPort<T> {
+final class PortContainer<T> {
 
-	private DynamicOutputPort<T> port;
+	private OutputPort<T> port;
 
-	PortContainer() {
-		super(null, null, -1);
-	}
+	PortContainer() {}
 
-	@Override
-	public int getIndex() {
-		return port.getIndex();
-	}
-
-	public void setPort(final DynamicOutputPort<T> port) {
+	public void setPort(final OutputPort<T> port) {
 		this.port = port;
+	}
+
+	public OutputPort<T> getPort() {
+		return port;
 	}
 
 }

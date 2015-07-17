@@ -15,8 +15,9 @@
  */
 package teetime.stage.basic.distributor.strategy;
 
+import java.util.List;
+
 import teetime.framework.OutputPort;
-import teetime.framework.Stage;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.util.stage.basic.CyclicIndex;
 
@@ -31,15 +32,16 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 
 	private int numWaits;
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public <T> boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
-		final int numOutputPorts = outputPorts.length;
+	public <T> boolean distribute(final List<OutputPort<?>> outputPorts, final T element) {
+		final int numOutputPorts = outputPorts.size();
 		int numLoops = numOutputPorts;
 
 		boolean success;
 		OutputPort<T> outputPort;
 		do {
-			outputPort = cyclicIndex.getNextElement(outputPorts);
+			outputPort = (OutputPort<T>) getNextPortInRoundRobinOrder(outputPorts);
 			success = outputPort.sendNonBlocking(element);
 			if (0 == numLoops) {
 				numWaits++;
@@ -62,15 +64,24 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 		// Thread.yield();
 	}
 
+	private OutputPort<?> getNextPortInRoundRobinOrder(final List<OutputPort<?>> outputPorts) {
+		final OutputPort<?> outputPort = outputPorts.get(this.index);
+
+		this.index = (this.index + 1) % outputPorts.size();
+
+		return outputPort;
+	}
+
 	public int getNumWaits() {
 		return numWaits;
 	}
 
 	@Override
-	public void onOutputPortRemoved(final Stage stage, final OutputPort<?> removedOutputPort) {
-		Distributor<?> distributor = (Distributor<?>) stage;
-		// for the case if it is out-of-bounds
-		cyclicIndex.ensureWithinBounds(distributor.getOutputPorts());
+	public void onPortRemoved(final OutputPort<?> removedOutputPort) {
+		Distributor<?> distributor = (Distributor<?>) removedOutputPort.getOwningStage();
+		// correct the index if it is out-of-bounds
+		List<OutputPort<?>> outputPorts = distributor.getOutputPorts();
+		this.index = this.index % outputPorts.size();
 	}
 
 }

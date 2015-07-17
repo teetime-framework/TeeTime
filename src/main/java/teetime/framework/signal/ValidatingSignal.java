@@ -37,7 +37,7 @@ public final class ValidatingSignal implements ISignal {
 	}
 
 	@Override
-	public boolean mayBeTriggered(final Set<InputPort<?>> receivedInputPorts, final InputPort<?>[] allInputPorts) {
+	public boolean mayBeTriggered(final Set<InputPort<?>> receivedInputPorts, final List<InputPort<?>> allInputPorts) {
 		return true;
 	}
 

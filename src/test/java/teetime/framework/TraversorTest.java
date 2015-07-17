@@ -44,11 +44,14 @@ public class TraversorTest {
 		TestConfiguration tc = new TestConfiguration();
 		new Execution<TestConfiguration>(tc);
 		traversor.traverse(tc.init);
+
 		Set<Stage> comparingStages = new HashSet<Stage>();
 		comparingStages.add(tc.init);
 		comparingStages.add(tc.f2b);
 		comparingStages.add(tc.distributor);
-		assertThat(tc.distributor.getOwningThread(), is(not(tc.distributor.getOutputPorts()[0].pipe.getTargetPort().getOwningStage().getOwningThread())));
+
+		OutputPort<?> distributorOutputPort0 = tc.distributor.getOutputPorts().get(0);
+		assertThat(tc.distributor.getOwningThread(), is(not(distributorOutputPort0.pipe.getTargetPort().getOwningStage().getOwningThread())));
 		assertEquals(comparingStages, traversor.getVisitedStage());
 	}
 

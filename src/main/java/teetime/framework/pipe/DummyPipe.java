@@ -95,4 +95,9 @@ public final class DummyPipe implements IPipe {
 
 	}
 
+	@Override
+	public int capacity() {
+		return 0;
+	}
+
 }

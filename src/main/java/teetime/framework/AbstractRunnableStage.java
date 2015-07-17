@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.StageException;
-import teetime.framework.signal.TerminatingSignal;
 
 abstract class AbstractRunnableStage implements Runnable {
 
@@ -33,47 +32,42 @@ abstract class AbstractRunnableStage implements Runnable {
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
 
-		// stage.owningContext.getThreadCounter().inc();
+		if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
+			stage.owningContext.getRunnableCounter().inc();
+		}
 	}
 
 	@Override
 	public final void run() {
 		this.logger.debug("Executing runnable stage...");
-		boolean failed = false;
+
 		try {
-			beforeStageExecution();
 			try {
-				do {
-					executeStage();
-				} while (!stage.shouldBeTerminated());
-			} catch (StageException e) {
-				this.stage.terminate();
-				failed = true;
-			}
-			afterStageExecution();
-
-		} catch (RuntimeException e) {
-			this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
-			throw e;
-		} catch (InterruptedException e) {
-			this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
-		}
-
-		this.logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
-		if (failed) {
-			if (stage.getTerminationStrategy() == TerminationStrategy.BY_SIGNAL) {
-				TerminatingSignal signal = new TerminatingSignal();
-				// TODO: Check if this is really needed... it seems like signals are passed on after their first arrival
-				InputPort<?>[] inputPorts = stage.getInputPorts();
-				for (int i = 0; i < inputPorts.length; i++) {
-					stage.onSignal(signal, inputPorts[i]);
+				beforeStageExecution();
+				try {
+					do {
+						executeStage();
+					} while (!stage.shouldBeTerminated());
+				} catch (StageException e) {
+					this.stage.terminate();
+					throw e;
+				} finally {
+					afterStageExecution();
 				}
+
+			} catch (RuntimeException e) {
+				this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
+				throw e;
+			} catch (InterruptedException e) {
+				this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
 			}
-			throw new IllegalStateException("Terminated by StageExceptionListener");
+		} finally {
+			if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
+				stage.owningContext.getRunnableCounter().dec();
+			}
 		}
 
-		// normal and exceptional termination
-		// stage.owningContext.getThreadCounter().dec();
+		logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
 	}
 
 	protected abstract void beforeStageExecution() throws InterruptedException;

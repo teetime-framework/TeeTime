@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import teetime.framework.DynamicActuator;
-import teetime.framework.DynamicOutputPort;
 import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.pipe.SpScPipeFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
@@ -41,13 +41,13 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 
 	@Override
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
-		DynamicOutputPort<T> newOutputPort = dynamicDistributor.getNewOutputPort();
+		OutputPort<T> newOutputPort = dynamicDistributor.getNewOutputPort();
 
 		processOutputPort(newOutputPort);
 		onOutputPortCreated(dynamicDistributor, newOutputPort);
 	}
 
-	private void processOutputPort(final DynamicOutputPort<T> newOutputPort) {
+	private void processOutputPort(final OutputPort<T> newOutputPort) {
 		INTER_THREAD_PIPE_FACTORY.create(newOutputPort, inputPort);
 
 		DYNAMIC_ACTUATOR.startWithinNewThread(inputPort.getOwningStage());
@@ -58,7 +58,7 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 		// FIXME pass the new thread to the analysis so that it can terminate the thread at the end
 	}
 
-	private void onOutputPortCreated(final DynamicDistributor<T> dynamicDistributor, final DynamicOutputPort<T> newOutputPort) {
+	private void onOutputPortCreated(final DynamicDistributor<T> dynamicDistributor, final OutputPort<T> newOutputPort) {
 		for (PortActionListener<T> listener : listeners) {
 			listener.onOutputPortCreated(dynamicDistributor, newOutputPort);
 		}
