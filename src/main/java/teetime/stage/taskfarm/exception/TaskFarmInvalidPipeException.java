@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.exceptionHandling;
+package teetime.stage.taskfarm.exception;
 
 public class TaskFarmInvalidPipeException extends RuntimeException {
 

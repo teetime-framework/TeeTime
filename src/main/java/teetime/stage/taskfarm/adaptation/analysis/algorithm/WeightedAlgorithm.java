@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage.taskfarm.adaptation.analysis;
+package teetime.stage.taskfarm.adaptation.analysis.algorithm;
 
 import teetime.stage.taskfarm.TaskFarmConfiguration;
+import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAnalysisAlgorithm;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 /**
@@ -50,12 +51,12 @@ public class WeightedAlgorithm extends AbstractThroughputAnalysisAlgorithm {
 	 *            TaskFarmConfiguration of the Task Farm which
 	 *            this algorithm is used for
 	 */
-	WeightedAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
+	public WeightedAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
 		super(configuration);
 		this.weightMethod = configuration.getWeightedAlgorithmMethod();
 	}
 
-	WeightedAlgorithm(final WeightMethod weightMethod, final TaskFarmConfiguration<?, ?, ?> configuration) {
+	public WeightedAlgorithm(final WeightMethod weightMethod, final TaskFarmConfiguration<?, ?, ?> configuration) {
 		super(configuration);
 		this.weightMethod = weightMethod;
 	}

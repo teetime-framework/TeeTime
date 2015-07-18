@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage.taskfarm.adaptation.analysis;
+package teetime.stage.taskfarm.adaptation.analysis.algorithm;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
@@ -22,7 +22,8 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.stage.taskfarm.adaptation.analysis.WeightedAlgorithm.WeightMethod;
+import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAnalysisAlgorithm;
+import teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm.WeightMethod;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 /**

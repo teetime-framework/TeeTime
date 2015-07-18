@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.exceptionHandling;
+package teetime.stage.taskfarm.exception;
 
-public class TaskFarmControllerException extends RuntimeException {
+public class TaskFarmInvalidStageException extends RuntimeException {
 
-	private static final long serialVersionUID = 7394932513863758925L;
+	private static final long serialVersionUID = -2024432280298919911L;
 
-	public TaskFarmControllerException(final String s) {
+	public TaskFarmInvalidStageException(final String s) {
 		super(s);
 	}
 

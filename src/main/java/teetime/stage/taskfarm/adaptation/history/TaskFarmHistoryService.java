@@ -1,9 +1,9 @@
 package teetime.stage.taskfarm.adaptation.history;
 
-import teetime.framework.exceptionHandling.TaskFarmInvalidPipeException;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
+import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
 
 public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 

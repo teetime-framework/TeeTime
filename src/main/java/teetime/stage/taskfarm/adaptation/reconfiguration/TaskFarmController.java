@@ -19,8 +19,6 @@ import java.util.List;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.exceptionHandling.TaskFarmControllerException;
-import teetime.framework.exceptionHandling.TaskFarmInvalidPipeException;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.stage.basic.distributor.dynamic.CreatePortActionDistributor;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
@@ -28,6 +26,8 @@ import teetime.stage.basic.distributor.dynamic.RemovePortActionDistributor;
 import teetime.stage.basic.merger.dynamic.CreatePortActionMerger;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
+import teetime.stage.taskfarm.exception.TaskFarmControllerException;
+import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
 import teetime.util.framework.port.PortAction;
 
 /**

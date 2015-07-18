@@ -57,21 +57,25 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	 */
 	public TaskFarmStage(final T workerStage) {
 		super();
-		this.configuration = new TaskFarmConfiguration<I, O, T>();
 
+		if (null == workerStage) {
+			throw new NullPointerException("The constructor of a Task Farm may not be called with null as the worker stage.");
+		}
+
+		this.configuration = new TaskFarmConfiguration<I, O, T>();
 		this.init(workerStage);
 	}
 
 	private void init(final T includedStage) {
 		addThreadableStage(this.merger);
 		addThreadableStage(includedStage.getInputPort().getOwningStage());
-	
+
 		final InputPort<I> stageInputPort = includedStage.getInputPort();
 		connectPorts(this.distributor.getNewOutputPort(), stageInputPort);
-	
+
 		final OutputPort<O> stageOutputPort = includedStage.getOutputPort();
 		connectPorts(stageOutputPort, this.merger.getNewInputPort());
-	
+
 		enclosedStageInstances.add(includedStage);
 	}
 

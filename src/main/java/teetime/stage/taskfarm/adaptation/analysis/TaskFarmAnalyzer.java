@@ -15,14 +15,23 @@
  */
 package teetime.stage.taskfarm.adaptation.analysis;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
+import teetime.stage.taskfarm.exception.TaskFarmAnalysisException;
+
+import com.google.common.base.Throwables;
 
 public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
+	private final static String THROUGHPUT_ALGORITHM_PATH = "teetime.stage.taskfarm.adaptation.analysis.algorithm";
+
 	private final TaskFarmConfiguration<I, O, T> configuration;
 	private double throughputScore;
+	private AbstractThroughputAnalysisAlgorithm lastUsedAlgorithm = null;
 
 	public TaskFarmAnalyzer(final TaskFarmConfiguration<I, O, T> configuration) {
 		this.configuration = configuration;
@@ -31,30 +40,66 @@ public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	public void analyze(final ThroughputHistory history) {
 		AbstractThroughputAnalysisAlgorithm algorithm = null;
 
-		// FIXME
-		// ThroughputAlgorithm throughputAlgorithm = configuration.getThroughputAlgorithm();
-		// algorithm = throughputAlgorithm.create(configuration);
+		algorithm = createAlgorithm(configuration.getThroughputAlgorithm());
+		lastUsedAlgorithm = algorithm;
 
-		switch (configuration.getThroughputAlgorithm()) {
-		case MEAN:
-			algorithm = new MeanAlgorithm(configuration);
-			break;
-		case WEIGHTED:
-			algorithm = new WeightedAlgorithm(configuration);
-			break;
-		case REGRESSION:
-			algorithm = new RegressionAlgorithm(configuration);
-			break;
-		default:
-			algorithm = new RegressionAlgorithm(configuration);
-			break;
-		}
-
-		throughputScore = algorithm.doAnalysis(history);
+		throughputScore = algorithm.getTroughputAnalysis(history);
 	}
 
 	public double getThroughputScore() {
 		return throughputScore;
 	}
 
+	private AbstractThroughputAnalysisAlgorithm createAlgorithm(final String algorithmClassName) {
+		String fullyQualifiedPath = THROUGHPUT_ALGORITHM_PATH + "." + algorithmClassName;
+
+		AbstractThroughputAnalysisAlgorithm algorithm = null;
+
+		try {
+			Class<?> algorithmClass = Class.forName(fullyQualifiedPath);
+
+			Class<?>[] constructorParameterClasses = new Class[] { TaskFarmConfiguration.class };
+			Object[] constructorParameterObjects = new Object[] { configuration };
+
+			Constructor<?> algorithmConstructor = algorithmClass.getConstructor(constructorParameterClasses);
+
+			algorithm = (AbstractThroughputAnalysisAlgorithm) algorithmConstructor.newInstance(constructorParameterObjects);
+		} catch (ClassNotFoundException e) {
+			throw new TaskFarmAnalysisException("The ThroughputAlgorithm \""
+					+ fullyQualifiedPath
+					+ "\" could not be found.");
+		} catch (InstantiationException e) {
+			throw new TaskFarmAnalysisException("The ThroughputAlgorithm \""
+					+ fullyQualifiedPath
+					+ "\" is declared as abstract and cannot be instantiated");
+		} catch (IllegalAccessException e) {
+			throw new TaskFarmAnalysisException("The constructor of \""
+					+ fullyQualifiedPath
+					+ "\" could not be accessed.");
+		} catch (IllegalArgumentException e) {
+			// should not happen at all
+			throw new TaskFarmAnalysisException("The constructor of \""
+					+ fullyQualifiedPath
+					+ "\" has not been called with the correct amount of arguments.");
+		} catch (InvocationTargetException e) {
+			throw new TaskFarmAnalysisException("The constructor of \""
+					+ fullyQualifiedPath
+					+ "\" has thrown an exception:\n"
+					+ Throwables.getStackTraceAsString(e));
+		} catch (NoSuchMethodException e) {
+			throw new TaskFarmAnalysisException("The ThroughputAlgorithm \""
+					+ fullyQualifiedPath
+					+ "\" does not have any constructor with exactly one TaskFarmConfiguration as its parameter.");
+		} catch (SecurityException e) {
+			throw new TaskFarmAnalysisException("A Security Manager is present and \""
+					+ fullyQualifiedPath
+					+ "\"does not have the correct class loader.");
+		}
+
+		return algorithm;
+	}
+
+	public AbstractThroughputAnalysisAlgorithm getLastUsedAlgorithm() {
+		return lastUsedAlgorithm;
+	}
 }

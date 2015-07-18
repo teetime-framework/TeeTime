@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage.taskfarm.adaptation.analysis;
+package teetime.stage.taskfarm.adaptation.analysis.algorithm;
 
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import teetime.stage.taskfarm.TaskFarmConfiguration;
+import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAnalysisAlgorithm;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 /**
@@ -39,7 +40,7 @@ public class RegressionAlgorithm extends AbstractThroughputAnalysisAlgorithm {
 	 *            TaskFarmConfiguration of the Task Farm which
 	 *            this algorithm is used for
 	 */
-	RegressionAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
+	public RegressionAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
 		super(configuration);
 	}
 

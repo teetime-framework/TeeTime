@@ -15,8 +15,7 @@
  */
 package teetime.stage.taskfarm;
 
-import teetime.stage.taskfarm.adaptation.analysis.ThroughputAlgorithm;
-import teetime.stage.taskfarm.adaptation.analysis.WeightedAlgorithm.WeightMethod;
+import teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm.WeightMethod;
 
 /**
  * This class contains the configuration of a single Task Farm.
@@ -35,7 +34,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	public static final int INIT_SAMPLES_UNTIL_REMOVE = -1;
 
 	private int analysisWindow = 3;
-	private ThroughputAlgorithm throughputAlgorithm = ThroughputAlgorithm.REGRESSION;
+	private String throughputAlgorithm = "RegressionAlgorithm";
 	private WeightMethod weightedAlgorithmMethod = WeightMethod.EXPONENTIAL;
 	private int maxSamplesUntilRemove = 5;
 	private double throughputScoreBoundary = 0.2d;
@@ -52,11 +51,11 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		this.analysisWindow = analysisWindow;
 	}
 
-	public ThroughputAlgorithm getThroughputAlgorithm() {
+	public String getThroughputAlgorithm() {
 		return throughputAlgorithm;
 	}
 
-	public void setThroughputAlgorithm(final ThroughputAlgorithm throughputAlgorithm) {
+	public void setThroughputAlgorithm(final String throughputAlgorithm) {
 		this.throughputAlgorithm = throughputAlgorithm;
 	}
 

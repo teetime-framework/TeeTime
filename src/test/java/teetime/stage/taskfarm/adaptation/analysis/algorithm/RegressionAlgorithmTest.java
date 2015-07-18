@@ -13,94 +13,96 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage.taskfarm.adaptation.analysis;
+package teetime.stage.taskfarm.adaptation.analysis.algorithm;
 
 import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
+import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAnalysisAlgorithm;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
-public class MeanAlgorithmTest {
+public class RegressionAlgorithmTest {
 
-	private static final double EPSILON = 0.00001;
-
-	@Test
-	public void constantThoughputTestAnomaly() {
-		final ThroughputHistory history = new ThroughputHistory();
-
-		history.add(40.5);
-		history.add(40.8);
-		history.add(40.8);
-		history.add(60);
-
-		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(null);
-		final double thoughputScore = algorithm.getTroughputAnalysis(history);
-
-		assertThat(thoughputScore, is(lessThan(-0.1)));
-	}
+	private static final double EPSILON = 0.1d;
 
 	@Test
-	public void constantThoughputTestNoAnomaly() {
+	public void positiveRegression() throws InterruptedException {
 		final ThroughputHistory history = new ThroughputHistory();
 
-		history.add(4.5);
-		history.add(4.8);
-		history.add(4.8);
-		history.add(4.7);
+		history.add(1);
+		Thread.sleep(100);
+		history.add(2);
+		Thread.sleep(100);
+		history.add(3);
+		Thread.sleep(100);
+		history.add(4);
+		Thread.sleep(100);
+		history.add(5);
 
-		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(null);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(history);
-
 		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
 	}
 
 	@Test
-	public void risingThoughputTestNoAnomaly() {
+	public void negativeRegression() throws InterruptedException {
 		final ThroughputHistory history = new ThroughputHistory();
 
-		history.add(4);
-		history.add(5);
-		history.add(6);
-		history.add(7);
-
-		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(null);
-		final double thoughputScore = algorithm.getTroughputAnalysis(history);
-
-		assertThat(thoughputScore, is(lessThan(-0.1)));
-	}
-
-	@Test
-	public void risingThoughputTestAnomaly() {
-		final ThroughputHistory history = new ThroughputHistory();
-
-		history.add(4);
-		history.add(5);
-		history.add(6);
-		history.add(3);
-
-		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(null);
-		final double thoughputScore = algorithm.getTroughputAnalysis(history);
-
-		assertThat(thoughputScore, is(closeTo(0.25d, EPSILON)));
-	}
-
-	@Test
-	public void irregularThoughputTest() {
-		final ThroughputHistory history = new ThroughputHistory();
-
-		history.add(4);
 		history.add(10);
+		Thread.sleep(100);
 		history.add(8);
-		history.add(1);
+		Thread.sleep(100);
+		history.add(6);
+		Thread.sleep(100);
+		history.add(4);
+		Thread.sleep(100);
+		history.add(2);
 
-		final AbstractThroughputAnalysisAlgorithm algorithm = new MeanAlgorithm(null);
+		final AbstractThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(history);
-
-		assertThat(thoughputScore, is(greaterThan(0.7)));
+		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
 	}
+
+	@Test
+	public void boundedRegression() throws InterruptedException {
+		final ThroughputHistory history = new ThroughputHistory();
+
+		history.add(10);
+		Thread.sleep(100);
+		history.add(7);
+		Thread.sleep(100);
+		history.add(4);
+		Thread.sleep(100);
+		history.add(1);
+		Thread.sleep(100);
+		history.add(0);
+
+		final AbstractThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(null);
+		final double thoughputScore = algorithm.getTroughputAnalysis(history);
+		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
+	}
+
+	@Test
+	public void falseRegression() throws InterruptedException {
+		final ThroughputHistory history = new ThroughputHistory();
+
+		history.add(10);
+		Thread.sleep(100);
+		history.add(9);
+		Thread.sleep(100);
+		history.add(8);
+		Thread.sleep(100);
+		history.add(7);
+		Thread.sleep(100);
+		history.add(13);
+
+		final AbstractThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(null);
+		final double thoughputScore = algorithm.getTroughputAnalysis(history);
+		assertThat(thoughputScore, is(lessThan(-0.3d)));
+	}
+
 }

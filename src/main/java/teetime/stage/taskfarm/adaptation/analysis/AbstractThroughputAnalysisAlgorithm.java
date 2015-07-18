@@ -40,7 +40,7 @@ public abstract class AbstractThroughputAnalysisAlgorithm {
 	 *            TaskFarmConfiguration of the Task Farm which
 	 *            this algorithm is used for
 	 */
-	AbstractThroughputAnalysisAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
+	protected AbstractThroughputAnalysisAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
 		if (configuration == null) {
 			// for testing purposes
 			window = 3;
