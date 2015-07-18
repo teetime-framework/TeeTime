@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 import teetime.framework.AbstractProducerStage;
 
-public final class InitialElementProducer<T> extends AbstractProducerStage<T> {
+public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 
 	private Iterable<T> elements;
 

@@ -64,11 +64,14 @@ public abstract class Stage {
 
 	@Override
 	public String toString() {
-		return this.getClass().getName() + ": " + this.getId();
+		return this.getClass().getName() + ", " + "Id: " + this.getId();
 	}
 
 	private String createId() {
 		String simpleName = this.getClass().getSimpleName();
+		if (simpleName.isEmpty()) {
+			simpleName = "anonymous";
+		}
 
 		Integer numInstances = INSTANCES_COUNTER.get(simpleName);
 		if (null == numInstances) {

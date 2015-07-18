@@ -67,7 +67,7 @@ abstract class AbstractRunnableStage implements Runnable {
 			}
 		}
 
-		logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
+		logger.debug("Finished runnable stage. (" + this.stage + ")");
 	}
 
 	protected abstract void beforeStageExecution() throws InterruptedException;

@@ -65,13 +65,11 @@ class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		@SuppressWarnings("unchecked")
 		final T newStage = (T) this.taskFarmStage.getBasicEnclosedStage().duplicate();
 
-		final CreatePortActionMerger<O> mergerPortAction =
-				new CreatePortActionMerger<O>(newStage.getOutputPort());
+		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort());
 		this.taskFarmStage.getMerger().addPortActionRequest(mergerPortAction);
 		mergerPortAction.waitForCompletion();
 
-		final PortAction<DynamicDistributor<I>> distributorPortAction =
-				new CreatePortActionDistributor<I>(newStage.getInputPort());
+		final PortAction<DynamicDistributor<I>> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort());
 		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 
 		this.addNewEnclosedStageInstance(newStage);

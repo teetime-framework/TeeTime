@@ -164,7 +164,6 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 		startThreads(this.infiniteProducerThreads);
 
 		sendInitializingSignal();
-
 	}
 
 	private Thread initializeThreadableStages(final Stage stage) {

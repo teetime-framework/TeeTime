@@ -45,11 +45,11 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	private final List<ITaskFarmDuplicable<I, O>> enclosedStageInstances = new LinkedList<ITaskFarmDuplicable<I, O>>();
 
 	private final DynamicDistributor<I> distributor = new DynamicDistributor<I>();
-	private final DynamicMerger<O> merger = new DynamicMerger<O>();
+	private final DynamicMerger<O> merger;
 
 	private final TaskFarmConfiguration<I, O, T> configuration;
 
-	private static AdaptationThread adaptationThread = null;
+	private AdaptationThread adaptationThread = null;
 
 	/**
 	 * Constructor.
@@ -66,13 +66,19 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 			throw new InvalidParameterException("The constructor of a Task Farm may not be called with null as the worker stage.");
 		}
 
+		this.merger = new DynamicMerger<O>() {
+			@Override
+			public void onStarting() throws Exception {
+				adaptationThread.start();
+				super.onStarting();
+			}
+		};
 		this.configuration = new TaskFarmConfiguration<I, O, T>();
 
-		if (TaskFarmStage.adaptationThread == null) {
-			TaskFarmStage.adaptationThread = new AdaptationThread();
-			TaskFarmStage.adaptationThread.start();
+		if (adaptationThread == null) {
+			adaptationThread = new AdaptationThread();
 		}
-		TaskFarmStage.adaptationThread.addTaskFarm(this);
+		adaptationThread.addTaskFarm(this);
 
 		this.init(workerStage);
 	}

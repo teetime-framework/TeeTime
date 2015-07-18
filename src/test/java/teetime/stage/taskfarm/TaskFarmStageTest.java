@@ -28,12 +28,13 @@ import teetime.framework.AbstractCompositeStage;
 import teetime.framework.Execution;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.pipe.SingleElementPipeFactory;
 import teetime.stage.basic.AbstractFilter;
 import teetime.stage.basic.AbstractTransformation;
 
 public class TaskFarmStageTest {
 
-	static final int NUMBER_OF_TEST_ELEMENTS = 1000;
+	static final int NUMBER_OF_TEST_ELEMENTS = 100000;
 
 	@Test
 	public void simpleTaskFarmStageTest() {
@@ -42,6 +43,7 @@ public class TaskFarmStageTest {
 
 		execution.executeBlocking();
 
+		System.out.println("Checking test result...");
 		final List<String> results = configuration.getCollection();
 		for (int i = 1; i <= NUMBER_OF_TEST_ELEMENTS; i++) {
 			final int n = i + 1;
@@ -78,8 +80,17 @@ public class TaskFarmStageTest {
 		private final StringDuplicationStage sDup = new StringDuplicationStage();
 
 		public CompositeTestStage() {
+			this(false);
+		}
+
+		public CompositeTestStage(final boolean runtime) {
 			super();
-			connectPorts(this.pOne.getOutputPort(), this.sDup.getInputPort());
+			if (runtime) {
+				SingleElementPipeFactory factory = new SingleElementPipeFactory();
+				factory.create(this.pOne.getOutputPort(), this.sDup.getInputPort());
+			} else {
+				connectPorts(this.pOne.getOutputPort(), this.sDup.getInputPort());
+			}
 		}
 
 		@Override
@@ -94,7 +105,7 @@ public class TaskFarmStageTest {
 
 		@Override
 		public ITaskFarmDuplicable<Integer, String> duplicate() {
-			return new CompositeTestStage();
+			return new CompositeTestStage(true);
 		}
 	}
 }
