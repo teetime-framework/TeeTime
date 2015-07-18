@@ -5,12 +5,10 @@ import teetime.stage.taskfarm.TaskFarmStage;
 
 public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
-	private final TaskFarmStage<I, O, T> taskFarmStage;
 	private final ReconfigurationCommandService<I, O, T> reconfigurationCommandService;
 	private final TaskFarmController<I, O, T> controller;
 
 	public TaskFarmReconfigurationService(final TaskFarmStage<I, O, T> taskFarmStage) {
-		this.taskFarmStage = taskFarmStage;
 		this.reconfigurationCommandService = new ReconfigurationCommandService<I, O, T>(taskFarmStage.getConfiguration());
 		this.controller = new TaskFarmController<I, O, T>(taskFarmStage);
 	}

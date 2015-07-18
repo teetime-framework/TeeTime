@@ -27,11 +27,6 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 				IMonitorablePipe inputPipe = (IMonitorablePipe) enclosedStage.getInputPort().getPipe();
 				sum += inputPipe.getPushThroughput();
 				count++;
-				// inputPipe.getPushThroughput();
-				// inputPipe.getPullThroughput();
-				// inputPipe.size();
-				// inputPipe.capacity();
-				// FIXME MonitoringService or ProtocolService
 			}
 		} catch (ClassCastException e) {
 			throw new TaskFarmInvalidPipeException(
