@@ -43,7 +43,7 @@ import teetime.util.framework.port.PortAction;
  * @param <T>
  *            Type of enclosed Stage (must extend {@link ITaskFarmDuplicable})
  */
-public class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
+class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	private final TaskFarmStage<I, O, T> taskFarmStage;
 

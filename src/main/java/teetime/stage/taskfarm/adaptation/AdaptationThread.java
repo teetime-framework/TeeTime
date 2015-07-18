@@ -21,7 +21,6 @@ import java.util.List;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
 import teetime.stage.taskfarm.adaptation.analysis.TaskFarmAnalyzer;
-import teetime.stage.taskfarm.adaptation.reconfiguration.TaskFarmController;
 
 final public class AdaptationThread extends Thread {
 
@@ -30,15 +29,15 @@ final public class AdaptationThread extends Thread {
 	private class ScheduledTaskFarm {
 		private final TaskFarmStage<?, ?, ?> taskFarmStage;
 		private final TaskFarmAnalyzer analyzer;
-		private final TaskFarmController<?, ?, ?> controller;
+
+		// private final TaskFarmController<?, ?, ?> controller;
 
 		public ScheduledTaskFarm(
 				final TaskFarmStage<?, ?, ?> taskFarmStage,
-				final TaskFarmAnalyzer analyzer,
-				final TaskFarmController<?, ?, ?> controller) {
+				final TaskFarmAnalyzer analyzer) {
 			this.taskFarmStage = taskFarmStage;
 			this.analyzer = analyzer;
-			this.controller = controller;
+			// this.controller = controller;
 		}
 	}
 

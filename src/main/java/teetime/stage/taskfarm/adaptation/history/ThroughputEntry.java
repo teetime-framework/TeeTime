@@ -21,7 +21,7 @@ package teetime.stage.taskfarm.adaptation.history;
  * @author Christian Claus Wiechmann
  *
  */
-public class ThroughputEntry {
+class ThroughputEntry {
 
 	private long timestamp;
 	private double throughput;

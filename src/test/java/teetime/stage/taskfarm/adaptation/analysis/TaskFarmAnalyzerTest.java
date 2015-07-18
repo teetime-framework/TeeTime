@@ -42,7 +42,7 @@ public class TaskFarmAnalyzerTest {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private TaskFarmConfiguration<?, ?, ?> createConfiguration() {
+	private TaskFarmConfiguration createConfiguration() {
 		TaskFarmStage taskFarmStage = new TaskFarmStage(new DummyDuplicableStage());
 		TaskFarmConfiguration configuration = taskFarmStage.getConfiguration();
 		return configuration;
