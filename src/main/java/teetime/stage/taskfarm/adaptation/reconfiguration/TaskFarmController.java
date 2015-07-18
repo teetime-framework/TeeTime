@@ -81,6 +81,10 @@ class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 * Dynamically removes a stage from the controlled task farm.
 	 */
 	public void removeStageFromTaskFarm() {
+		if (taskFarmStage.getEnclosedStageInstances().size() == 1) {
+			return;
+		}
+
 		final ITaskFarmDuplicable<I, O> stageToBeRemoved = this.getStageToBeRemoved();
 		final OutputPort<?> distributorOutputPort = this.getRemoveableDistributorOutputPort(stageToBeRemoved);
 

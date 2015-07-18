@@ -24,6 +24,7 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
+import teetime.stage.taskfarm.adaptation.AdaptationThread;
 
 /**
  * The TaskFarmStage implements the task farm parallelization pattern in
@@ -48,6 +49,8 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 
 	private final TaskFarmConfiguration<I, O, T> configuration;
 
+	private static AdaptationThread adaptationThread = null;
+
 	/**
 	 * Constructor.
 	 *
@@ -64,6 +67,13 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 		}
 
 		this.configuration = new TaskFarmConfiguration<I, O, T>();
+
+		if (TaskFarmStage.adaptationThread == null) {
+			TaskFarmStage.adaptationThread = new AdaptationThread();
+			TaskFarmStage.adaptationThread.start();
+		}
+		TaskFarmStage.adaptationThread.addTaskFarm(this);
+
 		this.init(workerStage);
 	}
 

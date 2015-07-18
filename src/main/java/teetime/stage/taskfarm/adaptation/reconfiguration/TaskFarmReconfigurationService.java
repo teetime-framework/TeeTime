@@ -13,7 +13,7 @@ public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<
 		this.controller = new TaskFarmController<I, O, T>(taskFarmStage);
 	}
 
-	public void execute(final double throughputScore) {
+	public void reconfigure(final double throughputScore) {
 		TaskFarmReconfigurationCommand command = reconfigurationCommandService.decideExecutionPlan(throughputScore);
 
 		switch (command) {
