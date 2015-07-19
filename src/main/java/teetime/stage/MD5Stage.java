@@ -24,11 +24,20 @@ import com.google.common.hash.Hashing;
 
 public class MD5Stage extends AbstractFilter<String> {
 
+	private String encoding = "UTF-8";
+
 	@Override
 	protected void execute(final String element) {
 		Hasher hasher = Hashing.md5().newHasher();
-		hasher.putString(element, Charset.forName("UTF-8"));
+		hasher.putString(element, Charset.forName(encoding));
 		outputPort.send(hasher.hash().toString());
 	}
 
+	public String getEncoding() {
+		return encoding;
+	}
+
+	public void setEncoding(final String encoding) {
+		this.encoding = encoding;
+	}
 }
