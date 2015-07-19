@@ -25,8 +25,10 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		try {
 			for (ITaskFarmDuplicable<I, O> enclosedStage : taskFarmStage.getEnclosedStageInstances()) {
 				IMonitorablePipe inputPipe = (IMonitorablePipe) enclosedStage.getInputPort().getPipe();
-				sum += inputPipe.getPushThroughput();
-				count++;
+				if (inputPipe != null) {
+					sum += inputPipe.getPushThroughput();
+					count++;
+				}
 			}
 		} catch (ClassCastException e) {
 			throw new TaskFarmInvalidPipeException(

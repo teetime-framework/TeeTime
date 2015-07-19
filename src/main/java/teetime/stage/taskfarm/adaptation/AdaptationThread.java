@@ -40,8 +40,6 @@ final public class AdaptationThread extends Thread {
 			}
 
 			executeNextStageToBeReconfigured();
-
-			checkForStopping();
 		}
 	}
 
@@ -68,18 +66,7 @@ final public class AdaptationThread extends Thread {
 		}
 	}
 
-	private void checkForStopping() {
-		boolean parallelizableStageRemaining = false;
-
-		// checks if there is still a parallelizable Task Farm
-		synchronized (taskFarmServices) {
-			for (TaskFarmComponents<?, ?, ?> service : taskFarmServices) {
-				if (service.getTaskFarmStage().getConfiguration().isStillParallelizable()) {
-					parallelizableStageRemaining = true;
-				}
-			}
-		}
-
-		this.stopping = !parallelizableStageRemaining;
+	public void stopAdaptationThread() {
+		stopping = true;
 	}
 }

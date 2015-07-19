@@ -56,6 +56,7 @@ class TaskFarmControllerConfiguration extends Configuration {
 
 		final SelfMonitoringPlusOneStage workerStage = new SelfMonitoringPlusOneStage(this.monitoredValues);
 		taskFarmStage = new TaskFarmStage<Integer, Integer, SelfMonitoringPlusOneStage>(workerStage);
+		taskFarmStage.getConfiguration().setStillParallelizable(false);
 
 		controller = new TaskFarmController<Integer, Integer, SelfMonitoringPlusOneStage>(taskFarmStage);
 		final TaskFarmControllerControllerStage taskFarmControllerControllerStage = new TaskFarmControllerControllerStage(controller);

@@ -33,7 +33,7 @@ import com.google.common.collect.ListMultimap;
  */
 public class TaskFarmControllerTest {
 
-	static final int NUMBER_OF_ITEMS = 1000;
+	static final int NUMBER_OF_ITEMS = 10000;
 
 	private static int numberOfEnclosedStage = 0;
 
