@@ -33,13 +33,13 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	public static final int INIT_SAMPLES_UNTIL_REMOVE = -1;
 
-	private int analysisWindow = 3;
-	private String throughputAlgorithm = "RegressionAlgorithm";
-	private WeightMethod weightedAlgorithmMethod = WeightMethod.EXPONENTIAL;
-	private int maxSamplesUntilRemove = 5;
-	private double throughputScoreBoundary = 0.2d;
+	private volatile int analysisWindow = 3;
+	private volatile String throughputAlgorithm = "RegressionAlgorithm";
+	private volatile WeightMethod weightedAlgorithmMethod = WeightMethod.EXPONENTIAL;
+	private volatile int maxSamplesUntilRemove = 5;
+	private volatile double throughputScoreBoundary = 0.2d;
 
-	private boolean stillParallelizable = true;
+	private volatile boolean stillParallelizable = true;
 
 	TaskFarmConfiguration() {}
 

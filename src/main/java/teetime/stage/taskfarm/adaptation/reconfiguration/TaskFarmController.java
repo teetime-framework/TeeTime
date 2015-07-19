@@ -128,7 +128,7 @@ class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 								+ port.getPipe().getClass().getSimpleName() + ".");
 			}
 
-			if (monitorablePipe.size() < currentMinimum) {
+			if (monitorablePipe != null && monitorablePipe.size() < currentMinimum) {
 				currentMinimum = monitorablePipe.size();
 				currentMinumumStageIndex = i;
 			}

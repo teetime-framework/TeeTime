@@ -20,26 +20,25 @@ import java.util.List;
 
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
-import teetime.stage.taskfarm.exception.TaskFarmAdaptationThreadException;
 
 final public class AdaptationThread extends Thread {
 
-	private static int sampleRateMillis = 50;
+	private volatile static int sampleRateMillis = 50;
 
 	private final List<TaskFarmComponents<?, ?, ?>> taskFarmServices = new LinkedList<TaskFarmComponents<?, ?, ?>>();
 
-	private boolean stopping = false;
+	private volatile boolean stopped = false;
 
 	@Override
 	public void run() {
-		while (!stopping) {
-			try {
+		try {
+			while (!Thread.currentThread().isInterrupted() && !stopped) {
 				Thread.sleep(sampleRateMillis);
-			} catch (InterruptedException e) {
-				throw new TaskFarmAdaptationThreadException("AdaptationThread was interrupted!");
-			}
 
-			executeNextStageToBeReconfigured();
+				executeNextStageToBeReconfigured();
+				checkForStopping();
+			}
+		} catch (InterruptedException e) {
 		}
 	}
 
@@ -66,7 +65,25 @@ final public class AdaptationThread extends Thread {
 		}
 	}
 
+	private void checkForStopping() {
+		boolean parallelizableStageRemaining = false;
+
+		// checks if there is still a parallelizable Task Farm
+		synchronized (taskFarmServices) {
+			for (TaskFarmComponents<?, ?, ?> service : taskFarmServices) {
+				if (service.getTaskFarmStage().getConfiguration().isStillParallelizable()) {
+					parallelizableStageRemaining = true;
+				}
+			}
+		}
+
+		if (!parallelizableStageRemaining) {
+			stopAdaptationThread();
+		}
+	}
+
 	public void stopAdaptationThread() {
-		stopping = true;
+		stopped = true;
+		interrupt();
 	}
 }
