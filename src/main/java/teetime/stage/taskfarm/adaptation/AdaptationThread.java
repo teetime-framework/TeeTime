@@ -15,6 +15,7 @@
  */
 package teetime.stage.taskfarm.adaptation;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,14 +26,18 @@ final public class AdaptationThread extends Thread {
 
 	private volatile static int sampleRateMillis = 50;
 
-	private final List<TaskFarmComponents<?, ?, ?>> taskFarmServices = new LinkedList<TaskFarmComponents<?, ?, ?>>();
+	private final List<TaskFarmComponents<?, ?, ?>> taskFarmServices;
 
 	private volatile boolean stopped = false;
+
+	public AdaptationThread() {
+		taskFarmServices = Collections.synchronizedList(new LinkedList<TaskFarmComponents<?, ?, ?>>());
+	}
 
 	@Override
 	public void run() {
 		try {
-			while (!Thread.currentThread().isInterrupted() && !stopped) {
+			while (!stopped) {
 				Thread.sleep(sampleRateMillis);
 
 				executeNextStageToBeReconfigured();
@@ -44,9 +49,7 @@ final public class AdaptationThread extends Thread {
 
 	public <I, O, T extends ITaskFarmDuplicable<I, O>> void addTaskFarm(final TaskFarmStage<I, O, T> taskFarmStage) {
 		TaskFarmComponents<I, O, T> service = new TaskFarmComponents<I, O, T>(taskFarmStage);
-		synchronized (taskFarmServices) {
-			taskFarmServices.add(service);
-		}
+		taskFarmServices.add(service);
 	}
 
 	public static void setSampleRate(final int sampleRateMillis) {
@@ -54,13 +57,11 @@ final public class AdaptationThread extends Thread {
 	}
 
 	private void executeNextStageToBeReconfigured() {
-		synchronized (taskFarmServices) {
-			for (TaskFarmComponents<?, ?, ?> service : taskFarmServices) {
-				// execute first Task Farm which is still parallelizable
-				if (service.getTaskFarmStage().getConfiguration().isStillParallelizable()) {
-					service.executeServices();
-					break;
-				}
+		for (TaskFarmComponents<?, ?, ?> service : taskFarmServices) {
+			// execute first Task Farm which is still parallelizable
+			if (service.getTaskFarmStage().getConfiguration().isStillParallelizable()) {
+				service.executeServices();
+				break;
 			}
 		}
 	}
@@ -69,11 +70,9 @@ final public class AdaptationThread extends Thread {
 		boolean parallelizableStageRemaining = false;
 
 		// checks if there is still a parallelizable Task Farm
-		synchronized (taskFarmServices) {
-			for (TaskFarmComponents<?, ?, ?> service : taskFarmServices) {
-				if (service.getTaskFarmStage().getConfiguration().isStillParallelizable()) {
-					parallelizableStageRemaining = true;
-				}
+		for (TaskFarmComponents<?, ?, ?> service : taskFarmServices) {
+			if (service.getTaskFarmStage().getConfiguration().isStillParallelizable()) {
+				parallelizableStageRemaining = true;
 			}
 		}
 
@@ -84,6 +83,5 @@ final public class AdaptationThread extends Thread {
 
 	public void stopAdaptationThread() {
 		stopped = true;
-		interrupt();
 	}
 }

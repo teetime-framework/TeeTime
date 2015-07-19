@@ -20,6 +20,7 @@ import java.util.List;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.IMonitorablePipe;
+import teetime.framework.pipe.IPipe;
 import teetime.stage.basic.distributor.dynamic.CreatePortActionDistributor;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.distributor.dynamic.RemovePortActionDistributor;
@@ -91,6 +92,7 @@ class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 			final PortAction<DynamicDistributor<I>> distributorPortAction =
 					new RemovePortActionDistributor<I>((OutputPort<I>) distributorOutputPort);
 			this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
+			this.taskFarmStage.getEnclosedStageInstances().remove(stageToBeRemoved);
 		} catch (ClassCastException e) {
 			throw new TaskFarmControllerException("Merger and Distributor have a different type than the Task Farm or the Task Farm Controller.");
 		}
@@ -101,7 +103,9 @@ class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	}
 
 	private OutputPort<?> getRemoveableDistributorOutputPort(final ITaskFarmDuplicable<I, O> stageToBeRemoved) {
-		final OutputPort<?> distributorOutputPort = stageToBeRemoved.getInputPort().getPipe().getSourcePort();
+		final InputPort<?> inputPortOfStage = stageToBeRemoved.getInputPort();
+		final IPipe pipeInBetween = inputPortOfStage.getPipe();
+		final OutputPort<?> distributorOutputPort = pipeInBetween.getSourcePort();
 		return distributorOutputPort;
 	}
 
@@ -114,7 +118,8 @@ class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		int currentMinimum = Integer.MAX_VALUE;
 		int currentMinumumStageIndex = taskFarmStage.getEnclosedStageInstances().size() - 1;
 
-		for (int i = 0; i < taskFarmStage.getEnclosedStageInstances().size(); i++) {
+		// do not remove basic stage
+		for (int i = 1; i < taskFarmStage.getEnclosedStageInstances().size(); i++) {
 			ITaskFarmDuplicable<I, O> instance = taskFarmStage.getEnclosedStageInstances().get(i);
 			InputPort<I> port = instance.getInputPort();
 			IMonitorablePipe monitorablePipe = null;

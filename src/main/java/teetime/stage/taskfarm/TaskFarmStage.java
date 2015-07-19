@@ -44,7 +44,7 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 
 	private final List<ITaskFarmDuplicable<I, O>> enclosedStageInstances = new LinkedList<ITaskFarmDuplicable<I, O>>();
 
-	private final DynamicDistributor<I> distributor = new DynamicDistributor<I>();
+	private final DynamicDistributor<I> distributor;
 	private final DynamicMerger<O> merger;
 
 	private final TaskFarmConfiguration<I, O, T> configuration;
@@ -76,6 +76,17 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 			@Override
 			public void onTerminating() throws Exception {
 				adaptationThread.stopAdaptationThread();
+				while (adaptationThread.isAlive()) {
+				}
+				super.onTerminating();
+			}
+		};
+		this.distributor = new DynamicDistributor<I>() {
+			@Override
+			public void onTerminating() throws Exception {
+				adaptationThread.stopAdaptationThread();
+				while (adaptationThread.isAlive()) {
+				}
 				super.onTerminating();
 			}
 		};
