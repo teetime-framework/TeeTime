@@ -83,10 +83,10 @@ public class TaskFarmControllerTest {
 	 */
 	static class TaskFarmControllerControllerStage extends AbstractFilter<Integer> {
 
-		private final TaskFarmController<?, ?, ?> controller;
+		private final TaskFarmController<?, ?> controller;
 		private int numberOfElements = 0;
 
-		public TaskFarmControllerControllerStage(final TaskFarmController<?, ?, ?> controller) {
+		public TaskFarmControllerControllerStage(final TaskFarmController<?, ?> controller) {
 			this.controller = controller;
 		}
 

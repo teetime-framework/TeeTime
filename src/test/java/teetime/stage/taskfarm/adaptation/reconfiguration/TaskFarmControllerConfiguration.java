@@ -50,7 +50,7 @@ class TaskFarmControllerConfiguration extends Configuration {
 
 		final InitialElementProducer<Integer> initialElementProducer;
 		final TaskFarmStage<Integer, Integer, SelfMonitoringPlusOneStage> taskFarmStage;
-		final TaskFarmController<Integer, Integer, SelfMonitoringPlusOneStage> controller;
+		final TaskFarmController<Integer, Integer> controller;
 
 		initialElementProducer = new InitialElementProducer<Integer>(numbers);
 
@@ -58,7 +58,7 @@ class TaskFarmControllerConfiguration extends Configuration {
 		taskFarmStage = new TaskFarmStage<Integer, Integer, SelfMonitoringPlusOneStage>(workerStage);
 		taskFarmStage.getConfiguration().setStillParallelizable(false);
 
-		controller = new TaskFarmController<Integer, Integer, SelfMonitoringPlusOneStage>(taskFarmStage);
+		controller = new TaskFarmController<Integer, Integer>(taskFarmStage);
 		final TaskFarmControllerControllerStage taskFarmControllerControllerStage = new TaskFarmControllerControllerStage(controller);
 
 		final Sink<Integer> sink = new Sink<Integer>();

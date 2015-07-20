@@ -25,15 +25,17 @@ import teetime.framework.pipe.SpScPipeFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.util.framework.port.PortAction;
+import teetime.util.stage.OneTimeCondition;
 
 public class CreatePortActionDistributor<T> implements PortAction<DynamicDistributor<T>> {
 
 	private static final SpScPipeFactory INTER_THREAD_PIPE_FACTORY = new SpScPipeFactory();
 	private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();
 
-	private final InputPort<T> inputPort;
-
 	private final List<PortActionListener<T>> listeners = new ArrayList<PortActionListener<T>>();
+	private final OneTimeCondition condition = new OneTimeCondition();
+
+	private final InputPort<T> inputPort;
 
 	public CreatePortActionDistributor(final InputPort<T> inputPort) {
 		this.inputPort = inputPort;
@@ -45,6 +47,7 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 
 		processOutputPort(newOutputPort);
 		onOutputPortCreated(dynamicDistributor, newOutputPort);
+		condition.signalAll();
 	}
 
 	private void processOutputPort(final OutputPort<T> newOutputPort) {
@@ -70,5 +73,13 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 
 	public void addPortActionListener(final PortActionListener<T> listener) {
 		listeners.add(listener);
+	}
+
+	public void waitForCompletion() {
+		try {
+			condition.await();
+		} catch (InterruptedException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 }

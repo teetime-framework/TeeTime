@@ -42,11 +42,11 @@ import teetime.util.framework.port.PortAction;
  * @param <O>
  *            Output type of Task Farm
  * @param <T>
- *            Type of enclosed Stage (must extend {@link ITaskFarmDuplicable})
+ *            Type of enclosed stage (must extend {@link ITaskFarmDuplicable})
  */
-class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
+class TaskFarmController<I, O> {
 
-	private final TaskFarmStage<I, O, T> taskFarmStage;
+	private final TaskFarmStage<I, O, ?> taskFarmStage;
 
 	/**
 	 * Constructor.
@@ -55,7 +55,7 @@ class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 *            TaskFarmConfiguration of the Task Farm which
 	 *            this controller is used for
 	 */
-	TaskFarmController(final TaskFarmStage<I, O, T> taskFarmStage) {
+	<T extends ITaskFarmDuplicable<I, O>> TaskFarmController(final TaskFarmStage<I, O, T> taskFarmStage) {
 		this.taskFarmStage = taskFarmStage;
 	}
 
@@ -63,15 +63,15 @@ class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 * Dynamically adds a stage to the controlled task farm.
 	 */
 	public void addStageToTaskFarm() {
-		@SuppressWarnings("unchecked")
-		final T newStage = (T) this.taskFarmStage.getBasicEnclosedStage().duplicate();
+		ITaskFarmDuplicable<I, O> newStage = this.taskFarmStage.getBasicEnclosedStage().duplicate();
 
 		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort());
 		this.taskFarmStage.getMerger().addPortActionRequest(mergerPortAction);
 		mergerPortAction.waitForCompletion();
 
-		final PortAction<DynamicDistributor<I>> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort());
+		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort());
 		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
+		// distributorPortAction.waitForCompletion();
 
 		this.addNewEnclosedStageInstance(newStage);
 	}
@@ -98,7 +98,7 @@ class TaskFarmController<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		}
 	}
 
-	private void addNewEnclosedStageInstance(final T newStage) {
+	private void addNewEnclosedStageInstance(final ITaskFarmDuplicable<I, O> newStage) {
 		this.taskFarmStage.getEnclosedStageInstances().add(newStage);
 	}
 
