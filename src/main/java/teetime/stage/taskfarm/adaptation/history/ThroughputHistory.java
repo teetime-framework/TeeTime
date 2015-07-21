@@ -18,6 +18,8 @@ package teetime.stage.taskfarm.adaptation.history;
 import java.util.LinkedList;
 import java.util.List;
 
+import teetime.stage.taskfarm.TaskFarmConfiguration;
+
 /**
  * The ThroughputHistory contains a relevant number of {@link ThroughputEntry}s.
  *
@@ -26,11 +28,17 @@ import java.util.List;
  */
 public class ThroughputHistory {
 
-	private static final int MAX_ENTRIES = 20;
+	private final int maxEntries;
 
 	private final LinkedList<ThroughputEntry> entries = new LinkedList<ThroughputEntry>();
 
-	public ThroughputHistory() {}
+	public ThroughputHistory(final TaskFarmConfiguration<?, ?, ?> configuration) {
+		maxEntries = configuration.getAnalysisWindow() + 1;
+	}
+
+	public ThroughputHistory() {
+		maxEntries = 20;
+	}
 
 	public List<ThroughputEntry> getEntries() {
 		return this.entries;
@@ -50,7 +58,7 @@ public class ThroughputHistory {
 
 	private void addEntry(final ThroughputEntry entry) {
 		this.entries.addFirst(entry);
-		if (this.entries.size() > MAX_ENTRIES) {
+		if (this.entries.size() > maxEntries) {
 			this.entries.removeLast();
 		}
 	}

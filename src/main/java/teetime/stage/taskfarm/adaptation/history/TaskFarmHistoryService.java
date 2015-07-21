@@ -8,10 +8,11 @@ import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
 public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	private final TaskFarmStage<I, O, T> taskFarmStage;
-	private final ThroughputHistory history = new ThroughputHistory();
+	private final ThroughputHistory history;
 
 	public TaskFarmHistoryService(final TaskFarmStage<I, O, T> taskFarmStage) {
 		this.taskFarmStage = taskFarmStage;
+		history = new ThroughputHistory(taskFarmStage.getConfiguration());
 	}
 
 	public ThroughputHistory getHistory() {
