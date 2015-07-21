@@ -270,12 +270,12 @@ public abstract class AbstractStage extends Stage {
 
 	@Override
 	protected void terminate() {
-		currentState = StageState.TERMINATING;
+		changeState(StageState.TERMINATING);
 	}
 
 	@Override
 	protected boolean shouldBeTerminated() {
-		return (currentState == StageState.TERMINATING);
+		return (getCurrentState() == StageState.TERMINATING);
 	}
 
 	@Override
