@@ -39,7 +39,8 @@ final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe
 	public boolean add(final Object element) {
 		while (!this.queue.offer(element)) {
 			// Thread.yield();
-			if (this.cachedTargetStage.getCurrentState() == StageState.TERMINATED) {
+			if (this.cachedTargetStage.getCurrentState() == StageState.TERMINATED &&
+					this.getSourcePort().getOwningStage().getCurrentState() == StageState.TERMINATING) {
 				return false;
 			}
 			this.numWaits++;

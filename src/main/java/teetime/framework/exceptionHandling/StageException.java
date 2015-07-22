@@ -18,7 +18,7 @@ package teetime.framework.exceptionHandling;
 import teetime.framework.Stage;
 
 /**
- * Represents an Exception, which is thrown by stages in case of theyimport teetime.framework.Stage;
+ * Represents an Exception, which is thrown by stages in case of they import teetime.framework.Stage;
  * original exception, which was thrown, call {@link #getCause()}. {@link #getThrowingStage()} returns the stage, which has thrown the original exception.
  *
  * @since 1.1

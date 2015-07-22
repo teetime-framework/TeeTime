@@ -34,7 +34,7 @@ public abstract class AbstractStage extends Stage {
 
 	private final PortList<InputPort<?>> inputPorts = new PortList<InputPort<?>>();
 	private final PortList<OutputPort<?>> outputPorts = new PortList<OutputPort<?>>();
-	private StageState currentState = StageState.CREATED;
+	private volatile StageState currentState = StageState.CREATED;
 
 	@Override
 	protected List<InputPort<?>> getInputPorts() {
