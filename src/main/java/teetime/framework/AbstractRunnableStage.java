@@ -33,7 +33,7 @@ abstract class AbstractRunnableStage implements Runnable {
 		this.logger = LoggerFactory.getLogger(stage.getClass());
 
 		if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
-			stage.owningContext.getRunnableCounter().inc();
+			stage.owningContext.getRuntimeService().getRunnableCounter().inc();
 		}
 	}
 
@@ -63,7 +63,7 @@ abstract class AbstractRunnableStage implements Runnable {
 			}
 		} finally {
 			if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
-				stage.owningContext.getRunnableCounter().dec();
+				stage.owningContext.getRuntimeService().getRunnableCounter().dec();
 			}
 		}
 

@@ -15,14 +15,12 @@
  */
 package teetime.framework;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.pipe.InstantiationPipe;
-import teetime.util.framework.concurrent.SignalingCounter;
 
 /**
  * Represents a context that is used by a configuration and composite stages to connect ports, for example.
@@ -36,18 +34,12 @@ final class ConfigurationContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
-	private Map<Stage, String> threadableStages = new HashMap<Stage, String>();
-
-	private final SignalingCounter runnableCounter = new SignalingCounter();
+	private ThreadService runtimeService = new ThreadService();
 
 	ConfigurationContext() {}
 
 	Map<Stage, String> getThreadableStages() {
-		return this.threadableStages;
-	}
-
-	SignalingCounter getRunnableCounter() {
-		return runnableCounter;
+		return runtimeService.getThreadableStages();
 	}
 
 	/**
@@ -55,9 +47,7 @@ final class ConfigurationContext {
 	 */
 	final void addThreadableStage(final Stage stage, final String threadName) {
 		mergeContexts(stage);
-		if (this.threadableStages.put(stage, threadName) != null) {
-			LOGGER.warn("Stage " + stage.getId() + " was already marked as threadable stage.");
-		}
+		runtimeService.addThreadableStage(stage, threadName);
 	}
 
 	/**
@@ -65,7 +55,7 @@ final class ConfigurationContext {
 	 */
 	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort.getOwningStage().getInputPorts().size() == 0) {
-			if (!threadableStages.containsKey(sourcePort.getOwningStage())) {
+			if (!runtimeService.getThreadableStages().containsKey(sourcePort.getOwningStage())) {
 				addThreadableStage(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
 			}
 		}
@@ -81,13 +71,21 @@ final class ConfigurationContext {
 	final void mergeContexts(final Stage stage) {
 		if (!stage.owningContext.equals(EMPTY_CONTEXT)) {
 			if (stage.owningContext != this) { // Performance
-				this.threadableStages.putAll(stage.owningContext.threadableStages);
-				stage.owningContext.threadableStages = this.threadableStages;
+				this.runtimeService.getThreadableStages().putAll(stage.owningContext.getRuntimeService().getThreadableStages());
+				stage.owningContext.getRuntimeService().setThreadableStages(this.getRuntimeService().getThreadableStages());
 			}
 		} else {
 			stage.owningContext = this;
 		}
 
+	}
+
+	public ThreadService getRuntimeService() {
+		return runtimeService;
+	}
+
+	public void setRuntimeService(final ThreadService runtimeService) {
+		this.runtimeService = runtimeService;
 	}
 
 }
