@@ -263,6 +263,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 		for (Stage stage : configuration.getContext().getThreadableStages().keySet()) {
 			stage.terminate();
 		}
+		waitForTermination();
 	}
 
 	/**
