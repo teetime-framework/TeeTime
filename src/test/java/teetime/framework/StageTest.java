@@ -49,8 +49,8 @@ public class StageTest {
 		TestConfig tc = new TestConfig();
 		new Execution<TestConfig>(tc);
 		assertEquals(tc.init.owningThread, tc.delay.owningThread);
-		assertThat(tc.delay.exceptionHandler, is(notNullValue()));
-		assertEquals(tc.init.exceptionHandler, tc.delay.exceptionHandler);
+		assertThat(tc.delay.exceptionListener, is(notNullValue()));
+		assertEquals(tc.init.exceptionListener, tc.delay.exceptionListener);
 	}
 
 	private static class TestConfig extends Configuration {

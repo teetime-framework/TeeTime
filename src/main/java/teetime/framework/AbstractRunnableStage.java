@@ -18,7 +18,7 @@ package teetime.framework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.exceptionHandling.StageException;
+import teetime.framework.exceptionHandling.TerminateException;
 
 abstract class AbstractRunnableStage implements Runnable {
 
@@ -48,7 +48,7 @@ abstract class AbstractRunnableStage implements Runnable {
 					do {
 						executeStage();
 					} while (!stage.shouldBeTerminated());
-				} catch (StageException e) {
+				} catch (TerminateException e) {
 					this.stage.terminate();
 					throw e;
 				} finally {

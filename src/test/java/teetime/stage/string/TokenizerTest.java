@@ -55,4 +55,12 @@ public class TokenizerTest {
 		assertThat(results, contains("Hello", "World"));
 	}
 
+	public static void main(final String[] args) {
+		TokenizerTest toker = new TokenizerTest();
+		for (int i = 0; i < 1000; i++) {
+			toker.initializeTokenizer();
+			toker.tokenizerShouldSplitMultipleToken();
+		}
+	}
+
 }

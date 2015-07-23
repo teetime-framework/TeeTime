@@ -260,16 +260,8 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 
 	// TODO: implement
 	private void abortEventually() {
-		for (Thread thread : this.finiteProducerThreads) {
-			thread.interrupt();
-		}
-
-		for (Thread thread : this.consumerThreads) {
-			thread.interrupt();
-		}
-
-		for (Thread thread : this.infiniteProducerThreads) {
-			thread.interrupt();
+		for (Stage stage : configuration.getContext().getThreadableStages().keySet()) {
+			stage.terminate();
 		}
 	}
 
@@ -347,7 +339,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 
 	/**
 	 * @return
-	 *         the given ExceptionListenerFactory instance
+	 * 		the given ExceptionListenerFactory instance
 	 *
 	 * @since 2.0
 	 */

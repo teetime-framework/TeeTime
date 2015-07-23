@@ -119,4 +119,10 @@ public class Merger<T> extends AbstractStage {
 		return this.outputPort;
 	}
 
+	@Override
+	protected void execute() {
+		// TODO Auto-generated method stub
+
+	}
+
 }
