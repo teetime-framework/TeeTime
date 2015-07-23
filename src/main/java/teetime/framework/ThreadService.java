@@ -14,7 +14,13 @@ import teetime.framework.signal.InitializingSignal;
 import teetime.util.ThreadThrowableContainer;
 import teetime.util.framework.concurrent.SignalingCounter;
 
-class ThreadService implements IService {
+/**
+ * A Service which manages thread creation and running.
+ *
+ * @author Nelson Tavares de Sousa
+ *
+ */
+class ThreadService extends AbstractService<ThreadService> {
 
 	private Map<Stage, String> threadableStages = new HashMap<Stage, String>();
 
@@ -75,7 +81,7 @@ class ThreadService implements IService {
 		return thread;
 	}
 
-	public void addThreadableStage(final Stage stage, final String threadName) {
+	void addThreadableStage(final Stage stage, final String threadName) {
 		if (this.threadableStages.put(stage, threadName) != null) {
 			LOGGER.warn("Stage " + stage.getId() + " was already marked as threadable stage.");
 		}
@@ -145,17 +151,18 @@ class ThreadService implements IService {
 		}
 	}
 
-	@Override
-	public void merge(final IService first, final IService second) {
-
-	}
-
-	public Map<Stage, String> getThreadableStages() {
+	Map<Stage, String> getThreadableStages() {
 		return threadableStages;
 	}
 
 	void setThreadableStages(final Map<Stage, String> threadableStages) {
 		this.threadableStages = threadableStages;
+	}
+
+	@Override
+	void merge(final ThreadService target, final ThreadService source) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
