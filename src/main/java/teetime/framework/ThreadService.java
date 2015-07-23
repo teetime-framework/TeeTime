@@ -19,6 +19,7 @@ import teetime.util.framework.concurrent.SignalingCounter;
  *
  * @author Nelson Tavares de Sousa
  *
+ * @since 2.0
  */
 class ThreadService extends AbstractService<ThreadService> {
 
