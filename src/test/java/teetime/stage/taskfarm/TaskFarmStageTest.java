@@ -27,7 +27,7 @@ import teetime.stage.basic.AbstractTransformation;
 
 public class TaskFarmStageTest {
 
-	static final int NUMBER_OF_TEST_ELEMENTS = 2000;
+	static final int NUMBER_OF_TEST_ELEMENTS = 10000;
 
 	@Test
 	public void simpleTaskFarmStageTest() {

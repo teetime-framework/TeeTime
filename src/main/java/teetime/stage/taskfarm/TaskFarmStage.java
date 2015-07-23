@@ -69,27 +69,21 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 		this.merger = new DynamicMerger<O>() {
 			@Override
 			public void onStarting() throws Exception {
-				adaptationThread.start();
+				synchronized (adaptationThread) {
+					if (!adaptationThread.isAlive()) {
+						adaptationThread.start();
+					}
+				}
 				super.onStarting();
 			}
 
 			@Override
 			public void onTerminating() throws Exception {
 				adaptationThread.stopAdaptationThread();
-				while (adaptationThread.isAlive()) {
-				}
 				super.onTerminating();
 			}
 		};
-		this.distributor = new DynamicDistributor<I>() {
-			@Override
-			public void onTerminating() throws Exception {
-				adaptationThread.stopAdaptationThread();
-				while (adaptationThread.isAlive()) {
-				}
-				super.onTerminating();
-			}
-		};
+		this.distributor = new DynamicDistributor<I>();
 		this.configuration = new TaskFarmConfiguration<I, O, T>();
 
 		if (adaptationThread == null) {

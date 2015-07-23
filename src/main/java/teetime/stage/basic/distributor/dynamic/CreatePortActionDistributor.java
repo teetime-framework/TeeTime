@@ -18,6 +18,9 @@ package teetime.stage.basic.distributor.dynamic;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import teetime.framework.DynamicActuator;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
@@ -28,6 +31,8 @@ import teetime.util.framework.port.PortAction;
 import teetime.util.stage.OneTimeCondition;
 
 public class CreatePortActionDistributor<T> implements PortAction<DynamicDistributor<T>> {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CreatePortActionDistributor.class);
 
 	private static final SpScPipeFactory INTER_THREAD_PIPE_FACTORY = new SpScPipeFactory();
 	private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();
@@ -43,8 +48,8 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 
 	@Override
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
+		LOGGER.debug("execute");
 		OutputPort<T> newOutputPort = dynamicDistributor.getNewOutputPort();
-
 		processOutputPort(newOutputPort);
 		onOutputPortCreated(dynamicDistributor, newOutputPort);
 		condition.signalAll();

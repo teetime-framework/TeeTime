@@ -17,19 +17,20 @@ package teetime.stage.taskfarm.adaptation.reconfiguration;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.pipe.IPipe;
 import teetime.stage.basic.distributor.dynamic.CreatePortActionDistributor;
-import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.distributor.dynamic.RemovePortActionDistributor;
 import teetime.stage.basic.merger.dynamic.CreatePortActionMerger;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
 import teetime.stage.taskfarm.exception.TaskFarmControllerException;
 import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
-import teetime.util.framework.port.PortAction;
 
 /**
  * The TaskFarmController is able to dynamically add stages to and remove
@@ -45,6 +46,8 @@ import teetime.util.framework.port.PortAction;
  *            Type of enclosed stage (must extend {@link ITaskFarmDuplicable})
  */
 class TaskFarmController<I, O> {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(TaskFarmController.class);
 
 	private final TaskFarmStage<I, O, ?> taskFarmStage;
 
@@ -63,17 +66,22 @@ class TaskFarmController<I, O> {
 	 * Dynamically adds a stage to the controlled task farm.
 	 */
 	public void addStageToTaskFarm() {
+		LOGGER.debug("Add stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
 		ITaskFarmDuplicable<I, O> newStage = this.taskFarmStage.getBasicEnclosedStage().duplicate();
 
 		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort());
 		this.taskFarmStage.getMerger().addPortActionRequest(mergerPortAction);
 		mergerPortAction.waitForCompletion();
+		LOGGER.debug("merger port created");
 
 		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort());
 		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
-		// distributorPortAction.waitForCompletion();
+		LOGGER.debug("distributor port created, before wait");
+		distributorPortAction.waitForCompletion();
+		LOGGER.debug("distributor port created");
 
 		this.addNewEnclosedStageInstance(newStage);
+		LOGGER.debug("Finished: Add stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
 	}
 
 	/**
@@ -84,15 +92,23 @@ class TaskFarmController<I, O> {
 			return;
 		}
 
-		final ITaskFarmDuplicable<I, O> stageToBeRemoved = this.getStageToBeRemoved();
-		final OutputPort<?> distributorOutputPort = this.getRemoveableDistributorOutputPort(stageToBeRemoved);
+		LOGGER.debug("Remove stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
+
+		ITaskFarmDuplicable<I, O> stageToBeRemoved = null;
+		OutputPort<?> distributorOutputPort = null;
+
+		stageToBeRemoved = this.getStageToBeRemoved();
+		distributorOutputPort = this.getRemoveableDistributorOutputPort(stageToBeRemoved);
 
 		try {
 			@SuppressWarnings("unchecked")
-			final PortAction<DynamicDistributor<I>> distributorPortAction =
+			final RemovePortActionDistributor<I> distributorPortAction =
 					new RemovePortActionDistributor<I>((OutputPort<I>) distributorOutputPort);
 			this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 			this.taskFarmStage.getEnclosedStageInstances().remove(stageToBeRemoved);
+			distributorPortAction.waitForCompletion();
+
+			LOGGER.debug("Finished: Remove stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
 		} catch (ClassCastException e) {
 			throw new TaskFarmControllerException("Merger and Distributor have a different type than the Task Farm or the Task Farm Controller.");
 		}
@@ -139,6 +155,7 @@ class TaskFarmController<I, O> {
 			}
 		}
 
+		LOGGER.debug("Remove stage (currentMinumumStageIndex: " + currentMinumumStageIndex + ")");
 		return currentMinumumStageIndex;
 	}
 }

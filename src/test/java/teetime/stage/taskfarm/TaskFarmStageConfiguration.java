@@ -22,7 +22,6 @@ import teetime.framework.Configuration;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.taskfarm.TaskFarmStageTest.CompositeTestStage;
-import teetime.stage.taskfarm.TaskFarmStageTest.StringDuplicationStage;
 
 class TaskFarmStageConfiguration extends Configuration {
 
@@ -44,13 +43,8 @@ class TaskFarmStageConfiguration extends Configuration {
 		final TaskFarmStage<Integer, String, CompositeTestStage> taskFarmStage =
 				new TaskFarmStage<Integer, String, CompositeTestStage>(compositeTestStage);
 
-		final StringDuplicationStage additionalDuplication = new StringDuplicationStage();
-		final TaskFarmStage<String, String, StringDuplicationStage> secondTaskFarmStage =
-				new TaskFarmStage<String, String, StringDuplicationStage>(additionalDuplication);
-
 		connectPorts(initialElementProducer.getOutputPort(), taskFarmStage.getInputPort());
-		connectPorts(taskFarmStage.getOutputPort(), secondTaskFarmStage.getInputPort());
-		connectPorts(secondTaskFarmStage.getOutputPort(), collectorSink.getInputPort());
+		connectPorts(taskFarmStage.getOutputPort(), collectorSink.getInputPort());
 	}
 
 	public List<String> getCollection() {

@@ -15,36 +15,41 @@
  */
 package teetime.stage.taskfarm.adaptation;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
 
 final public class AdaptationThread extends Thread {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(AdaptationThread.class);
+
 	private volatile static int sampleRateMillis = 50;
 
-	private final List<TaskFarmComponents<?, ?, ?>> taskFarmServices;
+	private final List<TaskFarmComponents<?, ?, ?>> taskFarmServices = new LinkedList<TaskFarmComponents<?, ?, ?>>();
 
 	private volatile boolean stopped = false;
 
-	public AdaptationThread() {
-		taskFarmServices = Collections.synchronizedList(new LinkedList<TaskFarmComponents<?, ?, ?>>());
-	}
-
 	@Override
 	public void run() {
-		try {
-			while (!stopped) {
+		LOGGER.debug("Adaptation thread started");
+		while (!stopped) {
+			try {
 				Thread.sleep(sampleRateMillis);
 
 				executeNextStageToBeReconfigured();
 				checkForStopping();
+			} catch (InterruptedException e) {
+				stopped = true;
+			} catch (IllegalStateException e) {
+				stopped = true;
 			}
-		} catch (InterruptedException e) {
 		}
+		LOGGER.debug("Adaptation thread stopped");
 	}
 
 	public <I, O, T extends ITaskFarmDuplicable<I, O>> void addTaskFarm(final TaskFarmStage<I, O, T> taskFarmStage) {
@@ -82,6 +87,8 @@ final public class AdaptationThread extends Thread {
 	}
 
 	public void stopAdaptationThread() {
+		LOGGER.debug("Adaptation thread stop signal sent");
 		stopped = true;
+		interrupt();
 	}
 }
