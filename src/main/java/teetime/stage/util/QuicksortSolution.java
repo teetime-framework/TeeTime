@@ -6,14 +6,14 @@ package teetime.stage.util;
  * @author Robin Mohr
  *
  */
-public final class QuicksortProblem {
+public final class QuicksortSolution {
 
-	private int low;
-	private int high;
+	private final int low;
+	private final int high;
 	private final int[] numbers;
 
 	/**
-	 * An implementation of a quicksort problem.
+	 * An implementation of a quicksort solution.
 	 *
 	 * @param low
 	 *            Pointer to the lower bound of indices to be compared in the array
@@ -22,7 +22,7 @@ public final class QuicksortProblem {
 	 * @param numbers
 	 *            Array to be sorted
 	 */
-	public QuicksortProblem(final int low, final int high, final int[] numbers) {
+	public QuicksortSolution(final int low, final int high, final int[] numbers) {
 		this.low = low;
 		this.high = high;
 		this.numbers = numbers;
@@ -34,14 +34,6 @@ public final class QuicksortProblem {
 
 	public int getHigh() {
 		return this.high;
-	}
-
-	public void setHigh(final int high) {
-		this.high = high;
-	}
-
-	public void setLow(final int low) {
-		this.low = low;
 	}
 
 	public int[] getNumbers() {

@@ -1,32 +1,35 @@
 package teetime.framework;
 
+import teetime.stage.taskfarm.ITaskFarmDuplicable;
+
+import com.carrotsearch.hppc.IntObjectHashMap;
+import com.carrotsearch.hppc.IntObjectMap;
+
 /**
  * Represents a stage to provide functionality for the divide and conquer paradigm
  *
  * @since 2.x
  *
- * @author Christian Wulf, Nelson Tavares de Sousa, Robin Mohr
+ * @author Robin Mohr
  *
- * @param <I>
- *            type of elements to be processed.
+ * @param <P>
+ *            type of elements that represent a problem to be solved.
  *
+ * @param <S>
+ *            type of elements that represent the solution to a problem.
  */
-public abstract class AbstractDCStage<I> extends AbstractStage { // IMPLEMENTS IDUPLICABLE (anderer Branch)
+public abstract class AbstractDCStage<P, S> extends AbstractStage implements ITaskFarmDuplicable<P, S> { // FIXME check compatibility of interface
 
-	// TODO arraylist!
-	// BETTER private final I[] buffer but see next TODO (l38)
-	private I leftBuffer = null;
-	private I rightBuffer = null;
-
+	private final IntObjectMap<S> solutionBuffer = new IntObjectHashMap<S>();
 	private final DynamicConfigurationContext context;
 
-	protected final InputPort<I> inputPort = this.createInputPort();
-	protected final InputPort<I> leftInputPort = this.createInputPort();
-	protected final InputPort<I> rightInputPort = this.createInputPort();
+	protected final InputPort<P> inputPort = this.createInputPort();
+	protected final InputPort<S> leftInputPort = this.createInputPort();
+	protected final InputPort<S> rightInputPort = this.createInputPort();
 
-	protected final OutputPort<I> outputPort = this.createOutputPort();
-	protected final OutputPort<I> leftOutputPort = this.createOutputPort();
-	protected final OutputPort<I> rightOutputPort = this.createOutputPort();
+	protected final OutputPort<S> outputPort = this.createOutputPort();
+	protected final OutputPort<P> leftOutputPort = this.createOutputPort();
+	protected final OutputPort<P> rightOutputPort = this.createOutputPort();
 
 	/**
 	 * Divide and Conquer stages need the configuration context upon creation
@@ -36,99 +39,51 @@ public abstract class AbstractDCStage<I> extends AbstractStage { // IMPLEMENTS I
 		if (null == context) {
 			throw new IllegalArgumentException("Context may not be null.");
 		}
-		// TODO this.buffer = (I[]) new Object[size]; but can't figure out 'size'
 		this.context = context;
-		// connect to self instead of dummy pipe upon creation
-		context.connectPorts(leftOutputPort, leftInputPort);
-		context.connectPorts(rightOutputPort, rightInputPort);
 	}
 
-	public final InputPort<I> getInputPort() {
+	@Override
+	public final InputPort<P> getInputPort() {
 		return this.inputPort;
 	}
 
-	public final InputPort<I> getLeftInputPort() {
+	public final InputPort<S> getLeftInputPort() {
 		return this.leftInputPort;
 	}
 
-	public final InputPort<I> getRightInputPort() {
+	public final InputPort<S> getRightInputPort() {
 		return this.rightInputPort;
 	}
 
-	public final OutputPort<I> getOutputPort() {
+	@Override
+	public final OutputPort<S> getOutputPort() {
 		return this.outputPort;
 	}
 
-	public final OutputPort<I> getleftOutputPort() {
+	public final OutputPort<P> getleftOutputPort() {
 		return this.leftOutputPort;
 	}
 
-	public final OutputPort<I> getrightOutputPort() {
+	public final OutputPort<P> getrightOutputPort() {
 		return this.rightOutputPort;
 	}
 
 	@Override
 	protected final void executeStage() {
-
-		// TODO STRUKTUR!
-		final I element = this.getInputPort().receive();
-		final I eLeft = this.getLeftInputPort().receive();
-		final I eRight = this.getRightInputPort().receive();
-
-		if (eLeft != null) {
-			this.logger.debug("Left " + eLeft.toString());
-			if (eRight != null) {
-				this.logger.debug("Right " + eRight.toString());
-				conquer(eLeft, eRight);
-			} else {
-				if (rightBuffer != null) {
-					this.logger.debug("RightB " + rightBuffer.toString());
-					conquer(eLeft, rightBuffer);
-				} else {
-					leftBuffer = eLeft;
-				}
-			}
-		} else if (eRight != null) {
-			if (leftBuffer != null) {
-				this.logger.debug("LeftB " + leftBuffer.toString());
-				conquer(leftBuffer, eRight);
-			} else {
-				rightBuffer = eRight;
-			}
-		} else if (element != null) {
-			this.logger.debug("E " + element.toString());
-			if (splitCondition(element)) {
-				this.logger.debug("[DC]" + this.getId() + "_" + "passed splitcondition_" + element.toString());
-
-				// SPLITCOUNT THREASHHOLD NUMTHREADS
-				makeCopy(leftOutputPort, leftInputPort);
-				makeCopy(rightOutputPort, rightInputPort);
-				this.logger.debug("[DC]" + this.getId() + "_" + "DIVIDING_" + element.toString());
-				divide(element);
-			} else {
-				this.logger.debug("[DC]" + this.getId() + "_" + "SOLVING_" + element.toString());
-				solve(element);
-			}
-		} else {
-			this.logger.debug("NO ELEMENT RECEIVED!");
-			returnNoElement();
-		}
+		// TODO
 	}
 
 	/**
 	 * A method to add a new copy (new instance) of this stage to the configuration, which should be executed in a own thread.
 	 *
 	 */
-	private void makeCopy(final OutputPort<I> out, final InputPort<I> in) {
-		final AbstractDCStage<I> newStage = debugCreateMethod();
+	private void makeCopy(final OutputPort<P> out, final InputPort<S> in) {
+		final AbstractDCStage<P, S> newStage = this;
 		context.connectPorts(out, newStage.getInputPort());
 		context.connectPorts(newStage.getOutputPort(), in);
 		context.beginThread(newStage);
 		context.sendSignals(out);
 	}
-
-	// BETTER Write the function code in this class instead
-	protected abstract AbstractDCStage<I> debugCreateMethod();
 
 	/**
 	 * Method to divide the given input and send to the left and right output ports.
@@ -136,7 +91,7 @@ public abstract class AbstractDCStage<I> extends AbstractStage { // IMPLEMENTS I
 	 * @param element
 	 *            An element to be split and further processed
 	 */
-	protected abstract void divide(final I element);
+	protected abstract void divide(final P problem);
 
 	/**
 	 * Method to process the given input and send to the output port.
@@ -144,7 +99,7 @@ public abstract class AbstractDCStage<I> extends AbstractStage { // IMPLEMENTS I
 	 * @param element
 	 *            An element to be processed
 	 */
-	protected abstract void solve(final I element);
+	protected abstract S solve(final P problem);
 
 	/**
 	 * Method to join the given inputs together and send to the output port.
@@ -154,7 +109,7 @@ public abstract class AbstractDCStage<I> extends AbstractStage { // IMPLEMENTS I
 	 * @param eRight
 	 *            Second half of the resulting element.
 	 */
-	protected abstract void conquer(final I eLeft, final I eRight);
+	protected abstract void combine(final S s1, final S s2);
 
 	/**
 	 * Determines whether or not to split the input problem by examining the given element
@@ -162,11 +117,12 @@ public abstract class AbstractDCStage<I> extends AbstractStage { // IMPLEMENTS I
 	 * @param element
 	 *            The element whose properties determine the split condition
 	 */
-	protected abstract boolean splitCondition(final I element);
+	protected abstract boolean isBaseCase(final P problem);
 
-	// TODO get rid of this
+	@Override
+	public abstract ITaskFarmDuplicable<P, S> duplicate();
+
 	public DynamicConfigurationContext getContext() {
-		// TODO Auto-generated method stub
 		return this.context;
 	}
 }
