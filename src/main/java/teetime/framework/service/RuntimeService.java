@@ -1,5 +1,5 @@
 package teetime.framework.service;
 
-public class RuntimeException {
+public class RuntimeService {
 
 }
