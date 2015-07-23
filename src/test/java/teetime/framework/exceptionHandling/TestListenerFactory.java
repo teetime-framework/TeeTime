@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,22 @@
  */
 package teetime.framework.exceptionHandling;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TestListenerFactory implements IExceptionListenerFactory {
+
+	private final List<TestListener> instances = new ArrayList<TestListener>();
 
 	@Override
 	public AbstractExceptionListener createInstance() {
-		return new TestListener();
+		TestListener listener = new TestListener();
+		instances.add(listener);
+		return listener;
+	}
+
+	public List<TestListener> getInstances() {
+		return instances;
 	}
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package teetime.stage.basic.distributor;
+
+import java.util.List;
 
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
@@ -41,14 +43,13 @@ public class Distributor<T> extends AbstractConsumerStage<T> {
 		addOutputPortRemovedListener(strategy);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void execute(final T element) {
-		this.strategy.distribute((OutputPort<T>[]) this.getOutputPorts(), element);
+		this.strategy.distribute(this.getOutputPorts(), element);
 	}
 
-	public OutputPort<T> getNewOutputPort() {
-		return this.createDynamicOutputPort();
+	public OutputPort<T> getNewOutputPort() { // make public
+		return this.createOutputPort();
 	}
 
 	public IDistributorStrategy getStrategy() {
@@ -60,7 +61,7 @@ public class Distributor<T> extends AbstractConsumerStage<T> {
 	}
 
 	@Override
-	public OutputPort<?>[] getOutputPorts() {
+	public List<OutputPort<?>> getOutputPorts() { // make public
 		return super.getOutputPorts();
 	}
 

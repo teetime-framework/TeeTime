@@ -24,6 +24,7 @@
 	<logger name="teetime.framework" level="TRACE" />
 	<logger name="teetime.stage.InitialElementProducer" level="DEBUG" />
 	<logger name="teetime.stage.merger" level="TRACE" />
+	<logger name="teetime.stage.taskfarm" level="TRACE" />
 <!-- 	<logger name="teetime.stage" level="TRACE" /> -->
 <!-- 	<logger name="teetime.framework.signal" level="TRACE" /> -->
 <!-- 	<logger name="teetime.stage" level="TRACE" /> -->

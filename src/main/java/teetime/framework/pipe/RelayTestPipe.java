@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ final class RelayTestPipe<T> extends AbstractInterThreadPipe {
 	private final ConstructorClosure<T> inputObjectCreator;
 
 	public RelayTestPipe(final int numInputObjects, final ConstructorClosure<T> inputObjectCreator) {
-		super(null, null);
+		super(null, null, Integer.MAX_VALUE);
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@ package teetime.stage.basic.merger;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import teetime.framework.AbstractStage;
-import teetime.framework.DynamicInputPort;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
@@ -42,10 +42,10 @@ import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
  */
 public class Merger<T> extends AbstractStage {
 
+	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap;
 	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	private final IMergerStrategy strategy;
-	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap;
 
 	public Merger() {
 		this(new RoundRobinStrategy());
@@ -58,7 +58,7 @@ public class Merger<T> extends AbstractStage {
 	}
 
 	@Override
-	public void executeStage() {
+	protected void executeStage() {
 		final T token = this.strategy.getNextInput(this);
 		if (token == null) {
 			returnNoElement();
@@ -106,14 +106,13 @@ public class Merger<T> extends AbstractStage {
 		return this.strategy;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public InputPort<T>[] getInputPorts() { // make public
-		return (InputPort<T>[]) super.getInputPorts();
+	public List<InputPort<?>> getInputPorts() { // make public
+		return super.getInputPorts();
 	}
 
-	public DynamicInputPort<T> getNewInputPort() {
-		return this.createDynamicInputPort();
+	public InputPort<T> getNewInputPort() {
+		return this.createInputPort();
 	}
 
 	public OutputPort<T> getOutputPort() {

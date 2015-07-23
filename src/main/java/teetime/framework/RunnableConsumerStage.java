@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package teetime.framework;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
-final class RunnableConsumerStage extends AbstractRunnableStage {
+public final class RunnableConsumerStage extends AbstractRunnableStage {
 
 	/**
 	 * Creates a new instance.
@@ -54,14 +54,15 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	}
 
 	private void checkForTerminationSignal(final Stage stage) {
-		System.out.println("checkForTerminationSignal: " + stage);
-		// FIXME should getInputPorts() really be defined in Stage?
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
-			System.out.println("\tclosed: " + inputPort.isClosed() + " (" + inputPort);
-			if (!inputPort.isClosed()) {
+			if (inputPort.isClosed()) {
+				// stage.removeDynamicPort(inputPort);
+			} else {
 				return;
 			}
 		}
+		// System.out.println("checkForTerminationSignal: " + stage);
+		// FIXME should getInputPorts() really be defined in Stage?
 
 		stage.terminate();
 	}

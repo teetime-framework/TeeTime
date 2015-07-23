@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,20 +27,17 @@ import teetime.util.ThreadThrowableContainer;
  */
 public class ExecutionException extends RuntimeException {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 7486086437171884298L;
 
 	private final Collection<ThreadThrowableContainer> exceptions;
 
 	public ExecutionException(final Collection<ThreadThrowableContainer> exceptions) {
-		super("Error(s) while running analysis. Check thrown exceptions.");
+		super((exceptions.size() == 1) ? exceptions.toString() : "Error(s) while execution. Check thrown exception(s).");
 		this.exceptions = exceptions;
 	}
 
 	/**
-	 * Returns all exceptions thrown within the analysis.
+	 * Returns all exceptions thrown within the execution.
 	 * These are passed on as pairs of threads and throwables, to indicate a exception's context.
 	 *
 	 * @return a collection of pairs

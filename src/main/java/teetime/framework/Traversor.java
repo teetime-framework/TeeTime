@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,7 @@ public class Traversor {
 			return;
 		}
 
-		OutputPort<?>[] outputPorts = stage.getOutputPorts();
-		for (OutputPort<?> outputPort : outputPorts) {
+		for (OutputPort<?> outputPort : stage.getOutputPorts()) {
 			IPipe pipe = outputPort.getPipe();
 			if (null != pipe && pipeVisitor.visit(pipe) == VisitorBehavior.CONTINUE) {
 				Stage owningStage = pipe.getTargetPort().getOwningStage();

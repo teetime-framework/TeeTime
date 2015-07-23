@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 package teetime.stage.string;
 
 import teetime.framework.AbstractCompositeStage;
-import teetime.framework.ConfigurationContext;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.stage.MappingCounter;
+import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.util.CountingMap;
 
 /**
@@ -31,13 +31,12 @@ import teetime.stage.util.CountingMap;
  * @author Nelson Tavares de Sousa
  *
  */
-public final class WordCounter extends AbstractCompositeStage {
+public final class WordCounter extends AbstractCompositeStage implements ITaskFarmDuplicable<String, CountingMap<String>> {
 
 	private final Tokenizer tokenizer;
 	private final MappingCounter<String> mapCounter;
 
-	public WordCounter(final ConfigurationContext context) {
-		super(context);
+	public WordCounter() {
 
 		this.tokenizer = new Tokenizer(" ");
 		final ToLowerCase toLowerCase = new ToLowerCase();
@@ -47,12 +46,19 @@ public final class WordCounter extends AbstractCompositeStage {
 		connectPorts(toLowerCase.getOutputPort(), this.mapCounter.getInputPort());
 	}
 
+	@Override
 	public InputPort<String> getInputPort() {
 		return this.tokenizer.getInputPort();
 	}
 
+	@Override
 	public OutputPort<CountingMap<String>> getOutputPort() {
 		return this.mapCounter.getOutputPort();
+	}
+
+	@Override
+	public ITaskFarmDuplicable<String, CountingMap<String>> duplicate() {
+		return new WordCounter();
 	}
 
 }

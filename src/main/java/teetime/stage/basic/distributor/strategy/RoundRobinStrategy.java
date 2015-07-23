@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
  */
 package teetime.stage.basic.distributor.strategy;
 
+import java.util.List;
+
 import teetime.framework.OutputPort;
-import teetime.framework.Stage;
 import teetime.stage.basic.distributor.Distributor;
 
 /**
@@ -28,28 +29,29 @@ public final class RoundRobinStrategy implements IDistributorStrategy {
 
 	private int index;
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public <T> boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
-		final OutputPort<T> outputPort = this.getNextPortInRoundRobinOrder(outputPorts);
+	public <T> boolean distribute(final List<OutputPort<?>> outputPorts, final T element) {
+		final OutputPort<T> outputPort = (OutputPort<T>) this.getNextPortInRoundRobinOrder(outputPorts);
 
 		outputPort.send(element);
 
 		return true;
 	}
 
-	private <T> OutputPort<T> getNextPortInRoundRobinOrder(final OutputPort<T>[] outputPorts) {
-		final OutputPort<T> outputPort = outputPorts[this.index];
+	private OutputPort<?> getNextPortInRoundRobinOrder(final List<OutputPort<?>> outputPorts) {
+		final OutputPort<?> outputPort = outputPorts.get(this.index);
 
-		this.index = (this.index + 1) % outputPorts.length;
+		this.index = (this.index + 1) % outputPorts.size();
 
 		return outputPort;
 	}
 
 	@Override
-	public void onOutputPortRemoved(final Stage stage, final OutputPort<?> removedOutputPort) {
-		Distributor<?> distributor = (Distributor<?>) stage;
+	public void onPortRemoved(final OutputPort<?> removedOutputPort) {
+		Distributor<?> distributor = (Distributor<?>) removedOutputPort.getOwningStage();
 		// correct the index if it is out-of-bounds
-		this.index = this.index % distributor.getOutputPorts().length;
+		this.index = this.index % distributor.getOutputPorts().size();
 	}
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,18 @@
  */
 package teetime.stage.basic.distributor.strategy;
 
+import java.util.List;
+
 import teetime.framework.OutputPort;
-import teetime.framework.OutputPortRemovedListener;
+import teetime.util.framework.port.PortRemovedListener;
 
 /**
- * @author Nils Christian Ehmke
+ * @author Nils Christian Ehmke, Christian Wulf
  *
  * @since 1.0
  */
-public interface IDistributorStrategy extends OutputPortRemovedListener {
+public interface IDistributorStrategy extends PortRemovedListener<OutputPort<?>> {
 
-	public <T> boolean distribute(final OutputPort<T>[] allOutputPorts, final T element);
+	public <T> boolean distribute(final List<OutputPort<?>> outputPorts, final T element);
 
 }

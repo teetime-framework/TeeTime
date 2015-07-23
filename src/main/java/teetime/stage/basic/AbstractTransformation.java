@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,20 @@ package teetime.stage.basic;
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ * @param <I>
+ *            the type of the input port
+ * @param <O>
+ *            the type of the output port
+ *
+ * @since 2.0
+ */
 public abstract class AbstractTransformation<I, O> extends AbstractConsumerStage<I> implements ITransformation<I, O> {
 
-	private final OutputPort<O> outputPort = createOutputPort();
+	protected final OutputPort<O> outputPort = createOutputPort();
 
 	protected AbstractTransformation() {
 		super();

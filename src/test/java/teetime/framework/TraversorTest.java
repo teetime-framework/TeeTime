@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,11 +44,14 @@ public class TraversorTest {
 		TestConfiguration tc = new TestConfiguration();
 		new Execution<TestConfiguration>(tc);
 		traversor.traverse(tc.init);
+
 		Set<Stage> comparingStages = new HashSet<Stage>();
 		comparingStages.add(tc.init);
 		comparingStages.add(tc.f2b);
 		comparingStages.add(tc.distributor);
-		assertThat(tc.distributor.getOwningThread(), is(not(tc.distributor.getOutputPorts()[0].pipe.getTargetPort().getOwningStage().getOwningThread())));
+
+		OutputPort<?> distributorOutputPort0 = tc.distributor.getOutputPorts().get(0);
+		assertThat(tc.distributor.getOwningThread(), is(not(distributorOutputPort0.pipe.getTargetPort().getOwningStage().getOwningThread())));
 		assertEquals(comparingStages, traversor.getVisitedStage());
 	}
 
@@ -77,7 +80,7 @@ public class TraversorTest {
 			// Middle part... multiple instances of WordCounter are created and connected to the merger and distrubuter stages
 			for (int i = 0; i < threads; i++) {
 				// final InputPortSizePrinter<String> inputPortSizePrinter = new InputPortSizePrinter<String>();
-				final WordCounter wc = new WordCounter(this.getContext());
+				final WordCounter wc = new WordCounter();
 				// intraFact.create(inputPortSizePrinter.getOutputPort(), wc.getInputPort());
 
 				connectPorts(distributor.getNewOutputPort(), wc.getInputPort());

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.util.List;
 
 public final class ListContainerPool<T> implements ObjectPool<ListContainer<T>> {
 
-	private final List<ListContainer<T>> pool = new ArrayList<ListContainer<T>>(); // NOPMD
+	private final List<ListContainer<T>> pool = new ArrayList<ListContainer<T>>(); 
 
 	public ListContainerPool(int initialPoolSize) {
 		while (initialPoolSize-- > 0) {

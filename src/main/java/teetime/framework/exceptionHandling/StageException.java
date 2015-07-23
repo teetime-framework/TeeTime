@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import teetime.framework.Stage;
 
 /**
  * Represents an Exception, which is thrown by stages in case of theyimport teetime.framework.Stage;
- original exception, which was thrown, call {@link #getCause()}. {@link #getThrowingStage()} returns the stage, which has thrown the original exception.
+ * original exception, which was thrown, call {@link #getCause()}. {@link #getThrowingStage()} returns the stage, which has thrown the original exception.
  *
  * @since 1.1
  */
@@ -44,6 +44,11 @@ public class StageException extends RuntimeException {
 	 */
 	public Stage getThrowingStage() {
 		return throwingStage;
+	}
+
+	@Override
+	public String toString() {
+		return getCause() + " in " + throwingStage.getId();
 	}
 
 }

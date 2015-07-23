@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import teetime.framework.AbstractCompositeStage;
-import teetime.framework.ConfigurationContext;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.Stage;
@@ -32,8 +31,7 @@ public final class EveryXthPrinter<T> extends AbstractCompositeStage {
 	private final Distributor<T> distributor;
 	private final List<Stage> lastStages = new ArrayList<Stage>();
 
-	public EveryXthPrinter(final int threshold, final ConfigurationContext context) {
-		super(context);
+	public EveryXthPrinter(final int threshold) {
 		distributor = new Distributor<T>(new CopyByReferenceStrategy());
 		EveryXthStage<T> everyXthStage = new EveryXthStage<T>(threshold);
 		Printer<Integer> printer = new Printer<Integer>();

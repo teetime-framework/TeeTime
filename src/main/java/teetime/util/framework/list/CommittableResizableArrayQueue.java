@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public final class CommittableResizableArrayQueue<T> implements CommittableQueue
 		this.elements = this.arrayPool.acquire(initialCapacity + 1);
 
 		this.elements[0] = (T) emptyObject; // optimization: avoids the use of an index out-of-bounds check
-		this.clear(); // NOPMD
+		this.clear(); 
 	}
 
 	@Override

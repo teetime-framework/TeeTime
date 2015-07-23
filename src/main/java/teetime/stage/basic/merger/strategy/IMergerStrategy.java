@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,16 @@
  */
 package teetime.stage.basic.merger.strategy;
 
-import teetime.framework.InputPortRemovedListener;
+import teetime.framework.InputPort;
 import teetime.stage.basic.merger.Merger;
+import teetime.util.framework.port.PortRemovedListener;
 
 /**
- * @author Nils Christian Ehmke
+ * @author Nils Christian Ehmke, Christian Wulf
  *
  * @since 1.0
  */
-public interface IMergerStrategy extends InputPortRemovedListener {
+public interface IMergerStrategy extends PortRemovedListener<InputPort<?>> {
 
 	public <T> T getNextInput(Merger<T> merger);
 

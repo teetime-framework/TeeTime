@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,8 @@ public abstract class Stage {
 	/** The owning thread of this stage if this stage is directly executed by a {@link AbstractRunnableStage}, <code>null</code> otherwise. */
 	protected Thread owningThread;
 
+	ConfigurationContext owningContext = ConfigurationContext.EMPTY_CONTEXT;
+
 	protected Stage() {
 		this.id = this.createId();
 		this.logger = LoggerFactory.getLogger(this.getClass().getCanonicalName() + ":" + id);
@@ -62,11 +64,14 @@ public abstract class Stage {
 
 	@Override
 	public String toString() {
-		return this.getClass().getName() + ": " + this.getId();
+		return this.getClass().getName() + ", " + "Id: " + this.getId();
 	}
 
 	private String createId() {
 		String simpleName = this.getClass().getSimpleName();
+		if (simpleName.isEmpty()) {
+			simpleName = "anonymous";
+		}
 
 		Integer numInstances = INSTANCES_COUNTER.get(simpleName);
 		if (null == numInstances) {
@@ -120,9 +125,9 @@ public abstract class Stage {
 		this.owningThread = owningThread;
 	}
 
-	protected abstract InputPort<?>[] getInputPorts();
+	protected abstract List<InputPort<?>> getInputPorts();
 
-	protected abstract OutputPort<?>[] getOutputPorts();
+	protected abstract List<OutputPort<?>> getOutputPorts();
 
 	// events
 
@@ -148,8 +153,8 @@ public abstract class Stage {
 		this.exceptionHandler = exceptionHandler;
 	}
 
-	protected abstract void removeDynamicPort(DynamicOutputPort<?> dynamicOutputPort);
+	protected abstract void removeDynamicPort(OutputPort<?> outputPort);
 
-	protected abstract void removeDynamicPort(DynamicInputPort<?> dynamicInputPort);
+	protected abstract void removeDynamicPort(InputPort<?> inputPort);
 
 }

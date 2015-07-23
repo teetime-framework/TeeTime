@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ public final class ZipByteArray extends AbstractConsumerStage<byte[]> {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
 
 		deflater.finish();
-		byte[] buffer = new byte[1024]; // NOPMD
+		byte[] buffer = new byte[1024]; 
 		while (!deflater.finished()) {
 			int count = deflater.deflate(buffer); // returns the generated code... index
 			outputStream.write(buffer, 0, count);
@@ -83,7 +83,7 @@ public final class ZipByteArray extends AbstractConsumerStage<byte[]> {
 		inflater.setInput(data);
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-		byte[] buffer = new byte[1024]; // NOPMD
+		byte[] buffer = new byte[1024]; 
 		while (!inflater.finished()) {
 			int count = inflater.inflate(buffer);
 			outputStream.write(buffer, 0, count);

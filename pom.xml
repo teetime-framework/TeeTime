@@ -4,7 +4,7 @@
 
 	<groupId>net.sourceforge.teetime</groupId>
 	<artifactId>teetime</artifactId>
-	<version>2.0-SNAPSHOT</version>
+	<version>ccw</version>
 	<packaging>jar</packaging>
 
 	<name>TeeTime</name>
@@ -21,8 +21,13 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.6</java.version>
 		<javadocOutputDir>apidocs</javadocOutputDir>
+		
+		<java.version>1.6</java.version>
+		<checkstyle.version>2.15</checkstyle.version>
+		<findbugs.version>3.0.1</findbugs.version>
+		<pmd.version>3.5</pmd.version>
+		<javadoc.version>2.10.3</javadoc.version>
 	</properties>
 
 	<distributionManagement>
@@ -127,6 +132,12 @@
 			<artifactId>hppc</artifactId>
 			<version>0.7.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -184,7 +195,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.3</version>
+				<version>${javadoc.version}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -211,7 +222,7 @@
 			<!-- <plugin> -->
 			<!-- <groupId>org.apache.maven.plugins</groupId> -->
 			<!-- <artifactId>maven-checkstyle-plugin</artifactId> -->
-			<!-- <version>2.15</version> -->
+			<!-- <version>${checkstyle.version}</version> -->
 			<!-- <executions> -->
 			<!-- <execution> -->
 			<!-- <phase>test</phase> -->
@@ -235,7 +246,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>3.0.1</version>
+				<version>${findbugs.version}</version>
 				<configuration>
 					<effort>Max</effort>
 					<threshold>Max</threshold>
@@ -269,14 +280,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.4</version>
+				<version>${pmd.version}</version>
 				<dependencies>
 					<dependency>
 						<groupId>de.chw</groupId>
 						<artifactId>pmd.ruleset</artifactId>
 						<version>0.0.1-SNAPSHOT</version>
 						<scope>system</scope>
-						<systemPath>${project.basedir}/conf/quality-config/pmd/CustomPmdRules_1.0.0.201505130542.jar</systemPath>
+						<systemPath>${project.basedir}/conf/quality-config/pmd/CustomPmdRules_1.0.0.201507080630.jar</systemPath>
 					</dependency>
 				</dependencies>
 				<configuration>
@@ -334,7 +345,7 @@
 					<header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
 					<properties>
 						<owner>Christian Wulf, Nelson Tavares de Sousa</owner>
-						<email>http://teetime.sourceforge.net</email>
+						<email>http://christianwulf.github.io/teetime</email>
 					</properties>
 					<includes>
 						<include>**/*.java</include>
@@ -348,6 +359,12 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<!-- removes the recommendation message for javadoc-plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.8</version>
 			</plugin>
 		</plugins>
 	</build>
@@ -375,39 +392,35 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.15</version>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>checkstyle</report>
-						</reports>
-					</reportSet>
-				</reportSets>
+				<version>${checkstyle.version}</version>
+				<!-- <reportSets> -->
+				<!-- <reportSet> -->
+				<!-- <reports> -->
+				<!-- <report>checkstyle</report> -->
+				<!-- </reports> -->
+				<!-- </reportSet> -->
+				<!-- </reportSets> -->
 			</plugin>
 			<!-- Findbugs -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>3.0.1</version>
+				<version>${findbugs.version}</version>
 			</plugin>
 			<!-- PMD -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.4</version>
+				<version>${pmd.version}</version>
 			</plugin>
+			<!-- generate javadoc html files -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.3</version>
+				<version>${javadoc.version}</version>
 				<configuration>
 					<destDir>${javadocOutputDir}</destDir>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.7</version>
 			</plugin>
 		</plugins>
 	</reporting>

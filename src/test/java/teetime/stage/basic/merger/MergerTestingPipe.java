@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package teetime.stage.basic.merger;
 
 import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.StartingSignal;
@@ -69,7 +70,17 @@ class MergerTestingPipe implements IPipe {
 	}
 
 	@Override
+	public int capacity() {
+		return 0;
+	}
+
+	@Override
 	public Object removeLast() {
+		return null;
+	}
+
+	@Override
+	public OutputPort<?> getSourcePort() {
 		return null;
 	}
 

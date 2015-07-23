@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import teetime.framework.pipe.UnboundedSpScPipeFactory;
 class ExecutionInstantiation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionInstantiation.class);
+	private static final int DEFAULT_COLOR = 0;
 
 	private final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
 	private final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
@@ -42,35 +43,16 @@ class ExecutionInstantiation {
 		this.configuration = configuration;
 	}
 
-	@SuppressWarnings("rawtypes")
-	Integer colorAndConnectStages(final Integer i, final Map<Stage, Integer> colors, final Stage threadableStage, final ConfigurationContext configuration) {
-		Integer createdConnections = new Integer(0);
-		Set<Stage> threadableStageJobs = configuration.getThreadableStages().keySet();
+	@SuppressWarnings({ "rawtypes" })
+	int colorAndConnectStages(final int color, final Map<Stage, Integer> colors, final Stage threadableStage, final ConfigurationContext configuration) {
+		Set<Stage> threadableStages = configuration.getThreadableStages().keySet();
+
+		int createdConnections = 0;
 		for (OutputPort outputPort : threadableStage.getOutputPorts()) {
 			if (outputPort.pipe != null) {
 				if (outputPort.pipe instanceof InstantiationPipe) {
 					InstantiationPipe pipe = (InstantiationPipe) outputPort.pipe;
-					Stage targetStage = pipe.getTargetPort().getOwningStage();
-					Integer targetColor = new Integer(0);
-					if (colors.containsKey(targetStage)) {
-						targetColor = colors.get(targetStage);
-					}
-					if (threadableStageJobs.contains(targetStage) && targetColor.compareTo(i) != 0) {
-						if (pipe.getCapacity() != 0) {
-							interBoundedThreadPipeFactory.create(outputPort, pipe.getTargetPort(), pipe.getCapacity());
-						} else {
-							interUnboundedThreadPipeFactory.create(outputPort, pipe.getTargetPort(), 4);
-						}
-					} else {
-						if (colors.containsKey(targetStage)) {
-							if (!colors.get(targetStage).equals(i)) {
-								throw new IllegalStateException("Crossing threads"); // One stage is connected to a stage of another thread (but not its "headstage")
-							}
-						}
-						intraThreadPipeFactory.create(outputPort, pipe.getTargetPort());
-						colors.put(targetStage, i);
-						createdConnections += colorAndConnectStages(i, colors, targetStage, configuration);
-					}
+					createdConnections += processPipe(color, colors, configuration, threadableStages, outputPort, pipe);
 					createdConnections++;
 				}
 			}
@@ -79,15 +61,44 @@ class ExecutionInstantiation {
 		return createdConnections;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private int processPipe(final int color, final Map<Stage, Integer> colors, final ConfigurationContext configuration, final Set<Stage> threadableStages,
+			final OutputPort outputPort, final InstantiationPipe pipe) {
+		Stage targetStage = pipe.getTargetPort().getOwningStage();
+
+		int targetColor = DEFAULT_COLOR;
+		if (colors.containsKey(targetStage)) {
+			targetColor = colors.get(targetStage);
+		}
+
+		if (threadableStages.contains(targetStage) && targetColor != color) {
+			if (pipe.capacity() != 0) {
+				interBoundedThreadPipeFactory.create(outputPort, pipe.getTargetPort(), pipe.capacity());
+			} else {
+				interUnboundedThreadPipeFactory.create(outputPort, pipe.getTargetPort(), 4);
+			}
+		} else {
+			if (colors.containsKey(targetStage)) {
+				if (!colors.get(targetStage).equals(color)) {
+					throw new IllegalStateException("Crossing threads"); // One stage is connected to a stage of another thread (but not its "headstage")
+				}
+			}
+			intraThreadPipeFactory.create(outputPort, pipe.getTargetPort());
+			colors.put(targetStage, color);
+			return colorAndConnectStages(color, colors, targetStage, configuration);
+		}
+		return 0;
+	}
+
 	void instantiatePipes() {
-		Integer i = new Integer(0);
+		int color = DEFAULT_COLOR;
 		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
 		Set<Stage> threadableStageJobs = configuration.getThreadableStages().keySet();
 		Integer createdConnections = 0;
 		for (Stage threadableStage : threadableStageJobs) {
-			i++;
-			colors.put(threadableStage, i);
-			createdConnections = colorAndConnectStages(i, colors, threadableStage, configuration);
+			color++;
+			colors.put(threadableStage, color);
+			createdConnections = colorAndConnectStages(color, colors, threadableStage, configuration);
 		}
 		LOGGER.debug("Created " + createdConnections + " connections");
 	}

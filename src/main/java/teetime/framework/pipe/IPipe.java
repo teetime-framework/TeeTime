@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package teetime.framework.pipe;
 
 import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
 
 /**
@@ -49,9 +50,14 @@ public interface IPipe {
 	boolean isEmpty();
 
 	/**
-	 * @return the current number of elements
+	 * @return the current number of elements held by this pipe instance
 	 */
 	int size();
+
+	/**
+	 * @return the maximum number of elements possible to hold by this pipe instance
+	 */
+	int capacity();
 
 	/**
 	 * Retrieves the last element of the pipe and deletes it.
@@ -61,9 +67,12 @@ public interface IPipe {
 	Object removeLast();
 
 	/**
-	 * Retrieves the receiving port.
-	 *
-	 * @return InputPort which is connected to the pipe.
+	 * @return the output port that is connected to the pipe.
+	 */
+	OutputPort<?> getSourcePort();
+
+	/**
+	 * @return the input port that is connected to the pipe.
 	 */
 	InputPort<?> getTargetPort();
 

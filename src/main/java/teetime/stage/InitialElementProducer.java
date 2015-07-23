@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 import teetime.framework.AbstractProducerStage;
 
-public final class InitialElementProducer<T> extends AbstractProducerStage<T> {
+public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 
 	private Iterable<T> elements;
 

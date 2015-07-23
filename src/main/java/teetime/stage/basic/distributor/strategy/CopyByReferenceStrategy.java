@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
  */
 package teetime.stage.basic.distributor.strategy;
 
+import java.util.List;
+
 import teetime.framework.OutputPort;
-import teetime.framework.Stage;
 
 /**
  * @author Nils Christian Ehmke
@@ -25,17 +26,19 @@ import teetime.framework.Stage;
  */
 public final class CopyByReferenceStrategy implements IDistributorStrategy {
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public <T> boolean distribute(final OutputPort<T>[] outputPorts, final T element) {
-		for (final OutputPort<T> outputPort : outputPorts) {
-			outputPort.send(element);
+	public <T> boolean distribute(final List<OutputPort<?>> outputPorts, final T element) {
+		for (final OutputPort<?> outputPort : outputPorts) {
+			((OutputPort<T>) outputPort).send(element);
 		}
 
 		return true;
 	}
 
 	@Override
-	public void onOutputPortRemoved(final Stage stage, final OutputPort<?> removedOutputPort) {
+	public void onPortRemoved(final OutputPort<?> removedOutputPort) {
 		// do nothing
 	}
+
 }

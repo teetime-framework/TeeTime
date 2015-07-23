@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,14 @@
  */
 package teetime.framework.exceptionHandling;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.framework.Execution;
 import teetime.framework.ExecutionException;
-import teetime.framework.StageState;
 
 public class ExceptionHandlingTest {
 
@@ -39,23 +37,22 @@ public class ExceptionHandlingTest {
 	public void exceptionPassingAndTermination() {
 		newInstances();
 		execution.executeBlocking();
-		assertEquals(TestListener.exceptionInvoked, 2); // listener did not kill thread too early
+		fail(); // Should never be executed
 	}
 
 	public void terminatesAllStages() {
 		ExceptionTestConfiguration config = newInstances();
 		execution.executeBlocking();
-		assertThat(config.first.getCurrentState(), is(StageState.TERMINATED));
-		assertThat(config.second.getCurrentState(), is(StageState.TERMINATED));
-		assertThat(config.third.getCurrentState(), is(StageState.TERMINATED));
+		fail(); // Should never be executed
 	}
 
+	@Ignore
 	@Test
 	public void forAFewTimes() {
 		for (int i = 0; i < 100; i++) {
 			boolean exceptionArised = false;
 			try {
-				exceptionPassingAndTermination();
+				exceptionPassingAndTermination(); // listener did not kill thread too early;
 			} catch (ExecutionException e) {
 				exceptionArised = true;
 			}

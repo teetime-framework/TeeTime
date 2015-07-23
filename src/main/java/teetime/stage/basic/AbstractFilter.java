@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,15 @@
  */
 package teetime.stage.basic;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ * @param <E>
+ *            the type of both the input port and the output port
+ *
+ * @since 2.0
+ */
 public abstract class AbstractFilter<E> extends AbstractTransformation<E, E> {
 
 	protected AbstractFilter() {

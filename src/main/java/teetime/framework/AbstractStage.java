@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime.sourceforge.net)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package teetime.framework;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +23,8 @@ import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
+import teetime.util.framework.port.PortList;
+import teetime.util.framework.port.PortRemovedListener;
 
 public abstract class AbstractStage extends Stage {
 
@@ -32,21 +32,18 @@ public abstract class AbstractStage extends Stage {
 
 	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
 
-	private InputPort<?>[] inputPorts = new InputPort<?>[0];
-	private OutputPort<?>[] outputPorts = new OutputPort<?>[0];
+	private final PortList<InputPort<?>> inputPorts = new PortList<InputPort<?>>();
+	private final PortList<OutputPort<?>> outputPorts = new PortList<OutputPort<?>>();
 	private StageState currentState = StageState.CREATED;
 
-	private final Set<OutputPortRemovedListener> outputPortRemovedListeners = new HashSet<OutputPortRemovedListener>();
-	private final Set<InputPortRemovedListener> inputPortsRemovedListeners = new HashSet<InputPortRemovedListener>();
-
 	@Override
-	public InputPort<?>[] getInputPorts() {
-		return inputPorts;
+	protected List<InputPort<?>> getInputPorts() {
+		return inputPorts.getOpenedPorts();
 	}
 
 	@Override
-	protected OutputPort<?>[] getOutputPorts() {
-		return this.outputPorts;
+	protected List<OutputPort<?>> getOutputPorts() {
+		return outputPorts.getOpenedPorts();
 	}
 
 	@Override
@@ -62,7 +59,7 @@ public abstract class AbstractStage extends Stage {
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
 			signal.trigger(this);
-			for (OutputPort<?> outputPort : outputPorts) {
+			for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
 				outputPort.sendSignal(signal);
 			}
 
@@ -99,10 +96,10 @@ public abstract class AbstractStage extends Stage {
 
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	private void connectUnconnectedOutputPorts() {
-		for (OutputPort<?> outputPort : this.outputPorts) {
+		for (OutputPort<?> outputPort : this.outputPorts.getOpenedPorts()) {
 			if (null == outputPort.getPipe()) { // if port is unconnected
 				if (logger.isInfoEnabled()) {
-					this.logger.info("Unconnected output port: " + outputPort + ". Connecting with a dummy output port.");
+					this.logger.info("Unconnected output port: " + outputPort + ". Connecting with a dummy pipe.");
 				}
 				outputPort.setPipe(DUMMY_PIPE);
 			}
@@ -189,7 +186,7 @@ public abstract class AbstractStage extends Stage {
 	 */
 	protected <T> InputPort<T> createInputPort(final Class<T> type, final String name) {
 		final InputPort<T> inputPort = new InputPort<T>(type, this, name);
-		inputPorts = addElementToArray(inputPort, inputPorts);
+		inputPorts.add(inputPort);
 		return inputPort;
 	}
 
@@ -252,20 +249,14 @@ public abstract class AbstractStage extends Stage {
 	 */
 	protected <T> OutputPort<T> createOutputPort(final Class<T> type, final String name) {
 		final OutputPort<T> outputPort = new OutputPort<T>(type, this, name);
-		outputPorts = addElementToArray(outputPort, outputPorts);
+		outputPorts.add(outputPort);
 		return outputPort;
-	}
-
-	private <T, E extends T> T[] addElementToArray(final E element, final T[] srcArray) {
-		T[] newOutputPorts = Arrays.copyOf(srcArray, srcArray.length + 1);
-		newOutputPorts[srcArray.length] = element;
-		return newOutputPorts;
 	}
 
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	@Override
 	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
-		for (OutputPort<?> outputPort : outputPorts) {
+		for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
 			final IPipe pipe = outputPort.getPipe();
 
 			final Class<?> sourcePortType = outputPort.getType();
@@ -292,68 +283,34 @@ public abstract class AbstractStage extends Stage {
 		return TerminationStrategy.BY_SIGNAL;
 	}
 
-	protected <T> DynamicOutputPort<T> createDynamicOutputPort() {
-		final DynamicOutputPort<T> outputPort = new DynamicOutputPort<T>(null, this, outputPorts.length);
-		outputPorts = addElementToArray(outputPort, outputPorts);
-		return outputPort;
+	// protected <T> DynamicOutputPort<T> createDynamicOutputPort() {
+	// final DynamicOutputPort<T> outputPort = new DynamicOutputPort<T>(null, this, outputPorts.size());
+	// outputPorts.add(outputPort);
+	// return outputPort;
+	// }
+
+	// protected <T> DynamicInputPort<T> createDynamicInputPort() {
+	// final DynamicInputPort<T> inputPort = new DynamicInputPort<T>(null, this, inputPorts.size());
+	// inputPorts.add(inputPort);
+	// return inputPort;
+	// }
+
+	@Override
+	protected void removeDynamicPort(final OutputPort<?> outputPort) {
+		outputPorts.remove(outputPort); // TODO update setIndex IF it is still used
 	}
 
-	protected <T> DynamicInputPort<T> createDynamicInputPort() {
-		final DynamicInputPort<T> inputPort = new DynamicInputPort<T>(null, this, inputPorts.length);
-		inputPorts = addElementToArray(inputPort, inputPorts);
-		return inputPort;
+	protected final void addOutputPortRemovedListener(final PortRemovedListener<OutputPort<?>> outputPortRemovedListener) {
+		outputPorts.addPortRemovedListener(outputPortRemovedListener);
 	}
 
 	@Override
-	protected void removeDynamicPort(final DynamicOutputPort<?> dynamicOutputPort) {
-		int index = dynamicOutputPort.getIndex();
-		List<OutputPort<?>> tempOutputPorts = new ArrayList<OutputPort<?>>(Arrays.asList(outputPorts));
-		OutputPort<?> removedOutputPort = tempOutputPorts.remove(index);
-		for (int i = index; i < tempOutputPorts.size(); i++) {
-			OutputPort<?> outputPort = tempOutputPorts.get(i);
-			if (outputPort instanceof DynamicOutputPort) {
-				((DynamicOutputPort<?>) outputPort).setIndex(i);
-			}
-		}
-		outputPorts = tempOutputPorts.toArray(new OutputPort[0]);
-
-		firePortRemoved(removedOutputPort);
+	protected void removeDynamicPort(final InputPort<?> inputPort) {
+		inputPorts.remove(inputPort); // TODO update setIndex IF it is still used
 	}
 
-	private void firePortRemoved(final OutputPort<?> removedOutputPort) {
-		for (OutputPortRemovedListener listener : outputPortRemovedListeners) {
-			listener.onOutputPortRemoved(this, removedOutputPort);
-		}
-	}
-
-	protected final void addOutputPortRemovedListener(final OutputPortRemovedListener outputPortRemovedListener) {
-		outputPortRemovedListeners.add(outputPortRemovedListener);
-	}
-
-	@Override
-	protected void removeDynamicPort(final DynamicInputPort<?> dynamicInputPort) {
-		int index = dynamicInputPort.getIndex();
-		List<InputPort<?>> tempInputPorts = new ArrayList<InputPort<?>>(Arrays.asList(inputPorts));
-		InputPort<?> removedInputPort = tempInputPorts.remove(index);
-		for (int i = index; i < tempInputPorts.size(); i++) {
-			InputPort<?> inputPort = tempInputPorts.get(i);
-			if (inputPort instanceof DynamicInputPort) {
-				((DynamicInputPort<?>) inputPort).setIndex(i);
-			}
-		}
-		inputPorts = tempInputPorts.toArray(new InputPort[0]);
-
-		firePortRemoved(removedInputPort);
-	}
-
-	private void firePortRemoved(final InputPort<?> removedInputPort) {
-		for (InputPortRemovedListener listener : inputPortsRemovedListeners) {
-			listener.onInputPortRemoved(this, removedInputPort);
-		}
-	}
-
-	protected final void addInputPortRemovedListener(final InputPortRemovedListener outputPortRemovedListener) {
-		inputPortsRemovedListeners.add(outputPortRemovedListener);
+	protected final void addInputPortRemovedListener(final PortRemovedListener<InputPort<?>> inputPortRemovedListener) {
+		inputPorts.addPortRemovedListener(inputPortRemovedListener);
 	}
 
 }
