@@ -38,12 +38,8 @@ public class RemovePortActionDistributor<T> implements PortAction<DynamicDistrib
 		condition.signalAll();
 	}
 
-	public void waitForCompletion() {
-		try {
-			condition.await();
-		} catch (InterruptedException e) {
-			throw new IllegalStateException(e);
-		}
+	public void waitForCompletion() throws InterruptedException {
+		condition.await();
 	}
 
 }

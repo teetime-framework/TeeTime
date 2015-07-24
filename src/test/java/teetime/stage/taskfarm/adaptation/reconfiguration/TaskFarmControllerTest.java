@@ -109,7 +109,11 @@ public class TaskFarmControllerTest {
 			}
 
 			if (this.numberOfElements == NUMBER_OF_ITEMS * 0.7) {
-				this.controller.removeStageFromTaskFarm();
+				try {
+					this.controller.removeStageFromTaskFarm();
+				} catch (InterruptedException e) {
+					throw new IllegalStateException(e);
+				}
 			}
 
 			this.outputPort.send(element);

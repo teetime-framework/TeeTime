@@ -45,11 +45,7 @@ public class CreatePortActionMerger<T> implements PortAction<DynamicMerger<T>> {
 		INTER_THREAD_PIPE_FACTORY.create(outputPort, newInputPort);
 	}
 
-	public void waitForCompletion() {
-		try {
-			condition.await();
-		} catch (InterruptedException e) {
-			throw new IllegalStateException(e);
-		}
+	public void waitForCompletion() throws InterruptedException {
+		condition.await();
 	}
 }

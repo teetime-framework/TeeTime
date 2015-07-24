@@ -64,7 +64,7 @@ class TaskFarmController<I, O> {
 
 	/**
 	 * Dynamically adds a stage to the controlled task farm.
-	 * 
+	 *
 	 * @throws InterruptedException
 	 */
 	public void addStageToTaskFarm() throws InterruptedException {
@@ -79,6 +79,7 @@ class TaskFarmController<I, O> {
 		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort());
 		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 		LOGGER.debug("distributor port created, before wait");
+		LOGGER.debug("state of distributor: " + this.taskFarmStage.getDistributor().getCurrentState().toString());
 		distributorPortAction.waitForCompletion();
 		LOGGER.debug("distributor port created");
 
@@ -88,8 +89,10 @@ class TaskFarmController<I, O> {
 
 	/**
 	 * Dynamically removes a stage from the controlled task farm.
+	 *
+	 * @throws InterruptedException
 	 */
-	public void removeStageFromTaskFarm() {
+	public void removeStageFromTaskFarm() throws InterruptedException {
 		if (taskFarmStage.getEnclosedStageInstances().size() == 1) {
 			return;
 		}
