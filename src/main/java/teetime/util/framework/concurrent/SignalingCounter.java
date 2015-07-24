@@ -15,10 +15,15 @@
  */
 package teetime.util.framework.concurrent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
 
 public class SignalingCounter {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(SignalingCounter.class);
 
 	private final IntObjectMap<Object> conditions = new IntObjectHashMap<Object>();
 	private int counter;
@@ -28,11 +33,13 @@ public class SignalingCounter {
 
 	public synchronized void inc() {
 		counter++;
+		LOGGER.trace("counter INC: " + counter);
 		conditionalNotifyAll(counter);
 	}
 
 	public synchronized void dec() {
 		counter--;
+		LOGGER.trace("counter DEC: " + counter);
 		conditionalNotifyAll(counter);
 	}
 
