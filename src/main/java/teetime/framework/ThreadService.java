@@ -5,11 +5,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import teetime.framework.exceptionHandling.AbstractExceptionListener;
+import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.util.ThreadThrowableContainer;
 import teetime.util.framework.concurrent.SignalingCounter;
@@ -41,7 +44,33 @@ class ThreadService extends AbstractService<ThreadService> {
 
 	private final List<RunnableProducerStage> producerRunnables = new LinkedList<RunnableProducerStage>();
 
-	Thread initializeThreadableStages(final Stage stage) {
+	@Override
+	void initialize() {
+		if (threadableStages.isEmpty()) {
+			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
+		}
+
+		for (Stage stage : threadableStages.keySet()) {
+			final Thread thread = initialize(stage);
+
+			final Set<Stage> intraStages = traverseIntraStages(stage);
+
+			// FIXME: receive factory from config!
+			final AbstractExceptionListener newListener = new TerminatingExceptionListenerFactory().createInstance();
+			initializeIntraStages(intraStages, thread, newListener);
+		}
+
+		start();
+	}
+
+	private void initializeIntraStages(final Set<Stage> intraStages, final Thread thread, final AbstractExceptionListener newListener) {
+		for (Stage intraStage : intraStages) {
+			intraStage.setOwningThread(thread);
+			intraStage.setExceptionHandler(newListener);
+		}
+	}
+
+	private Thread initialize(final Stage stage) {
 		final Thread thread;
 
 		final TerminationStrategy terminationStrategy = stage.getTerminationStrategy();
@@ -80,6 +109,12 @@ class ThreadService extends AbstractService<ThreadService> {
 		final Thread thread = new Thread(runnable);
 		thread.setName(threadableStages.get(runnable.stage));
 		return thread;
+	}
+
+	private Set<Stage> traverseIntraStages(final Stage stage) {
+		final Traversor traversor = new Traversor(new IntraStageCollector());
+		traversor.traverse(stage);
+		return traversor.getVisitedStage();
 	}
 
 	void addThreadableStage(final Stage stage, final String threadName) {
@@ -126,7 +161,8 @@ class ThreadService extends AbstractService<ThreadService> {
 		sendStartingSignal();
 	}
 
-	void startThreads() {
+	@Override
+	void start() {
 		startThreads(this.consumerThreads);
 		startThreads(this.finiteProducerThreads);
 		startThreads(this.infiniteProducerThreads);
@@ -161,7 +197,19 @@ class ThreadService extends AbstractService<ThreadService> {
 	}
 
 	@Override
-	void merge(final ThreadService target, final ThreadService source) {
+	void merge(final ThreadService source) {
+		this.getThreadableStages().putAll(source.getThreadableStages());
+		source.setThreadableStages(this.getThreadableStages());
+	}
+
+	@Override
+	void terminate() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	void finish() {
 		// TODO Auto-generated method stub
 
 	}

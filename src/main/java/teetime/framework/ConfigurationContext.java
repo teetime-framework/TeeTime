@@ -15,6 +15,8 @@
  */
 package teetime.framework;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -35,6 +37,7 @@ final class ConfigurationContext {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
 	private ThreadService runtimeService = new ThreadService();
+	private final List<ConfigurationContext> childs = new ArrayList<ConfigurationContext>(); // parent-child-tree
 
 	ConfigurationContext() {}
 
@@ -46,7 +49,7 @@ final class ConfigurationContext {
 	 * @see AbstractCompositeStage#addThreadableStage(Stage)
 	 */
 	final void addThreadableStage(final Stage stage, final String threadName) {
-		mergeContexts(stage);
+		childFunction(stage);
 		runtimeService.addThreadableStage(stage, threadName);
 	}
 
@@ -63,21 +66,38 @@ final class ConfigurationContext {
 			LOGGER.warn("Overwriting existing pipe while connecting stages " +
 					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
 		}
-		mergeContexts(sourcePort.getOwningStage());
-		mergeContexts(targetPort.getOwningStage());
+		childFunction(sourcePort.getOwningStage());
+		childFunction(targetPort.getOwningStage());
 		new InstantiationPipe(sourcePort, targetPort, capacity);
 	}
 
-	final void mergeContexts(final Stage stage) {
+	// FIXME: Rename method
+	final void childFunction(final Stage stage) {
 		if (!stage.owningContext.equals(EMPTY_CONTEXT)) {
 			if (stage.owningContext != this) { // Performance
-				this.runtimeService.getThreadableStages().putAll(stage.owningContext.getRuntimeService().getThreadableStages());
-				stage.owningContext.getRuntimeService().setThreadableStages(this.getRuntimeService().getThreadableStages());
+				// this.runtimeService.getThreadableStages().putAll(stage.owningContext.getRuntimeService().getThreadableStages());
+				// stage.owningContext.getRuntimeService().setThreadableStages(this.getRuntimeService().getThreadableStages());
+				childs.add(stage.owningContext);
 			}
 		} else {
 			stage.owningContext = this;
 		}
 
+	}
+
+	final void finalizeContext() {
+		for (ConfigurationContext child : childs) {
+			child.finalizeContext();
+			mergeContexts(child);
+		}
+	}
+
+	final void initializeServices() {
+		runtimeService.initialize();
+	}
+
+	private void mergeContexts(final ConfigurationContext child) {
+		runtimeService.merge(child.getRuntimeService());
 	}
 
 	public ThreadService getRuntimeService() {

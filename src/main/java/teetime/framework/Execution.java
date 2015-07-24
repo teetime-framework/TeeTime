@@ -16,12 +16,10 @@
 package teetime.framework;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.IExceptionListenerFactory;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.framework.signal.ValidatingSignal;
@@ -131,32 +129,8 @@ public final class Execution<T extends Configuration> {
 		ExecutionInstantiation executionInstantiation = new ExecutionInstantiation(configuration.getContext());
 		executionInstantiation.instantiatePipes();
 
-		final Set<Stage> threadableStageJobs = this.configuration.getContext().getThreadableStages().keySet();
-		if (threadableStageJobs.isEmpty()) {
-			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
-		}
-
-		for (Stage stage : threadableStageJobs) {
-			final Thread thread = initializeThreadableStages(stage);
-
-			final Set<Stage> intraStages = traverseIntraStages(stage);
-			final AbstractExceptionListener newListener = factory.createInstance();
-			initializeIntraStages(intraStages, thread, newListener);
-		}
-
-		getConfiguration().getContext().getRuntimeService().startThreads();
-
-	}
-
-	private Thread initializeThreadableStages(final Stage stage) {
-		return configuration.getContext().getRuntimeService().initializeThreadableStages(stage);
-	}
-
-	private void initializeIntraStages(final Set<Stage> intraStages, final Thread thread, final AbstractExceptionListener newListener) {
-		for (Stage intraStage : intraStages) {
-			intraStage.setOwningThread(thread);
-			intraStage.setExceptionHandler(newListener);
-		}
+		getConfiguration().getContext().finalizeContext();
+		getConfiguration().getContext().initializeServices();
 	}
 
 	/**
@@ -209,12 +183,6 @@ public final class Execution<T extends Configuration> {
 	 */
 	public T getConfiguration() {
 		return this.configuration;
-	}
-
-	private Set<Stage> traverseIntraStages(final Stage stage) {
-		final Traversor traversor = new Traversor(new IntraStageCollector());
-		traversor.traverse(stage);
-		return traversor.getVisitedStage();
 	}
 
 	/**

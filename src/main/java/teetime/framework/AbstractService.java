@@ -12,6 +12,14 @@ package teetime.framework;
  */
 public abstract class AbstractService<T> {
 
-	abstract void merge(T target, T source);
+	abstract void initialize();
+
+	abstract void start();
+
+	abstract void terminate();
+
+	abstract void finish();
+
+	abstract void merge(T source);
 
 }

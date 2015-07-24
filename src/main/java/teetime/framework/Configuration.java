@@ -15,6 +15,9 @@
  */
 package teetime.framework;
 
+import teetime.framework.exceptionHandling.IExceptionListenerFactory;
+import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
+
 /**
  * Represents a configuration of connected stages. Available to be extended.
  *
@@ -23,9 +26,11 @@ package teetime.framework;
  * @since 2.0
  *
  */
-public class Configuration extends AbstractCompositeStage {
+public abstract class Configuration extends AbstractCompositeStage {
 
 	private boolean executed;
+
+	private final IExceptionListenerFactory factory;
 
 	boolean isExecuted() {
 		return executed;
@@ -35,7 +40,15 @@ public class Configuration extends AbstractCompositeStage {
 		this.executed = executed;
 	}
 
+	public IExceptionListenerFactory getFactory() {
+		return factory;
+	}
+
 	protected Configuration() {
-		// protected ctor to prevent direct instantiation.
+		this(new TerminatingExceptionListenerFactory());
+	}
+
+	protected Configuration(final IExceptionListenerFactory factory) {
+		this.factory = factory;
 	}
 }
