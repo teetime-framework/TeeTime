@@ -19,6 +19,7 @@ import teetime.framework.pipe.IPipe;
 
 public abstract class AbstractPort<T> {
 
+	protected IPipe pipe;
 	/**
 	 * The type of this port.
 	 * <p>
@@ -28,8 +29,6 @@ public abstract class AbstractPort<T> {
 	private final Class<T> type;
 	private final Stage owningStage;
 	private final String name;
-
-	protected IPipe pipe;
 
 	protected AbstractPort(final Class<T> type, final Stage owningStage, final String name) {
 		super();

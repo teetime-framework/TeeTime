@@ -24,7 +24,7 @@
 		<javadocOutputDir>apidocs</javadocOutputDir>
 		
 		<java.version>1.6</java.version>
-		<checkstyle.version>2.15</checkstyle.version>
+		<checkstyle.version>2.16</checkstyle.version>
 		<findbugs.version>3.0.1</findbugs.version>
 		<pmd.version>3.5</pmd.version>
 		<javadoc.version>2.10.3</javadoc.version>
