@@ -98,7 +98,7 @@ final class ConfigurationContext {
 	}
 
 	final void initializeServices() {
-		runtimeService.initialize();
+		runtimeService.onInitialize();
 	}
 
 	private void mergeContexts(final ConfigurationContext child) {

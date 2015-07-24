@@ -48,7 +48,7 @@ public abstract class AbstractExceptionListener {
 	 * @param throwingStage
 	 *            the stage, which has thrown the exception.
 	 * @return
-	 *         true, if the thread should be terminated, false otherwise
+	 * 		true, if the thread should be terminated, false otherwise
 	 */
 	public abstract FurtherExecution onStageException(Exception e, Stage throwingStage);
 

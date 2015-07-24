@@ -52,7 +52,7 @@ class ThreadService extends AbstractService<ThreadService> {
 	private final List<RunnableProducerStage> producerRunnables = new LinkedList<RunnableProducerStage>();
 
 	@Override
-	void initialize() {
+	void onInitialize() {
 		IExceptionListenerFactory factory;
 		try {
 			factory = ((Configuration) compositeStage).getFactory();
@@ -72,7 +72,7 @@ class ThreadService extends AbstractService<ThreadService> {
 			initializeIntraStages(intraStages, thread, newListener);
 		}
 
-		start();
+		onStart();
 	}
 
 	private void initializeIntraStages(final Set<Stage> intraStages, final Thread thread, final AbstractExceptionListener newListener) {
@@ -135,7 +135,8 @@ class ThreadService extends AbstractService<ThreadService> {
 		}
 	}
 
-	void waitForTermination() {
+	@Override
+	void onFinish() {
 		try {
 			runnableCounter.waitFor(0);
 
@@ -169,12 +170,13 @@ class ThreadService extends AbstractService<ThreadService> {
 		}
 	}
 
-	void executeNonBlocking() {
+	@Override
+	void onExecute() {
 		sendStartingSignal();
 	}
 
 	@Override
-	void start() {
+	void onStart() {
 		startThreads(this.consumerThreads);
 		startThreads(this.finiteProducerThreads);
 		startThreads(this.infiniteProducerThreads);
@@ -215,15 +217,10 @@ class ThreadService extends AbstractService<ThreadService> {
 	}
 
 	@Override
-	void terminate() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	void finish() {
-		// TODO Auto-generated method stub
-
+	void onTerminate() {
+		for (Stage stage : threadableStages.keySet()) {
+			stage.terminate();
+		}
 	}
 
 }
