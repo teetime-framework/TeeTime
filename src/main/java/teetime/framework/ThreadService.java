@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
-import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.util.ThreadThrowableContainer;
 import teetime.util.framework.concurrent.SignalingCounter;
@@ -36,6 +35,13 @@ class ThreadService extends AbstractService<ThreadService> {
 
 	private final SignalingCounter runnableCounter = new SignalingCounter();
 
+	private final AbstractCompositeStage compositeStage;
+
+	public ThreadService(final AbstractCompositeStage compositeStage) {
+		this.compositeStage = compositeStage;
+
+	}
+
 	SignalingCounter getRunnableCounter() {
 		return runnableCounter;
 	}
@@ -46,6 +52,7 @@ class ThreadService extends AbstractService<ThreadService> {
 
 	@Override
 	void initialize() {
+		Configuration config = (Configuration) compositeStage;
 		if (threadableStages.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
@@ -56,7 +63,7 @@ class ThreadService extends AbstractService<ThreadService> {
 			final Set<Stage> intraStages = traverseIntraStages(stage);
 
 			// FIXME: receive factory from config!
-			final AbstractExceptionListener newListener = new TerminatingExceptionListenerFactory().createInstance();
+			final AbstractExceptionListener newListener = config.getFactory().createInstance();
 			initializeIntraStages(intraStages, thread, newListener);
 		}
 

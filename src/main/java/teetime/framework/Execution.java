@@ -20,8 +20,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.exceptionHandling.IExceptionListenerFactory;
-import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 
@@ -45,8 +43,6 @@ public final class Execution<T extends Configuration> {
 
 	private final T configuration;
 
-	private final IExceptionListenerFactory factory;
-
 	private final boolean executionInterrupted = false;
 
 	/**
@@ -60,30 +56,6 @@ public final class Execution<T extends Configuration> {
 	}
 
 	/**
-	 * Creates a new {@link Execution} that uses the default listener.
-	 *
-	 * @param configuration
-	 *            to be used for the analysis
-	 * @param validationEnabled
-	 *            whether or not the validation should be executed
-	 */
-	public Execution(final T configuration, final boolean validationEnabled) {
-		this(configuration, validationEnabled, new TerminatingExceptionListenerFactory());
-	}
-
-	/**
-	 * Creates a new {@link Execution} that skips validating the port connections and uses a specific listener.
-	 *
-	 * @param configuration
-	 *            to be used for the analysis
-	 * @param factory
-	 *            specific listener for the exception handling
-	 */
-	public Execution(final T configuration, final IExceptionListenerFactory factory) {
-		this(configuration, false, factory);
-	}
-
-	/**
 	 * Creates a new {@link Execution} that uses a specific listener.
 	 *
 	 * @param configuration
@@ -93,9 +65,8 @@ public final class Execution<T extends Configuration> {
 	 * @param factory
 	 *            specific listener for the exception handling
 	 */
-	public Execution(final T configuration, final boolean validationEnabled, final IExceptionListenerFactory factory) {
+	public Execution(final T configuration, final boolean validationEnabled) {
 		this.configuration = configuration;
-		this.factory = factory;
 		if (configuration.isExecuted()) {
 			throw new IllegalStateException("Configuration was already executed");
 		}
@@ -185,13 +156,4 @@ public final class Execution<T extends Configuration> {
 		return this.configuration;
 	}
 
-	/**
-	 * @return
-	 * 		the given ExceptionListenerFactory instance
-	 *
-	 * @since 2.0
-	 */
-	public IExceptionListenerFactory getExceptionListenerFactory() {
-		return factory;
-	}
 }

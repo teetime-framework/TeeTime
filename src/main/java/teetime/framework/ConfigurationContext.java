@@ -32,14 +32,19 @@ import teetime.framework.pipe.InstantiationPipe;
  */
 final class ConfigurationContext {
 
-	public static final ConfigurationContext EMPTY_CONTEXT = new ConfigurationContext();
+	public static final ConfigurationContext EMPTY_CONTEXT = new ConfigurationContext(null);
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
-	private ThreadService runtimeService = new ThreadService();
 	private final List<ConfigurationContext> childs = new ArrayList<ConfigurationContext>(); // parent-child-tree
+	private final AbstractCompositeStage compositeStage;
 
-	ConfigurationContext() {}
+	private ThreadService runtimeService;
+
+	ConfigurationContext(final AbstractCompositeStage compositeStage) {
+		this.compositeStage = compositeStage;
+		this.runtimeService = new ThreadService(compositeStage);
+	}
 
 	Map<Stage, String> getThreadableStages() {
 		return runtimeService.getThreadableStages();

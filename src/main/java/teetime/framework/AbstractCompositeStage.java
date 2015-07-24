@@ -33,7 +33,7 @@ public abstract class AbstractCompositeStage {
 	private final ConfigurationContext context;
 
 	public AbstractCompositeStage() {
-		this.context = new ConfigurationContext();
+		this.context = new ConfigurationContext(this);
 	}
 
 	ConfigurationContext getContext() {

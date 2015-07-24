@@ -49,8 +49,7 @@ public class DynamicMergerTest {
 		}
 
 		DynamicMergerTestConfig<Integer> config = new DynamicMergerTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<DynamicMergerTestConfig<Integer>> analysis = new Execution<DynamicMergerTestConfig<Integer>>(config,
-				new TerminatingExceptionListenerFactory());
+		Execution<DynamicMergerTestConfig<Integer>> analysis = new Execution<DynamicMergerTestConfig<Integer>>(config);
 
 		analysis.executeBlocking();
 
@@ -68,8 +67,7 @@ public class DynamicMergerTest {
 		}
 
 		DynamicMergerTestConfig<Integer> config = new DynamicMergerTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<DynamicMergerTestConfig<Integer>> analysis = new Execution<DynamicMergerTestConfig<Integer>>(config,
-				new TerminatingExceptionListenerFactory());
+		Execution<DynamicMergerTestConfig<Integer>> analysis = new Execution<DynamicMergerTestConfig<Integer>>(config);
 
 		analysis.executeBlocking();
 
@@ -90,8 +88,7 @@ public class DynamicMergerTest {
 		inputActions[5] = new RemovePortAction<Integer>(null);
 
 		DynamicMergerTestConfig<Integer> config = new DynamicMergerTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<DynamicMergerTestConfig<Integer>> analysis = new Execution<DynamicMergerTestConfig<Integer>>(config,
-				new TerminatingExceptionListenerFactory());
+		Execution<DynamicMergerTestConfig<Integer>> analysis = new Execution<DynamicMergerTestConfig<Integer>>(config);
 
 		analysis.executeBlocking();
 
@@ -119,6 +116,7 @@ public class DynamicMergerTest {
 		private final CollectorSink<T> collectorSink;
 
 		public DynamicMergerTestConfig(final List<T> elements, final List<PortAction<DynamicMerger<T>>> inputActions) {
+			super(new TerminatingExceptionListenerFactory());
 			InitialElementProducer<T> initialElementProducer = new InitialElementProducer<T>(elements);
 			DynamicMerger<T> merger = new DynamicMerger<T>(new BusyWaitingRoundRobinStrategy());
 			collectorSink = new CollectorSink<T>();
