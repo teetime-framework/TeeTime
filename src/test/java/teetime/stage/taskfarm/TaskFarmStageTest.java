@@ -39,7 +39,7 @@ public class TaskFarmStageTest {
 	volatile static int numStringDuplication;
 
 	@Test
-	public void simpleTaskFarmStageTest() {
+	public void simpleTaskFarmStageTest() throws InterruptedException {
 		final TaskFarmStageConfiguration configuration = new TaskFarmStageConfiguration(NUMBER_OF_TEST_ELEMENTS);
 		final Execution<TaskFarmStageConfiguration> execution = new Execution<TaskFarmStageConfiguration>(configuration);
 
