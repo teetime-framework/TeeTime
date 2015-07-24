@@ -41,6 +41,7 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 	private final OneTimeCondition condition = new OneTimeCondition();
 
 	private final InputPort<T> inputPort;
+	DynamicDistributor<T> dynamicDistributor;
 
 	public CreatePortActionDistributor(final InputPort<T> inputPort) {
 		this.inputPort = inputPort;
@@ -80,11 +81,7 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 		listeners.add(listener);
 	}
 
-	public void waitForCompletion() {
-		try {
-			condition.await();
-		} catch (InterruptedException e) {
-			throw new IllegalStateException(e);
-		}
+	public void waitForCompletion() throws InterruptedException {
+		condition.await();
 	}
 }

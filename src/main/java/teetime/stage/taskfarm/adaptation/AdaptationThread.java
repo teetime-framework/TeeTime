@@ -45,8 +45,6 @@ final public class AdaptationThread extends Thread {
 				checkForStopping();
 			} catch (InterruptedException e) {
 				stopped = true;
-			} catch (IllegalStateException e) {
-				stopped = true;
 			}
 		}
 		LOGGER.debug("Adaptation thread stopped");
@@ -61,7 +59,7 @@ final public class AdaptationThread extends Thread {
 		AdaptationThread.sampleRateMillis = sampleRateMillis;
 	}
 
-	private void executeNextStageToBeReconfigured() {
+	private void executeNextStageToBeReconfigured() throws InterruptedException {
 		for (TaskFarmComponents<?, ?, ?> service : taskFarmServices) {
 			// execute first Task Farm which is still parallelizable
 			if (service.getTaskFarmStage().getConfiguration().isStillParallelizable()) {

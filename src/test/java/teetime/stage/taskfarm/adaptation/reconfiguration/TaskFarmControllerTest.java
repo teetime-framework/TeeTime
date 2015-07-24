@@ -93,11 +93,19 @@ public class TaskFarmControllerTest {
 		@Override
 		protected void execute(final Integer element) {
 			if (this.numberOfElements == NUMBER_OF_ITEMS * 0.3) {
-				this.controller.addStageToTaskFarm();
+				try {
+					this.controller.addStageToTaskFarm();
+				} catch (InterruptedException e) {
+					throw new IllegalStateException(e);
+				}
 			}
 
 			if (this.numberOfElements == NUMBER_OF_ITEMS * 0.5) {
-				this.controller.addStageToTaskFarm();
+				try {
+					this.controller.addStageToTaskFarm();
+				} catch (InterruptedException e) {
+					throw new IllegalStateException(e);
+				}
 			}
 
 			if (this.numberOfElements == NUMBER_OF_ITEMS * 0.7) {

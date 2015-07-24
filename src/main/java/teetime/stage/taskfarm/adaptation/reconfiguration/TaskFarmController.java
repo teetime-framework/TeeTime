@@ -64,8 +64,10 @@ class TaskFarmController<I, O> {
 
 	/**
 	 * Dynamically adds a stage to the controlled task farm.
+	 * 
+	 * @throws InterruptedException
 	 */
-	public void addStageToTaskFarm() {
+	public void addStageToTaskFarm() throws InterruptedException {
 		LOGGER.debug("Add stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
 		ITaskFarmDuplicable<I, O> newStage = this.taskFarmStage.getBasicEnclosedStage().duplicate();
 

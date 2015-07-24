@@ -76,14 +76,15 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 				}
 				super.onStarting();
 			}
-
+		};
+		this.distributor = new DynamicDistributor<I>() {
 			@Override
 			public void onTerminating() throws Exception {
 				adaptationThread.stopAdaptationThread();
+				adaptationThread.join();
 				super.onTerminating();
 			}
 		};
-		this.distributor = new DynamicDistributor<I>();
 		this.configuration = new TaskFarmConfiguration<I, O, T>();
 
 		if (adaptationThread == null) {
