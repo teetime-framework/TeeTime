@@ -66,10 +66,7 @@ class ExecutionInstantiation {
 			final OutputPort outputPort, final InstantiationPipe pipe) {
 		Stage targetStage = pipe.getTargetPort().getOwningStage();
 
-		int targetColor = DEFAULT_COLOR;
-		if (colors.containsKey(targetStage)) {
-			targetColor = colors.get(targetStage);
-		}
+		int targetColor = colors.containsKey(targetStage) ? colors.get(targetStage) : DEFAULT_COLOR;
 
 		if (threadableStages.contains(targetStage) && targetColor != color) {
 			if (pipe.capacity() != 0) {
