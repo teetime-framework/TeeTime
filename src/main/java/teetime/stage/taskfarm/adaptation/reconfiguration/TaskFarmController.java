@@ -80,6 +80,7 @@ class TaskFarmController<I, O> {
 		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 		LOGGER.debug("distributor port created, before wait");
 		LOGGER.debug("state of distributor: " + this.taskFarmStage.getDistributor().getCurrentState().toString());
+		this.taskFarmStage.getDistributor().checkForPendingPortActionRequest();
 		distributorPortAction.waitForCompletion();
 		LOGGER.debug("distributor port created");
 

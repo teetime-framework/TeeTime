@@ -50,7 +50,7 @@ public class DynamicDistributor<T> extends Distributor<T> implements PortRemoved
 		super.execute(element);
 	}
 
-	protected void checkForPendingPortActionRequest() {
+	public void checkForPendingPortActionRequest() {
 		PortActionHelper.checkForPendingPortActionRequest(this, portActions);
 	}
 
