@@ -21,25 +21,22 @@ import java.util.concurrent.locks.LockSupport;
 
 public final class SCParkTakeStrategy<E> implements TakeStrategy<E> {
 
-	public volatile int storeFence = 0;
+	public volatile int storeFence = 0; // NOCS
 
 	private final AtomicReference<Thread> t = new AtomicReference<Thread>(null);
 
 	@Override
 	// Make sure the offer is visible before unpark
-	public void signal()
-	{
+	public void signal() {
 		storeFence = 1; // store barrier
 
 		LockSupport.unpark(t.get()); // t.get() load barrier
 	}
 
 	@Override
-	public E waitPoll(final Queue<E> q) throws InterruptedException
-	{
+	public E waitPoll(final Queue<E> q) throws InterruptedException {
 		E e = q.poll();
-		if (e != null)
-		{
+		if (e != null) {
 			return e;
 		}
 

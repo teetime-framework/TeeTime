@@ -12,4 +12,5 @@
     <file-match-pattern match-pattern="." include-pattern="true"/>
   </fileset>
   <filter name="WriteProtectedFiles" enabled="true"/>
+  <filter name="DerivedFiles" enabled="true"/>
 </fileset-config>

@@ -38,12 +38,12 @@ public abstract class AbstractStage extends Stage {
 
 	@Override
 	protected List<InputPort<?>> getInputPorts() {
-		return inputPorts.getOpenedPorts();
+		return inputPorts.getOpenedPorts(); // TODO consider to publish a read-only version
 	}
 
 	@Override
 	protected List<OutputPort<?>> getOutputPorts() {
-		return outputPorts.getOpenedPorts();
+		return outputPorts.getOpenedPorts(); // TODO consider to publish a read-only version
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public abstract class AbstractStage extends Stage {
 	 * @return <code>true</code> if this stage has already received the given <code>signal</code>, <code>false</code> otherwise
 	 */
 	protected boolean signalAlreadyReceived(final ISignal signal, final InputPort<?> inputPort) {
-		boolean signalAlreadyReceived = this.triggeredSignalTypes.contains(signal.getClass());
+		final boolean signalAlreadyReceived = this.triggeredSignalTypes.contains(signal.getClass());
 		if (signalAlreadyReceived) {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Got signal again: " + signal + " from input port: " + inputPort);

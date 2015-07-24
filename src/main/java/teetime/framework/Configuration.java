@@ -27,6 +27,10 @@ public class Configuration extends AbstractCompositeStage {
 
 	private boolean executed;
 
+	protected Configuration() {
+		// protected ctor to prevent direct instantiation.
+	}
+
 	boolean isExecuted() {
 		return executed;
 	}
@@ -35,7 +39,4 @@ public class Configuration extends AbstractCompositeStage {
 		this.executed = executed;
 	}
 
-	protected Configuration() {
-		// protected ctor to prevent direct instantiation.
-	}
 }
