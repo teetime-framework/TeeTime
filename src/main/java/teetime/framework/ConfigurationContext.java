@@ -15,9 +15,9 @@
  */
 package teetime.framework;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,18 +36,16 @@ final class ConfigurationContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
-	private final List<ConfigurationContext> childs = new ArrayList<ConfigurationContext>(); // parent-child-tree
-	private final AbstractCompositeStage compositeStage;
+	private final Set<ConfigurationContext> childs = new HashSet<ConfigurationContext>(); // parent-child-tree
 
-	private ThreadService runtimeService;
+	private ThreadService threadService;
 
 	ConfigurationContext(final AbstractCompositeStage compositeStage) {
-		this.compositeStage = compositeStage;
-		this.runtimeService = new ThreadService(compositeStage);
+		this.threadService = new ThreadService(compositeStage);
 	}
 
 	Map<Stage, String> getThreadableStages() {
-		return runtimeService.getThreadableStages();
+		return threadService.getThreadableStages();
 	}
 
 	/**
@@ -55,7 +53,7 @@ final class ConfigurationContext {
 	 */
 	final void addThreadableStage(final Stage stage, final String threadName) {
 		childFunction(stage);
-		runtimeService.addThreadableStage(stage, threadName);
+		threadService.addThreadableStage(stage, threadName);
 	}
 
 	/**
@@ -63,7 +61,7 @@ final class ConfigurationContext {
 	 */
 	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort.getOwningStage().getInputPorts().size() == 0) {
-			if (!runtimeService.getThreadableStages().containsKey(sourcePort.getOwningStage())) {
+			if (!threadService.getThreadableStages().containsKey(sourcePort.getOwningStage())) {
 				addThreadableStage(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
 			}
 		}
@@ -80,8 +78,6 @@ final class ConfigurationContext {
 	final void childFunction(final Stage stage) {
 		if (!stage.owningContext.equals(EMPTY_CONTEXT)) {
 			if (stage.owningContext != this) { // Performance
-				// this.runtimeService.getThreadableStages().putAll(stage.owningContext.getRuntimeService().getThreadableStages());
-				// stage.owningContext.getRuntimeService().setThreadableStages(this.getRuntimeService().getThreadableStages());
 				childs.add(stage.owningContext);
 			}
 		} else {
@@ -98,19 +94,22 @@ final class ConfigurationContext {
 	}
 
 	final void initializeServices() {
-		runtimeService.onInitialize();
+		threadService.onInitialize();
 	}
 
 	private void mergeContexts(final ConfigurationContext child) {
-		runtimeService.merge(child.getRuntimeService());
+		threadService.merge(child.getRuntimeService());
+
+		// Finally copy parent services
+		child.threadService = this.threadService;
 	}
 
 	public ThreadService getRuntimeService() {
-		return runtimeService;
+		return threadService;
 	}
 
 	public void setRuntimeService(final ThreadService runtimeService) {
-		this.runtimeService = runtimeService;
+		this.threadService = runtimeService;
 	}
 
 }
