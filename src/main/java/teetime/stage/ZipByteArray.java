@@ -45,15 +45,11 @@ public final class ZipByteArray extends AbstractConsumerStage<byte[]> {
 
 	@Override
 	protected void execute(final byte[] element) {
-		byte[] streamBytes = null;
+		byte[] streamBytes;
 		try {
-			if (mode == ZipMode.COMP) {
-				streamBytes = compress(element);
-			} else {
-				streamBytes = decompress(element);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			streamBytes = (mode == ZipMode.COMP) ? compress(element) : decompress(element);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
 		}
 		outputPort.send(streamBytes);
 	}
@@ -78,15 +74,20 @@ public final class ZipByteArray extends AbstractConsumerStage<byte[]> {
 		return outputBytes;
 	}
 
-	private byte[] decompress(final byte[] data) throws IOException, DataFormatException {
+	private byte[] decompress(final byte[] data) throws IOException {
 		Inflater inflater = new Inflater();
 		inflater.setInput(data);
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
 		byte[] uncompressedBytes = new byte[1024];
 		while (!inflater.finished()) {
-			int count = inflater.inflate(uncompressedBytes);
-			outputStream.write(uncompressedBytes, 0, count);
+			int count;
+			try {
+				count = inflater.inflate(uncompressedBytes);
+				outputStream.write(uncompressedBytes, 0, count);
+			} catch (DataFormatException e) {
+				throw new IllegalStateException(e);
+			}
 		}
 		outputStream.close();
 		byte[] outputBytes = outputStream.toByteArray();
