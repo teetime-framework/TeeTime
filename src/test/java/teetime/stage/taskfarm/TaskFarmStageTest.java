@@ -15,6 +15,9 @@
  */
 package teetime.stage.taskfarm;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 
 import teetime.framework.AbstractCompositeStage;
@@ -36,7 +39,7 @@ public class TaskFarmStageTest {
 
 		execution.executeBlocking();
 
-		// assertThat(configuration.getCollection().size(), is(NUMBER_OF_TEST_ELEMENTS));
+		assertThat(configuration.getCollection().size(), is(NUMBER_OF_TEST_ELEMENTS));
 	}
 
 	static private class PlusOneInStringStage extends AbstractTransformation<Integer, String> {

@@ -38,10 +38,9 @@ class TaskFarmStageConfiguration extends Configuration {
 		}
 		final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(values);
 		final CompositeTestStage compositeTestStage = new CompositeTestStage();
-		final CollectorSink<String> collectorSink = new CollectorSink<String>(this.results);
-
 		final TaskFarmStage<Integer, String, CompositeTestStage> taskFarmStage =
 				new TaskFarmStage<Integer, String, CompositeTestStage>(compositeTestStage);
+		final CollectorSink<String> collectorSink = new CollectorSink<String>(this.results);
 
 		connectPorts(initialElementProducer.getOutputPort(), taskFarmStage.getInputPort());
 		connectPorts(taskFarmStage.getOutputPort(), collectorSink.getInputPort());
