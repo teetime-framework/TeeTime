@@ -41,7 +41,6 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 	private final OneTimeCondition condition = new OneTimeCondition();
 
 	private final InputPort<T> inputPort;
-	DynamicDistributor<T> dynamicDistributor;
 
 	public CreatePortActionDistributor(final InputPort<T> inputPort) {
 		this.inputPort = inputPort;
