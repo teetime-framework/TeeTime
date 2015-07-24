@@ -94,13 +94,16 @@ class ExecutionInstantiation {
 		int color = DEFAULT_COLOR;
 		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
 		Set<Stage> threadableStageJobs = configuration.getThreadableStages().keySet();
-		Integer createdConnections = 0;
+		int numCreatedConnections = 0;
 		for (Stage threadableStage : threadableStageJobs) {
 			color++;
 			colors.put(threadableStage, color);
-			createdConnections = colorAndConnectStages(color, colors, threadableStage, configuration);
+			numCreatedConnections += colorAndConnectStages(color, colors, threadableStage, configuration);
 		}
-		LOGGER.debug("Created " + createdConnections + " connections");
+
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Created " + numCreatedConnections + " connections");
+		}
 	}
 
 }
