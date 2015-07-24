@@ -247,7 +247,6 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 			}
 		}
 
-		LOGGER.debug("Interrupting infiniteProducerThreads...");
 		for (Thread thread : this.infiniteProducerThreads) {
 			thread.interrupt();
 		}

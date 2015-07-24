@@ -25,15 +25,17 @@ import teetime.stage.taskfarm.TaskFarmStageTest.CompositeTestStage;
 
 class TaskFarmStageConfiguration extends Configuration {
 
+	private final int numberOfTestElements;
 	private final List<String> results = new LinkedList<String>();
 
-	public TaskFarmStageConfiguration(final TaskFarmStageTest taskFarmStageTest) {
+	public TaskFarmStageConfiguration(final int numberOfTestElements) {
+		this.numberOfTestElements = numberOfTestElements;
 		this.buildConfiguration();
 	}
 
 	private void buildConfiguration() {
 		final List<Integer> values = new LinkedList<Integer>();
-		for (int i = 1; i <= TaskFarmStageTest.NUMBER_OF_TEST_ELEMENTS; i++) {
+		for (int i = 1; i <= numberOfTestElements; i++) {
 			values.add(i);
 		}
 		final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(values);

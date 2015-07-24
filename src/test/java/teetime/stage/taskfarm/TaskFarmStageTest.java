@@ -19,6 +19,8 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import teetime.framework.AbstractCompositeStage;
 import teetime.framework.Execution;
@@ -30,15 +32,22 @@ import teetime.stage.basic.AbstractTransformation;
 
 public class TaskFarmStageTest {
 
-	static final int NUMBER_OF_TEST_ELEMENTS = 10000;
+	private static final Logger LOGGER = LoggerFactory.getLogger(TaskFarmStageTest.class);
+	private static final int NUMBER_OF_TEST_ELEMENTS = 10000;
+
+	volatile static int numPlusOneInString;
+	volatile static int numStringDuplication;
 
 	@Test
 	public void simpleTaskFarmStageTest() {
-		final TaskFarmStageConfiguration configuration = new TaskFarmStageConfiguration(this);
+		final TaskFarmStageConfiguration configuration = new TaskFarmStageConfiguration(NUMBER_OF_TEST_ELEMENTS);
 		final Execution<TaskFarmStageConfiguration> execution = new Execution<TaskFarmStageConfiguration>(configuration);
 
 		execution.executeBlocking();
+		LOGGER.debug("FINISHED TEST");
 
+		assertThat(numPlusOneInString, is(NUMBER_OF_TEST_ELEMENTS));
+		assertThat(numStringDuplication, is(NUMBER_OF_TEST_ELEMENTS));
 		assertThat(configuration.getCollection().size(), is(NUMBER_OF_TEST_ELEMENTS));
 	}
 
@@ -47,6 +56,7 @@ public class TaskFarmStageTest {
 		@Override
 		protected void execute(final Integer element) {
 			final Integer x = element + 1;
+			numPlusOneInString++;
 			this.outputPort.send(x.toString());
 		}
 	}
@@ -55,6 +65,7 @@ public class TaskFarmStageTest {
 
 		@Override
 		protected void execute(final String element) {
+			numStringDuplication++;
 			this.outputPort.send(element + element);
 		}
 

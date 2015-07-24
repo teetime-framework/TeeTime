@@ -19,9 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.InstantiationPipe;
 import teetime.framework.pipe.SingleElementPipeFactory;
@@ -30,7 +27,6 @@ import teetime.framework.pipe.UnboundedSpScPipeFactory;
 
 class ExecutionInstantiation {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionInstantiation.class);
 	private static final int DEFAULT_COLOR = 0;
 
 	private final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
@@ -64,8 +60,9 @@ class ExecutionInstantiation {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private int processPipe(final int color, final Map<Stage, Integer> colors, final ConfigurationContext configuration, final Set<Stage> threadableStages,
 			final OutputPort outputPort, final InstantiationPipe pipe) {
-		Stage targetStage = pipe.getTargetPort().getOwningStage();
+		int numCreatedConnections;
 
+		Stage targetStage = pipe.getTargetPort().getOwningStage();
 		int targetColor = colors.containsKey(targetStage) ? colors.get(targetStage) : DEFAULT_COLOR;
 
 		if (threadableStages.contains(targetStage) && targetColor != color) {
@@ -74,6 +71,7 @@ class ExecutionInstantiation {
 			} else {
 				interUnboundedThreadPipeFactory.create(outputPort, pipe.getTargetPort(), 4);
 			}
+			numCreatedConnections = 0;
 		} else {
 			if (colors.containsKey(targetStage)) {
 				if (!colors.get(targetStage).equals(color)) {
@@ -82,24 +80,20 @@ class ExecutionInstantiation {
 			}
 			intraThreadPipeFactory.create(outputPort, pipe.getTargetPort());
 			colors.put(targetStage, color);
-			return colorAndConnectStages(color, colors, targetStage, configuration);
+			numCreatedConnections = colorAndConnectStages(color, colors, targetStage, configuration);
 		}
-		return 0;
+
+		return numCreatedConnections;
 	}
 
 	void instantiatePipes() {
 		int color = DEFAULT_COLOR;
 		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
 		Set<Stage> threadableStageJobs = configuration.getThreadableStages().keySet();
-		int numCreatedConnections = 0;
 		for (Stage threadableStage : threadableStageJobs) {
 			color++;
 			colors.put(threadableStage, color);
-			numCreatedConnections += colorAndConnectStages(color, colors, threadableStage, configuration);
-		}
-
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Created " + numCreatedConnections + " connections");
+			colorAndConnectStages(color, colors, threadableStage, configuration);
 		}
 	}
 
