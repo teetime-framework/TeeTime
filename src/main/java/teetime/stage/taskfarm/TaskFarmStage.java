@@ -15,7 +15,6 @@
  */
 package teetime.stage.taskfarm;
 
-import java.security.InvalidParameterException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,7 +62,7 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 		super();
 
 		if (null == workerStage) {
-			throw new InvalidParameterException("The constructor of a Task Farm may not be called with null as the worker stage.");
+			throw new IllegalArgumentException("The constructor of a Task Farm may not be called with null as the worker stage.");
 		}
 
 		this.merger = new DynamicMerger<O>() {

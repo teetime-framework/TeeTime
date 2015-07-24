@@ -33,13 +33,13 @@ public class SignalingCounter {
 
 	public synchronized void inc() {
 		counter++;
-		LOGGER.trace("counter INC: " + counter);
+		LOGGER.trace(this + "counter INC: " + counter);
 		conditionalNotifyAll(counter);
 	}
 
 	public synchronized void dec() {
 		counter--;
-		LOGGER.trace("counter DEC: " + counter);
+		LOGGER.trace(this + "counter DEC: " + counter);
 		conditionalNotifyAll(counter);
 	}
 
