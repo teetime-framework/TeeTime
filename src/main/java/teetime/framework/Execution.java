@@ -101,7 +101,7 @@ public final class Execution<T extends Configuration> {
 		ExecutionInstantiation executionInstantiation = new ExecutionInstantiation(configurationContext);
 		executionInstantiation.instantiatePipes();
 
-		configurationContext.finalizeContext();
+		configurationContext.initializeContext();
 		configurationContext.initializeServices();
 	}
 

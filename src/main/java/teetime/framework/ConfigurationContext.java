@@ -85,9 +85,9 @@ final class ConfigurationContext {
 
 	}
 
-	final void finalizeContext() {
+	final void initializeContext() {
 		for (ConfigurationContext child : children) {
-			child.finalizeContext();
+			child.initializeContext();
 			mergeContexts(child);
 		}
 	}
