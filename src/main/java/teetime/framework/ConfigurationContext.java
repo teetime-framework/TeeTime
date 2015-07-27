@@ -104,6 +104,18 @@ final class ConfigurationContext {
 		child.threadService = this.threadService;
 	}
 
+	void executeConfiguration() {
+		this.threadService.onExecute();
+	}
+
+	void abortConfigurationRun() {
+		this.threadService.onTerminate();
+	}
+
+	void waitForConfigurationToTerminate() {
+		this.threadService.onFinish();
+	}
+
 	public ThreadService getRuntimeService() {
 		return threadService;
 	}

@@ -113,12 +113,13 @@ public final class Execution<T extends Configuration> {
 	 * @since 2.0
 	 */
 	public void waitForTermination() {
-		getConfiguration().getContext().getRuntimeService().onFinish();
+		getConfiguration().getContext().waitForConfigurationToTerminate();
+		;
 	}
 
 	// TODO: implement
 	private void abortEventually() {
-		getConfiguration().getContext().getRuntimeService().onTerminate();
+		getConfiguration().getContext().abortConfigurationRun();
 		waitForTermination();
 	}
 
@@ -142,7 +143,7 @@ public final class Execution<T extends Configuration> {
 	 * @since 2.0
 	 */
 	public void executeNonBlocking() {
-		configuration.getContext().getRuntimeService().onExecute();
+		configuration.getContext().executeConfiguration();
 	}
 
 	/**

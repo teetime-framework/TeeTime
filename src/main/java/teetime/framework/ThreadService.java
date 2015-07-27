@@ -122,9 +122,9 @@ class ThreadService extends AbstractService<ThreadService> {
 			thread.interrupt();
 		}
 
-		if (!exceptions.isEmpty()) {
-			throw new ExecutionException(exceptions);
-		}
+		// if (!exceptions.isEmpty()) {
+		// throw new ExecutionException(exceptions);
+		// }
 	}
 
 	private void initializeIntraStages(final Set<Stage> intraStages, final Thread thread, final AbstractExceptionListener newListener) {
