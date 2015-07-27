@@ -32,7 +32,7 @@ import teetime.framework.pipe.InstantiationPipe;
  */
 final class ConfigurationContext {
 
-	public static final ConfigurationContext EMPTY_CONTEXT = new ConfigurationContext(null);
+	static final ConfigurationContext EMPTY_CONTEXT = new ConfigurationContext(null);
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
@@ -52,7 +52,7 @@ final class ConfigurationContext {
 	 * @see AbstractCompositeStage#addThreadableStage(Stage)
 	 */
 	final void addThreadableStage(final Stage stage, final String threadName) {
-		childFunction(stage);
+		addChildContext(stage);
 		threadService.addThreadableStage(stage, threadName);
 	}
 
@@ -69,13 +69,13 @@ final class ConfigurationContext {
 			LOGGER.warn("Overwriting existing pipe while connecting stages " +
 					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
 		}
-		childFunction(sourcePort.getOwningStage());
-		childFunction(targetPort.getOwningStage());
+		addChildContext(sourcePort.getOwningStage());
+		addChildContext(targetPort.getOwningStage());
 		new InstantiationPipe(sourcePort, targetPort, capacity);
 	}
 
 	// FIXME: Rename method
-	final void childFunction(final Stage stage) {
+	final void addChildContext(final Stage stage) {
 		if (!stage.owningContext.equals(EMPTY_CONTEXT)) {
 			if (stage.owningContext != this) { // Performance
 				childs.add(stage.owningContext);
@@ -98,7 +98,7 @@ final class ConfigurationContext {
 	}
 
 	private void mergeContexts(final ConfigurationContext child) {
-		threadService.merge(child.getRuntimeService());
+		threadService.merge(child.getThreadService());
 
 		// Finally copy parent services
 		child.threadService = this.threadService;
@@ -116,12 +116,12 @@ final class ConfigurationContext {
 		this.threadService.onFinish();
 	}
 
-	public ThreadService getRuntimeService() {
+	ThreadService getThreadService() {
 		return threadService;
 	}
 
-	public void setRuntimeService(final ThreadService runtimeService) {
-		this.threadService = runtimeService;
+	void setThreadService(final ThreadService threadService) {
+		this.threadService = threadService;
 	}
 
 }
