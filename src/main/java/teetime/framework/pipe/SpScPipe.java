@@ -19,6 +19,7 @@ import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.StageState;
+import teetime.framework.exceptionHandling.TerminateException;
 import teetime.util.framework.concurrent.queue.ObservableSpScArrayQueue;
 
 final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe {
@@ -39,16 +40,15 @@ final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe
 	public boolean add(final Object element) {
 		while (!this.queue.offer(element)) {
 			// Thread.yield();
-			if (this.cachedTargetStage.getCurrentState() == StageState.TERMINATED &&
-					this.getSourcePort().getOwningStage().getCurrentState() == StageState.TERMINATING) {
-				return false;
+			if (this.cachedTargetStage.getCurrentState() == StageState.TERMINATED ||
+					Thread.currentThread().isInterrupted()) {
+				throw TerminateException.INSTANCE;
 			}
 			this.numWaits++;
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
-				// FIXME Handle it correctly
-				e.printStackTrace();
+				throw TerminateException.INSTANCE;
 			}
 		}
 		// this.reportNewElement();

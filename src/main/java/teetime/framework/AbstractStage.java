@@ -271,6 +271,7 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	protected void terminate() {
 		changeState(StageState.TERMINATING);
+		owningThread.interrupt();
 	}
 
 	@Override
