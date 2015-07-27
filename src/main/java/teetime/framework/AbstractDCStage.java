@@ -1,6 +1,7 @@
 package teetime.framework;
 
-import teetime.stage.taskfarm.ITaskFarmDuplicable;
+import teetime.util.divideAndConquer.Problem;
+import teetime.util.divideAndConquer.Solution;
 
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
@@ -18,9 +19,12 @@ import com.carrotsearch.hppc.IntObjectMap;
  * @param <S>
  *            type of elements that represent the solution to a problem.
  */
-public abstract class AbstractDCStage<P, S> extends AbstractStage implements ITaskFarmDuplicable<P, S> { // FIXME check compatibility of interface
+public abstract class AbstractDCStage<P extends Problem, S extends Solution> extends AbstractStage { // FIXME check compatibility of interface ITASKFARMDUPLICABLE
 
-	private final IntObjectMap<S> solutionBuffer = new IntObjectHashMap<S>();
+	private final int threshHold = Runtime.getRuntime().availableProcessors();
+	private final int numberOfStages = 1;
+
+	protected final IntObjectMap<S> solutionBuffer = new IntObjectHashMap<S>();
 	private final DynamicConfigurationContext context;
 
 	protected final InputPort<P> inputPort = this.createInputPort();
@@ -42,7 +46,6 @@ public abstract class AbstractDCStage<P, S> extends AbstractStage implements ITa
 		this.context = context;
 	}
 
-	@Override
 	public final InputPort<P> getInputPort() {
 		return this.inputPort;
 	}
@@ -55,7 +58,6 @@ public abstract class AbstractDCStage<P, S> extends AbstractStage implements ITa
 		return this.rightInputPort;
 	}
 
-	@Override
 	public final OutputPort<S> getOutputPort() {
 		return this.outputPort;
 	}
@@ -70,7 +72,54 @@ public abstract class AbstractDCStage<P, S> extends AbstractStage implements ITa
 
 	@Override
 	protected final void executeStage() {
-		// TODO
+
+		// check left / right input ports for new partial solutions
+		checkPort(rightInputPort);
+		checkPort(leftInputPort);
+
+		// check main input port for new problems
+		P problem = this.getInputPort().receive();
+		if (problem == null) {
+
+		} else {
+			if (isBaseCase(problem)) {
+				S solution = solve(problem);
+				this.getOutputPort().send(solution);
+			} else {
+				makeCopy(leftOutputPort, leftInputPort);
+				makeCopy(rightOutputPort, rightInputPort);
+				divide(problem);
+			}
+		}
+	}
+
+	private void checkPort(final InputPort<S> port) {
+		S solution = port.receive();
+		if (solution == null) {
+
+		} else {
+			if (isInBuffer(solution)) {
+				combine(solution, getFromBuffer(solution));
+				this.getOutputPort().send(solution);
+			} else {
+				addToBuffer(solution);
+			}
+		}
+
+	}
+
+	private S getFromBuffer(final S solution) {
+		S tempSolution = this.solutionBuffer.get(solution.getKey());
+		this.solutionBuffer.remove(solution.getKey());
+		return tempSolution;
+	}
+
+	private void addToBuffer(final S solution) {
+		this.solutionBuffer.put(solution.getKey(), solution);
+	}
+
+	private boolean isInBuffer(final S solution) {
+		return this.solutionBuffer.containsKey(solution.getKey());
 	}
 
 	/**
@@ -78,7 +127,7 @@ public abstract class AbstractDCStage<P, S> extends AbstractStage implements ITa
 	 *
 	 */
 	private void makeCopy(final OutputPort<P> out, final InputPort<S> in) {
-		final AbstractDCStage<P, S> newStage = this;
+		final AbstractDCStage<P, S> newStage = this.duplicate();
 		context.connectPorts(out, newStage.getInputPort());
 		context.connectPorts(newStage.getOutputPort(), in);
 		context.beginThread(newStage);
@@ -119,8 +168,7 @@ public abstract class AbstractDCStage<P, S> extends AbstractStage implements ITa
 	 */
 	protected abstract boolean isBaseCase(final P problem);
 
-	@Override
-	public abstract ITaskFarmDuplicable<P, S> duplicate();
+	public abstract AbstractDCStage<P, S> duplicate();
 
 	public DynamicConfigurationContext getContext() {
 		return this.context;

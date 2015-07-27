@@ -1,7 +1,7 @@
 package teetime.examples.quicksort;
 
 import teetime.framework.AbstractProducerStage;
-import teetime.stage.util.QuicksortProblem;
+import teetime.stage.quicksort.QuicksortProblem;
 
 public final class ArrayToQuicksortProblem extends AbstractProducerStage<QuicksortProblem> {
 
@@ -15,7 +15,7 @@ public final class ArrayToQuicksortProblem extends AbstractProducerStage<Quickso
 	@Override
 	protected void execute() {
 		if (firstTime) {
-			final QuicksortProblem qsp = new QuicksortProblem(0, arr.length - 1, this.arr);
+			final QuicksortProblem qsp = new QuicksortProblem(1337, 0, arr.length - 1, this.arr);
 			this.outputPort.send(qsp);
 			this.firstTime = false;
 		}

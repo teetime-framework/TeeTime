@@ -1,11 +1,9 @@
-package teetime.stage;
+package teetime.stage.quicksort;
 
 import teetime.framework.AbstractDCStage;
 import teetime.framework.DynamicConfigurationContext;
-import teetime.stage.taskfarm.ITaskFarmDuplicable;
-import teetime.stage.util.QuicksortProblem;
 
-public final class QuicksortStage extends AbstractDCStage<QuicksortProblem, QuicksortProblem> {
+public final class QuicksortStage extends AbstractDCStage<QuicksortProblem, QuicksortSolution> {
 
 	public QuicksortStage(final DynamicConfigurationContext context) {
 		super(context);
@@ -48,26 +46,26 @@ public final class QuicksortStage extends AbstractDCStage<QuicksortProblem, Quic
 		}
 		// recursively sort two sub parts
 		// FIXME Put following code in AbstraceDCStage
-		QuicksortProblem newQuicksortProblem1 = new QuicksortProblem(low, j, numbers);
+		QuicksortProblem newQuicksortProblem1 = new QuicksortProblem(problem.getKey(), low, j, numbers);
 		leftOutputPort.send(newQuicksortProblem1);
-		QuicksortProblem newQuicksortProblem2 = new QuicksortProblem(i, high, numbers);
+		QuicksortProblem newQuicksortProblem2 = new QuicksortProblem(problem.getKey(), i, high, numbers);
 		rightOutputPort.send(newQuicksortProblem2);
 
 	}
 
 	@Override
-	protected QuicksortProblem solve(final QuicksortProblem problem) {
-		return problem;
+	protected QuicksortSolution solve(final QuicksortProblem problem) {
+		QuicksortSolution solution = new QuicksortSolution(problem.getKey(), problem.getLow(), problem.getHigh(), problem.getNumbers());
+		return solution;
 	}
 
 	@Override
-	protected void combine(final QuicksortProblem s1, final QuicksortProblem s2) {
-		s1.setHigh(s2.getHigh());
+	protected void combine(final QuicksortSolution s1, final QuicksortSolution s2) {
 		this.getOutputPort().send(s1);
 	}
 
 	@Override
-	public ITaskFarmDuplicable<QuicksortProblem, QuicksortProblem> duplicate() {
+	public AbstractDCStage<QuicksortProblem, QuicksortSolution> duplicate() {
 		return new QuicksortStage(this.getContext());
 	}
 }

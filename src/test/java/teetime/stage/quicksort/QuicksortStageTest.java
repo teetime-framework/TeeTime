@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.stage;
+package teetime.stage.quicksort;
 
 import static org.junit.Assert.assertArrayEquals;
 import static teetime.framework.test.StageTester.test;
@@ -25,7 +25,8 @@ import java.util.Random;
 import org.junit.Test;
 
 import teetime.framework.DynamicConfigurationContext;
-import teetime.stage.util.QuicksortProblem;
+import teetime.stage.quicksort.QuicksortProblem;
+import teetime.stage.quicksort.QuicksortStage;
 
 /**
  * @author Robin Mohr
@@ -37,7 +38,7 @@ public class QuicksortStageTest {
 	private final int[] arr = generateRandomNumbers(numberOfElements);
 	private final int[] sortedArr = arr;
 
-	QuicksortProblem qsp = new QuicksortProblem(low, numberOfElements, arr);
+	QuicksortProblem qsp = new QuicksortProblem(1347384, low, numberOfElements, arr);
 	private final List<QuicksortProblem> input = new ArrayList<QuicksortProblem>();
 	private final List<QuicksortProblem> result = new ArrayList<QuicksortProblem>();
 	private final DynamicConfigurationContext context = new DynamicConfigurationContext(); // FIXME need to provide context for testing environment
@@ -52,7 +53,7 @@ public class QuicksortStageTest {
 
 		test(qs).and().send(input).to(qs.getInputPort()).and().receive(result).from(qs.getOutputPort()).start();
 
-		assertArrayEquals(result.get(0).getArr(), sortedArr);
+		assertArrayEquals(result.get(0).getNumbers(), sortedArr);
 	}
 
 	private int[] generateRandomNumbers(final int n) {
