@@ -14,16 +14,16 @@ public class PipeMonitoringService {
 	private long startingTimestamp = INIT;
 
 	private final Map<IMonitorablePipe, List<MonitoringData>> data = new HashMap<IMonitorablePipe, List<MonitoringData>>();
-	private final List<IMonitorablePipe> pipes = new LinkedList<IMonitorablePipe>();
 
 	public Map<IMonitorablePipe, List<MonitoringData>> getData() {
 		return this.data;
 	}
 
 	public void addPipe(final IMonitorablePipe pipe) {
-		this.pipes.add(pipe);
-		List<MonitoringData> pipeValues = new LinkedList<MonitoringData>();
-		this.data.put(pipe, pipeValues);
+		if (!data.containsKey(pipe)) {
+			List<MonitoringData> pipeValues = new LinkedList<MonitoringData>();
+			this.data.put(pipe, pipeValues);
+		}
 	}
 
 	public void addMonitoringData() {
@@ -32,7 +32,7 @@ public class PipeMonitoringService {
 			this.startingTimestamp = currentTimestamp;
 		}
 
-		for (IMonitorablePipe pipe : this.pipes) {
+		for (IMonitorablePipe pipe : this.data.keySet()) {
 			MonitoringData monitoringData = null;
 			try {
 				monitoringData = new MonitoringData(this.startingTimestamp - currentTimestamp,
