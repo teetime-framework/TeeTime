@@ -33,9 +33,8 @@ public class PipeMonitoringService {
 		}
 
 		for (IMonitorablePipe pipe : this.data.keySet()) {
-			MonitoringData monitoringData = null;
-			try {
-				monitoringData = new MonitoringData(this.startingTimestamp - currentTimestamp,
+			if (pipe != null) {
+				MonitoringData monitoringData = new MonitoringData(this.startingTimestamp - currentTimestamp,
 						pipe.getNumPushes(),
 						pipe.getNumPulls(),
 						pipe.size(),
@@ -43,11 +42,10 @@ public class PipeMonitoringService {
 						pipe.getPushThroughput(),
 						pipe.getPullThroughput(),
 						pipe.getNumWaits());
-			} catch (NullPointerException e) {
-				// data extraction from pipe was not successful, do not write any more values
+
+				List<MonitoringData> pipeValues = this.data.get(pipe);
+				pipeValues.add(monitoringData);
 			}
-			List<MonitoringData> pipeValues = this.data.get(pipe);
-			pipeValues.add(monitoringData);
 		}
 	}
 }
