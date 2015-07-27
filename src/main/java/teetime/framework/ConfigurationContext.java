@@ -38,7 +38,7 @@ final class ConfigurationContext {
 
 	private Map<Stage, String> threadableStages = new HashMap<Stage, String>();
 
-	private final SignalingCounter runnableCounter = new SignalingCounter();
+	private SignalingCounter runnableCounter = new SignalingCounter();
 
 	ConfigurationContext() {}
 
@@ -81,8 +81,12 @@ final class ConfigurationContext {
 	final void mergeContexts(final Stage stage) {
 		if (!stage.owningContext.equals(EMPTY_CONTEXT)) {
 			if (stage.owningContext != this) { // Performance
+				// import
 				this.threadableStages.putAll(stage.owningContext.threadableStages);
+				this.runnableCounter.inc(stage.owningContext.runnableCounter);
+				// replace
 				stage.owningContext.threadableStages = this.threadableStages;
+				stage.owningContext.runnableCounter = this.runnableCounter;
 			}
 		} else {
 			stage.owningContext = this;

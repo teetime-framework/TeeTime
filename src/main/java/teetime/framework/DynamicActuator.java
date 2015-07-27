@@ -28,7 +28,19 @@ public class DynamicActuator {
 		return new RunnableProducerStage(stage);
 	}
 
-	public Runnable startWithinNewThread(final Stage stage) {
+	public Runnable startWithinNewThread(final Stage previousStage, final Stage stage) {
+		previousStage.owningContext.mergeContexts(stage);
+
+		return wrapAndStartWithinNewThread(stage);
+	}
+
+	public Runnable startWithinNewThread(final Configuration configuration, final Stage stage) {
+		configuration.getContext().mergeContexts(stage);
+
+		return wrapAndStartWithinNewThread(stage);
+	}
+
+	private Runnable wrapAndStartWithinNewThread(final Stage stage) {
 		Runnable runnable = wrap(stage);
 		Thread thread = new Thread(runnable);
 		thread.start();

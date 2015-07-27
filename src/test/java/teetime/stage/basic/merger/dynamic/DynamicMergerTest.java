@@ -42,14 +42,12 @@ public class DynamicMergerTest {
 	public void shouldWorkWithoutActionTriggers() throws Exception {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4, 5);
 
-		@SuppressWarnings("unchecked")
-		PortAction<DynamicMerger<Integer>>[] inputActions = new PortAction[6];
-		for (int i = 0; i < inputActions.length; i++) {
-			inputActions[i] = new DoNothingPortAction<Integer>();
+		DynamicMergerTestConfig config = new DynamicMergerTestConfig(inputNumbers);
+		for (int i = 0; i < 6; i++) {
+			assertTrue(config.addPortActionRequest(new DoNothingPortAction<Integer>()));
 		}
 
-		DynamicMergerTestConfig<Integer> config = new DynamicMergerTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<DynamicMergerTestConfig<Integer>> analysis = new Execution<DynamicMergerTestConfig<Integer>>(config,
+		Execution<DynamicMergerTestConfig> analysis = new Execution<DynamicMergerTestConfig>(config,
 				new TerminatingExceptionListenerFactory());
 
 		analysis.executeBlocking();
@@ -61,14 +59,12 @@ public class DynamicMergerTest {
 	public void shouldWorkWithCreateActionTriggers() throws Exception {
 		List<Integer> inputNumbers = Arrays.asList(0);
 
-		@SuppressWarnings("unchecked")
-		PortAction<DynamicMerger<Integer>>[] inputActions = new PortAction[6];
-		for (int i = 0; i < inputActions.length; i++) {
-			inputActions[i] = createPortCreateAction(i + 1);
+		DynamicMergerTestConfig config = new DynamicMergerTestConfig(inputNumbers);
+		for (int i = 0; i < 6; i++) {
+			assertTrue(config.addCreatePortAction(i + 1));
 		}
 
-		DynamicMergerTestConfig<Integer> config = new DynamicMergerTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<DynamicMergerTestConfig<Integer>> analysis = new Execution<DynamicMergerTestConfig<Integer>>(config,
+		Execution<DynamicMergerTestConfig> analysis = new Execution<DynamicMergerTestConfig>(config,
 				new TerminatingExceptionListenerFactory());
 
 		analysis.executeBlocking();
@@ -81,17 +77,15 @@ public class DynamicMergerTest {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2);
 		// TODO: Repair test
 
-		@SuppressWarnings("unchecked")
-		PortAction<DynamicMerger<Integer>>[] inputActions = new PortAction[6];
-		inputActions[0] = createPortCreateAction(3);
-		inputActions[1] = new RemovePortAction<Integer>(null);
-		inputActions[2] = createPortCreateAction(4);
-		inputActions[3] = createPortCreateAction(5);
-		inputActions[4] = new RemovePortAction<Integer>(null);
-		inputActions[5] = new RemovePortAction<Integer>(null);
+		DynamicMergerTestConfig config = new DynamicMergerTestConfig(inputNumbers);
+		assertTrue(config.addCreatePortAction(3));
+		assertTrue(config.addRemovePortAction());
+		assertTrue(config.addCreatePortAction(4));
+		assertTrue(config.addCreatePortAction(5));
+		assertTrue(config.addRemovePortAction());
+		assertTrue(config.addRemovePortAction());
 
-		DynamicMergerTestConfig<Integer> config = new DynamicMergerTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<DynamicMergerTestConfig<Integer>> analysis = new Execution<DynamicMergerTestConfig<Integer>>(config,
+		Execution<DynamicMergerTestConfig> analysis = new Execution<DynamicMergerTestConfig>(config,
 				new TerminatingExceptionListenerFactory());
 
 		analysis.executeBlocking();
@@ -99,44 +93,51 @@ public class DynamicMergerTest {
 		assertThat(config.getOutputElements(), contains(0, 1, 2, 4, 5));
 	}
 
-	private PortAction<DynamicMerger<Integer>> createPortCreateAction(final Integer number) {
-		final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(number);
-		final Runnable runnableStage = DYNAMIC_ACTUATOR.startWithinNewThread(initialElementProducer);
+	private static class DynamicMergerTestConfig extends Configuration {
 
-		PortAction<DynamicMerger<Integer>> portAction = new CreatePortActionMerger<Integer>(initialElementProducer.getOutputPort()) {
-			@Override
-			public void execute(final DynamicMerger<Integer> dynamicDistributor) {
-				super.execute(dynamicDistributor);
-				final RunnableProducerStage runnableProducerStage = (RunnableProducerStage) runnableStage;
-				runnableProducerStage.triggerInitializingSignal();
-				runnableProducerStage.triggerStartingSignal();
-			}
-		};
-		return portAction;
-	}
+		private final CollectorSink<Integer> collectorSink;
+		private final DynamicMerger<Integer> merger;
 
-	private static class DynamicMergerTestConfig<T> extends Configuration {
-
-		private final CollectorSink<T> collectorSink;
-
-		public DynamicMergerTestConfig(final List<T> elements, final List<PortAction<DynamicMerger<T>>> inputActions) {
-			InitialElementProducer<T> initialElementProducer = new InitialElementProducer<T>(elements);
-			DynamicMerger<T> merger = new DynamicMerger<T>(new BusyWaitingRoundRobinStrategy());
-			collectorSink = new CollectorSink<T>();
+		public DynamicMergerTestConfig(final List<Integer> inputNumbers) {
+			InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(inputNumbers);
+			merger = new DynamicMerger<Integer>(new BusyWaitingRoundRobinStrategy());
+			collectorSink = new CollectorSink<Integer>();
 
 			connectPorts(initialElementProducer.getOutputPort(), merger.getNewInputPort());
 			connectPorts(merger.getOutputPort(), collectorSink.getInputPort());
 
 			addThreadableStage(merger);
-
-			for (PortAction<DynamicMerger<T>> a : inputActions) {
-				boolean added = merger.addPortActionRequest(a);
-				assertTrue(added);
-			}
 		}
 
-		public List<T> getOutputElements() {
+		public boolean addPortActionRequest(final PortAction<DynamicMerger<Integer>> portAction) {
+			return merger.addPortActionRequest(portAction);
+		}
+
+		public List<Integer> getOutputElements() {
 			return collectorSink.getElements();
+		}
+
+		boolean addCreatePortAction(final Integer number) {
+			final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(number);
+			final Runnable runnableStage = DYNAMIC_ACTUATOR.startWithinNewThread(this, initialElementProducer);
+
+			PortAction<DynamicMerger<Integer>> portAction = new CreatePortActionMerger<Integer>(initialElementProducer.getOutputPort()) {
+				@Override
+				public void execute(final DynamicMerger<Integer> dynamicDistributor) {
+					super.execute(dynamicDistributor);
+					final RunnableProducerStage runnableProducerStage = (RunnableProducerStage) runnableStage;
+					runnableProducerStage.triggerInitializingSignal();
+					runnableProducerStage.triggerStartingSignal();
+				}
+			};
+
+			return addPortActionRequest(portAction);
+		}
+
+		boolean addRemovePortAction() {
+			RemovePortAction<Integer> portAction = new RemovePortAction<Integer>(null);
+
+			return addPortActionRequest(portAction);
 		}
 	}
 }

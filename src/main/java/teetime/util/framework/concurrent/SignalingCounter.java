@@ -67,4 +67,11 @@ public class SignalingCounter {
 			}
 		}
 	}
+
+	public synchronized void inc(final SignalingCounter signalingCounter) {
+		if (signalingCounter != this) {
+			conditions.putAll(signalingCounter.conditions);
+			counter += signalingCounter.counter;
+		}
+	}
 }
