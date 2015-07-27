@@ -16,111 +16,84 @@
 package teetime.stage.taskfarm.adaptation.reconfiguration;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import teetime.framework.Execution;
-import teetime.stage.basic.AbstractFilter;
+import teetime.stage.MD5Stage;
+import teetime.stage.basic.merger.dynamic.DynamicMerger;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
-
-import com.google.common.collect.ListMultimap;
+import teetime.stage.taskfarm.TaskFarmStage;
+import teetime.util.framework.port.PortAction;
 
 /**
  * @author Christian Claus Wiechmann
  */
 public class TaskFarmControllerTest {
 
-	static final int NUMBER_OF_ITEMS = 10000;
-
-	private static int numberOfEnclosedStage = 0;
-
 	@Test
-	public void test() {
-		final TaskFarmControllerConfiguration configuration = new TaskFarmControllerConfiguration();
-		final Execution<TaskFarmControllerConfiguration> execution = new Execution<TaskFarmControllerConfiguration>(configuration);
+	public void test() throws InterruptedException {
+		TestMerger<String> merger = new TestMerger<String>();
+		DuplicableMD5Stage stage = new DuplicableMD5Stage();
+		TaskFarmWithTestDistributorAndMerger<String, String, DuplicableMD5Stage> taskFarm = new TaskFarmWithTestDistributorAndMerger<String, String, DuplicableMD5Stage>(
+				stage, merger);
 
-		execution.executeBlocking();
+		final TaskFarmController<String, String> controller = new TaskFarmController<String, String>(taskFarm);
 
-		final ListMultimap<Integer, Integer> monitoredValues = configuration.getMonitoredValues();
-		assertThat(monitoredValues.get(0).size(), is(greaterThan(0)));
-		assertThat(monitoredValues.get(1).size(), is(greaterThan(0)));
-		assertThat(monitoredValues.get(2).size(), is(greaterThan(0)));
-		assertThat(monitoredValues.size(), is(equalTo(NUMBER_OF_ITEMS)));
+		sendPortActionToMerger(merger, controller);
+
+		assertThat(merger.numberOfPortActions, is(equalTo(1)));
 	}
 
-	/**
-	 * @author Christian Claus Wiechmann
-	 */
-	static class SelfMonitoringPlusOneStage extends AbstractFilter<Integer> implements ITaskFarmDuplicable<Integer, Integer> {
-
-		private final ListMultimap<Integer, Integer> monitoredValues;
-		private final int stageId;
-
-		public SelfMonitoringPlusOneStage(final ListMultimap<Integer, Integer> monitoredValues) {
-			this.monitoredValues = monitoredValues;
-			this.stageId = numberOfEnclosedStage;
-			numberOfEnclosedStage++;
-		}
-
-		@Override
-		protected void execute(final Integer element) {
-			this.monitoredValues.put(this.stageId, element);
-			final Integer x = element + 1;
-			this.outputPort.send(x);
-		}
-
-		@Override
-		public ITaskFarmDuplicable<Integer, Integer> duplicate() {
-			return new SelfMonitoringPlusOneStage(monitoredValues);
+	private void sendPortActionToMerger(final TestMerger<String> merger, final TaskFarmController<String, String> controller) throws InterruptedException {
+		Thread adder = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					controller.addStageToTaskFarm();
+				} catch (InterruptedException e) {
+					// ignore
+				}
+			}
+		});
+		adder.start();
+		while (merger.numberOfPortActions == 0) {
+			Thread.sleep(10);
 		}
 	}
 
-	/**
-	 * @author Christian Claus Wiechmann
-	 */
-	static class TaskFarmControllerControllerStage extends AbstractFilter<Integer> {
+	private class TaskFarmWithTestDistributorAndMerger<I, O, T extends ITaskFarmDuplicable<I, O>> extends TaskFarmStage<I, O, T> {
 
-		private final TaskFarmController<?, ?> controller;
-		private int numberOfElements = 0;
+		private final TestMerger<O> merger;
 
-		public TaskFarmControllerControllerStage(final TaskFarmController<?, ?> controller) {
-			this.controller = controller;
+		public TaskFarmWithTestDistributorAndMerger(final T workerStage, final TestMerger<O> merger) {
+			super(workerStage);
+			this.merger = merger;
 		}
 
 		@Override
-		protected void execute(final Integer element) {
-			if (this.numberOfElements == NUMBER_OF_ITEMS * 0.3) {
-				try {
-					this.controller.addStageToTaskFarm();
-				} catch (InterruptedException e) {
-					throw new IllegalStateException(e);
-				}
-			}
+		public DynamicMerger<O> getMerger() {
+			return merger;
+		}
+	}
 
-			if (this.numberOfElements == NUMBER_OF_ITEMS * 0.5) {
-				try {
-					this.controller.addStageToTaskFarm();
-				} catch (InterruptedException e) {
-					throw new IllegalStateException(e);
-				}
-			}
+	private class TestMerger<T> extends DynamicMerger<T> {
+		public int numberOfPortActions = 0;
 
-			if (this.numberOfElements == NUMBER_OF_ITEMS * 0.7) {
-				try {
-					this.controller.removeStageFromTaskFarm();
-				} catch (InterruptedException e) {
-					throw new IllegalStateException(e);
-				}
-			}
+		@Override
+		public boolean addPortActionRequest(final PortAction<DynamicMerger<T>> newPortActionRequest) {
+			numberOfPortActions++;
+			return super.addPortActionRequest(newPortActionRequest);
+		}
+	}
 
-			this.outputPort.send(element);
+	private class DuplicableMD5Stage extends MD5Stage implements ITaskFarmDuplicable<String, String> {
 
-			this.numberOfElements++;
+		@Override
+		public ITaskFarmDuplicable<String, String> duplicate() {
+			return new DuplicableMD5Stage();
 		}
 
 	}
-
 }
