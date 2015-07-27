@@ -24,6 +24,7 @@ import teetime.framework.OutputPort;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
 import teetime.stage.taskfarm.adaptation.AdaptationThread;
+import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 
 /**
  * The TaskFarmStage implements the task farm parallelization pattern in
@@ -49,6 +50,8 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	private final TaskFarmConfiguration<I, O, T> configuration;
 
 	private AdaptationThread adaptationThread = null;
+
+	private final PipeMonitoringService monitoringService = new PipeMonitoringService();
 
 	/**
 	 * Constructor.
@@ -133,5 +136,9 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 
 	public DynamicMerger<O> getMerger() {
 		return merger;
+	}
+
+	public PipeMonitoringService getMonitoringService() {
+		return monitoringService;
 	}
 }

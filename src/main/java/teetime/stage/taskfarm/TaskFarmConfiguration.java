@@ -33,6 +33,8 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	public static final int INIT_SAMPLES_UNTIL_REMOVE = -1;
 
+	private volatile boolean monitoringEnabled = false;
+
 	private volatile int analysisWindow = 3;
 	private volatile String throughputAlgorithm = "RegressionAlgorithm";
 	private volatile WeightMethod weightedAlgorithmMethod = WeightMethod.EXPONENTIAL;
@@ -89,5 +91,13 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	public void setStillParallelizable(final boolean stillParallelizable) {
 		this.stillParallelizable = stillParallelizable;
+	}
+
+	public boolean isMonitoringEnabled() {
+		return monitoringEnabled;
+	}
+
+	public void setMonitoringEnabled(final boolean monitoringEnabled) {
+		this.monitoringEnabled = monitoringEnabled;
 	}
 }

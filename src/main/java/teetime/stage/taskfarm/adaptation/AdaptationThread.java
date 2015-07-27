@@ -39,6 +39,8 @@ final public class AdaptationThread extends Thread {
 		LOGGER.debug("Adaptation thread started");
 		while (!stopped) {
 			try {
+				doMonitoring();
+
 				Thread.sleep(sampleRateMillis);
 
 				executeNextStageToBeReconfigured();
@@ -48,6 +50,14 @@ final public class AdaptationThread extends Thread {
 			}
 		}
 		LOGGER.debug("Adaptation thread stopped");
+	}
+
+	private void doMonitoring() {
+		for (TaskFarmComponents<?, ?, ?> taskFarmComponents : taskFarmServices) {
+			if (taskFarmComponents.getTaskFarmStage().getConfiguration().isMonitoringEnabled()) {
+				taskFarmComponents.getTaskFarmStage().getMonitoringService().addMonitoringData();
+			}
+		}
 	}
 
 	public <I, O, T extends ITaskFarmDuplicable<I, O>> void addTaskFarm(final TaskFarmStage<I, O, T> taskFarmStage) {

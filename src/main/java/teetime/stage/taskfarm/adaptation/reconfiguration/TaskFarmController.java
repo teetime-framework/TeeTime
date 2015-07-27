@@ -84,7 +84,18 @@ class TaskFarmController<I, O> {
 		LOGGER.debug("distributor port created");
 
 		this.addNewEnclosedStageInstance(newStage);
+		this.addNewPipeToMonitoring(newStage);
 		LOGGER.debug("Finished: Add stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
+	}
+
+	private void addNewPipeToMonitoring(final ITaskFarmDuplicable<I, O> newStage) {
+		if (this.taskFarmStage.getConfiguration().isMonitoringEnabled()) {
+			try {
+				this.taskFarmStage.getMonitoringService().addPipe((IMonitorablePipe) newStage.getInputPort().getPipe());
+			} catch (ClassCastException e) {
+				throw new TaskFarmControllerException("A generated pipe is not monitorable.");
+			}
+		}
 	}
 
 	/**
