@@ -36,7 +36,7 @@ final class ConfigurationContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
-	private final Set<ConfigurationContext> childs = new HashSet<ConfigurationContext>(); // parent-child-tree
+	private final Set<ConfigurationContext> children = new HashSet<ConfigurationContext>(); // parent-child-tree
 
 	private ThreadService threadService;
 
@@ -77,7 +77,7 @@ final class ConfigurationContext {
 	final void addChildContext(final Stage stage) {
 		if (!stage.owningContext.equals(EMPTY_CONTEXT)) {
 			if (stage.owningContext != this) { // Performance
-				childs.add(stage.owningContext);
+				children.add(stage.owningContext);
 			}
 		} else {
 			stage.owningContext = this;
@@ -86,7 +86,7 @@ final class ConfigurationContext {
 	}
 
 	final void finalizeContext() {
-		for (ConfigurationContext child : childs) {
+		for (ConfigurationContext child : children) {
 			child.finalizeContext();
 			mergeContexts(child);
 		}
