@@ -10,7 +10,7 @@ package teetime.framework;
  *
  * @since 2.0
  */
-public abstract class AbstractService<T> {
+abstract class AbstractService<T> {
 
 	abstract void onInitialize();
 

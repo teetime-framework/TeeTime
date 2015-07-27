@@ -43,7 +43,7 @@ public final class Execution<T extends Configuration> {
 
 	private final T configuration;
 
-	private final boolean executionInterrupted = false;
+	private final ConfigurationContext configurationContext;
 
 	/**
 	 * Creates a new {@link Execution} that skips validating the port connections and uses the default listener.
@@ -67,6 +67,7 @@ public final class Execution<T extends Configuration> {
 	 */
 	public Execution(final T configuration, final boolean validationEnabled) {
 		this.configuration = configuration;
+		this.configurationContext = configuration.getContext();
 		if (configuration.isExecuted()) {
 			throw new IllegalStateException("Configuration was already executed");
 		}
@@ -79,7 +80,7 @@ public final class Execution<T extends Configuration> {
 
 	// BETTER validate concurrently
 	private void validateStages() {
-		final Map<Stage, String> threadableStageJobs = this.configuration.getContext().getThreadableStages();
+		final Map<Stage, String> threadableStageJobs = configurationContext.getThreadableStages();
 		for (Stage stage : threadableStageJobs.keySet()) {
 			// // portConnectionValidator.validate(stage);
 			// }
@@ -97,11 +98,11 @@ public final class Execution<T extends Configuration> {
 	 *
 	 */
 	private final void init() {
-		ExecutionInstantiation executionInstantiation = new ExecutionInstantiation(configuration.getContext());
+		ExecutionInstantiation executionInstantiation = new ExecutionInstantiation(configurationContext);
 		executionInstantiation.instantiatePipes();
 
-		getConfiguration().getContext().finalizeContext();
-		getConfiguration().getContext().initializeServices();
+		configurationContext.finalizeContext();
+		configurationContext.initializeServices();
 	}
 
 	/**
@@ -113,13 +114,12 @@ public final class Execution<T extends Configuration> {
 	 * @since 2.0
 	 */
 	public void waitForTermination() {
-		getConfiguration().getContext().waitForConfigurationToTerminate();
-		;
+		configurationContext.waitForConfigurationToTerminate();
 	}
 
 	// TODO: implement
 	private void abortEventually() {
-		getConfiguration().getContext().abortConfigurationRun();
+		configurationContext.abortConfigurationRun();
 		waitForTermination();
 	}
 
@@ -143,7 +143,7 @@ public final class Execution<T extends Configuration> {
 	 * @since 2.0
 	 */
 	public void executeNonBlocking() {
-		configuration.getContext().executeConfiguration();
+		configurationContext.executeConfiguration();
 	}
 
 	/**

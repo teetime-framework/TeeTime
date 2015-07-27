@@ -74,7 +74,6 @@ final class ConfigurationContext {
 		new InstantiationPipe(sourcePort, targetPort, capacity);
 	}
 
-	// FIXME: Rename method
 	final void addChildContext(final Stage stage) {
 		if (!stage.owningContext.equals(EMPTY_CONTEXT)) {
 			if (stage.owningContext != this) { // Performance
