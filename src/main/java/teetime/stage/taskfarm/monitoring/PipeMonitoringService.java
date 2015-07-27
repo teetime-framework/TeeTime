@@ -44,15 +44,7 @@ public class PipeMonitoringService {
 						pipe.getPullThroughput(),
 						pipe.getNumWaits());
 			} catch (NullPointerException e) {
-				// data extraction from pipe was not successful, write zero values
-				monitoringData = new MonitoringData(this.startingTimestamp - currentTimestamp,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0);
+				// data extraction from pipe was not successful, do not write any more values
 			}
 			List<MonitoringData> pipeValues = this.data.get(pipe);
 			pipeValues.add(monitoringData);
