@@ -30,8 +30,8 @@ public class File2SeqOfWordsTest {
 
 	@Test
 	public void testExecute() throws Exception {
-		File2SeqOfWords stage = new File2SeqOfWords(14);
-		List<String> outputSeqOfWords = new ArrayList<String>();
+		final File2SeqOfWords stage = new File2SeqOfWords(14);
+		final List<String> outputSeqOfWords = new ArrayList<String>();
 		StageTester.test(stage).send(Arrays.asList(new File("./src/test/resources/data/input.txt"))).to(stage.getInputPort()).and().receive(outputSeqOfWords)
 				.from(stage.getOutputPort()).start();
 		assertEquals(outputSeqOfWords.get(0), "Lorem ipsum");

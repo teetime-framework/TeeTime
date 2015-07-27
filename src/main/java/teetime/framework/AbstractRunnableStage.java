@@ -39,6 +39,7 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	@Override
 	public final void run() {
+		final Stage stage = this.stage; // should prevent the stage to be reloaded after a volatile read
 		this.logger.debug("Executing runnable stage...");
 
 		try {
@@ -67,7 +68,7 @@ abstract class AbstractRunnableStage implements Runnable {
 			}
 		}
 
-		logger.debug("Finished runnable stage. (" + this.stage.getId() + ")");
+		logger.debug("Finished runnable stage. (" + stage.getId() + ")");
 	}
 
 	protected abstract void beforeStageExecution() throws InterruptedException;

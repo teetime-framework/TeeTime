@@ -65,6 +65,14 @@
 		<exclude name="AvoidUsingVolatile" />
 	</rule>
 
+	<!-- UR means "undefined reference" which is already detected by the compiler. 
+		so we deactivate it. -->
+	<rule ref="rulesets/java/controversial.xml/DataflowAnomalyAnalysis">
+		<properties>
+			<property name="violationSuppressRegex" value="^Found 'UR'-anomaly.*" />
+		</properties>
+	</rule>
+
 	<rule ref="rulesets/java/coupling.xml">
 		<exclude name="LawOfDemeter" />
 	</rule>

@@ -39,7 +39,7 @@ public class TokenizerTest {
 
 	@Test
 	public void tokenizerShouldJustDelaySingleToken() {
-		List<String> results = new ArrayList<String>();
+		final List<String> results = new ArrayList<String>();
 
 		test(tokenizer).and().send("Hello World").to(tokenizer.getInputPort()).and().receive(results).from(tokenizer.getOutputPort()).start();
 
@@ -48,7 +48,7 @@ public class TokenizerTest {
 
 	@Test
 	public void tokenizerShouldSplitMultipleToken() {
-		List<String> results = new ArrayList<String>();
+		final List<String> results = new ArrayList<String>();
 
 		test(tokenizer).and().send("Hello;World").to(tokenizer.getInputPort()).and().receive(results).from(tokenizer.getOutputPort()).start();
 

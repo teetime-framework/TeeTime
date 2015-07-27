@@ -32,6 +32,14 @@ public abstract class Configuration extends AbstractCompositeStage {
 
 	private final IExceptionListenerFactory factory;
 
+	protected Configuration() {
+		this(new TerminatingExceptionListenerFactory());
+	}
+
+	protected Configuration(final IExceptionListenerFactory factory) {
+		this.factory = factory;
+	}
+
 	boolean isExecuted() {
 		return executed;
 	}
@@ -44,11 +52,4 @@ public abstract class Configuration extends AbstractCompositeStage {
 		return factory;
 	}
 
-	protected Configuration() {
-		this(new TerminatingExceptionListenerFactory());
-	}
-
-	protected Configuration(final IExceptionListenerFactory factory) {
-		this.factory = factory;
-	}
 }
