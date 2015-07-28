@@ -163,7 +163,6 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 		startThreads(this.infiniteProducerThreads);
 
 		sendInitializingSignal();
-
 	}
 
 	private Thread initializeThreadableStages(final Stage stage) {
@@ -222,16 +221,6 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	public void waitForTermination() {
 		try {
 			getConfiguration().getContext().getRunnableCounter().waitFor(0);
-
-			// LOGGER.debug("Waiting for finiteProducerThreads");
-			// for (Thread thread : this.finiteProducerThreads) {
-			// thread.join();
-			// }
-			//
-			// LOGGER.debug("Waiting for consumerThreads");
-			// for (Thread thread : this.consumerThreads) {
-			// thread.join();
-			// }
 		} catch (InterruptedException e) {
 			LOGGER.error("Execution has stopped unexpectedly", e);
 			for (Thread thread : this.finiteProducerThreads) {
