@@ -25,6 +25,7 @@ import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
 import teetime.stage.taskfarm.adaptation.AdaptationThread;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
+import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringService;
 
 /**
  * The TaskFarmStage implements the task farm parallelization pattern in
@@ -51,7 +52,8 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 
 	private AdaptationThread adaptationThread = null;
 
-	private final PipeMonitoringService monitoringService = new PipeMonitoringService();
+	private final PipeMonitoringService pipeMonitoringService = new PipeMonitoringService();
+	private final TaskFarmMonitoringService taskFarmMonitoringService = new TaskFarmMonitoringService();
 
 	/**
 	 * Constructor.
@@ -67,6 +69,8 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 		if (null == workerStage) {
 			throw new IllegalArgumentException("The constructor of a Task Farm may not be called with null as the worker stage.");
 		}
+
+		this.taskFarmMonitoringService.addMonitoredItem(this);
 
 		this.merger = new DynamicMerger<O>() {
 			@Override
@@ -89,10 +93,10 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 		};
 		this.configuration = new TaskFarmConfiguration<I, O, T>();
 
-		if (adaptationThread == null) {
-			adaptationThread = new AdaptationThread();
+		if (this.adaptationThread == null) {
+			this.adaptationThread = new AdaptationThread();
 		}
-		adaptationThread.addTaskFarm(this);
+		this.adaptationThread.addTaskFarm(this);
 
 		this.init(workerStage);
 	}
@@ -123,22 +127,26 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	}
 
 	public ITaskFarmDuplicable<I, O> getBasicEnclosedStage() {
-		return enclosedStageInstances.get(0);
+		return this.enclosedStageInstances.get(0);
 	}
 
 	public List<ITaskFarmDuplicable<I, O>> getEnclosedStageInstances() {
-		return enclosedStageInstances;
+		return this.enclosedStageInstances;
 	}
 
 	public DynamicDistributor<I> getDistributor() {
-		return distributor;
+		return this.distributor;
 	}
 
 	public DynamicMerger<O> getMerger() {
-		return merger;
+		return this.merger;
 	}
 
-	public PipeMonitoringService getMonitoringService() {
-		return monitoringService;
+	public PipeMonitoringService getPipeMonitoringService() {
+		return this.pipeMonitoringService;
+	}
+
+	public TaskFarmMonitoringService getTaskFarmMonitoringService() {
+		return this.taskFarmMonitoringService;
 	}
 }

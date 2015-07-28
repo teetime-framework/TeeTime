@@ -1,6 +1,6 @@
 package teetime.stage.taskfarm.monitoring;
 
-class MonitoringData {
+public class PipeMonitoringData implements IMonitoringData {
 
 	private final long time;
 	private final long numPushes;
@@ -11,7 +11,7 @@ class MonitoringData {
 	private final long pullThroughput;
 	private final int numWaits;
 
-	MonitoringData(final long time, final long numPushes, final long numPulls, final int size, final int capacity, final long pushThroughput,
+	PipeMonitoringData(final long time, final long numPushes, final long numPulls, final int size, final int capacity, final long pushThroughput,
 			final long pullThroughput,
 			final int numWaits) {
 		this.time = time;
@@ -50,5 +50,9 @@ class MonitoringData {
 
 	public int getNumWaits() {
 		return numWaits;
+	}
+
+	public long getTime() {
+		return time;
 	}
 }

@@ -7,25 +7,28 @@ import java.util.Map;
 
 import teetime.framework.pipe.IMonitorablePipe;
 
-public class PipeMonitoringService {
+public class PipeMonitoringService implements IMonitoringService<IMonitorablePipe, PipeMonitoringData> {
 
 	private static final long INIT = -1;
 
 	private long startingTimestamp = INIT;
 
-	private final Map<IMonitorablePipe, List<MonitoringData>> data = new HashMap<IMonitorablePipe, List<MonitoringData>>();
+	private final Map<IMonitorablePipe, List<PipeMonitoringData>> data = new HashMap<IMonitorablePipe, List<PipeMonitoringData>>();
 
-	public Map<IMonitorablePipe, List<MonitoringData>> getData() {
+	@Override
+	public Map<IMonitorablePipe, List<PipeMonitoringData>> getData() {
 		return this.data;
 	}
 
-	public void addPipe(final IMonitorablePipe pipe) {
+	@Override
+	public void addMonitoredItem(final IMonitorablePipe pipe) {
 		if (!data.containsKey(pipe)) {
-			List<MonitoringData> pipeValues = new LinkedList<MonitoringData>();
+			List<PipeMonitoringData> pipeValues = new LinkedList<PipeMonitoringData>();
 			this.data.put(pipe, pipeValues);
 		}
 	}
 
+	@Override
 	public void addMonitoringData() {
 		long currentTimestamp = System.currentTimeMillis();
 		if (this.startingTimestamp == INIT) {
@@ -34,7 +37,7 @@ public class PipeMonitoringService {
 
 		for (IMonitorablePipe pipe : this.data.keySet()) {
 			if (pipe != null) {
-				MonitoringData monitoringData = new MonitoringData(this.startingTimestamp - currentTimestamp,
+				PipeMonitoringData monitoringData = new PipeMonitoringData(this.startingTimestamp - currentTimestamp,
 						pipe.getNumPushes(),
 						pipe.getNumPulls(),
 						pipe.size(),
@@ -43,7 +46,7 @@ public class PipeMonitoringService {
 						pipe.getPullThroughput(),
 						pipe.getNumWaits());
 
-				List<MonitoringData> pipeValues = this.data.get(pipe);
+				List<PipeMonitoringData> pipeValues = this.data.get(pipe);
 				pipeValues.add(monitoringData);
 			}
 		}

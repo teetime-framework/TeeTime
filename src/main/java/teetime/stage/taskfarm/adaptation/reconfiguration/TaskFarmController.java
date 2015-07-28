@@ -91,7 +91,7 @@ class TaskFarmController<I, O> {
 	private void addNewPipeToMonitoring(final ITaskFarmDuplicable<I, O> newStage) {
 		if (this.taskFarmStage.getConfiguration().isMonitoringEnabled()) {
 			try {
-				this.taskFarmStage.getMonitoringService().addPipe((IMonitorablePipe) newStage.getInputPort().getPipe());
+				this.taskFarmStage.getPipeMonitoringService().addMonitoredItem((IMonitorablePipe) newStage.getInputPort().getPipe());
 			} catch (ClassCastException e) {
 				throw new TaskFarmControllerException("A generated pipe is not monitorable.");
 			}

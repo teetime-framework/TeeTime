@@ -55,7 +55,8 @@ final public class AdaptationThread extends Thread {
 	private void doMonitoring() {
 		for (TaskFarmComponents<?, ?, ?> taskFarmComponents : taskFarmServices) {
 			if (taskFarmComponents.getTaskFarmStage().getConfiguration().isMonitoringEnabled()) {
-				taskFarmComponents.getTaskFarmStage().getMonitoringService().addMonitoringData();
+				taskFarmComponents.getTaskFarmStage().getPipeMonitoringService().addMonitoringData();
+				taskFarmComponents.getTaskFarmStage().getTaskFarmMonitoringService().addMonitoringData();
 			}
 		}
 	}
