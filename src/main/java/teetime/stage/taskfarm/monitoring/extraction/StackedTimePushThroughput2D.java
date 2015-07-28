@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
-import teetime.stage.taskfarm.monitoring.PipeMonitoringService.ImmutableTriple;
+import teetime.stage.taskfarm.monitoring.PipeMonitoringService.TimePushPullThroughputs;
 import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringData;
 import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringService;
 
@@ -18,14 +18,14 @@ public class StackedTimePushThroughput2D extends AbstractMonitoringDataExtractio
 
 	@Override
 	protected void extractToWriter(final Writer writer) {
-		List<ImmutableTriple<Long, List<Long>, List<Long>>> triples = getPipeMonitoringService().getTimePushPullThroughput();
+		List<TimePushPullThroughputs> values = getPipeMonitoringService().getTimePushPullThroughput();
 		int maxNumberOfStages = getMaxNumberOfStages();
 
 		try {
 			createHeader(writer, maxNumberOfStages);
 
-			for (ImmutableTriple<Long, List<Long>, List<Long>> triple : triples) {
-				addTripleToCSV(writer, maxNumberOfStages, triple);
+			for (TimePushPullThroughputs value : values) {
+				addTripleToCSV(writer, maxNumberOfStages, value);
 			}
 		} catch (IOException e) {
 			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage());
@@ -47,13 +47,14 @@ public class StackedTimePushThroughput2D extends AbstractMonitoringDataExtractio
 		return maxNumberOfStages;
 	}
 
-	private void addTripleToCSV(final Writer writer, final int maxNumberOfStages, final ImmutableTriple<Long, List<Long>, List<Long>> triple)
+	private void addTripleToCSV(final Writer writer, final int maxNumberOfStages, final TimePushPullThroughputs value)
 			throws IOException {
 		String[] entryStrings = new String[maxNumberOfStages + 1];
-		entryStrings[0] = Long.toString(triple.getA());
+		entryStrings[0] = Long.toString(value.getTime());
 
-		for (int i = 0; i < triple.getC().size(); i++) {
-			entryStrings[i + 1] = Long.toString(triple.getB().get(i));
+		// add values while keeping pipe size consistent with pipe identity
+		for (int i = 0; i < value.getPushThroughputs().size(); i++) {
+			entryStrings[value.getPipeIndizes().get(i) + 2] = Long.toString(value.getPushThroughputs().get(i));
 		}
 
 		// give elements without values standard values for this timestamp

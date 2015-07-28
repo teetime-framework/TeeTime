@@ -14,10 +14,14 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 	private long startingTimestamp = INIT;
 
 	private final Map<IMonitorablePipe, List<PipeMonitoringData>> data = new HashMap<IMonitorablePipe, List<PipeMonitoringData>>();
-	private final List<ImmutableTriple<Long, List<Integer>, List<Integer>>> timeCapacitiesSizes =
-			new LinkedList<ImmutableTriple<Long, List<Integer>, List<Integer>>>();
-	private final List<ImmutableTriple<Long, List<Long>, List<Long>>> timePushPullThroughput =
-			new LinkedList<ImmutableTriple<Long, List<Long>, List<Long>>>();
+
+	private final List<TimeCapacitiesSizes> timeCapacitiesSizes =
+			new LinkedList<TimeCapacitiesSizes>();
+
+	private final List<TimePushPullThroughputs> timePushPullThroughputs =
+			new LinkedList<TimePushPullThroughputs>();
+
+	private final List<IMonitorablePipe> pipes = new LinkedList<IMonitorablePipe>();
 
 	@Override
 	public Map<IMonitorablePipe, List<PipeMonitoringData>> getData() {
@@ -29,6 +33,7 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 		if (!data.containsKey(pipe)) {
 			List<PipeMonitoringData> pipeValues = new LinkedList<PipeMonitoringData>();
 			this.data.put(pipe, pipeValues);
+			this.pipes.add(pipe);
 		}
 	}
 
@@ -41,10 +46,11 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 
 		List<Integer> capacities = new LinkedList<Integer>();
 		List<Integer> sizes = new LinkedList<Integer>();
+		List<Integer> pipeIndizes = new LinkedList<Integer>();
 		List<Long> pushThroughputs = new LinkedList<Long>();
 		List<Long> pullThroughputs = new LinkedList<Long>();
 
-		for (IMonitorablePipe pipe : this.data.keySet()) {
+		for (IMonitorablePipe pipe : this.pipes) {
 			if (pipe != null) {
 				PipeMonitoringData monitoringData = new PipeMonitoringData(this.startingTimestamp - currentTimestamp,
 						pipe.getNumPushes(),
@@ -60,49 +66,90 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 
 				capacities.add(pipe.capacity());
 				sizes.add(pipe.size());
+				pipeIndizes.add(this.pipes.indexOf(pipe));
 				pushThroughputs.add(pipe.getPushThroughput());
 				pullThroughputs.add(pipe.getPullThroughput());
 			}
 		}
 
-		ImmutableTriple<Long, List<Integer>, List<Integer>> timeCapacitiesSizesEntry = new ImmutableTriple<Long, List<Integer>, List<Integer>>(
-				this.startingTimestamp - currentTimestamp, capacities, sizes);
+		TimeCapacitiesSizes timeCapacitiesSizesEntry = new TimeCapacitiesSizes(
+				this.startingTimestamp - currentTimestamp, capacities, sizes, pipeIndizes);
 		this.timeCapacitiesSizes.add(timeCapacitiesSizesEntry);
 
-		ImmutableTriple<Long, List<Long>, List<Long>> timePushPullThroughputEntry = new ImmutableTriple<Long, List<Long>, List<Long>>(
-				this.startingTimestamp - currentTimestamp, pushThroughputs, pullThroughputs);
-		this.timePushPullThroughput.add(timePushPullThroughputEntry);
+		TimePushPullThroughputs timePushPullThroughputEntry = new TimePushPullThroughputs(
+				this.startingTimestamp - currentTimestamp, pushThroughputs, pullThroughputs, pipeIndizes);
+		this.timePushPullThroughputs.add(timePushPullThroughputEntry);
 	}
 
-	public List<ImmutableTriple<Long, List<Integer>, List<Integer>>> getTimeCapacitiesSizes() {
+	public List<TimeCapacitiesSizes> getTimeCapacitiesSizes() {
 		return timeCapacitiesSizes;
 	}
 
-	public List<ImmutableTriple<Long, List<Long>, List<Long>>> getTimePushPullThroughput() {
-		return timePushPullThroughput;
+	public List<TimePushPullThroughputs> getTimePushPullThroughput() {
+		return timePushPullThroughputs;
 	}
 
-	public class ImmutableTriple<A, B, C> {
-		private final A a;
-		private final B b;
-		private final C c;
+	public List<IMonitorablePipe> getPipes() {
+		return pipes;
+	}
 
-		public ImmutableTriple(final A a, final B b, final C c) {
-			this.a = a;
-			this.b = b;
-			this.c = c;
+	public class TimeCapacitiesSizes {
+		private final Long time;
+		private final List<Integer> capacities;
+		private final List<Integer> sizes;
+		private final List<Integer> pipeIndizes;
+
+		TimeCapacitiesSizes(final Long time, final List<Integer> capacities, final List<Integer> sizes, final List<Integer> pipeIndizes) {
+			this.time = time;
+			this.capacities = capacities;
+			this.sizes = sizes;
+			this.pipeIndizes = pipeIndizes;
 		}
 
-		public A getA() {
-			return a;
+		public Long getTime() {
+			return time;
 		}
 
-		public B getB() {
-			return b;
+		public List<Integer> getCapacities() {
+			return capacities;
 		}
 
-		public C getC() {
-			return c;
+		public List<Integer> getSizes() {
+			return sizes;
+		}
+
+		public List<Integer> getPipeIndizes() {
+			return pipeIndizes;
+		}
+	}
+
+	public class TimePushPullThroughputs {
+		private final Long time;
+		private final List<Long> pushThroughputs;
+		private final List<Long> pullThroughputs;
+		private final List<Integer> pipeIndizes;
+
+		TimePushPullThroughputs(final Long time, final List<Long> pushThroughputs, final List<Long> pullThroughputs, final List<Integer> pipeIndizes) {
+			this.time = time;
+			this.pushThroughputs = pushThroughputs;
+			this.pullThroughputs = pullThroughputs;
+			this.pipeIndizes = pipeIndizes;
+		}
+
+		public Long getTime() {
+			return time;
+		}
+
+		public List<Long> getPushThroughputs() {
+			return pushThroughputs;
+		}
+
+		public List<Long> getPullThroughputs() {
+			return pullThroughputs;
+		}
+
+		public List<Integer> getPipeIndizes() {
+			return pipeIndizes;
 		}
 	}
 }

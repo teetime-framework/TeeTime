@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.util.List;
 
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
-import teetime.stage.taskfarm.monitoring.PipeMonitoringService.ImmutableTriple;
+import teetime.stage.taskfarm.monitoring.PipeMonitoringService.TimeCapacitiesSizes;
 import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringService;
 
 public class StackedTimeSizeWithCapacity2D extends AbstractMonitoringDataExtraction {
@@ -16,27 +16,29 @@ public class StackedTimeSizeWithCapacity2D extends AbstractMonitoringDataExtract
 
 	@Override
 	protected void extractToWriter(final Writer writer) {
-		List<ImmutableTriple<Long, List<Integer>, List<Integer>>> triples = getPipeMonitoringService().getTimeCapacitiesSizes();
-		int maxNumberOfPipes = getPipeMonitoringService().getData().entrySet().size();
+		List<TimeCapacitiesSizes> values = getPipeMonitoringService().getTimeCapacitiesSizes();
+		int maxNumberOfPipes = getPipeMonitoringService().getPipes().size();
 
 		try {
 			createHeader(writer, maxNumberOfPipes);
 
-			for (ImmutableTriple<Long, List<Integer>, List<Integer>> triple : triples) {
-				addTripleToCSV(writer, maxNumberOfPipes, triple);
+			for (TimeCapacitiesSizes value : values) {
+				addTripleToCSV(writer, maxNumberOfPipes, value);
 			}
 		} catch (IOException e) {
 			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage());
 		}
 	}
 
-	private void addTripleToCSV(final Writer writer, final int maxNumberOfPipes, final ImmutableTriple<Long, List<Integer>, List<Integer>> triple) throws IOException {
+	private void addTripleToCSV(final Writer writer, final int maxNumberOfPipes, final TimeCapacitiesSizes value)
+			throws IOException {
 		String[] entryStrings = new String[maxNumberOfPipes + 2];
-		entryStrings[0] = Long.toString(triple.getA());
-		entryStrings[1] = Integer.toString(triple.getB().get(0));
+		entryStrings[0] = Long.toString(value.getTime());
+		entryStrings[1] = Integer.toString(value.getCapacities().get(0));
 
-		for (int i = 0; i < triple.getC().size(); i++) {
-			entryStrings[i + 2] = Integer.toString(triple.getC().get(i));
+		// add values while keeping pipe size consistent with pipe identity
+		for (int i = 0; i < value.getSizes().size(); i++) {
+			entryStrings[value.getPipeIndizes().get(i) + 2] = Integer.toString(value.getSizes().get(i));
 		}
 
 		// give elements without values standard values for this timestamp
