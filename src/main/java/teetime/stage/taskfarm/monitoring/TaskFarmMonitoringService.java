@@ -18,6 +18,8 @@ public class TaskFarmMonitoringService implements IMonitoringService<TaskFarmSta
 
 	private final Map<TaskFarmStage<?, ?, ?>, List<TaskFarmMonitoringData>> data = new HashMap<TaskFarmStage<?, ?, ?>, List<TaskFarmMonitoringData>>();
 
+	private int maxNumberOfStages = 0;
+
 	@Override
 	public Map<TaskFarmStage<?, ?, ?>, List<TaskFarmMonitoringData>> getData() {
 		return this.data;
@@ -46,7 +48,15 @@ public class TaskFarmMonitoringService implements IMonitoringService<TaskFarmSta
 
 			List<TaskFarmMonitoringData> taskFarmValues = this.data.get(taskFarmStage);
 			taskFarmValues.add(monitoringData);
+
+			if (taskFarmStage.getEnclosedStageInstances().size() > this.maxNumberOfStages) {
+				this.maxNumberOfStages = taskFarmStage.getEnclosedStageInstances().size();
+			}
 		}
+	}
+
+	public int getMaxNumberOfStages() {
+		return maxNumberOfStages;
 	}
 
 	private enum MeanThroughputType {
