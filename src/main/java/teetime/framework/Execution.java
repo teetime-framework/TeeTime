@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.IExceptionListenerFactory;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
-import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.ThreadThrowableContainer;
@@ -173,25 +172,21 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 		switch (terminationStrategy) {
 		case BY_SIGNAL: {
 			final RunnableConsumerStage runnable = new RunnableConsumerStage(stage);
-			thread = createThread(runnable, stage.getId());
+			thread = createThread(runnable);
 			this.consumerThreads.add(thread);
 			break;
 		}
 		case BY_SELF_DECISION: {
 			final RunnableProducerStage runnable = new RunnableProducerStage(stage);
 			producerRunnables.add(runnable);
-			thread = createThread(runnable, stage.getId());
+			thread = createThread(runnable);
 			this.finiteProducerThreads.add(thread);
-			InitializingSignal initializingSignal = new InitializingSignal();
-			stage.onSignal(initializingSignal, null);
 			break;
 		}
 		case BY_INTERRUPT: {
 			final RunnableProducerStage runnable = new RunnableProducerStage(stage);
 			producerRunnables.add(runnable);
-			thread = createThread(runnable, stage.getId());
-			InitializingSignal initializingSignal = new InitializingSignal();
-			stage.onSignal(initializingSignal, null);
+			thread = createThread(runnable);
 			this.infiniteProducerThreads.add(thread);
 			break;
 		}
@@ -201,7 +196,7 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 		return thread;
 	}
 
-	private Thread createThread(final AbstractRunnableStage runnable, final String name) {
+	private Thread createThread(final AbstractRunnableStage runnable) {
 		final Thread thread = new Thread(runnable);
 		thread.setUncaughtExceptionHandler(this);
 		thread.setName(configuration.getContext().getThreadableStages().get(runnable.stage));
@@ -226,16 +221,6 @@ public final class Execution<T extends Configuration> implements UncaughtExcepti
 	public void waitForTermination() {
 		try {
 			getConfiguration().getContext().getRunnableCounter().waitFor(0);
-
-			// LOGGER.debug("Waiting for finiteProducerThreads");
-			// for (Thread thread : this.finiteProducerThreads) {
-			// thread.join();
-			// }
-			//
-			// LOGGER.debug("Waiting for consumerThreads");
-			// for (Thread thread : this.consumerThreads) {
-			// thread.join();
-			// }
 		} catch (InterruptedException e) {
 			LOGGER.error("Execution has stopped unexpectedly", e);
 			for (Thread thread : this.finiteProducerThreads) {
