@@ -118,7 +118,7 @@ public final class Execution<T extends Configuration> {
 	}
 
 	// TODO: implement
-	private void abortEventually() {
+	public void abortEventually() {
 		configurationContext.abortConfigurationRun();
 		waitForTermination();
 	}
