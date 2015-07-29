@@ -27,7 +27,7 @@ public final class InitialElementProducer<T> extends AbstractProducerStage<T> {
 		this.elements = Arrays.asList(elements);
 	}
 
-	public <O extends Iterable<T>> InitialElementProducer(final O elements) {
+	public InitialElementProducer(final Iterable<T> elements) {
 		this.elements = elements;
 	}
 
