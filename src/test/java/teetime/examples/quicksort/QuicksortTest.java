@@ -12,7 +12,7 @@ public class QuicksortTest {
 
 	@Test
 	public void executeTest() {
-		final int[] arr = generateRandomNumbers(100);
+		final int[] arr = generateRandomNumbers(10);
 
 		final QuicksortConfiguration configuration = new QuicksortConfiguration(arr);
 		final Execution<QuicksortConfiguration> execution = new Execution<QuicksortConfiguration>(configuration);

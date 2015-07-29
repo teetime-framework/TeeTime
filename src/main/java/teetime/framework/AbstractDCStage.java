@@ -1,7 +1,8 @@
 package teetime.framework;
 
-import teetime.util.divideAndConquer.Problem;
-import teetime.util.divideAndConquer.Solution;
+import teetime.framework.pipe.DummyPipe;
+import teetime.framework.pipe.IPipe;
+import teetime.util.divideAndConquer.Identifiable;
 
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
@@ -19,9 +20,12 @@ import com.carrotsearch.hppc.IntObjectMap;
  * @param <S>
  *            type of elements that represent the solution to a problem.
  */
-public abstract class AbstractDCStage<P extends Problem, S extends Solution> extends AbstractStage { // FIXME check compatibility of interface ITASKFARMDUPLICABLE
+public abstract class AbstractDCStage<P extends Identifiable, S extends Identifiable> extends AbstractStage { // FIXME check compatibility of interface
+																												// ITASKFARMDUPLICABLE
 
-	private final int threshHold = Runtime.getRuntime().availableProcessors();
+	private static final IPipe DUMMY_PIPE = new DummyPipe();
+
+	private final int threshold = Runtime.getRuntime().availableProcessors();
 	private final int numberOfStages = 1;
 
 	protected final IntObjectMap<S> solutionBuffer = new IntObjectHashMap<S>();
@@ -44,6 +48,8 @@ public abstract class AbstractDCStage<P extends Problem, S extends Solution> ext
 			throw new IllegalArgumentException("Context may not be null.");
 		}
 		this.context = context;
+		leftInputPort.setPipe(DUMMY_PIPE);
+		rightInputPort.setPipe(DUMMY_PIPE);
 	}
 
 	public final InputPort<P> getInputPort() {
@@ -72,7 +78,6 @@ public abstract class AbstractDCStage<P extends Problem, S extends Solution> ext
 
 	@Override
 	protected final void executeStage() {
-
 		// check left / right input ports for new partial solutions
 		checkPort(rightInputPort);
 		checkPort(leftInputPort);
@@ -80,10 +85,11 @@ public abstract class AbstractDCStage<P extends Problem, S extends Solution> ext
 		// check main input port for new problems
 		P problem = this.getInputPort().receive();
 		if (problem == null) {
-
 		} else {
+			System.out.println("checking main port " + this.getId());
 			if (isBaseCase(problem)) {
 				S solution = solve(problem);
+				logger.trace("Sent element: " + solution.toString());
 				this.getOutputPort().send(solution);
 			} else {
 				makeCopy(leftOutputPort, leftInputPort);
@@ -96,30 +102,30 @@ public abstract class AbstractDCStage<P extends Problem, S extends Solution> ext
 	private void checkPort(final InputPort<S> port) {
 		S solution = port.receive();
 		if (solution == null) {
-
 		} else {
-			if (isInBuffer(solution)) {
-				combine(solution, getFromBuffer(solution));
+			int solutionID = solution.getID();
+			if (isInBuffer(solutionID)) {
+				combine(solution, getFromBuffer(solutionID));
 				this.getOutputPort().send(solution);
 			} else {
-				addToBuffer(solution);
+				addToBuffer(solutionID, solution);
 			}
 		}
 
 	}
 
-	private S getFromBuffer(final S solution) {
-		S tempSolution = this.solutionBuffer.get(solution.getKey());
-		this.solutionBuffer.remove(solution.getKey());
+	private S getFromBuffer(final int solutionID) {
+		S tempSolution = this.solutionBuffer.get(solutionID);
+		this.solutionBuffer.remove(solutionID);
 		return tempSolution;
 	}
 
-	private void addToBuffer(final S solution) {
-		this.solutionBuffer.put(solution.getKey(), solution);
+	private void addToBuffer(final int solutionID, final S solution) {
+		this.solutionBuffer.put(solutionID, solution);
 	}
 
-	private boolean isInBuffer(final S solution) {
-		return this.solutionBuffer.containsKey(solution.getKey());
+	private boolean isInBuffer(final int solutionID) {
+		return this.solutionBuffer.containsKey(solutionID);
 	}
 
 	/**

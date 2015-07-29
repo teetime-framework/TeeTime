@@ -1,6 +1,8 @@
 package teetime.stage.quicksort;
 
-import teetime.util.divideAndConquer.Solution;
+import java.util.Arrays;
+
+import teetime.util.divideAndConquer.Identifiable;
 
 /**
  * @since 2.x
@@ -8,12 +10,11 @@ import teetime.util.divideAndConquer.Solution;
  * @author Robin Mohr
  *
  */
-public final class QuicksortSolution extends Solution {
+public final class QuicksortSolution extends Identifiable {
 
 	private final int low;
 	private final int high;
 	private final int[] numbers;
-	private final int key;
 
 	/**
 	 * An implementation of a quicksort solution.
@@ -26,17 +27,11 @@ public final class QuicksortSolution extends Solution {
 	 *            Array to be sorted
 	 */
 
-	public QuicksortSolution(final int key, final int low, final int high, final int[] numbers) {
-		super(key);
-		this.key = key;
+	public QuicksortSolution(final int id, final int low, final int high, final int[] numbers) {
+		super(id);
 		this.low = low;
 		this.high = high;
 		this.numbers = numbers;
-	}
-
-	@Override
-	public int getKey() {
-		return this.key;
 	}
 
 	public int getLow() {
@@ -49,5 +44,12 @@ public final class QuicksortSolution extends Solution {
 
 	public int[] getNumbers() {
 		return this.numbers;
+	}
+
+	@Override
+	public String toString() {
+		String s = "Solution ID: " + this.getID() + " contains Array: " + Arrays.toString(numbers);
+		return s;
+
 	}
 }

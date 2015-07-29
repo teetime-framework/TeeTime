@@ -46,16 +46,16 @@ public final class QuicksortStage extends AbstractDCStage<QuicksortProblem, Quic
 		}
 		// recursively sort two sub parts
 		// FIXME Put following code in AbstraceDCStage
-		QuicksortProblem newQuicksortProblem1 = new QuicksortProblem(problem.getKey(), low, j, numbers);
+		QuicksortProblem newQuicksortProblem1 = new QuicksortProblem(problem.getID(), low, j, numbers);
 		leftOutputPort.send(newQuicksortProblem1);
-		QuicksortProblem newQuicksortProblem2 = new QuicksortProblem(problem.getKey(), i, high, numbers);
+		QuicksortProblem newQuicksortProblem2 = new QuicksortProblem(problem.getID(), i, high, numbers);
 		rightOutputPort.send(newQuicksortProblem2);
 
 	}
 
 	@Override
 	protected QuicksortSolution solve(final QuicksortProblem problem) {
-		QuicksortSolution solution = new QuicksortSolution(problem.getKey(), problem.getLow(), problem.getHigh(), problem.getNumbers());
+		QuicksortSolution solution = new QuicksortSolution(problem.getID(), problem.getLow(), problem.getHigh(), problem.getNumbers());
 		return solution;
 	}
 
