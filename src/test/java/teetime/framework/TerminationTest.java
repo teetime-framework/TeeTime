@@ -8,9 +8,9 @@ public class TerminationTest {
 
 	@Test(timeout = 2000)
 	public void doesNotGetStuckInAdd() throws InterruptedException {
-		Execution<TerminationConfig> execution = new Execution<TerminationConfig>(new TerminationConfig());
+		Execution<TerminationConfig> execution = new Execution<TerminationConfig>(new TerminationConfig(1));
 		execution.executeNonBlocking();
-		Thread.sleep(1000);
+		Thread.sleep(500);
 		execution.abortEventually();
 	}
 
@@ -18,8 +18,8 @@ public class TerminationTest {
 		InitialElementProducer<Integer> init = new InitialElementProducer<Integer>(1, 2, 3, 4, 5, 6);
 		DoesNotRetrieveElements sinkStage = new DoesNotRetrieveElements();
 
-		public TerminationConfig() {
-			connectPorts(init.getOutputPort(), sinkStage.getInputPort(), 1);
+		public TerminationConfig(final int capacity) {
+			connectPorts(init.getOutputPort(), sinkStage.getInputPort(), capacity);
 			addThreadableStage(sinkStage);
 		}
 
@@ -29,19 +29,23 @@ public class TerminationTest {
 
 		@Override
 		protected void execute(final Integer element) {
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				// Will happen in this test
+			int i = 0;
+			while (true) {
+				i++;
+				if (i > 1) {
+					Thread.currentThread().interrupt();
+					break;
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+				}
 			}
 
 		}
 
 		@Override
-		protected void terminate() {
-			Thread.currentThread().interrupt();
-			System.out.println("TADA " + this.shouldBeTerminated());
-		}
+		protected void terminate() {}
 
 	}
 

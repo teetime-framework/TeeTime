@@ -48,7 +48,7 @@ abstract class AbstractRunnableStage implements Runnable {
 				try {
 					do {
 						executeStage();
-					} while (!stage.shouldBeTerminated());
+					} while (!Thread.currentThread().isInterrupted());
 				} catch (TerminateException e) {
 					this.stage.terminate();
 					stage.owningContext.abortConfigurationRun();
