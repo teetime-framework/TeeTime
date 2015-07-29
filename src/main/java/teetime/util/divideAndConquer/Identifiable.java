@@ -7,7 +7,7 @@ package teetime.util.divideAndConquer;
  *
  */
 public abstract class Identifiable {
-
+	// TODO automatically create unique id on instantiation
 	private final int id;
 
 	protected Identifiable(final int id) {

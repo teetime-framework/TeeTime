@@ -22,9 +22,11 @@ import com.carrotsearch.hppc.IntObjectMap;
  */
 public abstract class AbstractDCStage<P extends Identifiable, S extends Identifiable> extends AbstractStage { // FIXME check compatibility of interface
 																												// ITASKFARMDUPLICABLE
-
+																												// FIXME this is needed for unconnected input ports
+																												// at the moment. framework won't validate additional
+																												// input ports on validating
 	private static final IPipe DUMMY_PIPE = new DummyPipe();
-
+	// TODO thread-optimization and scheduling: use these to create new threads / stages efficiently
 	private final int threshold = Runtime.getRuntime().availableProcessors();
 	private final int numberOfStages = 1;
 
@@ -48,6 +50,7 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 			throw new IllegalArgumentException("Context may not be null.");
 		}
 		this.context = context;
+		// FIXME maybe validate input ports in addition to output ports.
 		leftInputPort.setPipe(DUMMY_PIPE);
 		rightInputPort.setPipe(DUMMY_PIPE);
 	}
@@ -86,11 +89,11 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 		P problem = this.getInputPort().receive();
 		if (problem == null) {
 		} else {
-			System.out.println("checking main port " + this.getId());
 			if (isBaseCase(problem)) {
 				S solution = solve(problem);
 				logger.trace("Sent element: " + solution.toString());
 				this.getOutputPort().send(solution);
+				this.terminate();
 			} else {
 				makeCopy(leftOutputPort, leftInputPort);
 				makeCopy(rightOutputPort, rightInputPort);
@@ -99,6 +102,7 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 		}
 	}
 
+	// TODO make function more generic to check all 3 ports with different params
 	private void checkPort(final InputPort<S> port) {
 		S solution = port.receive();
 		if (solution == null) {
@@ -106,7 +110,9 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 			int solutionID = solution.getID();
 			if (isInBuffer(solutionID)) {
 				combine(solution, getFromBuffer(solutionID));
+				logger.trace("Sent element: " + solution.toString());
 				this.getOutputPort().send(solution);
+				this.terminate();
 			} else {
 				addToBuffer(solutionID, solution);
 			}
@@ -114,6 +120,7 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 
 	}
 
+	// FIXME maybe write an own class for the buffer, outsource these functions
 	private S getFromBuffer(final int solutionID) {
 		S tempSolution = this.solutionBuffer.get(solutionID);
 		this.solutionBuffer.remove(solutionID);
@@ -132,6 +139,7 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 	 * A method to add a new copy (new instance) of this stage to the configuration, which should be executed in a own thread.
 	 *
 	 */
+	// TODO thread intantiation and scheduling.... optimization
 	private void makeCopy(final OutputPort<P> out, final InputPort<S> in) {
 		final AbstractDCStage<P, S> newStage = this.duplicate();
 		context.connectPorts(out, newStage.getInputPort());
@@ -146,6 +154,8 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 	 * @param element
 	 *            An element to be split and further processed
 	 */
+	// FIXME change return type from void to (p1,p2) <- two problems
+	// so the sending can be done here instead of the quicksortstage
 	protected abstract void divide(final P problem);
 
 	/**
@@ -164,6 +174,7 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 	 * @param eRight
 	 *            Second half of the resulting element.
 	 */
+	// FIXME change return type to Solution
 	protected abstract void combine(final S s1, final S s2);
 
 	/**
@@ -178,5 +189,11 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 
 	public DynamicConfigurationContext getContext() {
 		return this.context;
+	}
+
+	// TODO Define terminating criteria. As of now, stage terminates after first solved problem
+	@Override
+	public TerminationStrategy getTerminationStrategy() {
+		return TerminationStrategy.BY_SELF_DECISION;
 	}
 }
