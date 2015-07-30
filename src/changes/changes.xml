@@ -23,7 +23,7 @@
 				Configurations are now
 				built within the Configuration class.
 				This removes any constraints on CompositeStages and
-				enables therefore multiple connections and multithreading.
+				enables therefore multiple connections and multithreading in such stages.
 			</action>
 			<action dev="ntd" type="update">
 				Renamed Analysis to Execution
@@ -37,6 +37,10 @@
 			</action>
 			<action dev="ntd" type="add" issue="122">
 				Threads can be named for better debugging.
+			</action>
+			<action dev="ntd" type="add" issue="211">
+				Added Services.
+				Any Execution can now be aborted.
 			</action>
 		</release>
 
