@@ -50,11 +50,7 @@ class ThreadService extends AbstractService<ThreadService> {
 	@Override
 	void onInitialize() {
 		IExceptionListenerFactory factory;
-		try {
-			factory = ((Configuration) compositeStage).getFactory();
-		} catch (ClassCastException e) {
-			throw new IllegalStateException("Something went wrong");
-		}
+		factory = ((Configuration) compositeStage).getFactory();
 		if (threadableStages.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
