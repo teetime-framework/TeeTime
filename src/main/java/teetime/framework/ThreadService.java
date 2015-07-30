@@ -206,7 +206,8 @@ class ThreadService extends AbstractService<ThreadService> {
 
 	@Override
 	void merge(final ThreadService source) {
-		this.getThreadableStages().putAll(source.getThreadableStages());
+		threadableStages.putAll(source.getThreadableStages());
+		runnableCounter.inc(source.runnableCounter);
 	}
 
 	SignalingCounter getRunnableCounter() {

@@ -31,6 +31,10 @@ public class DynamicActuator {
 	public Runnable startWithinNewThread(final Stage stage) {
 		Runnable runnable = wrap(stage);
 		Thread thread = new Thread(runnable);
+
+		stage.setOwningThread(thread);
+		stage.setExceptionHandler(null);
+
 		thread.start();
 		return runnable;
 	}
