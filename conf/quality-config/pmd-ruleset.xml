@@ -64,6 +64,7 @@
 		<exclude name="AtLeastOneConstructor" />
 		<exclude name="AvoidUsingVolatile" />
 		<exclude name="CallSuperInConstructor" />
+		<exclude name="DefaultPackage" />
 	</rule>
 
 	<!-- UR means "undefined reference" which is already detected by the compiler. 

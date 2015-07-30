@@ -65,12 +65,15 @@ final class ConfigurationContext {
 				addThreadableStage(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
 			}
 		}
-		if (sourcePort.getPipe() != null || targetPort.getPipe() != null) {
+
+		if (LOGGER.isWarnEnabled() && (sourcePort.getPipe() != null || targetPort.getPipe() != null)) {
 			LOGGER.warn("Overwriting existing pipe while connecting stages " +
 					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
 		}
+
 		addChildContext(sourcePort.getOwningStage());
 		addChildContext(targetPort.getOwningStage());
+
 		new InstantiationPipe(sourcePort, targetPort, capacity);
 	}
 
