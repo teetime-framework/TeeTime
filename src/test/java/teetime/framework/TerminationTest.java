@@ -8,7 +8,17 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import teetime.stage.basic.Sink;
+
 public class TerminationTest {
+
+	@Test(timeout = 1000)
+	public void correctAbort() throws InterruptedException {
+		TerminationConfig configuration = new TerminationConfig(10);
+		Execution<TerminationConfig> execution = new Execution<TerminationConfig>(configuration);
+		execution.executeNonBlocking();
+		execution.abortEventually();
+	}
 
 	@Test(timeout = 3000)
 	public void doesNotGetStuckInAdd() throws InterruptedException {
@@ -25,8 +35,14 @@ public class TerminationTest {
 		DoesNotRetrieveElements sinkStage = new DoesNotRetrieveElements();
 
 		public TerminationConfig(final int capacity) {
-			connectPorts(init.getOutputPort(), sinkStage.getInputPort(), capacity);
-			addThreadableStage(sinkStage);
+			if (capacity == 1) {
+				connectPorts(init.getOutputPort(), sinkStage.getInputPort(), capacity);
+				addThreadableStage(sinkStage);
+			} else {
+				Sink<Integer> sink = new Sink<Integer>();
+				connectPorts(init.getOutputPort(), sink.getInputPort(), capacity);
+				addThreadableStage(sink);
+			}
 		}
 
 	}
