@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.IExceptionListenerFactory;
-import teetime.framework.signal.InitializingSignal;
 import teetime.util.ThreadThrowableContainer;
 import teetime.util.framework.concurrent.SignalingCounter;
 
@@ -150,16 +149,12 @@ class ThreadService extends AbstractService<ThreadService> {
 			producerRunnables.add(runnable);
 			thread = createThread(runnable, stage.getId());
 			this.finiteProducerThreads.add(thread);
-			InitializingSignal initializingSignal = new InitializingSignal();
-			stage.onSignal(initializingSignal, null);
 			break;
 		}
 		case BY_INTERRUPT: {
 			final RunnableProducerStage runnable = new RunnableProducerStage(stage);
 			producerRunnables.add(runnable);
 			thread = createThread(runnable, stage.getId());
-			InitializingSignal initializingSignal = new InitializingSignal();
-			stage.onSignal(initializingSignal, null);
 			this.infiniteProducerThreads.add(thread);
 			break;
 		}
@@ -182,7 +177,7 @@ class ThreadService extends AbstractService<ThreadService> {
 	}
 
 	void addThreadableStage(final Stage stage, final String threadName) {
-		if (this.threadableStages.put(stage, threadName) != null) {
+		if (this.threadableStages.put(stage, threadName) != null && LOGGER.isWarnEnabled()) {
 			LOGGER.warn("Stage " + stage.getId() + " was already marked as threadable stage.");
 		}
 	}
