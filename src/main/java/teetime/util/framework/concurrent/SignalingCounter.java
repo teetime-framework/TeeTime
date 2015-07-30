@@ -65,4 +65,9 @@ public class SignalingCounter {
 		counter += otherCounter.counter;
 		conditionalNotifyAll(counter);
 	}
+
+	@Override
+	public String toString() {
+		return "counter: " + counter + ", " + super.toString();
+	}
 }

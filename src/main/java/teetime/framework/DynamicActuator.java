@@ -15,6 +15,7 @@
  */
 package teetime.framework;
 
+import teetime.util.framework.concurrent.SignalingCounter;
 
 public class DynamicActuator {
 
@@ -30,9 +31,13 @@ public class DynamicActuator {
 	}
 
 	public Runnable startWithinNewThread(final Stage previousStage, final Stage stage) {
-		// SignalingCounter runtimeCounter = previousStage.owningContext.getThreadService().getRunnableCounter();
-		// SignalingCounter newCounter = stage.owningContext.getThreadService().getRunnableCounter();
+		SignalingCounter runtimeCounter = previousStage.owningContext.getThreadService().getRunnableCounter();
+		SignalingCounter newCounter = stage.owningContext.getThreadService().getRunnableCounter();
 		// runtimeCounter.inc(newCounter);
+
+		// stage.logger.error(stage.owningContext.getThreadService().getRunnableCounter().toString());
+
+		// !!! stage.owningContext = XXX.owningContext !!!
 
 		Runnable runnable = wrap(stage);
 		Thread thread = new Thread(runnable);
@@ -41,6 +46,10 @@ public class DynamicActuator {
 		stage.setExceptionHandler(null);
 
 		thread.start();
+
+		// requirements:
+		// 1. all new threads from stage must be known to the global context
+		// 2. number of active threads must be increased by the stage
 
 		if (runnable instanceof RunnableConsumerStage) {
 			// do nothing
