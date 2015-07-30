@@ -63,6 +63,7 @@
 	<rule ref="rulesets/java/controversial.xml">
 		<exclude name="AtLeastOneConstructor" />
 		<exclude name="AvoidUsingVolatile" />
+		<exclude name="CallSuperInConstructor" />
 	</rule>
 
 	<!-- UR means "undefined reference" which is already detected by the compiler. 

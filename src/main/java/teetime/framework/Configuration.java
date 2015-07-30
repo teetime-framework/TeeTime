@@ -40,10 +40,12 @@ public abstract class Configuration extends AbstractCompositeStage {
 		this.factory = factory;
 	}
 
+	@SuppressWarnings("PMD.DefaultPackage")
 	boolean isExecuted() {
 		return executed;
 	}
 
+	@SuppressWarnings("PMD.DefaultPackage")
 	void setExecuted(final boolean executed) {
 		this.executed = executed;
 	}
