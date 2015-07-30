@@ -15,14 +15,26 @@
  */
 package teetime.framework.exceptionHandling;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import teetime.framework.Stage;
 
 class TerminatingExceptionListener extends AbstractExceptionListener {
 
+	private final List<Exception> exceptions = new ArrayList<Exception>();
+
 	@Override
 	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {
-		logger.warn("Exception occurred in " + throwingStage.getId(), e);
+		if (logger.isWarnEnabled()) {
+			logger.warn("Exception occurred in " + throwingStage.getId(), e);
+		}
+		exceptions.add(e);
 		return FurtherExecution.TERMINATE;
+	}
+
+	public List<Exception> getExceptions() {
+		return exceptions;
 	}
 
 }

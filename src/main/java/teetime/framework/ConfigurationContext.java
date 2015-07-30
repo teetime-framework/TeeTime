@@ -85,7 +85,6 @@ final class ConfigurationContext {
 		} else {
 			stage.owningContext = this;
 		}
-
 	}
 
 	final void initializeContext() {

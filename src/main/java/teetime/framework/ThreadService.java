@@ -1,19 +1,17 @@
 package teetime.framework;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.IExceptionListenerFactory;
-import teetime.util.ThreadThrowableContainer;
 import teetime.util.framework.concurrent.SignalingCounter;
 
 /**
@@ -39,21 +37,15 @@ class ThreadService extends AbstractService<ThreadService> {
 
 	public ThreadService(final AbstractCompositeStage compositeStage) {
 		this.compositeStage = compositeStage;
-
 	}
-
-	private final Collection<ThreadThrowableContainer> exceptions = new ConcurrentLinkedQueue<ThreadThrowableContainer>();
 
 	private final List<RunnableProducerStage> producerRunnables = new LinkedList<RunnableProducerStage>();
 
 	@Override
 	void onInitialize() {
-		IExceptionListenerFactory factory;
-		try {
-			factory = ((Configuration) compositeStage).getFactory();
-		} catch (ClassCastException e) {
-			throw new IllegalStateException("Something went wrong");
-		}
+		// is invoked only by a Configuration
+		IExceptionListenerFactory factory = ((Configuration) compositeStage).getFactory();
+
 		if (threadableStages.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
@@ -121,9 +113,23 @@ class ThreadService extends AbstractService<ThreadService> {
 			thread.interrupt();
 		}
 
-		// if (!exceptions.isEmpty()) {
-		// throw new ExecutionException(exceptions);
-		// }
+		List<Exception> exceptions = collectExceptions();
+		if (!exceptions.isEmpty()) {
+			// throw new ExecutionException(exceptions);
+		}
+	}
+
+	// TODO impl throw exception
+	private List<Exception> collectExceptions() {
+		// Collection<ThreadThrowableContainer> exceptions = new ConcurrentLinkedQueue<ThreadThrowableContainer>();
+		List<Exception> exceptions = new ArrayList<Exception>();
+
+		for (Stage stage : threadableStages.keySet()) {
+			// List<Exception> stageExceptions = stage.exceptionListener.getExceptions();
+			// exceptions.addAll(stageExceptions);
+		}
+
+		return exceptions;
 	}
 
 	private void initializeIntraStages(final Set<Stage> intraStages, final Thread thread, final AbstractExceptionListener newListener) {

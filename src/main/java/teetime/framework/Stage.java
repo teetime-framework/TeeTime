@@ -134,7 +134,6 @@ public abstract class Stage {
 		return owningThread;
 	}
 
-	@SuppressWarnings("PMD.DefaultPackage")
 	void setOwningThread(final Thread owningThread) {
 		this.owningThread = owningThread;
 	}
