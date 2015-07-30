@@ -72,6 +72,10 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 			}
 		}
 
+		// PipeMonitoringDataContainer c = new (monitoringDatas);
+		// c.getPushThroughputs();
+		// c.getPullThroughputs();
+
 		TimeCapacitiesSizes timeCapacitiesSizesEntry = new TimeCapacitiesSizes(
 				this.startingTimestamp - currentTimestamp, capacities, sizes, pipeIndizes);
 		this.timeCapacitiesSizes.add(timeCapacitiesSizesEntry);
