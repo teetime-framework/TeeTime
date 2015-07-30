@@ -114,10 +114,10 @@ class ThreadService extends AbstractService<ThreadService> {
 		// Collection<ThreadThrowableContainer> exceptions = new ConcurrentLinkedQueue<ThreadThrowableContainer>();
 		List<Exception> exceptions = new ArrayList<Exception>();
 
-		for (Stage stage : threadableStages.keySet()) {
-			// List<Exception> stageExceptions = stage.exceptionListener.getExceptions();
-			// exceptions.addAll(stageExceptions);
-		}
+		// for (Stage stage : threadableStages.keySet()) {
+		// List<Exception> stageExceptions = stage.exceptionListener.getExceptions();
+		// exceptions.addAll(stageExceptions);
+		// }
 
 		return exceptions;
 	}
@@ -207,7 +207,7 @@ class ThreadService extends AbstractService<ThreadService> {
 	@Override
 	void merge(final ThreadService source) {
 		threadableStages.putAll(source.getThreadableStages());
-		runnableCounter.inc(source.runnableCounter);
+		// runnableCounter.inc(source.runnableCounter);
 	}
 
 	SignalingCounter getRunnableCounter() {

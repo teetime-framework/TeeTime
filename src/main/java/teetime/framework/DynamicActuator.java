@@ -15,6 +15,7 @@
  */
 package teetime.framework;
 
+
 public class DynamicActuator {
 
 	/**
@@ -28,7 +29,11 @@ public class DynamicActuator {
 		return new RunnableProducerStage(stage);
 	}
 
-	public Runnable startWithinNewThread(final Stage stage) {
+	public Runnable startWithinNewThread(final Stage previousStage, final Stage stage) {
+		// SignalingCounter runtimeCounter = previousStage.owningContext.getThreadService().getRunnableCounter();
+		// SignalingCounter newCounter = stage.owningContext.getThreadService().getRunnableCounter();
+		// runtimeCounter.inc(newCounter);
+
 		Runnable runnable = wrap(stage);
 		Thread thread = new Thread(runnable);
 
@@ -36,6 +41,16 @@ public class DynamicActuator {
 		stage.setExceptionHandler(null);
 
 		thread.start();
+
+		if (runnable instanceof RunnableConsumerStage) {
+			// do nothing
+		} else if (runnable instanceof RunnableProducerStage) {
+			((RunnableProducerStage) runnable).triggerInitializingSignal();
+			((RunnableProducerStage) runnable).triggerStartingSignal();
+		} else {
+			// TODO
+		}
+
 		return runnable;
 	}
 }

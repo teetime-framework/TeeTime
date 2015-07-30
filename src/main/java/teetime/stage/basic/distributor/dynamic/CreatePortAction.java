@@ -43,14 +43,14 @@ public class CreatePortAction<T> implements PortAction<DynamicDistributor<T>> {
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
 		OutputPort<T> newOutputPort = dynamicDistributor.getNewOutputPort();
 
-		processOutputPort(newOutputPort);
+		processOutputPort(dynamicDistributor, newOutputPort);
 		onOutputPortCreated(dynamicDistributor, newOutputPort);
 	}
 
-	private void processOutputPort(final OutputPort<T> newOutputPort) {
+	private void processOutputPort(final DynamicDistributor<T> dynamicDistributor, final OutputPort<T> newOutputPort) {
 		INTER_THREAD_PIPE_FACTORY.create(newOutputPort, inputPort);
 
-		DYNAMIC_ACTUATOR.startWithinNewThread(inputPort.getOwningStage());
+		DYNAMIC_ACTUATOR.startWithinNewThread(dynamicDistributor, inputPort.getOwningStage());
 
 		newOutputPort.sendSignal(new InitializingSignal());
 		newOutputPort.sendSignal(new StartingSignal());

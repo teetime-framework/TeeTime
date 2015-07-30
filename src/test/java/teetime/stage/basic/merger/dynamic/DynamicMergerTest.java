@@ -27,7 +27,6 @@ import org.junit.Test;
 import teetime.framework.Configuration;
 import teetime.framework.DynamicActuator;
 import teetime.framework.Execution;
-import teetime.framework.RunnableProducerStage;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
@@ -97,15 +96,12 @@ public class DynamicMergerTest {
 
 	private PortAction<DynamicMerger<Integer>> createPortCreateAction(final Integer number) {
 		final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(number);
-		final Runnable runnableStage = DYNAMIC_ACTUATOR.startWithinNewThread(initialElementProducer);
 
 		PortAction<DynamicMerger<Integer>> portAction = new CreatePortAction<Integer>(initialElementProducer.getOutputPort()) {
 			@Override
 			public void execute(final DynamicMerger<Integer> dynamicDistributor) {
 				super.execute(dynamicDistributor);
-				final RunnableProducerStage runnableProducerStage = (RunnableProducerStage) runnableStage;
-				runnableProducerStage.triggerInitializingSignal();
-				runnableProducerStage.triggerStartingSignal();
+				DYNAMIC_ACTUATOR.startWithinNewThread(dynamicDistributor, initialElementProducer);
 			}
 		};
 		return portAction;
