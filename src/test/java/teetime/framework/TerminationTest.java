@@ -1,17 +1,23 @@
 package teetime.framework;
 
-import org.junit.Test;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
-import teetime.stage.InitialElementProducer;
+import java.util.Arrays;
+
+import org.junit.Test;
 
 public class TerminationTest {
 
-	@Test(timeout = 2000)
+	@Test(timeout = 3000)
 	public void doesNotGetStuckInAdd() throws InterruptedException {
-		Execution<TerminationConfig> execution = new Execution<TerminationConfig>(new TerminationConfig(1));
+		TerminationConfig configuration = new TerminationConfig(1);
+		Execution<TerminationConfig> execution = new Execution<TerminationConfig>(configuration);
 		execution.executeNonBlocking();
-		Thread.sleep(500);
+		Thread.sleep(100);
 		execution.abortEventually();
+		assertThat(configuration.sinkStage.time - 450, is(greaterThan(configuration.init.time)));
 	}
 
 	private class TerminationConfig extends Configuration {
@@ -25,20 +31,49 @@ public class TerminationTest {
 
 	}
 
+	private final class InitialElementProducer<T> extends AbstractProducerStage<T> {
+
+		private final Iterable<T> elements;
+		public long time;
+
+		public InitialElementProducer(final T... elements) {
+			this.elements = Arrays.asList(elements);
+		}
+
+		@Override
+		protected void execute() {
+			for (final T element : this.elements) {
+				this.outputPort.send(element);
+			}
+			this.terminate();
+		}
+
+		@Override
+		protected void terminate() {
+			time = System.currentTimeMillis();
+			super.terminate();
+		}
+
+	}
+
 	private class DoesNotRetrieveElements extends AbstractConsumerStage<Integer> {
+
+		public long time;
 
 		@Override
 		protected void execute(final Integer element) {
 			int i = 0;
 			while (true) {
 				i++;
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// First sleep will throw this
+				}
 				if (i > 1) {
 					Thread.currentThread().interrupt();
+					time = System.currentTimeMillis();
 					break;
-				}
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
 				}
 			}
 
