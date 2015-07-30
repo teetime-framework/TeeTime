@@ -87,16 +87,6 @@ class ThreadService extends AbstractService<ThreadService> {
 	void onFinish() {
 		try {
 			runnableCounter.waitFor(0);
-
-			// LOGGER.debug("Waiting for finiteProducerThreads");
-			// for (Thread thread : this.finiteProducerThreads) {
-			// thread.join();
-			// }
-			//
-			// LOGGER.debug("Waiting for consumerThreads");
-			// for (Thread thread : this.consumerThreads) {
-			// thread.join();
-			// }
 		} catch (InterruptedException e) {
 			LOGGER.error("Execution has stopped unexpectedly", e);
 			for (Thread thread : this.finiteProducerThreads) {
