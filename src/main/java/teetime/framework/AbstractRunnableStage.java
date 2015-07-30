@@ -29,6 +29,10 @@ abstract class AbstractRunnableStage implements Runnable {
 	protected final Logger logger;
 
 	public AbstractRunnableStage(final Stage stage) {
+		if (stage == null) {
+			throw new IllegalArgumentException("Argument stage may not be null");
+		}
+
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
 
