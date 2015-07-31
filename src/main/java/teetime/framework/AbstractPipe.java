@@ -69,4 +69,9 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	public final int capacity() {
 		return capacity;
 	}
+
+	@Override
+	public String toString() {
+		return sourcePort.getOwningStage().getId() + " -> " + targetPort.getOwningStage().getId() + " (" + super.toString() + ")";
+	}
 }

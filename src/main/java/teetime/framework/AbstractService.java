@@ -22,6 +22,6 @@ abstract class AbstractService<T> {
 
 	abstract void onFinish();
 
-	abstract void merge(T source);
+	// abstract void merge(T source);
 
 }

@@ -60,9 +60,11 @@ public abstract class AbstractCompositeStage {
 	 * @param threadName
 	 *            A string which can be used for debugging.
 	 */
-	protected final void addThreadableStage(final Stage stage, final String threadName) {
+	protected void addThreadableStage(final Stage stage, final String threadName) {
 		// context.addThreadableStage(stage, threadName);
-		stage.setOwningThread(new Thread(threadName));
+		AbstractRunnableStage runnable = AbstractRunnableStage.create(stage);
+		Thread newThread = new TeeTimeThread(runnable, threadName);
+		stage.setOwningThread(newThread);
 	}
 
 	/**
@@ -91,7 +93,7 @@ public abstract class AbstractCompositeStage {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
-	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		// context.connectPorts(sourcePort, targetPort, capacity);
 		connectPortsInternal(sourcePort, targetPort, capacity);
 	}

@@ -28,17 +28,13 @@ abstract class AbstractRunnableStage implements Runnable {
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
-	public AbstractRunnableStage(final Stage stage) {
+	protected AbstractRunnableStage(final Stage stage) {
 		if (stage == null) {
 			throw new IllegalArgumentException("Argument stage may not be null");
 		}
 
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
-
-		if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
-			stage.owningContext.getThreadService().getRunnableCounter().inc();
-		}
 	}
 
 	@Override
@@ -55,7 +51,7 @@ abstract class AbstractRunnableStage implements Runnable {
 					} while (!Thread.currentThread().isInterrupted());
 				} catch (TerminateException e) {
 					this.stage.terminate();
-					stage.owningContext.abortConfigurationRun();
+					stage.getOwningContext().abortConfigurationRun();
 				} finally {
 					afterStageExecution();
 				}
@@ -68,7 +64,7 @@ abstract class AbstractRunnableStage implements Runnable {
 			}
 		} finally {
 			if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
-				stage.owningContext.getThreadService().getRunnableCounter().dec();
+				stage.getOwningContext().getThreadService().getRunnableCounter().dec();
 			}
 		}
 
@@ -80,5 +76,13 @@ abstract class AbstractRunnableStage implements Runnable {
 	protected abstract void executeStage();
 
 	protected abstract void afterStageExecution();
+
+	public static AbstractRunnableStage create(final Stage stage) {
+		if (stage.getTerminationStrategy() == TerminationStrategy.BY_SIGNAL) {
+			return new RunnableConsumerStage(stage);
+		} else {
+			return new RunnableProducerStage(stage);
+		}
+	}
 
 }

@@ -15,12 +15,11 @@
  */
 package teetime.framework;
 
-import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.Traversor.Direction;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 
@@ -43,7 +42,6 @@ public final class Execution<T extends Configuration> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
 
 	private final T configuration;
-
 	private final ConfigurationContext configurationContext;
 
 	/**
@@ -68,8 +66,7 @@ public final class Execution<T extends Configuration> {
 	 */
 	public Execution(final T configuration, final boolean validationEnabled) {
 		this.configuration = configuration;
-		// this.configurationContext = configuration.getContext();
-		this.configurationContext = new ConfigurationContext(configuration);
+		this.configurationContext = configuration.getContext();
 		if (configuration.isExecuted()) {
 			throw new IllegalStateException("Configuration was already executed");
 		}
@@ -82,8 +79,8 @@ public final class Execution<T extends Configuration> {
 
 	// BETTER validate concurrently
 	private void validateStages() {
-		final Map<Stage, String> threadableStageJobs = configurationContext.getThreadableStages();
-		for (Stage stage : threadableStageJobs.keySet()) {
+		final Set<Stage> threadableStages = configurationContext.getThreadableStages();
+		for (Stage stage : threadableStages) {
 			// // portConnectionValidator.validate(stage);
 			// }
 
@@ -100,15 +97,10 @@ public final class Execution<T extends Configuration> {
 	 *
 	 */
 	private final void init() {
-		ExecutionInstantiation executionInstantiation = new ExecutionInstantiation(configurationContext);
-		executionInstantiation.instantiatePipes();
+		// ExecutionInstantiation executionInstantiation = new ExecutionInstantiation(configurationContext);
+		// executionInstantiation.instantiatePipes();
 
-		IPipeVisitor pipeVisitor = new StageCollector();
-		Traversor traversor = new Traversor(pipeVisitor, Direction.BOTH);
-		// TODO iterate through each producer
-		// traversor.traverse(stage);
-
-		configurationContext.initializeContext();
+		// configurationContext.initializeContext();
 		configurationContext.initializeServices();
 	}
 

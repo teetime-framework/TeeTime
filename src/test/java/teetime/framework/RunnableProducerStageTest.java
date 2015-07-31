@@ -20,11 +20,14 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import teetime.framework.pipe.DummyPipe;
+
 public class RunnableProducerStageTest {
 
 	@Test
 	public void testInit() {
 		RunnableTestStage testStage = new RunnableTestStage();
+		testStage.getOutputPort().setPipe(DummyPipe.INSTANCE);
 		RunnableProducerStage runnable = new RunnableProducerStage(testStage);
 		Thread thread = new Thread(runnable);
 		thread.start();

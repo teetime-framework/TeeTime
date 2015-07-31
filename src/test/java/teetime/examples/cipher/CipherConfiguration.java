@@ -46,6 +46,5 @@ public class CipherConfiguration extends Configuration {
 		connectPorts(comp.getOutputPort(), decomp.getInputPort());
 		connectPorts(decomp.getOutputPort(), decrypt.getInputPort());
 		connectPorts(decrypt.getOutputPort(), writer.getInputPort());
-
 	}
 }

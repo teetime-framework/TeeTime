@@ -34,14 +34,14 @@ class ExecutionInstantiation {
 
 	private final ConfigurationContext context;
 
-	public ExecutionInstantiation(final ConfigurationContext context) {
+	private ExecutionInstantiation(final ConfigurationContext context) {
 		this.context = context;
 	}
 
 	void instantiatePipes() {
 		int color = DEFAULT_COLOR;
 		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
-		Set<Stage> threadableStages = context.getThreadableStages().keySet();
+		Set<Stage> threadableStages = context.getThreadableStages();
 		for (Stage threadableStage : threadableStages) {
 			color++;
 			colors.put(threadableStage, color);

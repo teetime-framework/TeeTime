@@ -27,6 +27,12 @@ import teetime.framework.signal.ISignal;
  */
 public final class DummyPipe<T> implements IPipe<T> {
 
+	public static final IPipe<?> INSTANCE = new DummyPipe<Object>();
+
+	private DummyPipe() {
+		// singleton
+	}
+
 	@Override
 	public boolean add(final Object element) {
 		return true;

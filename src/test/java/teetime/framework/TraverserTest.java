@@ -35,9 +35,9 @@ import teetime.stage.io.File2SeqOfWords;
 import teetime.stage.string.WordCounter;
 import teetime.stage.util.CountingMap;
 
-public class TraversorTest {
+public class TraverserTest {
 
-	private final Traversor traversor = new Traversor(new IntraStageCollector());
+	private final Traverser traversor = new Traverser(new IntraStageCollector());
 
 	@Test
 	public void traverse() {
@@ -52,7 +52,7 @@ public class TraversorTest {
 
 		OutputPort<?> distributorOutputPort0 = tc.distributor.getOutputPorts().get(0);
 		assertThat(tc.distributor.getOwningThread(), is(not(distributorOutputPort0.pipe.getTargetPort().getOwningStage().getOwningThread())));
-		assertEquals(comparingStages, traversor.getVisitedStage());
+		assertEquals(comparingStages, traversor.getVisitedStages());
 	}
 
 	// WordCounterConfiguration

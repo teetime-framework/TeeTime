@@ -31,8 +31,8 @@ public class DynamicActuator {
 	}
 
 	public Runnable startWithinNewThread(final Stage previousStage, final Stage stage) {
-		SignalingCounter runtimeCounter = previousStage.owningContext.getThreadService().getRunnableCounter();
-		SignalingCounter newCounter = stage.owningContext.getThreadService().getRunnableCounter();
+		SignalingCounter runtimeCounter = previousStage.getOwningContext().getThreadService().getRunnableCounter();
+		SignalingCounter newCounter = stage.getOwningContext().getThreadService().getRunnableCounter();
 		// runtimeCounter.inc(newCounter);
 
 		// stage.logger.error(stage.owningContext.getThreadService().getRunnableCounter().toString());
