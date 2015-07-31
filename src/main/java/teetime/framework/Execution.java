@@ -67,7 +67,8 @@ public final class Execution<T extends Configuration> {
 	 */
 	public Execution(final T configuration, final boolean validationEnabled) {
 		this.configuration = configuration;
-		this.configurationContext = configuration.getContext();
+		// this.configurationContext = configuration.getContext();
+		this.configurationContext = new ConfigurationContext(configuration);
 		if (configuration.isExecuted()) {
 			throw new IllegalStateException("Configuration was already executed");
 		}
@@ -100,6 +101,11 @@ public final class Execution<T extends Configuration> {
 	private final void init() {
 		ExecutionInstantiation executionInstantiation = new ExecutionInstantiation(configurationContext);
 		executionInstantiation.instantiatePipes();
+
+		IPipeVisitor pipeVisitor = new StageCollector();
+		Traversor traversor = new Traversor(pipeVisitor);
+		// TODO iterate through each producer
+		// traversor.traverse(stage);
 
 		configurationContext.initializeContext();
 		configurationContext.initializeServices();

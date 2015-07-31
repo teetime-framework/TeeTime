@@ -23,11 +23,21 @@ import teetime.framework.pipe.IPipe;
 
 public class Traversor {
 
+	public static enum Direction {
+		BACKWARD, FORWARD, BOTH
+	}
+
 	private final IPipeVisitor pipeVisitor;
+	private final Direction direction;
 	private final Set<Stage> visitedStages = new HashSet<Stage>();
 
 	public Traversor(final IPipeVisitor pipeVisitor) {
+		this(pipeVisitor, Direction.FORWARD);
+	}
+
+	public Traversor(final IPipeVisitor pipeVisitor, final Direction direction) {
 		this.pipeVisitor = pipeVisitor;
+		this.direction = direction;
 	}
 
 	public void traverse(final Stage stage) {
@@ -35,12 +45,24 @@ public class Traversor {
 			return;
 		}
 
-		for (OutputPort<?> outputPort : stage.getOutputPorts()) {
-			IPipe pipe = outputPort.getPipe();
-			if (null != pipe && pipeVisitor.visit(pipe) == VisitorBehavior.CONTINUE) {
-				Stage owningStage = pipe.getTargetPort().getOwningStage();
-				traverse(owningStage); // recursive call
+		if (direction == Direction.BOTH || direction == Direction.FORWARD) {
+			for (OutputPort<?> outputPort : stage.getOutputPorts()) {
+				visitAndTraverse(outputPort);
 			}
+		}
+
+		if (direction == Direction.BOTH || direction == Direction.BACKWARD) {
+			for (InputPort<?> inputPort : stage.getInputPorts()) {
+				visitAndTraverse(inputPort);
+			}
+		}
+	}
+
+	private void visitAndTraverse(final AbstractPort<?> port) {
+		IPipe pipe = port.getPipe();
+		if (null != pipe && pipeVisitor.visit(pipe) == VisitorBehavior.CONTINUE) {
+			Stage owningStage = pipe.getTargetPort().getOwningStage();
+			traverse(owningStage); // recursive call
 		}
 	}
 
