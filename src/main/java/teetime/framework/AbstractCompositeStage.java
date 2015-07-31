@@ -112,7 +112,7 @@ public abstract class AbstractCompositeStage {
 		// addChildContext(sourcePort.getOwningStage());
 		// addChildContext(targetPort.getOwningStage());
 
-		new InstantiationPipe(sourcePort, targetPort, capacity);
+		new InstantiationPipe<T>(sourcePort, targetPort, capacity);
 	}
 
 }

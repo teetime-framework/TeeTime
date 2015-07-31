@@ -22,7 +22,7 @@ public class IntraStageCollector implements IPipeVisitor {
 	public IntraStageCollector() {}
 
 	@Override
-	public VisitorBehavior visit(final IPipe outputPipe) {
+	public VisitorBehavior visit(final IPipe<?> outputPipe) {
 		if (outputPipe instanceof AbstractIntraThreadPipe) {
 			return VisitorBehavior.CONTINUE;
 		}

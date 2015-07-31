@@ -20,6 +20,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import teetime.framework.Traversor.Direction;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 
@@ -103,7 +104,7 @@ public final class Execution<T extends Configuration> {
 		executionInstantiation.instantiatePipes();
 
 		IPipeVisitor pipeVisitor = new StageCollector();
-		Traversor traversor = new Traversor(pipeVisitor);
+		Traversor traversor = new Traversor(pipeVisitor, Direction.BOTH);
 		// TODO iterate through each producer
 		// traversor.traverse(stage);
 

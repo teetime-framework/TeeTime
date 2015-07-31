@@ -35,7 +35,7 @@ public interface IPipeFactory {
 	 *
 	 * @return The connecting pipe.
 	 */
-	<T> IPipe create(OutputPort<? extends T> sourcePort, InputPort<T> targetPort);
+	<T> IPipe<T> create(OutputPort<? extends T> sourcePort, InputPort<T> targetPort);
 
 	/**
 	 * Connects two stages with a pipe.
@@ -50,7 +50,7 @@ public interface IPipeFactory {
 	 *            type of elements which traverse this pipe
 	 * @return The connecting pipe.
 	 */
-	<T> IPipe create(OutputPort<? extends T> sourcePort, InputPort<T> targetPort, int capacity);
+	<T> IPipe<T> create(OutputPort<? extends T> sourcePort, InputPort<T> targetPort, int capacity);
 
 	/**
 	 * @return Whether or not the created pipes are growable

@@ -34,19 +34,19 @@ class ExecutionInstantiation {
 
 	private final ConfigurationContext context;
 
-	public ExecutionInstantiation(final ConfigurationContext configuration) {
-		this.context = configuration;
+	public ExecutionInstantiation(final ConfigurationContext context) {
+		this.context = context;
 	}
 
 	void instantiatePipes() {
 		int color = DEFAULT_COLOR;
 		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
-		Set<Stage> threadableStageJobs = context.getThreadableStages().keySet();
-		for (Stage threadableStage : threadableStageJobs) {
+		Set<Stage> threadableStages = context.getThreadableStages().keySet();
+		for (Stage threadableStage : threadableStages) {
 			color++;
 			colors.put(threadableStage, color);
 
-			ThreadPainter threadPainter = new ThreadPainter(colors, color, context);
+			ThreadPainter threadPainter = new ThreadPainter(colors, color, threadableStages);
 			threadPainter.colorAndConnectStages(threadableStage);
 		}
 	}
@@ -55,13 +55,13 @@ class ExecutionInstantiation {
 
 		private final Map<Stage, Integer> colors;
 		private final int color;
-		private final ConfigurationContext context;
+		private final Set<Stage> threadableStages;
 
-		public ThreadPainter(final Map<Stage, Integer> colors, final int color, final ConfigurationContext context) {
+		public ThreadPainter(final Map<Stage, Integer> colors, final int color, final Set<Stage> threadableStages) {
 			super();
 			this.colors = colors;
 			this.color = color;
-			this.context = context;
+			this.threadableStages = threadableStages;
 		}
 
 		public int colorAndConnectStages(final Stage stage) {
@@ -69,7 +69,7 @@ class ExecutionInstantiation {
 
 			for (OutputPort<?> outputPort : stage.getOutputPorts()) {
 				if (outputPort.pipe != null && outputPort.pipe instanceof InstantiationPipe) {
-					InstantiationPipe pipe = (InstantiationPipe) outputPort.pipe;
+					InstantiationPipe<?> pipe = (InstantiationPipe<?>) outputPort.pipe;
 					createdConnections += processPipe(outputPort, pipe);
 					createdConnections++;
 				}
@@ -80,7 +80,6 @@ class ExecutionInstantiation {
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		private int processPipe(final OutputPort outputPort, final InstantiationPipe pipe) {
-			Set<Stage> threadableStages = context.getThreadableStages().keySet();
 			int numCreatedConnections;
 
 			Stage targetStage = pipe.getTargetPort().getOwningStage();

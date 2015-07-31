@@ -32,13 +32,13 @@ import teetime.util.framework.concurrent.queue.putstrategy.YieldPutStrategy;
 import teetime.util.framework.concurrent.queue.takestrategy.SCParkTakeStrategy;
 import teetime.util.framework.concurrent.queue.takestrategy.TakeStrategy;
 
-public abstract class AbstractInterThreadPipe extends AbstractPipe {
+public abstract class AbstractInterThreadPipe<T> extends AbstractPipe<T> {
 
 	private final BlockingQueue<ISignal> signalQueue;
 
 	private volatile boolean closed;
 
-	protected <T> AbstractInterThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	protected AbstractInterThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		super(sourcePort, targetPort, capacity);
 		final Queue<ISignal> localSignalQueue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT));
 		final PutStrategy<ISignal> putStrategy = new YieldPutStrategy<ISignal>();

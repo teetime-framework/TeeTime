@@ -17,11 +17,11 @@ package teetime.framework;
 
 import teetime.framework.signal.ISignal;
 
-public abstract class AbstractIntraThreadPipe extends AbstractPipe {
+public abstract class AbstractIntraThreadPipe<T> extends AbstractPipe<T> {
 
 	private boolean closed;
 
-	protected <T> AbstractIntraThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	protected AbstractIntraThreadPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		super(sourcePort, targetPort, capacity);
 	}
 

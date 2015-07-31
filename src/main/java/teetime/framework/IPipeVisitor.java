@@ -23,6 +23,6 @@ public interface IPipeVisitor {
 		CONTINUE, STOP
 	}
 
-	VisitorBehavior visit(IPipe outputPipe);
+	VisitorBehavior visit(IPipe<?> pipe);
 
 }
