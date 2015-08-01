@@ -5,7 +5,7 @@ import java.util.Set;
 
 import teetime.framework.pipe.IPipe;
 
-public class A2ThreadableStageCollector implements IPipeVisitor {
+public class A1ThreadableStageCollector implements IPipeVisitor {
 
 	private final Set<Stage> threadableStages = new HashSet<Stage>();
 	private final Set<IPipe<?>> visitedPipes = new HashSet<IPipe<?>>();

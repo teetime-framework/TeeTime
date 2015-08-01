@@ -7,13 +7,13 @@ import teetime.framework.pipe.IPipe;
 import com.carrotsearch.hppc.ObjectIntHashMap;
 import com.carrotsearch.hppc.ObjectIntMap;
 
-public class A3InvalidThreadAssignmentCheck {
+public class A2InvalidThreadAssignmentCheck {
 
 	private static final int DEFAULT_COLOR = 0;
 
 	private final Set<Stage> threadableStages;
 
-	public A3InvalidThreadAssignmentCheck(final Set<Stage> threadableStages) {
+	public A2InvalidThreadAssignmentCheck(final Set<Stage> threadableStages) {
 		this.threadableStages = threadableStages;
 	}
 
@@ -28,7 +28,6 @@ public class A3InvalidThreadAssignmentCheck {
 			ThreadPainter threadPainter = new ThreadPainter(colors, color, threadableStages);
 			Traverser traverser = new Traverser(threadPainter);
 			traverser.traverse(threadableStage);
-			// threadPainter.check(threadableStage);
 		}
 	}
 
@@ -44,19 +43,6 @@ public class A3InvalidThreadAssignmentCheck {
 			this.color = color;
 			this.threadableStages = threadableStages;
 		}
-
-		// TODO consider to implement it as IPipeVisitor(FORWARD)
-
-		// public void check(final Stage stage) {
-		// for (OutputPort<?> outputPort : stage.getOutputPorts()) {
-		// if (outputPort.pipe != DummyPipe.INSTANCE) {
-		// Stage nextStage = checkPipe(outputPort.pipe);
-		// if (nextStage != null) {
-		// check(nextStage);
-		// }
-		// }
-		// }
-		// }
 
 		@Override
 		public VisitorBehavior visit(final IPipe<?> pipe) {

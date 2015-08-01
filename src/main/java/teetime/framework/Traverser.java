@@ -65,7 +65,8 @@ public class Traverser {
 	}
 
 	public void traverse(final Stage stage) {
-		if (!visitedStages.add(stage)) {
+		if (!visitedStages.add(stage) || stage.getCurrentState() != StageState.CREATED) {
+			// do not visit (1) an already visited stage and (2) a stage that currently run (runtime visiting)
 			return;
 		}
 

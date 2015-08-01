@@ -45,12 +45,8 @@ class ThreadService extends AbstractService<ThreadService> {
 		// TODO visit(port) only
 		// TODO use decorator pattern to combine all analyzes so that only one traverser pass is necessary
 		IPortVisitor portVisitor = new A0UnconnectedPort();
-		IPipeVisitor pipeVisitor = new A1PipeInstantiation();
-		Traverser traversor = new Traverser(portVisitor, pipeVisitor, Direction.BOTH);
-		traversor.traverse(startStage);
-
-		A2ThreadableStageCollector stageCollector = new A2ThreadableStageCollector();
-		traversor = new Traverser(stageCollector, Direction.BOTH);
+		A1ThreadableStageCollector stageCollector = new A1ThreadableStageCollector();
+		Traverser traversor = new Traverser(portVisitor, stageCollector, Direction.BOTH);
 		traversor.traverse(startStage);
 
 		threadableStages = stageCollector.getThreadableStages();
@@ -58,8 +54,12 @@ class ThreadService extends AbstractService<ThreadService> {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
 
-		A3InvalidThreadAssignmentCheck checker = new A3InvalidThreadAssignmentCheck(threadableStages);
+		A2InvalidThreadAssignmentCheck checker = new A2InvalidThreadAssignmentCheck(threadableStages);
 		checker.check();
+
+		IPipeVisitor pipeVisitor = new A3PipeInstantiation();
+		traversor = new Traverser(pipeVisitor, Direction.BOTH);
+		traversor.traverse(startStage);
 
 		A4StageAttributeSetter attributeSetter = new A4StageAttributeSetter(configuration, threadableStages);
 		attributeSetter.setAttributes();
