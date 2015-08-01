@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
+import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExecution;
+import teetime.framework.exceptionHandling.TerminateException;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 
@@ -43,12 +45,20 @@ public abstract class Stage {
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
-	protected AbstractExceptionListener exceptionHandler;
+	protected AbstractExceptionListener exceptionListener;
 
 	/** The owning thread of this stage if this stage is directly executed by a {@link AbstractRunnableStage}, <code>null</code> otherwise. */
-	protected Thread owningThread;
+	private Thread owningThread;
 
-	ConfigurationContext owningContext = ConfigurationContext.EMPTY_CONTEXT;
+	private ConfigurationContext owningContext;
+
+	ConfigurationContext getOwningContext() {
+		return owningContext;
+	}
+
+	void setOwningContext(final ConfigurationContext owningContext) {
+		this.owningContext = owningContext;
+	}
 
 	protected Stage() {
 		this.id = this.createId();
@@ -104,7 +114,22 @@ public abstract class Stage {
 	 */
 	public abstract void validateOutputPorts(List<InvalidPortConnection> invalidPortConnections);
 
-	protected abstract void executeStage();
+	protected void executeStage() {
+		try {
+			this.execute();
+		} catch (NotEnoughInputException e) {
+			throw e;
+		} catch (TerminateException e) {
+			throw e;
+		} catch (Exception e) {
+			final FurtherExecution furtherExecution = this.exceptionListener.onStageException(e, this);
+			if (furtherExecution == FurtherExecution.TERMINATE) {
+				throw TerminateException.INSTANCE;
+			}
+		}
+	}
+
+	protected abstract void execute();
 
 	protected abstract void onSignal(ISignal signal, InputPort<?> inputPort);
 
@@ -120,8 +145,11 @@ public abstract class Stage {
 		return owningThread;
 	}
 
-	@SuppressWarnings("PMD.DefaultPackage")
 	void setOwningThread(final Thread owningThread) {
+		if (this.owningThread != null && this.owningThread != owningThread) {
+			// checks also for "crossing threads"
+			// throw new IllegalStateException("Attribute owningThread was set twice each with another thread");
+		}
 		this.owningThread = owningThread;
 	}
 
@@ -150,7 +178,7 @@ public abstract class Stage {
 	public abstract void onTerminating() throws Exception;
 
 	protected final void setExceptionHandler(final AbstractExceptionListener exceptionHandler) {
-		this.exceptionHandler = exceptionHandler;
+		this.exceptionListener = exceptionHandler;
 	}
 
 	protected abstract void removeDynamicPort(OutputPort<?> outputPort);

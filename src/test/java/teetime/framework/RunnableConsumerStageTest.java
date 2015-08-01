@@ -34,7 +34,7 @@ public class RunnableConsumerStageTest {
 	public void testWaitingInfinitely() throws Exception {
 		RunnableConsumerStageTestConfiguration configuration = new RunnableConsumerStageTestConfiguration();
 
-		final Execution execution = new Execution(configuration);
+		final Execution<?> execution = new Execution<RunnableConsumerStageTestConfiguration>(configuration);
 		final Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -59,7 +59,7 @@ public class RunnableConsumerStageTest {
 	public void testCorrectStartAndTerminatation() throws Exception {
 		RunnableConsumerStageTestConfiguration configuration = new RunnableConsumerStageTestConfiguration(0, 1, 2, 3, 5);
 
-		final Execution execution = new Execution(configuration);
+		final Execution<?> execution = new Execution<RunnableConsumerStageTestConfiguration>(configuration);
 		start(execution);
 
 		assertEquals(5, configuration.getCollectedElements().size());
@@ -109,7 +109,7 @@ public class RunnableConsumerStageTest {
 	public void testYieldRun() throws Exception {
 		YieldStrategyConfiguration waitStrategyConfiguration = new YieldStrategyConfiguration(42);
 
-		final Execution execution = new Execution(waitStrategyConfiguration);
+		final Execution<?> execution = new Execution<YieldStrategyConfiguration>(waitStrategyConfiguration);
 
 		start(execution);
 
@@ -117,7 +117,7 @@ public class RunnableConsumerStageTest {
 		assertEquals(1, waitStrategyConfiguration.getCollectorSink().getElements().size());
 	}
 
-	private void start(final Execution execution) {
+	private void start(final Execution<?> execution) {
 		Collection<ThreadThrowableContainer> exceptions = new ArrayList<ThreadThrowableContainer>();
 		try {
 			execution.executeBlocking();

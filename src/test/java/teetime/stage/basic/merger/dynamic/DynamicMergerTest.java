@@ -25,18 +25,14 @@ import java.util.List;
 import org.junit.Test;
 
 import teetime.framework.Configuration;
-import teetime.framework.DynamicActuator;
 import teetime.framework.Execution;
-import teetime.framework.RunnableProducerStage;
-import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
+import teetime.framework.RuntimeServiceFacade;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.merger.strategy.BusyWaitingRoundRobinStrategy;
 import teetime.util.framework.port.PortAction;
 
 public class DynamicMergerTest {
-
-	private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();
 
 	@Test
 	public void shouldWorkWithoutActionTriggers() throws Exception {
@@ -47,8 +43,7 @@ public class DynamicMergerTest {
 			assertTrue(config.addPortActionRequest(new DoNothingPortAction<Integer>()));
 		}
 
-		Execution<DynamicMergerTestConfig> analysis = new Execution<DynamicMergerTestConfig>(config,
-				new TerminatingExceptionListenerFactory());
+		Execution<DynamicMergerTestConfig> analysis = new Execution<DynamicMergerTestConfig>(config);
 
 		analysis.executeBlocking();
 
@@ -64,8 +59,7 @@ public class DynamicMergerTest {
 			assertTrue(config.addCreatePortAction(i + 1));
 		}
 
-		Execution<DynamicMergerTestConfig> analysis = new Execution<DynamicMergerTestConfig>(config,
-				new TerminatingExceptionListenerFactory());
+		Execution<DynamicMergerTestConfig> analysis = new Execution<DynamicMergerTestConfig>(config);
 
 		analysis.executeBlocking();
 
@@ -85,8 +79,7 @@ public class DynamicMergerTest {
 		assertTrue(config.addRemovePortAction());
 		assertTrue(config.addRemovePortAction());
 
-		Execution<DynamicMergerTestConfig> analysis = new Execution<DynamicMergerTestConfig>(config,
-				new TerminatingExceptionListenerFactory());
+		Execution<DynamicMergerTestConfig> analysis = new Execution<DynamicMergerTestConfig>(config);
 
 		analysis.executeBlocking();
 
@@ -119,15 +112,12 @@ public class DynamicMergerTest {
 
 		boolean addCreatePortAction(final Integer number) {
 			final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(number);
-			final Runnable runnableStage = DYNAMIC_ACTUATOR.startWithinNewThread(this, initialElementProducer);
 
 			PortAction<DynamicMerger<Integer>> portAction = new CreatePortActionMerger<Integer>(initialElementProducer.getOutputPort()) {
 				@Override
 				public void execute(final DynamicMerger<Integer> dynamicDistributor) {
 					super.execute(dynamicDistributor);
-					final RunnableProducerStage runnableProducerStage = (RunnableProducerStage) runnableStage;
-					runnableProducerStage.triggerInitializingSignal();
-					runnableProducerStage.triggerStartingSignal();
+					RuntimeServiceFacade.INSTANCE.startWithinNewThread(merger, initialElementProducer);
 				}
 			};
 

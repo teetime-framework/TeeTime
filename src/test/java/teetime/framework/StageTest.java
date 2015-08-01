@@ -48,9 +48,9 @@ public class StageTest {
 	public void testSetOwningThread() throws Exception {
 		TestConfig tc = new TestConfig();
 		new Execution<TestConfig>(tc);
-		assertEquals(tc.init.owningThread, tc.delay.owningThread);
-		assertThat(tc.delay.exceptionHandler, is(notNullValue()));
-		assertEquals(tc.init.exceptionHandler, tc.delay.exceptionHandler);
+		assertEquals(tc.init.getOwningThread(), tc.delay.getOwningThread());
+		assertThat(tc.delay.exceptionListener, is(notNullValue()));
+		assertEquals(tc.init.exceptionListener, tc.delay.exceptionListener);
 	}
 
 	private static class TestConfig extends Configuration {

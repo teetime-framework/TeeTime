@@ -15,9 +15,6 @@
  */
 package teetime.framework;
 
-import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExecution;
-import teetime.framework.exceptionHandling.StageException;
-
 /**
  * The <code>ProducerStage</code> produces at least one element at each execution.<br>
  *
@@ -36,22 +33,8 @@ public abstract class AbstractProducerStage<O> extends AbstractStage {
 	}
 
 	@Override
-	protected void executeStage() {
-		try {
-			this.execute();
-		} catch (Exception e) {
-			final FurtherExecution furtherExecution = this.exceptionHandler.onStageException(e, this);
-			if (furtherExecution == FurtherExecution.TERMINATE) {
-				throw new StageException(e, this);
-			}
-		}
-	}
-
-	@Override
 	public TerminationStrategy getTerminationStrategy() {
 		return TerminationStrategy.BY_SELF_DECISION;
 	}
-
-	protected abstract void execute();
 
 }

@@ -21,7 +21,7 @@ import teetime.framework.OutputPort;
 public final class SingleElementPipeFactory implements IPipeFactory {
 
 	@Override
-	public <T> IPipe create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	public <T> IPipe<T> create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return this.create(sourcePort, targetPort, 1);
 	}
 
@@ -31,8 +31,8 @@ public final class SingleElementPipeFactory implements IPipeFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <T> IPipe create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		return new SingleElementPipe(sourcePort, targetPort);
+	public <T> IPipe<T> create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		return new SingleElementPipe<T>(sourcePort, targetPort);
 	}
 
 	@Override

@@ -15,14 +15,15 @@
  */
 package teetime.framework;
 
-public final class TerminateException extends RuntimeException {
+public final class RuntimeServiceFacade {
 
-	private static final long serialVersionUID = 6841651916837487909L;
+	public static final RuntimeServiceFacade INSTANCE = new RuntimeServiceFacade();
 
-	@SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
-	@Override
-	public synchronized Throwable fillInStackTrace() {
-		return this;
+	private RuntimeServiceFacade() {
+		// singleton
 	}
 
+	public void startWithinNewThread(final Stage previousStage, final Stage stage) {
+		previousStage.getOwningContext().getThreadService().startStageAtRuntime(stage);
+	}
 }

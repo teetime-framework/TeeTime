@@ -30,7 +30,7 @@ public class ExceptionHandlingTest {
 
 	public ExceptionTestConfiguration newInstances() {
 		ExceptionTestConfiguration configuration = new ExceptionTestConfiguration();
-		execution = new Execution<ExceptionTestConfiguration>(configuration, new TestListenerFactory());
+		execution = new Execution<ExceptionTestConfiguration>(configuration);
 		return configuration;
 	}
 

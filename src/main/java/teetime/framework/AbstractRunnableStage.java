@@ -18,7 +18,7 @@ package teetime.framework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.exceptionHandling.StageException;
+import teetime.framework.exceptionHandling.TerminateException;
 
 abstract class AbstractRunnableStage implements Runnable {
 
@@ -28,13 +28,13 @@ abstract class AbstractRunnableStage implements Runnable {
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
-	public AbstractRunnableStage(final Stage stage) {
+	protected AbstractRunnableStage(final Stage stage) {
+		if (stage == null) {
+			throw new IllegalArgumentException("Argument stage may not be null");
+		}
+
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
-
-		if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
-			stage.owningContext.getRunnableCounter().inc();
-		}
 	}
 
 	@Override
@@ -45,13 +45,16 @@ abstract class AbstractRunnableStage implements Runnable {
 		try {
 			try {
 				beforeStageExecution();
+				if (stage.getOwningContext() == null) {
+					throw new IllegalArgumentException("Argument stage may not have a nullable owning context");
+				}
 				try {
 					do {
 						executeStage();
-					} while (!stage.shouldBeTerminated());
-				} catch (StageException e) {
-					stage.terminate();
-					throw e;
+					} while (!Thread.currentThread().isInterrupted());
+				} catch (TerminateException e) {
+					this.stage.terminate();
+					stage.getOwningContext().abortConfigurationRun();
 				} finally {
 					afterStageExecution();
 				}
@@ -64,7 +67,7 @@ abstract class AbstractRunnableStage implements Runnable {
 			}
 		} finally {
 			if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
-				stage.owningContext.getRunnableCounter().dec();
+				stage.getOwningContext().getThreadService().getRunnableCounter().dec();
 			}
 		}
 
@@ -76,5 +79,13 @@ abstract class AbstractRunnableStage implements Runnable {
 	protected abstract void executeStage();
 
 	protected abstract void afterStageExecution();
+
+	public static AbstractRunnableStage create(final Stage stage) {
+		if (stage.getTerminationStrategy() == TerminationStrategy.BY_SIGNAL) {
+			return new RunnableConsumerStage(stage);
+		} else {
+			return new RunnableProducerStage(stage);
+		}
+	}
 
 }

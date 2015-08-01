@@ -15,14 +15,7 @@
  */
 package teetime.framework;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import teetime.framework.pipe.InstantiationPipe;
-import teetime.util.framework.concurrent.SignalingCounter;
+import java.util.Set;
 
 /**
  * Represents a context that is used by a configuration and composite stages to connect ports, for example.
@@ -32,66 +25,44 @@ import teetime.util.framework.concurrent.SignalingCounter;
  */
 final class ConfigurationContext {
 
-	public static final ConfigurationContext EMPTY_CONTEXT = new ConfigurationContext();
+	// static final ConfigurationContext EMPTY_CONTEXT = new ConfigurationContext(null);
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
+	// private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
-	private Map<Stage, String> threadableStages = new HashMap<Stage, String>();
+	// private final Set<ConfigurationContext> children = new HashSet<ConfigurationContext>(); // parent-child-tree
 
-	private SignalingCounter runnableCounter = new SignalingCounter();
+	private ThreadService threadService;
 
-	ConfigurationContext() {}
-
-	Map<Stage, String> getThreadableStages() {
-		return this.threadableStages;
+	ConfigurationContext(final Configuration configuration) {
+		this.threadService = new ThreadService(configuration);
 	}
 
-	SignalingCounter getRunnableCounter() {
-		return runnableCounter;
+	Set<Stage> getThreadableStages() {
+		return threadService.getThreadableStages();
 	}
 
-	/**
-	 * @see AbstractCompositeStage#addThreadableStage(Stage)
-	 */
-	final void addThreadableStage(final Stage stage, final String threadName) {
-		mergeContexts(stage);
-		if (this.threadableStages.put(stage, threadName) != null) {
-			LOGGER.warn("Stage " + stage.getId() + " was already marked as threadable stage.");
-		}
+	void initializeServices() {
+		threadService.onInitialize();
 	}
 
-	/**
-	 * @see AbstractCompositeStage#connectPorts(OutputPort, InputPort, int)
-	 */
-	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		if (sourcePort.getOwningStage().getInputPorts().size() == 0) {
-			if (!threadableStages.containsKey(sourcePort.getOwningStage())) {
-				addThreadableStage(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
-			}
-		}
-		if (sourcePort.getPipe() != null || targetPort.getPipe() != null) {
-			LOGGER.warn("Overwriting existing pipe while connecting stages " +
-					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
-		}
-		mergeContexts(sourcePort.getOwningStage());
-		mergeContexts(targetPort.getOwningStage());
-		new InstantiationPipe(sourcePort, targetPort, capacity);
+	void executeConfiguration() {
+		this.threadService.onExecute();
 	}
 
-	final void mergeContexts(final Stage stage) {
-		if (!stage.owningContext.equals(EMPTY_CONTEXT)) {
-			if (stage.owningContext != this) { // Performance
-				// import
-				this.threadableStages.putAll(stage.owningContext.threadableStages);
-				this.runnableCounter.inc(stage.owningContext.runnableCounter);
-				// replace
-				stage.owningContext.threadableStages = this.threadableStages;
-				stage.owningContext.runnableCounter = this.runnableCounter;
-			}
-		} else {
-			stage.owningContext = this;
-		}
+	void abortConfigurationRun() {
+		this.threadService.onTerminate();
+	}
 
+	void waitForConfigurationToTerminate() {
+		this.threadService.onFinish();
+	}
+
+	ThreadService getThreadService() {
+		return threadService;
+	}
+
+	void setThreadService(final ThreadService threadService) {
+		this.threadService = threadService;
 	}
 
 }

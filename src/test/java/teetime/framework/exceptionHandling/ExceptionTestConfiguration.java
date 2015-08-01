@@ -24,6 +24,8 @@ public class ExceptionTestConfiguration extends Configuration {
 	ExceptionTestProducerStage third;
 
 	public ExceptionTestConfiguration() {
+		super(new TestListenerFactory());
+
 		first = new ExceptionTestProducerStage();
 		second = new ExceptionTestConsumerStage();
 		third = new ExceptionTestProducerStage();
