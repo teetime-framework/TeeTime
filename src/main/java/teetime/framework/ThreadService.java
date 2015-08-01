@@ -1,6 +1,7 @@
 package teetime.framework;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,12 +24,12 @@ class ThreadService extends AbstractService<ThreadService> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ThreadService.class);
 
-	private final List<Thread> consumerThreads = new LinkedList<Thread>();
-	private final List<Thread> finiteProducerThreads = new LinkedList<Thread>();
-	private final List<Thread> infiniteProducerThreads = new LinkedList<Thread>();
+	private final List<Thread> consumerThreads = Collections.synchronizedList(new LinkedList<Thread>());
+	private final List<Thread> finiteProducerThreads = Collections.synchronizedList(new LinkedList<Thread>());
+	private final List<Thread> infiniteProducerThreads = Collections.synchronizedList(new LinkedList<Thread>());
 
 	private final SignalingCounter runnableCounter = new SignalingCounter();
-	private final Set<Stage> threadableStages = new HashSet<Stage>();
+	private final Set<Stage> threadableStages = Collections.synchronizedSet(new HashSet<Stage>());
 
 	private final Configuration configuration;
 
@@ -77,17 +78,17 @@ class ThreadService extends AbstractService<ThreadService> {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
 
-		A2InvalidThreadAssignmentCheck checker = new A2InvalidThreadAssignmentCheck(threadableStages);
+		A2InvalidThreadAssignmentCheck checker = new A2InvalidThreadAssignmentCheck(newThreadableStages);
 		checker.check();
 
 		A3PipeInstantiation pipeVisitor = new A3PipeInstantiation();
 		traversor = new Traverser(pipeVisitor, Direction.BOTH);
 		traversor.traverse(startStage);
 
-		A4StageAttributeSetter attributeSetter = new A4StageAttributeSetter(configuration, threadableStages);
+		A4StageAttributeSetter attributeSetter = new A4StageAttributeSetter(configuration, newThreadableStages);
 		attributeSetter.setAttributes();
 
-		for (Stage stage : threadableStages) {
+		for (Stage stage : newThreadableStages) {
 			categorizeThreadableStage(stage);
 		}
 
