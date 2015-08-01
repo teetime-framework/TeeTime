@@ -15,8 +15,8 @@
  */
 package teetime.framework.exceptionHandling;
 
-public interface IExceptionListenerFactory {
+public interface IExceptionListenerFactory<T extends AbstractExceptionListener> {
 
-	public AbstractExceptionListener createInstance();
+	public T createInstance();
 
 }

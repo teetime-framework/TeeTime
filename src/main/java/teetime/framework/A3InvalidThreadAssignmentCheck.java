@@ -2,7 +2,6 @@ package teetime.framework;
 
 import java.util.Set;
 
-import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
 
 import com.carrotsearch.hppc.ObjectIntHashMap;
@@ -27,11 +26,13 @@ public class A3InvalidThreadAssignmentCheck {
 			colors.put(threadableStage, color);
 
 			ThreadPainter threadPainter = new ThreadPainter(colors, color, threadableStages);
-			threadPainter.check(threadableStage);
+			Traverser traverser = new Traverser(threadPainter);
+			traverser.traverse(threadableStage);
+			// threadPainter.check(threadableStage);
 		}
 	}
 
-	private static class ThreadPainter {
+	private static class ThreadPainter implements IPipeVisitor {
 
 		private final ObjectIntMap<Stage> colors;
 		private final int color;
@@ -46,18 +47,19 @@ public class A3InvalidThreadAssignmentCheck {
 
 		// TODO consider to implement it as IPipeVisitor(FORWARD)
 
-		public void check(final Stage stage) {
-			for (OutputPort<?> outputPort : stage.getOutputPorts()) {
-				if (outputPort.pipe != DummyPipe.INSTANCE) {
-					Stage nextStage = checkPipe(outputPort.pipe);
-					if (nextStage != null) {
-						check(nextStage);
-					}
-				}
-			}
-		}
+		// public void check(final Stage stage) {
+		// for (OutputPort<?> outputPort : stage.getOutputPorts()) {
+		// if (outputPort.pipe != DummyPipe.INSTANCE) {
+		// Stage nextStage = checkPipe(outputPort.pipe);
+		// if (nextStage != null) {
+		// check(nextStage);
+		// }
+		// }
+		// }
+		// }
 
-		private Stage checkPipe(final IPipe<?> pipe) {
+		@Override
+		public VisitorBehavior visit(final IPipe<?> pipe) {
 			Stage targetStage = pipe.getTargetPort().getOwningStage();
 			int targetColor = colors.containsKey(targetStage) ? colors.get(targetStage) : DEFAULT_COLOR;
 
@@ -70,9 +72,9 @@ public class A3InvalidThreadAssignmentCheck {
 					}
 				}
 				colors.put(targetStage, color);
-				return targetStage;
+				return VisitorBehavior.CONTINUE;
 			}
-			return null;
+			return VisitorBehavior.STOP;
 		}
 
 	}

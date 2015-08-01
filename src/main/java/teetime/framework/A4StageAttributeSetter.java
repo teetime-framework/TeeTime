@@ -15,12 +15,16 @@ public class A4StageAttributeSetter {
 
 	public void setAttributes() {
 		for (Stage threadableStage : threadableStages) {
-			IPipeVisitor pipeVisitor = new IntraStageCollector();
-			Traverser traverser = new Traverser(pipeVisitor);
-			traverser.traverse(threadableStage);
-
-			setAttributes(threadableStage, traverser.getVisitedStages());
+			setAttributes(threadableStage);
 		}
+	}
+
+	private void setAttributes(final Stage threadableStage) {
+		IPipeVisitor pipeVisitor = new IntraStageCollector();
+		Traverser traverser = new Traverser(pipeVisitor);
+		traverser.traverse(threadableStage);
+
+		setAttributes(threadableStage, traverser.getVisitedStages());
 	}
 
 	private void setAttributes(final Stage threadableStage, final Set<Stage> intraStages) {

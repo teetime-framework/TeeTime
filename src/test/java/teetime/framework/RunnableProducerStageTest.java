@@ -15,7 +15,9 @@
  */
 package teetime.framework;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -24,22 +26,31 @@ import teetime.framework.pipe.DummyPipe;
 
 public class RunnableProducerStageTest {
 
-	@Test
-	public void testInit() {
+	@Test(timeout = 1000)
+	// t/o if join() waits infinitely
+	public void testInit() throws InterruptedException {
 		RunnableTestStage testStage = new RunnableTestStage();
 		testStage.getOutputPort().setPipe(DummyPipe.INSTANCE);
+
 		RunnableProducerStage runnable = new RunnableProducerStage(testStage);
 		Thread thread = new Thread(runnable);
+
+		testStage.setOwningThread(thread);
+		testStage.setOwningContext(new ConfigurationContext(null));
+
 		thread.start();
+
 		// Not running and not initialized
 		assertFalse(testStage.executed && testStage.initialized);
 		runnable.triggerInitializingSignal();
+
 		// Not running, but initialized
 		assertFalse(testStage.executed && !testStage.initialized);
 		runnable.triggerStartingSignal();
-		while (!(testStage.getCurrentState() == StageState.TERMINATED)) {
-			Thread.yield();
-		}
+
+		thread.join();
+
+		assertThat(testStage.getCurrentState(), is(StageState.TERMINATED));
 		assertTrue(testStage.executed);
 	}
 }

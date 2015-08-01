@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.framework.Configuration;
@@ -33,6 +34,7 @@ import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.merger.strategy.BusyWaitingRoundRobinStrategy;
 import teetime.util.framework.port.PortAction;
 
+@Ignore
 public class DynamicMergerTest {
 
 	private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();

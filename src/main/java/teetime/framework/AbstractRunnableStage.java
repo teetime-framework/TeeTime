@@ -45,6 +45,9 @@ abstract class AbstractRunnableStage implements Runnable {
 		try {
 			try {
 				beforeStageExecution();
+				if (stage.getOwningContext() == null) {
+					throw new IllegalArgumentException("Argument stage may not have a nullable owning context");
+				}
 				try {
 					do {
 						executeStage();

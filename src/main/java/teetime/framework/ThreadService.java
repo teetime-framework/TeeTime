@@ -83,7 +83,7 @@ class ThreadService extends AbstractService<ThreadService> {
 			consumerThreads.add(stage.getOwningThread());
 			break;
 		default:
-			LOGGER.warn("Unknown termination strategy '" + stage.getTerminationStrategy() + "' in stage " + stage);
+			LOGGER.warn("Unknown termination strategy '" + stage.getTerminationStrategy() + "' in stage " + stage);// NOPMD
 			break;
 		}
 	}

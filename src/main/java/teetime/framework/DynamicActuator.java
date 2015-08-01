@@ -15,37 +15,26 @@
  */
 package teetime.framework;
 
-import teetime.util.framework.concurrent.SignalingCounter;
-
 public class DynamicActuator {
 
-	/**
-	 * @deprecated Use {@link #startWithinNewThread(Stage)} instead.
-	 */
-	@Deprecated
-	public AbstractRunnableStage wrap(final Stage stage) {
-		if (stage.getInputPorts().size() > 0) {
-			return new RunnableConsumerStage(stage);
-		}
-		return new RunnableProducerStage(stage);
-	}
-
 	public Runnable startWithinNewThread(final Stage previousStage, final Stage stage) {
-		SignalingCounter runtimeCounter = previousStage.getOwningContext().getThreadService().getRunnableCounter();
-		SignalingCounter newCounter = stage.getOwningContext().getThreadService().getRunnableCounter();
+		previousStage.getOwningContext().getThreadService().onInitialize();
+
+		// SignalingCounter runtimeCounter = previousStage.getOwningContext().getThreadService().getRunnableCounter();
+		// SignalingCounter newCounter = stage.getOwningContext().getThreadService().getRunnableCounter();
 		// runtimeCounter.inc(newCounter);
 
 		// stage.logger.error(stage.owningContext.getThreadService().getRunnableCounter().toString());
 
 		// !!! stage.owningContext = XXX.owningContext !!!
 
-		Runnable runnable = wrap(stage);
-		Thread thread = new Thread(runnable);
-
-		stage.setOwningThread(thread);
-		stage.setExceptionHandler(null);
-
-		thread.start();
+		Runnable runnable = AbstractRunnableStage.create(stage);
+		// Thread thread = new Thread(runnable);
+		//
+		// stage.setOwningThread(thread);
+		// stage.setExceptionHandler(null);
+		//
+		// thread.start();
 
 		// requirements:
 		// 1. all new threads from stage must be known to the global context

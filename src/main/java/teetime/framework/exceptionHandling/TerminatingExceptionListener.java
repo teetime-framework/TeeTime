@@ -24,6 +24,10 @@ class TerminatingExceptionListener extends AbstractExceptionListener {
 
 	private final List<Exception> exceptions = new ArrayList<Exception>();
 
+	TerminatingExceptionListener() {
+		// should only be instantiated by its factory
+	}
+
 	@Override
 	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {
 		if (logger.isWarnEnabled()) {
