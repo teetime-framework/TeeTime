@@ -25,36 +25,5 @@ public final class RuntimeServiceFacade {
 
 	public void startWithinNewThread(final Stage previousStage, final Stage stage) {
 		previousStage.getOwningContext().getThreadService().startStageAtRuntime(stage);
-
-		// SignalingCounter runtimeCounter = previousStage.getOwningContext().getThreadService().getRunnableCounter();
-		// SignalingCounter newCounter = stage.getOwningContext().getThreadService().getRunnableCounter();
-		// runtimeCounter.inc(newCounter);
-
-		// stage.logger.error(stage.owningContext.getThreadService().getRunnableCounter().toString());
-
-		// !!! stage.owningContext = XXX.owningContext !!!
-
-		// Runnable runnable = AbstractRunnableStage.create(stage);
-		// Thread thread = new Thread(runnable);
-		//
-		// stage.setOwningThread(thread);
-		// stage.setExceptionHandler(null);
-		//
-		// thread.start();
-
-		// requirements:
-		// 1. all new threads from stage must be known to the global context
-		// 2. number of active threads must be increased by the stage
-
-		// if (runnable instanceof RunnableConsumerStage) {
-		// // do nothing
-		// } else if (runnable instanceof RunnableProducerStage) {
-		// ((RunnableProducerStage) runnable).triggerInitializingSignal();
-		// ((RunnableProducerStage) runnable).triggerStartingSignal();
-		// } else {
-		// // TODO
-		// }
-
-		// stage.onSignal(signal, inputPort);
 	}
 }

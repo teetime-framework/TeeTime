@@ -32,16 +32,6 @@ public abstract class AbstractCompositeStage {
 	 */
 	private static final int DEFAULT_CAPACITY = 4;
 
-	// private final ConfigurationContext context;
-
-	public AbstractCompositeStage() {
-		// this.context = new ConfigurationContext(this);
-	}
-
-	// ConfigurationContext getContext() {
-	// return context;
-	// }
-
 	/**
 	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
 	 *
@@ -61,7 +51,6 @@ public abstract class AbstractCompositeStage {
 	 *            A string which can be used for debugging.
 	 */
 	protected void addThreadableStage(final Stage stage, final String threadName) {
-		// context.addThreadableStage(stage, threadName);
 		AbstractRunnableStage runnable = AbstractRunnableStage.create(stage);
 		Thread newThread = new TeeTimeThread(runnable, threadName);
 		stage.setOwningThread(newThread);
@@ -94,25 +83,15 @@ public abstract class AbstractCompositeStage {
 	 *            the type of elements to be sent
 	 */
 	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		// context.connectPorts(sourcePort, targetPort, capacity);
 		connectPortsInternal(sourcePort, targetPort, capacity);
 	}
 
 	private final <T> void connectPortsInternal(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort.getOwningStage().getInputPorts().size() == 0) {
-			// if (!threadService.getThreadableStages().containsKey(sourcePort.getOwningStage())) {
 			if (sourcePort.getOwningStage().getOwningThread() == null) {
 				addThreadableStage(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
 			}
 		}
-
-		// if (LOGGER.isWarnEnabled() && (sourcePort.getPipe() != null || targetPort.getPipe() != null)) {
-		// LOGGER.warn("Overwriting existing pipe while connecting stages " +
-		// sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
-		// }
-
-		// addChildContext(sourcePort.getOwningStage());
-		// addChildContext(targetPort.getOwningStage());
 
 		new InstantiationPipe<T>(sourcePort, targetPort, capacity);
 	}

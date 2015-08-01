@@ -15,10 +15,10 @@ public class A1ThreadableStageCollector implements ITraverserVisitor {
 
 	@Override
 	public VisitorBehavior visit(final Stage stage) {
-		if (stage.getOwningThread() != null && !threadableStages.contains(stage)) {
+		if (stage.getOwningThread() != null && !threadableStages.contains(stage) && stage.getCurrentState() == StageState.CREATED) {
 			threadableStages.add(stage);
 		}
-		return VisitorBehavior.CONTINUE;
+		return stage.getCurrentState() == StageState.CREATED ? VisitorBehavior.CONTINUE : VisitorBehavior.STOP;
 	}
 
 	@Override

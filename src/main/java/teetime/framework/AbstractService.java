@@ -14,14 +14,10 @@ abstract class AbstractService<T> {
 
 	abstract void onInitialize();
 
-	abstract void onStart();
-
 	abstract void onExecute();
 
 	abstract void onTerminate();
 
 	abstract void onFinish();
-
-	// abstract void merge(T source);
 
 }

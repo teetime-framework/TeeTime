@@ -22,19 +22,17 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.framework.Configuration;
-import teetime.framework.RuntimeServiceFacade;
 import teetime.framework.Execution;
+import teetime.framework.RuntimeServiceFacade;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.merger.strategy.BusyWaitingRoundRobinStrategy;
 import teetime.util.framework.port.PortAction;
 
-@Ignore
 public class DynamicMergerTest {
 
 	@Test
