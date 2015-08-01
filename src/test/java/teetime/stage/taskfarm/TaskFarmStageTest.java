@@ -26,7 +26,6 @@ import teetime.framework.AbstractCompositeStage;
 import teetime.framework.Execution;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.pipe.SingleElementPipeFactory;
 import teetime.stage.basic.AbstractFilter;
 import teetime.stage.basic.AbstractTransformation;
 
@@ -34,9 +33,7 @@ public class TaskFarmStageTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskFarmStageTest.class);
 	private static final int NUMBER_OF_TEST_ELEMENTS = 10000;
-
-	volatile static int numPlusOneInString;
-	volatile static int numStringDuplication;
+	public static volatile int counter = 0;
 
 	@Test
 	public void simpleTaskFarmStageTest() throws InterruptedException {
@@ -46,9 +43,8 @@ public class TaskFarmStageTest {
 		execution.executeBlocking();
 		LOGGER.debug("FINISHED TEST");
 
-		assertThat(numPlusOneInString, is(NUMBER_OF_TEST_ELEMENTS));
-		assertThat(numStringDuplication, is(NUMBER_OF_TEST_ELEMENTS));
 		assertThat(configuration.getCollection().size(), is(NUMBER_OF_TEST_ELEMENTS));
+		assertThat(counter, is(NUMBER_OF_TEST_ELEMENTS));
 	}
 
 	static private class PlusOneInStringStage extends AbstractTransformation<Integer, String> {
@@ -56,7 +52,7 @@ public class TaskFarmStageTest {
 		@Override
 		protected void execute(final Integer element) {
 			final Integer x = element + 1;
-			numPlusOneInString++;
+			counter++;
 			this.outputPort.send(x.toString());
 		}
 	}
@@ -65,7 +61,6 @@ public class TaskFarmStageTest {
 
 		@Override
 		protected void execute(final String element) {
-			numStringDuplication++;
 			this.outputPort.send(element + element);
 		}
 
@@ -84,13 +79,7 @@ public class TaskFarmStageTest {
 		}
 
 		public CompositeTestStage(final boolean runtime) {
-			super();
-			if (runtime) {
-				SingleElementPipeFactory factory = new SingleElementPipeFactory();
-				factory.create(this.pOne.getOutputPort(), this.sDup.getInputPort());
-			} else {
-				connectPorts(this.pOne.getOutputPort(), this.sDup.getInputPort());
-			}
+			connectPorts(this.pOne.getOutputPort(), this.sDup.getInputPort());
 		}
 
 		@Override

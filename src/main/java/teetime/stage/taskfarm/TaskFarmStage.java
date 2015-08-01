@@ -50,7 +50,7 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 
 	private final TaskFarmConfiguration<I, O, T> configuration;
 
-	private AdaptationThread adaptationThread = null;
+	private final AdaptationThread adaptationThread = new AdaptationThread();
 
 	private final PipeMonitoringService pipeMonitoringService = new PipeMonitoringService();
 	private final TaskFarmMonitoringService taskFarmMonitoringService = new TaskFarmMonitoringService();
@@ -93,9 +93,6 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 		};
 		this.configuration = new TaskFarmConfiguration<I, O, T>();
 
-		if (this.adaptationThread == null) {
-			this.adaptationThread = new AdaptationThread();
-		}
 		this.adaptationThread.addTaskFarm(this);
 
 		this.init(workerStage);
