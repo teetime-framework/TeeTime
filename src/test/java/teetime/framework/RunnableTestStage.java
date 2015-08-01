@@ -20,14 +20,9 @@ class RunnableTestStage extends AbstractProducerStage<Object> {
 	boolean executed, initialized;
 
 	@Override
-	protected void executeStage() {
+	protected void execute() {
 		executed = true;
 		this.terminate();
-	}
-
-	@Override
-	protected void execute() {
-
 	}
 
 	@Override

@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
@@ -27,8 +26,6 @@ import teetime.util.framework.port.PortList;
 import teetime.util.framework.port.PortRemovedListener;
 
 public abstract class AbstractStage extends Stage {
-
-	private static final IPipe DUMMY_PIPE = new DummyPipe();
 
 	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
 
@@ -90,20 +87,7 @@ public abstract class AbstractStage extends Stage {
 
 	@Override
 	public void onInitializing() throws Exception {
-		this.connectUnconnectedOutputPorts();
 		changeState(StageState.INITIALIZED);
-	}
-
-	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-	private void connectUnconnectedOutputPorts() {
-		for (OutputPort<?> outputPort : this.outputPorts.getOpenedPorts()) {
-			if (null == outputPort.getPipe()) { // if port is unconnected
-				if (logger.isInfoEnabled()) {
-					this.logger.info("Unconnected output port: " + outputPort + ". Connecting with a dummy output port.");
-				}
-				outputPort.setPipe(DUMMY_PIPE);
-			}
-		}
 	}
 
 	private void changeState(final StageState newState) {
@@ -257,7 +241,7 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
 		for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
-			final IPipe pipe = outputPort.getPipe();
+			final IPipe<?> pipe = outputPort.getPipe();
 
 			final Class<?> sourcePortType = outputPort.getType();
 			final Class<?> targetPortType = pipe.getTargetPort().getType();
@@ -271,7 +255,7 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	protected void terminate() {
 		changeState(StageState.TERMINATING);
-		owningThread.interrupt();
+		getOwningThread().interrupt();
 	}
 
 	@Override

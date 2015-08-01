@@ -42,7 +42,7 @@ public class TokenizerTest {
 		final String password = "Password";
 
 		final TokenizerConfiguration configuration = new TokenizerConfiguration(inputFile, password);
-		final Execution execution = new Execution(configuration);
+		final Execution<TokenizerConfiguration> execution = new Execution<TokenizerConfiguration>(configuration);
 		execution.executeBlocking();
 
 		final String string = Files.toString(new File("src/test/resources/data/input.txt"), Charset.forName("UTF-8"));

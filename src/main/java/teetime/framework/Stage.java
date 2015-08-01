@@ -48,9 +48,17 @@ public abstract class Stage {
 	protected AbstractExceptionListener exceptionListener;
 
 	/** The owning thread of this stage if this stage is directly executed by a {@link AbstractRunnableStage}, <code>null</code> otherwise. */
-	protected Thread owningThread;
+	private Thread owningThread;
 
-	ConfigurationContext owningContext = ConfigurationContext.EMPTY_CONTEXT;
+	private ConfigurationContext owningContext;
+
+	ConfigurationContext getOwningContext() {
+		return owningContext;
+	}
+
+	void setOwningContext(final ConfigurationContext owningContext) {
+		this.owningContext = owningContext;
+	}
 
 	protected Stage() {
 		this.id = this.createId();
@@ -135,6 +143,10 @@ public abstract class Stage {
 	}
 
 	void setOwningThread(final Thread owningThread) {
+		if (this.owningThread != null && this.owningThread != owningThread) {
+			// checks also for "crossing threads"
+			// throw new IllegalStateException("Attribute owningThread was set twice each with another thread");
+		}
 		this.owningThread = owningThread;
 	}
 

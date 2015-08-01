@@ -28,9 +28,11 @@ import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
  */
 public abstract class Configuration extends AbstractCompositeStage {
 
-	private boolean executed;
-
 	private final IExceptionListenerFactory factory;
+	private final ConfigurationContext context;
+
+	private boolean executed;
+	private Stage startStage;
 
 	protected Configuration() {
 		this(new TerminatingExceptionListenerFactory());
@@ -38,20 +40,39 @@ public abstract class Configuration extends AbstractCompositeStage {
 
 	protected Configuration(final IExceptionListenerFactory factory) {
 		this.factory = factory;
+		this.context = new ConfigurationContext(this);
 	}
 
-	@SuppressWarnings("PMD.DefaultPackage")
 	boolean isExecuted() {
 		return executed;
 	}
 
-	@SuppressWarnings("PMD.DefaultPackage")
 	void setExecuted(final boolean executed) {
 		this.executed = executed;
 	}
 
 	public IExceptionListenerFactory getFactory() {
 		return factory;
+	}
+
+	@Override
+	protected void addThreadableStage(final Stage stage, final String threadName) {
+		startStage = stage; // memorize an arbitrary stage as starting point for traversing
+		super.addThreadableStage(stage, threadName);
+	}
+
+	@Override
+	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		startStage = sourcePort.getOwningStage(); // memorize an arbitrary stage as starting point for traversing
+		super.connectPorts(sourcePort, targetPort, capacity);
+	}
+
+	ConfigurationContext getContext() {
+		return context;
+	}
+
+	Stage getStartStage() {
+		return startStage;
 	}
 
 }

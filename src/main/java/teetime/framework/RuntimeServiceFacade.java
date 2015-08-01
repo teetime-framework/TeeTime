@@ -15,14 +15,15 @@
  */
 package teetime.framework;
 
-import teetime.framework.pipe.IPipe;
+public final class RuntimeServiceFacade {
 
-public interface IPipeVisitor {
+	public static final RuntimeServiceFacade INSTANCE = new RuntimeServiceFacade();
 
-	public enum VisitorBehavior {
-		CONTINUE, STOP
+	private RuntimeServiceFacade() {
+		// singleton
 	}
 
-	VisitorBehavior visit(IPipe outputPipe);
-
+	public void startWithinNewThread(final Stage previousStage, final Stage stage) {
+		previousStage.getOwningContext().getThreadService().startStageAtRuntime(stage);
+	}
 }

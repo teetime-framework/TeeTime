@@ -15,14 +15,7 @@
  */
 package teetime.framework;
 
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import teetime.framework.pipe.InstantiationPipe;
 
 /**
  * Represents a context that is used by a configuration and composite stages to connect ports, for example.
@@ -32,77 +25,24 @@ import teetime.framework.pipe.InstantiationPipe;
  */
 final class ConfigurationContext {
 
-	static final ConfigurationContext EMPTY_CONTEXT = new ConfigurationContext(null);
+	// static final ConfigurationContext EMPTY_CONTEXT = new ConfigurationContext(null);
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
+	// private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
 
-	private final Set<ConfigurationContext> children = new HashSet<ConfigurationContext>(); // parent-child-tree
+	// private final Set<ConfigurationContext> children = new HashSet<ConfigurationContext>(); // parent-child-tree
 
 	private ThreadService threadService;
 
-	ConfigurationContext(final AbstractCompositeStage compositeStage) {
-		this.threadService = new ThreadService(compositeStage);
+	ConfigurationContext(final Configuration configuration) {
+		this.threadService = new ThreadService(configuration);
 	}
 
-	Map<Stage, String> getThreadableStages() {
+	Set<Stage> getThreadableStages() {
 		return threadService.getThreadableStages();
 	}
 
-	/**
-	 * @see AbstractCompositeStage#addThreadableStage(Stage)
-	 */
-	final void addThreadableStage(final Stage stage, final String threadName) {
-		addChildContext(stage);
-		threadService.addThreadableStage(stage, threadName);
-	}
-
-	/**
-	 * @see AbstractCompositeStage#connectPorts(OutputPort, InputPort, int)
-	 */
-	final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		if (sourcePort.getOwningStage().getInputPorts().size() == 0) {
-			if (!threadService.getThreadableStages().containsKey(sourcePort.getOwningStage())) {
-				addThreadableStage(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
-			}
-		}
-
-		if (LOGGER.isWarnEnabled() && (sourcePort.getPipe() != null || targetPort.getPipe() != null)) {
-			LOGGER.warn("Overwriting existing pipe while connecting stages " +
-					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
-		}
-
-		addChildContext(sourcePort.getOwningStage());
-		addChildContext(targetPort.getOwningStage());
-
-		new InstantiationPipe(sourcePort, targetPort, capacity);
-	}
-
-	final void addChildContext(final Stage stage) {
-		if (!stage.owningContext.equals(EMPTY_CONTEXT)) {
-			if (stage.owningContext != this) { // Performance
-				children.add(stage.owningContext);
-			}
-		} else {
-			stage.owningContext = this;
-		}
-	}
-
-	final void initializeContext() {
-		for (ConfigurationContext child : children) {
-			child.initializeContext();
-			mergeContexts(child);
-		}
-	}
-
-	final void initializeServices() {
+	void initializeServices() {
 		threadService.onInitialize();
-	}
-
-	private void mergeContexts(final ConfigurationContext child) {
-		threadService.merge(child.getThreadService());
-
-		// Finally copy parent services
-		child.threadService = this.threadService;
 	}
 
 	void executeConfiguration() {

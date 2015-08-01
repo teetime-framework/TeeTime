@@ -18,7 +18,7 @@ package teetime.stage.basic.distributor.dynamic;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.DynamicActuator;
+import teetime.framework.RuntimeServiceFacade;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.SpScPipeFactory;
@@ -29,7 +29,6 @@ import teetime.util.framework.port.PortAction;
 public class CreatePortAction<T> implements PortAction<DynamicDistributor<T>> {
 
 	private static final SpScPipeFactory INTER_THREAD_PIPE_FACTORY = new SpScPipeFactory();
-	private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();
 
 	private final InputPort<T> inputPort;
 
@@ -50,7 +49,7 @@ public class CreatePortAction<T> implements PortAction<DynamicDistributor<T>> {
 	private void processOutputPort(final DynamicDistributor<T> dynamicDistributor, final OutputPort<T> newOutputPort) {
 		INTER_THREAD_PIPE_FACTORY.create(newOutputPort, inputPort);
 
-		DYNAMIC_ACTUATOR.startWithinNewThread(dynamicDistributor, inputPort.getOwningStage());
+		RuntimeServiceFacade.INSTANCE.startWithinNewThread(dynamicDistributor, inputPort.getOwningStage());
 
 		newOutputPort.sendSignal(new InitializingSignal());
 		newOutputPort.sendSignal(new StartingSignal());

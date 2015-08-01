@@ -33,6 +33,7 @@ import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.util.framework.port.PortAction;
 
+//@Ignore
 public class DynamicDistributorTest {
 
 	@Test

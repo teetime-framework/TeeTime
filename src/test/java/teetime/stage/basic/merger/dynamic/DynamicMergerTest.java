@@ -25,8 +25,8 @@ import java.util.List;
 import org.junit.Test;
 
 import teetime.framework.Configuration;
-import teetime.framework.DynamicActuator;
 import teetime.framework.Execution;
+import teetime.framework.RuntimeServiceFacade;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
@@ -34,8 +34,6 @@ import teetime.stage.basic.merger.strategy.BusyWaitingRoundRobinStrategy;
 import teetime.util.framework.port.PortAction;
 
 public class DynamicMergerTest {
-
-	private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();
 
 	@Test
 	public void shouldWorkWithoutActionTriggers() throws Exception {
@@ -101,7 +99,7 @@ public class DynamicMergerTest {
 			@Override
 			public void execute(final DynamicMerger<Integer> dynamicDistributor) {
 				super.execute(dynamicDistributor);
-				DYNAMIC_ACTUATOR.startWithinNewThread(dynamicDistributor, initialElementProducer);
+				RuntimeServiceFacade.INSTANCE.startWithinNewThread(dynamicDistributor, initialElementProducer);
 			}
 		};
 		return portAction;
