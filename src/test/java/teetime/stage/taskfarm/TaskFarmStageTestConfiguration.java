@@ -18,16 +18,22 @@ package teetime.stage.taskfarm;
 import java.util.LinkedList;
 import java.util.List;
 
+import teetime.framework.AbstractCompositeStage;
 import teetime.framework.Configuration;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
-import teetime.stage.taskfarm.TaskFarmStageTest.CompositeTestStage;
+import teetime.stage.basic.AbstractFilter;
+import teetime.stage.basic.AbstractTransformation;
 
-class TaskFarmStageConfiguration extends Configuration {
+class TaskFarmStageTestConfiguration extends Configuration {
+
+	static volatile int counter;
 
 	private final List<String> results = new LinkedList<String>();
 
-	public TaskFarmStageConfiguration(final int numberOfTestElements) {
+	public TaskFarmStageTestConfiguration(final int numberOfTestElements) {
 		this.buildConfiguration(numberOfTestElements);
 	}
 
@@ -49,4 +55,52 @@ class TaskFarmStageConfiguration extends Configuration {
 	public List<String> getCollection() {
 		return this.results;
 	}
+
+	private static class CompositeTestStage extends AbstractCompositeStage implements ITaskFarmDuplicable<Integer, String> {
+		private final PlusOneInStringStage pOne = new PlusOneInStringStage();
+		private final StringDuplicationStage sDup = new StringDuplicationStage();
+
+		public CompositeTestStage() {
+			connectPorts(this.pOne.getOutputPort(), this.sDup.getInputPort());
+		}
+
+		@Override
+		public InputPort<Integer> getInputPort() {
+			return this.pOne.getInputPort();
+		}
+
+		@Override
+		public OutputPort<String> getOutputPort() {
+			return this.sDup.getOutputPort();
+		}
+
+		@Override
+		public ITaskFarmDuplicable<Integer, String> duplicate() {
+			return new CompositeTestStage();
+		}
+	}
+
+	private static class PlusOneInStringStage extends AbstractTransformation<Integer, String> {
+
+		@Override
+		protected void execute(final Integer element) {
+			final Integer x = element + 1;
+			counter++;
+			this.outputPort.send(x.toString());
+		}
+	}
+
+	private static class StringDuplicationStage extends AbstractFilter<String> implements ITaskFarmDuplicable<String, String> {
+
+		@Override
+		protected void execute(final String element) {
+			this.outputPort.send(element + element);
+		}
+
+		@Override
+		public ITaskFarmDuplicable<String, String> duplicate() {
+			return new StringDuplicationStage();
+		}
+	}
+
 }
