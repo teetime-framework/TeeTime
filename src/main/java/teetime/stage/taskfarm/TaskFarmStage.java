@@ -87,7 +87,6 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 			@Override
 			public void onTerminating() throws Exception {
 				adaptationThread.stopAdaptationThread();
-				adaptationThread.join();
 				super.onTerminating();
 			}
 		};

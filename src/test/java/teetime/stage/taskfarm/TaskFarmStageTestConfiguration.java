@@ -29,9 +29,7 @@ import teetime.stage.basic.AbstractTransformation;
 
 class TaskFarmStageTestConfiguration extends Configuration {
 
-	static volatile int counter;
-
-	private final List<String> results = new LinkedList<String>();
+	private CollectorSink<String> collectorSink;
 
 	public TaskFarmStageTestConfiguration(final int numberOfTestElements) {
 		this.buildConfiguration(numberOfTestElements);
@@ -46,14 +44,14 @@ class TaskFarmStageTestConfiguration extends Configuration {
 		final CompositeTestStage compositeTestStage = new CompositeTestStage();
 		final TaskFarmStage<Integer, String, CompositeTestStage> taskFarmStage =
 				new TaskFarmStage<Integer, String, CompositeTestStage>(compositeTestStage);
-		final CollectorSink<String> collectorSink = new CollectorSink<String>(this.results);
+		collectorSink = new CollectorSink<String>();
 
 		connectPorts(initialElementProducer.getOutputPort(), taskFarmStage.getInputPort());
 		connectPorts(taskFarmStage.getOutputPort(), collectorSink.getInputPort());
 	}
 
 	public List<String> getCollection() {
-		return this.results;
+		return collectorSink.getElements();
 	}
 
 	private static class CompositeTestStage extends AbstractCompositeStage implements ITaskFarmDuplicable<Integer, String> {
@@ -85,7 +83,6 @@ class TaskFarmStageTestConfiguration extends Configuration {
 		@Override
 		protected void execute(final Integer element) {
 			final Integer x = element + 1;
-			counter++;
 			this.outputPort.send(x.toString());
 		}
 	}

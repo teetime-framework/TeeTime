@@ -29,15 +29,14 @@ final public class AdaptationThread extends Thread {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AdaptationThread.class);
 
 	private volatile static int sampleRateMillis = 50;
+	private volatile boolean shouldTerminate;
 
 	private final List<TaskFarmComponents<?, ?, ?>> taskFarmServices = new LinkedList<TaskFarmComponents<?, ?, ?>>();
-
-	private volatile boolean stopped = false;
 
 	@Override
 	public void run() {
 		LOGGER.debug("Adaptation thread started");
-		while (!stopped) {
+		while (!shouldTerminate) {
 			try {
 				doMonitoring();
 
@@ -46,7 +45,7 @@ final public class AdaptationThread extends Thread {
 				executeNextStageToBeReconfigured();
 				checkForStopping();
 			} catch (InterruptedException e) {
-				stopped = true;
+				shouldTerminate = true;
 			}
 		}
 		LOGGER.debug("Adaptation thread stopped");
@@ -96,8 +95,8 @@ final public class AdaptationThread extends Thread {
 	}
 
 	public void stopAdaptationThread() {
-		LOGGER.debug("Adaptation thread stop signal sent");
-		stopped = true;
+		shouldTerminate = true;
 		interrupt();
+		LOGGER.debug("Adaptation thread stop signal sent");
 	}
 }
