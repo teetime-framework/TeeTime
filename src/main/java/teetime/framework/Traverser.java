@@ -18,10 +18,15 @@ package teetime.framework;
 import java.util.HashSet;
 import java.util.Set;
 
-import teetime.framework.IPipeVisitor.VisitorBehavior;
 import teetime.framework.pipe.DummyPipe;
-import teetime.framework.pipe.IPipe;
 
+/**
+ * Traverses the all stages that are <b>reachable</b> from the given <i>stage</i>.
+ * Each stage is visited exactly once (not more, not less).
+ *
+ * @author Christian Wulf
+ *
+ */
 public class Traverser {
 
 	public static enum Direction {
@@ -38,34 +43,32 @@ public class Traverser {
 		}
 	}
 
-	private static final IPortVisitor DEFAULT_PORT_VISITOR = new IPortVisitor() {
-		@Override
-		public void visit(final AbstractPort<?> port) {
-			// do nothing
-		}
-	};
+	public static enum VisitorBehavior {
+		CONTINUE, STOP;
+	}
 
-	private final IPortVisitor portVisitor;
-	private final IPipeVisitor pipeVisitor;
-	private final Direction direction;
 	private final Set<Stage> visitedStages = new HashSet<Stage>();
 
-	public Traverser(final IPipeVisitor pipeVisitor) {
-		this(pipeVisitor, Direction.FORWARD);
+	private final ITraverserVisitor traverserVisitor;
+	private final Direction direction;
+
+	public Traverser(final ITraverserVisitor traverserVisitor) {
+		this(traverserVisitor, Direction.FORWARD);
 	}
 
-	public Traverser(final IPipeVisitor pipeVisitor, final Direction direction) {
-		this(DEFAULT_PORT_VISITOR, pipeVisitor, direction);
-	}
-
-	public Traverser(final IPortVisitor portVisitor, final IPipeVisitor pipeVisitor, final Direction direction) {
-		this.portVisitor = portVisitor;
-		this.pipeVisitor = pipeVisitor;
+	public Traverser(final ITraverserVisitor traverserVisitor, final Direction direction) {
+		this.traverserVisitor = traverserVisitor;
 		this.direction = direction;
 	}
 
 	public void traverse(final Stage stage) {
-		if (!visitedStages.add(stage) || stage.getCurrentState() != StageState.CREATED) {
+		VisitorBehavior behavior = traverserVisitor.visit(stage);
+		if (behavior == VisitorBehavior.STOP) {
+			return;
+		}
+
+		if (!visitedStages.add(stage)) {
+			// || stage.getCurrentState() != StageState.CREATED
 			// do not visit (1) an already visited stage and (2) a stage that currently run (runtime visiting)
 			return;
 		}
@@ -84,10 +87,13 @@ public class Traverser {
 	}
 
 	private void visitAndTraverse(final AbstractPort<?> port, final Direction direction) {
-		portVisitor.visit(port);
-		IPipe<?> pipe = port.getPipe();
-		if (pipe != DummyPipe.INSTANCE && pipeVisitor.visit(pipe) == VisitorBehavior.CONTINUE) {
-			AbstractPort<?> nextPort = (direction == Direction.FORWARD) ? pipe.getTargetPort() : pipe.getSourcePort();
+		if (port.getPipe() instanceof DummyPipe) {
+			return;
+		}
+		VisitorBehavior behavior = traverserVisitor.visit(port);
+
+		if (behavior == VisitorBehavior.CONTINUE) {
+			AbstractPort<?> nextPort = (direction == Direction.FORWARD) ? port.getPipe().getTargetPort() : port.getPipe().getSourcePort();
 			traverse(nextPort.getOwningStage()); // recursive call
 		}
 	}

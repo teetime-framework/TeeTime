@@ -3,6 +3,7 @@ package teetime.framework;
 import java.util.HashSet;
 import java.util.Set;
 
+import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.InstantiationPipe;
@@ -10,7 +11,7 @@ import teetime.framework.pipe.SingleElementPipeFactory;
 import teetime.framework.pipe.SpScPipeFactory;
 import teetime.framework.pipe.UnboundedSpScPipeFactory;
 
-public class A3PipeInstantiation implements IPipeVisitor {
+public class A3PipeInstantiation implements ITraverserVisitor {
 
 	private static final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
 	private static final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
@@ -19,7 +20,13 @@ public class A3PipeInstantiation implements IPipeVisitor {
 	private final Set<IPipe<?>> visitedPipes = new HashSet<IPipe<?>>();
 
 	@Override
-	public VisitorBehavior visit(final IPipe<?> pipe) {
+	public VisitorBehavior visit(final Stage stage) {
+		return VisitorBehavior.CONTINUE;
+	}
+
+	@Override
+	public VisitorBehavior visit(final AbstractPort<?> port) {
+		IPipe<?> pipe = port.getPipe();
 		if (visitedPipes.contains(pipe)) {
 			return VisitorBehavior.STOP;
 		}

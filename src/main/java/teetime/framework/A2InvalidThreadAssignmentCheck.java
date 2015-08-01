@@ -2,6 +2,7 @@ package teetime.framework;
 
 import java.util.Set;
 
+import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.IPipe;
 
 import com.carrotsearch.hppc.ObjectIntHashMap;
@@ -31,7 +32,7 @@ public class A2InvalidThreadAssignmentCheck {
 		}
 	}
 
-	private static class ThreadPainter implements IPipeVisitor {
+	private static class ThreadPainter implements ITraverserVisitor {
 
 		private final ObjectIntMap<Stage> colors;
 		private final int color;
@@ -45,8 +46,16 @@ public class A2InvalidThreadAssignmentCheck {
 		}
 
 		@Override
-		public VisitorBehavior visit(final IPipe<?> pipe) {
+		public VisitorBehavior visit(final Stage stage) {
+			return VisitorBehavior.CONTINUE;
+		}
+
+		@Override
+		public VisitorBehavior visit(final AbstractPort<?> port) {
+			IPipe<?> pipe = port.getPipe();
+			// FIXME line below requires FORWARD. should be independent of the used direction
 			Stage targetStage = pipe.getTargetPort().getOwningStage();
+
 			int targetColor = colors.containsKey(targetStage) ? colors.get(targetStage) : DEFAULT_COLOR;
 
 			if (threadableStages.contains(targetStage) && targetColor != color) {

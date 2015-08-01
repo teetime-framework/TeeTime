@@ -37,12 +37,12 @@ import teetime.stage.util.CountingMap;
 
 public class TraverserTest {
 
-	private final Traverser traversor = new Traverser(new IntraStageCollector());
-
 	@Test
 	public void traverse() {
 		TestConfiguration tc = new TestConfiguration();
 		new Execution<TestConfiguration>(tc);
+
+		Traverser traversor = new Traverser(new IntraStageCollector(tc.init));
 		traversor.traverse(tc.init);
 
 		Set<Stage> comparingStages = new HashSet<Stage>();
@@ -56,9 +56,8 @@ public class TraverserTest {
 	}
 
 	// WordCounterConfiguration
-	private class TestConfiguration extends Configuration {
+	private static class TestConfiguration extends Configuration {
 
-		public final CountingMapMerger<String> result = new CountingMapMerger<String>();
 		public final InitialElementProducer<File> init;
 		public final File2SeqOfWords f2b;
 		public Distributor<String> distributor;
@@ -68,6 +67,7 @@ public class TraverserTest {
 			init = new InitialElementProducer<File>(new File(""));
 			f2b = new File2SeqOfWords("UTF-8", 512);
 			distributor = new Distributor<String>(new RoundRobinStrategy2());
+			CountingMapMerger<String> result = new CountingMapMerger<String>();
 
 			// last part
 			final Merger<CountingMap<String>> merger = new Merger<CountingMap<String>>();

@@ -15,18 +15,29 @@
  */
 package teetime.framework;
 
-import teetime.framework.pipe.IPipe;
+import teetime.framework.Traverser.VisitorBehavior;
 
-public class IntraStageCollector implements IPipeVisitor {
+public class IntraStageCollector implements ITraverserVisitor {
 
-	public IntraStageCollector() {}
+	private final Stage startStage;
+
+	public IntraStageCollector(final Stage startStage) {
+		super();
+		this.startStage = startStage;
+	}
 
 	@Override
-	public VisitorBehavior visit(final IPipe<?> outputPipe) {
-		if (outputPipe instanceof AbstractIntraThreadPipe) {
+	public VisitorBehavior visit(final Stage stage) {
+		if (stage == startStage || stage.getOwningThread() == null /* before execution */
+				|| stage.getOwningThread() == startStage.getOwningThread() /* while execution */) {
 			return VisitorBehavior.CONTINUE;
 		}
 		return VisitorBehavior.STOP;
+	}
+
+	@Override
+	public VisitorBehavior visit(final AbstractPort<?> port) {
+		return VisitorBehavior.CONTINUE;
 	}
 
 }

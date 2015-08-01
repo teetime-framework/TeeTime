@@ -1,6 +1,7 @@
 package teetime.framework;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -27,9 +28,9 @@ class ThreadService extends AbstractService<ThreadService> {
 	private final List<Thread> infiniteProducerThreads = new LinkedList<Thread>();
 
 	private final SignalingCounter runnableCounter = new SignalingCounter();
-	private final Configuration configuration;
+	private final Set<Stage> threadableStages = new HashSet<Stage>();
 
-	private Set<Stage> threadableStages;
+	private final Configuration configuration;
 
 	public ThreadService(final Configuration configuration) {
 		this.configuration = configuration;
@@ -43,20 +44,34 @@ class ThreadService extends AbstractService<ThreadService> {
 		onStart();
 	}
 
+	void startStageAtRuntime(final Stage newStage) {
+		Set<Stage> newThreadableStages = initialize(newStage);
+
+		startThreads(newThreadableStages);
+
+		sendInitializingSignal(newThreadableStages);
+
+		sendStartingSignal(newThreadableStages);
+	}
+
 	// extracted for runtime use
-	void initialize(final Stage startStage) {
+	private Set<Stage> initialize(final Stage startStage) {
 		if (startStage == null) {
 			throw new IllegalStateException("The start stage may not be null.");
 		}
 
-		// TODO visit(port) only
 		// TODO use decorator pattern to combine all analyzes so that only one traverser pass is necessary
-		IPortVisitor portVisitor = new A0UnconnectedPort();
-		A1ThreadableStageCollector stageCollector = new A1ThreadableStageCollector();
-		Traverser traversor = new Traverser(portVisitor, stageCollector, Direction.BOTH);
+		A0UnconnectedPort portVisitor = new A0UnconnectedPort();
+		Traverser traversor = new Traverser(portVisitor, Direction.BOTH);
 		traversor.traverse(startStage);
 
-		threadableStages.addAll(stageCollector.getThreadableStages());
+		A1ThreadableStageCollector stageCollector = new A1ThreadableStageCollector();
+		traversor = new Traverser(stageCollector, Direction.BOTH);
+		traversor.traverse(startStage);
+
+		Set<Stage> newThreadableStages = stageCollector.getThreadableStages();
+
+		threadableStages.addAll(newThreadableStages);
 		if (threadableStages.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
@@ -64,7 +79,7 @@ class ThreadService extends AbstractService<ThreadService> {
 		A2InvalidThreadAssignmentCheck checker = new A2InvalidThreadAssignmentCheck(threadableStages);
 		checker.check();
 
-		IPipeVisitor pipeVisitor = new A3PipeInstantiation();
+		A3PipeInstantiation pipeVisitor = new A3PipeInstantiation();
 		traversor = new Traverser(pipeVisitor, Direction.BOTH);
 		traversor.traverse(startStage);
 
@@ -74,6 +89,8 @@ class ThreadService extends AbstractService<ThreadService> {
 		for (Stage stage : threadableStages) {
 			categorizeThreadableStage(stage);
 		}
+
+		return newThreadableStages;
 	}
 
 	private void categorizeThreadableStage(final Stage stage) {
@@ -93,18 +110,34 @@ class ThreadService extends AbstractService<ThreadService> {
 		}
 	}
 
+	private void startThreads(final Set<Stage> threadableStages) {
+		for (Stage stage : threadableStages) {
+			stage.getOwningThread().start();
+		}
+	}
+
+	private void sendInitializingSignal(final Set<Stage> threadableStages) {
+		for (Stage stage : threadableStages) {
+			((TeeTimeThread) stage.getOwningThread()).sendInitializingSignal();
+		}
+	}
+
+	private void sendStartingSignal(final Set<Stage> newThreadableStages) {
+		for (Stage stage : newThreadableStages) {
+			((TeeTimeThread) stage.getOwningThread()).sendStartingSignal();
+		}
+	}
+
 	@Override
 	void onStart() {
-		startThreads(this.consumerThreads);
-		startThreads(this.finiteProducerThreads);
-		startThreads(this.infiniteProducerThreads);
+		startThreads(threadableStages);
 
-		sendInitializingSignal();
+		sendInitializingSignal(threadableStages);
 	}
 
 	@Override
 	void onExecute() {
-		sendStartingSignal();
+		sendStartingSignal(threadableStages);
 	}
 
 	@Override
@@ -151,30 +184,6 @@ class ThreadService extends AbstractService<ThreadService> {
 		// }
 
 		return exceptions;
-	}
-
-	private void startThreads(final Iterable<Thread> threads) {
-		for (Thread thread : threads) {
-			thread.start();
-		}
-	}
-
-	private void sendInitializingSignal() {
-		for (Thread thread : infiniteProducerThreads) {
-			((TeeTimeThread) thread).sendInitializingSignal();
-		}
-		for (Thread thread : finiteProducerThreads) {
-			((TeeTimeThread) thread).sendInitializingSignal();
-		}
-	}
-
-	private void sendStartingSignal() {
-		for (Thread thread : infiniteProducerThreads) {
-			((TeeTimeThread) thread).sendStartingSignal();
-		}
-		for (Thread thread : finiteProducerThreads) {
-			((TeeTimeThread) thread).sendStartingSignal();
-		}
 	}
 
 	Set<Stage> getThreadableStages() {
