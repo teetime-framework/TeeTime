@@ -51,10 +51,10 @@ public final class PortActionHelper {
 		}
 	}
 
-	public static <T extends Stage> void checkBlockingForPendingPortActionRequest(final T stage, final BlockingQueue<PortAction<T>> portActions)
-			throws InterruptedException {
-		PortAction<T> dynamicPortAction = portActions.take();
-		dynamicPortAction.execute(stage);
-	}
+	// public static <T extends Stage> void checkBlockingForPendingPortActionRequest(final T stage, final BlockingQueue<PortAction<T>> portActions)
+	// throws InterruptedException {
+	// PortAction<T> dynamicPortAction = portActions.take();
+	// dynamicPortAction.execute(stage);
+	// }
 
 }

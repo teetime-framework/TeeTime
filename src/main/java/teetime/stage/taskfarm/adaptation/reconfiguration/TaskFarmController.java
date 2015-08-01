@@ -80,7 +80,12 @@ class TaskFarmController<I, O> {
 		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 		LOGGER.debug("distributor port created, before wait");
 		LOGGER.debug("state of distributor: " + this.taskFarmStage.getDistributor().getCurrentState().toString());
-		distributorPortAction.waitForCompletion();
+		try {
+			distributorPortAction.waitForCompletion();
+		} catch (InterruptedException e) {
+			LOGGER.debug("Interrupted while waiting for completion", e);
+			throw e;
+		}
 		LOGGER.debug("distributor port created");
 
 		this.addNewEnclosedStageInstance(newStage);
