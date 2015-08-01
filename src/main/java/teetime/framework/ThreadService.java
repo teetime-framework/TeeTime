@@ -38,6 +38,13 @@ class ThreadService extends AbstractService<ThreadService> {
 	@Override
 	void onInitialize() {
 		Stage startStage = configuration.getStartStage();
+		initialize(startStage);
+
+		onStart();
+	}
+
+	// extracted for runtime use
+	void initialize(final Stage startStage) {
 		if (startStage == null) {
 			throw new IllegalStateException("The start stage may not be null.");
 		}
@@ -49,7 +56,7 @@ class ThreadService extends AbstractService<ThreadService> {
 		Traverser traversor = new Traverser(portVisitor, stageCollector, Direction.BOTH);
 		traversor.traverse(startStage);
 
-		threadableStages = stageCollector.getThreadableStages();
+		threadableStages.addAll(stageCollector.getThreadableStages());
 		if (threadableStages.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
@@ -67,8 +74,6 @@ class ThreadService extends AbstractService<ThreadService> {
 		for (Stage stage : threadableStages) {
 			categorizeThreadableStage(stage);
 		}
-
-		onStart();
 	}
 
 	private void categorizeThreadableStage(final Stage stage) {
