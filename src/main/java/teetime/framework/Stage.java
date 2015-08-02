@@ -111,7 +111,7 @@ public abstract class Stage {
 	 */
 	public abstract void validateOutputPorts(List<InvalidPortConnection> invalidPortConnections);
 
-	protected void executeStage() {
+	protected final void executeStage() {
 		try {
 			this.execute();
 		} catch (NotEnoughInputException e) {
