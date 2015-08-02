@@ -2,7 +2,6 @@ package teetime.stage.taskfarm.monitoring;
 
 public class PipeMonitoringData implements IMonitoringData {
 
-	private final long time;
 	private final long numPushes;
 	private final long numPulls;
 	private final int size;
@@ -10,11 +9,10 @@ public class PipeMonitoringData implements IMonitoringData {
 	private final long pushThroughput;
 	private final long pullThroughput;
 	private final int numWaits;
+	private final int uniquePipeId;
 
-	PipeMonitoringData(final long time, final long numPushes, final long numPulls, final int size, final int capacity, final long pushThroughput,
-			final long pullThroughput,
-			final int numWaits) {
-		this.time = time;
+	PipeMonitoringData(final long numPushes, final long numPulls, final int size, final int capacity, final long pushThroughput,
+			final long pullThroughput, final int numWaits, final int uniquePipeId) {
 		this.numPushes = numPushes;
 		this.numPulls = numPulls;
 		this.size = size;
@@ -22,6 +20,7 @@ public class PipeMonitoringData implements IMonitoringData {
 		this.pushThroughput = pushThroughput;
 		this.pullThroughput = pullThroughput;
 		this.numWaits = numWaits;
+		this.uniquePipeId = uniquePipeId;
 	}
 
 	public long getNumPushes() {
@@ -52,7 +51,7 @@ public class PipeMonitoringData implements IMonitoringData {
 		return numWaits;
 	}
 
-	public long getTime() {
-		return time;
+	public int getUniquePipeId() {
+		return uniquePipeId;
 	}
 }

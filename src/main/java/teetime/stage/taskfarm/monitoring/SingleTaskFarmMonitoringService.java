@@ -1,35 +1,36 @@
 package teetime.stage.taskfarm.monitoring;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
 import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
 
-public class TaskFarmMonitoringService implements IMonitoringService<TaskFarmStage<?, ?, ?>, TaskFarmMonitoringData> {
+public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskFarmStage<?, ?, ?>, TaskFarmMonitoringData> {
 
 	private static final long INIT = -1;
 
 	private long startingTimestamp = INIT;
 
-	private final Map<TaskFarmStage<?, ?, ?>, List<TaskFarmMonitoringData>> data = new HashMap<TaskFarmStage<?, ?, ?>, List<TaskFarmMonitoringData>>();
+	private final List<TaskFarmMonitoringData> monitoredDatas = new LinkedList<TaskFarmMonitoringData>();
+	private final TaskFarmStage<?, ?, ?> taskFarmStage;
 
 	private int maxNumberOfStages = 0;
 
+	public SingleTaskFarmMonitoringService(final TaskFarmStage<?, ?, ?> taskFarmStage) {
+		this.taskFarmStage = taskFarmStage;
+	}
+
 	@Override
-	public Map<TaskFarmStage<?, ?, ?>, List<TaskFarmMonitoringData>> getData() {
-		return this.data;
+	public List<TaskFarmMonitoringData> getData() {
+		return this.monitoredDatas;
 	}
 
 	@Override
 	public void addMonitoredItem(final TaskFarmStage<?, ?, ?> taskFarmStage) {
-		if (!this.data.containsKey(taskFarmStage)) {
-			this.data.put(taskFarmStage, new LinkedList<TaskFarmMonitoringData>());
-		}
+		throw new IllegalStateException("SingleTaskFarmMonitoringService can only monitor the one Task Farm given to the constructor.");
 	}
 
 	@Override
@@ -39,19 +40,16 @@ public class TaskFarmMonitoringService implements IMonitoringService<TaskFarmSta
 			this.startingTimestamp = currentTimestamp;
 		}
 
-		for (TaskFarmStage<?, ?, ?> taskFarmStage : this.data.keySet()) {
-			TaskFarmMonitoringData monitoringData = new TaskFarmMonitoringData(this.startingTimestamp - currentTimestamp,
-					taskFarmStage.getEnclosedStageInstances().size(),
-					getMeanThroughput(taskFarmStage, MeanThroughputType.PULL),
-					getMeanThroughput(taskFarmStage, MeanThroughputType.PUSH),
-					taskFarmStage.getConfiguration().getThroughputScoreBoundary());
+		TaskFarmMonitoringData monitoringData = new TaskFarmMonitoringData(this.startingTimestamp - currentTimestamp,
+				taskFarmStage.getEnclosedStageInstances().size(),
+				getMeanThroughput(taskFarmStage, MeanThroughputType.PULL),
+				getMeanThroughput(taskFarmStage, MeanThroughputType.PUSH),
+				taskFarmStage.getConfiguration().getThroughputScoreBoundary());
 
-			List<TaskFarmMonitoringData> taskFarmValues = this.data.get(taskFarmStage);
-			taskFarmValues.add(monitoringData);
+		monitoredDatas.add(monitoringData);
 
-			if (taskFarmStage.getEnclosedStageInstances().size() > this.maxNumberOfStages) {
-				this.maxNumberOfStages = taskFarmStage.getEnclosedStageInstances().size();
-			}
+		if (taskFarmStage.getEnclosedStageInstances().size() > this.maxNumberOfStages) {
+			this.maxNumberOfStages = taskFarmStage.getEnclosedStageInstances().size();
 		}
 	}
 

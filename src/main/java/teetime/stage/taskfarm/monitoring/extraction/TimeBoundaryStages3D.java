@@ -6,11 +6,11 @@ import java.util.List;
 
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringData;
-import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringService;
+import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
 public class TimeBoundaryStages3D extends AbstractSingleTaskFarmMonitoring {
 
-	public TimeBoundaryStages3D(final PipeMonitoringService pipeMonitoringService, final TaskFarmMonitoringService taskFarmMonitoringService) {
+	public TimeBoundaryStages3D(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		super(pipeMonitoringService, taskFarmMonitoringService);
 	}
 

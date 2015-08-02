@@ -9,15 +9,15 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
-import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringService;
+import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
 public abstract class AbstractMonitoringDataExtraction {
 
 	private final static String NEWLINE = System.getProperty("line.separator");
 	private final PipeMonitoringService pipeMonitoringService;
-	private final TaskFarmMonitoringService taskFarmMonitoringService;
+	private final SingleTaskFarmMonitoringService taskFarmMonitoringService;
 
-	public AbstractMonitoringDataExtraction(final PipeMonitoringService pipeMonitoringService, final TaskFarmMonitoringService taskFarmMonitoringService) {
+	public AbstractMonitoringDataExtraction(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		this.pipeMonitoringService = pipeMonitoringService;
 		this.taskFarmMonitoringService = taskFarmMonitoringService;
 	}
@@ -61,7 +61,7 @@ public abstract class AbstractMonitoringDataExtraction {
 		return pipeMonitoringService;
 	}
 
-	public TaskFarmMonitoringService getTaskFarmMonitoringService() {
+	public SingleTaskFarmMonitoringService getTaskFarmMonitoringService() {
 		return taskFarmMonitoringService;
 	}
 }

@@ -1,9 +1,7 @@
 package teetime.stage.taskfarm.monitoring;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import teetime.framework.pipe.IMonitorablePipe;
 
@@ -12,27 +10,17 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 	private static final long INIT = -1;
 
 	private long startingTimestamp = INIT;
-
-	private final Map<IMonitorablePipe, List<PipeMonitoringData>> data = new HashMap<IMonitorablePipe, List<PipeMonitoringData>>();
-
-	private final List<TimeCapacitiesSizes> timeCapacitiesSizes =
-			new LinkedList<TimeCapacitiesSizes>();
-
-	private final List<TimePushPullThroughputs> timePushPullThroughputs =
-			new LinkedList<TimePushPullThroughputs>();
-
 	private final List<IMonitorablePipe> pipes = new LinkedList<IMonitorablePipe>();
+	private final List<PipeMonitoringDataContainer> containers = new LinkedList<PipeMonitoringDataContainer>();
 
 	@Override
-	public Map<IMonitorablePipe, List<PipeMonitoringData>> getData() {
-		return this.data;
+	public List<PipeMonitoringDataContainer> getData() {
+		return this.containers;
 	}
 
 	@Override
 	public void addMonitoredItem(final IMonitorablePipe pipe) {
-		if (!data.containsKey(pipe)) {
-			List<PipeMonitoringData> pipeValues = new LinkedList<PipeMonitoringData>();
-			this.data.put(pipe, pipeValues);
+		if (!this.pipes.contains(pipe)) {
 			this.pipes.add(pipe);
 		}
 	}
@@ -44,116 +32,96 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 			this.startingTimestamp = currentTimestamp;
 		}
 
-		List<Integer> capacities = new LinkedList<Integer>();
-		List<Integer> sizes = new LinkedList<Integer>();
-		List<Integer> pipeIndizes = new LinkedList<Integer>();
-		List<Long> pushThroughputs = new LinkedList<Long>();
-		List<Long> pullThroughputs = new LinkedList<Long>();
+		PipeMonitoringDataContainer container = new PipeMonitoringDataContainer(this.startingTimestamp - currentTimestamp);
 
-		for (IMonitorablePipe pipe : this.pipes) {
+		for (int i = 0; i < this.pipes.size(); i++) {
+			IMonitorablePipe pipe = this.pipes.get(i);
 			if (pipe != null) {
-				PipeMonitoringData monitoringData = new PipeMonitoringData(this.startingTimestamp - currentTimestamp,
-						pipe.getNumPushes(),
+				PipeMonitoringData monitoringData = new PipeMonitoringData(pipe.getNumPushes(),
 						pipe.getNumPulls(),
 						pipe.size(),
 						pipe.capacity(),
 						pipe.getPushThroughput(),
 						pipe.getPullThroughput(),
-						pipe.getNumWaits());
+						pipe.getNumWaits(),
+						i
+						);
 
-				List<PipeMonitoringData> pipeValues = this.data.get(pipe);
-				pipeValues.add(monitoringData);
-
-				capacities.add(pipe.capacity());
-				sizes.add(pipe.size());
-				pipeIndizes.add(this.pipes.indexOf(pipe));
-				pushThroughputs.add(pipe.getPushThroughput());
-				pullThroughputs.add(pipe.getPullThroughput());
+				container.addMonitoringData(monitoringData);
 			}
 		}
 
-		// PipeMonitoringDataContainer c = new (monitoringDatas);
-		// c.getPushThroughputs();
-		// c.getPullThroughputs();
-
-		TimeCapacitiesSizes timeCapacitiesSizesEntry = new TimeCapacitiesSizes(
-				this.startingTimestamp - currentTimestamp, capacities, sizes, pipeIndizes);
-		this.timeCapacitiesSizes.add(timeCapacitiesSizesEntry);
-
-		TimePushPullThroughputs timePushPullThroughputEntry = new TimePushPullThroughputs(
-				this.startingTimestamp - currentTimestamp, pushThroughputs, pullThroughputs, pipeIndizes);
-		this.timePushPullThroughputs.add(timePushPullThroughputEntry);
-	}
-
-	public List<TimeCapacitiesSizes> getTimeCapacitiesSizes() {
-		return timeCapacitiesSizes;
-	}
-
-	public List<TimePushPullThroughputs> getTimePushPullThroughput() {
-		return timePushPullThroughputs;
+		this.containers.add(container);
 	}
 
 	public List<IMonitorablePipe> getPipes() {
-		return pipes;
+		return this.pipes;
 	}
 
-	public class TimeCapacitiesSizes {
+	public class PipeMonitoringDataContainer {
 		private final Long time;
-		private final List<Integer> capacities;
-		private final List<Integer> sizes;
-		private final List<Integer> pipeIndizes;
+		private final List<PipeMonitoringData> monitoringDatas = new LinkedList<PipeMonitoringData>();
 
-		TimeCapacitiesSizes(final Long time, final List<Integer> capacities, final List<Integer> sizes, final List<Integer> pipeIndizes) {
+		public PipeMonitoringDataContainer(final Long time) {
 			this.time = time;
-			this.capacities = capacities;
-			this.sizes = sizes;
-			this.pipeIndizes = pipeIndizes;
+		}
+
+		public void addMonitoringData(final PipeMonitoringData data) {
+			this.monitoringDatas.add(data);
+		}
+
+		public List<ValueWithId<Long>> getPushThroughputsWithPipeIds() {
+			List<ValueWithId<Long>> results = new LinkedList<ValueWithId<Long>>();
+			for (PipeMonitoringData data : this.monitoringDatas) {
+				results.add(new ValueWithId<Long>(data.getPushThroughput(), data.getUniquePipeId()));
+			}
+			return results;
+		}
+
+		public List<ValueWithId<Long>> getPullThroughputsWithPipeIds() {
+			List<ValueWithId<Long>> results = new LinkedList<ValueWithId<Long>>();
+			for (PipeMonitoringData data : this.monitoringDatas) {
+				results.add(new ValueWithId<Long>(data.getPullThroughput(), data.getUniquePipeId()));
+			}
+			return results;
+		}
+
+		public List<ValueWithId<Integer>> getSizesWithPipeIds() {
+			List<ValueWithId<Integer>> results = new LinkedList<ValueWithId<Integer>>();
+			for (PipeMonitoringData data : this.monitoringDatas) {
+				results.add(new ValueWithId<Integer>(data.getSize(), data.getUniquePipeId()));
+			}
+			return results;
+		}
+
+		public List<ValueWithId<Integer>> getCapacitiesWithPipeIds() {
+			List<ValueWithId<Integer>> results = new LinkedList<ValueWithId<Integer>>();
+			for (PipeMonitoringData data : this.monitoringDatas) {
+				results.add(new ValueWithId<Integer>(data.getCapacity(), data.getUniquePipeId()));
+			}
+			return results;
 		}
 
 		public Long getTime() {
 			return time;
 		}
-
-		public List<Integer> getCapacities() {
-			return capacities;
-		}
-
-		public List<Integer> getSizes() {
-			return sizes;
-		}
-
-		public List<Integer> getPipeIndizes() {
-			return pipeIndizes;
-		}
 	}
 
-	public class TimePushPullThroughputs {
-		private final Long time;
-		private final List<Long> pushThroughputs;
-		private final List<Long> pullThroughputs;
-		private final List<Integer> pipeIndizes;
+	public class ValueWithId<T> {
+		private final T value;
+		private final Integer id;
 
-		TimePushPullThroughputs(final Long time, final List<Long> pushThroughputs, final List<Long> pullThroughputs, final List<Integer> pipeIndizes) {
-			this.time = time;
-			this.pushThroughputs = pushThroughputs;
-			this.pullThroughputs = pullThroughputs;
-			this.pipeIndizes = pipeIndizes;
+		public ValueWithId(final T value, final Integer id) {
+			this.value = value;
+			this.id = id;
 		}
 
-		public Long getTime() {
-			return time;
+		public T getValue() {
+			return this.value;
 		}
 
-		public List<Long> getPushThroughputs() {
-			return pushThroughputs;
-		}
-
-		public List<Long> getPullThroughputs() {
-			return pullThroughputs;
-		}
-
-		public List<Integer> getPipeIndizes() {
-			return pipeIndizes;
+		public Integer getId() {
+			return this.id;
 		}
 	}
 }

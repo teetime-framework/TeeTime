@@ -25,7 +25,7 @@ import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
 import teetime.stage.taskfarm.adaptation.AdaptationThread;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
-import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringService;
+import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
 /**
  * The TaskFarmStage implements the task farm parallelization pattern in
@@ -53,7 +53,7 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	private final AdaptationThread adaptationThread = new AdaptationThread();
 
 	private final PipeMonitoringService pipeMonitoringService = new PipeMonitoringService();
-	private final TaskFarmMonitoringService taskFarmMonitoringService = new TaskFarmMonitoringService();
+	private final SingleTaskFarmMonitoringService taskFarmMonitoringService;
 
 	/**
 	 * Constructor.
@@ -69,8 +69,6 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 		if (null == workerStage) {
 			throw new IllegalArgumentException("The constructor of a Task Farm may not be called with null as the worker stage.");
 		}
-
-		this.taskFarmMonitoringService.addMonitoredItem(this);
 
 		this.merger = new DynamicMerger<O>() {
 			@Override
@@ -93,6 +91,7 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 		this.configuration = new TaskFarmConfiguration<I, O, T>();
 
 		this.adaptationThread.addTaskFarm(this);
+		taskFarmMonitoringService = new SingleTaskFarmMonitoringService(this);
 
 		this.init(workerStage);
 	}
@@ -142,7 +141,7 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 		return this.pipeMonitoringService;
 	}
 
-	public TaskFarmMonitoringService getTaskFarmMonitoringService() {
+	public SingleTaskFarmMonitoringService getTaskFarmMonitoringService() {
 		return this.taskFarmMonitoringService;
 	}
 }
