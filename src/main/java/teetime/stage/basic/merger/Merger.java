@@ -58,7 +58,7 @@ public class Merger<T> extends AbstractStage {
 	}
 
 	@Override
-	protected void executeStage() {
+	protected void execute() {
 		final T token = this.strategy.getNextInput(this);
 		if (token == null) {
 			returnNoElement();
@@ -117,12 +117,6 @@ public class Merger<T> extends AbstractStage {
 
 	public OutputPort<T> getOutputPort() {
 		return this.outputPort;
-	}
-
-	@Override
-	protected void execute() {
-		// TODO Auto-generated method stub
-
 	}
 
 }
