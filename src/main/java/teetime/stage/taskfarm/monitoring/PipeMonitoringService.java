@@ -32,7 +32,7 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 			this.startingTimestamp = currentTimestamp;
 		}
 
-		PipeMonitoringDataContainer container = new PipeMonitoringDataContainer(this.startingTimestamp - currentTimestamp);
+		PipeMonitoringDataContainer container = new PipeMonitoringDataContainer(currentTimestamp - this.startingTimestamp);
 
 		for (int i = 0; i < this.pipes.size(); i++) {
 			IMonitorablePipe pipe = this.pipes.get(i);

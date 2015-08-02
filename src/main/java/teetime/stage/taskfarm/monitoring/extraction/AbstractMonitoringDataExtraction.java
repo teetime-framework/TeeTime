@@ -1,10 +1,8 @@
 package teetime.stage.taskfarm.monitoring.extraction;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 
@@ -25,13 +23,20 @@ public abstract class AbstractMonitoringDataExtraction {
 	protected abstract void extractToWriter(Writer writer);
 
 	public void extractToFile(final File file) throws IOException {
-		FileOutputStream outputStream = new FileOutputStream(file);
+		if (!file.exists()) {
+			file.createNewFile();
+		}
 
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+		FileWriter writer = new FileWriter(file, false);
 
 		this.extractToWriter(writer);
 
 		writer.close();
+	}
+
+	public void extractToFile(final String filepath) throws IOException {
+		File file = new File(filepath);
+		extractToFile(file);
 	}
 
 	public String extractToString() {

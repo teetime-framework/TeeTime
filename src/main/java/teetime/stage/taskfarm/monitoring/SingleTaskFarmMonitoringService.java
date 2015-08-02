@@ -40,7 +40,7 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 			this.startingTimestamp = currentTimestamp;
 		}
 
-		TaskFarmMonitoringData monitoringData = new TaskFarmMonitoringData(this.startingTimestamp - currentTimestamp,
+		TaskFarmMonitoringData monitoringData = new TaskFarmMonitoringData(currentTimestamp - this.startingTimestamp,
 				taskFarmStage.getEnclosedStageInstances().size(),
 				getMeanThroughput(taskFarmStage, MeanThroughputType.PULL),
 				getMeanThroughput(taskFarmStage, MeanThroughputType.PUSH),

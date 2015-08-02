@@ -24,7 +24,7 @@ public class StackedTimePushThroughput2D extends AbstractStackedMonitoring {
 			Integer pipeId = container.getPushThroughputsWithPipeIds().get(i).getId();
 			Long value = container.getPushThroughputsWithPipeIds().get(i).getValue();
 
-			entryStrings[pipeId + 2] = Long.toString(value);
+			entryStrings[pipeId + 1] = Long.toString(value);
 		}
 
 		fillNullValuesWithZeros(entryStrings);
