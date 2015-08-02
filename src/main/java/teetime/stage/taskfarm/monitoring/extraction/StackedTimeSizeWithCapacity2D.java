@@ -2,35 +2,19 @@ package teetime.stage.taskfarm.monitoring.extraction;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
 
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService.PipeMonitoringDataContainer;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
-public class StackedTimeSizeWithCapacity2D extends AbstractMonitoringDataExtraction {
+public class StackedTimeSizeWithCapacity2D extends AbstractStackedMonitoring {
 
 	public StackedTimeSizeWithCapacity2D(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		super(pipeMonitoringService, taskFarmMonitoringService);
 	}
 
 	@Override
-	protected void extractToWriter(final Writer writer) {
-		List<PipeMonitoringDataContainer> containers = getPipeMonitoringService().getData();
-		int maxNumberOfPipes = this.getPipeMonitoringService().getPipes().size();
-
-		try {
-			createHeader(writer, maxNumberOfPipes);
-
-			for (PipeMonitoringDataContainer container : containers) {
-				addTripleToCSV(writer, maxNumberOfPipes, container);
-			}
-		} catch (IOException e) {
-			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage());
-		}
-	}
-
-	private void addTripleToCSV(final Writer writer, final int maxNumberOfPipes, final PipeMonitoringDataContainer container)
+	protected void addTripleToCSV(final Writer writer, final int maxNumberOfPipes, final PipeMonitoringDataContainer container)
 			throws IOException {
 		String[] entryStrings = new String[maxNumberOfPipes + 2];
 		entryStrings[0] = Long.toString(container.getTime());
@@ -44,17 +28,13 @@ public class StackedTimeSizeWithCapacity2D extends AbstractMonitoringDataExtract
 			entryStrings[pipeId + 2] = Integer.toString(value);
 		}
 
-		// give elements without values standard values for this timestamp
-		for (int i = 0; i < entryStrings.length; i++) {
-			if (entryStrings[i] == null) {
-				entryStrings[i] = "0";
-			}
-		}
+		fillNullValuesWithZeros(entryStrings);
 
 		addCSVLineToWriter(writer, entryStrings);
 	}
 
-	private void createHeader(final Writer writer, final int maxNumberOfPipes) throws IOException {
+	@Override
+	protected void createHeader(final Writer writer, final int maxNumberOfPipes) throws IOException {
 		String[] headerStrings = new String[maxNumberOfPipes + 2];
 		headerStrings[0] = "time";
 		headerStrings[1] = "capacity";
