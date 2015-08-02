@@ -14,7 +14,7 @@ public abstract class AbstractSingleTaskFarmMonitoring extends AbstractMonitorin
 	}
 
 	@Override
-	protected void extractToWriter(final Writer writer) {
+	final protected void extractToWriter(final Writer writer) {
 		List<TaskFarmMonitoringData> monitoredDataValues = this.getTaskFarmMonitoringService().getData();
 
 		writeCSVData(writer, monitoredDataValues);
