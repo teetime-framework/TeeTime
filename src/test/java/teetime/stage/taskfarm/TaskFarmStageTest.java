@@ -24,7 +24,7 @@ import teetime.framework.Execution;
 
 public class TaskFarmStageTest {
 
-	private static final int NUMBER_OF_TEST_ELEMENTS = 10000;
+	private static final int NUMBER_OF_TEST_ELEMENTS = 40000;
 
 	@Test
 	public void simpleTaskFarmStageTest() throws InterruptedException {

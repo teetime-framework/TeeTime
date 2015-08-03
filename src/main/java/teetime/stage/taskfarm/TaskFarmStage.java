@@ -55,6 +55,10 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	private final PipeMonitoringService pipeMonitoringService = new PipeMonitoringService();
 	private final SingleTaskFarmMonitoringService taskFarmMonitoringService;
 
+	public TaskFarmStage(final T workerStage) {
+		this(workerStage, null);
+	}
+
 	/**
 	 * Constructor.
 	 *
@@ -63,20 +67,25 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	 * @param context
 	 *            current execution context
 	 */
-	public TaskFarmStage(final T workerStage) {
+	public TaskFarmStage(final T workerStage, final DynamicMerger<O> merger) {
 		super();
 
 		if (null == workerStage) {
 			throw new IllegalArgumentException("The constructor of a Task Farm may not be called with null as the worker stage.");
 		}
 
-		this.merger = new DynamicMerger<O>() {
-			@Override
-			public void onStarting() throws Exception {
-				adaptationThread.start();
-				super.onStarting();
-			}
-		};
+		if (merger == null) {
+			this.merger = new DynamicMerger<O>() {
+				@Override
+				public void onStarting() throws Exception {
+					adaptationThread.start();
+					super.onStarting();
+				}
+			};
+		} else {
+			this.merger = merger;
+		}
+
 		this.distributor = new DynamicDistributor<I>() {
 			@Override
 			public void onTerminating() throws Exception {

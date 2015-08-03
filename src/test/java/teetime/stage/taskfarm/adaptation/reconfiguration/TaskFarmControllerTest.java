@@ -23,7 +23,6 @@ import org.junit.Test;
 
 import teetime.stage.MD5Stage;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
-import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
 import teetime.util.framework.port.PortAction;
 
@@ -32,12 +31,12 @@ import teetime.util.framework.port.PortAction;
  */
 public class TaskFarmControllerTest {
 
+	// @Ignore
 	@Test
 	public void test() throws InterruptedException {
 		TestMerger<String> merger = new TestMerger<String>();
-		DuplicableMD5Stage stage = new DuplicableMD5Stage();
-		TaskFarmWithTestDistributorAndMerger<String, String, DuplicableMD5Stage> taskFarm = new TaskFarmWithTestDistributorAndMerger<String, String, DuplicableMD5Stage>(
-				stage, merger);
+		MD5Stage stage = new MD5Stage();
+		TaskFarmStage<String, String, MD5Stage> taskFarm = new TaskFarmStage<String, String, MD5Stage>(stage, merger);
 
 		final TaskFarmController<String, String> controller = new TaskFarmController<String, String>(taskFarm);
 
@@ -58,28 +57,15 @@ public class TaskFarmControllerTest {
 			}
 		});
 		adder.start();
+
 		while (merger.numberOfPortActions == 0) {
 			Thread.sleep(10);
-		}
-	}
-
-	private class TaskFarmWithTestDistributorAndMerger<I, O, T extends ITaskFarmDuplicable<I, O>> extends TaskFarmStage<I, O, T> {
-
-		private final TestMerger<O> merger;
-
-		public TaskFarmWithTestDistributorAndMerger(final T workerStage, final TestMerger<O> merger) {
-			super(workerStage);
-			this.merger = merger;
-		}
-
-		@Override
-		public DynamicMerger<O> getMerger() {
-			return merger;
+			System.out.println("sleep");
 		}
 	}
 
 	private class TestMerger<T> extends DynamicMerger<T> {
-		public int numberOfPortActions = 0;
+		volatile int numberOfPortActions;
 
 		@Override
 		public boolean addPortActionRequest(final PortAction<DynamicMerger<T>> newPortActionRequest) {
@@ -88,12 +74,4 @@ public class TaskFarmControllerTest {
 		}
 	}
 
-	private class DuplicableMD5Stage extends MD5Stage implements ITaskFarmDuplicable<String, String> {
-
-		@Override
-		public ITaskFarmDuplicable<String, String> duplicate() {
-			return new DuplicableMD5Stage();
-		}
-
-	}
 }

@@ -18,13 +18,25 @@ package teetime.stage;
 import java.nio.charset.Charset;
 
 import teetime.stage.basic.AbstractFilter;
+import teetime.stage.taskfarm.ITaskFarmDuplicable;
 
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
 
-public class MD5Stage extends AbstractFilter<String> {
+public class MD5Stage extends AbstractFilter<String> implements ITaskFarmDuplicable<String, String> {
 
-	private String encoding = "UTF-8";
+	private final String encoding;
+
+	/**
+	 * encoding = UTF-8
+	 */
+	public MD5Stage() {
+		this("UTF-8");
+	}
+
+	public MD5Stage(final String encoding) {
+		this.encoding = encoding;
+	}
 
 	@Override
 	protected void execute(final String element) {
@@ -37,7 +49,8 @@ public class MD5Stage extends AbstractFilter<String> {
 		return encoding;
 	}
 
-	public void setEncoding(final String encoding) {
-		this.encoding = encoding;
+	@Override
+	public ITaskFarmDuplicable<String, String> duplicate() {
+		return new MD5Stage(encoding);
 	}
 }
