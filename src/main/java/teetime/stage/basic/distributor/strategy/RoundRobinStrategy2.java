@@ -18,6 +18,7 @@ package teetime.stage.basic.distributor.strategy;
 import java.util.List;
 
 import teetime.framework.OutputPort;
+import teetime.framework.exceptionHandling.TerminateException;
 import teetime.stage.basic.distributor.Distributor;
 
 /**
@@ -56,8 +57,7 @@ public final class RoundRobinStrategy2 implements IDistributorStrategy {
 		try {
 			Thread.sleep(1);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw TerminateException.INSTANCE;
 		}
 		// Thread.yield();
 	}

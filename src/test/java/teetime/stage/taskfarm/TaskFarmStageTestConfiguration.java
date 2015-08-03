@@ -27,9 +27,10 @@ import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.AbstractFilter;
 import teetime.stage.basic.AbstractTransformation;
 
-class TaskFarmStageTestConfiguration extends Configuration {
+public class TaskFarmStageTestConfiguration extends Configuration {
 
 	private CollectorSink<String> collectorSink;
+	public volatile static int counter;
 
 	public TaskFarmStageTestConfiguration(final int numberOfTestElements) {
 		this.buildConfiguration(numberOfTestElements);
@@ -83,6 +84,9 @@ class TaskFarmStageTestConfiguration extends Configuration {
 		@Override
 		protected void execute(final Integer element) {
 			final Integer x = element + 1;
+			synchronized (TaskFarmStageTestConfiguration.class) {
+				counter++;
+			}
 			this.outputPort.send(x.toString());
 		}
 	}

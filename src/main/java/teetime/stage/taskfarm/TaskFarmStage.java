@@ -73,11 +73,7 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 		this.merger = new DynamicMerger<O>() {
 			@Override
 			public void onStarting() throws Exception {
-				synchronized (adaptationThread) {
-					if (!adaptationThread.isAlive()) {
-						adaptationThread.start();
-					}
-				}
+				adaptationThread.start();
 				super.onStarting();
 			}
 		};
@@ -97,14 +93,14 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	}
 
 	private void init(final T includedStage) {
-		addThreadableStage(this.merger);
-		addThreadableStage(includedStage.getInputPort().getOwningStage());
-
 		final InputPort<I> stageInputPort = includedStage.getInputPort();
 		connectPorts(this.distributor.getNewOutputPort(), stageInputPort);
 
 		final OutputPort<O> stageOutputPort = includedStage.getOutputPort();
 		connectPorts(stageOutputPort, this.merger.getNewInputPort());
+
+		addThreadableStage(this.merger);
+		addThreadableStage(includedStage.getInputPort().getOwningStage());
 
 		enclosedStageInstances.add(includedStage);
 	}

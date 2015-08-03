@@ -53,13 +53,12 @@ public abstract class AbstractStage extends Stage {
 	 */
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	@Override
-	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
+	protected void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
 			signal.trigger(this);
 			for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
 				outputPort.sendSignal(signal);
 			}
-
 		}
 	}
 
@@ -91,8 +90,10 @@ public abstract class AbstractStage extends Stage {
 	}
 
 	private void changeState(final StageState newState) {
+		if (logger.isTraceEnabled()) {
+			logger.trace(currentState + " -> " + newState);
+		}
 		currentState = newState;
-		logger.trace(newState.toString());
 	}
 
 	@Override

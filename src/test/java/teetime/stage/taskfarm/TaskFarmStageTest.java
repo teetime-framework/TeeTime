@@ -19,14 +19,10 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import teetime.framework.Execution;
 
 public class TaskFarmStageTest {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(TaskFarmStageTest.class);
 
 	private static final int NUMBER_OF_TEST_ELEMENTS = 10000;
 
@@ -36,7 +32,6 @@ public class TaskFarmStageTest {
 		final Execution<TaskFarmStageTestConfiguration> execution = new Execution<TaskFarmStageTestConfiguration>(configuration);
 
 		execution.executeBlocking();
-		LOGGER.debug("TEST FINSIHED");
 
 		assertThat(configuration.getCollection().size(), is(NUMBER_OF_TEST_ELEMENTS));
 	}

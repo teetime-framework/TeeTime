@@ -18,12 +18,8 @@ package teetime.stage.basic.distributor.dynamic;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.RuntimeServiceFacade;
 import teetime.framework.pipe.SpScPipeFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
@@ -31,8 +27,6 @@ import teetime.util.framework.port.PortAction;
 import teetime.util.stage.OneTimeCondition;
 
 public class CreatePortActionDistributor<T> implements PortAction<DynamicDistributor<T>> {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(CreatePortActionDistributor.class);
 
 	private static final SpScPipeFactory INTER_THREAD_PIPE_FACTORY = new SpScPipeFactory();
 
@@ -47,22 +41,15 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 
 	@Override
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
-		LOGGER.debug("execute");
 		OutputPort<T> newOutputPort = dynamicDistributor.getNewOutputPort();
-		processOutputPort(dynamicDistributor, newOutputPort);
-		onOutputPortCreated(dynamicDistributor, newOutputPort);
-		condition.signalAll();
-	}
 
-	private void processOutputPort(final DynamicDistributor<T> dynamicDistributor, final OutputPort<T> newOutputPort) {
 		INTER_THREAD_PIPE_FACTORY.create(newOutputPort, inputPort);
-
-		RuntimeServiceFacade.INSTANCE.startWithinNewThread(dynamicDistributor, inputPort.getOwningStage());
 
 		newOutputPort.sendSignal(new InitializingSignal());
 		newOutputPort.sendSignal(new StartingSignal());
 
-		// FIXME pass the new thread to the analysis so that it can terminate the thread at the end
+		onOutputPortCreated(dynamicDistributor, newOutputPort);
+		condition.signalAll();
 	}
 
 	private void onOutputPortCreated(final DynamicDistributor<T> dynamicDistributor, final OutputPort<T> newOutputPort) {

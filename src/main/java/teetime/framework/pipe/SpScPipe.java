@@ -46,6 +46,10 @@ final class SpScPipe<T> extends AbstractInterThreadPipe<T> implements IMonitorab
 			}
 			this.numWaits++;
 			try {
+				// LOGGER.trace("queue is full " + numWaits + " " + getTargetPort().getOwningStage().getCurrentState() + " "
+				// + getTargetPort().getOwningStage().getOwningThread().getState() + " "
+				// + queue.getNumPullsSinceAppStart() + " "
+				// + getSourcePort().getOwningStage().getOwningThread().getName() + " -> " + getTargetPort().getOwningStage().getOwningThread().getName());
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
 				throw TerminateException.INSTANCE;
@@ -82,22 +86,22 @@ final class SpScPipe<T> extends AbstractInterThreadPipe<T> implements IMonitorab
 
 	@Override
 	public long getPushThroughput() {
-		return queue.getProducerFrequency();
-	}
-
-	@Override
-	public long getPullThroughput() {
-		return queue.getConsumerFrequency();
-	}
-
-	@Override
-	public long getNumPushes() {
 		return queue.getNumPushes();
 	}
 
 	@Override
-	public long getNumPulls() {
+	public long getPullThroughput() {
 		return queue.getNumPulls();
+	}
+
+	@Override
+	public long getNumPushes() {
+		return queue.getNumPushesSinceAppStart();
+	}
+
+	@Override
+	public long getNumPulls() {
+		return queue.getNumPullsSinceAppStart();
 	}
 
 }
