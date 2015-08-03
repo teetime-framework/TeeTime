@@ -60,12 +60,7 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	}
 
 	/**
-	 * Constructor.
-	 *
-	 * @param workerStage
-	 *            instance of enclosed stage
-	 * @param context
-	 *            current execution context
+	 * for test purposes only
 	 */
 	public TaskFarmStage(final T workerStage, final DynamicMerger<O> merger) {
 		super();
