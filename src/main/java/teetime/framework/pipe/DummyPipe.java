@@ -25,7 +25,13 @@ import teetime.framework.signal.ISignal;
  * @author Christian Wulf
  *
  */
-public final class DummyPipe implements IPipe {
+public final class DummyPipe implements IPipe<Object> {
+
+	public static final IPipe<?> INSTANCE = new DummyPipe();
+
+	private DummyPipe() {
+		// singleton
+	}
 
 	@Override
 	public boolean add(final Object element) {
@@ -53,7 +59,7 @@ public final class DummyPipe implements IPipe {
 	}
 
 	@Override
-	public OutputPort<?> getSourcePort() {
+	public OutputPort<? extends Object> getSourcePort() {
 		return null;
 	}
 

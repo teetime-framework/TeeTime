@@ -53,10 +53,21 @@ public class SignalingCounter {
 		}
 
 		final Object cond = conditions.get(number);
-		while (counter != number) {
-			synchronized (cond) {
+
+		synchronized (cond) { // counter must be wrapped by synchronized to get the latest value
+			while (counter != number) {
 				cond.wait();
 			}
 		}
+	}
+
+	public synchronized void inc(final SignalingCounter otherCounter) {
+		counter += otherCounter.counter;
+		conditionalNotifyAll(counter);
+	}
+
+	@Override
+	public String toString() {
+		return "counter: " + counter + ", " + super.toString();
 	}
 }

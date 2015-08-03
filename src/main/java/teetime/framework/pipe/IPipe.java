@@ -22,7 +22,7 @@ import teetime.framework.signal.ISignal;
 /**
  * Represents a pipe that connects an output port with an input port.
  */
-public interface IPipe {
+public interface IPipe<T> {
 
 	/**
 	 * Adds an element to the Pipe.
@@ -69,12 +69,12 @@ public interface IPipe {
 	/**
 	 * @return the output port that is connected to the pipe.
 	 */
-	OutputPort<?> getSourcePort();
+	OutputPort<? extends T> getSourcePort();
 
 	/**
 	 * @return the input port that is connected to the pipe.
 	 */
-	InputPort<?> getTargetPort();
+	InputPort<T> getTargetPort();
 
 	/**
 	 * A stage can pass on a signal by executing this method. The signal will be sent to the receiving stage.

@@ -26,8 +26,11 @@ public final class TerminatingSignal extends AbstractSignal {
 	@Override
 	public void trigger(final Stage stage) {
 		try {
+			if (LOGGER.isTraceEnabled()) {
+				LOGGER.trace("TERM @" + stage);
+			}
 			stage.onTerminating();
-		} catch (Exception e) { // NOCS (Stages can throw any arbitrary Exception)
+		} catch (final Exception e) { // NOCS NOPMD (Stages can throw any arbitrary Exception)
 			this.catchedExceptions.add(e);
 			LOGGER.error("Exception while sending the termination signal", e);
 		}

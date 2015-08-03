@@ -15,9 +15,6 @@
  */
 package teetime.framework;
 
-import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExecution;
-import teetime.framework.exceptionHandling.StageException;
-
 public abstract class AbstractConsumerStage<I> extends AbstractStage {
 
 	protected final InputPort<I> inputPort = this.createInputPort();
@@ -27,20 +24,13 @@ public abstract class AbstractConsumerStage<I> extends AbstractStage {
 	}
 
 	@Override
-	protected final void executeStage() {
+	protected final void execute() {
 		final I element = this.getInputPort().receive();
 		if (null == element) {
 			returnNoElement();
 		}
 
-		try {
-			this.execute(element);
-		} catch (Exception e) {
-			final FurtherExecution furtherExecution = exceptionHandler.onStageException(e, this);
-			if (furtherExecution == FurtherExecution.TERMINATE) {
-				throw new StageException(e, this);
-			}
-		}
+		this.execute(element);
 	}
 
 	protected abstract void execute(I element);

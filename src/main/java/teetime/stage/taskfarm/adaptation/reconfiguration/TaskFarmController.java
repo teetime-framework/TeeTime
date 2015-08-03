@@ -17,19 +17,21 @@ package teetime.stage.taskfarm.adaptation.reconfiguration;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.RuntimeServiceFacade;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.pipe.IPipe;
 import teetime.stage.basic.distributor.dynamic.CreatePortActionDistributor;
-import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.distributor.dynamic.RemovePortActionDistributor;
 import teetime.stage.basic.merger.dynamic.CreatePortActionMerger;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
 import teetime.stage.taskfarm.exception.TaskFarmControllerException;
 import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
-import teetime.util.framework.port.PortAction;
 
 /**
  * The TaskFarmController is able to dynamically add stages to and remove
@@ -46,6 +48,8 @@ import teetime.util.framework.port.PortAction;
  */
 class TaskFarmController<I, O> {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(TaskFarmController.class);
+
 	private final TaskFarmStage<I, O, ?> taskFarmStage;
 
 	/**
@@ -61,38 +65,76 @@ class TaskFarmController<I, O> {
 
 	/**
 	 * Dynamically adds a stage to the controlled task farm.
+	 *
+	 * @throws InterruptedException
 	 */
-	public void addStageToTaskFarm() {
+	public void addStageToTaskFarm() throws InterruptedException {
+		LOGGER.debug("Add stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
 		ITaskFarmDuplicable<I, O> newStage = this.taskFarmStage.getBasicEnclosedStage().duplicate();
+
+		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort());
+		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
+		LOGGER.debug("distributor port created, before wait");
+		LOGGER.debug("state of distributor: " + this.taskFarmStage.getDistributor().getCurrentState().toString());
+		try {
+			distributorPortAction.waitForCompletion();
+		} catch (InterruptedException e) {
+			LOGGER.debug("Interrupted while waiting for completion", e);
+			throw e;
+		}
+		LOGGER.debug("distributor port created");
 
 		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort());
 		this.taskFarmStage.getMerger().addPortActionRequest(mergerPortAction);
 		mergerPortAction.waitForCompletion();
+		LOGGER.debug("merger port created");
 
-		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort());
-		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
-		// distributorPortAction.waitForCompletion();
+		RuntimeServiceFacade.INSTANCE.startWithinNewThread(taskFarmStage.getDistributor(), newStage.getInputPort().getOwningStage());
+		LOGGER.debug("Started new thread");
 
 		this.addNewEnclosedStageInstance(newStage);
+		this.addNewPipeToMonitoring(newStage);
+		LOGGER.debug("Finished: Add stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
+	}
+
+	private void addNewPipeToMonitoring(final ITaskFarmDuplicable<I, O> newStage) {
+		if (this.taskFarmStage.getConfiguration().isMonitoringEnabled()) {
+			try {
+				this.taskFarmStage.getPipeMonitoringService().addMonitoredItem((IMonitorablePipe) newStage.getInputPort().getPipe());
+			} catch (ClassCastException e) {
+				throw new TaskFarmControllerException("A generated pipe is not monitorable.");
+			}
+		}
 	}
 
 	/**
 	 * Dynamically removes a stage from the controlled task farm.
+	 *
+	 * @throws InterruptedException
 	 */
-	public void removeStageFromTaskFarm() {
+	public void removeStageFromTaskFarm() throws InterruptedException {
 		if (taskFarmStage.getEnclosedStageInstances().size() == 1) {
 			return;
 		}
 
-		final ITaskFarmDuplicable<I, O> stageToBeRemoved = this.getStageToBeRemoved();
-		final OutputPort<?> distributorOutputPort = this.getRemoveableDistributorOutputPort(stageToBeRemoved);
+		LOGGER.debug("Remove stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
+
+		ITaskFarmDuplicable<I, O> stageToBeRemoved = null;
+		OutputPort<?> distributorOutputPort = null;
+
+		stageToBeRemoved = this.getStageToBeRemoved();
+		distributorOutputPort = this.getRemoveableDistributorOutputPort(stageToBeRemoved);
 
 		try {
 			@SuppressWarnings("unchecked")
-			final PortAction<DynamicDistributor<I>> distributorPortAction =
+			final RemovePortActionDistributor<I> distributorPortAction =
 					new RemovePortActionDistributor<I>((OutputPort<I>) distributorOutputPort);
 			this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 			this.taskFarmStage.getEnclosedStageInstances().remove(stageToBeRemoved);
+			LOGGER.debug("WAIT for " + distributorPortAction);
+			distributorPortAction.waitForCompletion();
+
+			LOGGER.debug("Finished: Remove stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
 		} catch (ClassCastException e) {
 			throw new TaskFarmControllerException("Merger and Distributor have a different type than the Task Farm or the Task Farm Controller.");
 		}
@@ -104,7 +146,7 @@ class TaskFarmController<I, O> {
 
 	private OutputPort<?> getRemoveableDistributorOutputPort(final ITaskFarmDuplicable<I, O> stageToBeRemoved) {
 		final InputPort<?> inputPortOfStage = stageToBeRemoved.getInputPort();
-		final IPipe pipeInBetween = inputPortOfStage.getPipe();
+		final IPipe<?> pipeInBetween = inputPortOfStage.getPipe();
 		final OutputPort<?> distributorOutputPort = pipeInBetween.getSourcePort();
 		return distributorOutputPort;
 	}
@@ -139,6 +181,7 @@ class TaskFarmController<I, O> {
 			}
 		}
 
+		LOGGER.debug("Remove stage (currentMinumumStageIndex: " + currentMinumumStageIndex + ")");
 		return currentMinumumStageIndex;
 	}
 }

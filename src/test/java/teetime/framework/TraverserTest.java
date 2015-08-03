@@ -35,14 +35,14 @@ import teetime.stage.io.File2SeqOfWords;
 import teetime.stage.string.WordCounter;
 import teetime.stage.util.CountingMap;
 
-public class TraversorTest {
-
-	private final Traversor traversor = new Traversor(new IntraStageCollector());
+public class TraverserTest {
 
 	@Test
 	public void traverse() {
 		TestConfiguration tc = new TestConfiguration();
 		new Execution<TestConfiguration>(tc);
+
+		Traverser traversor = new Traverser(new IntraStageCollector(tc.init));
 		traversor.traverse(tc.init);
 
 		Set<Stage> comparingStages = new HashSet<Stage>();
@@ -52,13 +52,12 @@ public class TraversorTest {
 
 		OutputPort<?> distributorOutputPort0 = tc.distributor.getOutputPorts().get(0);
 		assertThat(tc.distributor.getOwningThread(), is(not(distributorOutputPort0.pipe.getTargetPort().getOwningStage().getOwningThread())));
-		assertEquals(comparingStages, traversor.getVisitedStage());
+		assertEquals(comparingStages, traversor.getVisitedStages());
 	}
 
 	// WordCounterConfiguration
-	private class TestConfiguration extends Configuration {
+	private static class TestConfiguration extends Configuration {
 
-		public final CountingMapMerger<String> result = new CountingMapMerger<String>();
 		public final InitialElementProducer<File> init;
 		public final File2SeqOfWords f2b;
 		public Distributor<String> distributor;
@@ -68,6 +67,7 @@ public class TraversorTest {
 			init = new InitialElementProducer<File>(new File(""));
 			f2b = new File2SeqOfWords("UTF-8", 512);
 			distributor = new Distributor<String>(new RoundRobinStrategy2());
+			CountingMapMerger<String> result = new CountingMapMerger<String>();
 
 			// last part
 			final Merger<CountingMap<String>> merger = new Merger<CountingMap<String>>();

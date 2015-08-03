@@ -13,7 +13,7 @@ public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<
 		this.controller = new TaskFarmController<I, O>(taskFarmStage);
 	}
 
-	public void reconfigure(final double throughputScore) {
+	public void reconfigure(final double throughputScore) throws InterruptedException {
 		TaskFarmReconfigurationCommand command = reconfigurationCommandService.decideExecutionPlan(throughputScore);
 
 		switch (command) {

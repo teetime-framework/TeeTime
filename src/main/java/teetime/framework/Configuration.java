@@ -15,6 +15,9 @@
  */
 package teetime.framework;
 
+import teetime.framework.exceptionHandling.IExceptionListenerFactory;
+import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
+
 /**
  * Represents a configuration of connected stages. Available to be extended.
  *
@@ -23,9 +26,22 @@ package teetime.framework;
  * @since 2.0
  *
  */
-public class Configuration extends AbstractCompositeStage {
+public abstract class Configuration extends AbstractCompositeStage {
+
+	private final IExceptionListenerFactory factory;
+	private final ConfigurationContext context;
 
 	private boolean executed;
+	private Stage startStage;
+
+	protected Configuration() {
+		this(new TerminatingExceptionListenerFactory());
+	}
+
+	protected Configuration(final IExceptionListenerFactory factory) {
+		this.factory = factory;
+		this.context = new ConfigurationContext(this);
+	}
 
 	boolean isExecuted() {
 		return executed;
@@ -35,7 +51,28 @@ public class Configuration extends AbstractCompositeStage {
 		this.executed = executed;
 	}
 
-	protected Configuration() {
-		// protected ctor to prevent direct instantiation.
+	public IExceptionListenerFactory getFactory() {
+		return factory;
 	}
+
+	@Override
+	protected void addThreadableStage(final Stage stage, final String threadName) {
+		startStage = stage; // memorize an arbitrary stage as starting point for traversing
+		super.addThreadableStage(stage, threadName);
+	}
+
+	@Override
+	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		startStage = sourcePort.getOwningStage(); // memorize an arbitrary stage as starting point for traversing
+		super.connectPorts(sourcePort, targetPort, capacity);
+	}
+
+	ConfigurationContext getContext() {
+		return context;
+	}
+
+	Stage getStartStage() {
+		return startStage;
+	}
+
 }

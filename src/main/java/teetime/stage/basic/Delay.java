@@ -31,7 +31,7 @@ public final class Delay<T> extends AbstractStage {
 	private final List<T> bufferedElements = new LinkedList<T>();
 
 	@Override
-	public void executeStage() {
+	protected void execute() {
 		T element = inputPort.receive();
 		if (null != element) {
 			bufferedElements.add(element);
@@ -49,7 +49,6 @@ public final class Delay<T> extends AbstractStage {
 		while (!bufferedElements.isEmpty()) {
 			T element = bufferedElements.remove(0);
 			outputPort.send(element);
-			logger.trace("Sent buffered element: " + element);
 		}
 	}
 
@@ -64,7 +63,6 @@ public final class Delay<T> extends AbstractStage {
 		T element;
 		while (null != (element = inputPort.receive())) {
 			outputPort.send(element);
-			logger.trace("Sent element: " + element);
 		}
 
 		super.onTerminating();

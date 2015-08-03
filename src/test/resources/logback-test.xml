@@ -22,9 +22,18 @@
 	
 	<logger name="teetime" level="INFO" />
 	<logger name="teetime.framework" level="TRACE" />
-	<logger name="teetime.stage.InitialElementProducer" level="DEBUG" />
-	<logger name="teetime.stage.merger" level="TRACE" />
+	<logger name="teetime.framework.pipe" level="WARN" />
+	<logger name="teetime.framework.signal" level="TRACE" />
+	
+<!-- 	<logger name="teetime.stage.basic.distributor" level="TRACE" /> -->
+	<logger name="teetime.stage.basic.merger" level="TRACE" />
+	
+	<logger name="teetime.stage.InitialElementProducer" level="TRACE" />
+	<logger name="teetime.stage.CollectorSink" level="TRACE" />
 	<logger name="teetime.stage.taskfarm" level="TRACE" />
+<!-- 	<logger name="teetime.stage.taskfarm.TaskFarmStageTestConfiguration" level="TRACE" /> -->
+<!-- 	<logger name="teetime.stage.taskfarm.adaptation" level="TRACE" /> -->
+	<logger name="teetime.util.framework.concurrent" level="TRACE" />
 <!-- 	<logger name="teetime.stage" level="TRACE" /> -->
 <!-- 	<logger name="teetime.framework.signal" level="TRACE" /> -->
 <!-- 	<logger name="teetime.stage" level="TRACE" /> -->

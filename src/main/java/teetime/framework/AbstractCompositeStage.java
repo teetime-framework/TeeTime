@@ -15,6 +15,8 @@
  */
 package teetime.framework;
 
+import teetime.framework.pipe.InstantiationPipe;
+
 /**
  * Represents a minimal stage that composes several other stages.
  *
@@ -30,14 +32,14 @@ public abstract class AbstractCompositeStage {
 	 */
 	private static final int DEFAULT_CAPACITY = 4;
 
-	private final ConfigurationContext context;
-
-	public AbstractCompositeStage() {
-		this.context = new ConfigurationContext();
-	}
-
-	protected ConfigurationContext getContext() {
-		return context;
+	/**
+	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
+	 *
+	 * @param stage
+	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
+	 */
+	protected final void addThreadableStage(final Stage stage) {
+		this.addThreadableStage(stage, stage.getId());
 	}
 
 	/**
@@ -48,18 +50,10 @@ public abstract class AbstractCompositeStage {
 	 * @param threadName
 	 *            A string which can be used for debugging.
 	 */
-	protected final void addThreadableStage(final Stage stage, final String threadName) {
-		context.addThreadableStage(stage, threadName);
-	}
-
-	/**
-	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
-	 *
-	 * @param stage
-	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
-	 */
-	protected final void addThreadableStage(final Stage stage) {
-		this.addThreadableStage(stage, stage.getId());
+	protected void addThreadableStage(final Stage stage, final String threadName) {
+		AbstractRunnableStage runnable = AbstractRunnableStage.create(stage);
+		Thread newThread = new TeeTimeThread(runnable, threadName);
+		stage.setOwningThread(newThread);
 	}
 
 	/**
@@ -73,7 +67,7 @@ public abstract class AbstractCompositeStage {
 	 *            the type of elements to be sent
 	 */
 	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		context.connectPorts(sourcePort, targetPort, DEFAULT_CAPACITY);
+		connectPorts(sourcePort, targetPort, DEFAULT_CAPACITY);
 	}
 
 	/**
@@ -88,8 +82,18 @@ public abstract class AbstractCompositeStage {
 	 * @param <T>
 	 *            the type of elements to be sent
 	 */
-	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		context.connectPorts(sourcePort, targetPort, capacity);
+	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		connectPortsInternal(sourcePort, targetPort, capacity);
+	}
+
+	private final <T> void connectPortsInternal(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		if (sourcePort.getOwningStage().getInputPorts().size() == 0) {
+			if (sourcePort.getOwningStage().getOwningThread() == null) {
+				addThreadableStage(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
+			}
+		}
+
+		new InstantiationPipe<T>(sourcePort, targetPort, capacity);
 	}
 
 }

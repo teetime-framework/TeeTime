@@ -18,7 +18,6 @@ package teetime.stage.basic.distributor.dynamic;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.DynamicActuator;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.SpScPipeFactory;
@@ -30,7 +29,6 @@ import teetime.util.stage.OneTimeCondition;
 public class CreatePortActionDistributor<T> implements PortAction<DynamicDistributor<T>> {
 
 	private static final SpScPipeFactory INTER_THREAD_PIPE_FACTORY = new SpScPipeFactory();
-	private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();
 
 	private final List<PortActionListener<T>> listeners = new ArrayList<PortActionListener<T>>();
 	private final OneTimeCondition condition = new OneTimeCondition();
@@ -45,20 +43,13 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
 		OutputPort<T> newOutputPort = dynamicDistributor.getNewOutputPort();
 
-		processOutputPort(newOutputPort);
-		onOutputPortCreated(dynamicDistributor, newOutputPort);
-		condition.signalAll();
-	}
-
-	private void processOutputPort(final OutputPort<T> newOutputPort) {
 		INTER_THREAD_PIPE_FACTORY.create(newOutputPort, inputPort);
-
-		DYNAMIC_ACTUATOR.startWithinNewThread(inputPort.getOwningStage());
 
 		newOutputPort.sendSignal(new InitializingSignal());
 		newOutputPort.sendSignal(new StartingSignal());
 
-		// FIXME pass the new thread to the analysis so that it can terminate the thread at the end
+		onOutputPortCreated(dynamicDistributor, newOutputPort);
+		condition.signalAll();
 	}
 
 	private void onOutputPortCreated(final DynamicDistributor<T> dynamicDistributor, final OutputPort<T> newOutputPort) {
@@ -75,11 +66,7 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 		listeners.add(listener);
 	}
 
-	public void waitForCompletion() {
-		try {
-			condition.await();
-		} catch (InterruptedException e) {
-			throw new IllegalStateException(e);
-		}
+	public void waitForCompletion() throws InterruptedException {
+		condition.await();
 	}
 }

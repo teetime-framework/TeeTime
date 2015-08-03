@@ -20,7 +20,7 @@ class TaskFarmComponents<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		this.taskFarmStage = taskFarmStage;
 	}
 
-	public void executeServices() {
+	public void executeServices() throws InterruptedException {
 		historyService.monitorPipes();
 		analysisService.analyze(historyService.getHistory());
 		reconfigurationService.reconfigure(analysisService.getThroughputScore());

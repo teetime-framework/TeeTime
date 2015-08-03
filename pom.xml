@@ -22,7 +22,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<javadocOutputDir>apidocs</javadocOutputDir>
-		
+
 		<java.version>1.6</java.version>
 		<checkstyle.version>2.15</checkstyle.version>
 		<findbugs.version>3.0.1</findbugs.version>

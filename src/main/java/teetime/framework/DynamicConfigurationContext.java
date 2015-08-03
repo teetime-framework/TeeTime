@@ -11,10 +11,9 @@ public class DynamicConfigurationContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicConfigurationContext.class);
 	private static final SpScPipeFactory PIPE_FACTORY = new SpScPipeFactory();
-	private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();
 
-	public void beginThread(final Stage stage) {
-		DYNAMIC_ACTUATOR.startWithinNewThread(stage);
+	public void beginThread(final Stage previousStage, final Stage stage) {
+		RuntimeServiceFacade.INSTANCE.startWithinNewThread(previousStage, stage);
 	}
 
 	/**

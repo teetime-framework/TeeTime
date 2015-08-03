@@ -1,11 +1,10 @@
 package teetime.framework;
 
-import teetime.framework.pipe.DummyPipe;
-import teetime.framework.pipe.IPipe;
-import teetime.util.divideAndConquer.Identifiable;
-
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
+
+import teetime.framework.pipe.DummyPipe;
+import teetime.util.divideAndConquer.Identifiable;
 
 /**
  * Represents a stage to provide functionality for the divide and conquer paradigm
@@ -14,7 +13,8 @@ import com.carrotsearch.hppc.IntObjectMap;
  *
  * @author Robin Mohr
  *
- * @param <P>
+ * @param
+ * 			<P>
  *            type of elements that represent a problem to be solved.
  *
  * @param <S>
@@ -25,13 +25,12 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 																												// FIXME this is needed for unconnected input ports
 																												// at the moment. framework won't validate additional
 																												// input ports on validating
-	private static final IPipe DUMMY_PIPE = new DummyPipe();
 	// TODO thread-optimization and scheduling: use these to create new threads / stages efficiently
 	private final int threshold = Runtime.getRuntime().availableProcessors();
 	private final int numberOfStages = 1;
 
 	protected final IntObjectMap<S> solutionBuffer = new IntObjectHashMap<S>();
-	private final DynamicConfigurationContext context;
+	private final DynamicConfigurationContext context = new DynamicConfigurationContext();
 
 	protected final InputPort<P> inputPort = this.createInputPort();
 	protected final InputPort<S> leftInputPort = this.createInputPort();
@@ -45,14 +44,10 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 	 * Divide and Conquer stages need the configuration context upon creation
 	 *
 	 */
-	public AbstractDCStage(final DynamicConfigurationContext context) {
-		if (null == context) {
-			throw new IllegalArgumentException("Context may not be null.");
-		}
-		this.context = context;
+	public AbstractDCStage() {
 		// FIXME maybe validate input ports in addition to output ports.
-		leftInputPort.setPipe(DUMMY_PIPE);
-		rightInputPort.setPipe(DUMMY_PIPE);
+		leftInputPort.setPipe(DummyPipe.INSTANCE);
+		rightInputPort.setPipe(DummyPipe.INSTANCE);
 	}
 
 	public final InputPort<P> getInputPort() {
@@ -80,7 +75,7 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 	}
 
 	@Override
-	protected final void executeStage() {
+	protected void execute() {
 		// check left / right input ports for new partial solutions
 		checkPort(rightInputPort);
 		checkPort(leftInputPort);
@@ -144,7 +139,7 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 		final AbstractDCStage<P, S> newStage = this.duplicate();
 		context.connectPorts(out, newStage.getInputPort());
 		context.connectPorts(newStage.getOutputPort(), in);
-		context.beginThread(newStage);
+		context.beginThread(this, newStage);
 		context.sendSignals(out);
 	}
 
@@ -186,10 +181,6 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 	protected abstract boolean isBaseCase(final P problem);
 
 	public abstract AbstractDCStage<P, S> duplicate();
-
-	public DynamicConfigurationContext getContext() {
-		return this.context;
-	}
 
 	// TODO Define terminating criteria. As of now, stage terminates after first solved problem
 	@Override

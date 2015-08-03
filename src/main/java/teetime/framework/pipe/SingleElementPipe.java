@@ -19,11 +19,11 @@ import teetime.framework.AbstractIntraThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-final class SingleElementPipe extends AbstractIntraThreadPipe {
+final class SingleElementPipe<T> extends AbstractIntraThreadPipe<T> {
 
 	private Object element;
 
-	<T> SingleElementPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	SingleElementPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort, 1);
 	}
 

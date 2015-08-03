@@ -19,9 +19,10 @@ import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.StageState;
+import teetime.framework.exceptionHandling.TerminateException;
 import teetime.util.framework.concurrent.queue.ObservableSpScArrayQueue;
 
-final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe {
+final class SpScPipe<T> extends AbstractInterThreadPipe<T> implements IMonitorablePipe {
 
 	// private static final Logger LOGGER = LoggerFactory.getLogger(SpScPipe.class);
 
@@ -29,7 +30,7 @@ final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe
 	// statistics
 	private int numWaits;
 
-	<T> SpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	SpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		super(sourcePort, targetPort, capacity);
 		this.queue = new ObservableSpScArrayQueue<Object>(capacity);
 	}
@@ -39,15 +40,19 @@ final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe
 	public boolean add(final Object element) {
 		while (!this.queue.offer(element)) {
 			// Thread.yield();
-			if (this.cachedTargetStage.getCurrentState() == StageState.TERMINATED) {
-				return false;
+			if (this.cachedTargetStage.getCurrentState() == StageState.TERMINATED ||
+					Thread.currentThread().isInterrupted()) {
+				throw TerminateException.INSTANCE;
 			}
 			this.numWaits++;
 			try {
+				// LOGGER.trace("queue is full " + numWaits + " " + getTargetPort().getOwningStage().getCurrentState() + " "
+				// + getTargetPort().getOwningStage().getOwningThread().getState() + " "
+				// + queue.getNumPullsSinceAppStart() + " "
+				// + getSourcePort().getOwningStage().getOwningThread().getName() + " -> " + getTargetPort().getOwningStage().getOwningThread().getName());
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
-				// FIXME Handle it correctly
-				e.printStackTrace();
+				throw TerminateException.INSTANCE;
 			}
 		}
 		// this.reportNewElement();
@@ -81,22 +86,22 @@ final class SpScPipe extends AbstractInterThreadPipe implements IMonitorablePipe
 
 	@Override
 	public long getPushThroughput() {
-		return queue.getProducerFrequency();
-	}
-
-	@Override
-	public long getPullThroughput() {
-		return queue.getConsumerFrequency();
-	}
-
-	@Override
-	public long getNumPushes() {
 		return queue.getNumPushes();
 	}
 
 	@Override
-	public long getNumPulls() {
+	public long getPullThroughput() {
 		return queue.getNumPulls();
+	}
+
+	@Override
+	public long getNumPushes() {
+		return queue.getNumPushesSinceAppStart();
+	}
+
+	@Override
+	public long getNumPulls() {
+		return queue.getNumPullsSinceAppStart();
 	}
 
 }

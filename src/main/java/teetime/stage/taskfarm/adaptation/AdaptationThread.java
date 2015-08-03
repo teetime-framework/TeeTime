@@ -15,35 +15,48 @@
  */
 package teetime.stage.taskfarm.adaptation;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
 
 final public class AdaptationThread extends Thread {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(AdaptationThread.class);
+
 	private volatile static int sampleRateMillis = 50;
+	private volatile boolean shouldTerminate;
 
-	private final List<TaskFarmComponents<?, ?, ?>> taskFarmServices;
-
-	private volatile boolean stopped = false;
-
-	public AdaptationThread() {
-		taskFarmServices = Collections.synchronizedList(new LinkedList<TaskFarmComponents<?, ?, ?>>());
-	}
+	private final List<TaskFarmComponents<?, ?, ?>> taskFarmServices = new LinkedList<TaskFarmComponents<?, ?, ?>>();
 
 	@Override
 	public void run() {
-		try {
-			while (!stopped) {
+		LOGGER.debug("Adaptation thread started");
+		while (!shouldTerminate) {
+			try {
+				doMonitoring();
+
 				Thread.sleep(sampleRateMillis);
 
 				executeNextStageToBeReconfigured();
 				checkForStopping();
+			} catch (InterruptedException e) {
+				shouldTerminate = true;
 			}
-		} catch (InterruptedException e) {
+		}
+		LOGGER.debug("Adaptation thread stopped");
+	}
+
+	private void doMonitoring() {
+		for (TaskFarmComponents<?, ?, ?> taskFarmComponents : taskFarmServices) {
+			if (taskFarmComponents.getTaskFarmStage().getConfiguration().isMonitoringEnabled()) {
+				taskFarmComponents.getTaskFarmStage().getPipeMonitoringService().addMonitoringData();
+				taskFarmComponents.getTaskFarmStage().getTaskFarmMonitoringService().addMonitoringData();
+			}
 		}
 	}
 
@@ -56,7 +69,7 @@ final public class AdaptationThread extends Thread {
 		AdaptationThread.sampleRateMillis = sampleRateMillis;
 	}
 
-	private void executeNextStageToBeReconfigured() {
+	private void executeNextStageToBeReconfigured() throws InterruptedException {
 		for (TaskFarmComponents<?, ?, ?> service : taskFarmServices) {
 			// execute first Task Farm which is still parallelizable
 			if (service.getTaskFarmStage().getConfiguration().isStillParallelizable()) {
@@ -82,6 +95,8 @@ final public class AdaptationThread extends Thread {
 	}
 
 	public void stopAdaptationThread() {
-		stopped = true;
+		shouldTerminate = true;
+		interrupt();
+		LOGGER.debug("Adaptation thread stop signal sent");
 	}
 }

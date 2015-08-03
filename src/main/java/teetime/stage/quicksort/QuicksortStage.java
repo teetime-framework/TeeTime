@@ -1,13 +1,8 @@
 package teetime.stage.quicksort;
 
 import teetime.framework.AbstractDCStage;
-import teetime.framework.DynamicConfigurationContext;
 
 public final class QuicksortStage extends AbstractDCStage<QuicksortProblem, QuicksortSolution> {
-
-	public QuicksortStage(final DynamicConfigurationContext context) {
-		super(context);
-	}
 
 	@Override
 	protected boolean isBaseCase(final QuicksortProblem quickSortProblem) {
@@ -50,7 +45,6 @@ public final class QuicksortStage extends AbstractDCStage<QuicksortProblem, Quic
 		leftOutputPort.send(newQuicksortProblem1);
 		QuicksortProblem newQuicksortProblem2 = new QuicksortProblem(problem.getID(), i, high, numbers);
 		rightOutputPort.send(newQuicksortProblem2);
-
 	}
 
 	@Override
@@ -66,6 +60,6 @@ public final class QuicksortStage extends AbstractDCStage<QuicksortProblem, Quic
 
 	@Override
 	public AbstractDCStage<QuicksortProblem, QuicksortSolution> duplicate() {
-		return new QuicksortStage(this.getContext());
+		return new QuicksortStage();
 	}
 }

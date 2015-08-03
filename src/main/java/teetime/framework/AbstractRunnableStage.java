@@ -18,7 +18,7 @@ package teetime.framework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.exceptionHandling.StageException;
+import teetime.framework.exceptionHandling.TerminateException;
 
 abstract class AbstractRunnableStage implements Runnable {
 
@@ -28,29 +28,33 @@ abstract class AbstractRunnableStage implements Runnable {
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
-	public AbstractRunnableStage(final Stage stage) {
+	protected AbstractRunnableStage(final Stage stage) {
+		if (stage == null) {
+			throw new IllegalArgumentException("Argument stage may not be null");
+		}
+
 		this.stage = stage;
 		this.logger = LoggerFactory.getLogger(stage.getClass());
-
-		if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
-			stage.owningContext.getRunnableCounter().inc();
-		}
 	}
 
 	@Override
 	public final void run() {
+		final Stage stage = this.stage; // should prevent the stage to be reloaded after a volatile read
 		this.logger.debug("Executing runnable stage...");
 
 		try {
 			try {
 				beforeStageExecution();
+				if (stage.getOwningContext() == null) {
+					throw new IllegalArgumentException("Argument stage may not have a nullable owning context");
+				}
 				try {
 					do {
 						executeStage();
-					} while (!stage.shouldBeTerminated());
-				} catch (StageException e) {
+					} while (!Thread.currentThread().isInterrupted());
+				} catch (TerminateException e) {
 					this.stage.terminate();
-					throw e;
+					stage.getOwningContext().abortConfigurationRun();
 				} finally {
 					afterStageExecution();
 				}
@@ -63,11 +67,11 @@ abstract class AbstractRunnableStage implements Runnable {
 			}
 		} finally {
 			if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
-				stage.owningContext.getRunnableCounter().dec();
+				stage.getOwningContext().getThreadService().getRunnableCounter().dec();
 			}
 		}
 
-		logger.debug("Finished runnable stage. (" + this.stage + ")");
+		logger.debug("Finished runnable stage. (" + stage.getId() + ")");
 	}
 
 	protected abstract void beforeStageExecution() throws InterruptedException;
@@ -75,5 +79,13 @@ abstract class AbstractRunnableStage implements Runnable {
 	protected abstract void executeStage();
 
 	protected abstract void afterStageExecution();
+
+	public static AbstractRunnableStage create(final Stage stage) {
+		if (stage.getTerminationStrategy() == TerminationStrategy.BY_SIGNAL) {
+			return new RunnableConsumerStage(stage);
+		} else {
+			return new RunnableProducerStage(stage);
+		}
+	}
 
 }

@@ -15,7 +15,6 @@
  */
 package teetime.stage.taskfarm;
 
-import java.security.InvalidParameterException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,6 +24,8 @@ import teetime.framework.OutputPort;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
 import teetime.stage.taskfarm.adaptation.AdaptationThread;
+import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
+import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
 /**
  * The TaskFarmStage implements the task farm parallelization pattern in
@@ -49,66 +50,61 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 
 	private final TaskFarmConfiguration<I, O, T> configuration;
 
-	private AdaptationThread adaptationThread = null;
+	private final AdaptationThread adaptationThread = new AdaptationThread();
+
+	private final PipeMonitoringService pipeMonitoringService = new PipeMonitoringService();
+	private final SingleTaskFarmMonitoringService taskFarmMonitoringService;
+
+	public TaskFarmStage(final T workerStage) {
+		this(workerStage, null);
+	}
 
 	/**
-	 * Constructor.
-	 *
-	 * @param workerStage
-	 *            instance of enclosed stage
-	 * @param context
-	 *            current execution context
+	 * for test purposes only
 	 */
-	public TaskFarmStage(final T workerStage) {
+	public TaskFarmStage(final T workerStage, final DynamicMerger<O> merger) {
 		super();
 
 		if (null == workerStage) {
-			throw new InvalidParameterException("The constructor of a Task Farm may not be called with null as the worker stage.");
+			throw new IllegalArgumentException("The constructor of a Task Farm may not be called with null as the worker stage.");
 		}
 
-		this.merger = new DynamicMerger<O>() {
-			@Override
-			public void onStarting() throws Exception {
-				adaptationThread.start();
-				super.onStarting();
-			}
-
-			@Override
-			public void onTerminating() throws Exception {
-				adaptationThread.stopAdaptationThread();
-				while (adaptationThread.isAlive()) {
+		if (merger == null) {
+			this.merger = new DynamicMerger<O>() {
+				@Override
+				public void onStarting() throws Exception {
+					adaptationThread.start();
+					super.onStarting();
 				}
-				super.onTerminating();
-			}
-		};
+			};
+		} else {
+			this.merger = merger;
+		}
+
 		this.distributor = new DynamicDistributor<I>() {
 			@Override
 			public void onTerminating() throws Exception {
 				adaptationThread.stopAdaptationThread();
-				while (adaptationThread.isAlive()) {
-				}
 				super.onTerminating();
 			}
 		};
 		this.configuration = new TaskFarmConfiguration<I, O, T>();
 
-		if (adaptationThread == null) {
-			adaptationThread = new AdaptationThread();
-		}
-		adaptationThread.addTaskFarm(this);
+		this.adaptationThread.addTaskFarm(this);
+		taskFarmMonitoringService = new SingleTaskFarmMonitoringService(this);
 
 		this.init(workerStage);
 	}
 
 	private void init(final T includedStage) {
-		addThreadableStage(this.merger);
-		addThreadableStage(includedStage.getInputPort().getOwningStage());
-
 		final InputPort<I> stageInputPort = includedStage.getInputPort();
 		connectPorts(this.distributor.getNewOutputPort(), stageInputPort);
 
 		final OutputPort<O> stageOutputPort = includedStage.getOutputPort();
 		connectPorts(stageOutputPort, this.merger.getNewInputPort());
+
+		addThreadableStage(this.merger);
+		addThreadableStage(includedStage.getInputPort().getOwningStage());
 
 		enclosedStageInstances.add(includedStage);
 	}
@@ -126,18 +122,26 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	}
 
 	public ITaskFarmDuplicable<I, O> getBasicEnclosedStage() {
-		return enclosedStageInstances.get(0);
+		return this.enclosedStageInstances.get(0);
 	}
 
 	public List<ITaskFarmDuplicable<I, O>> getEnclosedStageInstances() {
-		return enclosedStageInstances;
+		return this.enclosedStageInstances;
 	}
 
 	public DynamicDistributor<I> getDistributor() {
-		return distributor;
+		return this.distributor;
 	}
 
 	public DynamicMerger<O> getMerger() {
-		return merger;
+		return this.merger;
+	}
+
+	public PipeMonitoringService getPipeMonitoringService() {
+		return this.pipeMonitoringService;
+	}
+
+	public SingleTaskFarmMonitoringService getTaskFarmMonitoringService() {
+		return this.taskFarmMonitoringService;
 	}
 }

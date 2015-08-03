@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import teetime.framework.DynamicConfigurationContext;
 import teetime.stage.quicksort.QuicksortProblem;
 import teetime.stage.quicksort.QuicksortSolution;
 import teetime.stage.quicksort.QuicksortStage;
@@ -20,9 +19,7 @@ public class QuicksortStageTest {
 
 	@Test
 	public void quicksortImplementationShouldSortArray() {
-		final DynamicConfigurationContext context = new DynamicConfigurationContext();
-
-		final QuicksortStage quicksortStage = new QuicksortStage(context);
+		final QuicksortStage quicksortStage = new QuicksortStage();
 
 		final int[] numbers = new int[] { 3, 1, 4, 5, 2 };
 		final int[] sortedNumbers = new int[] { 1, 2, 3, 4, 5 };

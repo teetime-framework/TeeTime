@@ -17,7 +17,7 @@ package teetime.framework;
 
 import teetime.framework.pipe.IPipe;
 
-public abstract class AbstractPipe implements IPipe {
+public abstract class AbstractPipe<T> implements IPipe<T> {
 
 	/**
 	 * Performance cache: Avoids the following method chain
@@ -28,12 +28,12 @@ public abstract class AbstractPipe implements IPipe {
 	 */
 	protected final Stage cachedTargetStage;
 
-	private final OutputPort<?> sourcePort;
-	private final InputPort<?> targetPort;
+	private final OutputPort<? extends T> sourcePort;
+	private final InputPort<T> targetPort;
 	@SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
 	private final int capacity;
 
-	protected <T> AbstractPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	protected AbstractPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort == null) {
 			throw new IllegalArgumentException("sourcePort may not be null");
 		}
@@ -51,12 +51,12 @@ public abstract class AbstractPipe implements IPipe {
 	}
 
 	@Override
-	public final OutputPort<?> getSourcePort() {
+	public final OutputPort<? extends T> getSourcePort() {
 		return sourcePort;
 	}
 
 	@Override
-	public final InputPort<?> getTargetPort() {
+	public final InputPort<T> getTargetPort() {
 		return targetPort;
 	}
 
@@ -68,5 +68,10 @@ public abstract class AbstractPipe implements IPipe {
 	@Override
 	public final int capacity() {
 		return capacity;
+	}
+
+	@Override
+	public String toString() {
+		return sourcePort.getOwningStage().getId() + " -> " + targetPort.getOwningStage().getId() + " (" + super.toString() + ")";
 	}
 }

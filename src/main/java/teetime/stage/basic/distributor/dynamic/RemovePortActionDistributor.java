@@ -17,10 +17,13 @@ package teetime.stage.basic.distributor.dynamic;
 
 import teetime.framework.OutputPort;
 import teetime.util.framework.port.PortAction;
+import teetime.util.stage.OneTimeCondition;
 
 public class RemovePortActionDistributor<T> implements PortAction<DynamicDistributor<T>> {
 
 	private final OutputPort<T> outputPort;
+
+	private final OneTimeCondition condition = new OneTimeCondition();
 
 	public RemovePortActionDistributor(final OutputPort<T> outputPort) {
 		if (null == outputPort) {
@@ -32,5 +35,11 @@ public class RemovePortActionDistributor<T> implements PortAction<DynamicDistrib
 	@Override
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
 		dynamicDistributor.removeDynamicPort(outputPort);
+		condition.signalAll();
 	}
+
+	public void waitForCompletion() throws InterruptedException {
+		condition.await();
+	}
+
 }

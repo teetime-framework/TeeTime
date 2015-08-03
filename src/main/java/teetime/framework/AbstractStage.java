@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
@@ -28,22 +27,20 @@ import teetime.util.framework.port.PortRemovedListener;
 
 public abstract class AbstractStage extends Stage {
 
-	private static final IPipe DUMMY_PIPE = new DummyPipe();
-
 	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
 
 	private final PortList<InputPort<?>> inputPorts = new PortList<InputPort<?>>();
 	private final PortList<OutputPort<?>> outputPorts = new PortList<OutputPort<?>>();
-	private StageState currentState = StageState.CREATED;
+	private volatile StageState currentState = StageState.CREATED;
 
 	@Override
 	protected List<InputPort<?>> getInputPorts() {
-		return inputPorts.getOpenedPorts();
+		return inputPorts.getOpenedPorts(); // TODO consider to publish a read-only version
 	}
 
 	@Override
 	protected List<OutputPort<?>> getOutputPorts() {
-		return outputPorts.getOpenedPorts();
+		return outputPorts.getOpenedPorts(); // TODO consider to publish a read-only version
 	}
 
 	@Override
@@ -56,13 +53,12 @@ public abstract class AbstractStage extends Stage {
 	 */
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	@Override
-	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
+	protected void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
 			signal.trigger(this);
 			for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
 				outputPort.sendSignal(signal);
 			}
-
 		}
 	}
 
@@ -74,7 +70,7 @@ public abstract class AbstractStage extends Stage {
 	 * @return <code>true</code> if this stage has already received the given <code>signal</code>, <code>false</code> otherwise
 	 */
 	protected boolean signalAlreadyReceived(final ISignal signal, final InputPort<?> inputPort) {
-		boolean signalAlreadyReceived = this.triggeredSignalTypes.contains(signal.getClass());
+		final boolean signalAlreadyReceived = this.triggeredSignalTypes.contains(signal.getClass());
 		if (signalAlreadyReceived) {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Got signal again: " + signal + " from input port: " + inputPort);
@@ -90,25 +86,14 @@ public abstract class AbstractStage extends Stage {
 
 	@Override
 	public void onInitializing() throws Exception {
-		this.connectUnconnectedOutputPorts();
 		changeState(StageState.INITIALIZED);
 	}
 
-	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-	private void connectUnconnectedOutputPorts() {
-		for (OutputPort<?> outputPort : this.outputPorts.getOpenedPorts()) {
-			if (null == outputPort.getPipe()) { // if port is unconnected
-				if (logger.isInfoEnabled()) {
-					this.logger.info("Unconnected output port: " + outputPort + ". Connecting with a dummy pipe.");
-				}
-				outputPort.setPipe(DUMMY_PIPE);
-			}
-		}
-	}
-
 	private void changeState(final StageState newState) {
+		if (logger.isTraceEnabled()) {
+			logger.trace(currentState + " -> " + newState);
+		}
 		currentState = newState;
-		logger.trace(newState.toString());
 	}
 
 	@Override
@@ -257,7 +242,7 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
 		for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
-			final IPipe pipe = outputPort.getPipe();
+			final IPipe<?> pipe = outputPort.getPipe();
 
 			final Class<?> sourcePortType = outputPort.getType();
 			final Class<?> targetPortType = pipe.getTargetPort().getType();
@@ -270,12 +255,13 @@ public abstract class AbstractStage extends Stage {
 
 	@Override
 	protected void terminate() {
-		currentState = StageState.TERMINATING;
+		changeState(StageState.TERMINATING);
+		getOwningThread().interrupt();
 	}
 
 	@Override
 	protected boolean shouldBeTerminated() {
-		return (currentState == StageState.TERMINATING);
+		return (getCurrentState() == StageState.TERMINATING);
 	}
 
 	@Override
