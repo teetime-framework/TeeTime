@@ -15,29 +15,30 @@
  */
 package teetime.framework;
 
-import teetime.framework.Traverser.VisitorBehavior;
+public class TeeTimeThread extends Thread {
 
-public class IntraStageCollector implements ITraverserVisitor {
+	private final AbstractRunnableStage runnable;
 
-	private final Stage startStage;
-
-	public IntraStageCollector(final Stage startStage) {
-		super();
-		this.startStage = startStage;
+	public TeeTimeThread(final AbstractRunnableStage runnable, final String name) {
+		super(runnable, name);
+		this.runnable = runnable;
 	}
 
-	@Override
-	public VisitorBehavior visit(final Stage stage) {
-		if (stage == startStage || stage.getOwningThread() == null /* before execution */
-				|| stage.getOwningThread() == startStage.getOwningThread() /* while execution */) {
-			return VisitorBehavior.CONTINUE;
+	public void sendInitializingSignal() {
+		if (runnable instanceof RunnableProducerStage) {
+			((RunnableProducerStage) runnable).triggerInitializingSignal();
 		}
-		return VisitorBehavior.STOP;
+	}
+
+	public void sendStartingSignal() {
+		if (runnable instanceof RunnableProducerStage) {
+			((RunnableProducerStage) runnable).triggerStartingSignal();
+		}
 	}
 
 	@Override
-	public VisitorBehavior visit(final AbstractPort<?> port) {
-		return VisitorBehavior.CONTINUE;
+	public synchronized void start() {
+		runnable.stage.getOwningContext().getThreadService().getRunnableCounter().inc();
+		super.start();
 	}
-
 }

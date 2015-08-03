@@ -32,8 +32,8 @@ abstract class AbstractTrigger<I, T, O> extends AbstractStage {
 	@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
 	// disabled while in development
 	@Override
-	protected void executeStage() {
-
+	protected void execute() {
+		// TODO implement
 	}
 
 }

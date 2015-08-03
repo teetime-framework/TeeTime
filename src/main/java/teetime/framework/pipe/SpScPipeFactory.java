@@ -21,13 +21,13 @@ import teetime.framework.OutputPort;
 public final class SpScPipeFactory implements IPipeFactory {
 
 	@Override
-	public <T> IPipe create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	public <T> IPipe<T> create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return this.create(sourcePort, targetPort, 4);
 	}
 
 	@Override
-	public <T> IPipe create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		return new SpScPipe(sourcePort, targetPort, capacity);
+	public <T> IPipe<T> create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		return new SpScPipe<T>(sourcePort, targetPort, capacity);
 	}
 
 	@Override

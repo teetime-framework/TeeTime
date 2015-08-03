@@ -18,33 +18,27 @@ package teetime.framework;
 import java.util.HashSet;
 import java.util.Set;
 
-import teetime.framework.IPipeVisitor.VisitorBehavior;
-import teetime.framework.pipe.IPipe;
+import teetime.framework.Traverser.VisitorBehavior;
 
-public class Traversor {
+public class A1ThreadableStageCollector implements ITraverserVisitor {
 
-	private final IPipeVisitor pipeVisitor;
-	private final Set<Stage> visitedStages = new HashSet<Stage>();
+	private final Set<Stage> threadableStages = new HashSet<Stage>();
 
-	public Traversor(final IPipeVisitor pipeVisitor) {
-		this.pipeVisitor = pipeVisitor;
+	public Set<Stage> getThreadableStages() {
+		return threadableStages;
 	}
 
-	public void traverse(final Stage stage) {
-		if (!visitedStages.add(stage)) {
-			return;
+	@Override
+	public VisitorBehavior visit(final Stage stage) {
+		if (stage.getOwningThread() != null && !threadableStages.contains(stage) && stage.getCurrentState() == StageState.CREATED) {
+			threadableStages.add(stage);
 		}
-
-		for (OutputPort<?> outputPort : stage.getOutputPorts()) {
-			IPipe pipe = outputPort.getPipe();
-			if (null != pipe && pipeVisitor.visit(pipe) == VisitorBehavior.CONTINUE) {
-				Stage owningStage = pipe.getTargetPort().getOwningStage();
-				traverse(owningStage); // recursive call
-			}
-		}
+		return stage.getCurrentState() == StageState.CREATED ? VisitorBehavior.CONTINUE : VisitorBehavior.STOP;
 	}
 
-	public Set<Stage> getVisitedStage() {
-		return visitedStages;
+	@Override
+	public VisitorBehavior visit(final AbstractPort<?> port) {
+		return VisitorBehavior.CONTINUE;
 	}
+
 }

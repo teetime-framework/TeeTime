@@ -33,8 +33,8 @@ public class DynamicMerger<T> extends Merger<T> {
 	}
 
 	@Override
-	public void executeStage() {
-		super.executeStage(); // must be first, to throw NotEnoughInputException before checking
+	protected void execute() {
+		super.execute(); // must be first, to throw NotEnoughInputException before checking
 		checkForPendingPortActionRequest();
 	}
 

@@ -15,14 +15,12 @@
  */
 package teetime.framework;
 
-import teetime.framework.pipe.IPipe;
+import teetime.framework.Traverser.VisitorBehavior;
 
-public interface IPipeVisitor {
+public interface ITraverserVisitor {
 
-	public enum VisitorBehavior {
-		CONTINUE, STOP
-	}
+	VisitorBehavior visit(Stage stage);
 
-	VisitorBehavior visit(IPipe outputPipe);
+	VisitorBehavior visit(AbstractPort<?> port);
 
 }

@@ -1,20 +1,31 @@
+/**
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package teetime.framework;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.exceptionHandling.AbstractExceptionListener;
-import teetime.framework.exceptionHandling.IExceptionListenerFactory;
-import teetime.framework.signal.InitializingSignal;
-import teetime.util.ThreadThrowableContainer;
+import teetime.framework.Traverser.Direction;
 import teetime.util.framework.concurrent.SignalingCounter;
 
 /**
@@ -26,64 +37,122 @@ import teetime.util.framework.concurrent.SignalingCounter;
  */
 class ThreadService extends AbstractService<ThreadService> {
 
-	private Map<Stage, String> threadableStages = new HashMap<Stage, String>();
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(ThreadService.class);
 
-	private final List<Thread> consumerThreads = new LinkedList<Thread>();
-	private final List<Thread> finiteProducerThreads = new LinkedList<Thread>();
-	private final List<Thread> infiniteProducerThreads = new LinkedList<Thread>();
+	private final List<Thread> consumerThreads = Collections.synchronizedList(new LinkedList<Thread>());
+	private final List<Thread> finiteProducerThreads = Collections.synchronizedList(new LinkedList<Thread>());
+	private final List<Thread> infiniteProducerThreads = Collections.synchronizedList(new LinkedList<Thread>());
 
 	private final SignalingCounter runnableCounter = new SignalingCounter();
+	private final Set<Stage> threadableStages = Collections.synchronizedSet(new HashSet<Stage>());
 
-	private final AbstractCompositeStage compositeStage;
+	private final Configuration configuration;
 
-	public ThreadService(final AbstractCompositeStage compositeStage) {
-		this.compositeStage = compositeStage;
-
+	public ThreadService(final Configuration configuration) {
+		this.configuration = configuration;
 	}
-
-	private final Collection<ThreadThrowableContainer> exceptions = new ConcurrentLinkedQueue<ThreadThrowableContainer>();
-
-	private final List<RunnableProducerStage> producerRunnables = new LinkedList<RunnableProducerStage>();
 
 	@Override
 	void onInitialize() {
-		IExceptionListenerFactory factory;
-		factory = ((Configuration) compositeStage).getFactory();
+		Stage startStage = configuration.getStartStage();
+
+		Set<Stage> newThreadableStages = initialize(startStage);
+		startThreads(newThreadableStages);
+		sendInitializingSignal(newThreadableStages);
+	}
+
+	void startStageAtRuntime(final Stage newStage) {
+		configuration.addThreadableStage(newStage);
+
+		Set<Stage> newThreadableStages = initialize(newStage);
+		startThreads(newThreadableStages);
+		sendInitializingSignal(newThreadableStages);
+
+		sendStartingSignal(newThreadableStages);
+	}
+
+	// extracted for runtime use
+	private Set<Stage> initialize(final Stage startStage) {
+		if (startStage == null) {
+			throw new IllegalStateException("The start stage may not be null.");
+		}
+
+		// TODO use decorator pattern to combine all analyzes so that only one traverser pass is necessary
+		A0UnconnectedPort portVisitor = new A0UnconnectedPort();
+		Traverser traversor = new Traverser(portVisitor, Direction.BOTH);
+		traversor.traverse(startStage);
+
+		A1ThreadableStageCollector stageCollector = new A1ThreadableStageCollector();
+		traversor = new Traverser(stageCollector, Direction.BOTH);
+		traversor.traverse(startStage);
+
+		Set<Stage> newThreadableStages = stageCollector.getThreadableStages();
+
+		threadableStages.addAll(newThreadableStages);
 		if (threadableStages.isEmpty()) {
 			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
 		}
 
-		for (Stage stage : threadableStages.keySet()) {
-			final Thread thread = initializeStage(stage);
+		A2InvalidThreadAssignmentCheck checker = new A2InvalidThreadAssignmentCheck(newThreadableStages);
+		checker.check();
 
-			final Set<Stage> intraStages = traverseIntraStages(stage);
+		A3PipeInstantiation pipeVisitor = new A3PipeInstantiation();
+		traversor = new Traverser(pipeVisitor, Direction.BOTH);
+		traversor.traverse(startStage);
 
-			final AbstractExceptionListener newListener = factory.createInstance();
-			initializeIntraStages(intraStages, thread, newListener);
+		A4StageAttributeSetter attributeSetter = new A4StageAttributeSetter(configuration, newThreadableStages);
+		attributeSetter.setAttributes();
+
+		for (Stage stage : newThreadableStages) {
+			categorizeThreadableStage(stage);
 		}
 
-		onStart();
+		return newThreadableStages;
 	}
 
-	@Override
-	void onStart() {
-		startThreads(this.consumerThreads);
-		startThreads(this.finiteProducerThreads);
-		startThreads(this.infiniteProducerThreads);
+	private void categorizeThreadableStage(final Stage stage) {
+		switch (stage.getTerminationStrategy()) {
+		case BY_INTERRUPT:
+			infiniteProducerThreads.add(stage.getOwningThread());
+			break;
+		case BY_SELF_DECISION:
+			finiteProducerThreads.add(stage.getOwningThread());
+			break;
+		case BY_SIGNAL:
+			consumerThreads.add(stage.getOwningThread());
+			break;
+		default:
+			LOGGER.warn("Unknown termination strategy '" + stage.getTerminationStrategy() + "' in stage " + stage);// NOPMD
+			break;
+		}
+	}
 
-		sendInitializingSignal();
+	private void startThreads(final Set<Stage> threadableStages) {
+		for (Stage stage : threadableStages) {
+			stage.getOwningThread().start();
+		}
+	}
+
+	private void sendInitializingSignal(final Set<Stage> threadableStages) {
+		for (Stage stage : threadableStages) {
+			((TeeTimeThread) stage.getOwningThread()).sendInitializingSignal();
+		}
+	}
+
+	private void sendStartingSignal(final Set<Stage> newThreadableStages) {
+		for (Stage stage : newThreadableStages) {
+			((TeeTimeThread) stage.getOwningThread()).sendStartingSignal();
+		}
 	}
 
 	@Override
 	void onExecute() {
-		sendStartingSignal();
+		sendStartingSignal(threadableStages);
 	}
 
 	@Override
 	void onTerminate() {
-		for (Stage stage : threadableStages.keySet()) {
+		for (Stage stage : threadableStages) {
 			stage.terminate();
 		}
 	}
@@ -92,16 +161,6 @@ class ThreadService extends AbstractService<ThreadService> {
 	void onFinish() {
 		try {
 			runnableCounter.waitFor(0);
-
-			// LOGGER.debug("Waiting for finiteProducerThreads");
-			// for (Thread thread : this.finiteProducerThreads) {
-			// thread.join();
-			// }
-			//
-			// LOGGER.debug("Waiting for consumerThreads");
-			// for (Thread thread : this.consumerThreads) {
-			// thread.join();
-			// }
 		} catch (InterruptedException e) {
 			LOGGER.error("Execution has stopped unexpectedly", e);
 			for (Thread thread : this.finiteProducerThreads) {
@@ -118,101 +177,34 @@ class ThreadService extends AbstractService<ThreadService> {
 			thread.interrupt();
 		}
 
-		// if (!exceptions.isEmpty()) {
-		// throw new ExecutionException(exceptions);
+		List<Exception> exceptions = collectExceptions();
+		if (!exceptions.isEmpty()) {
+			// throw new ExecutionException(exceptions);
+		}
+	}
+
+	// TODO impl throw exception
+	private List<Exception> collectExceptions() {
+		// Collection<ThreadThrowableContainer> exceptions = new ConcurrentLinkedQueue<ThreadThrowableContainer>();
+		List<Exception> exceptions = new ArrayList<Exception>();
+
+		// for (Stage stage : threadableStages.keySet()) {
+		// List<Exception> stageExceptions = stage.exceptionListener.getExceptions();
+		// exceptions.addAll(stageExceptions);
 		// }
+
+		return exceptions;
 	}
 
-	private void initializeIntraStages(final Set<Stage> intraStages, final Thread thread, final AbstractExceptionListener newListener) {
-		for (Stage intraStage : intraStages) {
-			intraStage.setOwningThread(thread);
-			intraStage.setExceptionHandler(newListener);
-		}
-	}
-
-	private Thread initializeStage(final Stage stage) {
-		final Thread thread;
-
-		final TerminationStrategy terminationStrategy = stage.getTerminationStrategy();
-		switch (terminationStrategy) {
-		case BY_SIGNAL: {
-			final RunnableConsumerStage runnable = new RunnableConsumerStage(stage);
-			thread = createThread(runnable, stage.getId());
-			this.consumerThreads.add(thread);
-			break;
-		}
-		case BY_SELF_DECISION: {
-			final RunnableProducerStage runnable = new RunnableProducerStage(stage);
-			producerRunnables.add(runnable);
-			thread = createThread(runnable, stage.getId());
-			this.finiteProducerThreads.add(thread);
-			InitializingSignal initializingSignal = new InitializingSignal();
-			stage.onSignal(initializingSignal, null);
-			break;
-		}
-		case BY_INTERRUPT: {
-			final RunnableProducerStage runnable = new RunnableProducerStage(stage);
-			producerRunnables.add(runnable);
-			thread = createThread(runnable, stage.getId());
-			InitializingSignal initializingSignal = new InitializingSignal();
-			stage.onSignal(initializingSignal, null);
-			this.infiniteProducerThreads.add(thread);
-			break;
-		}
-		default:
-			throw new IllegalStateException("Unhandled termination strategy: " + terminationStrategy);
-		}
-		return thread;
-	}
-
-	private Thread createThread(final AbstractRunnableStage runnable, final String name) {
-		final Thread thread = new Thread(runnable);
-		thread.setName(threadableStages.get(runnable.stage));
-		return thread;
-	}
-
-	private Set<Stage> traverseIntraStages(final Stage stage) {
-		final Traversor traversor = new Traversor(new IntraStageCollector());
-		traversor.traverse(stage);
-		return traversor.getVisitedStage();
-	}
-
-	void addThreadableStage(final Stage stage, final String threadName) {
-		if (this.threadableStages.put(stage, threadName) != null) {
-			LOGGER.warn("Stage " + stage.getId() + " was already marked as threadable stage.");
-		}
-	}
-
-	private void startThreads(final Iterable<Thread> threads) {
-		for (Thread thread : threads) {
-			thread.start();
-		}
-	}
-
-	private void sendInitializingSignal() {
-		for (RunnableProducerStage runnable : producerRunnables) {
-			runnable.triggerInitializingSignal();
-		}
-	}
-
-	private void sendStartingSignal() {
-		for (RunnableProducerStage runnable : producerRunnables) {
-			runnable.triggerStartingSignal();
-		}
-	}
-
-	Map<Stage, String> getThreadableStages() {
+	Set<Stage> getThreadableStages() {
 		return threadableStages;
 	}
 
-	void setThreadableStages(final Map<Stage, String> threadableStages) {
-		this.threadableStages = threadableStages;
-	}
-
-	@Override
-	void merge(final ThreadService source) {
-		this.getThreadableStages().putAll(source.getThreadableStages());
-	}
+	// @Override
+	// void merge(final ThreadService source) {
+	// threadableStages.putAll(source.getThreadableStages());
+	// // runnableCounter.inc(source.runnableCounter);
+	// }
 
 	SignalingCounter getRunnableCounter() {
 		return runnableCounter;

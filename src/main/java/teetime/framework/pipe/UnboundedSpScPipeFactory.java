@@ -21,7 +21,7 @@ import teetime.framework.OutputPort;
 public class UnboundedSpScPipeFactory implements IPipeFactory {
 
 	@Override
-	public <T> IPipe create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	public <T> IPipe<T> create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		return this.create(sourcePort, targetPort, 0);
 	}
 
@@ -31,8 +31,8 @@ public class UnboundedSpScPipeFactory implements IPipeFactory {
 	 * The capacity is ignored.
 	 */
 	@Override
-	public <T> IPipe create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		return new UnboundedSpScPipe(sourcePort, targetPort);
+	public <T> IPipe<T> create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		return new UnboundedSpScPipe<T>(sourcePort, targetPort);
 	}
 
 	@Override

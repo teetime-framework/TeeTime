@@ -60,4 +60,14 @@ public class SignalingCounter {
 			}
 		}
 	}
+
+	public synchronized void inc(final SignalingCounter otherCounter) {
+		counter += otherCounter.counter;
+		conditionalNotifyAll(counter);
+	}
+
+	@Override
+	public String toString() {
+		return "counter: " + counter + ", " + super.toString();
+	}
 }

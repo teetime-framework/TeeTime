@@ -19,15 +19,16 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
 
-public class InstantiationPipe implements IPipe {
+public class InstantiationPipe<T> implements IPipe<T> {
 
 	private static final String ERROR_MESSAGE = "This must not be called while executing the configuration";
 
-	private final OutputPort<?> sourcePort;
-	private final InputPort<?> targetPort;
+	private final OutputPort<? extends T> sourcePort;
+	private final InputPort<T> targetPort;
+	@SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
 	private final int capacity;
 
-	public <T> InstantiationPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	public InstantiationPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		this.sourcePort = sourcePort;
 		this.targetPort = targetPort;
 		this.capacity = capacity;
@@ -41,12 +42,12 @@ public class InstantiationPipe implements IPipe {
 	}
 
 	@Override
-	public OutputPort<?> getSourcePort() {
+	public OutputPort<? extends T> getSourcePort() {
 		return sourcePort;
 	}
 
 	@Override
-	public InputPort<?> getTargetPort() {
+	public InputPort<T> getTargetPort() {
 		return targetPort;
 	}
 

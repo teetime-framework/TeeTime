@@ -18,9 +18,8 @@ package teetime.framework.exceptionHandling;
 import teetime.util.StacklessException;
 
 /**
- * Represents an Exception, which is thrown by stages in case of they import teetime.framework.Stage;
- * original exception, which was thrown, call {@link #getCause()}. {@link #getThrowingStage()} returns the stage, which has thrown the original exception.
- *
+ * Represents an exception that is used to terminate the running thread.
+ * 
  * @since 1.1
  */
 public class TerminateException extends StacklessException {
@@ -34,6 +33,6 @@ public class TerminateException extends StacklessException {
 
 	private TerminateException(final String string) {
 		super(string);
-	};
+	}
 
 }

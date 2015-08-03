@@ -15,10 +15,7 @@
  */
 package teetime.framework;
 
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Set;
 
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
@@ -39,10 +36,9 @@ import teetime.framework.validation.AnalysisNotValidException;
  */
 public final class Execution<T extends Configuration> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
+	// private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
 
 	private final T configuration;
-
 	private final ConfigurationContext configurationContext;
 
 	/**
@@ -62,8 +58,6 @@ public final class Execution<T extends Configuration> {
 	 *            to be used for the analysis
 	 * @param validationEnabled
 	 *            whether or not the validation should be executed
-	 * @param factory
-	 *            specific listener for the exception handling
 	 */
 	public Execution(final T configuration, final boolean validationEnabled) {
 		this.configuration = configuration;
@@ -80,8 +74,8 @@ public final class Execution<T extends Configuration> {
 
 	// BETTER validate concurrently
 	private void validateStages() {
-		final Map<Stage, String> threadableStageJobs = configurationContext.getThreadableStages();
-		for (Stage stage : threadableStageJobs.keySet()) {
+		final Set<Stage> threadableStages = configurationContext.getThreadableStages();
+		for (Stage stage : threadableStages) {
 			// // portConnectionValidator.validate(stage);
 			// }
 
@@ -98,10 +92,6 @@ public final class Execution<T extends Configuration> {
 	 *
 	 */
 	private final void init() {
-		ExecutionInstantiation executionInstantiation = new ExecutionInstantiation(configurationContext);
-		executionInstantiation.instantiatePipes();
-
-		configurationContext.initializeContext();
 		configurationContext.initializeServices();
 	}
 

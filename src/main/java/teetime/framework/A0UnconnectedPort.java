@@ -15,29 +15,30 @@
  */
 package teetime.framework;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import teetime.framework.Traverser.VisitorBehavior;
+import teetime.framework.pipe.DummyPipe;
 
-public class IntraStageCollector implements ITraverserVisitor {
+public class A0UnconnectedPort implements ITraverserVisitor {
 
-	private final Stage startStage;
-
-	public IntraStageCollector(final Stage startStage) {
-		super();
-		this.startStage = startStage;
-	}
+	private static final Logger LOGGER = LoggerFactory.getLogger(A0UnconnectedPort.class);
 
 	@Override
 	public VisitorBehavior visit(final Stage stage) {
-		if (stage == startStage || stage.getOwningThread() == null /* before execution */
-				|| stage.getOwningThread() == startStage.getOwningThread() /* while execution */) {
-			return VisitorBehavior.CONTINUE;
-		}
-		return VisitorBehavior.STOP;
+		return VisitorBehavior.CONTINUE;
 	}
 
 	@Override
 	public VisitorBehavior visit(final AbstractPort<?> port) {
+		if (port.getPipe() == null) {
+			if (LOGGER.isInfoEnabled()) {
+				LOGGER.info("Unconnected output port: " + port + ". Connecting with a dummy output port.");
+			}
+			port.setPipe(DummyPipe.INSTANCE);
+			return VisitorBehavior.STOP;
+		}
 		return VisitorBehavior.CONTINUE;
 	}
-
 }

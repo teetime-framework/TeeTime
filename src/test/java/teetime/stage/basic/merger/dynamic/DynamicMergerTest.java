@@ -25,9 +25,8 @@ import java.util.List;
 import org.junit.Test;
 
 import teetime.framework.Configuration;
-import teetime.framework.DynamicActuator;
 import teetime.framework.Execution;
-import teetime.framework.RunnableProducerStage;
+import teetime.framework.RuntimeServiceFacade;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
@@ -35,8 +34,6 @@ import teetime.stage.basic.merger.strategy.BusyWaitingRoundRobinStrategy;
 import teetime.util.framework.port.PortAction;
 
 public class DynamicMergerTest {
-
-	private static final DynamicActuator DYNAMIC_ACTUATOR = new DynamicActuator();
 
 	@Test
 	public void shouldWorkWithoutActionTriggers() throws Exception {
@@ -97,15 +94,12 @@ public class DynamicMergerTest {
 
 	private PortAction<DynamicMerger<Integer>> createPortCreateAction(final Integer number) {
 		final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(number);
-		final Runnable runnableStage = DYNAMIC_ACTUATOR.startWithinNewThread(initialElementProducer);
 
 		PortAction<DynamicMerger<Integer>> portAction = new CreatePortAction<Integer>(initialElementProducer.getOutputPort()) {
 			@Override
 			public void execute(final DynamicMerger<Integer> dynamicDistributor) {
 				super.execute(dynamicDistributor);
-				final RunnableProducerStage runnableProducerStage = (RunnableProducerStage) runnableStage;
-				runnableProducerStage.triggerInitializingSignal();
-				runnableProducerStage.triggerStartingSignal();
+				RuntimeServiceFacade.INSTANCE.startWithinNewThread(dynamicDistributor, initialElementProducer);
 			}
 		};
 		return portAction;
