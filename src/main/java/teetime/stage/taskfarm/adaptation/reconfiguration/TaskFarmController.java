@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.RuntimeServiceFacade;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.pipe.IPipe;
 import teetime.stage.basic.distributor.dynamic.CreatePortActionDistributor;
@@ -71,11 +72,6 @@ class TaskFarmController<I, O> {
 		LOGGER.debug("Add stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
 		ITaskFarmDuplicable<I, O> newStage = this.taskFarmStage.getBasicEnclosedStage().duplicate();
 
-		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort());
-		this.taskFarmStage.getMerger().addPortActionRequest(mergerPortAction);
-		mergerPortAction.waitForCompletion();
-		LOGGER.debug("merger port created");
-
 		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort());
 		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 		LOGGER.debug("distributor port created, before wait");
@@ -87,6 +83,14 @@ class TaskFarmController<I, O> {
 			throw e;
 		}
 		LOGGER.debug("distributor port created");
+
+		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort());
+		this.taskFarmStage.getMerger().addPortActionRequest(mergerPortAction);
+		mergerPortAction.waitForCompletion();
+		LOGGER.debug("merger port created");
+
+		RuntimeServiceFacade.INSTANCE.startWithinNewThread(taskFarmStage.getDistributor(), newStage.getInputPort().getOwningStage());
+		LOGGER.debug("Started new thread");
 
 		this.addNewEnclosedStageInstance(newStage);
 		this.addNewPipeToMonitoring(newStage);
@@ -127,6 +131,7 @@ class TaskFarmController<I, O> {
 					new RemovePortActionDistributor<I>((OutputPort<I>) distributorOutputPort);
 			this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 			this.taskFarmStage.getEnclosedStageInstances().remove(stageToBeRemoved);
+			LOGGER.debug("WAIT for " + distributorPortAction);
 			distributorPortAction.waitForCompletion();
 
 			LOGGER.debug("Finished: Remove stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
@@ -141,7 +146,7 @@ class TaskFarmController<I, O> {
 
 	private OutputPort<?> getRemoveableDistributorOutputPort(final ITaskFarmDuplicable<I, O> stageToBeRemoved) {
 		final InputPort<?> inputPortOfStage = stageToBeRemoved.getInputPort();
-		final IPipe pipeInBetween = inputPortOfStage.getPipe();
+		final IPipe<?> pipeInBetween = inputPortOfStage.getPipe();
 		final OutputPort<?> distributorOutputPort = pipeInBetween.getSourcePort();
 		return distributorOutputPort;
 	}

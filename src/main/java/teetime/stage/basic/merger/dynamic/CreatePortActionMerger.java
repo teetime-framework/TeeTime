@@ -37,12 +37,9 @@ public class CreatePortActionMerger<T> implements PortAction<DynamicMerger<T>> {
 	public void execute(final DynamicMerger<T> dynamicDistributor) {
 		InputPort<T> newInputPort = dynamicDistributor.getNewInputPort();
 
-		onInputPortCreated(newInputPort);
-		condition.signalAll();
-	}
-
-	private void onInputPortCreated(final InputPort<T> newInputPort) {
 		INTER_THREAD_PIPE_FACTORY.create(outputPort, newInputPort);
+
+		condition.signalAll();
 	}
 
 	public void waitForCompletion() throws InterruptedException {

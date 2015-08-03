@@ -62,7 +62,11 @@ public abstract class Stage {
 
 	protected Stage() {
 		this.id = this.createId();
-		this.logger = LoggerFactory.getLogger(this.getClass().getCanonicalName() + ":" + id);
+		String canonicalName = this.getClass().getCanonicalName();
+		if (canonicalName == null) {
+			canonicalName = this.getClass().getSuperclass().getCanonicalName();
+		}
+		this.logger = LoggerFactory.getLogger(canonicalName + ":" + id);
 	}
 
 	/**
@@ -80,7 +84,7 @@ public abstract class Stage {
 	private String createId() {
 		String simpleName = this.getClass().getSimpleName();
 		if (simpleName.isEmpty()) {
-			simpleName = "anonymous";
+			simpleName = this.getClass().getSuperclass().getSimpleName();
 		}
 
 		Integer numInstances = INSTANCES_COUNTER.get(simpleName);

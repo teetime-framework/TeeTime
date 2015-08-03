@@ -55,32 +55,32 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	private final PipeMonitoringService pipeMonitoringService = new PipeMonitoringService();
 	private final SingleTaskFarmMonitoringService taskFarmMonitoringService;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param workerStage
-	 *            instance of enclosed stage
-	 * @param context
-	 *            current execution context
-	 */
 	public TaskFarmStage(final T workerStage) {
+		this(workerStage, null);
+	}
+
+	/**
+	 * for test purposes only
+	 */
+	public TaskFarmStage(final T workerStage, final DynamicMerger<O> merger) {
 		super();
 
 		if (null == workerStage) {
 			throw new IllegalArgumentException("The constructor of a Task Farm may not be called with null as the worker stage.");
 		}
 
-		this.merger = new DynamicMerger<O>() {
-			@Override
-			public void onStarting() throws Exception {
-				synchronized (adaptationThread) {
-					if (!adaptationThread.isAlive()) {
-						adaptationThread.start();
-					}
+		if (merger == null) {
+			this.merger = new DynamicMerger<O>() {
+				@Override
+				public void onStarting() throws Exception {
+					adaptationThread.start();
+					super.onStarting();
 				}
-				super.onStarting();
-			}
-		};
+			};
+		} else {
+			this.merger = merger;
+		}
+
 		this.distributor = new DynamicDistributor<I>() {
 			@Override
 			public void onTerminating() throws Exception {
@@ -97,14 +97,14 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 	}
 
 	private void init(final T includedStage) {
-		addThreadableStage(this.merger);
-		addThreadableStage(includedStage.getInputPort().getOwningStage());
-
 		final InputPort<I> stageInputPort = includedStage.getInputPort();
 		connectPorts(this.distributor.getNewOutputPort(), stageInputPort);
 
 		final OutputPort<O> stageOutputPort = includedStage.getOutputPort();
 		connectPorts(stageOutputPort, this.merger.getNewInputPort());
+
+		addThreadableStage(this.merger);
+		addThreadableStage(includedStage.getInputPort().getOwningStage());
 
 		enclosedStageInstances.add(includedStage);
 	}

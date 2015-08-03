@@ -78,7 +78,7 @@ public class Merger<T> extends AbstractStage {
 	 *            The port which the signal was sent to
 	 */
 	@Override
-	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
+	protected void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (logger.isTraceEnabled()) {
 			this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
 		}
