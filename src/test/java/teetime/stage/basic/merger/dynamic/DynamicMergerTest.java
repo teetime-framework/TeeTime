@@ -66,10 +66,9 @@ public class DynamicMergerTest {
 		assertThat(config.getOutputElements(), contains(0, 1, 2, 3, 4, 5, 6));
 	}
 
-	// @Test
+	@Test
 	public void shouldWorkWithRemoveActionTriggers() throws Exception {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2);
-		// TODO: Repair test
 
 		DynamicMergerTestConfig config = new DynamicMergerTestConfig(inputNumbers);
 		assertTrue(config.addCreatePortAction(3));
