@@ -30,7 +30,6 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 	private final int numberOfStages = 1;
 
 	protected final IntObjectMap<S> solutionBuffer = new IntObjectHashMap<S>();
-	private final DynamicConfigurationContext context = new DynamicConfigurationContext();
 
 	protected final InputPort<P> inputPort = this.createInputPort();
 	protected final InputPort<S> leftInputPort = this.createInputPort();
@@ -137,10 +136,10 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 	// TODO thread intantiation and scheduling.... optimization
 	private void makeCopy(final OutputPort<P> out, final InputPort<S> in) {
 		final AbstractDCStage<P, S> newStage = this.duplicate();
-		context.connectPorts(out, newStage.getInputPort());
-		context.connectPorts(newStage.getOutputPort(), in);
-		context.beginThread(this, newStage);
-		context.sendSignals(out);
+		DynamicConfigurationContext.INSTANCE.connectPorts(out, newStage.getInputPort());
+		DynamicConfigurationContext.INSTANCE.connectPorts(newStage.getOutputPort(), in);
+		DynamicConfigurationContext.INSTANCE.beginThread(this, newStage);
+		DynamicConfigurationContext.INSTANCE.sendSignals(out);
 	}
 
 	/**

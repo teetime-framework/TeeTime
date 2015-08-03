@@ -7,10 +7,16 @@ import teetime.framework.pipe.SpScPipeFactory;
 import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 
-public class DynamicConfigurationContext {
+class DynamicConfigurationContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicConfigurationContext.class);
 	private static final SpScPipeFactory PIPE_FACTORY = new SpScPipeFactory();
+
+	public static final DynamicConfigurationContext INSTANCE = new DynamicConfigurationContext();
+
+	private DynamicConfigurationContext() {
+		// singleton
+	}
 
 	public void beginThread(final Stage previousStage, final Stage stage) {
 		RuntimeServiceFacade.INSTANCE.startWithinNewThread(previousStage, stage);
