@@ -33,7 +33,7 @@ public abstract class AbstractThroughputAnalysisAlgorithm {
 	 */
 	protected final int window;
 
-	public static final int INVALID_SCORE = -1;
+	public static final int INVALID_SCORE = -2;
 
 	/**
 	 * Constructor.
