@@ -35,7 +35,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	private volatile boolean monitoringEnabled = false;
 
-	private volatile int analysisWindow = 3;
+	private volatile int analysisWindow = 5;
 	private volatile String throughputAlgorithm = "RegressionAlgorithm";
 	private volatile WeightMethod weightedAlgorithmMethod = WeightMethod.EXPONENTIAL;
 	private volatile int maxSamplesUntilRemove = 5;
