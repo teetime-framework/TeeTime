@@ -33,6 +33,8 @@ public abstract class AbstractThroughputAnalysisAlgorithm {
 	 */
 	protected final int window;
 
+	public static final int INVALID_SCORE = -1;
+
 	/**
 	 * Constructor.
 	 *
@@ -68,7 +70,7 @@ public abstract class AbstractThroughputAnalysisAlgorithm {
 	 */
 	public double getTroughputAnalysis(final ThroughputHistory history) {
 		if (!this.isHistoryLargeEnough(history)) {
-			return 0;
+			return INVALID_SCORE;
 		}
 
 		final double predicted = this.doAnalysis(history);
