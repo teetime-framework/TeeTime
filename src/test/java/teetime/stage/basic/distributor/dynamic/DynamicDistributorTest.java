@@ -33,7 +33,6 @@ import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.util.framework.port.PortAction;
 
-//@Ignore
 public class DynamicDistributorTest {
 
 	@Test
@@ -76,6 +75,7 @@ public class DynamicDistributorTest {
 		assertValuesForIndex(inputActions[4], Collections.<Integer> emptyList());
 	}
 
+	@Test
 	public void shouldWorkWithRemoveActionTriggers() throws Exception {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4, 5);
 
