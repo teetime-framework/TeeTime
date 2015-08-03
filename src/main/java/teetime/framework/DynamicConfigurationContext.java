@@ -17,7 +17,7 @@ public class DynamicConfigurationContext {
 	}
 
 	/**
-	 * Sends the {@linkInitializingSignal} and the {@link StartingSignal}.
+	 * Sends the {@link InitializingSignal} and the {@link StartingSignal}.
 	 *
 	 * @param outputPort
 	 */
