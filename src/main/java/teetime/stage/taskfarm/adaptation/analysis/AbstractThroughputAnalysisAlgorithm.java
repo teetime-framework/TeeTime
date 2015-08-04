@@ -68,7 +68,7 @@ public abstract class AbstractThroughputAnalysisAlgorithm {
 	 *            history of measured values
 	 * @return throughput score
 	 */
-	public double getTroughputAnalysis(final ThroughputHistory history) {
+	public final double getTroughputAnalysis(final ThroughputHistory history) {
 		if (!this.isHistoryLargeEnough(history)) {
 			return INVALID_SCORE;
 		}
