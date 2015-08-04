@@ -35,6 +35,8 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	private volatile boolean monitoringEnabled = false;
 
+	private volatile int adaptationWaitingTimeMillis = 50;
+
 	private volatile int analysisWindow = 5;
 	private volatile String throughputAlgorithm = "RegressionAlgorithm";
 	private volatile WeightMethod weightedAlgorithmMethod = WeightMethod.EXPONENTIAL;
@@ -99,5 +101,13 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	public void setMonitoringEnabled(final boolean monitoringEnabled) {
 		this.monitoringEnabled = monitoringEnabled;
+	}
+
+	public int getAdaptationWaitingTimeMillis() {
+		return adaptationWaitingTimeMillis;
+	}
+
+	public void setAdaptationWaitingTimeMillis(final int adaptationWaitingTimeMillis) {
+		this.adaptationWaitingTimeMillis = adaptationWaitingTimeMillis;
 	}
 }

@@ -15,23 +15,32 @@
  */
 package teetime.stage.taskfarm.adaptation;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
+import teetime.stage.taskfarm.adaptation.analysis.TaskFarmAnalyzer;
+import teetime.stage.taskfarm.adaptation.history.TaskFarmHistoryService;
+import teetime.stage.taskfarm.adaptation.reconfiguration.TaskFarmReconfigurationService;
 
-final public class AdaptationThread extends Thread {
+final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> extends Thread {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AdaptationThread.class);
 
-	private volatile static int sampleRateMillis = 50;
 	private volatile boolean shouldTerminate;
 
-	private final List<TaskFarmComponents<?, ?, ?>> taskFarmServices = new LinkedList<TaskFarmComponents<?, ?, ?>>();
+	private final TaskFarmStage<I, O, T> taskFarmStage;
+	private final TaskFarmHistoryService<I, O, T> historyService;
+	private final TaskFarmAnalyzer<I, O, T> analysisService;
+	private final TaskFarmReconfigurationService<I, O, T> reconfigurationService;
+
+	public AdaptationThread(final TaskFarmStage<I, O, T> taskFarmStage) {
+		this.historyService = new TaskFarmHistoryService<I, O, T>(taskFarmStage);
+		this.analysisService = new TaskFarmAnalyzer<I, O, T>(taskFarmStage.getConfiguration());
+		this.reconfigurationService = new TaskFarmReconfigurationService<I, O, T>(taskFarmStage);
+		this.taskFarmStage = taskFarmStage;
+	}
 
 	@Override
 	public void run() {
@@ -40,9 +49,9 @@ final public class AdaptationThread extends Thread {
 			try {
 				doMonitoring();
 
-				Thread.sleep(sampleRateMillis);
+				Thread.sleep(taskFarmStage.getConfiguration().getAdaptationWaitingTimeMillis());
 
-				executeNextStageToBeReconfigured();
+				executeServices();
 				checkForStopping();
 			} catch (InterruptedException e) {
 				shouldTerminate = true;
@@ -52,44 +61,20 @@ final public class AdaptationThread extends Thread {
 	}
 
 	private void doMonitoring() {
-		for (TaskFarmComponents<?, ?, ?> taskFarmComponents : taskFarmServices) {
-			if (taskFarmComponents.getTaskFarmStage().getConfiguration().isMonitoringEnabled()) {
-				taskFarmComponents.getTaskFarmStage().getPipeMonitoringService().addMonitoringData();
-				taskFarmComponents.getTaskFarmStage().getTaskFarmMonitoringService().addMonitoringData();
-			}
+		if (taskFarmStage.getConfiguration().isMonitoringEnabled()) {
+			taskFarmStage.getPipeMonitoringService().addMonitoringData();
+			taskFarmStage.getTaskFarmMonitoringService().addMonitoringData();
 		}
 	}
 
-	public <I, O, T extends ITaskFarmDuplicable<I, O>> void addTaskFarm(final TaskFarmStage<I, O, T> taskFarmStage) {
-		TaskFarmComponents<I, O, T> service = new TaskFarmComponents<I, O, T>(taskFarmStage);
-		taskFarmServices.add(service);
-	}
-
-	public static void setSampleRate(final int sampleRateMillis) {
-		AdaptationThread.sampleRateMillis = sampleRateMillis;
-	}
-
-	private void executeNextStageToBeReconfigured() throws InterruptedException {
-		for (TaskFarmComponents<?, ?, ?> service : taskFarmServices) {
-			// execute first Task Farm which is still parallelizable
-			if (service.getTaskFarmStage().getConfiguration().isStillParallelizable()) {
-				service.executeServices();
-				break;
-			}
-		}
+	private void executeServices() throws InterruptedException {
+		historyService.monitorPipes();
+		analysisService.analyze(historyService.getHistory());
+		reconfigurationService.reconfigure(analysisService.getThroughputScore());
 	}
 
 	private void checkForStopping() {
-		boolean parallelizableStageRemaining = false;
-
-		// checks if there is still a parallelizable Task Farm
-		for (TaskFarmComponents<?, ?, ?> service : taskFarmServices) {
-			if (service.getTaskFarmStage().getConfiguration().isStillParallelizable()) {
-				parallelizableStageRemaining = true;
-			}
-		}
-
-		if (!parallelizableStageRemaining) {
+		if (!taskFarmStage.getConfiguration().isStillParallelizable()) {
 			stopAdaptationThread();
 		}
 	}

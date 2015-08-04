@@ -41,16 +41,16 @@ import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
  * @param <T>
  *            Type of enclosed stage
  */
-public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends AbstractCompositeStage {
+public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends AbstractCompositeStage {
 
 	private final List<ITaskFarmDuplicable<I, O>> enclosedStageInstances = new LinkedList<ITaskFarmDuplicable<I, O>>();
 
 	private final DynamicDistributor<I> distributor;
 	private final DynamicMerger<O> merger;
 
-	private final TaskFarmConfiguration<I, O, T> configuration;
+	private final TaskFarmConfiguration<I, O, T> configuration = new TaskFarmConfiguration<I, O, T>();
 
-	private final AdaptationThread adaptationThread = new AdaptationThread();
+	private final AdaptationThread<I, O, T> adaptationThread;
 
 	private final PipeMonitoringService pipeMonitoringService = new PipeMonitoringService();
 	private final SingleTaskFarmMonitoringService taskFarmMonitoringService;
@@ -88,10 +88,9 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 				super.onTerminating();
 			}
 		};
-		this.configuration = new TaskFarmConfiguration<I, O, T>();
 
-		this.adaptationThread.addTaskFarm(this);
 		taskFarmMonitoringService = new SingleTaskFarmMonitoringService(this);
+		adaptationThread = new AdaptationThread<I, O, T>(this);
 
 		this.init(workerStage);
 	}
