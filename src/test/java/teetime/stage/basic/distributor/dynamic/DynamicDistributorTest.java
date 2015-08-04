@@ -51,7 +51,7 @@ public class DynamicDistributorTest {
 		assertThat(config.getOutputElements(), contains(0, 1, 2, 3, 4));
 	}
 
-	@Test
+	// @Test
 	public void shouldWorkWithCreateActionTriggers() throws Exception {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4);
 
@@ -75,7 +75,7 @@ public class DynamicDistributorTest {
 		assertValuesForIndex(inputActions[4], Collections.<Integer> emptyList());
 	}
 
-	@Test
+	// @Test
 	public void shouldWorkWithRemoveActionTriggers() throws Exception {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4, 5);
 
