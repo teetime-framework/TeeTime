@@ -26,7 +26,10 @@ import teetime.framework.pipe.SingleElementPipeFactory;
 import teetime.framework.pipe.SpScPipeFactory;
 import teetime.framework.pipe.UnboundedSpScPipeFactory;
 
-public class A3PipeInstantiation implements ITraverserVisitor {
+/**
+ * Automatically instantiates the correct pipes
+ */
+class A3PipeInstantiation implements ITraverserVisitor {
 
 	private static final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
 	private static final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
@@ -67,12 +70,11 @@ public class A3PipeInstantiation implements ITraverserVisitor {
 			} else {
 				interUnboundedThreadPipeFactory.create(pipe.getSourcePort(), pipe.getTargetPort(), 4);
 			}
-			return;
 		} else {
 			// normal or reflexive pipe => intra
+			intraThreadPipeFactory.create(pipe.getSourcePort(), pipe.getTargetPort(), 4);
 		}
 
-		intraThreadPipeFactory.create(pipe.getSourcePort(), pipe.getTargetPort(), 4);
 	}
 
 }

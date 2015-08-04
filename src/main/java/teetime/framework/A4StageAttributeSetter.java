@@ -17,7 +17,10 @@ package teetime.framework;
 
 import java.util.Set;
 
-public class A4StageAttributeSetter {
+/**
+ * Sets the attributes of all stages within the same thread
+ */
+class A4StageAttributeSetter {
 
 	private final Configuration configuration;
 	private final Set<Stage> threadableStages;

@@ -20,7 +20,10 @@ import java.util.Set;
 
 import teetime.framework.Traverser.VisitorBehavior;
 
-public class A1ThreadableStageCollector implements ITraverserVisitor {
+/**
+ * Searches for threadable stages
+ */
+class A1ThreadableStageCollector implements ITraverserVisitor {
 
 	private final Set<Stage> threadableStages = new HashSet<Stage>();
 

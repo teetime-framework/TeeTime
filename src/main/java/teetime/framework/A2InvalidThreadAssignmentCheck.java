@@ -17,12 +17,15 @@ package teetime.framework;
 
 import java.util.Set;
 
-import teetime.framework.Traverser.VisitorBehavior;
-import teetime.framework.pipe.IPipe;
-
 import com.carrotsearch.hppc.ObjectIntHashMap;
 import com.carrotsearch.hppc.ObjectIntMap;
 
+import teetime.framework.Traverser.VisitorBehavior;
+import teetime.framework.pipe.IPipe;
+
+/**
+ * Checks for invalid thread assignments
+ */
 public class A2InvalidThreadAssignmentCheck {
 
 	private static final int DEFAULT_COLOR = 0;

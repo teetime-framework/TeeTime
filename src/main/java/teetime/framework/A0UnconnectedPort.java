@@ -21,7 +21,10 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.DummyPipe;
 
-public class A0UnconnectedPort implements ITraverserVisitor {
+/**
+ * Connects unconnected ports to a dummy pipe
+ */
+class A0UnconnectedPort implements ITraverserVisitor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(A0UnconnectedPort.class);
 
