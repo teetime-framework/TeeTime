@@ -31,6 +31,13 @@ public class InputPort<T> extends AbstractPort<T> {
 	}
 
 	/**
+	 * For testing purposes only.
+	 */
+	public InputPort() {
+		super(null, null, null);
+	}
+
+	/**
 	 *
 	 * @return the next element from the connected pipe
 	 */

@@ -12,25 +12,25 @@ import org.junit.Test;
 
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 
-public class StackedTimePullThroughput2DTest {
+public class StackedTimeSizeWithCapacity2DTest {
 
 	@Test
 	public void testWorkingService() {
 		PipeMonitoringService service = ExtractorTestHelper.generate4PipeMonitoringServiceWithBehavior();
 
-		AbstractMonitoringDataExtraction extraction = new StackedTimePullThroughput2D(service, null);
+		AbstractMonitoringDataExtraction extraction = new StackedTimeSizeWithCapacity2D(service, null);
 		String result = extraction.extractToString();
 
 		List<String> outputValues = new LinkedList<String>();
-		outputValues.add("time,pullthroughput0,pullthroughput1,pullthroughput2,pullthroughput3");
+		outputValues.add("time,capacity,size0,size1,size2,size3");
 		// as the exact processing time is slightly nondeterministic, we only check for the other values
-		outputValues.add(",6,0,0,0");
-		outputValues.add(",11,0,0,0");
-		outputValues.add(",16,6,0,0");
-		outputValues.add(",21,0,6,0");
-		outputValues.add(",26,0,11,0");
-		outputValues.add(",31,0,0,0");
-		outputValues.add(",36,0,0,6");
+		outputValues.add(",1000,2,0,0,0");
+		outputValues.add(",1000,4,0,0,0");
+		outputValues.add(",1000,8,2,0,0");
+		outputValues.add(",1000,16,0,2,0");
+		outputValues.add(",1000,32,0,4,0");
+		outputValues.add(",1000,64,0,0,0");
+		outputValues.add(",1000,128,0,0,2");
 		assertThat(result, stringContainsInOrder(outputValues));
 	}
 
@@ -38,10 +38,10 @@ public class StackedTimePullThroughput2DTest {
 	public void testEmptyService() {
 		PipeMonitoringService service = ExtractorTestHelper.generateEmpty5PipeMonitoringService();
 
-		AbstractMonitoringDataExtraction extraction = new StackedTimePullThroughput2D(service, null);
+		AbstractMonitoringDataExtraction extraction = new StackedTimeSizeWithCapacity2D(service, null);
 		String result = extraction.extractToString();
 
-		String header = "time,pullthroughput0,pullthroughput1,pullthroughput2,pullthroughput3,pullthroughput4"
+		String header = "time,capacity,size0,size1,size2,size3,size4"
 				+ System.getProperty("line.separator");
 		assertThat(result, is(equalTo(header)));
 	}

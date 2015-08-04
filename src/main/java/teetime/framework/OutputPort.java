@@ -34,6 +34,13 @@ public class OutputPort<T> extends AbstractPort<T> {
 	}
 
 	/**
+	 * For testing purposes only.
+	 */
+	public OutputPort() {
+		super(null, null, null);
+	}
+
+	/**
 	 *
 	 * Guarantees the delivery of the given <code>element</code>.
 	 *

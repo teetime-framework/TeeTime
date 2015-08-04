@@ -1,8 +1,12 @@
 package teetime.stage.taskfarm.monitoring.extraction;
 
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.pipe.IMonitorablePipe;
+import teetime.framework.pipe.IPipe;
+import teetime.framework.signal.ISignal;
 
-class ExtractionTestPipe implements IMonitorablePipe {
+class ExtractionTestPipe<T> implements IMonitorablePipe, IPipe<T> {
 
 	private long numPushes = 0;
 	private long numPulls = 0;
@@ -104,5 +108,70 @@ class ExtractionTestPipe implements IMonitorablePipe {
 
 	public void setActive(final boolean active) {
 		this.active = active;
+	}
+
+	@Override
+	public boolean add(final Object element) {
+		return false;
+	}
+
+	@Override
+	public boolean addNonBlocking(final Object element) {
+		return false;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return false;
+	}
+
+	@Override
+	public Object removeLast() {
+		return null;
+	}
+
+	@Override
+	public OutputPort<? extends T> getSourcePort() {
+		return null;
+	}
+
+	@Override
+	public InputPort<T> getTargetPort() {
+		return null;
+	}
+
+	@Override
+	public void sendSignal(final ISignal signal) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void reportNewElement() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean isClosed() {
+		return false;
+	}
+
+	@Override
+	public boolean hasMore() {
+		return false;
+	}
+
+	@Override
+	public void waitForStartSignal() throws InterruptedException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void waitForInitializingSignal() throws InterruptedException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void close() {
+		throw new UnsupportedOperationException();
 	}
 }

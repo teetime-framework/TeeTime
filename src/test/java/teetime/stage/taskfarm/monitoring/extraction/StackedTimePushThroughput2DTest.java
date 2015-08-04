@@ -12,25 +12,25 @@ import org.junit.Test;
 
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 
-public class StackedTimePullThroughput2DTest {
+public class StackedTimePushThroughput2DTest {
 
 	@Test
 	public void testWorkingService() {
 		PipeMonitoringService service = ExtractorTestHelper.generate4PipeMonitoringServiceWithBehavior();
 
-		AbstractMonitoringDataExtraction extraction = new StackedTimePullThroughput2D(service, null);
+		AbstractMonitoringDataExtraction extraction = new StackedTimePushThroughput2D(service, null);
 		String result = extraction.extractToString();
 
 		List<String> outputValues = new LinkedList<String>();
-		outputValues.add("time,pullthroughput0,pullthroughput1,pullthroughput2,pullthroughput3");
+		outputValues.add("time,pushthroughput0,pushthroughput1,pushthroughput2,pushthroughput3");
 		// as the exact processing time is slightly nondeterministic, we only check for the other values
-		outputValues.add(",6,0,0,0");
-		outputValues.add(",11,0,0,0");
-		outputValues.add(",16,6,0,0");
-		outputValues.add(",21,0,6,0");
-		outputValues.add(",26,0,11,0");
-		outputValues.add(",31,0,0,0");
-		outputValues.add(",36,0,0,6");
+		outputValues.add(",4,0,0,0");
+		outputValues.add(",7,0,0,0");
+		outputValues.add(",10,4,0,0");
+		outputValues.add(",13,0,4,0");
+		outputValues.add(",16,0,7,0");
+		outputValues.add(",19,0,0,0");
+		outputValues.add(",22,0,0,4");
 		assertThat(result, stringContainsInOrder(outputValues));
 	}
 
@@ -38,11 +38,12 @@ public class StackedTimePullThroughput2DTest {
 	public void testEmptyService() {
 		PipeMonitoringService service = ExtractorTestHelper.generateEmpty5PipeMonitoringService();
 
-		AbstractMonitoringDataExtraction extraction = new StackedTimePullThroughput2D(service, null);
+		AbstractMonitoringDataExtraction extraction = new StackedTimePushThroughput2D(service, null);
 		String result = extraction.extractToString();
 
-		String header = "time,pullthroughput0,pullthroughput1,pullthroughput2,pullthroughput3,pullthroughput4"
+		String header = "time,pushthroughput0,pushthroughput1,pushthroughput2,pushthroughput3,pushthroughput4"
 				+ System.getProperty("line.separator");
 		assertThat(result, is(equalTo(header)));
 	}
+
 }
