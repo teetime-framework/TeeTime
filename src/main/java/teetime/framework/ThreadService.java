@@ -78,12 +78,9 @@ class ThreadService extends AbstractService<ThreadService> {
 		}
 
 		// TODO use decorator pattern to combine all analyzes so that only one traverser pass is necessary
-		A0UnconnectedPort portVisitor = new A0UnconnectedPort();
-		Traverser traversor = new Traverser(portVisitor, Direction.BOTH);
-		traversor.traverse(startStage);
 
 		A1ThreadableStageCollector stageCollector = new A1ThreadableStageCollector();
-		traversor = new Traverser(stageCollector, Direction.BOTH);
+		Traverser traversor = new Traverser(stageCollector, Direction.BOTH);
 		traversor.traverse(startStage);
 
 		Set<Stage> newThreadableStages = stageCollector.getThreadableStages();
