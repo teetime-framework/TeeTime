@@ -40,6 +40,8 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 		this.analysisService = new TaskFarmAnalyzer<I, O, T>(taskFarmStage.getConfiguration());
 		this.reconfigurationService = new TaskFarmReconfigurationService<I, O, T>(taskFarmStage);
 		this.taskFarmStage = taskFarmStage;
+
+		this.setPriority(MAX_PRIORITY);
 	}
 
 	@Override
@@ -47,12 +49,11 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 		LOGGER.debug("Adaptation thread started");
 		while (!shouldTerminate) {
 			try {
+				executeServices();
 				doMonitoring();
+				checkForStopping();
 
 				Thread.sleep(taskFarmStage.getConfiguration().getAdaptationWaitingTimeMillis());
-
-				executeServices();
-				checkForStopping();
 			} catch (InterruptedException e) {
 				shouldTerminate = true;
 			}

@@ -22,40 +22,37 @@ import teetime.framework.AbstractCompositeStage;
 import teetime.framework.Configuration;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.AbstractFilter;
 import teetime.stage.basic.AbstractTransformation;
+import teetime.stage.basic.Sink;
 
 public class TaskFarmStageTestConfiguration extends Configuration {
 
-	private CollectorSink<String> collectorSink;
-	public volatile static int counter;
-
-	public TaskFarmStageTestConfiguration(final int numberOfTestElements) {
+	public TaskFarmStageTestConfiguration(final long numberOfTestElements) {
 		this.buildConfiguration(numberOfTestElements);
 	}
 
-	private void buildConfiguration(final int numberOfTestElements) {
-		final List<Integer> values = new LinkedList<Integer>();
-		for (int i = 1; i <= numberOfTestElements; i++) {
+	private void buildConfiguration(final long numberOfTestElements) {
+		final List<Long> values = new LinkedList<Long>();
+		for (long i = 1; i <= numberOfTestElements; i++) {
 			values.add(i);
 		}
-		final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(values);
+		final InitialElementProducer<Long> initialElementProducer = new InitialElementProducer<Long>(values);
 		final CompositeTestStage compositeTestStage = new CompositeTestStage();
-		final TaskFarmStage<Integer, String, CompositeTestStage> taskFarmStage =
-				new TaskFarmStage<Integer, String, CompositeTestStage>(compositeTestStage);
-		collectorSink = new CollectorSink<String>();
+		final TaskFarmStage<Long, String, CompositeTestStage> taskFarmStage =
+				new TaskFarmStage<Long, String, CompositeTestStage>(compositeTestStage);
+		taskFarmStage.getConfiguration().setThroughputScoreBoundary(0.2);
+		taskFarmStage.getConfiguration().setStillParallelizable(true);
+		taskFarmStage.getConfiguration().setThroughputAlgorithm("RegressionAlgorithm");
+		taskFarmStage.getConfiguration().setAdaptationWaitingTimeMillis(50);
+		Sink<String> sink = new Sink<String>();
 
 		connectPorts(initialElementProducer.getOutputPort(), taskFarmStage.getInputPort());
-		connectPorts(taskFarmStage.getOutputPort(), collectorSink.getInputPort());
+		connectPorts(taskFarmStage.getOutputPort(), sink.getInputPort());
 	}
 
-	public List<String> getCollection() {
-		return collectorSink.getElements();
-	}
-
-	private static class CompositeTestStage extends AbstractCompositeStage implements ITaskFarmDuplicable<Integer, String> {
+	private static class CompositeTestStage extends AbstractCompositeStage implements ITaskFarmDuplicable<Long, String> {
 		private final PlusOneInStringStage pOne = new PlusOneInStringStage();
 		private final StringDuplicationStage sDup = new StringDuplicationStage();
 
@@ -64,7 +61,7 @@ public class TaskFarmStageTestConfiguration extends Configuration {
 		}
 
 		@Override
-		public InputPort<Integer> getInputPort() {
+		public InputPort<Long> getInputPort() {
 			return this.pOne.getInputPort();
 		}
 
@@ -74,19 +71,16 @@ public class TaskFarmStageTestConfiguration extends Configuration {
 		}
 
 		@Override
-		public ITaskFarmDuplicable<Integer, String> duplicate() {
+		public ITaskFarmDuplicable<Long, String> duplicate() {
 			return new CompositeTestStage();
 		}
 	}
 
-	private static class PlusOneInStringStage extends AbstractTransformation<Integer, String> {
+	private static class PlusOneInStringStage extends AbstractTransformation<Long, String> {
 
 		@Override
-		protected void execute(final Integer element) {
-			final Integer x = element + 1;
-			synchronized (TaskFarmStageTestConfiguration.class) {
-				counter++;
-			}
+		protected void execute(final Long element) {
+			final Long x = element + 1;
 			this.outputPort.send(x.toString());
 		}
 	}

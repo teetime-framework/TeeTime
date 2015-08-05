@@ -97,10 +97,10 @@ public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 
 	private void init(final T includedStage) {
 		final InputPort<I> stageInputPort = includedStage.getInputPort();
-		connectPorts(this.distributor.getNewOutputPort(), stageInputPort);
+		connectPorts(this.distributor.getNewOutputPort(), stageInputPort, 10000);
 
 		final OutputPort<O> stageOutputPort = includedStage.getOutputPort();
-		connectPorts(stageOutputPort, this.merger.getNewInputPort());
+		connectPorts(stageOutputPort, this.merger.getNewInputPort(), 10000);
 
 		addThreadableStage(this.merger);
 		addThreadableStage(includedStage.getInputPort().getOwningStage());
