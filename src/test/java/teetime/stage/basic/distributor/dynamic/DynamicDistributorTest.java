@@ -33,7 +33,6 @@ import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.util.framework.port.PortAction;
 
-//@Ignore
 public class DynamicDistributorTest {
 
 	@Test
@@ -101,7 +100,7 @@ public class DynamicDistributorTest {
 
 		assertThat(config.getOutputElements(), contains(0, 1, 2, 4, 5));
 		assertValuesForIndex(inputActions[0], Collections.<Integer> emptyList());
-		assertValuesForIndex(inputActions[2], Arrays.asList(3)); // FIXME fails sometimes
+		assertValuesForIndex(inputActions[2], Arrays.asList(3));
 		assertValuesForIndex(inputActions[3], Collections.<Integer> emptyList());
 	}
 
@@ -123,7 +122,7 @@ public class DynamicDistributorTest {
 		@SuppressWarnings("unchecked")
 		CollectorSink<Integer> collectorSink = (CollectorSink<Integer>) stage;
 
-		assertThat(collectorSink.getElements(), is(values)); // FIXME fails sometimes with a ConcurrentModificationException
+		assertThat(collectorSink.getElements(), is(values));
 	}
 
 	private static class DynamicDistributorTestConfig<T> extends Configuration {
