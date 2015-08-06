@@ -27,7 +27,4 @@ public final class RuntimeServiceFacade {
 		previousStage.getOwningContext().getThreadService().startStageAtRuntime(stage);
 	}
 
-	public void abortExecution(final Stage stage) {
-		stage.getOwningContext().abortConfigurationRun();
-	}
 }
