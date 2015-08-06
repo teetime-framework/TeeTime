@@ -137,8 +137,10 @@ class ThreadService extends AbstractService<ThreadService> {
 	}
 
 	private void sendStartingSignal(final Set<Stage> newThreadableStages) {
-		for (Stage stage : newThreadableStages) {
-			((TeeTimeThread) stage.getOwningThread()).sendStartingSignal();
+		synchronized (newThreadableStages) {
+			for (Stage stage : newThreadableStages) {
+				((TeeTimeThread) stage.getOwningThread()).sendStartingSignal();
+			}
 		}
 	}
 
@@ -149,8 +151,14 @@ class ThreadService extends AbstractService<ThreadService> {
 
 	@Override
 	void onTerminate() {
-		for (Stage stage : threadableStages) {
-			stage.terminate();
+		abortStages(threadableStages);
+	}
+
+	private void abortStages(final Set<Stage> currentTreadableStages) {
+		synchronized (currentTreadableStages) {
+			for (Stage stage : currentTreadableStages) {
+				stage.terminate();
+			}
 		}
 	}
 
