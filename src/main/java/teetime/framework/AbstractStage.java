@@ -85,11 +85,6 @@ public abstract class AbstractStage extends Stage {
 		return signalAlreadyReceived;
 	}
 
-	@Override
-	public void onInitializing() throws Exception {
-		changeState(StageState.INITIALIZED);
-	}
-
 	private void changeState(final StageState newState) {
 		currentState = newState;
 		logger.trace(newState.toString());

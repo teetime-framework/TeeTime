@@ -24,12 +24,6 @@ public class TeeTimeThread extends Thread {
 		this.runnable = runnable;
 	}
 
-	public void sendInitializingSignal() {
-		if (runnable instanceof RunnableProducerStage) {
-			((RunnableProducerStage) runnable).triggerInitializingSignal();
-		}
-	}
-
 	public void sendStartingSignal() {
 		if (runnable instanceof RunnableProducerStage) {
 			((RunnableProducerStage) runnable).triggerStartingSignal();

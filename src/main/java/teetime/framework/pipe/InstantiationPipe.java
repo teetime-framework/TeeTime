@@ -102,11 +102,6 @@ public class InstantiationPipe<T> implements IPipe<T> {
 	}
 
 	@Override
-	public void waitForInitializingSignal() throws InterruptedException {
-		throw new IllegalStateException(ERROR_MESSAGE);
-	}
-
-	@Override
 	public void close() {
 		throw new IllegalStateException(ERROR_MESSAGE);
 	}

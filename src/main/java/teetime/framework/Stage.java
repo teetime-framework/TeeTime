@@ -166,9 +166,6 @@ public abstract class Stage {
 	 *             an arbitrary exception if an error occurs during the initialization
 	 */
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
-	public abstract void onInitializing() throws Exception;
-
-	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public abstract void onStarting() throws Exception;
 
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")

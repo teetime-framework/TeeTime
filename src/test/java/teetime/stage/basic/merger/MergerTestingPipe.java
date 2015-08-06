@@ -108,9 +108,6 @@ class MergerTestingPipe implements IPipe {
 	public void waitForStartSignal() throws InterruptedException {}
 
 	@Override
-	public void waitForInitializingSignal() throws InterruptedException {}
-
-	@Override
 	public void close() {}
 
 }

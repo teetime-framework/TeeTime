@@ -17,14 +17,12 @@ package teetime.framework;
 
 import java.util.concurrent.Semaphore;
 
-import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
 public final class RunnableProducerStage extends AbstractRunnableStage {
 
 	private final Semaphore startSemaphore = new Semaphore(0);
-	private final Semaphore initSemaphore = new Semaphore(0);
 
 	RunnableProducerStage(final Stage stage) {
 		super(stage);
@@ -32,8 +30,6 @@ public final class RunnableProducerStage extends AbstractRunnableStage {
 
 	@Override
 	protected void beforeStageExecution() throws InterruptedException {
-		waitForInitializingSignal();
-		this.stage.onSignal(new InitializingSignal(), null);
 		waitForStartingSignal();
 		this.stage.onSignal(new StartingSignal(), null);
 	}
@@ -49,17 +45,8 @@ public final class RunnableProducerStage extends AbstractRunnableStage {
 		this.stage.onSignal(terminatingSignal, null);
 	}
 
-	public void triggerInitializingSignal() {
-		initSemaphore.release();
-	}
-
 	public void triggerStartingSignal() {
 		startSemaphore.release();
-	}
-
-	private void waitForInitializingSignal() throws InterruptedException {
-		logger.trace("waitForInitializingSignal");
-		initSemaphore.acquire();
 	}
 
 	private void waitForStartingSignal() throws InterruptedException {
