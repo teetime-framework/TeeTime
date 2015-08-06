@@ -19,20 +19,13 @@ import java.util.List;
 import java.util.Set;
 
 import teetime.framework.InputPort;
-import teetime.framework.RuntimeServiceFacade;
 import teetime.framework.Stage;
 
-public final class StartingSignal extends AbstractSignal {
+public final class StartingSignal implements ISignal {
 
 	@Override
-	public void trigger(final Stage stage) {
-		try {
-			stage.onStarting();
-		} catch (final Exception e) { // NOCS NOPMD (Stages can throw any arbitrary Exception)
-			this.catchedExceptions.add(e);
-			RuntimeServiceFacade.INSTANCE.abortExecution(stage);
-			LOGGER.error("Exception while sending the start signal", e);
-		}
+	public void trigger(final Stage stage) throws Exception {
+		stage.onStarting();
 	}
 
 	@Override

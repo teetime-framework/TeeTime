@@ -55,7 +55,11 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
-			signal.trigger(this);
+			try {
+				signal.trigger(this);
+			} catch (Exception e) {
+				this.getOwningContext().abortConfigurationRun();
+			}
 			for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
 				outputPort.sendSignal(signal);
 			}
