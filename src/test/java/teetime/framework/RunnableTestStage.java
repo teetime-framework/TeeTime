@@ -25,10 +25,4 @@ class RunnableTestStage extends AbstractProducerStage<Object> {
 		this.terminate();
 	}
 
-	@Override
-	public void onInitializing() throws Exception {
-		super.onInitializing();
-		initialized = true;
-	}
-
 }

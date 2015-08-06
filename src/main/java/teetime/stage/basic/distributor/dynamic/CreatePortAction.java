@@ -18,11 +18,10 @@ package teetime.stage.basic.distributor.dynamic;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.RuntimeServiceFacade;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.RuntimeServiceFacade;
 import teetime.framework.pipe.SpScPipeFactory;
-import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.util.framework.port.PortAction;
 
@@ -51,7 +50,6 @@ public class CreatePortAction<T> implements PortAction<DynamicDistributor<T>> {
 
 		RuntimeServiceFacade.INSTANCE.startWithinNewThread(dynamicDistributor, inputPort.getOwningStage());
 
-		newOutputPort.sendSignal(new InitializingSignal());
 		newOutputPort.sendSignal(new StartingSignal());
 
 		// FIXME pass the new thread to the analysis so that it can terminate the thread at the end

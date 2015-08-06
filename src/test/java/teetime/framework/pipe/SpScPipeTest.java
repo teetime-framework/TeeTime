@@ -27,7 +27,6 @@ import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
-import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 import teetime.framework.signal.ValidatingSignal;
@@ -47,14 +46,11 @@ public class SpScPipeTest {
 		List<ISignal> signals = new ArrayList<ISignal>();
 		signals.add(new StartingSignal());
 		signals.add(new TerminatingSignal());
-		signals.add(new InitializingSignal());
 		signals.add(new ValidatingSignal());
 		signals.add(new StartingSignal());
 		signals.add(new TerminatingSignal());
-		signals.add(new InitializingSignal());
 		signals.add(new ValidatingSignal());
 		signals.add(new StartingSignal());
-		signals.add(new InitializingSignal());
 		signals.add(new TerminatingSignal());
 		signals.add(new ValidatingSignal());
 

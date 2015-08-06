@@ -58,7 +58,6 @@ class ThreadService extends AbstractService<ThreadService> {
 
 		Set<Stage> newThreadableStages = initialize(startStage);
 		startThreads(newThreadableStages);
-		sendInitializingSignal(newThreadableStages);
 	}
 
 	void startStageAtRuntime(final Stage newStage) {
@@ -66,7 +65,6 @@ class ThreadService extends AbstractService<ThreadService> {
 
 		Set<Stage> newThreadableStages = initialize(newStage);
 		startThreads(newThreadableStages);
-		sendInitializingSignal(newThreadableStages);
 
 		sendStartingSignal(newThreadableStages);
 	}
@@ -127,12 +125,6 @@ class ThreadService extends AbstractService<ThreadService> {
 	private void startThreads(final Set<Stage> threadableStages) {
 		for (Stage stage : threadableStages) {
 			stage.getOwningThread().start();
-		}
-	}
-
-	private void sendInitializingSignal(final Set<Stage> threadableStages) {
-		for (Stage stage : threadableStages) {
-			((TeeTimeThread) stage.getOwningThread()).sendInitializingSignal();
 		}
 	}
 

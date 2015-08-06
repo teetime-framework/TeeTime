@@ -24,7 +24,6 @@ import org.jctools.queues.spec.Ordering;
 import org.jctools.queues.spec.Preference;
 
 import teetime.framework.signal.ISignal;
-import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.util.framework.concurrent.queue.PCBlockingQueue;
 import teetime.util.framework.concurrent.queue.putstrategy.PutStrategy;
@@ -63,15 +62,6 @@ public abstract class AbstractInterThreadPipe<T> extends AbstractPipe<T> {
 	@Override
 	public void reportNewElement() { // NOPMD
 		// do nothing
-	}
-
-	@Override
-	public final void waitForInitializingSignal() throws InterruptedException {
-		final ISignal signal = signalQueue.take();
-		if (!(signal instanceof InitializingSignal)) {
-			throw new IllegalStateException("Expected InitializingSignal, but was " + signal.getClass().getSimpleName());
-		}
-		cachedTargetStage.onSignal(signal, getTargetPort());
 	}
 
 	@Override
