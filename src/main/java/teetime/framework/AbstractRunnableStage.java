@@ -83,7 +83,7 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	protected abstract void afterStageExecution();
 
-	public static AbstractRunnableStage create(final Stage stage) {
+	static AbstractRunnableStage create(final Stage stage) {
 		if (stage.getTerminationStrategy() == TerminationStrategy.BY_SIGNAL) {
 			return new RunnableConsumerStage(stage);
 		} else {

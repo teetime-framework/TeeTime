@@ -20,11 +20,11 @@ import java.util.concurrent.Semaphore;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
-public final class RunnableProducerStage extends AbstractRunnableStage {
+public class RunnableProducerStage extends AbstractRunnableStage {
 
 	private final Semaphore startSemaphore = new Semaphore(0);
 
-	RunnableProducerStage(final Stage stage) {
+	public RunnableProducerStage(final Stage stage) {
 		super(stage);
 	}
 
@@ -45,7 +45,7 @@ public final class RunnableProducerStage extends AbstractRunnableStage {
 		this.stage.onSignal(terminatingSignal, null);
 	}
 
-	public void triggerStartingSignal() {
+	void triggerStartingSignal() {
 		startSemaphore.release();
 	}
 
