@@ -254,8 +254,13 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	protected void terminate() {
 		changeState(StageState.TERMINATING);
-		getOwningThread().interrupt();
 	}
+
+	@Override
+	protected void abort() {
+		this.terminate();
+		this.getOwningThread().interrupt();
+	};
 
 	@Override
 	protected boolean shouldBeTerminated() {

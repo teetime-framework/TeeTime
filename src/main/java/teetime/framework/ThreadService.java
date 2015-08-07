@@ -149,7 +149,7 @@ class ThreadService extends AbstractService<ThreadService> {
 	private void abortStages(final Set<Stage> currentTreadableStages) {
 		synchronized (currentTreadableStages) {
 			for (Stage stage : currentTreadableStages) {
-				stage.terminate();
+				stage.abort();
 			}
 		}
 	}

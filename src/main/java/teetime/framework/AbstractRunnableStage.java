@@ -53,7 +53,7 @@ abstract class AbstractRunnableStage implements Runnable {
 						executeStage();
 					}
 				} catch (TerminateException e) {
-					this.stage.terminate();
+					this.stage.abort();
 					stage.getOwningContext().abortConfigurationRun();
 				} finally {
 					afterStageExecution();

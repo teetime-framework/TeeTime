@@ -134,6 +134,8 @@ public abstract class Stage {
 
 	protected abstract void terminate();
 
+	protected abstract void abort();
+
 	protected abstract boolean shouldBeTerminated();
 
 	public abstract StageState getCurrentState();

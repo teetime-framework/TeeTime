@@ -94,6 +94,9 @@ public class TerminationTest {
 		@Override
 		protected void terminate() {}
 
+		@Override
+		protected void abort() {}
+
 	}
 
 	private class Propagator extends AbstractConsumerStage<Integer> {
