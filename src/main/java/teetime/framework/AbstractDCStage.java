@@ -150,7 +150,7 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 			final AbstractDCStage<P, S> newStage = this.duplicate();
 			DynamicConfigurationContext.INSTANCE.connectPorts(out, newStage.getInputPort());
 			DynamicConfigurationContext.INSTANCE.connectPorts(newStage.getOutputPort(), in);
-			DynamicConfigurationContext.INSTANCE.beginThread(this, newStage);
+			RuntimeServiceFacade.INSTANCE.startWithinNewThread(this, newStage);
 		}
 	}
 

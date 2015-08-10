@@ -82,10 +82,7 @@ public abstract class Stage {
 	}
 
 	private String createId() {
-		String simpleName = this.getClass().getSimpleName();
-		if (simpleName.isEmpty()) {
-			simpleName = this.getClass().getSuperclass().getSimpleName();
-		}
+		String simpleName = getSimpleClassName();
 
 		Integer numInstances = INSTANCES_COUNTER.get(simpleName);
 		if (null == numInstances) {
@@ -97,8 +94,17 @@ public abstract class Stage {
 		return newId;
 	}
 
+	private String getSimpleClassName() {
+		String simpleName = this.getClass().getSimpleName();
+		if (simpleName.isEmpty()) {
+			simpleName = this.getClass().getSuperclass().getSimpleName();
+		}
+		return simpleName;
+	}
+
 	protected int getInstanceCount() {
-		Integer numInstances = INSTANCES_COUNTER.get(this.getClass().getSimpleName());
+		String simpleClassName = getSimpleClassName();
+		Integer numInstances = INSTANCES_COUNTER.get(simpleClassName);
 		if (null == numInstances) {
 			numInstances = 0;
 		}

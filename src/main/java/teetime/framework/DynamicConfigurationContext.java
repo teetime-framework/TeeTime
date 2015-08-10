@@ -16,10 +16,6 @@ class DynamicConfigurationContext {
 		// singleton
 	}
 
-	public void beginThread(final Stage previousStage, final Stage stage) {
-		RuntimeServiceFacade.INSTANCE.startWithinNewThread(previousStage, stage);
-	}
-
 	/**
 	 * Connects two ports with a pipe with a default capacity of currently {@value #DEFAULT_CAPACITY}.
 	 *
