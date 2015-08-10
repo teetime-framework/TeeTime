@@ -12,8 +12,8 @@ import teetime.util.divideAndConquer.Identifiable;
  */
 public final class QuicksortProblem extends Identifiable {
 
-	private int low;
-	private int high;
+	private final int low;
+	private final int high;
 	private final int[] numbers;
 
 	/**
@@ -39,14 +39,6 @@ public final class QuicksortProblem extends Identifiable {
 
 	public int getHigh() {
 		return this.high;
-	}
-
-	public void setHigh(final int high) {
-		this.high = high;
-	}
-
-	public void setLow(final int low) {
-		this.low = low;
 	}
 
 	public int[] getNumbers() {
