@@ -1,5 +1,7 @@
 package teetime.stage.quicksort;
 
+import org.apache.commons.math3.util.Pair;
+
 import teetime.framework.AbstractDCStage;
 
 public final class QuicksortStage extends AbstractDCStage<QuicksortProblem, QuicksortSolution> {
@@ -10,7 +12,7 @@ public final class QuicksortStage extends AbstractDCStage<QuicksortProblem, Quic
 	}
 
 	@Override
-	protected void divide(final QuicksortProblem problem) {
+	protected Pair<QuicksortProblem, QuicksortProblem> divide(final QuicksortProblem problem) {
 		final int low = problem.getLow();
 		final int high = problem.getHigh();
 		final int[] numbers = problem.getNumbers();
@@ -40,22 +42,23 @@ public final class QuicksortStage extends AbstractDCStage<QuicksortProblem, Quic
 			}
 		}
 		// recursively sort two sub parts
-		// FIXME Put following code in AbstraceDCStage
-		QuicksortProblem newQuicksortProblem1 = new QuicksortProblem(problem.getID(), low, j, numbers);
-		leftOutputPort.send(newQuicksortProblem1);
-		QuicksortProblem newQuicksortProblem2 = new QuicksortProblem(problem.getID(), i, high, numbers);
-		rightOutputPort.send(newQuicksortProblem2);
+		return new Pair<QuicksortProblem, QuicksortProblem>(
+				new QuicksortProblem(problem.getID(), low, j, numbers),
+				new QuicksortProblem(problem.getID(), i, high, numbers));
 	}
 
 	@Override
 	protected QuicksortSolution solve(final QuicksortProblem problem) {
-		QuicksortSolution solution = new QuicksortSolution(problem.getID(), problem.getLow(), problem.getHigh(), problem.getNumbers());
-		return solution;
+		return new QuicksortSolution(
+				problem.getID(),
+				problem.getLow(),
+				problem.getHigh(),
+				problem.getNumbers());
 	}
 
 	@Override
-	protected void combine(final QuicksortSolution s1, final QuicksortSolution s2) {
-		this.getOutputPort().send(s1);
+	protected QuicksortSolution combine(final QuicksortSolution s1, final QuicksortSolution s2) {
+		return s1;
 	}
 
 	@Override
