@@ -6,7 +6,7 @@ import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 import teetime.util.divideAndConquer.Identifiable;
 
-public class DivideAndConquerRecursivePipe<P extends Identifiable, S extends Identifiable> implements IPipe<P> {
+class DivideAndConquerRecursivePipe<P extends Identifiable, S extends Identifiable> implements IPipe<P> {
 
 	protected final AbstractDCStage<P, S> cachedTargetStage;
 
