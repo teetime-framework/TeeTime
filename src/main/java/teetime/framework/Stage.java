@@ -97,6 +97,14 @@ public abstract class Stage {
 		return newId;
 	}
 
+	protected int getInstanceCount() {
+		Integer numInstances = INSTANCES_COUNTER.get(this.getClass().getSimpleName());
+		if (null == numInstances) {
+			numInstances = 0;
+		}
+		return numInstances;
+	}
+
 	@SuppressWarnings("PMD.DefaultPackage")
 	static void clearInstanceCounters() {
 		INSTANCES_COUNTER.clear();
