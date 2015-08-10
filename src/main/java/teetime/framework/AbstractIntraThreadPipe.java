@@ -57,9 +57,4 @@ public abstract class AbstractIntraThreadPipe<T> extends AbstractPipe<T> {
 		// do nothing
 	}
 
-	@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-	@Override
-	public void waitForInitializingSignal() throws InterruptedException {
-		// do nothing
-	}
 }

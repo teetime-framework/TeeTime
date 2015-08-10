@@ -21,7 +21,6 @@ import java.util.List;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.SpScPipeFactory;
-import teetime.framework.signal.InitializingSignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.util.framework.port.PortAction;
 import teetime.util.stage.OneTimeCondition;
@@ -45,7 +44,6 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 
 		INTER_THREAD_PIPE_FACTORY.create(newOutputPort, inputPort);
 
-		newOutputPort.sendSignal(new InitializingSignal());
 		newOutputPort.sendSignal(new StartingSignal());
 
 		onOutputPortCreated(dynamicDistributor, newOutputPort);

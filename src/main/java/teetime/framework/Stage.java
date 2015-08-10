@@ -149,6 +149,8 @@ public abstract class Stage {
 
 	protected abstract void terminate();
 
+	protected abstract void abort();
+
 	protected abstract boolean shouldBeTerminated();
 
 	public abstract StageState getCurrentState();
@@ -180,9 +182,6 @@ public abstract class Stage {
 	 * @throws Exception
 	 *             an arbitrary exception if an error occurs during the initialization
 	 */
-	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
-	public abstract void onInitializing() throws Exception;
-
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public abstract void onStarting() throws Exception;
 

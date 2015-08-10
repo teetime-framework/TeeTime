@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package teetime.framework;
 
 import java.util.ArrayList;
@@ -43,7 +58,6 @@ class ThreadService extends AbstractService<ThreadService> {
 
 		Set<Stage> newThreadableStages = initialize(startStage);
 		startThreads(newThreadableStages);
-		sendInitializingSignal(newThreadableStages);
 	}
 
 	void startStageAtRuntime(final Stage newStage) {
@@ -51,7 +65,6 @@ class ThreadService extends AbstractService<ThreadService> {
 
 		Set<Stage> newThreadableStages = initialize(newStage);
 		startThreads(newThreadableStages);
-		sendInitializingSignal(newThreadableStages);
 
 		sendStartingSignal(newThreadableStages);
 	}
@@ -63,12 +76,9 @@ class ThreadService extends AbstractService<ThreadService> {
 		}
 
 		// TODO use decorator pattern to combine all analyzes so that only one traverser pass is necessary
-		A0UnconnectedPort portVisitor = new A0UnconnectedPort();
-		Traverser traversor = new Traverser(portVisitor, Direction.BOTH);
-		traversor.traverse(startStage);
 
 		A1ThreadableStageCollector stageCollector = new A1ThreadableStageCollector();
-		traversor = new Traverser(stageCollector, Direction.BOTH);
+		Traverser traversor = new Traverser(stageCollector, Direction.BOTH);
 		traversor.traverse(startStage);
 
 		Set<Stage> newThreadableStages = stageCollector.getThreadableStages();
@@ -118,15 +128,11 @@ class ThreadService extends AbstractService<ThreadService> {
 		}
 	}
 
-	private void sendInitializingSignal(final Set<Stage> threadableStages) {
-		for (Stage stage : threadableStages) {
-			((TeeTimeThread) stage.getOwningThread()).sendInitializingSignal();
-		}
-	}
-
 	private void sendStartingSignal(final Set<Stage> newThreadableStages) {
-		for (Stage stage : newThreadableStages) {
-			((TeeTimeThread) stage.getOwningThread()).sendStartingSignal();
+		synchronized (newThreadableStages) {
+			for (Stage stage : newThreadableStages) {
+				((TeeTimeThread) stage.getOwningThread()).sendStartingSignal();
+			}
 		}
 	}
 
@@ -137,8 +143,14 @@ class ThreadService extends AbstractService<ThreadService> {
 
 	@Override
 	void onTerminate() {
-		for (Stage stage : threadableStages) {
-			stage.terminate();
+		abortStages(threadableStages);
+	}
+
+	private void abortStages(final Set<Stage> currentTreadableStages) {
+		synchronized (currentTreadableStages) {
+			for (Stage stage : currentTreadableStages) {
+				stage.abort();
+			}
 		}
 	}
 

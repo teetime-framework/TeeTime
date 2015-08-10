@@ -74,12 +74,6 @@ public class DivideAndConquerRecursivePipe<P extends Identifiable, S extends Ide
 		// do nothing
 	}
 
-	@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-	@Override
-	public void waitForInitializingSignal() throws InterruptedException {
-		// do nothing
-	}
-
 	@Override
 	public final void reportNewElement() {
 		this.cachedTargetStage.executeStage();

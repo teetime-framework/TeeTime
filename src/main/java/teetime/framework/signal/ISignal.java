@@ -23,7 +23,7 @@ import teetime.framework.Stage;
 
 public interface ISignal {
 
-	void trigger(Stage stage);
+	void trigger(Stage stage) throws Exception;
 
 	// Only used by the merger so far
 	boolean mayBeTriggered(Set<InputPort<?>> receivedInputPorts, List<InputPort<?>> allInputPorts);

@@ -49,11 +49,11 @@ abstract class AbstractRunnableStage implements Runnable {
 					throw new IllegalArgumentException("Argument stage may not have a nullable owning context");
 				}
 				try {
-					do {
+					while (!stage.shouldBeTerminated()) {
 						executeStage();
-					} while (!Thread.currentThread().isInterrupted());
+					}
 				} catch (TerminateException e) {
-					this.stage.terminate();
+					this.stage.abort();
 					stage.getOwningContext().abortConfigurationRun();
 				} finally {
 					afterStageExecution();
@@ -65,13 +65,16 @@ abstract class AbstractRunnableStage implements Runnable {
 			} catch (InterruptedException e) {
 				this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
 			}
-		} finally {
+		} finally
+
+		{
 			if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
 				stage.getOwningContext().getThreadService().getRunnableCounter().dec();
 			}
 		}
 
 		logger.debug("Finished runnable stage. (" + stage.getId() + ")");
+
 	}
 
 	protected abstract void beforeStageExecution() throws InterruptedException;
@@ -80,7 +83,7 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	protected abstract void afterStageExecution();
 
-	public static AbstractRunnableStage create(final Stage stage) {
+	static AbstractRunnableStage create(final Stage stage) {
 		if (stage.getTerminationStrategy() == TerminationStrategy.BY_SIGNAL) {
 			return new RunnableConsumerStage(stage);
 		} else {

@@ -15,6 +15,7 @@
  */
 package teetime.framework;
 
+import teetime.framework.pipe.DummyPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
@@ -31,6 +32,7 @@ public class OutputPort<T> extends AbstractPort<T> {
 
 	OutputPort(final Class<T> type, final Stage owningStage, final String portName) {
 		super(type, owningStage, portName);
+		setPipe(DummyPipe.INSTANCE);
 	}
 
 	/**

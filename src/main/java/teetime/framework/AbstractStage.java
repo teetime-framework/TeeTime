@@ -55,7 +55,11 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	protected void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
-			signal.trigger(this);
+			try {
+				signal.trigger(this);
+			} catch (Exception e) {
+				this.getOwningContext().abortConfigurationRun();
+			}
 			for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
 				outputPort.sendSignal(signal);
 			}
@@ -82,11 +86,6 @@ public abstract class AbstractStage extends Stage {
 			this.triggeredSignalTypes.add(signal.getClass());
 		}
 		return signalAlreadyReceived;
-	}
-
-	@Override
-	public void onInitializing() throws Exception {
-		changeState(StageState.INITIALIZED);
 	}
 
 	private void changeState(final StageState newState) {
@@ -256,8 +255,13 @@ public abstract class AbstractStage extends Stage {
 	@Override
 	protected void terminate() {
 		changeState(StageState.TERMINATING);
-		getOwningThread().interrupt();
 	}
+
+	@Override
+	protected void abort() {
+		this.terminate();
+		this.getOwningThread().interrupt();
+	};
 
 	@Override
 	protected boolean shouldBeTerminated() {

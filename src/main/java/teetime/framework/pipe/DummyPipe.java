@@ -92,11 +92,6 @@ public final class DummyPipe implements IPipe<Object> {
 	}
 
 	@Override
-	public void waitForInitializingSignal() throws InterruptedException {
-
-	}
-
-	@Override
 	public void close() {
 
 	}
