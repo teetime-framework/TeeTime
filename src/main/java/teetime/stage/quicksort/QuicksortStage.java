@@ -8,7 +8,7 @@ public final class QuicksortStage extends AbstractDCStage<QuicksortProblem, Quic
 
 	@Override
 	protected boolean isBaseCase(final QuicksortProblem quickSortProblem) {
-		return (quickSortProblem.getHigh() - quickSortProblem.getLow() >= 1 ? false : true);
+		return quickSortProblem.getHigh() - quickSortProblem.getLow() < 1;
 	}
 
 	@Override

@@ -128,8 +128,8 @@ public class DivideAndConquerRecursivePipe<P extends Identifiable, S extends Ide
 			return tempTargetStage.solve(problem);
 		} else {
 			Pair<P, P> problems = tempTargetStage.divide(problem);
-			S firstSolution = divideAndConquer(problems.getFirst());
-			S secondSolution = divideAndConquer(problems.getSecond());
+			S firstSolution = divideAndConquer(problems.getFirst()); // recursive call
+			S secondSolution = divideAndConquer(problems.getSecond()); // recursive call
 			return tempTargetStage.combine(firstSolution, secondSolution);
 		}
 	}
