@@ -4,13 +4,13 @@ import org.apache.commons.math3.util.Pair;
 
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
-import teetime.util.divideAndConquer.Identifiable;
 
-class DivideAndConquerRecursivePipe<P extends Identifiable, S extends Identifiable> implements IPipe<P> {
+class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> implements
+		IPipe<P> {
 
-	protected final AbstractDCStage<P, S> cachedTargetStage;
+	protected final DivideAndConquerStage<P, S> cachedTargetStage;
 
-	private final OutputPort<? extends P> sourcePort;
+	private final OutputPort<P> sourcePort;
 	private final InputPort<S> targetPort;
 	@SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
 	private final int capacity;
@@ -20,13 +20,7 @@ class DivideAndConquerRecursivePipe<P extends Identifiable, S extends Identifiab
 	private S element;
 
 	@SuppressWarnings("unchecked")
-	protected DivideAndConquerRecursivePipe(final OutputPort<? extends P> sourcePort, final InputPort<S> targetPort) {
-		if (sourcePort == null) {
-			throw new IllegalArgumentException("sourcePort may not be null");
-		}
-		if (targetPort == null) {
-			throw new IllegalArgumentException("targetPort may not be null");
-		}
+	protected DivideAndConquerRecursivePipe(final OutputPort<P> sourcePort, final InputPort<S> targetPort) {
 
 		sourcePort.setPipe(this);
 		targetPort.setPipe(this);
@@ -34,7 +28,7 @@ class DivideAndConquerRecursivePipe<P extends Identifiable, S extends Identifiab
 		this.sourcePort = sourcePort;
 		this.targetPort = targetPort;
 		this.capacity = 1;
-		this.cachedTargetStage = (AbstractDCStage<P, S>) targetPort.getOwningStage();
+		this.cachedTargetStage = (DivideAndConquerStage<P, S>) targetPort.getOwningStage();
 	}
 
 	@Override
@@ -42,10 +36,9 @@ class DivideAndConquerRecursivePipe<P extends Identifiable, S extends Identifiab
 		return sourcePort;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public final InputPort<P> getTargetPort() {
-		return (InputPort<P>) targetPort;
+		return null; // (InputPort<P>) targetPort;
 	}
 
 	@Override
@@ -123,14 +116,13 @@ class DivideAndConquerRecursivePipe<P extends Identifiable, S extends Identifiab
 	}
 
 	private S divideAndConquer(final P problem) {
-		final AbstractDCStage<P, S> tempTargetStage = cachedTargetStage;
-		if (tempTargetStage.isBaseCase(problem)) {
-			return tempTargetStage.solve(problem);
+		if (problem.isBaseCase()) {
+			return problem.solve();
 		} else {
-			Pair<P, P> problems = tempTargetStage.divide(problem);
+			Pair<P, P> problems = problem.divide();
 			S firstSolution = divideAndConquer(problems.getFirst()); // recursive call
 			S secondSolution = divideAndConquer(problems.getSecond()); // recursive call
-			return tempTargetStage.combine(firstSolution, secondSolution);
+			return firstSolution.combine(secondSolution);
 		}
 	}
 }

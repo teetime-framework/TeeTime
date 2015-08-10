@@ -2,7 +2,7 @@ package teetime.stage.quicksort;
 
 import java.util.Arrays;
 
-import teetime.util.divideAndConquer.Identifiable;
+import teetime.framework.AbstractDivideAndConquerSolution;
 
 /**
  * @since 2.x
@@ -10,7 +10,7 @@ import teetime.util.divideAndConquer.Identifiable;
  * @author Robin Mohr
  *
  */
-public final class QuicksortSolution extends Identifiable {
+public final class QuicksortSolution extends AbstractDivideAndConquerSolution<QuicksortSolution> {
 
 	private final int low;
 	private final int high;
@@ -51,5 +51,10 @@ public final class QuicksortSolution extends Identifiable {
 		String s = "Solution ID: " + this.getID() + " contains Array: " + Arrays.toString(numbers);
 		return s;
 
+	}
+
+	@Override
+	protected QuicksortSolution combine(final QuicksortSolution s1) {
+		return s1;
 	}
 }

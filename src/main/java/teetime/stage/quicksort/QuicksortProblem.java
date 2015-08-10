@@ -2,7 +2,9 @@ package teetime.stage.quicksort;
 
 import java.util.Arrays;
 
-import teetime.util.divideAndConquer.Identifiable;
+import org.apache.commons.math3.util.Pair;
+
+import teetime.framework.AbstractDivideAndConquerProblem;
 
 /**
  * @since 2.x
@@ -10,7 +12,7 @@ import teetime.util.divideAndConquer.Identifiable;
  * @author Robin Mohr
  *
  */
-public final class QuicksortProblem extends Identifiable {
+public final class QuicksortProblem extends AbstractDivideAndConquerProblem<QuicksortProblem, QuicksortSolution> {
 
 	private final int low;
 	private final int high;
@@ -47,8 +49,53 @@ public final class QuicksortProblem extends Identifiable {
 
 	@Override
 	public String toString() {
-		String s = "Solution ID: " + this.getID() + " contains Array: " + Arrays.toString(numbers);
-		return s;
+		return "Solution ID: " + this.getID() + " contains Array: " + Arrays.toString(numbers);
+	}
 
+	@Override
+	public boolean isBaseCase() {
+		return high - low < 1;
+	}
+
+	@Override
+	public Pair<QuicksortProblem, QuicksortProblem> divide() {
+
+		// pick the pivot
+		final int middle = low + (high - low) / 2;
+		final int pivot = numbers[middle];
+
+		// make left < pivot and right > pivot
+		int i = low;
+		int j = high;
+		while (i <= j) {
+			while (numbers[i] < pivot) {
+				i++;
+			}
+
+			while (numbers[j] > pivot) {
+				j--;
+			}
+
+			if (i <= j) {
+				int temp = numbers[i];
+				numbers[i] = numbers[j];
+				numbers[j] = temp;
+				i++;
+				j--;
+			}
+		}
+		// recursively sort two sub parts
+		return new Pair<QuicksortProblem, QuicksortProblem>(
+				new QuicksortProblem(this.getID(), low, j, numbers),
+				new QuicksortProblem(this.getID(), i, high, numbers));
+	}
+
+	@Override
+	public QuicksortSolution solve() {
+		return new QuicksortSolution(
+				this.getID(),
+				this.low,
+				this.high,
+				this.numbers);
 	}
 }

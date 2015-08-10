@@ -8,18 +8,18 @@ import java.util.List;
 
 import org.junit.Test;
 
+import teetime.framework.DivideAndConquerStage;
 import teetime.stage.quicksort.QuicksortProblem;
 import teetime.stage.quicksort.QuicksortSolution;
-import teetime.stage.quicksort.QuicksortStage;
 
 /**
  * @author Robin Mohr
  */
-public class QuicksortStageTest {
+public class DivideAndConquerStageTest {
 
 	@Test
 	public void quicksortImplementationShouldSortArray() {
-		final QuicksortStage quicksortStage = new QuicksortStage();
+		final DivideAndConquerStage<QuicksortProblem, QuicksortSolution> quicksortStage = new DivideAndConquerStage<QuicksortProblem, QuicksortSolution>();
 
 		final int[] numbers = new int[] { 3, 1, 4, 5, 2 };
 		final int[] sortedNumbers = new int[] { 1, 2, 3, 4, 5 };
