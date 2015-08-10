@@ -31,9 +31,12 @@ public class QuicksortStageTest {
 
 		problems.add(problem);
 
-		test(quicksortStage).and().send(problems).to(quicksortStage.getInputPort()).and().receive(solutions).from(quicksortStage.getOutputPort()).start();
+		test(quicksortStage).and()
+				.send(problems).to(quicksortStage.getInputPort()).and()
+				.receive(solutions).from(quicksortStage.getOutputPort())
+				.start();
 
-		System.out.println(solutions.get(1).toString());
-		assertArrayEquals(solutions.get(1).getNumbers(), sortedNumbers);
+		System.out.println(solutions.get(0).toString());
+		assertArrayEquals(solutions.get(0).getNumbers(), sortedNumbers);
 	}
 }
