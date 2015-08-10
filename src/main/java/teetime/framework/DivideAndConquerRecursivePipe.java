@@ -129,11 +129,14 @@ public class DivideAndConquerRecursivePipe<P extends Identifiable, S extends Ide
 	}
 
 	private S divideAndConquer(final P problem) {
-		if (cachedTargetStage.isBaseCase(problem)) {
-			return cachedTargetStage.solve(problem);
+		final AbstractDCStage<P, S> tempTargetStage = cachedTargetStage;
+		if (tempTargetStage.isBaseCase(problem)) {
+			return tempTargetStage.solve(problem);
 		} else {
-			Pair<P, P> problems = cachedTargetStage.divide(problem);
-			return (cachedTargetStage.combine(divideAndConquer(problems.getFirst()), divideAndConquer(problems.getSecond())));
+			Pair<P, P> problems = tempTargetStage.divide(problem);
+			S firstSolution = divideAndConquer(problems.getFirst());
+			S secondSolution = divideAndConquer(problems.getSecond());
+			return tempTargetStage.combine(firstSolution, secondSolution);
 		}
 	}
 }
