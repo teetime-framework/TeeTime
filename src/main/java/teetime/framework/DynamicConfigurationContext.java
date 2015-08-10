@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.pipe.SpScPipeFactory;
-import teetime.framework.signal.StartingSignal;
 
 class DynamicConfigurationContext {
 
@@ -53,14 +52,5 @@ class DynamicConfigurationContext {
 					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
 		}
 		PIPE_FACTORY.create(sourcePort, targetPort, capacity);
-	}
-
-	/**
-	 * Sends the {@link StartingSignal}.
-	 *
-	 * @param outputPort
-	 */
-	public void sendSignals(final OutputPort<?> outputPort) {
-		outputPort.sendSignal(new StartingSignal());
 	}
 }
