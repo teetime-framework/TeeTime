@@ -4,8 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.pipe.SpScPipeFactory;
-import teetime.framework.signal.InitializingSignal;
-import teetime.framework.signal.StartingSignal;
 
 class DynamicConfigurationContext {
 
@@ -20,16 +18,6 @@ class DynamicConfigurationContext {
 
 	public void beginThread(final Stage previousStage, final Stage stage) {
 		RuntimeServiceFacade.INSTANCE.startWithinNewThread(previousStage, stage);
-	}
-
-	/**
-	 * Sends the {@link InitializingSignal} and the {@link StartingSignal}.
-	 *
-	 * @param outputPort
-	 */
-	public void sendSignals(final OutputPort<?> outputPort) {
-		outputPort.sendSignal(new InitializingSignal());
-		outputPort.sendSignal(new StartingSignal());
 	}
 
 	/**
