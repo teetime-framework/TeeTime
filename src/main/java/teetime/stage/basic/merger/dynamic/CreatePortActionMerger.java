@@ -28,16 +28,19 @@ public class CreatePortActionMerger<T> implements PortAction<DynamicMerger<T>> {
 	private final OneTimeCondition condition = new OneTimeCondition();
 
 	private final OutputPort<T> outputPort;
+	private final int capacity;
 
-	public CreatePortActionMerger(final OutputPort<T> outputPort) {
+	public CreatePortActionMerger(final OutputPort<T> outputPort, final int capacity) {
+		super();
 		this.outputPort = outputPort;
+		this.capacity = capacity;
 	}
 
 	@Override
 	public void execute(final DynamicMerger<T> dynamicDistributor) {
 		InputPort<T> newInputPort = dynamicDistributor.getNewInputPort();
 
-		INTER_THREAD_PIPE_FACTORY.create(outputPort, newInputPort, 10000);
+		INTER_THREAD_PIPE_FACTORY.create(outputPort, newInputPort, capacity);
 
 		condition.signalAll();
 	}

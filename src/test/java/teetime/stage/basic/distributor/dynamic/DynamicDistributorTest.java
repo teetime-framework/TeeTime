@@ -35,6 +35,8 @@ import teetime.util.framework.port.PortAction;
 
 public class DynamicDistributorTest {
 
+	private static final int DEFAULT_CAPACITY = 16;
+
 	@Test
 	public void shouldWorkWithoutActionTriggers() throws Exception {
 		PortAction<DynamicDistributor<Integer>> createAction = new DoNothingPortAction<Integer>();
@@ -106,7 +108,7 @@ public class DynamicDistributorTest {
 
 	private CreatePortActionDistributor<Integer> createPortCreateAction(final PortContainer<Integer> portContainer) {
 		CollectorSink<Integer> newStage = new CollectorSink<Integer>();
-		CreatePortActionDistributor<Integer> portAction = new CreatePortActionDistributor<Integer>(newStage.getInputPort());
+		CreatePortActionDistributor<Integer> portAction = new CreatePortActionDistributor<Integer>(newStage.getInputPort(), DEFAULT_CAPACITY);
 		portAction.addPortActionListener(new PortActionListener<Integer>() {
 			@Override
 			public void onOutputPortCreated(final DynamicDistributor<Integer> distributor, final OutputPort<Integer> port) {

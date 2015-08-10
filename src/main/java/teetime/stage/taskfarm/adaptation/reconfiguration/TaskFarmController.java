@@ -72,7 +72,7 @@ class TaskFarmController<I, O> {
 		LOGGER.debug("Add stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
 		ITaskFarmDuplicable<I, O> newStage = this.taskFarmStage.getBasicEnclosedStage().duplicate();
 
-		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort());
+		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort(), 4);
 		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 		LOGGER.debug("distributor port created, before wait");
 		LOGGER.debug("state of distributor: " + this.taskFarmStage.getDistributor().getCurrentState().toString());
@@ -84,7 +84,7 @@ class TaskFarmController<I, O> {
 		}
 		LOGGER.debug("distributor port created");
 
-		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort());
+		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort(), 10000);
 		this.taskFarmStage.getMerger().addPortActionRequest(mergerPortAction);
 		mergerPortAction.waitForCompletion();
 		LOGGER.debug("merger port created");
@@ -127,8 +127,7 @@ class TaskFarmController<I, O> {
 
 		try {
 			@SuppressWarnings("unchecked")
-			final RemovePortActionDistributor<I> distributorPortAction =
-					new RemovePortActionDistributor<I>((OutputPort<I>) distributorOutputPort);
+			final RemovePortActionDistributor<I> distributorPortAction = new RemovePortActionDistributor<I>((OutputPort<I>) distributorOutputPort);
 			this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 			this.taskFarmStage.getEnclosedStageInstances().remove(stageToBeRemoved);
 			LOGGER.debug("WAIT for " + distributorPortAction);

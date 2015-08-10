@@ -87,6 +87,8 @@ public class DynamicMergerTest {
 
 	private static class DynamicMergerTestConfig extends Configuration {
 
+		private static final int DEFAULT_CAPACITY = 16;
+
 		private final CollectorSink<Integer> collectorSink;
 		private final DynamicMerger<Integer> merger;
 
@@ -112,7 +114,7 @@ public class DynamicMergerTest {
 		boolean addCreatePortAction(final Integer number) {
 			final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(number);
 
-			PortAction<DynamicMerger<Integer>> portAction = new CreatePortActionMerger<Integer>(initialElementProducer.getOutputPort()) {
+			PortAction<DynamicMerger<Integer>> portAction = new CreatePortActionMerger<Integer>(initialElementProducer.getOutputPort(), DEFAULT_CAPACITY) {
 				@Override
 				public void execute(final DynamicMerger<Integer> dynamicDistributor) {
 					super.execute(dynamicDistributor);

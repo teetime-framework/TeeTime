@@ -34,16 +34,19 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 	private final OneTimeCondition condition = new OneTimeCondition();
 
 	private final InputPort<T> inputPort;
+	private final int capacity;
 
-	public CreatePortActionDistributor(final InputPort<T> inputPort) {
+	public CreatePortActionDistributor(final InputPort<T> inputPort, final int capacity) {
+		super();
 		this.inputPort = inputPort;
+		this.capacity = capacity;
 	}
 
 	@Override
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
 		OutputPort<T> newOutputPort = dynamicDistributor.getNewOutputPort();
 
-		INTER_THREAD_PIPE_FACTORY.create(newOutputPort, inputPort);
+		INTER_THREAD_PIPE_FACTORY.create(newOutputPort, inputPort, capacity);
 
 		newOutputPort.sendSignal(new InitializingSignal());
 		newOutputPort.sendSignal(new StartingSignal());
