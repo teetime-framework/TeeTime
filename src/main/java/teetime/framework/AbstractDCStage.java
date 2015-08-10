@@ -140,7 +140,7 @@ public abstract class AbstractDCStage<P extends Identifiable, S extends Identifi
 	}
 
 	private boolean isThresholdReached() {
-		return (this.threshold - this.getInstanceCount() > 0 ? false : true);
+		return this.threshold - this.getInstanceCount() <= 0;
 	}
 
 	private void makeCopy(final OutputPort<P> out, final InputPort<S> in) {
