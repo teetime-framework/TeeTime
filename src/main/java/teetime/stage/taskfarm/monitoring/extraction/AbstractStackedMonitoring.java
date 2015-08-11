@@ -38,7 +38,9 @@ abstract public class AbstractStackedMonitoring extends AbstractMonitoringDataEx
 			createHeader(writer, maxNumberOfPipes);
 
 			for (PipeMonitoringDataContainer container : containers) {
-				addTripleToCSV(writer, maxNumberOfPipes, container);
+				if (container.getCapacitiesWithPipeIds().size() > 0) {
+					addTripleToCSV(writer, maxNumberOfPipes, container);
+				}
 			}
 		} catch (IOException e) {
 			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage());
