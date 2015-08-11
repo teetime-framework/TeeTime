@@ -37,10 +37,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	protected final OutputPort<P> leftOutputPort = this.createOutputPort();
 	protected final OutputPort<P> rightOutputPort = this.createOutputPort();
 
-	/**
-	 * Divide and Conquer stages need the configuration context upon creation
-	 *
-	 */
 	public DivideAndConquerStage() {
 		leftInputPort.setPipe(DummyPipe.INSTANCE);
 		rightInputPort.setPipe(DummyPipe.INSTANCE);
