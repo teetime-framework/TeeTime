@@ -15,6 +15,8 @@
  */
 package teetime.stage.string;
 
+import java.util.Locale;
+
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
@@ -31,8 +33,7 @@ public final class ToLowerCase extends AbstractConsumerStage<String> {
 
 	@Override
 	protected void execute(final String element) {
-		this.outputPort.send(element.toLowerCase());
-
+		this.outputPort.send(element.toLowerCase(Locale.ENGLISH));
 	}
 
 	public OutputPort<String> getOutputPort() {
