@@ -43,7 +43,6 @@ public class DivideAndConquerStageTest {
 
 	@Test
 	public void quicksortImplementationShouldSortArray() {
-
 		test(this.quicksortStage).and()
 				.send(problems).to(quicksortStage.getInputPort()).and()
 				.receive(solutions).from(quicksortStage.getOutputPort())
@@ -52,7 +51,6 @@ public class DivideAndConquerStageTest {
 
 	@After
 	public void evaluate() {
-		System.out.println(solutions.get(0).toString());
 		assertArrayEquals(solutions.get(0).getNumbers(), sortedNumbers);
 	}
 }

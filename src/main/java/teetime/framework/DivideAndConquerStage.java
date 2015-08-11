@@ -72,10 +72,8 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 
 	@Override
 	protected void execute() {
-		// check left / right input ports for new partial solutions
 		checkForSolutions(rightInputPort);
 		checkForSolutions(leftInputPort);
-		// check main input port for new problems
 		checkForProblems(inputPort);
 	}
 
@@ -84,7 +82,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		if (problem != null) {
 			if (problem.isBaseCase()) {
 				S solution = problem.solve();
-				logger.trace("Sent element: " + solution.toString());
 				this.getOutputPort().send(solution);
 				this.terminate();
 			} else {
@@ -141,13 +138,13 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		return this.threshold - this.getInstanceCount() <= 0;
 	}
 
-	private void makeCopy(final OutputPort<P> out, final InputPort<S> in) {
+	private void makeCopy(final OutputPort<P> outputPort, final InputPort<S> inputPort) {
 		if (isThresholdReached()) {
-			new DivideAndConquerRecursivePipe<P, S>(out, in);
+			new DivideAndConquerRecursivePipe<P, S>(outputPort, inputPort);
 		} else {
 			final DivideAndConquerStage<P, S> newStage = this.duplicate();
-			DynamicConfigurationContext.INSTANCE.connectPorts(out, newStage.getInputPort());
-			DynamicConfigurationContext.INSTANCE.connectPorts(newStage.getOutputPort(), in);
+			DynamicConfigurationContext.INSTANCE.connectPorts(outputPort, newStage.getInputPort());
+			DynamicConfigurationContext.INSTANCE.connectPorts(newStage.getOutputPort(), inputPort);
 			RuntimeServiceFacade.INSTANCE.startWithinNewThread(this, newStage);
 		}
 	}
