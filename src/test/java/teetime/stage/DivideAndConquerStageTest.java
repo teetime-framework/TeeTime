@@ -6,6 +6,7 @@ import static teetime.framework.test.StageTester.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import teetime.framework.DivideAndConquerStage;
@@ -16,22 +17,33 @@ import teetime.stage.quicksort.QuicksortSolution;
  * @author Robin Mohr
  */
 public class DivideAndConquerStageTest {
+	DivideAndConquerStage<QuicksortProblem, QuicksortSolution> quicksortStage;
+	int[] numbers;
+	int[] sortedNumbers;
+	QuicksortProblem problemOne;
+	QuicksortProblem problemTwo;
+	List<QuicksortSolution> solutions;
+	List<QuicksortProblem> problems;
+
+	@Before
+	public void initialize() {
+		quicksortStage = new DivideAndConquerStage<QuicksortProblem, QuicksortSolution>();
+
+		numbers = new int[] { 3, 1, 4, 5, 2 };
+		sortedNumbers = new int[] { 1, 2, 3, 4, 5 };
+
+		problemOne = new QuicksortProblem(1, 0, numbers.length - 1, numbers);
+
+		problems = new ArrayList<QuicksortProblem>();
+		solutions = new ArrayList<QuicksortSolution>();
+
+		problems.add(problemOne);
+	}
 
 	@Test
 	public void quicksortImplementationShouldSortArray() {
-		final DivideAndConquerStage<QuicksortProblem, QuicksortSolution> quicksortStage = new DivideAndConquerStage<QuicksortProblem, QuicksortSolution>();
 
-		final int[] numbers = new int[] { 3, 1, 4, 5, 2 };
-		final int[] sortedNumbers = new int[] { 1, 2, 3, 4, 5 };
-
-		final QuicksortProblem problem = new QuicksortProblem(1, 0, numbers.length - 1, numbers);
-
-		final List<QuicksortProblem> problems = new ArrayList<QuicksortProblem>();
-		final List<QuicksortSolution> solutions = new ArrayList<QuicksortSolution>();
-
-		problems.add(problem);
-
-		test(quicksortStage).and()
+		test(this.quicksortStage).and()
 				.send(problems).to(quicksortStage.getInputPort()).and()
 				.receive(solutions).from(quicksortStage.getOutputPort())
 				.start();

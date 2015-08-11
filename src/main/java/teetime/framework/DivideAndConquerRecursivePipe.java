@@ -21,10 +21,8 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 
 	@SuppressWarnings("unchecked")
 	protected DivideAndConquerRecursivePipe(final OutputPort<P> sourcePort, final InputPort<S> targetPort) {
-
 		sourcePort.setPipe(this);
 		targetPort.setPipe(this);
-
 		this.sourcePort = sourcePort;
 		this.targetPort = targetPort;
 		this.capacity = 1;
