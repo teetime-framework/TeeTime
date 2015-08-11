@@ -2,10 +2,11 @@ package teetime.framework;
 
 import org.apache.commons.math3.util.Pair;
 
-import teetime.framework.pipe.DummyPipe;
-
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
+
+import teetime.framework.pipe.DummyPipe;
+import teetime.framework.signal.StartingSignal;
 
 /**
  * Represents a stage to provide functionality for the divide and conquer paradigm
@@ -14,7 +15,8 @@ import com.carrotsearch.hppc.IntObjectMap;
  *
  * @author Robin Mohr
  *
- * @param <P>
+ * @param
+ * 			<P>
  *            type of elements that represent a problem to be solved.
  *
  * @param <S>
@@ -145,6 +147,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 			final DivideAndConquerStage<P, S> newStage = this.duplicate();
 			DynamicConfigurationContext.INSTANCE.connectPorts(outputPort, newStage.getInputPort());
 			DynamicConfigurationContext.INSTANCE.connectPorts(newStage.getOutputPort(), inputPort);
+			outputPort.sendSignal(new StartingSignal());
 			RuntimeServiceFacade.INSTANCE.startWithinNewThread(this, newStage);
 		}
 	}
