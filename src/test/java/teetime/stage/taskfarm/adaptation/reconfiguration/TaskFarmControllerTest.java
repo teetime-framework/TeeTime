@@ -37,7 +37,7 @@ public class TaskFarmControllerTest {
 	public void test() throws InterruptedException {
 		TestMerger<String> merger = new TestMerger<String>();
 		MD5Stage stage = new MD5Stage();
-		TaskFarmStage<String, String, MD5Stage> taskFarm = new TaskFarmStage<String, String, MD5Stage>(stage, merger);
+		TaskFarmStage<String, String, MD5Stage> taskFarm = new TaskFarmStage<String, String, MD5Stage>(stage, merger, 100);
 
 		final TaskFarmController<String, String> controller = new TaskFarmController<String, String>(taskFarm);
 

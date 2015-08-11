@@ -56,13 +56,17 @@ public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 	private final SingleTaskFarmMonitoringService taskFarmMonitoringService;
 
 	public TaskFarmStage(final T workerStage) {
-		this(workerStage, null);
+		this(workerStage, null, 100);
+	}
+
+	public TaskFarmStage(final T workerStage, final int pipeCapacity) {
+		this(workerStage, null, pipeCapacity);
 	}
 
 	/**
 	 * for test purposes only
 	 */
-	public TaskFarmStage(final T workerStage, final DynamicMerger<O> merger) {
+	public TaskFarmStage(final T workerStage, final DynamicMerger<O> merger, final int pipeCapacity) {
 		super();
 
 		if (null == workerStage) {
@@ -92,15 +96,17 @@ public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 		taskFarmMonitoringService = new SingleTaskFarmMonitoringService(this);
 		adaptationThread = new AdaptationThread<I, O, T>(this);
 
+		configuration.setPipeCapacity(pipeCapacity);
+
 		this.init(workerStage);
 	}
 
 	private void init(final T includedStage) {
 		final InputPort<I> stageInputPort = includedStage.getInputPort();
-		connectPorts(this.distributor.getNewOutputPort(), stageInputPort, 10000);
+		connectPorts(this.distributor.getNewOutputPort(), stageInputPort, configuration.getPipeCapacity());
 
 		final OutputPort<O> stageOutputPort = includedStage.getOutputPort();
-		connectPorts(stageOutputPort, this.merger.getNewInputPort(), 10000);
+		connectPorts(stageOutputPort, this.merger.getNewInputPort(), configuration.getPipeCapacity());
 
 		addThreadableStage(this.merger);
 		addThreadableStage(includedStage.getInputPort().getOwningStage());

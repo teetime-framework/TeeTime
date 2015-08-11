@@ -43,6 +43,8 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	private volatile int maxSamplesUntilRemove = 5;
 	private volatile double throughputScoreBoundary = 0.2d;
 
+	private volatile int pipeCapacity = 100;
+
 	private volatile boolean stillParallelizable = true;
 
 	TaskFarmConfiguration() {}
@@ -109,5 +111,13 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	public void setAdaptationWaitingTimeMillis(final int adaptationWaitingTimeMillis) {
 		this.adaptationWaitingTimeMillis = adaptationWaitingTimeMillis;
+	}
+
+	public int getPipeCapacity() {
+		return pipeCapacity;
+	}
+
+	public void setPipeCapacity(final int pipeCapacity) {
+		this.pipeCapacity = pipeCapacity;
 	}
 }
