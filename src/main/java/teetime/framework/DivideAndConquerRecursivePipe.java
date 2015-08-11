@@ -1,7 +1,5 @@
 package teetime.framework;
 
-import org.apache.commons.math3.util.Pair;
-
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 
@@ -117,9 +115,9 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 		if (problem.isBaseCase()) {
 			return problem.solve();
 		} else {
-			Pair<P, P> problems = problem.divide();
-			S firstSolution = divideAndConquer(problems.getFirst()); // recursive call
-			S secondSolution = divideAndConquer(problems.getSecond()); // recursive call
+			DividedDCProblem<P> dividedProblem = problem.divide();
+			S firstSolution = divideAndConquer(dividedProblem.leftProblem); // recursive call
+			S secondSolution = divideAndConquer(dividedProblem.rightProblem); // recursive call
 			return firstSolution.combine(secondSolution);
 		}
 	}

@@ -1,7 +1,5 @@
 package teetime.framework;
 
-import org.apache.commons.math3.util.Pair;
-
 import teetime.util.divideAndConquer.Identifiable;
 
 public abstract class AbstractDivideAndConquerProblem<P, S> extends Identifiable {
@@ -24,7 +22,7 @@ public abstract class AbstractDivideAndConquerProblem<P, S> extends Identifiable
 	 * @param element
 	 *            An element to be split and further processed
 	 */
-	protected abstract Pair<P, P> divide();
+	protected abstract DividedDCProblem<P> divide();
 
 	/**
 	 * Method to process the given input and send to the output port.

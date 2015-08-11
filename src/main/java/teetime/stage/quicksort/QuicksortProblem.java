@@ -2,9 +2,8 @@ package teetime.stage.quicksort;
 
 import java.util.Arrays;
 
-import org.apache.commons.math3.util.Pair;
-
 import teetime.framework.AbstractDivideAndConquerProblem;
+import teetime.framework.DividedDCProblem;
 
 /**
  * @since 2.x
@@ -58,7 +57,7 @@ public final class QuicksortProblem extends AbstractDivideAndConquerProblem<Quic
 	}
 
 	@Override
-	public Pair<QuicksortProblem, QuicksortProblem> divide() {
+	public DividedDCProblem<QuicksortProblem> divide() {
 
 		// pick the pivot
 		final int middle = low + (high - low) / 2;
@@ -85,7 +84,7 @@ public final class QuicksortProblem extends AbstractDivideAndConquerProblem<Quic
 			}
 		}
 		// recursively sort two sub parts
-		return new Pair<QuicksortProblem, QuicksortProblem>(
+		return new DividedDCProblem<QuicksortProblem>(
 				new QuicksortProblem(this.getID(), low, j, numbers),
 				new QuicksortProblem(this.getID(), i, high, numbers));
 	}

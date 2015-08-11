@@ -1,7 +1,5 @@
 package teetime.framework;
 
-import org.apache.commons.math3.util.Pair;
-
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
 
@@ -75,32 +73,14 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		checkForProblems(inputPort);
 	}
 
-	private void checkForProblems(final InputPort<P> port) {
-		P problem = port.receive();
-		if (problem != null) {
-			if (problem.isBaseCase()) {
-				S solution = problem.solve();
-				this.getOutputPort().send(solution);
-				this.terminate();
-			} else {
-				if (firstExecution) {
-					createCopies();
-				}
-				Pair<P, P> tempProblems = problem.divide();
-				this.getleftOutputPort().send(tempProblems.getFirst()); // first recursive call
-				this.getrightOutputPort().send(tempProblems.getSecond()); // second recursive call
-			}
-		}
-	}
-
 	private void checkForSolutions(final InputPort<S> port) {
 		S solution = port.receive();
 		if (solution != null) {
 			int solutionID = solution.getID();
 			if (isInBuffer(solutionID)) {
-				this.getOutputPort()
-						.send(
-								solution.combine(getFromBuffer(solutionID)));
+				S bufferedSolution = getSolutionFromBuffer(solutionID);
+				S combinedSolution = solution.combine(bufferedSolution);
+				outputPort.send(combinedSolution);
 				this.terminate();
 			} else {
 				addToBuffer(solutionID, solution);
@@ -108,7 +88,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		}
 	}
 
-	private S getFromBuffer(final int solutionID) {
+	private S getSolutionFromBuffer(final int solutionID) {
 		S tempSolution = this.solutionBuffer.get(solutionID);
 		this.solutionBuffer.remove(solutionID);
 		return tempSolution;
@@ -120,6 +100,24 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 
 	private boolean isInBuffer(final int solutionID) {
 		return this.solutionBuffer.containsKey(solutionID);
+	}
+
+	private void checkForProblems(final InputPort<P> port) {
+		P problem = port.receive();
+		if (problem != null) {
+			if (problem.isBaseCase()) {
+				S solution = problem.solve();
+				this.getOutputPort().send(solution);
+				this.terminate();
+			} else {
+				if (firstExecution) {
+					createCopies();
+				}
+				DividedDCProblem<P> dividedProblem = problem.divide();
+				this.getleftOutputPort().send(dividedProblem.leftProblem); // first recursive call
+				this.getrightOutputPort().send(dividedProblem.rightProblem); // second recursive call
+			}
+		}
 	}
 
 	/**
