@@ -15,22 +15,68 @@
  */
 package teetime.stage.taskfarm;
 
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.Test;
 
 import teetime.framework.Execution;
+import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
+import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
+import teetime.stage.taskfarm.monitoring.extraction.AbstractMonitoringDataExtraction;
+import teetime.stage.taskfarm.monitoring.extraction.StackedTimePullThroughput2D;
+import teetime.stage.taskfarm.monitoring.extraction.StackedTimePushThroughput2D;
+import teetime.stage.taskfarm.monitoring.extraction.StackedTimeSizeWithCapacity2D;
+import teetime.stage.taskfarm.monitoring.extraction.TimeBoundary2D;
+import teetime.stage.taskfarm.monitoring.extraction.TimeBoundaryMSPullThroughput3D;
+import teetime.stage.taskfarm.monitoring.extraction.TimeBoundaryMSPushThroughput3D;
+import teetime.stage.taskfarm.monitoring.extraction.TimeBoundaryStages3D;
 
 public class TaskFarmStageTest {
 
-	private static final int NUMBER_OF_TEST_ELEMENTS = 7000000;
+	private static final int NUMBER_OF_TEST_ELEMENTS = 5000000;
 
 	@Test
-	public void simpleTaskFarmStageTest() throws InterruptedException {
+	public void simpleTaskFarmStageTest() throws IOException {
 		final TaskFarmStageTestConfiguration configuration = new TaskFarmStageTestConfiguration(NUMBER_OF_TEST_ELEMENTS);
 		final Execution<TaskFarmStageTestConfiguration> execution = new Execution<TaskFarmStageTestConfiguration>(configuration);
 
 		execution.executeBlocking();
 
-		// assertThat(configuration.getCollection().size(), is(NUMBER_OF_TEST_ELEMENTS));
+		assertThat(TaskFarmStageTestConfiguration.getNumOfElements(), is(NUMBER_OF_TEST_ELEMENTS));
+
+		checkIfLoggingWorks(configuration);
+	}
+
+	private void checkIfLoggingWorks(final TaskFarmStageTestConfiguration configuration) throws IOException {
+		PipeMonitoringService pipeService = configuration.getTaskFarmStage().getPipeMonitoringService();
+		SingleTaskFarmMonitoringService taskFarmService = configuration.getTaskFarmStage().getTaskFarmMonitoringService();
+		applyExtractors(pipeService, taskFarmService);
+	}
+
+	private void applyExtractors(final PipeMonitoringService pipeService, final SingleTaskFarmMonitoringService taskFarmService) throws IOException {
+		extractToTempFile(new StackedTimeSizeWithCapacity2D(pipeService, taskFarmService));
+		extractToTempFile(new StackedTimePullThroughput2D(pipeService, taskFarmService));
+		extractToTempFile(new StackedTimePushThroughput2D(pipeService, taskFarmService));
+		extractToTempFile(new TimeBoundary2D(pipeService, taskFarmService));
+		extractToTempFile(new TimeBoundaryMSPullThroughput3D(pipeService, taskFarmService));
+		extractToTempFile(new TimeBoundaryMSPushThroughput3D(pipeService, taskFarmService));
+		extractToTempFile(new TimeBoundaryStages3D(pipeService, taskFarmService));
+	}
+
+	private void extractToTempFile(final AbstractMonitoringDataExtraction extractor) throws IOException {
+		File tempFile = File.createTempFile(extractor.getClass().getSimpleName(), ".tmp");
+		tempFile.deleteOnExit();
+
+		extractor.extractToFile(tempFile);
+
+		assertTrue(tempFile.exists());
+		assertThat(tempFile.length(), is(greaterThan(0l)));
 	}
 
 }

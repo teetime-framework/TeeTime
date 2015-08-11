@@ -29,6 +29,9 @@ import teetime.stage.basic.Sink;
 
 public class TaskFarmStageTestConfiguration extends Configuration {
 
+	private static volatile int numOfElements = 0;
+	private TaskFarmStage<Long, String, CompositeTestStage> taskFarmStage;
+
 	public TaskFarmStageTestConfiguration(final long numberOfTestElements) {
 		this.buildConfiguration(numberOfTestElements);
 	}
@@ -40,12 +43,12 @@ public class TaskFarmStageTestConfiguration extends Configuration {
 		}
 		final InitialElementProducer<Long> initialElementProducer = new InitialElementProducer<Long>(values);
 		final CompositeTestStage compositeTestStage = new CompositeTestStage();
-		final TaskFarmStage<Long, String, CompositeTestStage> taskFarmStage =
-				new TaskFarmStage<Long, String, CompositeTestStage>(compositeTestStage);
+		taskFarmStage = new TaskFarmStage<Long, String, CompositeTestStage>(compositeTestStage, 1000);
 		taskFarmStage.getConfiguration().setThroughputScoreBoundary(0.2);
 		taskFarmStage.getConfiguration().setStillParallelizable(true);
 		taskFarmStage.getConfiguration().setThroughputAlgorithm("RegressionAlgorithm");
 		taskFarmStage.getConfiguration().setAdaptationWaitingTimeMillis(50);
+		taskFarmStage.getConfiguration().setMonitoringEnabled(true);
 		Sink<String> sink = new Sink<String>();
 
 		connectPorts(initialElementProducer.getOutputPort(), taskFarmStage.getInputPort());
@@ -81,6 +84,9 @@ public class TaskFarmStageTestConfiguration extends Configuration {
 		@Override
 		protected void execute(final Long element) {
 			final Long x = element + 1;
+			synchronized (TaskFarmStageTestConfiguration.class) {
+				numOfElements++;
+			}
 			this.outputPort.send(x.toString());
 		}
 	}
@@ -98,4 +104,13 @@ public class TaskFarmStageTestConfiguration extends Configuration {
 		}
 	}
 
+	public static int getNumOfElements() {
+		synchronized (TaskFarmStageTestConfiguration.class) {
+			return numOfElements;
+		}
+	}
+
+	public TaskFarmStage<Long, String, CompositeTestStage> getTaskFarmStage() {
+		return taskFarmStage;
+	}
 }
