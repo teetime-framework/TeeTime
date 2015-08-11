@@ -19,10 +19,6 @@ import teetime.stage.quicksort.QuicksortSolution;
  */
 public class DivideAndConquerStageTest {
 	DivideAndConquerStage<QuicksortProblem, QuicksortSolution> quicksortStage;
-	int[] numbers;
-	int[] sortedNumbers;
-	QuicksortProblem problemOne;
-	QuicksortProblem problemTwo;
 	List<QuicksortSolution> solutions;
 	List<QuicksortProblem> problems;
 
@@ -30,15 +26,13 @@ public class DivideAndConquerStageTest {
 	public void initialize() {
 		quicksortStage = new DivideAndConquerStage<QuicksortProblem, QuicksortSolution>();
 
-		numbers = new int[] { 3, 1, 4, 5, 2 };
-		sortedNumbers = new int[] { 1, 2, 3, 4, 5 };
-
-		problemOne = new QuicksortProblem(1, 0, numbers.length - 1, numbers);
+		int[] numbers = new int[] { 3, 1, 4, 5, 2 };
+		QuicksortProblem problemOne = new QuicksortProblem(1, 0, numbers.length - 1, numbers);
 
 		problems = new ArrayList<QuicksortProblem>();
-		solutions = new ArrayList<QuicksortSolution>();
-
 		problems.add(problemOne);
+
+		solutions = new ArrayList<QuicksortSolution>();
 	}
 
 	@Test
@@ -51,6 +45,7 @@ public class DivideAndConquerStageTest {
 
 	@After
 	public void evaluate() {
+		int[] sortedNumbers = new int[] { 1, 2, 3, 4, 5 };
 		assertArrayEquals(solutions.get(0).getNumbers(), sortedNumbers);
 	}
 }
