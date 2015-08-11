@@ -6,6 +6,7 @@ import static teetime.framework.test.StageTester.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,7 +48,10 @@ public class DivideAndConquerStageTest {
 				.send(problems).to(quicksortStage.getInputPort()).and()
 				.receive(solutions).from(quicksortStage.getOutputPort())
 				.start();
+	}
 
+	@After
+	public void evaluate() {
 		System.out.println(solutions.get(0).toString());
 		assertArrayEquals(solutions.get(0).getNumbers(), sortedNumbers);
 	}
