@@ -35,15 +35,17 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	}
 
 	public void monitorPipes() {
+		history.add(getSumOfPipePushThroughputs());
+	}
+
+	private double getSumOfPipePushThroughputs() {
 		double sum = 0;
-		double count = 0;
 
 		try {
 			for (ITaskFarmDuplicable<I, O> enclosedStage : taskFarmStage.getEnclosedStageInstances()) {
 				IMonitorablePipe inputPipe = (IMonitorablePipe) enclosedStage.getInputPort().getPipe();
 				if (inputPipe != null) {
 					sum += inputPipe.getPushThroughput();
-					count++;
 				}
 			}
 		} catch (ClassCastException e) {
@@ -52,7 +54,6 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 							+ " does not implement IMonitorablePipe, which is required.");
 		}
 
-		// count is never 0, since every Task Farm has at least the basic enclosed stage
-		history.add(sum / count);
+		return sum;
 	}
 }

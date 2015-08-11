@@ -57,8 +57,10 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 
 		TaskFarmMonitoringData monitoringData = new TaskFarmMonitoringData(currentTimestamp - this.startingTimestamp,
 				taskFarmStage.getEnclosedStageInstances().size(),
-				getMeanThroughput(taskFarmStage, MeanThroughputType.PULL),
-				getMeanThroughput(taskFarmStage, MeanThroughputType.PUSH),
+				getMeanAndSumThroughput(taskFarmStage, MeanThroughputType.PULL, true),
+				getMeanAndSumThroughput(taskFarmStage, MeanThroughputType.PUSH, true),
+				getMeanAndSumThroughput(taskFarmStage, MeanThroughputType.PULL, false),
+				getMeanAndSumThroughput(taskFarmStage, MeanThroughputType.PUSH, false),
 				taskFarmStage.getConfiguration().getThroughputScoreBoundary());
 
 		monitoredDatas.add(monitoringData);
@@ -76,7 +78,7 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 		PUSH, PULL
 	}
 
-	private double getMeanThroughput(final TaskFarmStage<?, ?, ?> taskFarmStage, final MeanThroughputType type) {
+	private double getMeanAndSumThroughput(final TaskFarmStage<?, ?, ?> taskFarmStage, final MeanThroughputType type, final boolean mean) {
 		double sum = 0;
 		double count = 0;
 
@@ -104,8 +106,10 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 							+ " does not implement IMonitorablePipe, which is required.");
 		}
 
-		if (count > 0) {
-			sum /= count;
+		if (mean) {
+			if (count > 0) {
+				sum /= count;
+			}
 		}
 
 		return sum;

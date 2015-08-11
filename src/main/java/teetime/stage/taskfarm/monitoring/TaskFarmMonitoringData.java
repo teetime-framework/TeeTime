@@ -21,15 +21,20 @@ public class TaskFarmMonitoringData implements IMonitoringData {
 	private final int stages;
 	private final double meanPullThroughput;
 	private final double meanPushThroughput;
+	private final double sumOfPullThroughput;
+	private final double sumOfPushThroughput;
 	private final double throughputBoundary;
 
-	TaskFarmMonitoringData(final long time, final int stages, final double meanPullThroughput, final double meanPushThroughput, final double throughputBoundary) {
+	TaskFarmMonitoringData(final long time, final int stages, final double meanPullThroughput, final double meanPushThroughput, final double sumOfPullThroughput,
+			final double sumOfPushThroughput, final double throughputBoundary) {
 		super();
 		this.time = time;
 		this.stages = stages;
 		this.meanPullThroughput = meanPullThroughput;
 		this.meanPushThroughput = meanPushThroughput;
 		this.throughputBoundary = throughputBoundary;
+		this.sumOfPullThroughput = sumOfPullThroughput;
+		this.sumOfPushThroughput = sumOfPushThroughput;
 	}
 
 	public long getTime() {
@@ -50,5 +55,13 @@ public class TaskFarmMonitoringData implements IMonitoringData {
 
 	public double getThroughputBoundary() {
 		return throughputBoundary;
+	}
+
+	public double getSumOfPullThroughput() {
+		return sumOfPullThroughput;
+	}
+
+	public double getSumOfPushThroughput() {
+		return sumOfPushThroughput;
 	}
 }

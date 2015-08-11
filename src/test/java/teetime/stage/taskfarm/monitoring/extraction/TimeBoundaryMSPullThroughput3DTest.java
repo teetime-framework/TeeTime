@@ -27,26 +27,26 @@ import org.junit.Test;
 
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
-public class TimeBoundaryMPushThroughput3DTest {
+public class TimeBoundaryMSPullThroughput3DTest {
 
 	@Test
 	public void testWorkingService() {
 		SingleTaskFarmMonitoringService service = ExtractorTestHelper.generateSingleTaskFarmMonitoringServiceWithBehavior();
 
-		AbstractMonitoringDataExtraction extraction = new TimeBoundaryMPushThroughput3D(null, service);
+		AbstractMonitoringDataExtraction extraction = new TimeBoundaryMSPullThroughput3D(null, service);
 		String result = extraction.extractToString();
 
 		List<String> outputValues = new LinkedList<String>();
-		outputValues.add("time,boundary,mpushthroughput");
-		outputValues.add(",0.4,4.0");
-		outputValues.add(",0.4,7.0");
-		outputValues.add(",0.4,10.0");
-		outputValues.add(",0.4," + (13.0 + 4.0) / 2.0);
-		outputValues.add(",0.4," + (16.0 + 7.0) / 2.0);
-		outputValues.add(",0.4," + (19.0 + 10.0) / 2.0);
-		outputValues.add(",0.4," + (22.0 + 13.0 + 4.0) / 3.0);
-		outputValues.add(",0.4," + (25.0 + 16.0 + 7.0) / 3.0);
-		outputValues.add(",0.4," + (28.0 + 19.0 + 10.0) / 3.0);
+		outputValues.add("time,boundary,mpullthroughput,pullthroughputsum");
+		outputValues.add(",0.4,6.0,11.0");
+		outputValues.add(",0.4,16.0,21.0");
+		outputValues.add(",0.4,26.0,31.0");
+		outputValues.add(",0.4," + (36.0 + 6.0) / 2.0 + ",52.0");
+		outputValues.add(",0.4," + (46.0 + 16.0) / 2.0 + ",72.0");
+		outputValues.add(",0.4," + (56.0 + 26.0) / 2.0 + ",92.0");
+		outputValues.add(",0.4," + (66.0 + 36.0 + 6.0) / 3.0 + ",123.0");
+		outputValues.add(",0.4," + (76.0 + 46.0 + 16.0) / 3.0 + ",153.0");
+		outputValues.add(",0.4," + (86.0 + 56.0 + 26.0) / 3.0 + ",183.0");
 		assertThat(result, stringContainsInOrder(outputValues));
 	}
 
@@ -54,10 +54,10 @@ public class TimeBoundaryMPushThroughput3DTest {
 	public void testEmptyService() {
 		SingleTaskFarmMonitoringService service = ExtractorTestHelper.generateEmptySingleTaskFarmMonitoringService();
 
-		AbstractMonitoringDataExtraction extraction = new TimeBoundaryMPushThroughput3D(null, service);
+		AbstractMonitoringDataExtraction extraction = new TimeBoundaryMSPullThroughput3D(null, service);
 		String result = extraction.extractToString();
 
-		String header = "time,boundary,mpushthroughput"
+		String header = "time,boundary,mpullthroughput,pullthroughputsum"
 				+ System.getProperty("line.separator");
 		assertThat(result, is(equalTo(header)));
 	}
