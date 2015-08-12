@@ -1,6 +1,7 @@
 package teetime.framework;
 
 import teetime.framework.pipe.DummyPipe;
+import teetime.framework.signal.ISignal;
 import teetime.framework.signal.StartingSignal;
 
 import com.carrotsearch.hppc.IntObjectHashMap;
@@ -151,9 +152,15 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		return new DivideAndConquerStage<P, S>();
 	}
 
-	// TODO Define terminating criteria. As of now, stage terminates after first solved problem
 	@Override
-	public TerminationStrategy getTerminationStrategy() {
-		return TerminationStrategy.BY_SELF_DECISION;
+	protected void onSignal(final ISignal signal, final InputPort<?> inputPort) {
+		if (!this.signalAlreadyReceived(signal, inputPort)) {
+			try {
+				signal.trigger(this);
+			} catch (Exception e) {
+				this.getOwningContext().abortConfigurationRun();
+			}
+			// send signal to L R
+		}
 	}
 }
