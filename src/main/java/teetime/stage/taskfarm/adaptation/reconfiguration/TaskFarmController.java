@@ -69,11 +69,12 @@ class TaskFarmController<I, O> {
 	 * @throws InterruptedException
 	 */
 	public void addStageToTaskFarm() throws InterruptedException {
+		// FIXME limit number of stages to cores-2. consider to move setting to config
 		LOGGER.debug("Add stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
 		ITaskFarmDuplicable<I, O> newStage = this.taskFarmStage.getBasicEnclosedStage().duplicate();
 
-		final CreatePortActionDistributor<I> distributorPortAction =
-				new CreatePortActionDistributor<I>(newStage.getInputPort(), taskFarmStage.getConfiguration().getPipeCapacity());
+		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort(),
+				taskFarmStage.getConfiguration().getPipeCapacity());
 		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 		LOGGER.debug("distributor port created, before wait");
 		LOGGER.debug("state of distributor: " + this.taskFarmStage.getDistributor().getCurrentState().toString());
@@ -85,8 +86,8 @@ class TaskFarmController<I, O> {
 		}
 		LOGGER.debug("distributor port created");
 
-		final CreatePortActionMerger<O> mergerPortAction =
-				new CreatePortActionMerger<O>(newStage.getOutputPort(), taskFarmStage.getConfiguration().getPipeCapacity());
+		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort(),
+				taskFarmStage.getConfiguration().getPipeCapacity());
 		this.taskFarmStage.getMerger().addPortActionRequest(mergerPortAction);
 		mergerPortAction.waitForCompletion();
 		LOGGER.debug("merger port created");
