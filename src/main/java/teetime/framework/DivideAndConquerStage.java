@@ -1,10 +1,10 @@
 package teetime.framework;
 
-import com.carrotsearch.hppc.IntObjectHashMap;
-import com.carrotsearch.hppc.IntObjectMap;
-
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.signal.StartingSignal;
+
+import com.carrotsearch.hppc.IntObjectHashMap;
+import com.carrotsearch.hppc.IntObjectMap;
 
 /**
  * Represents a stage to provide functionality for the divide and conquer paradigm
@@ -13,8 +13,7 @@ import teetime.framework.signal.StartingSignal;
  *
  * @author Robin Mohr
  *
- * @param
- * 			<P>
+ * @param <P>
  *            type of elements that represent a problem to be solved.
  *
  * @param <S>
@@ -73,7 +72,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		checkForProblems(inputPort);
 	}
 
-	private void checkForSolutions(final InputPort<S> port) {
+	private boolean checkForSolutions(final InputPort<S> port) {
 		S solution = port.receive();
 		if (solution != null) {
 			int solutionID = solution.getID();
@@ -86,6 +85,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 				addToBuffer(solutionID, solution);
 			}
 		}
+		return solution != null;
 	}
 
 	private S getSolutionFromBuffer(final int solutionID) {
@@ -102,7 +102,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		return this.solutionBuffer.containsKey(solutionID);
 	}
 
-	private void checkForProblems(final InputPort<P> port) {
+	private boolean checkForProblems(final InputPort<P> port) {
 		P problem = port.receive();
 		if (problem != null) {
 			if (problem.isBaseCase()) {
@@ -118,6 +118,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 				this.getrightOutputPort().send(dividedProblem.rightProblem); // second recursive call
 			}
 		}
+		return problem != null;
 	}
 
 	/**
