@@ -21,21 +21,23 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.pipe.IMonitorablePipe;
-import teetime.framework.pipe.IPipe;
 
 public class MonitoringThread extends Thread {
 
 	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(MonitoringThread.class);
 
-	private final List<IMonitorablePipe> monitoredPipes = new ArrayList<IMonitorablePipe>();
+	// private final List<IMonitorablePipe> monitoredPipes = new ArrayList<IMonitorablePipe>();
 
 	private volatile boolean terminated;
+
+	private final List<AbstractPort<?>> monitoredPorts = new ArrayList<AbstractPort<?>>();
 
 	@Override
 	public void run() {
 		while (!terminated) {
 
-			for (final IMonitorablePipe pipe : monitoredPipes) {
+			for (final AbstractPort<?> port : monitoredPorts) {
+				IMonitorablePipe pipe = (IMonitorablePipe) port.getPipe();
 				final long pushThroughput = pipe.getPushThroughput();
 				final long pullThroughput = pipe.getPullThroughput();
 				final double ratio = (double) pushThroughput / pullThroughput;
@@ -54,12 +56,12 @@ public class MonitoringThread extends Thread {
 		}
 	}
 
-	public void addPipe(final IPipe pipe) {
-		if (!(pipe instanceof IMonitorablePipe)) {
-			throw new IllegalArgumentException("The given pipe does not implement IMonitorablePipe");
-		}
-		monitoredPipes.add((IMonitorablePipe) pipe);
-	}
+	// public void addPipe(final IPipe pipe) {
+	// if (!(pipe instanceof IMonitorablePipe)) {
+	// throw new IllegalArgumentException("The given pipe does not implement IMonitorablePipe");
+	// }
+	// monitoredPipes.add((IMonitorablePipe) pipe);
+	// }
 
 	/**
 	 * Sets the <code>terminated</code> flag and interrupts this thread.
@@ -67,6 +69,10 @@ public class MonitoringThread extends Thread {
 	public void terminate() {
 		terminated = true;
 		interrupt();
+	}
+
+	public void addPort(final InputPort<String> inputPort) {
+		monitoredPorts.add(inputPort);
 	}
 
 }

@@ -37,7 +37,6 @@ public final class WordCounter extends AbstractCompositeStage implements ITaskFa
 	private final MappingCounter<String> mapCounter;
 
 	public WordCounter() {
-
 		this.tokenizer = new Tokenizer(" ");
 		final ToLowerCase toLowerCase = new ToLowerCase();
 		this.mapCounter = new MappingCounter<String>();

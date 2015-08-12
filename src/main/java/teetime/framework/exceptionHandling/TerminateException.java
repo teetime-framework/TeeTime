@@ -19,10 +19,10 @@ import teetime.util.StacklessException;
 
 /**
  * Represents an exception that is used to terminate the running thread.
- * 
+ *
  * @since 1.1
  */
-public class TerminateException extends StacklessException {
+public final class TerminateException extends StacklessException {
 
 	public static final TerminateException INSTANCE = new TerminateException("Framework Exception");
 

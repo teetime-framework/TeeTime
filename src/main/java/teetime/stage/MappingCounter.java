@@ -35,14 +35,9 @@ public final class MappingCounter<T> extends AbstractConsumerStage<T> {
 	private final CountingMap<T> counter = new CountingMap<T>();
 	private final OutputPort<CountingMap<T>> port = createOutputPort();
 
-	public MappingCounter() {
-
-	}
-
 	@Override
 	protected void execute(final T element) {
 		counter.increment(element);
-
 	}
 
 	@Override

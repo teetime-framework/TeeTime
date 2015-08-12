@@ -26,7 +26,7 @@ public final class RunnableConsumerStage extends AbstractRunnableStage {
 	 * @param stage
 	 *            to execute within an own thread
 	 */
-	public RunnableConsumerStage(final Stage stage) {
+	RunnableConsumerStage(final Stage stage) {
 		super(stage);
 	}
 

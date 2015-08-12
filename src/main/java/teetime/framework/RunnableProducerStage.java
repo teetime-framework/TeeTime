@@ -24,7 +24,7 @@ public class RunnableProducerStage extends AbstractRunnableStage {
 
 	private final Semaphore startSemaphore = new Semaphore(0);
 
-	public RunnableProducerStage(final Stage stage) {
+	RunnableProducerStage(final Stage stage) {
 		super(stage);
 	}
 
