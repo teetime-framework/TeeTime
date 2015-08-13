@@ -3,6 +3,7 @@ package teetime.framework;
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.StartingSignal;
+import teetime.framework.signal.TerminatingSignal;
 
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
@@ -71,6 +72,10 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		checkForSolutions(rightInputPort);
 		checkForSolutions(leftInputPort);
 		checkForProblems(inputPort);
+		if (this.inputPort.isClosed() && this.leftInputPort.isClosed() && this.rightInputPort.isClosed()) { // all child stages terminated
+			final ISignal signal = new TerminatingSignal();
+			this.getOutputPort().sendSignal(signal); // terminate stages following the DC stage
+		}
 	}
 
 	private boolean checkForSolutions(final InputPort<S> port) {
@@ -86,7 +91,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 				addToBuffer(solutionID, solution);
 			}
 		}
-		return solution != null;
+		return solution == null;
 	}
 
 	private S getSolutionFromBuffer(final int solutionID) {
@@ -119,7 +124,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 				this.getrightOutputPort().send(dividedProblem.rightProblem); // second recursive call
 			}
 		}
-		return problem != null;
+		return problem == null;
 	}
 
 	/**
@@ -155,12 +160,19 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	@Override
 	protected void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
-			try {
-				signal.trigger(this);
-			} catch (Exception e) {
-				this.getOwningContext().abortConfigurationRun();
+			if (signal instanceof TerminatingSignal) {
+				this.getleftOutputPort().sendSignal(signal);// send signal to terminate child stages first
+				this.getrightOutputPort().sendSignal(signal);
+			} else {
+				try {
+					signal.trigger(this);
+				} catch (Exception e) {
+					this.getOwningContext().abortConfigurationRun();
+				}
+				for (OutputPort<?> outputPort : getOutputPorts()) {
+					outputPort.sendSignal(signal);
+				}
 			}
-			// send signal to L R
 		}
 	}
 }
