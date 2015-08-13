@@ -26,6 +26,8 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	private final int threshold;
 	private boolean firstExecution;
 
+	private boolean signalsSent = false;
+
 	protected final IntObjectMap<S> solutionBuffer = new IntObjectHashMap<S>();
 
 	protected final InputPort<P> inputPort = this.createInputPort();
@@ -72,9 +74,18 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		checkForSolutions(rightInputPort);
 		checkForSolutions(leftInputPort);
 		checkForProblems(inputPort);
-		if (this.inputPort.isClosed() && this.leftInputPort.isClosed() && this.rightInputPort.isClosed()) { // all child stages terminated
-			final ISignal signal = new TerminatingSignal();
-			this.getOutputPort().sendSignal(signal); // terminate stages following the DC stage
+		if (this.inputPort.isClosed()) { // no more input, time to terminate child stages
+			if (!signalsSent) {
+				this.getleftOutputPort().sendSignal(new TerminatingSignal());// send signal to terminate child stages first
+				this.getrightOutputPort().sendSignal(new TerminatingSignal());
+				this.signalsSent = true;
+			}
+			if (this.leftInputPort.isClosed() && this.rightInputPort.isClosed()) {// all child stages terminated
+				final ISignal signal = new TerminatingSignal();
+				this.getOutputPort().sendSignal(signal); // terminate stages following the DC stage
+				this.returnNoElement(); // terminate this stage
+			}
+
 		}
 	}
 
@@ -86,7 +97,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 				S bufferedSolution = getSolutionFromBuffer(solutionID);
 				S combinedSolution = solution.combine(bufferedSolution);
 				outputPort.send(combinedSolution);
-				this.terminate();
 			} else {
 				addToBuffer(solutionID, solution);
 			}
@@ -114,7 +124,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 			if (problem.isBaseCase()) {
 				S solution = problem.solve();
 				this.getOutputPort().send(solution);
-				this.terminate();
 			} else {
 				if (firstExecution) {
 					createCopies();
@@ -161,8 +170,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	protected void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (!this.signalAlreadyReceived(signal, inputPort)) {
 			if (signal instanceof TerminatingSignal) {
-				this.getleftOutputPort().sendSignal(signal);// send signal to terminate child stages first
-				this.getrightOutputPort().sendSignal(signal);
+				// do nothing
 			} else {
 				try {
 					signal.trigger(this);

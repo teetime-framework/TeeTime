@@ -54,7 +54,7 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 
 	@Override
 	public final void sendSignal(final ISignal signal) {
-		this.cachedTargetStage.onSignal(signal, this.targetPort);
+		// do nothing instead of: this.cachedTargetStage.onSignal(signal, this.targetPort);
 	}
 
 	@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")

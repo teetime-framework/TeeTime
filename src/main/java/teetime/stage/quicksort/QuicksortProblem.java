@@ -48,7 +48,7 @@ public final class QuicksortProblem extends AbstractDivideAndConquerProblem<Quic
 
 	@Override
 	public String toString() {
-		return "Solution ID: " + this.getID() + " contains Array: " + Arrays.toString(numbers);
+		return "Problem ID: " + this.getID() + " contains Array: " + Arrays.toString(numbers);
 	}
 
 	@Override
