@@ -25,6 +25,8 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 
 	private final int threshold;
 	private boolean firstExecution;
+	private int problemsReceived;
+	private int solutionsSent;
 
 	private boolean signalsSent = false;
 
@@ -43,6 +45,8 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		rightInputPort.setPipe(DummyPipe.INSTANCE);
 		this.threshold = Runtime.getRuntime().availableProcessors();
 		this.firstExecution = true;
+		this.solutionsSent = 0;
+		this.problemsReceived = 0;
 	}
 
 	public final InputPort<P> getInputPort() {
@@ -74,8 +78,12 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		checkForSolutions(rightInputPort);
 		checkForSolutions(leftInputPort);
 		checkForProblems(inputPort);
+		checkForTermination();
+	}
+
+	private void checkForTermination() {
 		if (this.inputPort.isClosed()) { // no more input, time to terminate child stages
-			if (!signalsSent) {
+			if (!signalsSent && (problemsReceived == solutionsSent)) {
 				this.getleftOutputPort().sendSignal(new TerminatingSignal());// send signal to terminate child stages first
 				this.getrightOutputPort().sendSignal(new TerminatingSignal());
 				this.signalsSent = true;
@@ -85,7 +93,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 				this.getOutputPort().sendSignal(signal); // terminate stages following the DC stage
 				this.returnNoElement(); // terminate this stage
 			}
-
 		}
 	}
 
@@ -97,6 +104,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 				S bufferedSolution = getSolutionFromBuffer(solutionID);
 				S combinedSolution = solution.combine(bufferedSolution);
 				outputPort.send(combinedSolution);
+				this.solutionsSent++;
 			} else {
 				addToBuffer(solutionID, solution);
 			}
@@ -121,9 +129,11 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	private boolean checkForProblems(final InputPort<P> port) {
 		P problem = port.receive();
 		if (problem != null) {
+			this.problemsReceived++;
 			if (problem.isBaseCase()) {
 				S solution = problem.solve();
 				this.getOutputPort().send(solution);
+				this.solutionsSent++;
 			} else {
 				if (firstExecution) {
 					createCopies();
