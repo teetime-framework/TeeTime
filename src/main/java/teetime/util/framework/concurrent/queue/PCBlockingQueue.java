@@ -38,20 +38,17 @@ public final class PCBlockingQueue<E> implements BlockingQueue<E> {
 	}
 
 	@Override
-	public void put(final E e) throws InterruptedException
-	{
+	public void put(final E e) throws InterruptedException {
 		putStrategy.backoffOffer(q, e);
 	}
 
 	@Override
-	public E take() throws InterruptedException
-	{
+	public E take() throws InterruptedException {
 		return takeStrategy.waitPoll(q);
 	}
 
 	@Override
-	public boolean offer(final E e)
-	{
+	public boolean offer(final E e) {
 		boolean offered = q.offer(e);
 		if (offered) {
 			takeStrategy.signal();
@@ -60,8 +57,7 @@ public final class PCBlockingQueue<E> implements BlockingQueue<E> {
 	}
 
 	@Override
-	public E poll()
-	{
+	public E poll() {
 		E e = q.poll();
 		if (e != null) {
 			putStrategy.signal();
@@ -85,12 +81,10 @@ public final class PCBlockingQueue<E> implements BlockingQueue<E> {
 	}
 
 	@Override
-	public int drainTo(final Collection<? super E> c)
-	{
+	public int drainTo(final Collection<? super E> c) {
 		int count = 0;
 		E e;
-		while ((e = poll()) != null)
-		{
+		while ((e = poll()) != null) {
 			c.add(e);
 			count++;
 		}
@@ -98,12 +92,10 @@ public final class PCBlockingQueue<E> implements BlockingQueue<E> {
 	}
 
 	@Override
-	public int drainTo(final Collection<? super E> c, final int maxElements)
-	{
+	public int drainTo(final Collection<? super E> c, final int maxElements) {
 		int count = 0;
 		E e;
-		while (((e = poll()) != null) && count < maxElements)
-		{
+		while (((e = poll()) != null) && count < maxElements) {
 			c.add(e);
 			count++;
 		}
