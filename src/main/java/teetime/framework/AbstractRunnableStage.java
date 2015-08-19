@@ -40,7 +40,9 @@ abstract class AbstractRunnableStage implements Runnable {
 	@Override
 	public final void run() {
 		final Stage stage = this.stage; // should prevent the stage to be reloaded after a volatile read
-		this.logger.debug("Executing runnable stage...");
+		final Logger logger = this.logger; // should prevent the logger to be reloaded after a volatile read
+
+		logger.debug("Executing runnable stage...");
 
 		try {
 			try {
@@ -53,17 +55,17 @@ abstract class AbstractRunnableStage implements Runnable {
 						executeStage();
 					}
 				} catch (TerminateException e) {
-					this.stage.abort();
+					stage.abort();
 					stage.getOwningContext().abortConfigurationRun();
 				} finally {
 					afterStageExecution();
 				}
 
 			} catch (RuntimeException e) {
-				this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
+				logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
 				throw e;
 			} catch (InterruptedException e) {
-				this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
+				logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
 			}
 		} finally {
 			if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
@@ -71,8 +73,9 @@ abstract class AbstractRunnableStage implements Runnable {
 			}
 		}
 
-		logger.debug("Finished runnable stage. (" + stage.getId() + ")");
-
+		if (logger.isDebugEnabled()) {
+			logger.debug("Finished runnable stage. (" + stage.getId() + ")");
+		}
 	}
 
 	protected abstract void beforeStageExecution() throws InterruptedException;
