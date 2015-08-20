@@ -15,18 +15,27 @@
  */
 package teetime.framework;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.TerminateException;
+import teetime.util.StopWatch;
 
 abstract class AbstractRunnableStage implements Runnable {
 
 	private static final String TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION = "Terminating thread due to the following exception: ";
 
+	private final StopWatch stopWatch = new StopWatch();
+
 	protected final Stage stage;
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
+
+	public static final Map<Stage, Long> durationsInNs = Collections.synchronizedMap(new LinkedHashMap<Stage, Long>());
 
 	protected AbstractRunnableStage(final Stage stage) {
 		if (stage == null) {
@@ -50,6 +59,7 @@ abstract class AbstractRunnableStage implements Runnable {
 				if (stage.getOwningContext() == null) {
 					throw new IllegalArgumentException("Argument stage may not have a nullable owning context");
 				}
+				stopWatch.start();
 				try {
 					while (!stage.shouldBeTerminated()) {
 						executeStage();
@@ -58,6 +68,8 @@ abstract class AbstractRunnableStage implements Runnable {
 					stage.abort();
 					stage.getOwningContext().abortConfigurationRun();
 				} finally {
+					stopWatch.end();
+					durationsInNs.put(stage, stopWatch.getDurationInNs());
 					afterStageExecution();
 				}
 

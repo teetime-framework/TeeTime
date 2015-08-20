@@ -21,6 +21,8 @@ import teetime.framework.OutputPort;
 import teetime.stage.basic.distributor.Distributor;
 
 /**
+ * Backoff strategy
+ *
  * @author Christian Wulf
  *
  * @since 1.1
