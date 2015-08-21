@@ -16,7 +16,6 @@
 package teetime.stage.basic.merger;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,42 +63,6 @@ public class Merger<T> extends AbstractStage {
 			returnNoElement();
 		}
 		outputPort.send(token);
-	}
-
-	/**
-	 * This method is executed, if a signal is sent to a instance of this class.
-	 * Multiple signals of one certain type are ignored, if they are sent to same port.
-	 * Hence a signal is only passed on, when it arrived on all input ports, regardless how often.
-	 *
-	 * @param signal
-	 *            Signal which is sent
-	 *
-	 * @param inputPort
-	 *            The port which the signal was sent to
-	 */
-	@Override
-	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
-		if (logger.isTraceEnabled()) {
-			this.logger.trace("Got signal: " + signal + " from input port: " + inputPort);
-		}
-
-		Class<? extends ISignal> signalClass = signal.getClass();
-
-		Set<InputPort<?>> signalReceivedInputPorts;
-		if (signalMap.containsKey(signalClass)) {
-			signalReceivedInputPorts = signalMap.get(signalClass);
-		} else {
-			signalReceivedInputPorts = new HashSet<InputPort<?>>();
-			signalMap.put(signalClass, signalReceivedInputPorts);
-		}
-
-		if (!signalReceivedInputPorts.add(inputPort)) {
-			this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
-		}
-
-		if (signal.mayBeTriggered(signalReceivedInputPorts, getInputPorts())) {
-			super.onSignal(signal, inputPort);
-		}
 	}
 
 	public IMergerStrategy getMergerStrategy() {
