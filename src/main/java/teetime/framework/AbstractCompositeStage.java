@@ -54,6 +54,7 @@ public abstract class AbstractCompositeStage {
 		AbstractRunnableStage runnable = AbstractRunnableStage.create(stage);
 		Thread newThread = new TeeTimeThread(runnable, threadName);
 		stage.setOwningThread(newThread);
+		stage.setActive(true);
 	}
 
 	/**
