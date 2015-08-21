@@ -60,8 +60,9 @@ public abstract class AbstractStage extends Stage {
 		Class<? extends ISignal> signalClass = signal.getClass();
 
 		Set<InputPort<?>> signalReceivedInputPorts;
-		signalReceivedInputPorts = signalMap.get(signalClass);
-		if (signalReceivedInputPorts == null) {
+		if (signalMap.containsKey(signalClass)) {
+			signalReceivedInputPorts = signalMap.get(signalClass);
+		} else {
 			signalReceivedInputPorts = new HashSet<InputPort<?>>();
 			signalMap.put(signalClass, signalReceivedInputPorts);
 		}
