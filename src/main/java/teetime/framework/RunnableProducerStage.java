@@ -53,4 +53,9 @@ public class RunnableProducerStage extends AbstractRunnableStage {
 		logger.trace("waitForStartingSignal");
 		startSemaphore.acquire();
 	}
+
+	void runNow() {
+		triggerStartingSignal();
+		super.run();
+	}
 }

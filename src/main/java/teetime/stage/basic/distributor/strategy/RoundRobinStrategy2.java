@@ -22,6 +22,8 @@ import teetime.framework.exceptionHandling.TerminateException;
 import teetime.stage.basic.distributor.Distributor;
 
 /**
+ * Backoff strategy
+ *
  * @author Christian Wulf
  *
  * @since 1.1

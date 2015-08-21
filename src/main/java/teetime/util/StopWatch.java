@@ -35,6 +35,10 @@ public final class StopWatch {
 	}
 
 	public long getDurationInMs() {
-		return TimeUnit.NANOSECONDS.toMillis(getDurationInNs());
+		return getDuration(TimeUnit.MILLISECONDS);
+	}
+
+	public long getDuration(final TimeUnit timeUnit) {
+		return timeUnit.convert(getDurationInNs(), TimeUnit.NANOSECONDS);
 	}
 }

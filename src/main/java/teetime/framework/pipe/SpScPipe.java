@@ -22,7 +22,7 @@ import teetime.framework.StageState;
 import teetime.framework.exceptionHandling.TerminateException;
 import teetime.util.framework.concurrent.queue.ObservableSpScArrayQueue;
 
-final class SpScPipe<T> extends AbstractInterThreadPipe<T> implements IMonitorablePipe {
+class SpScPipe<T> extends AbstractInterThreadPipe<T>implements IMonitorablePipe {
 
 	// private static final Logger LOGGER = LoggerFactory.getLogger(SpScPipe.class);
 
@@ -38,7 +38,7 @@ final class SpScPipe<T> extends AbstractInterThreadPipe<T> implements IMonitorab
 	// BETTER introduce a QueueIsFullStrategy
 	@Override
 	public boolean add(final Object element) {
-		while (!this.queue.offer(element)) {
+		while (!addNonBlocking(element)) {
 			// Thread.yield();
 			if (this.cachedTargetStage.getCurrentState() == StageState.TERMINATED ||
 					Thread.currentThread().isInterrupted()) {
