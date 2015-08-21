@@ -15,10 +15,7 @@
  */
 package teetime.stage.basic.merger;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
@@ -41,7 +38,6 @@ import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
  */
 public class Merger<T> extends AbstractStage {
 
-	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap;
 	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	private final IMergerStrategy strategy;
@@ -51,7 +47,6 @@ public class Merger<T> extends AbstractStage {
 	}
 
 	public Merger(final IMergerStrategy strategy) {
-		this.signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
 		this.strategy = strategy;
 		addInputPortRemovedListener(strategy);
 	}

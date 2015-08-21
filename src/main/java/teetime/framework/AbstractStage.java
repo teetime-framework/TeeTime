@@ -28,8 +28,8 @@ import teetime.util.framework.port.PortList;
 import teetime.util.framework.port.PortRemovedListener;
 
 public abstract class AbstractStage extends Stage {
-	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
 
+	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
 	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
 
 	private final PortList<InputPort<?>> inputPorts = new PortList<InputPort<?>>();
