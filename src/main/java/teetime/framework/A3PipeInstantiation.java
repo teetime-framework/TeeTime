@@ -18,7 +18,11 @@ package teetime.framework;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import teetime.framework.Traverser.VisitorBehavior;
+import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.InstantiationPipe;
@@ -31,6 +35,7 @@ import teetime.framework.pipe.UnboundedSpScPipeFactory;
  */
 class A3PipeInstantiation implements ITraverserVisitor {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
 	private static final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
 	private static final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
 	private static final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
@@ -75,6 +80,11 @@ class A3PipeInstantiation implements ITraverserVisitor {
 			intraThreadPipeFactory.create(pipe.getSourcePort(), pipe.getTargetPort(), 4);
 		}
 
+	}
+
+	@Override
+	public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
+		LOGGER.debug("Unconnected port " + port + " in stage " + port.getOwningStage().getId());
 	}
 
 }

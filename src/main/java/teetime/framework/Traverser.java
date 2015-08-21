@@ -18,9 +18,6 @@ package teetime.framework;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import teetime.framework.pipe.DummyPipe;
 
 /**
@@ -31,8 +28,6 @@ import teetime.framework.pipe.DummyPipe;
  *
  */
 public class Traverser {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
 
 	public static enum Direction {
 		BACKWARD(1), FORWARD(2), BOTH(BACKWARD.value | FORWARD.value);
@@ -87,11 +82,7 @@ public class Traverser {
 
 	private void visitAndTraverse(final AbstractPort<?> port, final Direction direction) {
 		if (port.getPipe() instanceof DummyPipe) {
-			if (direction == Direction.FORWARD) {
-				if (traverserVisitor instanceof A3PipeInstantiation) {
-					LOGGER.debug("Unconnected port " + port + " in stage " + port.getOwningStage().getId());
-				}
-			}
+			traverserVisitor.visit((DummyPipe) port.getPipe(), port);
 			return;
 		}
 		VisitorBehavior behavior = traverserVisitor.visit(port);
