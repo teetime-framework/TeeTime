@@ -91,7 +91,9 @@ public abstract class AbstractStage extends Stage {
 
 	private void changeState(final StageState newState) {
 		currentState = newState;
-		logger.trace(newState.toString());
+		if (logger.isTraceEnabled()) {
+			logger.trace(newState.toString());
+		}
 	}
 
 	@Override

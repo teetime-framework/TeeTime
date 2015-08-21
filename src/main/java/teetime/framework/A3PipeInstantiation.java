@@ -18,6 +18,9 @@ package teetime.framework;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.IPipeFactory;
@@ -30,6 +33,8 @@ import teetime.framework.pipe.UnboundedSpScPipeFactory;
  * Automatically instantiates the correct pipes
  */
 class A3PipeInstantiation implements ITraverserVisitor {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(A3PipeInstantiation.class);
 
 	private static final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
 	private static final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
@@ -67,14 +72,22 @@ class A3PipeInstantiation implements ITraverserVisitor {
 			// inter
 			if (pipe.capacity() != 0) {
 				interBoundedThreadPipeFactory.create(pipe.getSourcePort(), pipe.getTargetPort(), pipe.capacity());
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug("Connected (bounded) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
+				}
 			} else {
 				interUnboundedThreadPipeFactory.create(pipe.getSourcePort(), pipe.getTargetPort(), 4);
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug("Connected (unbounded) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
+				}
 			}
 		} else {
 			// normal or reflexive pipe => intra
 			intraThreadPipeFactory.create(pipe.getSourcePort(), pipe.getTargetPort(), 4);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Connected (unsynch) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
+			}
 		}
 
 	}
-
 }
