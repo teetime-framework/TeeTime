@@ -52,7 +52,7 @@ public class AbstractCompositeStageTest {
 		private final Counter firstCounter = new Counter();
 
 		public TestCompositeOneStage() {
-			addThreadableStage(firstCounter);
+			declareActive(firstCounter);
 		}
 
 	}
@@ -63,7 +63,7 @@ public class AbstractCompositeStageTest {
 		private final Counter secondCounter = new Counter();
 
 		public TestCompositeTwoStage() {
-			addThreadableStage(firstCounter);
+			declareActive(firstCounter);
 			connectPorts(firstCounter.getOutputPort(), secondCounter.getInputPort());
 		}
 

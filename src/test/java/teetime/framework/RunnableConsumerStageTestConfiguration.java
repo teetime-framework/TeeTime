@@ -30,11 +30,11 @@ public class RunnableConsumerStageTestConfiguration extends Configuration {
 	public RunnableConsumerStageTestConfiguration(final Integer... inputElements) {
 		InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>(inputElements);
 		if (inputElements.length > 0) {
-			addThreadableStage(producer);
+			declareActive(producer);
 		}
 
 		CollectorSink<Integer> collectorSink = new CollectorSink<Integer>(collectedElements);
-		addThreadableStage(collectorSink);
+		declareActive(collectorSink);
 
 		// Can not use createPorts, as the if condition above will lead to an exception
 		new SpScPipeFactory().create(producer.getOutputPort(), collectorSink.getInputPort());
