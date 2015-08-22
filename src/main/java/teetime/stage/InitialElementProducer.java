@@ -35,12 +35,6 @@ public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 	}
 
 	@Override
-	public void onStarting() throws Exception {
-
-		super.onStarting();
-	}
-
-	@Override
 	protected void execute() {
 		for (final T element : this.elements) {
 			this.outputPort.send(element);
