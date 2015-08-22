@@ -19,23 +19,24 @@ import java.util.Arrays;
 
 import teetime.framework.AbstractProducerStage;
 
-public final class InitialElementProducer<T> extends AbstractProducerStage<T> {
+public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 
-	private Iterable<T> elements;
+	private final Iterable<T> elements;
 
 	public InitialElementProducer(final T... elements) {
-		this.elements = Arrays.asList(elements);
+		this(Arrays.asList(elements));
 	}
 
 	public InitialElementProducer(final Iterable<T> elements) {
+		if (elements == null) {
+			throw new IllegalArgumentException("The given iterable must not be null");
+		}
 		this.elements = elements;
 	}
 
 	@Override
 	public void onStarting() throws Exception {
-		if (elements == null) {
-			throw new IllegalArgumentException("The given iterable must not be null");
-		}
+
 		super.onStarting();
 	}
 
@@ -45,14 +46,6 @@ public final class InitialElementProducer<T> extends AbstractProducerStage<T> {
 			this.outputPort.send(element);
 		}
 		this.terminate();
-	}
-
-	public void setIter(final T... elements) {
-		this.elements = Arrays.asList(elements);
-	}
-
-	public void setIter(final Iterable<T> elements) {
-		this.elements = elements;
 	}
 
 }
