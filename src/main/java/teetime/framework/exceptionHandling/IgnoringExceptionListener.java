@@ -19,6 +19,10 @@ import teetime.framework.Stage;
 
 class IgnoringExceptionListener extends AbstractExceptionListener {
 
+	IgnoringExceptionListener() {
+		super(false);
+	}
+
 	@Override
 	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {
 		return FurtherExecution.CONTINUE;

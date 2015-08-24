@@ -31,6 +31,7 @@ import teetime.framework.Stage;
 public abstract class AbstractExceptionListener {
 
 	private final List<Exception> exceptionsList = new ArrayList<Exception>();
+	private final boolean logExceptions;
 
 	public enum FurtherExecution {
 		CONTINUE, TERMINATE
@@ -41,8 +42,9 @@ public abstract class AbstractExceptionListener {
 	 */
 	protected final Logger logger;
 
-	public AbstractExceptionListener() {
+	protected AbstractExceptionListener(final boolean shouldLogExceptions) {
 		this.logger = LoggerFactory.getLogger(this.getClass().getCanonicalName());
+		this.logExceptions = shouldLogExceptions;
 	}
 
 	/**
@@ -59,6 +61,13 @@ public abstract class AbstractExceptionListener {
 
 	public List<Exception> getLoggedExceptions() {
 		return exceptionsList;
+	}
+
+	public FurtherExecution reportException(final Exception e, final Stage stage) {
+		if (logExceptions) {
+			exceptionsList.add(e);
+		}
+		return onStageException(e, stage);
 	}
 
 }

@@ -19,6 +19,10 @@ import teetime.framework.Stage;
 
 public class TestListener extends AbstractExceptionListener {
 
+	protected TestListener() {
+		super(false);
+	}
+
 	private int numExceptionsInvoked;
 
 	@Override

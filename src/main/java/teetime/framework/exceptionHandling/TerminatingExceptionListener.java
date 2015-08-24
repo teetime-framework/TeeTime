@@ -25,7 +25,7 @@ class TerminatingExceptionListener extends AbstractExceptionListener {
 	private final List<Exception> exceptions = new ArrayList<Exception>();
 
 	TerminatingExceptionListener() {
-		// should only be instantiated by its factory
+		super(true);
 	}
 
 	@Override
