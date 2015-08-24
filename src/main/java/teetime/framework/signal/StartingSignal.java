@@ -30,7 +30,7 @@ public final class StartingSignal implements ISignal {
 
 	@Override
 	public boolean mayBeTriggered(final Set<InputPort<?>> receivedInputPorts, final List<InputPort<?>> allInputPorts) {
-		return true;
+		return receivedInputPorts.size() == 1;
 	}
 
 }

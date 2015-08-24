@@ -30,7 +30,7 @@ public final class TerminatingSignal implements ISignal {
 
 	@Override
 	public boolean mayBeTriggered(final Set<InputPort<?>> receivedInputPorts, final List<InputPort<?>> allInputPorts) {
-		return receivedInputPorts.size() == allInputPorts.size();
+		return receivedInputPorts.size() >= allInputPorts.size();
 	}
 
 }
