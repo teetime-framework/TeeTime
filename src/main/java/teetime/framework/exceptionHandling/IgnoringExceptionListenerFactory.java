@@ -15,10 +15,10 @@
  */
 package teetime.framework.exceptionHandling;
 
-public class IgnoringExceptionListenerFactory implements IExceptionListenerFactory {
+public class IgnoringExceptionListenerFactory extends AbstractExceptionListenerFactory<IgnoringExceptionListener> {
 
 	@Override
-	public AbstractExceptionListener createInstance() {
+	protected final IgnoringExceptionListener createInstance() {
 		return new IgnoringExceptionListener();
 	}
 

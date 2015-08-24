@@ -15,8 +15,24 @@
  */
 package teetime.framework.exceptionHandling;
 
-public interface IExceptionListenerFactory<T extends AbstractExceptionListener> {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-	public T createInstance();
+public abstract class AbstractExceptionListenerFactory<T extends AbstractExceptionListener> {
+
+	private final Map<Thread, List<Exception>> threadExceptionsMap = new HashMap<Thread, List<Exception>>();
+
+	protected abstract T createInstance();
+
+	public T getInstance(final Thread thread) {
+		T instance = createInstance();
+		threadExceptionsMap.put(thread, instance.getLoggedExceptions());
+		return instance;
+	}
+
+	public Map<Thread, List<Exception>> getThreadExceptionsMap() {
+		return threadExceptionsMap;
+	}
 
 }

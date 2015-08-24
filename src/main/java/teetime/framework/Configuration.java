@@ -15,7 +15,7 @@
  */
 package teetime.framework;
 
-import teetime.framework.exceptionHandling.IExceptionListenerFactory;
+import teetime.framework.exceptionHandling.AbstractExceptionListenerFactory;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 
 /**
@@ -28,7 +28,7 @@ import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
  */
 public abstract class Configuration extends AbstractCompositeStage {
 
-	private final IExceptionListenerFactory<?> factory;
+	private final AbstractExceptionListenerFactory<?> factory;
 	private final ConfigurationContext context;
 
 	private boolean executed;
@@ -38,7 +38,7 @@ public abstract class Configuration extends AbstractCompositeStage {
 		this(new TerminatingExceptionListenerFactory());
 	}
 
-	protected Configuration(final IExceptionListenerFactory<?> factory) {
+	protected Configuration(final AbstractExceptionListenerFactory<?> factory) {
 		this.factory = factory;
 		this.context = new ConfigurationContext(this);
 	}
@@ -51,7 +51,7 @@ public abstract class Configuration extends AbstractCompositeStage {
 		this.executed = executed;
 	}
 
-	public IExceptionListenerFactory<?> getFactory() {
+	public AbstractExceptionListenerFactory<?> getFactory() {
 		return factory;
 	}
 

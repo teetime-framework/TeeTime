@@ -15,6 +15,9 @@
  */
 package teetime.framework.exceptionHandling;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +29,8 @@ import teetime.framework.Stage;
  * This abstract class provides a Logger {@link #logger} and the method {@link #onStageException(Exception, Stage)} which is called on every raised exception.
  */
 public abstract class AbstractExceptionListener {
+
+	private final List<Exception> exceptionsList = new ArrayList<Exception>();
 
 	public enum FurtherExecution {
 		CONTINUE, TERMINATE
@@ -51,5 +56,9 @@ public abstract class AbstractExceptionListener {
 	 * 		true, if the thread should be terminated, false otherwise
 	 */
 	public abstract FurtherExecution onStageException(Exception e, Stage throwingStage);
+
+	public List<Exception> getLoggedExceptions() {
+		return exceptionsList;
+	}
 
 }

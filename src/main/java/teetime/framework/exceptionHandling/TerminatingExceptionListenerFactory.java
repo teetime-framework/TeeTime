@@ -15,7 +15,7 @@
  */
 package teetime.framework.exceptionHandling;
 
-public class TerminatingExceptionListenerFactory implements IExceptionListenerFactory<TerminatingExceptionListener> {
+public class TerminatingExceptionListenerFactory extends AbstractExceptionListenerFactory<TerminatingExceptionListener> {
 
 	@Override
 	public TerminatingExceptionListener createInstance() {

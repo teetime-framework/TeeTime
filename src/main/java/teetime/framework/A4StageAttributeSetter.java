@@ -46,7 +46,7 @@ class A4StageAttributeSetter {
 	}
 
 	private void setAttributes(final Stage threadableStage, final Set<Stage> intraStages) {
-		threadableStage.setExceptionHandler(configuration.getFactory().createInstance());
+		threadableStage.setExceptionHandler(configuration.getFactory().getInstance(threadableStage.getOwningThread()));
 		// threadableStage.setOwningThread(owningThread);
 		threadableStage.setOwningContext(configuration.getContext());
 
