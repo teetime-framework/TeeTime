@@ -83,10 +83,6 @@ public abstract class AbstractCompositeStage {
 	 *            the type of elements to be sent
 	 */
 	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		connectPortsInternal(sourcePort, targetPort, capacity);
-	}
-
-	private final <T> void connectPortsInternal(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort.getOwningStage().getInputPorts().size() == 0) {
 			if (sourcePort.getOwningStage().getOwningThread() == null) {
 				addThreadableStage(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
