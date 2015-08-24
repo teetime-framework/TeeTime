@@ -27,17 +27,17 @@ public class AbstractCompositeStageTest {
 	@Ignore
 	@Test
 	public void testNestedStages() {
-		Execution<NestesConfig> exec = new Execution<NestesConfig>(new NestesConfig());
+		Execution<NestedConf> exec = new Execution<NestedConf>(new NestedConf());
 		// assertThat(exec.getConfiguration().getContext().getThreadableStages().size(), is(3));
 	}
 
-	private class NestesConfig extends Configuration {
+	private class NestedConf extends Configuration {
 
 		private final InitialElementProducer<Object> init;
 		private final Sink sink;
 		private final TestNestingCompositeStage compositeStage;
 
-		public NestesConfig() {
+		public NestedConf() {
 			init = new InitialElementProducer<Object>(new Object());
 			sink = new Sink();
 			compositeStage = new TestNestingCompositeStage();
@@ -52,7 +52,7 @@ public class AbstractCompositeStageTest {
 		private final Counter firstCounter = new Counter();
 
 		public TestCompositeOneStage() {
-			addThreadableStage(firstCounter);
+			declareActive(firstCounter);
 		}
 
 	}
@@ -63,7 +63,7 @@ public class AbstractCompositeStageTest {
 		private final Counter secondCounter = new Counter();
 
 		public TestCompositeTwoStage() {
-			addThreadableStage(firstCounter);
+			declareActive(firstCounter);
 			connectPorts(firstCounter.getOutputPort(), secondCounter.getInputPort());
 		}
 

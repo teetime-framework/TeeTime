@@ -18,7 +18,9 @@ package teetime.framework;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -51,6 +53,13 @@ public class StageTest {
 		assertEquals(tc.init.getOwningThread(), tc.delay.getOwningThread());
 		assertThat(tc.delay.exceptionListener, is(notNullValue()));
 		assertEquals(tc.init.exceptionListener, tc.delay.exceptionListener);
+	}
+
+	@Test
+	public void testActiveFlag() {
+		TestConfig config = new TestConfig();
+		assertTrue(config.init.isActive());
+		assertFalse(config.delay.isActive());
 	}
 
 	private static class TestConfig extends Configuration {

@@ -56,9 +56,9 @@ public abstract class Configuration extends AbstractCompositeStage {
 	}
 
 	@Override
-	protected void addThreadableStage(final Stage stage, final String threadName) {
+	protected void declareActive(final Stage stage, final String threadName) {
 		startStage = stage; // memorize an arbitrary stage as starting point for traversing
-		super.addThreadableStage(stage, threadName);
+		super.declareActive(stage, threadName);
 	}
 
 	@Override

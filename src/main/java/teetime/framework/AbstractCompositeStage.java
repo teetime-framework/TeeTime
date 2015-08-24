@@ -38,8 +38,8 @@ public abstract class AbstractCompositeStage {
 	 * @param stage
 	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
 	 */
-	protected final void addThreadableStage(final Stage stage) {
-		this.addThreadableStage(stage, stage.getId());
+	protected final void declareActive(final Stage stage) {
+		this.declareActive(stage, stage.getId());
 	}
 
 	/**
@@ -50,10 +50,11 @@ public abstract class AbstractCompositeStage {
 	 * @param threadName
 	 *            A string which can be used for debugging.
 	 */
-	protected void addThreadableStage(final Stage stage, final String threadName) {
+	protected void declareActive(final Stage stage, final String threadName) {
 		AbstractRunnableStage runnable = AbstractRunnableStage.create(stage);
 		Thread newThread = new TeeTimeThread(runnable, threadName);
 		stage.setOwningThread(newThread);
+		stage.setActive(true);
 	}
 
 	/**
@@ -85,7 +86,7 @@ public abstract class AbstractCompositeStage {
 	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort.getOwningStage().getInputPorts().size() == 0) {
 			if (sourcePort.getOwningStage().getOwningThread() == null) {
-				addThreadableStage(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
+				declareActive(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
 			}
 		}
 
