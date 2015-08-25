@@ -15,6 +15,8 @@
  */
 package teetime.framework;
 
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import teetime.framework.signal.ValidatingSignal;
@@ -104,7 +106,14 @@ public final class Execution<T extends Configuration> {
 	 * @since 2.0
 	 */
 	public void waitForTermination() {
+		int numExceptions = 0;
 		configurationContext.waitForConfigurationToTerminate();
+		for (Entry<Thread, List<Exception>> entry : configuration.getFactory().getThreadExceptionsMap().entrySet()) {
+			numExceptions += entry.getValue().size();
+		}
+		if (numExceptions != 0) {
+			throw new ExecutionException(configuration.getFactory().getThreadExceptionsMap());
+		}
 	}
 
 	// TODO: implement

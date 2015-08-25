@@ -18,15 +18,12 @@ package teetime.framework;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.Thread.State;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import teetime.util.ThreadThrowableContainer;
-
-import com.google.common.base.Joiner;
 
 public class RunnableConsumerStageTest {
 
@@ -118,17 +115,17 @@ public class RunnableConsumerStageTest {
 	}
 
 	private void start(final Execution<?> execution) {
-		Collection<ThreadThrowableContainer> exceptions = new ArrayList<ThreadThrowableContainer>();
+		Map<Thread, List<Exception>> exceptions = new HashMap<Thread, List<Exception>>();
 		try {
 			execution.executeBlocking();
 		} catch (ExecutionException e) {
 			exceptions = e.getThrownExceptions();
 		}
-		for (ThreadThrowableContainer pair : exceptions) {
-			System.err.println(pair.getThrowable());
-			System.err.println(Joiner.on("\n").join(pair.getThrowable().getStackTrace()));
-			throw new AssertionError(pair.getThrowable());
-		}
+		// for (ThreadThrowableContainer pair : exceptions) {
+		// System.err.println(pair.getThrowable());
+		// System.err.println(Joiner.on("\n").join(pair.getThrowable().getStackTrace()));
+		// throw new AssertionError(pair.getThrowable());
+		// }
 		assertEquals(0, exceptions.size());
 	}
 }

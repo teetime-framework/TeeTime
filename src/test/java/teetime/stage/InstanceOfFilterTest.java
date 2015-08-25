@@ -23,7 +23,6 @@ import static org.junit.Assert.assertThat;
 import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
@@ -32,7 +31,6 @@ import org.junit.Test;
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
 import teetime.framework.ExecutionException;
-import teetime.util.ThreadThrowableContainer;
 
 /**
  * @author Nils Christian Ehmke
@@ -117,7 +115,7 @@ public class InstanceOfFilterTest {
 		try {
 			execution.executeBlocking();
 		} catch (ExecutionException e) {
-			Collection<ThreadThrowableContainer> thrownExceptions = e.getThrownExceptions();
+			// Collection<ThreadThrowableContainer> thrownExceptions = e.getThrownExceptions();
 			// TODO: handle exception
 		}
 	}
