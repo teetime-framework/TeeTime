@@ -25,7 +25,7 @@ public abstract class AbstractExceptionListenerFactory<T extends AbstractExcepti
 
 	protected abstract T createInstance();
 
-	public T getInstance(final Thread thread) {
+	public T createInstance(final Thread thread) {
 		T instance = createInstance();
 		threadExceptionsMap.put(thread, instance.getLoggedExceptions());
 		return instance;
