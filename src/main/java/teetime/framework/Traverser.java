@@ -82,6 +82,7 @@ public class Traverser {
 
 	private void visitAndTraverse(final AbstractPort<?> port, final Direction direction) {
 		if (port.getPipe() instanceof DummyPipe) {
+			traverserVisitor.visit((DummyPipe) port.getPipe(), port);
 			return;
 		}
 		VisitorBehavior behavior = traverserVisitor.visit(port);

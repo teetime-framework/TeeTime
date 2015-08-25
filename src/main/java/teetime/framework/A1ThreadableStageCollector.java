@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import teetime.framework.Traverser.VisitorBehavior;
+import teetime.framework.pipe.DummyPipe;
 
 /**
  * Searches for threadable stages
@@ -42,6 +43,12 @@ class A1ThreadableStageCollector implements ITraverserVisitor {
 	@Override
 	public VisitorBehavior visit(final AbstractPort<?> port) {
 		return VisitorBehavior.CONTINUE;
+	}
+
+	@Override
+	public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
