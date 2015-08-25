@@ -62,10 +62,10 @@ public final class Execution<T extends Configuration> {
 	public Execution(final T configuration, final boolean validationEnabled) {
 		this.configuration = configuration;
 		this.configurationContext = configuration.getContext();
-		if (configuration.isExecuted()) {
+		if (configuration.isInitialized()) {
 			throw new IllegalStateException("Configuration was already executed");
 		}
-		configuration.setExecuted(true);
+		configuration.setInitialized(true);
 		if (validationEnabled) {
 			validateStages();
 		}
@@ -133,6 +133,10 @@ public final class Execution<T extends Configuration> {
 	 * @since 2.0
 	 */
 	public void executeNonBlocking() {
+		if (configuration.isExecuted()) {
+			throw new IllegalStateException("Any configuration instance may only be executed once.");
+		}
+		configuration.setExecuted(true);
 		configurationContext.executeConfiguration();
 	}
 
