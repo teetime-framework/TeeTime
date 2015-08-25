@@ -45,6 +45,7 @@ public final class CollectorSink<T> extends AbstractConsumerStage<T> {
 
 	@Override
 	protected void execute(final T element) {
+		System.out.println(element.toString());
 		this.elements.add(element);
 	}
 

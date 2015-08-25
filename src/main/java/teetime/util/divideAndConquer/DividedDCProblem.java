@@ -1,4 +1,4 @@
-package teetime.framework;
+package teetime.util.divideAndConquer;
 
 public final class DividedDCProblem<P> {
 

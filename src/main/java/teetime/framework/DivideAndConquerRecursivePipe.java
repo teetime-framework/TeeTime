@@ -2,6 +2,7 @@ package teetime.framework;
 
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
+import teetime.util.divideAndConquer.DividedDCProblem;
 
 class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> implements
 		IPipe<P> {
@@ -32,9 +33,10 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 		return sourcePort;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public final InputPort<P> getTargetPort() {
-		return null; // (InputPort<P>) targetPort;
+	public final InputPort getTargetPort() {
+		return targetPort;
 	}
 
 	@Override
@@ -54,7 +56,7 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 
 	@Override
 	public final void sendSignal(final ISignal signal) {
-		// do nothing instead of: this.cachedTargetStage.onSignal(signal, this.targetPort);
+		this.cachedTargetStage.onSignal(signal, this.targetPort);
 	}
 
 	@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
@@ -65,7 +67,7 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 
 	@Override
 	public final void reportNewElement() {
-		this.cachedTargetStage.executeStage();
+		// this.cachedTargetStage.executeStage();
 	}
 
 	@Override

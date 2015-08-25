@@ -1,6 +1,8 @@
 package teetime.framework;
 
+import teetime.util.divideAndConquer.DividedDCProblem;
 import teetime.util.divideAndConquer.Identifiable;
+
 
 public abstract class AbstractDivideAndConquerProblem<P, S> extends Identifiable {
 

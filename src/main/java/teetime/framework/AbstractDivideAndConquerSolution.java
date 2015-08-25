@@ -2,6 +2,7 @@ package teetime.framework;
 
 import teetime.util.divideAndConquer.Identifiable;
 
+
 public abstract class AbstractDivideAndConquerSolution<S> extends Identifiable {
 
 	protected AbstractDivideAndConquerSolution(final int id) {

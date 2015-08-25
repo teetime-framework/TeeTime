@@ -3,7 +3,7 @@ package teetime.stage.quicksort;
 import java.util.Arrays;
 
 import teetime.framework.AbstractDivideAndConquerProblem;
-import teetime.framework.DividedDCProblem;
+import teetime.util.divideAndConquer.DividedDCProblem;
 
 /**
  * @since 2.x
