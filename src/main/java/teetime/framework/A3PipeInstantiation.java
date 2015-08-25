@@ -94,7 +94,9 @@ class A3PipeInstantiation implements ITraverserVisitor {
 
 	@Override
 	public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
-		LOGGER.debug("Unconnected port " + port + " in stage " + port.getOwningStage().getId());
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Unconnected port " + port + " in stage " + port.getOwningStage().getId());
+		}
 	}
 
 }
