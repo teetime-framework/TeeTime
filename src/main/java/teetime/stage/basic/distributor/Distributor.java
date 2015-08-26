@@ -34,7 +34,7 @@ import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
  * +---+             |           |
  *   |               |           |
  *                   |         +---+
- *   .      . . . ---+-------> |   |
+ *   .      . . . ---+-------&gt; |   |
  *                   |         +---+
  *   |               |           |
  * +---+             |           |

@@ -33,7 +33,7 @@ import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
  *     +----------------------------+
  *     |                            |
  *     |                          +---+
- *     |           +------------> |   |
+ *     |           +------------&gt; |   |
  *     |           |              +---+
  *     |           |                |
  *   +---+         |
@@ -41,7 +41,7 @@ import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
  *   +---+         |
  *     |           |                |
  *     |           |              +---+
- *     |           +------------> |   |
+ *     |           +------------&gt; |   |
  *     |                          +---+
  *     |                            |
  *     +----------------------------+

@@ -19,7 +19,7 @@ import teetime.framework.AbstractProducerStage;
 import teetime.framework.TerminationStrategy;
 
 /**
- * This stage sends an element repeatedly with a given interval.
+ * This stage sends an element repeatedly with a given interval {@link #intervalDelayInMs}.
  *
  * <pre>
  * Illustration:
@@ -27,7 +27,7 @@ import teetime.framework.TerminationStrategy;
  * +------------------------+
  * |                        |
  * |                      +---+
- * |      *INTERVAL* +--> |   |
+ * |      *INTERVAL* +--&gt; |   |
  * |                      +---+
  * |                        |
  * +------------------------+
@@ -37,12 +37,20 @@ import teetime.framework.TerminationStrategy;
  *
  * @author Nelson Tavares de Sousa
  *
+ * @stage.output A long with the current system time in ms.
+ *
  */
 public final class Clock extends AbstractProducerStage<Long> {
 
 	private boolean initialDelayExceeded = false;
 
+	/**
+	 * Waiting time span until first sent element.
+	 */
 	private long initialDelayInMs;
+	/**
+	 * Interval between two sent elements.
+	 */
 	private long intervalDelayInMs;
 
 	@Override
