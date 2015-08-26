@@ -47,6 +47,8 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	private volatile boolean stillParallelizable = true;
 
+	private volatile int maxNumberOfCores = Runtime.getRuntime().availableProcessors() - 2;
+
 	TaskFarmConfiguration() {}
 
 	public int getAnalysisWindow() {
@@ -119,5 +121,13 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	public void setPipeCapacity(final int pipeCapacity) {
 		this.pipeCapacity = pipeCapacity;
+	}
+
+	public int getMaxNumberOfCores() {
+		return maxNumberOfCores;
+	}
+
+	public void setMaxNumberOfCores(final int maxNumberOfCores) {
+		this.maxNumberOfCores = maxNumberOfCores;
 	}
 }

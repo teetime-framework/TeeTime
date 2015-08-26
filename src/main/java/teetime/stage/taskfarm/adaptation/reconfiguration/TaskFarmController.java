@@ -69,7 +69,6 @@ class TaskFarmController<I, O> {
 	 * @throws InterruptedException
 	 */
 	public void addStageToTaskFarm() throws InterruptedException {
-		// FIXME limit number of stages to cores-2. consider to move setting to config
 		LOGGER.debug("Add stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
 		ITaskFarmDuplicable<I, O> newStage = this.taskFarmStage.getBasicEnclosedStage().duplicate();
 

@@ -24,7 +24,7 @@ public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<
 	private final TaskFarmController<I, O> controller;
 
 	public TaskFarmReconfigurationService(final TaskFarmStage<I, O, T> taskFarmStage) {
-		this.reconfigurationCommandService = new ReconfigurationCommandService<I, O, T>(taskFarmStage.getConfiguration());
+		this.reconfigurationCommandService = new ReconfigurationCommandService<I, O, T>(taskFarmStage);
 		this.controller = new TaskFarmController<I, O>(taskFarmStage);
 	}
 
