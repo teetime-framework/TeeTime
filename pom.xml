@@ -202,6 +202,11 @@
 							<placement>t</placement>
 							<head>Stage output:</head>
 						</tag>
+						<tag>
+							<name>stage.sketch</name>
+							<placement>t</placement>
+							<head>Stage sketch:</head>
+						</tag>
 					</tags>
 				</configuration>
 				<executions>
@@ -438,6 +443,11 @@
 							<name>stage.output</name>
 							<placement>t</placement>
 							<head>Stage output:</head>
+						</tag>
+						<tag>
+							<name>stage.sketch</name>
+							<placement>t</placement>
+							<head>Stage sketch:</head>
 						</tag>
 					</tags>
 				</configuration>

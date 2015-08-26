@@ -24,9 +24,9 @@ import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
 
 /**
  *
- * <pre>
- * Illustration:
- *
+ * @stage.sketch
+ * 
+ * 				<pre>
  *   +---------------------------+
  *   |                           |
  * +---+                         |
@@ -44,7 +44,7 @@ import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
  *   +---------------------------+
  *
  *
- * </pre>
+ *               </pre>
  *
  * @author Christian Wulf
  *

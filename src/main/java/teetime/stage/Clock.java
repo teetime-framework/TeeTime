@@ -21,9 +21,9 @@ import teetime.framework.TerminationStrategy;
 /**
  * This stage sends an element repeatedly with a given interval {@link #intervalDelayInMs}.
  *
- * <pre>
- * Illustration:
- *
+ * @stage.sketch
+ * 
+ * 				<pre>
  * +------------------------+
  * |                        |
  * |                      +---+
@@ -31,9 +31,7 @@ import teetime.framework.TerminationStrategy;
  * |                      +---+
  * |                        |
  * +------------------------+
- *
- *
- * </pre>
+ *               </pre>
  *
  * @author Nelson Tavares de Sousa
  *

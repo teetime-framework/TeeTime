@@ -27,9 +27,9 @@ import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
  *
  * This stage merges data from the input ports, by taking elements according to the chosen merge strategy and by putting them to the output port.
  *
- * <pre>
- * Illustration:
- *
+ * @stage.sketch
+ * 
+ * 				<pre>
  *     +----------------------------+
  *     |                            |
  *     |                          +---+
@@ -45,7 +45,7 @@ import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
  *     |                          +---+
  *     |                            |
  *     +----------------------------+
- * </pre>
+ *               </pre>
  *
  *
  * @author Christian Wulf, Nelson Tavares de Sousa
