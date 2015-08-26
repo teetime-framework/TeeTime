@@ -61,7 +61,7 @@ class ThreadService extends AbstractService<ThreadService> {
 	}
 
 	void startStageAtRuntime(final Stage newStage) {
-		configuration.declareActive(newStage);
+		newStage.declareActive();
 
 		Set<Stage> newThreadableStages = initialize(newStage);
 		startThreads(newThreadableStages);

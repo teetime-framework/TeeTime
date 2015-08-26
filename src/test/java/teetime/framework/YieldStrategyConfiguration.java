@@ -26,10 +26,10 @@ class YieldStrategyConfiguration extends Configuration {
 	public YieldStrategyConfiguration(final Object... elements) {
 
 		InitialElementProducer<Object> producer = buildProducer(elements);
-		declareActive(producer);
+		producer.declareActive();
 
 		Stage consumer = buildConsumer(producer);
-		declareActive(consumer);
+		consumer.declareActive();
 	}
 
 	private InitialElementProducer<Object> buildProducer(final Object... elements) {

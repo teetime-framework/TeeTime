@@ -33,31 +33,6 @@ public abstract class AbstractCompositeStage {
 	private static final int DEFAULT_CAPACITY = 4;
 
 	/**
-	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
-	 *
-	 * @param stage
-	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
-	 */
-	protected final void declareActive(final Stage stage) {
-		this.declareActive(stage, stage.getId());
-	}
-
-	/**
-	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
-	 *
-	 * @param stage
-	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
-	 * @param threadName
-	 *            A string which can be used for debugging.
-	 */
-	protected void declareActive(final Stage stage, final String threadName) {
-		AbstractRunnableStage runnable = AbstractRunnableStage.create(stage);
-		Thread newThread = new TeeTimeThread(runnable, threadName);
-		stage.setOwningThread(newThread);
-		stage.setActive(true);
-	}
-
-	/**
 	 * Connects two ports with a pipe with a default capacity of currently {@value #DEFAULT_CAPACITY}.
 	 *
 	 * @param sourcePort
@@ -86,7 +61,7 @@ public abstract class AbstractCompositeStage {
 	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort.getOwningStage().getInputPorts().size() == 0) {
 			if (sourcePort.getOwningStage().getOwningThread() == null) {
-				declareActive(sourcePort.getOwningStage(), sourcePort.getOwningStage().getId());
+				sourcePort.getOwningStage().declareActive();
 			}
 		}
 

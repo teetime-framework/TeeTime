@@ -64,10 +64,8 @@ public abstract class Configuration extends AbstractCompositeStage {
 		return factory;
 	}
 
-	@Override
-	protected void declareActive(final Stage stage, final String threadName) {
-		startStage = stage; // memorize an arbitrary stage as starting point for traversing
-		super.declareActive(stage, threadName);
+	protected void registerCustomPipe(final AbstractPipe<?> pipe) {
+		startStage = pipe.getSourcePort().getOwningStage(); // memorize an arbitrary stage as starting point for traversing
 	}
 
 	@Override

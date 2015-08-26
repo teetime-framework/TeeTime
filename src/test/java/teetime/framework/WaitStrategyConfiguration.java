@@ -29,13 +29,13 @@ class WaitStrategyConfiguration extends Configuration {
 	public WaitStrategyConfiguration(final long initialDelayInMs, final Object... elements) {
 
 		Stage producer = buildProducer(elements);
-		declareActive(producer);
+		producer.declareActive();
 
 		Stage consumer = buildConsumer(delay);
-		declareActive(consumer);
+		consumer.declareActive();
 
 		Clock clock = buildClock(initialDelayInMs, delay);
-		declareActive(clock);
+		clock.declareActive();
 	}
 
 	private Clock buildClock(final long initialDelayInMs, final Delay<Object> delay) {
