@@ -23,6 +23,33 @@ import teetime.stage.basic.distributor.strategy.IDistributorStrategy;
 import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
 
 /**
+ *
+ * <pre>
+ * Illustration:
+ *
+ * Inputports                Outputport
+ *   |                           |
+ *   v                           v
+ *
+ *   +---------------------------+
+ *   |                           |
+ * +---+                         |
+ * |   | +-----------+           |
+ * +---+             |           |
+ *   |               |           |
+ *                   |         +---+
+ *   .      . . . ---+-------> |   |
+ *                   |         +---+
+ *   |               |           |
+ * +---+             |           |
+ * |   | +-----------+           |
+ * +---+                         |
+ *   |                           |
+ *   +---------------------------+
+ *
+ *
+ * </pre>
+ *
  * @author Christian Wulf
  *
  * @since 1.0
