@@ -18,6 +18,22 @@ package teetime.stage;
 import teetime.framework.AbstractProducerStage;
 import teetime.framework.TerminationStrategy;
 
+/**
+ * <pre>
+ * Illustration:
+ *
+ *   +-----------------------+
+ *   |                       |
+ * +---+                   +---+
+ * |   | +--> *DELAY* +--> |   |
+ * +---+                   +---+
+ *   |                       |
+ *   +-----------------------+
+ * </pre>
+ *
+ * @author Nelson Tavares de Sousa
+ *
+ */
 public final class Clock extends AbstractProducerStage<Long> {
 
 	private boolean initialDelayExceeded = false;
