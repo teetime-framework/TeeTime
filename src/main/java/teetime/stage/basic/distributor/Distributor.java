@@ -23,35 +23,36 @@ import teetime.stage.basic.distributor.strategy.IDistributorStrategy;
 import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
 
 /**
+ * New output ports can be created by calling {@link #getNewOutputPort()}.
  *
  * @stage.sketch
- * 
+ *
  * 				<pre>
- *   +---------------------------+
- *   |                           |
- * +---+                         |
- * |   | +-----------+           |
- * +---+             |           |
- *   |               |           |
- *                   |         +---+
- *   .      . . . ---+-------&gt; |   |
- *                   |         +---+
- *   |               |           |
- * +---+             |           |
- * |   | +-----------+           |
- * +---+                         |
- *   |                           |
- *   +---------------------------+
- *
- *
+ *     +----------------------------+
+ *     |                            |
+ *     |                          +---+
+ *     |           +------------&gt; |   |
+ *     |           |              +---+
+ *     |           |                |
+ *   +---+         |
+ *   |   | +-------+--- . . .       .
+ *   +---+         |
+ *     |           |                |
+ *     |           |              +---+
+ *     |           +------------&gt; |   |
+ *     |                          +---+
+ *     |                            |
+ *     +----------------------------+
  *               </pre>
  *
- * @author Christian Wulf
+ * @stage.output The incoming element will be passed to output ports, which are selected by a strategy.
+ *
+ * @author Christian Wulf, Nelson Tavares de Sousa
  *
  * @since 1.0
  *
- * @param T
- *            the type of the input port and the output ports
+ * @param <T>
+ *            the type of both the input and output ports
  */
 public class Distributor<T> extends AbstractConsumerStage<T> {
 

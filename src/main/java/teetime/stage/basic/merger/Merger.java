@@ -26,36 +26,36 @@ import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
 /**
  *
  * This stage merges data from the input ports, by taking elements according to the chosen merge strategy and by putting them to the output port.
- * New output ports can be created by calling {@link #createOutputPort()}.
+ * New input ports can be created by calling {@link #getNewInputPort()}.
  *
  * @stage.sketch
  *
  * 				<pre>
- *     +----------------------------+
- *     |                            |
- *     |                          +---+
- *     |           +------------&gt; |   |
- *     |           |              +---+
- *     |           |                |
- *   +---+         |
- *   |   | +-------+--- . . .       .
- *   +---+         |
- *     |           |                |
- *     |           |              +---+
- *     |           +------------&gt; |   |
- *     |                          +---+
- *     |                            |
- *     +----------------------------+
+ *   +---------------------------+
+ *   |                           |
+ * +---+                         |
+ * |   | +-----------+           |
+ * +---+             |           |
+ *   |               |           |
+ *                   |         +---+
+ *   .      . . . ---+-------&gt; |   |
+ *                   |         +---+
+ *   |               |           |
+ * +---+             |           |
+ * |   | +-----------+           |
+ * +---+                         |
+ *   |                           |
+ *   +---------------------------+
+ *
+ *
  *               </pre>
  *
- * @stage.output The incoming element will be passed to output ports, which are selected by a strategy.
- *
- * @author Christian Wulf, Nelson Tavares de Sousa
+ * @author Christian Wulf
  *
  * @since 1.0
  *
- * @param <T>
- *            the type of both the input and output ports
+ * @param T
+ *            the type of the input port and the output ports
  */
 public class Merger<T> extends AbstractStage {
 
