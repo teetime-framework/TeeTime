@@ -26,9 +26,10 @@ import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
 /**
  *
  * This stage merges data from the input ports, by taking elements according to the chosen merge strategy and by putting them to the output port.
+ * New output ports can be created by calling {@link #createOutputPort()}.
  *
  * @stage.sketch
- * 
+ *
  * 				<pre>
  *     +----------------------------+
  *     |                            |
@@ -47,6 +48,7 @@ import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
  *     +----------------------------+
  *               </pre>
  *
+ * @stage.output The incoming element will be passed to output ports, which are selected by a strategy.
  *
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
