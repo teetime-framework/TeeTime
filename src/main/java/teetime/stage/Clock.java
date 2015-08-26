@@ -19,16 +19,20 @@ import teetime.framework.AbstractProducerStage;
 import teetime.framework.TerminationStrategy;
 
 /**
+ * This stage sends an element repeatedly with a given interval.
+ *
  * <pre>
  * Illustration:
  *
- *   +-----------------------+
- *   |                       |
- * +---+                   +---+
- * |   | +--> *DELAY* +--> |   |
- * +---+                   +---+
- *   |                       |
- *   +-----------------------+
+ * +------------------------+
+ * |                        |
+ * |                      +---+
+ * |      *INTERVAL* +--> |   |
+ * |                      +---+
+ * |                        |
+ * +------------------------+
+ *
+ *
  * </pre>
  *
  * @author Nelson Tavares de Sousa
