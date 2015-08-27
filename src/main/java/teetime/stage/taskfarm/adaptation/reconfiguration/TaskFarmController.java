@@ -80,15 +80,24 @@ class TaskFarmController<I, O> {
 		try {
 			distributorPortAction.waitForCompletion();
 		} catch (InterruptedException e) {
+			// Adaptation Thread was asked to terminate
 			LOGGER.debug("Interrupted while waiting for completion", e);
-			throw e;
+			taskFarmStage.getConfiguration().setStillParallelizable(false);
+			return;
 		}
 		LOGGER.debug("distributor port created");
 
 		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort(),
 				taskFarmStage.getConfiguration().getPipeCapacity());
 		this.taskFarmStage.getMerger().addPortActionRequest(mergerPortAction);
-		mergerPortAction.waitForCompletion();
+		try {
+			mergerPortAction.waitForCompletion();
+		} catch (InterruptedException e) {
+			// Adaptation Thread was asked to terminate
+			LOGGER.debug("Interrupted while waiting for completion", e);
+			taskFarmStage.getConfiguration().setStillParallelizable(false);
+			return;
+		}
 		LOGGER.debug("merger port created");
 
 		RuntimeServiceFacade.INSTANCE.startWithinNewThread(taskFarmStage.getDistributor(), newStage.getInputPort().getOwningStage());
@@ -133,7 +142,14 @@ class TaskFarmController<I, O> {
 			this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 			this.taskFarmStage.getEnclosedStageInstances().remove(stageToBeRemoved);
 			LOGGER.debug("WAIT for " + distributorPortAction);
-			distributorPortAction.waitForCompletion();
+			try {
+				distributorPortAction.waitForCompletion();
+			} catch (InterruptedException e) {
+				// Adaptation Thread was asked to terminate
+				LOGGER.debug("Interrupted while waiting for completion", e);
+				taskFarmStage.getConfiguration().setStillParallelizable(false);
+				return;
+			}
 
 			LOGGER.debug("Finished: Remove stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
 		} catch (ClassCastException e) {

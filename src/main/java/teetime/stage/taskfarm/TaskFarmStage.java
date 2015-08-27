@@ -89,6 +89,10 @@ public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 			@Override
 			public void onTerminating() throws Exception {
 				adaptationThread.stopAdaptationThread();
+				System.out.println("Distributor Output Ports: " + this.getOutputPorts().size());
+				for (OutputPort<?> port : this.getOutputPorts()) {
+					System.out.println(port.getPipe().getTargetPort().getOwningStage().getCurrentState());
+				}
 				super.onTerminating();
 			}
 		};

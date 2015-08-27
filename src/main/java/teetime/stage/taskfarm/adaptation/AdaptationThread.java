@@ -49,6 +49,7 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 		LOGGER.debug("Adaptation thread started");
 		while (!shouldTerminate) {
 			try {
+				checkForStopping();
 				executeServices();
 				doMonitoring();
 				checkForStopping();
