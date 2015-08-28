@@ -16,7 +16,7 @@ public class QuicksortConfiguration extends Configuration {
 		InitialElementProducer<QuicksortProblem> initialElementProducer = new InitialElementProducer<QuicksortProblem>(inputs);
 		DivideAndConquerStage<QuicksortProblem, QuicksortSolution> quicksortStage = new DivideAndConquerStage<QuicksortProblem, QuicksortSolution>();
 		CollectorSink<QuicksortSolution> collectorSink = new CollectorSink<QuicksortSolution>(results);
-		this.addThreadableStage(quicksortStage);
+		this.declareActive(quicksortStage);
 
 		// connect ports
 		connectPorts(initialElementProducer.getOutputPort(), quicksortStage.getInputPort());

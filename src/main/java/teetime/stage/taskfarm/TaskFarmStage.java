@@ -103,8 +103,8 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Ab
 		final OutputPort<O> stageOutputPort = includedStage.getOutputPort();
 		connectPorts(stageOutputPort, this.merger.getNewInputPort());
 
-		addThreadableStage(this.merger);
-		addThreadableStage(includedStage.getInputPort().getOwningStage());
+		declareActive(this.merger);
+		declareActive(includedStage.getInputPort().getOwningStage());
 
 		enclosedStageInstances.add(includedStage);
 	}

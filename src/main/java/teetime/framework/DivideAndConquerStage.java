@@ -31,13 +31,13 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 
 	private final IntObjectMap<S> solutionBuffer = new IntObjectHashMap<S>();
 
-	protected final InputPort<P> inputPort = this.createInputPort();
-	protected final InputPort<S> leftInputPort = this.createInputPort();
-	protected final InputPort<S> rightInputPort = this.createInputPort();
+	private final InputPort<P> inputPort = this.createInputPort();
+	private final InputPort<S> leftInputPort = this.createInputPort();
+	private final InputPort<S> rightInputPort = this.createInputPort();
 
-	protected final OutputPort<S> outputPort = this.createOutputPort();
-	protected final OutputPort<P> leftOutputPort = this.createOutputPort();
-	protected final OutputPort<P> rightOutputPort = this.createOutputPort();
+	private final OutputPort<S> outputPort = this.createOutputPort();
+	private final OutputPort<P> leftOutputPort = this.createOutputPort();
+	private final OutputPort<P> rightOutputPort = this.createOutputPort();
 
 	public DivideAndConquerStage() {
 		new DivideAndConquerRecursivePipe<P, S>(this.leftOutputPort, this.leftInputPort);
@@ -48,7 +48,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		this.problemsReceived = 0;
 	}
 
-	public void setThreshold(final int threshold) {
+	protected void setThreshold(final int threshold) {
 		this.threshold = threshold;
 	}
 
@@ -197,12 +197,12 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		return this.threshold - this.getInstanceCount() <= 0;
 	}
 
-	public final DivideAndConquerStage<P, S> duplicate() {
+	protected final DivideAndConquerStage<P, S> duplicate() {
 		return new DivideAndConquerStage<P, S>();
 	}
 
 	@Override
-	protected void onSignal(final ISignal signal, final InputPort<?> inputPort) {
+	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (!this.signalAlreadyReceived(signal, inputPort) && !(signal instanceof TerminatingSignal)) {
 			try {
 				signal.trigger(this);
