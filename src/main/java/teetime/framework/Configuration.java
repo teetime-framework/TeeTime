@@ -31,6 +31,7 @@ public abstract class Configuration extends AbstractCompositeStage {
 	private final IExceptionListenerFactory<?> factory;
 	private final ConfigurationContext context;
 
+	private boolean initialized;
 	private boolean executed;
 	private Stage startStage;
 
@@ -43,11 +44,19 @@ public abstract class Configuration extends AbstractCompositeStage {
 		this.context = new ConfigurationContext(this);
 	}
 
-	boolean isExecuted() {
+	boolean isInitialized() {
+		return initialized;
+	}
+
+	void setInitialized(final boolean executed) {
+		this.initialized = executed;
+	}
+
+	public boolean isExecuted() {
 		return executed;
 	}
 
-	void setExecuted(final boolean executed) {
+	public void setExecuted(final boolean executed) {
 		this.executed = executed;
 	}
 
@@ -56,9 +65,9 @@ public abstract class Configuration extends AbstractCompositeStage {
 	}
 
 	@Override
-	protected void addThreadableStage(final Stage stage, final String threadName) {
+	protected void declareActive(final Stage stage, final String threadName) {
 		startStage = stage; // memorize an arbitrary stage as starting point for traversing
-		super.addThreadableStage(stage, threadName);
+		super.declareActive(stage, threadName);
 	}
 
 	@Override

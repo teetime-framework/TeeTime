@@ -16,6 +16,7 @@
 package teetime.framework;
 
 import teetime.framework.Traverser.VisitorBehavior;
+import teetime.framework.pipe.DummyPipe;
 
 public class IntraStageCollector implements ITraverserVisitor {
 
@@ -38,6 +39,12 @@ public class IntraStageCollector implements ITraverserVisitor {
 	@Override
 	public VisitorBehavior visit(final AbstractPort<?> port) {
 		return VisitorBehavior.CONTINUE;
+	}
+
+	@Override
+	public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

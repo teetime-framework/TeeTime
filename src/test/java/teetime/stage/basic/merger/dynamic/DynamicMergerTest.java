@@ -27,6 +27,7 @@ import org.junit.Test;
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
 import teetime.framework.RuntimeServiceFacade;
+import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.merger.strategy.BusyWaitingRoundRobinStrategy;
@@ -98,19 +99,8 @@ public class DynamicMergerTest {
 			connectPorts(initialElementProducer.getOutputPort(), merger.getNewInputPort());
 			connectPorts(merger.getOutputPort(), collectorSink.getInputPort());
 
-			addThreadableStage(merger);
-		}
-
-		public boolean addPortActionRequest(final PortAction<DynamicMerger<Integer>> portAction) {
-			return merger.addPortActionRequest(portAction);
-		}
-
-		public List<Integer> getOutputElements() {
-			return collectorSink.getElements();
-		}
-
-		boolean addCreatePortAction(final Integer number) {
-			final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(number);
+	private PortAction<DynamicMerger<Integer>> createPortCreateAction(final Integer number) {
+		final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(number);
 
 			PortAction<DynamicMerger<Integer>> portAction = new CreatePortActionMerger<Integer>(initialElementProducer.getOutputPort()) {
 				@Override

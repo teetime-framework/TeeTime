@@ -136,8 +136,8 @@ public class DynamicDistributorTest {
 			connectPorts(initialElementProducer.getOutputPort(), distributor.getInputPort());
 			connectPorts(distributor.getNewOutputPort(), collectorSink.getInputPort());
 
-			addThreadableStage(distributor);
-			addThreadableStage(collectorSink);
+			declareActive(distributor);
+			declareActive(collectorSink);
 
 			for (PortAction<DynamicDistributor<T>> a : inputActions) {
 				distributor.addPortActionRequest(a);

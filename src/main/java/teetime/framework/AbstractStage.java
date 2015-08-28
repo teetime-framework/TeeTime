@@ -15,8 +15,10 @@
  */
 package teetime.framework;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import teetime.framework.pipe.IPipe;
@@ -27,6 +29,7 @@ import teetime.util.framework.port.PortRemovedListener;
 
 public abstract class AbstractStage extends Stage {
 
+	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
 	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
 
 	private final PortList<InputPort<?>> inputPorts = new PortList<InputPort<?>>();
@@ -53,8 +56,22 @@ public abstract class AbstractStage extends Stage {
 	 */
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	@Override
-	protected void onSignal(final ISignal signal, final InputPort<?> inputPort) {
-		if (!this.signalAlreadyReceived(signal, inputPort)) {
+	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
+		Class<? extends ISignal> signalClass = signal.getClass();
+
+		Set<InputPort<?>> signalReceivedInputPorts;
+		if (signalMap.containsKey(signalClass)) {
+			signalReceivedInputPorts = signalMap.get(signalClass);
+		} else {
+			signalReceivedInputPorts = new HashSet<InputPort<?>>();
+			signalMap.put(signalClass, signalReceivedInputPorts);
+		}
+
+		if (!signalReceivedInputPorts.add(inputPort)) {
+			this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
+			return;
+		}
+		if (signal.mayBeTriggered(signalReceivedInputPorts, getInputPorts())) {
 			try {
 				signal.trigger(this);
 			} catch (Exception e) {
@@ -93,6 +110,9 @@ public abstract class AbstractStage extends Stage {
 			logger.trace(currentState + " -> " + newState);
 		}
 		currentState = newState;
+		if (logger.isTraceEnabled()) {
+			logger.trace(newState.toString());
+		}
 	}
 
 	@Override

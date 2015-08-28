@@ -50,6 +50,8 @@ public abstract class Stage {
 	/** The owning thread of this stage if this stage is directly executed by a {@link AbstractRunnableStage}, <code>null</code> otherwise. */
 	private Thread owningThread;
 
+	private boolean isActive;
+
 	private ConfigurationContext owningContext;
 
 	ConfigurationContext getOwningContext() {
@@ -201,5 +203,13 @@ public abstract class Stage {
 	protected abstract void removeDynamicPort(OutputPort<?> outputPort);
 
 	protected abstract void removeDynamicPort(InputPort<?> inputPort);
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	void setActive(final boolean isActive) {
+		this.isActive = isActive;
+	}
 
 }

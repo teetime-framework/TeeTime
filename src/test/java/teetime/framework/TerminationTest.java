@@ -55,11 +55,11 @@ public class TerminationTest {
 				connectPorts(init.getOutputPort(), firstProp.getInputPort());
 				connectPorts(firstProp.getOutputPort(), sinkStage.getInputPort(), capacity);
 				connectPorts(sinkStage.getOutputPort(), finalProp.getInputPort());
-				addThreadableStage(sinkStage);
+				declareActive(sinkStage);
 			} else {
 				Sink<Integer> sink = new Sink<Integer>();
 				connectPorts(init.getOutputPort(), sink.getInputPort(), capacity);
-				addThreadableStage(sink);
+				declareActive(sink);
 			}
 		}
 

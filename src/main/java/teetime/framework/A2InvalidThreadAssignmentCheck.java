@@ -21,6 +21,7 @@ import com.carrotsearch.hppc.ObjectIntHashMap;
 import com.carrotsearch.hppc.ObjectIntMap;
 
 import teetime.framework.Traverser.VisitorBehavior;
+import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
 
 /**
@@ -88,6 +89,12 @@ public class A2InvalidThreadAssignmentCheck {
 				return VisitorBehavior.CONTINUE;
 			}
 			return VisitorBehavior.STOP;
+		}
+
+		@Override
+		public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
+			// TODO Auto-generated method stub
+
 		}
 
 	}
