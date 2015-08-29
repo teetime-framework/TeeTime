@@ -2,8 +2,8 @@ package teetime.stage.quicksort;
 
 import java.util.Arrays;
 
-import teetime.framework.AbstractDivideAndConquerProblem;
-import teetime.util.divideAndConquer.DividedDCProblem;
+import teetime.framework.divideAndConquer.AbstractDivideAndConquerProblem;
+import teetime.framework.divideAndConquer.DividedDCProblem;
 
 /**
  * @since 2.x
@@ -27,6 +27,13 @@ public final class QuicksortProblem extends AbstractDivideAndConquerProblem<Quic
 	 * @param numbers
 	 *            Array to be sorted
 	 */
+	public QuicksortProblem(final int low, final int high, final int[] numbers) {
+		super();
+		this.low = low;
+		this.high = high;
+		this.numbers = numbers;
+	}
+
 	public QuicksortProblem(final int id, final int low, final int high, final int[] numbers) {
 		super(id);
 		this.low = low;

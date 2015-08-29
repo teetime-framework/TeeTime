@@ -24,7 +24,9 @@ public class ExtendedDivideAndConquerStageTest {
 
 	private QuicksortProblem problemOne;
 	private QuicksortProblem problemTwo;
-	QuicksortProblem problemThree;
+	private QuicksortProblem problemThree;
+	private QuicksortProblem problemFour;
+	private QuicksortProblem problemFive;
 
 	@Before
 	public void initialize() {
@@ -33,15 +35,21 @@ public class ExtendedDivideAndConquerStageTest {
 		int[] firstInts = { 3, 8, 4, 2, 1, 9, 5, 10, 7, 6 };
 		int[] secondInts = { 2, 4, 3, 1, 5 };
 		int[] thirdInts = { 4, 3, 3, 4, 2, 4, 1, 2, 3, 4 };
+		int[] fourthInts = { 4 };
+		int[] fifthInts = {};
 
-		problemOne = new QuicksortProblem(1, 0, firstInts.length - 1, firstInts);
-		problemTwo = new QuicksortProblem(2, 0, secondInts.length - 1, secondInts);
-		problemThree = new QuicksortProblem(3, 0, thirdInts.length - 1, thirdInts);
+		problemOne = new QuicksortProblem(0, firstInts.length - 1, firstInts);
+		problemTwo = new QuicksortProblem(0, secondInts.length - 1, secondInts);
+		problemThree = new QuicksortProblem(0, thirdInts.length - 1, thirdInts);
+		problemFour = new QuicksortProblem(0, fourthInts.length - 1, fourthInts);
+		problemFive = new QuicksortProblem(0, fifthInts.length - 1, fifthInts);
 
 		problems = new ArrayList<QuicksortProblem>();
 		problems.add(problemOne);
 		problems.add(problemTwo);
 		problems.add(problemThree);
+		problems.add(problemFour);
+		problems.add(problemFive);
 
 		solutions = new ArrayList<QuicksortSolution>();
 	}
@@ -59,7 +67,6 @@ public class ExtendedDivideAndConquerStageTest {
 		assertTrue(isSorted(solutions.get(0).getNumbers()));
 		assertTrue(isSorted(solutions.get(1).getNumbers()));
 		assertTrue(isSorted(solutions.get(2).getNumbers()));
-
 	}
 
 	private boolean isSorted(final int[] ints) {

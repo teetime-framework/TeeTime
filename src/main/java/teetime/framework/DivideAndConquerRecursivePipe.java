@@ -1,8 +1,10 @@
 package teetime.framework;
 
+import teetime.framework.divideAndConquer.AbstractDivideAndConquerProblem;
+import teetime.framework.divideAndConquer.AbstractDivideAndConquerSolution;
+import teetime.framework.divideAndConquer.DividedDCProblem;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
-import teetime.util.divideAndConquer.DividedDCProblem;
 
 class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> implements
 		IPipe<P> {

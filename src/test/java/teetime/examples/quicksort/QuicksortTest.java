@@ -15,7 +15,7 @@ public class QuicksortTest {
 	@Test
 	public void executeTest() {
 		int[] numbers = new int[] { 3, 1, 4, 5, 2 };
-		QuicksortProblem problemOne = new QuicksortProblem(1, 0, numbers.length - 1, numbers);
+		QuicksortProblem problemOne = new QuicksortProblem(0, numbers.length - 1, numbers);
 
 		ArrayList<QuicksortProblem> inputs = new ArrayList<QuicksortProblem>();
 		inputs.add(problemOne);

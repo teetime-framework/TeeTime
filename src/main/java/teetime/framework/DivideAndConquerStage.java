@@ -1,8 +1,10 @@
 package teetime.framework;
 
+import teetime.framework.divideAndConquer.AbstractDivideAndConquerProblem;
+import teetime.framework.divideAndConquer.AbstractDivideAndConquerSolution;
+import teetime.framework.divideAndConquer.DividedDCProblem;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
-import teetime.util.divideAndConquer.DividedDCProblem;
 
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;

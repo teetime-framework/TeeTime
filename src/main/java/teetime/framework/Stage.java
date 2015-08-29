@@ -54,7 +54,7 @@ public abstract class Stage {
 
 	private ConfigurationContext owningContext;
 
-	ConfigurationContext getOwningContext() {
+	protected ConfigurationContext getOwningContext() {
 		return owningContext;
 	}
 
