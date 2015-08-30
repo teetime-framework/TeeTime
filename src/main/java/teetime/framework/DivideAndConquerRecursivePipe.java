@@ -1,8 +1,8 @@
 package teetime.framework;
 
-import teetime.framework.divideAndConquer.AbstractDivideAndConquerProblem;
-import teetime.framework.divideAndConquer.AbstractDivideAndConquerSolution;
-import teetime.framework.divideAndConquer.DividedDCProblem;
+import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
+import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
+import teetime.framework.divideandconquer.DividedDCProblem;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 

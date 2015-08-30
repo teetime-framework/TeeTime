@@ -1,7 +1,7 @@
 package teetime.framework;
 
-import teetime.framework.divideAndConquer.AbstractDivideAndConquerProblem;
-import teetime.framework.divideAndConquer.AbstractDivideAndConquerSolution;
+import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
+import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
 import teetime.framework.signal.StartingSignal;
 
 /**

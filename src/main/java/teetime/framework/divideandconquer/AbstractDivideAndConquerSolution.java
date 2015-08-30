@@ -1,4 +1,4 @@
-package teetime.framework.divideAndConquer;
+package teetime.framework.divideandconquer;
 
 public abstract class AbstractDivideAndConquerSolution<S> extends Identifiable {
 

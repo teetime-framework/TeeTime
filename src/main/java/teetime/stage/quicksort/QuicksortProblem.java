@@ -2,8 +2,8 @@ package teetime.stage.quicksort;
 
 import java.util.Arrays;
 
-import teetime.framework.divideAndConquer.AbstractDivideAndConquerProblem;
-import teetime.framework.divideAndConquer.DividedDCProblem;
+import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
+import teetime.framework.divideandconquer.DividedDCProblem;
 
 /**
  * @since 2.x

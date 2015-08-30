@@ -1,8 +1,8 @@
 package teetime.framework;
 
-import teetime.framework.divideAndConquer.AbstractDivideAndConquerProblem;
-import teetime.framework.divideAndConquer.AbstractDivideAndConquerSolution;
-import teetime.framework.divideAndConquer.DividedDCProblem;
+import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
+import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
+import teetime.framework.divideandconquer.DividedDCProblem;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
@@ -10,7 +10,7 @@ import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
 
 /**
- * Represents a stage to provide functionality for the divide and conquer paradigm
+ * Represents a stage to solve divide and conquer problems
  *
  * @since 2.x
  *
@@ -41,6 +41,10 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	private final OutputPort<P> leftOutputPort = this.createOutputPort();
 	private final OutputPort<P> rightOutputPort = this.createOutputPort();
 
+	/**
+	 * Creates a new divide and conquer stage and connects the additional in- and output ports with recursive pipes
+	 *
+	 */
 	public DivideAndConquerStage() {
 		new DivideAndConquerRecursivePipe<P, S>(this.leftOutputPort, this.leftInputPort);
 		new DivideAndConquerRecursivePipe<P, S>(this.rightOutputPort, this.rightInputPort);
@@ -50,30 +54,72 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		this.problemsReceived = 0;
 	}
 
+	/**
+	 * Sets the threshold for parallelism to the specified value.
+	 *
+	 * @param threshold
+	 *            Number of new threads to create.
+	 */
 	protected void setThreshold(final int threshold) {
 		this.threshold = threshold;
 	}
 
+	/**
+	 * @param <P>
+	 *            Type of input port.
+	 *
+	 * @return <code>InputPort</code>
+	 */
 	public final InputPort<P> getInputPort() {
 		return this.inputPort;
 	}
 
+	/**
+	 * @param <S>
+	 *            Type of input port.
+	 *
+	 * @return <code>InputPort</code>
+	 */
 	public final InputPort<S> getLeftInputPort() {
 		return this.leftInputPort;
 	}
 
+	/**
+	 * @param <S>
+	 *            Type of input port.
+	 *
+	 * @return <code>InputPort</code>
+	 */
 	public final InputPort<S> getRightInputPort() {
 		return this.rightInputPort;
 	}
 
+	/**
+	 * @param <S>
+	 *            Type of output port.
+	 *
+	 * @return <code>OutputPort</code>
+	 */
 	public final OutputPort<S> getOutputPort() {
 		return this.outputPort;
 	}
 
+	/**
+	 * @param <P>
+	 *            Type of output port.
+	 *
+	 * @return <code>OutputPort</code>
+	 */
 	public final OutputPort<P> getleftOutputPort() {
 		return this.leftOutputPort;
 	}
 
+	/**
+	 * @param <P>
+	 *            Type of output port.
+	 *
+	 * @return <code>OutputPort</code>
+	 */
 	public final OutputPort<P> getrightOutputPort() {
 		return this.rightOutputPort;
 	}
@@ -86,6 +132,10 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		checkForTermination();
 	}
 
+	/**
+	 * Checks whether or not to terminate this stage and all child stages.
+	 * The stage will termintate if there is no more input to process, a <code>TerminatingSignal</code> has been received and all child stages are terminated.
+	 */
 	private void checkForTermination() {
 		if (this.inputPort.isClosed() && solutionsSent > 0) { // no more input, time to terminate child stages
 			if (!signalsSent && problemsReceived == solutionsSent) {
@@ -107,6 +157,17 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		}
 	}
 
+	/**
+	 * Receives and processes incoming solutions to combine or send to the next stage.
+	 *
+	 * @param port
+	 *            The <code>InputPort</code> to receive solutions from.
+	 *
+	 * @param <S>
+	 *            Type of solutions.
+	 * @return
+	 *         <code>true</code> if there was input to receive, <code>false</code> otherwise
+	 */
 	private boolean checkForSolutions(final InputPort<S> port) {
 		S solution = port.receive();
 		if (solution != null) {
@@ -146,6 +207,17 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		return this.solutionBuffer.containsKey(solutionID);
 	}
 
+	/**
+	 * Receives and processes incoming problems to divide or solve.
+	 *
+	 * @param port
+	 *            The <code>InputPort</code> to receive problems from.
+	 *
+	 * @param <P>
+	 *            Type of problems.
+	 * @return
+	 *         <code>true</code> if there was input to receive, <code>false</code> otherwise
+	 */
 	private boolean checkForProblems(final InputPort<P> port) {
 		P problem = port.receive();
 		if (problem != null) {
