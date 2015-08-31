@@ -80,21 +80,32 @@ public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 					adaptationThread.start();
 					super.onStarting();
 				}
+
+				@Override
+				public void onTerminating() throws Exception {
+					adaptationThread.stopAdaptationThread();
+					System.out.println("input ports: " + this.getInputPorts().size());
+					for (InputPort<?> port : this.getInputPorts()) {
+						System.out.println(port.getPipe().getTargetPort().getOwningStage().getCurrentState());
+					}
+					super.onTerminating();
+				}
 			};
 		} else {
 			this.merger = merger;
 		}
 
 		this.distributor = new DynamicDistributor<I>() {
-			@Override
-			public void onTerminating() throws Exception {
-				adaptationThread.stopAdaptationThread();
-				System.out.println("Distributor Output Ports: " + this.getOutputPorts().size());
-				for (OutputPort<?> port : this.getOutputPorts()) {
-					System.out.println(port.getPipe().getTargetPort().getOwningStage().getCurrentState());
-				}
-				super.onTerminating();
-			}
+			// FIXME remove comment
+			// @Override
+			// public void onTerminating() throws Exception {
+			// adaptationThread.stopAdaptationThread();
+			// System.out.println("Distributor Output Ports: " + this.getOutputPorts().size());
+			// for (OutputPort<?> port : this.getOutputPorts()) {
+			// System.out.println(port.getPipe().getTargetPort().getOwningStage().getCurrentState());
+			// }
+			// super.onTerminating();
+			// }
 		};
 
 		taskFarmMonitoringService = new SingleTaskFarmMonitoringService(this);
