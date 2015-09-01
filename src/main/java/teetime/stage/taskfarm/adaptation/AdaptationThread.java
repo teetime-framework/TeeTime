@@ -49,10 +49,8 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 		LOGGER.debug("Adaptation thread started");
 		while (!shouldTerminate) {
 			try {
-				checkForStopping();
 				executeServices();
 				doMonitoring();
-				checkForStopping();
 
 				Thread.sleep(taskFarmStage.getConfiguration().getAdaptationWaitingTimeMillis());
 			} catch (InterruptedException e) {
@@ -73,12 +71,6 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 		historyService.monitorPipes();
 		analysisService.analyze(historyService.getHistory());
 		reconfigurationService.reconfigure(analysisService.getThroughputScore());
-	}
-
-	private void checkForStopping() {
-		if (!taskFarmStage.getConfiguration().isStillParallelizable()) {
-			stopAdaptationThread();
-		}
 	}
 
 	public void stopAdaptationThread() {

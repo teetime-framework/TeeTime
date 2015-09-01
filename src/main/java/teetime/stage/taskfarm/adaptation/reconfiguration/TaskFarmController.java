@@ -82,7 +82,6 @@ class TaskFarmController<I, O> {
 		} catch (InterruptedException e) {
 			// Adaptation Thread was asked to terminate
 			LOGGER.debug("Interrupted while waiting for completion", e);
-			taskFarmStage.getConfiguration().setStillParallelizable(false);
 			return;
 		}
 		LOGGER.debug("distributor port created");
@@ -95,7 +94,6 @@ class TaskFarmController<I, O> {
 		} catch (InterruptedException e) {
 			// Adaptation Thread was asked to terminate
 			LOGGER.debug("Interrupted while waiting for completion", e);
-			taskFarmStage.getConfiguration().setStillParallelizable(false);
 			return;
 		}
 		LOGGER.debug("merger port created");
@@ -147,7 +145,6 @@ class TaskFarmController<I, O> {
 			} catch (InterruptedException e) {
 				// Adaptation Thread was asked to terminate
 				LOGGER.debug("Interrupted while waiting for completion", e);
-				taskFarmStage.getConfiguration().setStillParallelizable(false);
 				return;
 			}
 

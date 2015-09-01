@@ -45,8 +45,6 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	private volatile int pipeCapacity = 100;
 
-	private volatile boolean stillParallelizable = true;
-
 	private volatile int maxNumberOfCores = Runtime.getRuntime().availableProcessors() - 2;
 
 	TaskFarmConfiguration() {}
@@ -89,14 +87,6 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	public void setThroughputScoreBoundary(final double throughputScoreBoundary) {
 		this.throughputScoreBoundary = throughputScoreBoundary;
-	}
-
-	public boolean isStillParallelizable() {
-		return stillParallelizable;
-	}
-
-	public void setStillParallelizable(final boolean stillParallelizable) {
-		this.stillParallelizable = stillParallelizable;
 	}
 
 	public boolean isMonitoringEnabled() {

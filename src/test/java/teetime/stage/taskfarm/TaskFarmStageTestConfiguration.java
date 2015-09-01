@@ -45,7 +45,6 @@ public class TaskFarmStageTestConfiguration extends Configuration {
 		final CompositeTestStage compositeTestStage = new CompositeTestStage();
 		taskFarmStage = new TaskFarmStage<Long, String, CompositeTestStage>(compositeTestStage, 1000);
 		taskFarmStage.getConfiguration().setThroughputScoreBoundary(0.2);
-		taskFarmStage.getConfiguration().setStillParallelizable(true);
 		taskFarmStage.getConfiguration().setThroughputAlgorithm("RegressionAlgorithm");
 		taskFarmStage.getConfiguration().setAdaptationWaitingTimeMillis(50);
 		taskFarmStage.getConfiguration().setMonitoringEnabled(true);

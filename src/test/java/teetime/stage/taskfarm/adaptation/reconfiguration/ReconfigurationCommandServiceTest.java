@@ -17,9 +17,7 @@ package teetime.stage.taskfarm.adaptation.reconfiguration;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -35,13 +33,11 @@ public class ReconfigurationCommandServiceTest {
 		TaskFarmStage taskFarmStage = createTaskFarm();
 		ReconfigurationCommandService commandService = new ReconfigurationCommandService(taskFarmStage);
 
-		assertTrue(taskFarmStage.getConfiguration().isStillParallelizable());
 		assertThat(commandService.decideExecutionPlan(0.5d), is(equalTo(TaskFarmReconfigurationCommand.ADD)));
 		for (int i = 0; i < taskFarmStage.getConfiguration().getMaxSamplesUntilRemove(); i++) {
 			assertThat(commandService.decideExecutionPlan(0.1d), is(equalTo(TaskFarmReconfigurationCommand.NONE)));
 		}
 		assertThat(commandService.decideExecutionPlan(0.1d), is(equalTo(TaskFarmReconfigurationCommand.REMOVE)));
-		assertFalse(taskFarmStage.getConfiguration().isStillParallelizable());
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -50,22 +46,18 @@ public class ReconfigurationCommandServiceTest {
 		TaskFarmStage taskFarmStage = createTaskFarm();
 		ReconfigurationCommandService commandService = new ReconfigurationCommandService(taskFarmStage);
 
-		assertTrue(taskFarmStage.getConfiguration().isStillParallelizable());
 		assertThat(commandService.decideExecutionPlan(0.5d), is(equalTo(TaskFarmReconfigurationCommand.ADD)));
 		assertThat(commandService.decideExecutionPlan(0.1d), is(equalTo(TaskFarmReconfigurationCommand.NONE)));
 		assertThat(commandService.decideExecutionPlan(0.1d), is(equalTo(TaskFarmReconfigurationCommand.NONE)));
-		assertTrue(taskFarmStage.getConfiguration().isStillParallelizable());
 		assertThat(commandService.decideExecutionPlan(0.3d), is(equalTo(TaskFarmReconfigurationCommand.ADD)));
 		assertThat(commandService.decideExecutionPlan(0.1d), is(equalTo(TaskFarmReconfigurationCommand.NONE)));
 		assertThat(commandService.decideExecutionPlan(0.1d), is(equalTo(TaskFarmReconfigurationCommand.NONE)));
 		assertThat(commandService.decideExecutionPlan(0.1d), is(equalTo(TaskFarmReconfigurationCommand.NONE)));
-		assertTrue(taskFarmStage.getConfiguration().isStillParallelizable());
 		assertThat(commandService.decideExecutionPlan(0.3d), is(equalTo(TaskFarmReconfigurationCommand.ADD)));
 		for (int i = 0; i < taskFarmStage.getConfiguration().getMaxSamplesUntilRemove(); i++) {
 			assertThat(commandService.decideExecutionPlan(0.1d), is(equalTo(TaskFarmReconfigurationCommand.NONE)));
 		}
 		assertThat(commandService.decideExecutionPlan(0.1d), is(equalTo(TaskFarmReconfigurationCommand.REMOVE)));
-		assertFalse(taskFarmStage.getConfiguration().isStillParallelizable());
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

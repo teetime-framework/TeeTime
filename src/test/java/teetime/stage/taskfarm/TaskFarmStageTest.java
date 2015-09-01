@@ -39,7 +39,7 @@ import teetime.stage.taskfarm.monitoring.extraction.TimeBoundaryStages3D;
 
 public class TaskFarmStageTest {
 
-	private static final int NUMBER_OF_TEST_ELEMENTS = 5000000;
+	private static final int NUMBER_OF_TEST_ELEMENTS = 50000;
 
 	@Test
 	public void simpleTaskFarmStageTest() throws IOException {

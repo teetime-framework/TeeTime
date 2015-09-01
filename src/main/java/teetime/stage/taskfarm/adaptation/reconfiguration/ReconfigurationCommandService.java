@@ -15,6 +15,7 @@
  */
 package teetime.stage.taskfarm.adaptation.reconfiguration;
 
+import teetime.framework.pipe.IMonitorablePipe;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.TaskFarmStage;
@@ -24,6 +25,7 @@ class ReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	private final TaskFarmStage<I, O, T> taskFarmStage;
 	private int samplesUntilRemove;
+	private ReconfigurationMode currentMode = ReconfigurationMode.ADDING;
 
 	ReconfigurationCommandService(final TaskFarmStage<I, O, T> taskFarmStage) {
 		this.taskFarmStage = taskFarmStage;
@@ -33,9 +35,24 @@ class ReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	public TaskFarmReconfigurationCommand decideExecutionPlan(final double throughputScore) {
 		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE;
 
+		switch (currentMode) {
+		case ADDING:
+			command = decideForAddingMode(throughputScore);
+			break;
+		case REMOVING:
+			command = decideForRemovingMode(throughputScore);
+			break;
+		}
+
+		return command;
+	}
+
+	private TaskFarmReconfigurationCommand decideForAddingMode(final double throughputScore) {
+		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE;
+
 		if (taskFarmStage.getEnclosedStageInstances().size() >= taskFarmStage.getConfiguration().getMaxNumberOfCores()) {
 			// we do not want to parallelize more than we have (virtual) processors
-			taskFarmStage.getConfiguration().setStillParallelizable(false);
+			this.currentMode = ReconfigurationMode.REMOVING;
 			command = TaskFarmReconfigurationCommand.NONE;
 		} else {
 			if (throughputScore != AbstractThroughputAnalysisAlgorithm.INVALID_SCORE) {
@@ -58,7 +75,7 @@ class ReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 						}
 					} else {
 						// we found a boundary where new stages will not increase performance
-						taskFarmStage.getConfiguration().setStillParallelizable(false);
+						this.currentMode = ReconfigurationMode.REMOVING;
 						command = TaskFarmReconfigurationCommand.REMOVE;
 					}
 				}
@@ -66,5 +83,35 @@ class ReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		}
 
 		return command;
+	}
+
+	private TaskFarmReconfigurationCommand decideForRemovingMode(final double throughputScore) {
+		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE;
+
+		// we never want to remove the basic stage since it would destroy the pipeline
+		for (int i = 1; i < taskFarmStage.getEnclosedStageInstances().size() - 1; i++) {
+			ITaskFarmDuplicable<?, ?> stage = taskFarmStage.getEnclosedStageInstances().get(i);
+
+			IMonitorablePipe monitorableInputPipe = (IMonitorablePipe) stage.getInputPort().getPipe();
+			int sizeOfInputQueue = monitorableInputPipe.size();
+
+			if (sizeOfInputQueue == 0) {
+				// there is still a stage which is currently unused can be safely removed
+				command = TaskFarmReconfigurationCommand.REMOVE;
+				break;
+			}
+		}
+
+		if (throughputScore > taskFarmStage.getConfiguration().getThroughputScoreBoundary()) {
+			// performance need has risen again, so we are parallelizing more
+			this.currentMode = ReconfigurationMode.ADDING;
+		}
+
+		return command;
+	}
+
+	private enum ReconfigurationMode {
+		ADDING,
+		REMOVING
 	}
 }
