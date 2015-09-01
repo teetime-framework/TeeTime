@@ -45,7 +45,7 @@ public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 
 	private final List<ITaskFarmDuplicable<I, O>> enclosedStageInstances = new LinkedList<ITaskFarmDuplicable<I, O>>();
 
-	private final DynamicDistributor<I> distributor;
+	private final DynamicDistributor<I> distributor = new DynamicDistributor<I>();
 	private final DynamicMerger<O> merger;
 
 	private final TaskFarmConfiguration<I, O, T> configuration = new TaskFarmConfiguration<I, O, T>();
@@ -84,29 +84,12 @@ public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 				@Override
 				public void onTerminating() throws Exception {
 					adaptationThread.stopAdaptationThread();
-					System.out.println("input ports: " + this.getInputPorts().size());
-					for (InputPort<?> port : this.getInputPorts()) {
-						System.out.println(port.getPipe().getTargetPort().getOwningStage().getCurrentState());
-					}
 					super.onTerminating();
 				}
 			};
 		} else {
 			this.merger = merger;
 		}
-
-		this.distributor = new DynamicDistributor<I>() {
-			// FIXME remove comment
-			// @Override
-			// public void onTerminating() throws Exception {
-			// adaptationThread.stopAdaptationThread();
-			// System.out.println("Distributor Output Ports: " + this.getOutputPorts().size());
-			// for (OutputPort<?> port : this.getOutputPorts()) {
-			// System.out.println(port.getPipe().getTargetPort().getOwningStage().getCurrentState());
-			// }
-			// super.onTerminating();
-			// }
-		};
 
 		taskFarmMonitoringService = new SingleTaskFarmMonitoringService(this);
 		adaptationThread = new AdaptationThread<I, O, T>(this);
