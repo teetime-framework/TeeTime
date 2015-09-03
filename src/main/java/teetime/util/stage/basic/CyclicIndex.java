@@ -24,6 +24,7 @@ public class CyclicIndex {
 	 * Reads the element and increments the internal index afterwards.
 	 *
 	 * @param elements
+	 *            elements
 	 * @return the next element of the given elements.
 	 */
 	public <T> T getNextElement(final T[] elements) {

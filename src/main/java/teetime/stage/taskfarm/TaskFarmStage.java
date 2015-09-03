@@ -63,9 +63,6 @@ public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 		this(workerStage, null, pipeCapacity);
 	}
 
-	/**
-	 * for test purposes only
-	 */
 	public TaskFarmStage(final T workerStage, final DynamicMerger<O> merger, final int pipeCapacity) {
 		super();
 

@@ -61,8 +61,6 @@ public final class Execution<T extends Configuration> {
 	 *            to be used for the analysis
 	 * @param validationEnabled
 	 *            whether or not the validation should be executed
-	 * @param factory
-	 *            specific listener for the exception handling
 	 */
 	public Execution(final T configuration, final boolean validationEnabled) {
 		this.configuration = configuration;

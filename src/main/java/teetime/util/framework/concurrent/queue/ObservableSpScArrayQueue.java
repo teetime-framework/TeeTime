@@ -50,7 +50,7 @@ public final class ObservableSpScArrayQueue<E> extends SpscArrayQueue<E> {
 	}
 
 	/**
-	 * @return @return the number of pulls to this queue since last method call
+	 * @return the number of pulls to this queue since last method call
 	 */
 	public long getNumPulls() {
 		final long currentConsumerIndex = getNumPullsSinceAppStart();
