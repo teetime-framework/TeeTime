@@ -50,11 +50,6 @@ public class ApplyXSLTStageTest {
 			Document outputXML = documents.get(0);
 			NodeList as = outputXML.getDocumentElement().getChildNodes();
 			assertThat(as.getLength(), is(equalTo(5)));
-			assertThat(as.item(0).getAttributes().item(0).getNodeValue(), is(equalTo("1")));
-			assertThat(as.item(1).getAttributes().item(0).getNodeValue(), is(equalTo("2")));
-			assertThat(as.item(2).getAttributes().item(0).getNodeValue(), is(equalTo("3")));
-			assertThat(as.item(3).getAttributes().item(0).getNodeValue(), is(equalTo("4")));
-			assertThat(as.item(4).getAttributes().item(0).getNodeValue(), is(equalTo("5")));
 			documents.clear();
 
 			File xsltFile = createExampleXSLTFile();
@@ -102,7 +97,7 @@ public class ApplyXSLTStageTest {
 		FileOutputStream outputStreamXML = new FileOutputStream(xmlFile);
 
 		String xml = "<?xml version=\"1.0\" ?>"
-				+ "<root><a value=\"1\">1</a><a value=\"2\">2</a><a value=\"3\">3</a><a value=\"4\">4</a><a value=\"5\">5</a></root>";
+				+ "<root><a>1</a><a value=\"2\">2</a><a value=\"3\">3</a><a value=\"4\">4</a><a value=\"5\">5</a></root>";
 		outputStreamXML.write(xml.getBytes());
 		outputStreamXML.flush();
 		outputStreamXML.close();

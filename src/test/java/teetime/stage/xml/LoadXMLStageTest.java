@@ -67,7 +67,7 @@ public class LoadXMLStageTest {
 		FileOutputStream outputStream = new FileOutputStream(xmlFile);
 
 		String xml = "<?xml version=\"1.0\" ?>"
-				+ "<root><a value=\"1\">1</a><a value=\"2\">2</a><a value=\"3\">3</a><a value=\"4\">4</a><a value=\"5\">5</a></root>";
+				+ "<root><a value=\"1\" /><a value=\"2\">2</a><a value=\"3\">3</a><a value=\"4\">4</a><a value=\"5\">5</a></root>";
 		outputStream.write(xml.getBytes());
 		outputStream.flush();
 		outputStream.close();
