@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package teetime.framework;
 
 import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
@@ -10,9 +25,7 @@ import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
 
 /**
- * Represents a stage to solve divide and conquer problems
- *
- * @since 2.x
+ * A stage to solve divide and conquer problems
  *
  * @author Robin Mohr
  *
@@ -42,7 +55,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	private final OutputPort<P> rightOutputPort = this.createOutputPort();
 
 	/**
-	 * Creates a new divide and conquer stage and connects the additional in- and output ports with recursive pipes
+	 * Creates a new divide and conquer stage and connects the additional in- and output ports with {@link teetime.framework.DivideAndConquerRecursivePipe}.
 	 *
 	 */
 	public DivideAndConquerStage() {
@@ -139,13 +152,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	private void checkForTermination() {
 		if (this.inputPort.isClosed() && solutionsSent > 0) { // no more input, time to terminate child stages
 			if (!signalsSent && problemsReceived == solutionsSent) {
-				if (logger.isDebugEnabled()) {
-					logger.debug(" left terminating signal ");
-				}
 				this.getleftOutputPort().sendSignal(new TerminatingSignal());// send signal to terminate child stages first
-				if (logger.isDebugEnabled()) {
-					logger.debug(" right terminating signal ");
-				}
 				this.getrightOutputPort().sendSignal(new TerminatingSignal());
 				this.signalsSent = true;
 			}
@@ -171,21 +178,12 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	private boolean checkForSolutions(final InputPort<S> port) {
 		S solution = port.receive();
 		if (solution != null) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(" received solution " + solution.getID());
-			}
 			int solutionID = solution.getID();
 			if (isInBuffer(solutionID)) {
 				S bufferedSolution = getSolutionFromBuffer(solutionID);
 				S combinedSolution = solution.combine(bufferedSolution);
-				if (logger.isDebugEnabled()) {
-					logger.debug(" created solution: " + combinedSolution.getID());
-				}
 				outputPort.send(combinedSolution);
 				this.solutionsSent++;
-				if (logger.isDebugEnabled()) {
-					logger.debug(" solutionsSent: " + solutionsSent);
-				}
 			} else {
 				addToBuffer(solutionID, solution);
 			}
@@ -222,31 +220,16 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		P problem = port.receive();
 		if (problem != null) {
 			this.problemsReceived++;
-			if (logger.isDebugEnabled()) {
-				logger.debug(" problemsReceived: " + problemsReceived);
-			}
 			if (problem.isBaseCase()) {
 				S solution = problem.solve();
 				this.getOutputPort().send(solution);
 				this.solutionsSent++;
-				if (logger.isDebugEnabled()) {
-					logger.debug(" solutionsSent: " + solutionsSent);
-				}
 			} else {
 				if (firstExecution) {
-					if (logger.isDebugEnabled()) {
-						logger.debug(" creating copies");
-					}
 					createCopies();
 				}
 				DividedDCProblem<P> dividedProblem = problem.divide();
-				if (logger.isDebugEnabled()) {
-					logger.debug(" problem left out" + dividedProblem.leftProblem.getID());
-				}
 				this.getleftOutputPort().send(dividedProblem.leftProblem); // first recursive call
-				if (logger.isDebugEnabled()) {
-					logger.debug(" problem right out" + dividedProblem.rightProblem.getID());
-				}
 				this.getrightOutputPort().send(dividedProblem.rightProblem); // second recursive call
 			}
 		}
@@ -269,10 +252,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 
 	protected boolean isThresholdReached() {
 		return this.threshold - this.getInstanceCount() <= 0;
-	}
-
-	protected final DivideAndConquerStage<P, S> duplicate() {
-		return new DivideAndConquerStage<P, S>();
 	}
 
 	@Override

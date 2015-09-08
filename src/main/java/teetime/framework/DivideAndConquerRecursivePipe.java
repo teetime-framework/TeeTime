@@ -111,7 +111,7 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 			throw new IllegalArgumentException("Parameter 'element' is null, but must be non-null.");
 		}
 		this.element = divideAndConquer((P) element);
-		this.reportNewElement();
+		// this.reportNewElement();
 		return true;
 	}
 
