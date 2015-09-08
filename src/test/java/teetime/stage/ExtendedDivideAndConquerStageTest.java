@@ -69,7 +69,7 @@ public class ExtendedDivideAndConquerStageTest {
 		assertTrue(isSorted(solutions.get(2).getNumbers()));
 	}
 
-	private boolean isSorted(final int[] ints) {
+	private boolean isSorted(final int... ints) {
 		for (int i = 1; i < ints.length; i++) {
 			if (ints[i - 1] > ints[i]) {
 				return false;

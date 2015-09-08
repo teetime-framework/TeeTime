@@ -27,15 +27,15 @@ public final class QuicksortSolution extends AbstractDivideAndConquerSolution<Qu
 	 *            Array to be sorted
 	 */
 
-	public QuicksortSolution(final int low, final int high, final int[] numbers) {
+	public QuicksortSolution(final int low, final int high, final int... numbers) {
 		super();
 		this.low = low;
 		this.high = high;
 		this.numbers = numbers;
 	}
 
-	public QuicksortSolution(final int id, final int low, final int high, final int[] numbers) {
-		super(id);
+	public QuicksortSolution(final int identifier, final int low, final int high, final int... numbers) {
+		super(identifier);
 		this.low = low;
 		this.high = high;
 		this.numbers = numbers;
@@ -55,13 +55,12 @@ public final class QuicksortSolution extends AbstractDivideAndConquerSolution<Qu
 
 	@Override
 	public String toString() {
-		String s = "Solution ID: " + this.getID() + " contains Array: " + Arrays.toString(numbers);
-		return s;
+		return "Solution ID: " + this.getID() + " contains Array: " + Arrays.toString(numbers);
 
 	}
 
 	@Override
-	public QuicksortSolution combine(final QuicksortSolution s1) {
-		return s1;
+	public QuicksortSolution combine(final QuicksortSolution otherSolution) {
+		return otherSolution;
 	}
 }

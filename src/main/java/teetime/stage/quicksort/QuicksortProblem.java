@@ -6,7 +6,7 @@ import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
 import teetime.framework.divideandconquer.DividedDCProblem;
 
 /**
- * @since 2.x
+ * A problem to be solved with the quicksort algorithm.
  *
  * @author Robin Mohr
  *
@@ -27,15 +27,15 @@ public final class QuicksortProblem extends AbstractDivideAndConquerProblem<Quic
 	 * @param numbers
 	 *            Array to be sorted
 	 */
-	public QuicksortProblem(final int low, final int high, final int[] numbers) {
+	public QuicksortProblem(final int low, final int high, final int... numbers) {
 		super();
 		this.low = low;
 		this.high = high;
 		this.numbers = numbers;
 	}
 
-	public QuicksortProblem(final int id, final int low, final int high, final int[] numbers) {
-		super(id);
+	public QuicksortProblem(final int identifier, final int low, final int high, final int... numbers) {
+		super(identifier);
 		this.low = low;
 		this.high = high;
 		this.numbers = numbers;
@@ -65,35 +65,33 @@ public final class QuicksortProblem extends AbstractDivideAndConquerProblem<Quic
 
 	@Override
 	public DividedDCProblem<QuicksortProblem> divide() {
-
-		// pick the pivot
-		final int middle = low + (high - low) / 2;
+		final int middle = low + (high - low) / 2; // pick the pivot
 		final int pivot = numbers[middle];
 
 		// make left < pivot and right > pivot
-		int i = low;
-		int j = high;
-		while (i <= j) {
-			while (numbers[i] < pivot) {
-				i++;
+		int lowPointer = low;
+		int highPointer = high;
+		while (lowPointer <= highPointer) {
+			while (numbers[lowPointer] < pivot) {
+				lowPointer++;
 			}
 
-			while (numbers[j] > pivot) {
-				j--;
+			while (numbers[highPointer] > pivot) {
+				highPointer--;
 			}
 
-			if (i <= j) {
-				int temp = numbers[i];
-				numbers[i] = numbers[j];
-				numbers[j] = temp;
-				i++;
-				j--;
+			if (lowPointer <= highPointer) {
+				int temp = numbers[lowPointer];
+				numbers[lowPointer] = numbers[highPointer];
+				numbers[highPointer] = temp;
+				lowPointer++;
+				highPointer--;
 			}
 		}
 		// recursively sort two sub parts
 		return new DividedDCProblem<QuicksortProblem>(
-				new QuicksortProblem(this.getID(), low, j, numbers),
-				new QuicksortProblem(this.getID(), i, high, numbers));
+				new QuicksortProblem(this.getID(), low, highPointer, numbers),
+				new QuicksortProblem(this.getID(), lowPointer, high, numbers));
 	}
 
 	@Override
