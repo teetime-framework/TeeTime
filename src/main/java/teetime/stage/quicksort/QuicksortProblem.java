@@ -95,7 +95,7 @@ public final class QuicksortProblem extends AbstractDivideAndConquerProblem<Quic
 	}
 
 	@Override
-	public QuicksortSolution solve() {
+	public QuicksortSolution baseSolve() {
 		return new QuicksortSolution(
 				this.getID(),
 				this.low,

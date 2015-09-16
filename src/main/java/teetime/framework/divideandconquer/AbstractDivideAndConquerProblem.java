@@ -59,6 +59,6 @@ public abstract class AbstractDivideAndConquerProblem<P, S> extends Identifiable
 	 * @return
 	 *         {@link teetime.framework.divideandconquer.AbstractDivideAndConquerSolution}
 	 */
-	public abstract S solve();
+	public abstract S baseSolve();
 
 }

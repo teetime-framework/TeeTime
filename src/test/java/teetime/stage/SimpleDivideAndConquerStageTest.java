@@ -10,7 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.framework.SimpleDivideAndConquerStage;
+import teetime.framework.divideandconquer.stages.DivideAndConquerSolveStage;
 import teetime.stage.quicksort.QuicksortProblem;
 import teetime.stage.quicksort.QuicksortSolution;
 
@@ -18,13 +18,13 @@ import teetime.stage.quicksort.QuicksortSolution;
  * @author Robin Mohr
  */
 public class SimpleDivideAndConquerStageTest {
-	SimpleDivideAndConquerStage<QuicksortProblem, QuicksortSolution> quicksortStage;
+	DivideAndConquerSolveStage<QuicksortProblem, QuicksortSolution> quicksortStage;
 	List<QuicksortSolution> solutions;
 	List<QuicksortProblem> problems;
 
 	@Before
 	public void initialize() {
-		quicksortStage = new SimpleDivideAndConquerStage<QuicksortProblem, QuicksortSolution>();
+		quicksortStage = new DivideAndConquerSolveStage<QuicksortProblem, QuicksortSolution>();
 
 		int[] numbers = new int[] { 3, 1, 4, 5, 2 };
 		QuicksortProblem problemOne = new QuicksortProblem(1, 0, numbers.length - 1, numbers);

@@ -64,12 +64,12 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 	@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
 	@Override
 	public void waitForStartSignal() throws InterruptedException {
-		// do nothing
+
 	}
 
 	@Override
 	public final void reportNewElement() {
-		// this.cachedTargetStage.executeStage();
+
 	}
 
 	@Override
@@ -110,18 +110,18 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 		if (null == element) {
 			throw new IllegalArgumentException("Parameter 'element' is null, but must be non-null.");
 		}
-		this.element = divideAndConquer((P) element);
+		this.element = solve((P) element);
 		// this.reportNewElement();
 		return true;
 	}
 
-	private S divideAndConquer(final P problem) {
+	private S solve(final P problem) {
 		if (problem.isBaseCase()) {
-			return problem.solve();
+			return problem.baseSolve();
 		} else {
 			DividedDCProblem<P> dividedProblem = problem.divide();
-			S firstSolution = divideAndConquer(dividedProblem.leftProblem); // recursive call
-			S secondSolution = divideAndConquer(dividedProblem.rightProblem); // recursive call
+			S firstSolution = solve(dividedProblem.leftProblem); // recursive call
+			S secondSolution = solve(dividedProblem.rightProblem); // recursive call
 			return firstSolution.combine(secondSolution);
 		}
 	}

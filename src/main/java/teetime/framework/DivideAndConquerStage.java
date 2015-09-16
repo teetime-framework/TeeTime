@@ -221,7 +221,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		if (problem != null) {
 			this.problemsReceived++;
 			if (problem.isBaseCase()) {
-				S solution = problem.solve();
+				S solution = problem.baseSolve();
 				this.getOutputPort().send(solution);
 				this.solutionsSent++;
 			} else {

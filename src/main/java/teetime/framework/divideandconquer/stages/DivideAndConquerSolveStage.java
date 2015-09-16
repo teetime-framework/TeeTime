@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.divideandconquer.stages;
 
+import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
 import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
 import teetime.framework.divideandconquer.DividedDCProblem;
@@ -30,12 +33,12 @@ import teetime.framework.divideandconquer.DividedDCProblem;
  * @param <S>
  *            type of elements that represent the solution to a problem.
  */
-public class SimpleDivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage {
+public class DivideAndConquerSolveStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage {
 
 	private final InputPort<P> inputPort = this.createInputPort();
 	private final OutputPort<S> outputPort = this.createOutputPort();
 
-	public SimpleDivideAndConquerStage() {
+	public DivideAndConquerSolveStage() {
 		super();
 	}
 
@@ -63,19 +66,19 @@ public class SimpleDivideAndConquerStage<P extends AbstractDivideAndConquerProbl
 	protected void execute() {
 		P inputProblem = this.getInputPort().receive();
 		if (inputProblem != null) {
-			this.getOutputPort().send(this.divideAndConquer(inputProblem));
+			this.getOutputPort().send(this.solve(inputProblem));
 		} else {
 			returnNoElement();
 		}
 	}
 
-	private S divideAndConquer(final P problem) {
+	private S solve(final P problem) {
 		if (problem.isBaseCase()) {
-			return problem.solve();
+			return problem.baseSolve();
 		} else {
 			DividedDCProblem<P> dividedProblem = problem.divide();
-			S firstSolution = divideAndConquer(dividedProblem.leftProblem); // recursive call
-			S secondSolution = divideAndConquer(dividedProblem.rightProblem); // recursive call
+			S firstSolution = solve(dividedProblem.leftProblem); // recursive call
+			S secondSolution = solve(dividedProblem.rightProblem); // recursive call
 			return firstSolution.combine(secondSolution);
 		}
 	}

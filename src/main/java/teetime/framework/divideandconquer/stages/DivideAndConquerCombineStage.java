@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.divideandconquer.stages;
 
+import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
 import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
 
@@ -32,7 +35,7 @@ import com.carrotsearch.hppc.IntObjectMap;
  * @param <S>
  *            type of elements that represent the solution to a problem.
  */
-public class CombineStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage {
+public class DivideAndConquerCombineStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage {
 
 	private final IntObjectMap<S> solutionBuffer = new IntObjectHashMap<S>();
 
@@ -40,7 +43,7 @@ public class CombineStage<P extends AbstractDivideAndConquerProblem<P, S>, S ext
 	private final InputPort<S> secondInputPort = this.createInputPort();
 	private final OutputPort<S> outputPort = this.createOutputPort();
 
-	public CombineStage() {
+	public DivideAndConquerCombineStage() {
 		super();
 	}
 

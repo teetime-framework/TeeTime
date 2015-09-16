@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.divideandconquer.stages;
 
+import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
 import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
 import teetime.framework.divideandconquer.DividedDCProblem;
@@ -30,13 +33,13 @@ import teetime.framework.divideandconquer.DividedDCProblem;
  * @param <S>
  *            type of elements that represent the solution to a problem.
  */
-public class DivideStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage {
+public class DivideAndConquerDivideStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage {
 
 	private final InputPort<P> inputPort = this.createInputPort();
 	private final OutputPort<P> firstOutputPort = this.createOutputPort();
 	private final OutputPort<P> secondOutputPort = this.createOutputPort();
 
-	public DivideStage() {
+	public DivideAndConquerDivideStage() {
 		super();
 	}
 

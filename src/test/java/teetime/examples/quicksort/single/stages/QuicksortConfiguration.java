@@ -2,10 +2,10 @@ package teetime.examples.quicksort.single.stages;
 
 import java.util.List;
 
-import teetime.framework.CombineStage;
 import teetime.framework.Configuration;
-import teetime.framework.DivideStage;
-import teetime.framework.SimpleDivideAndConquerStage;
+import teetime.framework.divideandconquer.stages.DivideAndConquerCombineStage;
+import teetime.framework.divideandconquer.stages.DivideAndConquerDivideStage;
+import teetime.framework.divideandconquer.stages.DivideAndConquerSolveStage;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.quicksort.QuicksortProblem;
@@ -16,10 +16,10 @@ public class QuicksortConfiguration extends Configuration {
 	public QuicksortConfiguration(final List<QuicksortProblem> inputs, final List<QuicksortSolution> results) {
 		// set up stages
 		InitialElementProducer<QuicksortProblem> initialElementProducer = new InitialElementProducer<QuicksortProblem>(inputs);
-		DivideStage<QuicksortProblem, QuicksortSolution> divide = new DivideStage<QuicksortProblem, QuicksortSolution>();
-		SimpleDivideAndConquerStage<QuicksortProblem, QuicksortSolution> solveOne = new SimpleDivideAndConquerStage<QuicksortProblem, QuicksortSolution>();
-		SimpleDivideAndConquerStage<QuicksortProblem, QuicksortSolution> solveTwo = new SimpleDivideAndConquerStage<QuicksortProblem, QuicksortSolution>();
-		CombineStage<QuicksortProblem, QuicksortSolution> combine = new CombineStage<QuicksortProblem, QuicksortSolution>();
+		DivideAndConquerDivideStage<QuicksortProblem, QuicksortSolution> divide = new DivideAndConquerDivideStage<QuicksortProblem, QuicksortSolution>();
+		DivideAndConquerSolveStage<QuicksortProblem, QuicksortSolution> solveOne = new DivideAndConquerSolveStage<QuicksortProblem, QuicksortSolution>();
+		DivideAndConquerSolveStage<QuicksortProblem, QuicksortSolution> solveTwo = new DivideAndConquerSolveStage<QuicksortProblem, QuicksortSolution>();
+		DivideAndConquerCombineStage<QuicksortProblem, QuicksortSolution> combine = new DivideAndConquerCombineStage<QuicksortProblem, QuicksortSolution>();
 		CollectorSink<QuicksortSolution> collectorSink = new CollectorSink<QuicksortSolution>(results);
 		this.declareActive(divide);
 		this.declareActive(solveOne);
