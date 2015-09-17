@@ -26,6 +26,11 @@ import teetime.framework.signal.StartingSignal;
  *
  */
 public class DivideAndConquerStageFactory {
+
+	private enum parallelismMode {
+		ALL, DIVIDE, COMBINE
+	};
+
 	private DivideAndConquerStageFactory() {}
 
 	/**
