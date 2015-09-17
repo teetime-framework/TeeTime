@@ -25,20 +25,20 @@ import teetime.framework.signal.StartingSignal;
  * @author Robin Mohr
  *
  */
-public class DivideAndConquerStageCopier {
-	private DivideAndConquerStageCopier() {}
+public class DivideAndConquerStageFactory {
+	private DivideAndConquerStageFactory() {}
 
 	/**
-	 * This inner class is used for thread-safe initialization of the {@link teetime.framework.divideandconquer.DivideAndConquerStageCopier}
+	 * This inner class is used for thread-safe initialization of the {@link teetime.framework.divideandconquer.DivideAndConquerStageFactory}
 	 */
 	private static class Initialization {
-		private static final DivideAndConquerStageCopier INSTANCE = new DivideAndConquerStageCopier();
+		private static final DivideAndConquerStageFactory INSTANCE = new DivideAndConquerStageFactory();
 	}
 
 	/**
 	 * Returns the instance or creates a new one if none is present.
 	 */
-	public static DivideAndConquerStageCopier getInstance() {
+	public static DivideAndConquerStageFactory getInstance() {
 		return Initialization.INSTANCE;
 	}
 

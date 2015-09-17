@@ -73,7 +73,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	 * @param threshold
 	 *            Number of new threads to create.
 	 */
-	protected void setThreshold(final int threshold) {
+	public void setThreshold(final int threshold) {
 		this.threshold = threshold;
 	}
 
@@ -241,8 +241,8 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	 *
 	 */
 	private void createCopies() {
-		DivideAndConquerStageCopier.getInstance().makeCopy(leftOutputPort, leftInputPort, this);
-		DivideAndConquerStageCopier.getInstance().makeCopy(rightOutputPort, rightInputPort, this);
+		DivideAndConquerStageFactory.getInstance().makeCopy(leftOutputPort, leftInputPort, this);
+		DivideAndConquerStageFactory.getInstance().makeCopy(rightOutputPort, rightInputPort, this);
 		if (this.inputPort.isClosed()) {
 			this.leftOutputPort.sendSignal(new TerminatingSignal());
 			this.rightOutputPort.sendSignal(new TerminatingSignal());

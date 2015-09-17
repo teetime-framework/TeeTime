@@ -17,6 +17,7 @@ public class QuicksortConfiguration extends Configuration {
 		DivideAndConquerStage<QuicksortProblem, QuicksortSolution> quicksortStage = new DivideAndConquerStage<QuicksortProblem, QuicksortSolution>();
 		CollectorSink<QuicksortSolution> collectorSink = new CollectorSink<QuicksortSolution>(results);
 		this.declareActive(quicksortStage);
+		quicksortStage.setThreshold(2); // set parallelism level to 2
 
 		// connect ports
 		connectPorts(initialElementProducer.getOutputPort(), quicksortStage.getInputPort());
