@@ -51,7 +51,7 @@
 		<links>
 			<item name="News" href="news.html" />
 			<item name="Download" href="download.html" />
-			<item name="Wiki" href="wiki/" />
+			<item name="Wiki" href="wiki/home.html" />
 		</links>
 		<menu name="Documentation">
 			<item name="JavaDoc" href="http://teetime.sourceforge.net/stabledocs/index.html" />
@@ -70,7 +70,7 @@
 			<item name="Home" href="index.html" />
 			<item name="News" href="news.html" />
 			<item name="Download" href="download.html" />
-			<item name="Wiki" href="wiki/" />
+			<item name="Wiki" href="wiki/home.html" />
 		</menu>
 		<!-- <menu ref="modules"/> -->
 		<!-- <menu ref="reports"/> -->
