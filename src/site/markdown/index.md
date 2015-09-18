@@ -58,7 +58,7 @@ To make working with TeeTime as pleasant and efficient as possible, this homepag
 
 You can take a closer look at:
 
-- [TeeTime's Wiki](wiki/), or 
+- [TeeTime's Wiki](wiki/home.html), or 
 
 - [API Documentation](stabledocs/index.html). 
 
