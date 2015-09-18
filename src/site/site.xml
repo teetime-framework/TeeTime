@@ -61,7 +61,7 @@
 		</menu>
 		<menu name="Get Involved">
 			<item name="Contribute" href="contribute.html" />
-			<item name="SourceForge Project Site" href="https://sourceforge.net/projects/teetime/" />
+			<item name="Visit us on GitHub" href="https://github.com/ChristianWulf/teetime/" />
 			<item name="Issue Tracking"
 				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/issues" />
 			<item name="Team" href="team-list.html" />
