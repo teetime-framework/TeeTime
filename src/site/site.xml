@@ -4,7 +4,6 @@
 		<artifactId>reflow-maven-skin</artifactId>
 		<version>1.1.1</version>
 	</skin>
-
 	<bannerLeft>
 		<name>
 			<![CDATA[
@@ -79,6 +78,7 @@
 	<version position="none" />
 	<custom>
 		<reflowSkin>
+	<localResources>true</localResources>
 			<topNav>News|Download|Wiki|Documentation|Get Involved</topNav>
 			<!-- <toc>sidebar</toc> -->
 			<!-- <tocTopMax>4</tocTopMax> -->
