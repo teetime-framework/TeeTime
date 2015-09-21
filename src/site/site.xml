@@ -137,7 +137,7 @@
 				</release>
 				<download>
 					<toc>top</toc>
-					<tocTopMax>4</tocTopMax>
+					<tocTopMax>5</tocTopMax>
 				</download>
 				<contribute>
 					<highlightJs>false</highlightJs>
