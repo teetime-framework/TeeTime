@@ -12,3 +12,7 @@ body {
 	color: #7E7E7E;
 	margin-top: 0.5em;
 }
+
+.dropdown-backdrop{
+position: static;
+}

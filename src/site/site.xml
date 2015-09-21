@@ -151,22 +151,6 @@
 					<tocTopMax>4</tocTopMax>
 				</wiki-home>
 			</pages>
-			<endContent>
-				<script>
-					!function ($) {
-					$(function(){
-					// Fix for dropdowns on mobile devices
-					$('body').on('touchstart.dropdown', '.dropdown-menu', function (e)
-					{
-					e.stopPropagation();
-					});
-					$(document).on('click','.dropdown-menu a',function(){
-					document.location = $(this).attr('href');
-					});
-					})
-					}(window.jQuery)
-				</script>
-			</endContent>
 		</reflowSkin>
 	</custom>
 </project>
