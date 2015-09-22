@@ -121,7 +121,7 @@ public abstract class Stage {
 		} catch (TerminateException e) {
 			throw e;
 		} catch (Exception e) {
-			final FurtherExecution furtherExecution = this.exceptionListener.onStageException(e, this);
+			final FurtherExecution furtherExecution = this.exceptionListener.reportException(e, this);
 			if (furtherExecution == FurtherExecution.TERMINATE) {
 				throw TerminateException.INSTANCE;
 			}
