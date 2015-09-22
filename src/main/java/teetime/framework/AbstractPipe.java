@@ -26,7 +26,7 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	 * this.getPipe().getTargetPort().getOwningStage()
 	 * </pre>
 	 */
-	protected final Stage cachedTargetStage;
+	protected final AbstractStage cachedTargetStage;
 
 	private final OutputPort<? extends T> sourcePort;
 	private final InputPort<T> targetPort;

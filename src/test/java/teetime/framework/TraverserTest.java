@@ -45,7 +45,7 @@ public class TraverserTest {
 		Traverser traversor = new Traverser(new IntraStageCollector(tc.init));
 		traversor.traverse(tc.init);
 
-		Set<Stage> comparingStages = new HashSet<Stage>();
+		Set<AbstractStage> comparingStages = new HashSet<AbstractStage>();
 		comparingStages.add(tc.init);
 		comparingStages.add(tc.f2b);
 		comparingStages.add(tc.distributor);

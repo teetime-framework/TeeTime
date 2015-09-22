@@ -40,9 +40,9 @@ class ExecutionInstantiation {
 
 	void instantiatePipes() {
 		int color = DEFAULT_COLOR;
-		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
-		Set<Stage> threadableStages = context.getThreadableStages();
-		for (Stage threadableStage : threadableStages) {
+		Map<AbstractStage, Integer> colors = new HashMap<AbstractStage, Integer>();
+		Set<AbstractStage> threadableStages = context.getThreadableStages();
+		for (AbstractStage threadableStage : threadableStages) {
 			color++;
 			colors.put(threadableStage, color);
 
@@ -53,18 +53,18 @@ class ExecutionInstantiation {
 
 	private static class ThreadPainter {
 
-		private final Map<Stage, Integer> colors;
+		private final Map<AbstractStage, Integer> colors;
 		private final int color;
-		private final Set<Stage> threadableStages;
+		private final Set<AbstractStage> threadableStages;
 
-		public ThreadPainter(final Map<Stage, Integer> colors, final int color, final Set<Stage> threadableStages) {
+		public ThreadPainter(final Map<AbstractStage, Integer> colors, final int color, final Set<AbstractStage> threadableStages) {
 			super();
 			this.colors = colors;
 			this.color = color;
 			this.threadableStages = threadableStages;
 		}
 
-		public int colorAndConnectStages(final Stage stage) {
+		public int colorAndConnectStages(final AbstractStage stage) {
 			int createdConnections = 0;
 
 			for (OutputPort<?> outputPort : stage.getOutputPorts()) {
@@ -82,7 +82,7 @@ class ExecutionInstantiation {
 		private int processPipe(final OutputPort outputPort, final InstantiationPipe pipe) {
 			int numCreatedConnections;
 
-			Stage targetStage = pipe.getTargetPort().getOwningStage();
+			AbstractStage targetStage = pipe.getTargetPort().getOwningStage();
 			int targetColor = colors.containsKey(targetStage) ? colors.get(targetStage) : DEFAULT_COLOR;
 
 			if (threadableStages.contains(targetStage) && targetColor != color) {

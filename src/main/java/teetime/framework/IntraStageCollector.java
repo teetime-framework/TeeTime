@@ -20,15 +20,15 @@ import teetime.framework.pipe.DummyPipe;
 
 public class IntraStageCollector implements ITraverserVisitor {
 
-	private final Stage startStage;
+	private final AbstractStage startStage;
 
-	public IntraStageCollector(final Stage startStage) {
+	public IntraStageCollector(final AbstractStage startStage) {
 		super();
 		this.startStage = startStage;
 	}
 
 	@Override
-	public VisitorBehavior visit(final Stage stage) {
+	public VisitorBehavior visit(final AbstractStage stage) {
 		if (stage == startStage || stage.getOwningThread() == null /* before execution */
 				|| stage.getOwningThread() == startStage.getOwningThread() /* while execution */) {
 			return VisitorBehavior.CONTINUE;

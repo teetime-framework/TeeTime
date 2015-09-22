@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import teetime.framework.InputPort;
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 import teetime.framework.validation.InvalidPortConnection;
 
 public final class ValidatingSignal implements ISignal {
@@ -28,7 +28,7 @@ public final class ValidatingSignal implements ISignal {
 	private final List<InvalidPortConnection> invalidPortConnections = new LinkedList<InvalidPortConnection>();
 
 	@Override
-	public void trigger(final Stage stage) {
+	public void trigger(final AbstractStage stage) {
 		stage.onValidating(this.invalidPortConnections);
 	}
 

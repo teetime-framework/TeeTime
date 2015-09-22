@@ -33,7 +33,7 @@ public abstract class Configuration extends AbstractCompositeStage {
 
 	private boolean initialized;
 	private boolean executed;
-	private Stage startStage;
+	private AbstractStage startStage;
 
 	protected Configuration() {
 		this(new TerminatingExceptionListenerFactory());
@@ -84,7 +84,7 @@ public abstract class Configuration extends AbstractCompositeStage {
 		return context;
 	}
 
-	Stage getStartStage() {
+	AbstractStage getStartStage() {
 		return startStage;
 	}
 

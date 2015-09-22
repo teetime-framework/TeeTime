@@ -15,7 +15,7 @@
  */
 package teetime.framework.exceptionHandling;
 
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
 class IgnoringExceptionListener extends AbstractExceptionListener {
 
@@ -24,7 +24,7 @@ class IgnoringExceptionListener extends AbstractExceptionListener {
 	}
 
 	@Override
-	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {
+	public FurtherExecution onStageException(final Exception e, final AbstractStage throwingStage) {
 		return FurtherExecution.CONTINUE;
 	}
 }

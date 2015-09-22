@@ -29,11 +29,11 @@ import teetime.stage.Cache;
 import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
 
-public class StageTest {
+public class AbstractStageTest {
 
 	@Test
 	public void testId() {
-		Stage.clearInstanceCounters();
+		AbstractStage.clearInstanceCounters();
 
 		Counter<Object> counter0 = new Counter<Object>();
 		Counter<Object> counter1 = new Counter<Object>();
@@ -77,8 +77,6 @@ public class StageTest {
 
 		private final long delayInMs;
 
-		public boolean finished;
-
 		public DelayAndTerminate(final long delayInMs) {
 			super();
 			this.delayInMs = delayInMs;
@@ -89,8 +87,8 @@ public class StageTest {
 			try {
 				Thread.sleep(delayInMs);
 			} catch (InterruptedException e) {
+				throw new IllegalStateException(e);
 			}
-			finished = true;
 		}
 
 	}

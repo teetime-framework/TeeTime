@@ -21,12 +21,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
 /**
  * Represents a minimalistic StageExceptionListener.
  * Listener which extend from this one, must a least implement this functionality.
- * This abstract class provides a Logger {@link #logger} and the method {@link #onStageException(Exception, Stage)} which is called on every raised exception.
+ * This abstract class provides a Logger {@link #logger} and the method {@link #onStageException(Exception, AbstractStage)} which is called on every raised exception.
  */
 public abstract class AbstractExceptionListener {
 
@@ -57,13 +57,13 @@ public abstract class AbstractExceptionListener {
 	 * @return
 	 * 		true, if the thread should be terminated, false otherwise
 	 */
-	public abstract FurtherExecution onStageException(Exception e, Stage throwingStage);
+	public abstract FurtherExecution onStageException(Exception e, AbstractStage throwingStage);
 
 	public List<Exception> getLoggedExceptions() {
 		return exceptionsList;
 	}
 
-	public FurtherExecution reportException(final Exception e, final Stage stage) {
+	public FurtherExecution reportException(final Exception e, final AbstractStage stage) {
 		if (logExceptions) {
 			exceptionsList.add(e);
 		}

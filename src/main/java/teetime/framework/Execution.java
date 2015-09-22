@@ -76,8 +76,8 @@ public final class Execution<T extends Configuration> {
 
 	// BETTER validate concurrently
 	private void validateStages() {
-		final Set<Stage> threadableStages = configurationContext.getThreadableStages();
-		for (Stage stage : threadableStages) {
+		final Set<AbstractStage> threadableStages = configurationContext.getThreadableStages();
+		for (AbstractStage stage : threadableStages) {
 			// // portConnectionValidator.validate(stage);
 			// }
 

@@ -15,9 +15,9 @@
  */
 package teetime.util.framework.port;
 
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
-public interface PortAction<T extends Stage> {
+public interface PortAction<T extends AbstractStage> {
 
 	public abstract void execute(final T stage);
 

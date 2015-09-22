@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Set;
 
 import teetime.framework.InputPort;
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
 public final class TerminatingSignal implements ISignal {
 
 	@Override
-	public void trigger(final Stage stage) throws Exception {
+	public void trigger(final AbstractStage stage) throws Exception {
 		stage.onTerminating();
 	}
 

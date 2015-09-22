@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.Set;
 
 import teetime.framework.InputPort;
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
 public interface ISignal {
 
-	void trigger(Stage stage) throws Exception;
+	void trigger(AbstractStage stage) throws Exception;
 
 	// Only used by the merger so far
 	boolean mayBeTriggered(Set<InputPort<?>> receivedInputPorts, List<InputPort<?>> allInputPorts);

@@ -20,14 +20,165 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import teetime.framework.exceptionHandling.AbstractExceptionListener;
+import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExecution;
+import teetime.framework.exceptionHandling.TerminateException;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.validation.InvalidPortConnection;
 import teetime.util.framework.port.PortList;
 import teetime.util.framework.port.PortRemovedListener;
 
-public abstract class AbstractStage extends Stage {
+/**
+ * Represents a minimal Stage, with some pre-defined methods.
+ * Implemented stages need to adapt all abstract methods with own implementations.
+ */
+@SuppressWarnings("PMD.AbstractNaming")
+public abstract class AbstractStage {
+
+	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
+	private static final NotEnoughInputException NOT_ENOUGH_INPUT_EXCEPTION = new NotEnoughInputException();
+
+	private final String id;
+	/**
+	 * A unique logger instance per stage instance
+	 */
+	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
+	protected final Logger logger;
+
+	protected AbstractExceptionListener exceptionListener;
+
+	/** The owning thread of this stage if this stage is directly executed by a {@link AbstractRunnableStage}, <code>null</code> otherwise. */
+	private Thread owningThread;
+
+	private boolean isActive;
+
+	private ConfigurationContext owningContext;
+
+	ConfigurationContext getOwningContext() {
+		return owningContext;
+	}
+
+	void setOwningContext(final ConfigurationContext owningContext) {
+		this.owningContext = owningContext;
+	}
+
+	protected AbstractStage() {
+		this.id = this.createId();
+		this.logger = LoggerFactory.getLogger(this.getClass().getCanonicalName() + ":" + id);
+	}
+
+	/**
+	 * @return an identifier that is unique among all stage instances. It is especially unique among all instances of the same stage type.
+	 */
+	public String getId() {
+		return this.id;
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getName() + ": " + this.getId();
+	}
+
+	private String createId() {
+		String simpleName = this.getClass().getSimpleName();
+
+		Integer numInstances = INSTANCES_COUNTER.get(simpleName);
+		if (null == numInstances) {
+			numInstances = 0;
+		}
+
+		String newId = simpleName + "-" + numInstances;
+		INSTANCES_COUNTER.put(simpleName, ++numInstances);
+		return newId;
+	}
+
+	@SuppressWarnings("PMD.DefaultPackage")
+	static void clearInstanceCounters() {
+		INSTANCES_COUNTER.clear();
+	}
+
+	// public abstract Stage getParentStage();
+	//
+	// public abstract void setParentStage(Stage parentStage, int index);
+
+	protected final void returnNoElement() {
+		throw NOT_ENOUGH_INPUT_EXCEPTION;
+	}
+
+	protected final void executeStage() {
+		try {
+			this.execute();
+		} catch (NotEnoughInputException e) {
+			throw e;
+		} catch (TerminateException e) {
+			throw e;
+		} catch (Exception e) {
+			final FurtherExecution furtherExecution = this.exceptionListener.reportException(e, this);
+			if (furtherExecution == FurtherExecution.TERMINATE) {
+				throw TerminateException.INSTANCE;
+			}
+		}
+	}
+
+	protected abstract void execute();
+
+	public Thread getOwningThread() {
+		return owningThread;
+	}
+
+	void setOwningThread(final Thread owningThread) {
+		if (this.owningThread != null && this.owningThread != owningThread) {
+			// checks also for "crossing threads"
+			// throw new IllegalStateException("Attribute owningThread was set twice each with another thread");
+		}
+		this.owningThread = owningThread;
+	}
+
+	// events
+
+	protected final void setExceptionHandler(final AbstractExceptionListener exceptionHandler) {
+		this.exceptionListener = exceptionHandler;
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	void setActive(final boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	/**
+	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
+	 *
+	 * @param stage
+	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
+	 */
+	public void declareActive() {
+		declareActive(getId());
+	}
+
+	/**
+	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
+	 *
+	 * @param stage
+	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
+	 * @param threadName
+	 *            A string which can be used for debugging.
+	 */
+	public void declareActive(final String threadName) {
+		AbstractRunnableStage runnable = AbstractRunnableStage.create(this);
+		Thread newThread = new TeeTimeThread(runnable, threadName);
+		this.setOwningThread(newThread);
+		this.setActive(true);
+	}
 
 	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
 	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
@@ -36,17 +187,14 @@ public abstract class AbstractStage extends Stage {
 	private final PortList<OutputPort<?>> outputPorts = new PortList<OutputPort<?>>();
 	private volatile StageState currentState = StageState.CREATED;
 
-	@Override
 	protected List<InputPort<?>> getInputPorts() {
 		return inputPorts.getOpenedPorts(); // TODO consider to publish a read-only version
 	}
 
-	@Override
 	protected List<OutputPort<?>> getOutputPorts() {
 		return outputPorts.getOpenedPorts(); // TODO consider to publish a read-only version
 	}
 
-	@Override
 	public StageState getCurrentState() {
 		return currentState;
 	}
@@ -55,7 +203,6 @@ public abstract class AbstractStage extends Stage {
 	 * May not be invoked outside of IPipe implementations
 	 */
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-	@Override
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		Class<? extends ISignal> signalClass = signal.getClass();
 
@@ -113,20 +260,24 @@ public abstract class AbstractStage extends Stage {
 		}
 	}
 
-	@Override
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
 		this.validateOutputPorts(invalidPortConnections);
 		changeState(StageState.VALIDATED);
 	}
 
+	/**
+	 * Event that is triggered within the initialization phase of the analysis.
+	 * It does not count to the execution time.
+	 *
+	 * @throws Exception
+	 *             an arbitrary exception if an error occurs during the initialization
+	 */
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
-	@Override
 	public void onStarting() throws Exception {
 		changeState(StageState.STARTED);
 	}
 
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
-	@Override
 	public void onTerminating() throws Exception {
 		changeState(StageState.TERMINATED);
 	}
@@ -255,8 +406,13 @@ public abstract class AbstractStage extends Stage {
 		return outputPort;
 	}
 
+	/**
+	 * This should check, if the OutputPorts are connected correctly. This is needed to avoid NullPointerExceptions and other errors.
+	 *
+	 * @param invalidPortConnections
+	 *            <i>(Passed as parameter for performance reasons)</i>
+	 */
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-	@Override
 	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
 		for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
 			final IPipe<?> pipe = outputPort.getPipe();
@@ -270,23 +426,19 @@ public abstract class AbstractStage extends Stage {
 		}
 	}
 
-	@Override
 	protected void terminate() {
 		changeState(StageState.TERMINATING);
 	}
 
-	@Override
 	protected void abort() {
 		this.terminate();
 		this.getOwningThread().interrupt();
 	};
 
-	@Override
 	protected boolean shouldBeTerminated() {
 		return (getCurrentState() == StageState.TERMINATING);
 	}
 
-	@Override
 	protected TerminationStrategy getTerminationStrategy() {
 		return TerminationStrategy.BY_SIGNAL;
 	}
@@ -303,7 +455,6 @@ public abstract class AbstractStage extends Stage {
 	// return inputPort;
 	// }
 
-	@Override
 	protected void removeDynamicPort(final OutputPort<?> outputPort) {
 		outputPorts.remove(outputPort); // TODO update setIndex IF it is still used
 	}
@@ -312,7 +463,6 @@ public abstract class AbstractStage extends Stage {
 		outputPorts.addPortRemovedListener(outputPortRemovedListener);
 	}
 
-	@Override
 	protected void removeDynamicPort(final InputPort<?> inputPort) {
 		inputPorts.remove(inputPort); // TODO update setIndex IF it is still used
 	}

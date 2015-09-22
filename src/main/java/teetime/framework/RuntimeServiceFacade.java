@@ -23,7 +23,7 @@ public final class RuntimeServiceFacade {
 		// singleton
 	}
 
-	public void startWithinNewThread(final Stage previousStage, final Stage stage) {
+	public void startWithinNewThread(final AbstractStage previousStage, final AbstractStage stage) {
 		previousStage.getOwningContext().getThreadService().startStageAtRuntime(stage);
 	}
 

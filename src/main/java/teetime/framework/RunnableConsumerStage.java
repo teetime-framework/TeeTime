@@ -26,7 +26,7 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	 * @param stage
 	 *            to execute within an own thread
 	 */
-	public RunnableConsumerStage(final Stage stage) {
+	public RunnableConsumerStage(final AbstractStage stage) {
 		super(stage);
 	}
 
@@ -47,7 +47,7 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 		}
 	}
 
-	private void checkForTerminationSignal(final Stage stage) {
+	private void checkForTerminationSignal(final AbstractStage stage) {
 		// FIXME should getInputPorts() really be defined in Stage?
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			if (inputPort.isClosed()) {

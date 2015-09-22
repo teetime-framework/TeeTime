@@ -18,7 +18,7 @@ package teetime.framework.exceptionHandling;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
 class TerminatingExceptionListener extends AbstractExceptionListener {
 
@@ -29,7 +29,7 @@ class TerminatingExceptionListener extends AbstractExceptionListener {
 	}
 
 	@Override
-	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {
+	public FurtherExecution onStageException(final Exception e, final AbstractStage throwingStage) {
 		if (logger.isWarnEnabled()) {
 			logger.warn("Exception occurred in " + throwingStage.getId(), e);
 		}

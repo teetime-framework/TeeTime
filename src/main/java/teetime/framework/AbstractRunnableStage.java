@@ -31,13 +31,13 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	private final StopWatch stopWatch = new StopWatch();
 
-	protected final Stage stage;
+	protected final AbstractStage stage;
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
-	public static final Map<Stage, Long> durationsInNs = Collections.synchronizedMap(new LinkedHashMap<Stage, Long>());
+	public static final Map<AbstractStage, Long> durationsInNs = Collections.synchronizedMap(new LinkedHashMap<AbstractStage, Long>());
 
-	protected AbstractRunnableStage(final Stage stage) {
+	protected AbstractRunnableStage(final AbstractStage stage) {
 		if (stage == null) {
 			throw new IllegalArgumentException("Argument stage may not be null");
 		}
@@ -48,7 +48,7 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	@Override
 	public final void run() {
-		final Stage stage = this.stage; // should prevent the stage to be reloaded after a volatile read
+		final AbstractStage stage = this.stage; // should prevent the stage to be reloaded after a volatile read
 		final Logger logger = this.logger; // should prevent the logger to be reloaded after a volatile read
 
 		logger.debug("Executing runnable stage...");
@@ -96,7 +96,7 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	protected abstract void afterStageExecution();
 
-	static AbstractRunnableStage create(final Stage stage) {
+	static AbstractRunnableStage create(final AbstractStage stage) {
 		if (stage.getInputPorts().size() > 0) {
 			return new RunnableConsumerStage(stage);
 		} else {

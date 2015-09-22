@@ -19,7 +19,7 @@ import java.util.Set;
 
 /**
  * Represents a context that is used by a configuration and composite stages to connect ports, for example.
- * Stages can be added by executing {@link #declareActive(Stage)}.
+ * Stages can be added by executing {@link #declareActive(AbstractStage)}.
  *
  * @since 2.0
  */
@@ -37,7 +37,7 @@ final class ConfigurationContext {
 		this.threadService = new ThreadService(configuration);
 	}
 
-	Set<Stage> getThreadableStages() {
+	Set<AbstractStage> getThreadableStages() {
 		return threadService.getThreadableStages();
 	}
 

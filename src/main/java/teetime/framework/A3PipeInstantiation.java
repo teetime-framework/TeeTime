@@ -44,7 +44,7 @@ class A3PipeInstantiation implements ITraverserVisitor {
 	private final Set<IPipe<?>> visitedPipes = new HashSet<IPipe<?>>();
 
 	@Override
-	public VisitorBehavior visit(final Stage stage) {
+	public VisitorBehavior visit(final AbstractStage stage) {
 		return VisitorBehavior.CONTINUE;
 	}
 

@@ -23,21 +23,21 @@ import java.util.Set;
 class A4StageAttributeSetter {
 
 	private final Configuration configuration;
-	private final Set<Stage> threadableStages;
+	private final Set<AbstractStage> threadableStages;
 
-	public A4StageAttributeSetter(final Configuration configuration, final Set<Stage> threadableStages) {
+	public A4StageAttributeSetter(final Configuration configuration, final Set<AbstractStage> threadableStages) {
 		super();
 		this.configuration = configuration;
 		this.threadableStages = threadableStages;
 	}
 
 	public void setAttributes() {
-		for (Stage threadableStage : threadableStages) {
+		for (AbstractStage threadableStage : threadableStages) {
 			setAttributes(threadableStage);
 		}
 	}
 
-	private void setAttributes(final Stage threadableStage) {
+	private void setAttributes(final AbstractStage threadableStage) {
 		IntraStageCollector visitor = new IntraStageCollector(threadableStage);
 		Traverser traverser = new Traverser(visitor);
 		traverser.traverse(threadableStage);
@@ -45,12 +45,12 @@ class A4StageAttributeSetter {
 		setAttributes(threadableStage, traverser.getVisitedStages());
 	}
 
-	private void setAttributes(final Stage threadableStage, final Set<Stage> intraStages) {
+	private void setAttributes(final AbstractStage threadableStage, final Set<AbstractStage> intraStages) {
 		threadableStage.setExceptionHandler(configuration.getFactory().createInstance(threadableStage.getOwningThread()));
 		// threadableStage.setOwningThread(owningThread);
 		threadableStage.setOwningContext(configuration.getContext());
 
-		for (Stage stage : intraStages) {
+		for (AbstractStage stage : intraStages) {
 			stage.setExceptionHandler(threadableStage.exceptionListener);
 			stage.setOwningThread(threadableStage.getOwningThread());
 			stage.setOwningContext(threadableStage.getOwningContext());

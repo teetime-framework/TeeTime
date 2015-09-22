@@ -28,7 +28,7 @@ import org.junit.Test;
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
 import teetime.framework.OutputPort;
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.util.framework.port.PortAction;
@@ -117,7 +117,7 @@ public class DynamicDistributorTest {
 	}
 
 	private void assertValuesForIndex(final PortAction<DynamicDistributor<Integer>> ia, final List<Integer> values) {
-		Stage stage = ((CreatePortAction<Integer>) ia).getInputPort().getOwningStage();
+		AbstractStage stage = ((CreatePortAction<Integer>) ia).getInputPort().getOwningStage();
 
 		@SuppressWarnings("unchecked")
 		CollectorSink<Integer> collectorSink = (CollectorSink<Integer>) stage;

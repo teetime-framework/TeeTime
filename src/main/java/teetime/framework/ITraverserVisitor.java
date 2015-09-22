@@ -20,7 +20,7 @@ import teetime.framework.pipe.DummyPipe;
 
 public interface ITraverserVisitor {
 
-	VisitorBehavior visit(Stage stage);
+	VisitorBehavior visit(AbstractStage stage);
 
 	VisitorBehavior visit(AbstractPort<?> port);
 

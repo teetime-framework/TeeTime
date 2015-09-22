@@ -15,7 +15,7 @@
  */
 package teetime.framework.exceptionHandling;
 
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
 public class TestListener extends AbstractExceptionListener {
 
@@ -26,7 +26,7 @@ public class TestListener extends AbstractExceptionListener {
 	private int numExceptionsInvoked;
 
 	@Override
-	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {
+	public FurtherExecution onStageException(final Exception e, final AbstractStage throwingStage) {
 		numExceptionsInvoked++;
 		if (numExceptionsInvoked == 2) {
 			return FurtherExecution.TERMINATE;
