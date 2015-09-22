@@ -18,11 +18,37 @@ package teetime.stage;
 import teetime.framework.AbstractProducerStage;
 import teetime.framework.TerminationStrategy;
 
+/**
+ * This stage sends the current timestamp repeatedly with a given interval delay of {@link #intervalDelayInMs}.
+ *
+ * @stage.sketch
+ *
+ * 				<pre>
+ * +------------------------+
+ * |                        |
+ * |                      +---+
+ * |      *INTERVAL* +--&gt; |   |
+ * |                      +---+
+ * |                        |
+ * +------------------------+
+ *               </pre>
+ *
+ * @author Nelson Tavares de Sousa
+ *
+ * @stage.output Current timestamp as long.
+ *
+ */
 public final class Clock extends AbstractProducerStage<Long> {
 
 	private boolean initialDelayExceeded = false;
 
+	/**
+	 * Waiting time span until first sent element.
+	 */
 	private long initialDelayInMs;
+	/**
+	 * Interval between two sent elements in ms.
+	 */
 	private long intervalDelayInMs;
 
 	@Override

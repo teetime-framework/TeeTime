@@ -190,6 +190,25 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${javadoc.version}</version>
+				<configuration>
+					<tags>
+						<tag>
+							<name>stage.input</name>
+							<placement>t</placement>
+							<head>Stage input:</head>
+						</tag>
+						<tag>
+							<name>stage.output</name>
+							<placement>t</placement>
+							<head>Stage output:</head>
+						</tag>
+						<tag>
+							<name>stage.sketch</name>
+							<placement>t</placement>
+							<head>Stage sketch:</head>
+						</tag>
+					</tags>
+				</configuration>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -414,6 +433,23 @@
 				<version>${javadoc.version}</version>
 				<configuration>
 					<destDir>${javadocOutputDir}</destDir>
+					<tags>
+						<tag>
+							<name>stage.input</name>
+							<placement>t</placement>
+							<head>Stage input:</head>
+						</tag>
+						<tag>
+							<name>stage.output</name>
+							<placement>t</placement>
+							<head>Stage output:</head>
+						</tag>
+						<tag>
+							<name>stage.sketch</name>
+							<placement>t</placement>
+							<head>Stage sketch:</head>
+						</tag>
+					</tags>
 				</configuration>
 			</plugin>
 		</plugins>

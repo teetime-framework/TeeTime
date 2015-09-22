@@ -20,21 +20,42 @@ import java.util.List;
 import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.signal.ISignal;
 import teetime.stage.basic.merger.strategy.IMergerStrategy;
 import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
 
 /**
  *
  * This stage merges data from the input ports, by taking elements according to the chosen merge strategy and by putting them to the output port.
- * For its signal handling behavior see {@link #onSignal(ISignal, InputPort)}
+ * New input ports can be created by calling {@link #getNewInputPort()}.
  *
- * @author Christian Wulf, Nelson Tavares de Sousa
+ * @stage.sketch
+ *
+ * 				<pre>
+ *   +---------------------------+
+ *   |                           |
+ * +---+                         |
+ * |   | +-----------+           |
+ * +---+             |           |
+ *   |               |           |
+ *                   |         +---+
+ *   .      . . . ---+-------&gt; |   |
+ *                   |         +---+
+ *   |               |           |
+ * +---+             |           |
+ * |   | +-----------+           |
+ * +---+                         |
+ *   |                           |
+ *   +---------------------------+
+ *
+ *
+ *               </pre>
+ *
+ * @author Christian Wulf
  *
  * @since 1.0
  *
- * @param <T>
- *            the type of both the input and output ports
+ * @param T
+ *            the type of the input port and the output ports
  */
 public class Merger<T> extends AbstractStage {
 
