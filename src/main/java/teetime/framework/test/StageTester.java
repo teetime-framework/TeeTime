@@ -91,7 +91,7 @@ public final class StageTester {
 				connectPorts(producer.getOutputPort(), inputHolder.getPort());
 			}
 
-			addThreadableStage(stage);
+			stage.declareActive();
 
 			for (OutputHolder<?> outputHolder : outputHolders) {
 				final CollectorSink<Object> sink = new CollectorSink<Object>(outputHolder.getOutputElements());

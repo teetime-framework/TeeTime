@@ -31,6 +31,7 @@ public abstract class Configuration extends AbstractCompositeStage {
 	private final AbstractExceptionListenerFactory<?> factory;
 	private final ConfigurationContext context;
 
+	private boolean initialized;
 	private boolean executed;
 	private Stage startStage;
 
@@ -43,11 +44,19 @@ public abstract class Configuration extends AbstractCompositeStage {
 		this.context = new ConfigurationContext(this);
 	}
 
-	boolean isExecuted() {
+	boolean isInitialized() {
+		return initialized;
+	}
+
+	void setInitialized(final boolean executed) {
+		this.initialized = executed;
+	}
+
+	public boolean isExecuted() {
 		return executed;
 	}
 
-	void setExecuted(final boolean executed) {
+	public void setExecuted(final boolean executed) {
 		this.executed = executed;
 	}
 
@@ -55,10 +64,14 @@ public abstract class Configuration extends AbstractCompositeStage {
 		return factory;
 	}
 
-	@Override
-	protected void addThreadableStage(final Stage stage, final String threadName) {
-		startStage = stage; // memorize an arbitrary stage as starting point for traversing
-		super.addThreadableStage(stage, threadName);
+	/**
+	 * Register pipes if your configuration only relies on custom pipes and therefore {@link #connectPorts(OutputPort, InputPort)} is never called.
+	 *
+	 * @param pipe
+	 *            A custom pipe instance
+	 */
+	protected void registerCustomPipe(final AbstractPipe<?> pipe) {
+		startStage = pipe.getSourcePort().getOwningStage(); // memorize an arbitrary stage as starting point for traversing
 	}
 
 	@Override

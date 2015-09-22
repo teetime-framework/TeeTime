@@ -30,7 +30,6 @@ import org.junit.Test;
 
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
-import teetime.framework.ExecutionException;
 
 /**
  * @author Nils Christian Ehmke
@@ -109,15 +108,10 @@ public class InstanceOfFilterTest {
 	}
 
 	@Test
-	public void filterShouldSendToBothOutputPorts() throws Exception {
+	public void filterShouldSendToBothOutputPorts() {
 		InstanceOfFilterTestConfig config = new InstanceOfFilterTestConfig();
 		Execution<InstanceOfFilterTestConfig> execution = new Execution<InstanceOfFilterTestConfig>(config);
-		try {
-			execution.executeBlocking();
-		} catch (ExecutionException e) {
-			// Collection<ThreadThrowableContainer> thrownExceptions = e.getThrownExceptions();
-			// TODO: handle exception
-		}
+		execution.executeBlocking();
 	}
 
 	private static class InstanceOfFilterTestConfig extends Configuration {

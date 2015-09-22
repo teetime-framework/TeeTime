@@ -19,7 +19,7 @@ import java.util.Set;
 
 /**
  * Represents a context that is used by a configuration and composite stages to connect ports, for example.
- * Stages can be added by executing {@link #addThreadableStage(Stage)}.
+ * Stages can be added by executing {@link #declareActive(Stage)}.
  *
  * @since 2.0
  */

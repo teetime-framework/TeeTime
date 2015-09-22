@@ -25,7 +25,7 @@
 
 		<java.version>1.6</java.version>
 		<checkstyle.version>2.16</checkstyle.version>
-		<findbugs.version>3.0.1</findbugs.version>
+		<findbugs.version>3.0.2</findbugs.version>
 		<pmd.version>3.5</pmd.version>
 		<javadoc.version>2.10.3</javadoc.version>
 	</properties>
@@ -190,6 +190,25 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${javadoc.version}</version>
+				<configuration>
+					<tags>
+						<tag>
+							<name>stage.input</name>
+							<placement>t</placement>
+							<head>Stage input:</head>
+						</tag>
+						<tag>
+							<name>stage.output</name>
+							<placement>t</placement>
+							<head>Stage output:</head>
+						</tag>
+						<tag>
+							<name>stage.sketch</name>
+							<placement>t</placement>
+							<head>Stage sketch:</head>
+						</tag>
+					</tags>
+				</configuration>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -203,7 +222,7 @@
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.5</version>
+				<version>1.6.6</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>teetime-deployment</serverId>
@@ -358,7 +377,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.8</version>
+				<version>2.8.1</version>
 			</plugin>
 		</plugins>
 	</build>
@@ -414,6 +433,23 @@
 				<version>${javadoc.version}</version>
 				<configuration>
 					<destDir>${javadocOutputDir}</destDir>
+					<tags>
+						<tag>
+							<name>stage.input</name>
+							<placement>t</placement>
+							<head>Stage input:</head>
+						</tag>
+						<tag>
+							<name>stage.output</name>
+							<placement>t</placement>
+							<head>Stage output:</head>
+						</tag>
+						<tag>
+							<name>stage.sketch</name>
+							<placement>t</placement>
+							<head>Stage sketch:</head>
+						</tag>
+					</tags>
 				</configuration>
 			</plugin>
 		</plugins>

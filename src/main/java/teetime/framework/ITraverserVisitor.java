@@ -16,11 +16,14 @@
 package teetime.framework;
 
 import teetime.framework.Traverser.VisitorBehavior;
+import teetime.framework.pipe.DummyPipe;
 
 public interface ITraverserVisitor {
 
 	VisitorBehavior visit(Stage stage);
 
 	VisitorBehavior visit(AbstractPort<?> port);
+
+	void visit(DummyPipe pipe, AbstractPort<?> port);
 
 }

@@ -4,7 +4,6 @@
 		<artifactId>reflow-maven-skin</artifactId>
 		<version>1.1.1</version>
 	</skin>
-
 	<bannerLeft>
 		<name>
 			<![CDATA[
@@ -51,17 +50,18 @@
 		<links>
 			<item name="News" href="news.html" />
 			<item name="Download" href="download.html" />
-			<item name="Wiki" href="wiki/" />
+			<item name="Wiki" href="wiki/home.html" />
 		</links>
 		<menu name="Documentation">
-			<item name="JavaDoc" href="http://teetime.sourceforge.net/stabledocs/index.html" />
+			<item name="JavaDoc"
+				href="http://teetime.sourceforge.net/stabledocs/index.html" />
 			<item name="Release Notes" href="changes-report.html" />
 			<item name="Project Dependencies" href="dependencies.html" />
 			<item name="License" href="license.html" />
 		</menu>
 		<menu name="Get Involved">
 			<item name="Contribute" href="contribute.html" />
-			<item name="SourceForge Project Site" href="https://sourceforge.net/projects/teetime/" />
+			<item name="Visit us on GitHub" href="https://github.com/ChristianWulf/teetime/" />
 			<item name="Issue Tracking"
 				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/issues" />
 			<item name="Team" href="team-list.html" />
@@ -70,7 +70,7 @@
 			<item name="Home" href="index.html" />
 			<item name="News" href="news.html" />
 			<item name="Download" href="download.html" />
-			<item name="Wiki" href="wiki/" />
+			<item name="Wiki" href="wiki/home.html" />
 		</menu>
 		<!-- <menu ref="modules"/> -->
 		<!-- <menu ref="reports"/> -->
@@ -137,7 +137,7 @@
 				</release>
 				<download>
 					<toc>top</toc>
-					<tocTopMax>4</tocTopMax>
+					<tocTopMax>5</tocTopMax>
 				</download>
 				<contribute>
 					<highlightJs>false</highlightJs>

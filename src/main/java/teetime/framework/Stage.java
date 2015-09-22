@@ -50,6 +50,8 @@ public abstract class Stage {
 	/** The owning thread of this stage if this stage is directly executed by a {@link AbstractRunnableStage}, <code>null</code> otherwise. */
 	private Thread owningThread;
 
+	private boolean isActive;
+
 	private ConfigurationContext owningContext;
 
 	ConfigurationContext getOwningContext() {
@@ -180,5 +182,38 @@ public abstract class Stage {
 	protected abstract void removeDynamicPort(OutputPort<?> outputPort);
 
 	protected abstract void removeDynamicPort(InputPort<?> inputPort);
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	void setActive(final boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	/**
+	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
+	 *
+	 * @param stage
+	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
+	 */
+	public void declareActive() {
+		declareActive(getId());
+	}
+
+	/**
+	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
+	 *
+	 * @param stage
+	 *            A arbitrary stage, which will be added to the configuration and executed in a thread.
+	 * @param threadName
+	 *            A string which can be used for debugging.
+	 */
+	public void declareActive(final String threadName) {
+		AbstractRunnableStage runnable = AbstractRunnableStage.create(this);
+		Thread newThread = new TeeTimeThread(runnable, threadName);
+		this.setOwningThread(newThread);
+		this.setActive(true);
+	}
 
 }

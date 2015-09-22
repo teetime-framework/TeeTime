@@ -118,7 +118,7 @@ public class ExecutionTest {
 		public AnalysisTestConfig(final boolean inter) {
 			connectPorts(init.getOutputPort(), sink.getInputPort());
 			if (inter) {
-				addThreadableStage(sink);
+				sink.declareActive();
 			}
 		}
 	}
@@ -143,7 +143,7 @@ public class ExecutionTest {
 			connectPorts(init.getOutputPort(), iof.getInputPort());
 			connectPorts(iof.getMatchedOutputPort(), sink.getInputPort());
 			connectPorts(init.createOutputPort(), sink.createInputPort());
-			addThreadableStage(iof);
+			iof.declareActive();
 		}
 	}
 
@@ -191,7 +191,7 @@ public class ExecutionTest {
 			stageWithNamedThread = new InitialElementProducer<Object>(new Object());
 			Sink<Object> sink = new Sink<Object>();
 
-			addThreadableStage(stageWithNamedThread, "TestName");
+			stageWithNamedThread.declareActive("TestName");
 
 			connectPorts(stageWithNamedThread.getOutputPort(), sink.getInputPort());
 		}
