@@ -54,7 +54,7 @@
 		</links>
 		<menu name="Documentation">
 			<item name="JavaDoc"
-				href="http://teetime.sourceforge.net/stabledocs/index.html" />
+				href="stabledocs/index.html" />
 			<item name="Release Notes" href="changes-report.html" />
 			<item name="Project Dependencies" href="dependencies.html" />
 			<item name="License" href="license.html" />
