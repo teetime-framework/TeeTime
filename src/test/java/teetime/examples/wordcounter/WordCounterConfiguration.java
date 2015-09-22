@@ -83,7 +83,7 @@ public class WordCounterConfiguration extends Configuration {
 			connectPorts(distributor.getNewOutputPort(), threadableStage.getInputPort(), 1000);
 			connectPorts(wc.getOutputPort(), merger.getNewInputPort());
 			// Add WordCounter as a threadable stage, so it runs in its own thread
-			declareActive(threadableStage.getInputPort().getOwningStage());
+			threadableStage.getInputPort().getOwningStage().declareActive();
 
 			distributorPorts.add(threadableStage.getInputPort());
 			mergerPorts.add(wc.getOutputPort());
@@ -95,8 +95,8 @@ public class WordCounterConfiguration extends Configuration {
 		connectPorts(merger.getOutputPort(), result.getInputPort());
 
 		// Add the first and last part to the threadable stages
-		declareActive(init);
-		declareActive(merger);
+		init.declareActive();
+		merger.declareActive();
 	}
 
 	public MonitoringThread getMonitoringThread() {

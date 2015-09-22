@@ -118,7 +118,7 @@ public class DynamicMergerTest {
 			connectPorts(initialElementProducer.getOutputPort(), merger.getNewInputPort());
 			connectPorts(merger.getOutputPort(), collectorSink.getInputPort());
 
-			declareActive(merger);
+			merger.declareActive();
 
 			for (PortAction<DynamicMerger<T>> a : inputActions) {
 				boolean added = merger.addPortActionRequest(a);
