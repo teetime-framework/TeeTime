@@ -64,6 +64,12 @@ public abstract class Configuration extends AbstractCompositeStage {
 		return factory;
 	}
 
+	/**
+	 * Register pipes if your configuration only relies on custom pipes and therefore {@link #connectPorts(OutputPort, InputPort)} is never called.
+	 *
+	 * @param pipe
+	 *            A custom pipe instance
+	 */
 	protected void registerCustomPipe(final AbstractPipe<?> pipe) {
 		startStage = pipe.getSourcePort().getOwningStage(); // memorize an arbitrary stage as starting point for traversing
 	}
