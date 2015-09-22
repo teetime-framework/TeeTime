@@ -26,7 +26,7 @@ For other project management tools, please check [here](nomaven.html).
 
 #### Binaries and sources
 
-The latest TeeTime release can be downloaded directly from [Sourceforge](https://sourceforge.net/projects/teetime/files/latest/download). If you also want to download the source and/or JavaDoc, you can also get a summary of available files on [Sourceforge](https://sourceforge.net/projects/teetime/files/) or [the Central Repository](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22net.sourceforge.teetime%22%20AND%20a%3A%22teetime%22).
+The latest TeeTime release can be downloaded directly from [GitHub](https://github.com/teetime-framework/teetime/releases/latest) where also the JavaDoc and the sources are available. A summary of available files, such as older versions, can be found on [the Central Repository](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22net.sourceforge.teetime%22%20AND%20a%3A%22teetime%22) or also on [GitHub](https://github.com/teetime-framework/teetime/releases).
 
 ## Snapshot
 

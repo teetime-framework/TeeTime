@@ -7,10 +7,10 @@
 	<bannerLeft>
 		<name>
 			<![CDATA[
-					<img src="http://christianwulf.github.io/teetime/images/teetime-path.svg" id="logo">
+					<img src="http://teetime-framework.github.io/images/teetime-path.svg" id="logo">
 					]]>
 		</name>
-		<href>http://christianwulf.github.io/teetime/</href>
+		<href>http://teetime-framework.github.io/</href>
 	</bannerLeft>
 	<poweredBy>
 		<logo name="Maven" href="http://maven.apache.org/"
@@ -61,7 +61,7 @@
 		</menu>
 		<menu name="Get Involved">
 			<item name="Contribute" href="contribute.html" />
-			<item name="Visit us on GitHub" href="https://github.com/ChristianWulf/teetime/" />
+			<item name="Visit us on GitHub" href="https://github.com/teetime-framework/teetime" />
 			<item name="Issue Tracking"
 				href="https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/issues" />
 			<item name="Team" href="team-list.html" />
@@ -82,7 +82,7 @@
 			<topNav>News|Download|Wiki|Documentation|Get Involved</topNav>
 			<!-- <toc>sidebar</toc> -->
 			<!-- <tocTopMax>4</tocTopMax> -->
-			<absoluteResourceURL>http://christianwulf.github.io/teetime/
+			<absoluteResourceURL>http://teetime-framework.github.io/
 			</absoluteResourceURL>
 			<theme>default</theme>
 			<highlightJs>true</highlightJs>
@@ -91,7 +91,7 @@
 				<name>
 					TeeTime
 				</name>
-				<href>http://christianwulf.github.io/teetime/</href>
+				<href>http://teetime-framework.github.io/</href>
 			</brand>
 			<slogan>
 				<![CDATA[
