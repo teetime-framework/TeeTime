@@ -46,6 +46,18 @@ public class ExceptionHandlingTest {
 		fail(); // Should never be executed
 	}
 
+	@Test
+	public void testException() {
+		boolean exceptionArised = false;
+		ExceptionPassingTestConfig exceptionPassingTestConfig = new ExceptionPassingTestConfig();
+		try {
+			new Execution<ExceptionPassingTestConfig>(exceptionPassingTestConfig).executeBlocking();
+		} catch (ExecutionException e) {
+			exceptionArised = true;
+		}
+		assertTrue(exceptionArised);
+	}
+
 	@Ignore
 	@Test
 	public void forAFewTimes() {
