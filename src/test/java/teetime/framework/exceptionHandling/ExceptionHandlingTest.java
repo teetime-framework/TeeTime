@@ -16,35 +16,13 @@
 package teetime.framework.exceptionHandling;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.framework.Execution;
 import teetime.framework.ExecutionException;
 
 public class ExceptionHandlingTest {
-
-	private Execution<ExceptionTestConfiguration> execution;
-
-	public ExceptionTestConfiguration newInstances() {
-		ExceptionTestConfiguration configuration = new ExceptionTestConfiguration();
-		execution = new Execution<ExceptionTestConfiguration>(configuration);
-		return configuration;
-	}
-
-	public void exceptionPassingAndTermination() {
-		newInstances();
-		execution.executeBlocking();
-		fail(); // Should never be executed
-	}
-
-	public void terminatesAllStages() {
-		ExceptionTestConfiguration config = newInstances();
-		execution.executeBlocking();
-		fail(); // Should never be executed
-	}
 
 	@Test
 	public void testException() {
@@ -58,25 +36,4 @@ public class ExceptionHandlingTest {
 		assertTrue(exceptionArised);
 	}
 
-	@Ignore
-	@Test
-	public void forAFewTimes() {
-		for (int i = 0; i < 100; i++) {
-			boolean exceptionArised = false;
-			try {
-				exceptionPassingAndTermination(); // listener did not kill thread too early;
-			} catch (ExecutionException e) {
-				exceptionArised = true;
-			}
-			assertTrue(exceptionArised);
-
-			exceptionArised = false;
-			try {
-				terminatesAllStages();
-			} catch (ExecutionException e) {
-				exceptionArised = true;
-			}
-			assertTrue(exceptionArised);
-		}
-	}
 }
