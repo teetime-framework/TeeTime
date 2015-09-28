@@ -31,6 +31,8 @@ import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExec
 import teetime.framework.exceptionHandling.TerminateException;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
+import teetime.framework.signal.StartingSignal;
+import teetime.framework.signal.TerminatingSignal;
 import teetime.framework.validation.InvalidPortConnection;
 import teetime.util.framework.port.PortList;
 import teetime.util.framework.port.PortRemovedListener;
@@ -180,6 +182,10 @@ public abstract class AbstractStage {
 
 	private final PortList<InputPort<?>> inputPorts = new PortList<InputPort<?>>();
 	private final PortList<OutputPort<?>> outputPorts = new PortList<OutputPort<?>>();
+
+	private boolean calledOnTerminating = false;
+	private boolean calledOnStarting = false;
+
 	private volatile StageState currentState = StageState.CREATED;
 
 	protected List<InputPort<?>> getInputPorts() {
@@ -216,6 +222,16 @@ public abstract class AbstractStage {
 		if (signal.mayBeTriggered(signalReceivedInputPorts, getInputPorts())) {
 			try {
 				signal.trigger(this);
+				if (signal instanceof StartingSignal) {
+					if (!calledOnStarting) {
+						throw new SuperNotCalledException("The super method onStarting was not called in " + this.getId());
+					}
+				}
+				if (signal instanceof TerminatingSignal) {
+					if (!calledOnTerminating) {
+						throw new SuperNotCalledException("The super method onTerminating was not called in " + this.getId());
+					}
+				}
 			} catch (Exception e) {
 				this.getOwningContext().abortConfigurationRun();
 			}
@@ -248,7 +264,7 @@ public abstract class AbstractStage {
 		return signalAlreadyReceived;
 	}
 
-	private void changeState(final StageState newState) {
+	void changeState(final StageState newState) {
 		currentState = newState;
 		if (logger.isTraceEnabled()) {
 			logger.trace(newState.toString());
@@ -270,11 +286,13 @@ public abstract class AbstractStage {
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public void onStarting() throws Exception {
 		changeState(StageState.STARTED);
+		calledOnStarting = true;
 	}
 
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public void onTerminating() throws Exception {
 		changeState(StageState.TERMINATED);
+		calledOnTerminating = true;
 	}
 
 	/**
