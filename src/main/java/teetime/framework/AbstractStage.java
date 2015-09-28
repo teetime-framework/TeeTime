@@ -164,7 +164,7 @@ public abstract class AbstractStage {
 
 	/**
 	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
-	 * 
+	 *
 	 * @param threadName
 	 *            A string which can be used for debugging.
 	 */
@@ -198,7 +198,7 @@ public abstract class AbstractStage {
 	 * May not be invoked outside of IPipe implementations
 	 */
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
+	public final void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		Class<? extends ISignal> signalClass = signal.getClass();
 
 		Set<InputPort<?>> signalReceivedInputPorts;
