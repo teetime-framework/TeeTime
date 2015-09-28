@@ -264,7 +264,7 @@ public abstract class AbstractStage {
 		return signalAlreadyReceived;
 	}
 
-	void changeState(final StageState newState) {
+	private void changeState(final StageState newState) {
 		currentState = newState;
 		if (logger.isTraceEnabled()) {
 			logger.trace(newState.toString());
