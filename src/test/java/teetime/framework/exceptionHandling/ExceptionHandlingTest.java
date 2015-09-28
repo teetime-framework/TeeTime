@@ -15,8 +15,6 @@
  */
 package teetime.framework.exceptionHandling;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
 import teetime.framework.Execution;
@@ -24,16 +22,9 @@ import teetime.framework.ExecutionException;
 
 public class ExceptionHandlingTest {
 
-	@Test
+	@Test(expected = ExecutionException.class)
 	public void testException() {
-		boolean exceptionArised = false;
-		ExceptionPassingTestConfig exceptionPassingTestConfig = new ExceptionPassingTestConfig();
-		try {
-			new Execution<ExceptionPassingTestConfig>(exceptionPassingTestConfig).executeBlocking();
-		} catch (ExecutionException e) {
-			exceptionArised = true;
-		}
-		assertTrue(exceptionArised);
+		new Execution<ExceptionPassingTestConfig>(new ExceptionPassingTestConfig()).executeBlocking();
 	}
 
 }
