@@ -149,6 +149,7 @@
 					</breadcrumbs>
 					<toc>sidebar</toc>
 					<tocTopMax>4</tocTopMax>
+					<shortTitle>Wiki</shortTitle>
 				</wiki-home>
 			</pages>
 		</reflowSkin>
