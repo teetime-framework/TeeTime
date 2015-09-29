@@ -111,8 +111,6 @@
 				<a href="https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nightly-release/"><img alt="Jenkins build status" src="https://img.shields.io/jenkins/s/https/build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/teetime-nightly-release.svg?style=flat-square"></a>
 				<br />
 				<a href="https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nightly-release/lastCompletedBuild/testReport/"><img alt="Jenkins build status" src="https://img.shields.io/jenkins/t/https/build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/teetime-nightly-release.svg?style=flat-square"></a>
-				<br />
-				<a href="https://github.com/teetime-framework/teetime"><img src="https://img.shields.io/github/commits-since/teetime-framework/teetime/v1.1.2.svg?style=flat-square"></a>
 				<br /><br />Stable state:
 				<br />
 				<a href="https://github.com/teetime-framework/teetime/releases/latest" rel="nofollow"><img alt="Download TeeTime" src="https://img.shields.io/github/downloads/teetime-framework/teetime/latest/total.svg?style=flat-square"></a>
