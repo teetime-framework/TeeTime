@@ -102,7 +102,7 @@ public class RunnableConsumerStageTest {
 	// }
 
 	@Ignore
-	@Test
+	// @Test
 	public void testYieldRun() throws Exception {
 		YieldStrategyConfiguration waitStrategyConfiguration = new YieldStrategyConfiguration(42);
 

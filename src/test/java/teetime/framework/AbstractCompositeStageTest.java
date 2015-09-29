@@ -15,7 +15,8 @@
  */
 package teetime.framework;
 
-import org.junit.Ignore;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import teetime.stage.Counter;
@@ -24,11 +25,10 @@ import teetime.stage.basic.Sink;
 
 public class AbstractCompositeStageTest {
 
-	@Ignore
 	@Test
 	public void testNestedStages() {
 		Execution<NestedConf> exec = new Execution<NestedConf>(new NestedConf());
-		// assertThat(exec.getConfiguration().getContext().getThreadableStages().size(), is(3));
+		assertEquals(exec.getConfiguration().getContext().getThreadableStages().size(), 3);
 	}
 
 	private class NestedConf extends Configuration {
