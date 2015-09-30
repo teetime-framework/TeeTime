@@ -15,11 +15,10 @@
  */
 package teetime.framework;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -80,7 +79,7 @@ public class AbstractCompositeStageTest {
 		Execution<CompositeProducerConfig> execution = new Execution<CompositeProducerConfig>(new CompositeProducerConfig());
 		execution.executeBlocking();
 
-		assertThat(execution.getConfiguration().getResultElements(), is(Arrays.asList(5, 0, 6, 1, 7, 2, 8, 3, 9, 4)));
+		assertThat(execution.getConfiguration().getResultElements(), containsInAnyOrder(5, 0, 6, 1, 7, 2, 8, 3, 9, 4));
 	}
 
 	private InitialElementProducer<CounterContainer> assertFirstStage(final Execution<CompositeCounterPipelineConfig> execution) {
@@ -96,9 +95,9 @@ public class AbstractCompositeStageTest {
 		return stage;
 	}
 
-	private CounterIncrementer assertThirdStage(CounterIncrementer stage) {
-		AbstractStage nextStage = stage.getOutputPort().getPipe().getTargetPort().getOwningStage();
-		stage = AssertHelper.assertInstanceOf(CounterIncrementer.class, nextStage);
+	private CounterIncrementer assertThirdStage(final CounterIncrementer previousStage) {
+		AbstractStage nextStage = previousStage.getOutputPort().getPipe().getTargetPort().getOwningStage();
+		CounterIncrementer stage = AssertHelper.assertInstanceOf(CounterIncrementer.class, nextStage);
 		assertThat(stage.getId(), is(equalTo("CounterIncrementer-1")));
 		return stage;
 	}
