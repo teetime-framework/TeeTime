@@ -9,6 +9,10 @@
 			<action dev="ntd" type="add" issue="93">
 				New concept: composite stages.
 			</action>
+			<action dev="ntd" type="add" issue="33">
+				New concept: TeeTime automatically
+				chooses the correct type of pipe for all connections.
+			</action>
 			<action dev="chw" type="add" issue="207">
 				Added capacity to IPipe.
 			</action>
@@ -20,10 +24,6 @@
 			</action>
 			<action dev="chw" type="add" issue="183">
 				Threads can be added at runtime.
-			</action>
-			<action dev="ntd" type="add" issue="33">
-				TeeTime automatically
-				chooses the correct type of pipe for all connections.
 			</action>
 			<action dev="ntd" type="add" issue="195">
 				Configurations can only be executed once.
