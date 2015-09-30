@@ -15,6 +15,14 @@
  */
 package teetime.framework.exceptionHandling;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static teetime.testutil.AssertHelper.assertInstanceOf;
+
+import java.util.List;
+import java.util.Map.Entry;
+
 import org.junit.Test;
 
 import teetime.framework.Execution;
@@ -22,9 +30,20 @@ import teetime.framework.ExecutionException;
 
 public class ExceptionHandlingTest {
 
-	@Test(expected = ExecutionException.class)
+	@Test
 	public void testException() {
-		new Execution<ExceptionPassingTestConfig>(new ExceptionPassingTestConfig()).executeBlocking();
+		Execution<ExceptionPassingTestConfig> execution = new Execution<ExceptionPassingTestConfig>(new ExceptionPassingTestConfig());
+		try {
+			execution.executeBlocking();
+		} catch (ExecutionException e) {
+			Entry<Thread, List<Exception>> entry = e.getThrownExceptions().entrySet().iterator().next();
+			List<Exception> exceptions = entry.getValue();
+			IllegalStateException exception = assertInstanceOf(IllegalStateException.class, exceptions.get(0));
+			assertThat(exception.getMessage(), is(equalTo("Correct exception")));
+
+			assertThat(exceptions.size(), is(1));
+			assertThat(e.getThrownExceptions().size(), is(1));
+		}
 	}
 
 }

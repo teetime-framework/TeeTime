@@ -15,7 +15,9 @@
  */
 package teetime.framework;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -106,13 +108,19 @@ public final class Execution<T extends Configuration> {
 	 * @since 2.0
 	 */
 	public void waitForTermination() {
-		int numExceptions = 0;
 		configurationContext.waitForConfigurationToTerminate();
-		for (Entry<Thread, List<Exception>> entry : configuration.getFactory().getThreadExceptionsMap().entrySet()) {
-			numExceptions += entry.getValue().size();
+
+		Map<Thread, List<Exception>> threadExceptionsMap = configuration.getFactory().getThreadExceptionsMap();
+		Iterator<Entry<Thread, List<Exception>>> iterator = threadExceptionsMap.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<Thread, List<Exception>> entry = iterator.next();
+			if (entry.getValue().isEmpty()) {
+				iterator.remove();
+			}
 		}
-		if (numExceptions != 0) {
-			throw new ExecutionException(configuration.getFactory().getThreadExceptionsMap());
+
+		if (!threadExceptionsMap.isEmpty()) {
+			throw new ExecutionException(threadExceptionsMap);
 		}
 	}
 
