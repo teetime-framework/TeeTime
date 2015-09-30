@@ -6,6 +6,9 @@
 	</properties>
 	<body>
 		<release version="2.0" date="30.09.2015" description="Camellia Release">
+			<action dev="ntd" type="add" issue="93">
+				New concept: composite stages.
+			</action>
 			<action dev="chw" type="add" issue="207">
 				Added capacity to IPipe.
 			</action>
@@ -67,11 +70,6 @@
 			</action>
 			<action dev="ntd" type="update">
 				Renamed Analysis to Execution.
-			</action>
-			
-			<action dev="ntd" type="fix" issue="93">
-				Introduced a new concept
-				for composing stages.
 			</action>
 			
 			<action dev="ntd" type="remove" issue="217">
