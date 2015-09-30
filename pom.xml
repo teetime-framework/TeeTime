@@ -9,7 +9,7 @@
 
 	<name>TeeTime</name>
 	<description>TeeTime is a Pipe-and-Filter framework for Java</description>
-	<url>http://christianwulf.github.io/teetime/</url>
+	<url>http://teetime-framework.github.io</url>
 	<inceptionYear>2015</inceptionYear>
 
 	<licenses>
