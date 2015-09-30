@@ -2,7 +2,7 @@
 
 ### Release 2.0 - 30.09.2015
 
-TeeTime is released as 2.0. It can be downloaded from the [download section](download.html). For a changelog visit the [release notes](changes-report.html#a2.0).
+TeeTime is released as 2.0. It can be downloaded from the [download section](download.html). For a changelog visit the [release notes](changes-report.html#a2.0). Assistance on how to migrate to this version can be found [here](wiki/migrate-to-v2).
 
 ### Release 1.1.2 - 12.05.2015
 
