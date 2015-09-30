@@ -15,20 +15,95 @@
  */
 package teetime.framework;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.Sink;
+import teetime.testutil.AssertHelper;
 
+/**
+ * Tests whether
+ * <ul>
+ * <li>setting a stage active within a composite stage works
+ * <li>creating a producer within a composite state works
+ * <li>creating and connecting two stages within a composite stage works
+ * <li>flattening of a composite stage works
+ * </ul>
+ *
+ * @author Christian Wulf
+ *
+ */
 public class AbstractCompositeStageTest {
 
+	@Before
+	public void before() {
+		AbstractStage.clearInstanceCounters(); // resets the id to zero
+	}
+
 	@Test
-	public void testNestedStages() {
+	public void ensureCorrectNumberOfActiveStages() {
 		Execution<NestedConf> exec = new Execution<NestedConf>(new NestedConf());
-		assertEquals(exec.getConfiguration().getContext().getThreadableStages().size(), 3);
+		assertThat(exec.getConfiguration().getContext().getThreadableStages().size(), is(3));
+	}
+
+	@Test
+	public void ensureFlatteningDepth1AtRuntime() {
+		CounterContainer element = new CounterContainer();
+		Execution<CompositeCounterPipelineConfig> execution = new Execution<CompositeCounterPipelineConfig>(new CompositeCounterPipelineConfig(1, element));
+
+		InitialElementProducer<CounterContainer> producer;
+		CounterIncrementer stage;
+
+		producer = assertFirstStage(execution);
+		stage = assertSecondStage(producer);
+		assertLastStage(stage);
+	}
+
+	@Test
+	public void ensureFlatteningDepth2AtRuntime() {
+		CounterContainer element = new CounterContainer();
+		Execution<CompositeCounterPipelineConfig> execution = new Execution<CompositeCounterPipelineConfig>(new CompositeCounterPipelineConfig(2, element));
+
+		InitialElementProducer<CounterContainer> producer;
+		CounterIncrementer stage;
+
+		producer = assertFirstStage(execution);
+		stage = assertSecondStage(producer);
+		stage = assertThirdStage(stage);
+		assertLastStage(stage);
+	}
+
+	private InitialElementProducer<CounterContainer> assertFirstStage(final Execution<CompositeCounterPipelineConfig> execution) {
+		InitialElementProducer<CounterContainer> producer = execution.getConfiguration().getProducer();
+		assertThat(producer.getId(), is(equalTo("InitialElementProducer-0")));
+		return producer;
+	}
+
+	private CounterIncrementer assertSecondStage(final InitialElementProducer<CounterContainer> producer) {
+		AbstractStage nextStage = producer.getOutputPort().getPipe().getTargetPort().getOwningStage();
+		CounterIncrementer stage = AssertHelper.assertInstanceOf(CounterIncrementer.class, nextStage);
+		assertThat(stage.getId(), is(equalTo("CounterIncrementer-0")));
+		return stage;
+	}
+
+	private CounterIncrementer assertThirdStage(CounterIncrementer stage) {
+		AbstractStage nextStage = stage.getOutputPort().getPipe().getTargetPort().getOwningStage();
+		stage = AssertHelper.assertInstanceOf(CounterIncrementer.class, nextStage);
+		assertThat(stage.getId(), is(equalTo("CounterIncrementer-1")));
+		return stage;
+	}
+
+	private void assertLastStage(final CounterIncrementer stage) {
+		AbstractStage nextStage;
+		nextStage = stage.getOutputPort().getPipe().getTargetPort().getOwningStage();
+		Sink<?> sink = AssertHelper.assertInstanceOf(Sink.class, nextStage);
+		assertThat(sink.getId(), is(equalTo("Sink-0")));
 	}
 
 	private class NestedConf extends Configuration {
