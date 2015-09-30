@@ -63,6 +63,9 @@ public class Merger<T> extends AbstractStage {
 
 	private final IMergerStrategy strategy;
 
+	/**
+	 * A merger using the {@link RoundRobinStrategy}}.
+	 */
 	public Merger() {
 		this(new RoundRobinStrategy());
 	}

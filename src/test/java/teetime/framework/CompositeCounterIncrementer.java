@@ -19,7 +19,6 @@ class CompositeCounterIncrementer extends AbstractCompositeStage {
 			lastStageInputPort = lastStage.getInputPort();
 			outputPort = lastStage.getOutputPort();
 		} else {
-			// NoopFilter<CounterContainer> lastStage = new NoopFilter<CounterContainer>();
 			CounterIncrementer lastStage = incrementer;
 			lastStageInputPort = lastStage.getInputPort();
 			outputPort = lastStage.getOutputPort();

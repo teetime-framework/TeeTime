@@ -19,10 +19,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.Sink;
 import teetime.testutil.AssertHelper;
@@ -30,10 +31,11 @@ import teetime.testutil.AssertHelper;
 /**
  * Tests whether
  * <ul>
- * <li>setting a stage active within a composite stage works
- * <li>creating a producer within a composite state works
- * <li>creating and connecting two stages within a composite stage works
- * <li>flattening of a composite stage works
+ * <li>creating and connecting two stages within a composite stage works ({@link #ensureFlatteningDepth1AtRuntime()})
+ * <li>flattening of a composite stage works ({@link #ensureFlatteningDepth1AtRuntime()})
+ * <li>different levels of composite stages work ({@link #ensureFlatteningDepth2AtRuntime()})
+ * <li>setting a stage active within a composite stage works ({@link #ensureWorkingCompositeStageWithInternalProducerAndActiveMerger()})
+ * <li>creating a producer within a composite state works ({@link #ensureWorkingCompositeStageWithInternalProducerAndActiveMerger()})
  * </ul>
  *
  * @author Christian Wulf
@@ -44,12 +46,6 @@ public class AbstractCompositeStageTest {
 	@Before
 	public void before() {
 		AbstractStage.clearInstanceCounters(); // resets the id to zero
-	}
-
-	@Test
-	public void ensureCorrectNumberOfActiveStages() {
-		Execution<NestedConf> exec = new Execution<NestedConf>(new NestedConf());
-		assertThat(exec.getConfiguration().getContext().getThreadableStages().size(), is(3));
 	}
 
 	@Test
@@ -79,6 +75,14 @@ public class AbstractCompositeStageTest {
 		assertLastStage(stage);
 	}
 
+	@Test
+	public void ensureWorkingCompositeStageWithInternalProducerAndActiveMerger() {
+		Execution<CompositeProducerConfig> execution = new Execution<CompositeProducerConfig>(new CompositeProducerConfig());
+		execution.executeBlocking();
+
+		assertThat(execution.getConfiguration().getResultElements(), is(Arrays.asList(5, 0, 6, 1, 7, 2, 8, 3, 9, 4)));
+	}
+
 	private InitialElementProducer<CounterContainer> assertFirstStage(final Execution<CompositeCounterPipelineConfig> execution) {
 		InitialElementProducer<CounterContainer> producer = execution.getConfiguration().getProducer();
 		assertThat(producer.getId(), is(equalTo("InitialElementProducer-0")));
@@ -105,56 +109,4 @@ public class AbstractCompositeStageTest {
 		Sink<?> sink = AssertHelper.assertInstanceOf(Sink.class, nextStage);
 		assertThat(sink.getId(), is(equalTo("Sink-0")));
 	}
-
-	private class NestedConf extends Configuration {
-
-		private final InitialElementProducer<Object> init;
-		private final Sink<Object> sink;
-		private final TestNestingCompositeStage compositeStage;
-
-		public NestedConf() {
-			init = new InitialElementProducer<Object>(new Object());
-			sink = new Sink<Object>();
-			compositeStage = new TestNestingCompositeStage();
-			connectPorts(init.getOutputPort(), compositeStage.firstCompositeStage.firstCounter.getInputPort());
-			connectPorts(compositeStage.secondCompositeStage.secondCounter.getOutputPort(), sink.getInputPort());
-
-		}
-	}
-
-	private class TestCompositeOneStage extends AbstractCompositeStage {
-
-		private final Counter firstCounter = new Counter();
-
-		public TestCompositeOneStage() {
-			firstCounter.declareActive();
-		}
-
-	}
-
-	private class TestCompositeTwoStage extends AbstractCompositeStage {
-
-		private final Counter firstCounter = new Counter();
-		private final Counter secondCounter = new Counter();
-
-		public TestCompositeTwoStage() {
-			firstCounter.declareActive();
-			connectPorts(firstCounter.getOutputPort(), secondCounter.getInputPort());
-		}
-
-	}
-
-	private class TestNestingCompositeStage extends AbstractCompositeStage {
-
-		public TestCompositeOneStage firstCompositeStage;
-		public TestCompositeTwoStage secondCompositeStage;
-
-		public TestNestingCompositeStage() {
-			firstCompositeStage = new TestCompositeOneStage();
-			secondCompositeStage = new TestCompositeTwoStage();
-			connectPorts(firstCompositeStage.firstCounter.getOutputPort(), secondCompositeStage.firstCounter.getInputPort());
-		}
-
-	}
-
 }
