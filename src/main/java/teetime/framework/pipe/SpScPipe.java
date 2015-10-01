@@ -22,7 +22,7 @@ import teetime.framework.StageState;
 import teetime.framework.exceptionHandling.TerminateException;
 import teetime.util.framework.concurrent.queue.ObservableSpScArrayQueue;
 
-class SpScPipe<T> extends AbstractInterThreadPipe<T>implements IMonitorablePipe {
+public class SpScPipe<T> extends AbstractInterThreadPipe<T>implements IMonitorablePipe {
 
 	// private static final Logger LOGGER = LoggerFactory.getLogger(SpScPipe.class);
 
@@ -30,9 +30,13 @@ class SpScPipe<T> extends AbstractInterThreadPipe<T>implements IMonitorablePipe 
 	// statistics
 	private int numWaits;
 
-	SpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	public SpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		super(sourcePort, targetPort, capacity);
 		this.queue = new ObservableSpScArrayQueue<Object>(capacity);
+	}
+
+	public SpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		this(sourcePort, targetPort, 4);
 	}
 
 	// BETTER introduce a QueueIsFullStrategy

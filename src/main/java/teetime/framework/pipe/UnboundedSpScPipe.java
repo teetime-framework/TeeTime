@@ -26,11 +26,11 @@ import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-final class UnboundedSpScPipe<T> extends AbstractInterThreadPipe<T> {
+public final class UnboundedSpScPipe<T> extends AbstractInterThreadPipe<T> {
 
 	private final Queue<Object> queue;
 
-	UnboundedSpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	public UnboundedSpScPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort, Integer.MAX_VALUE);
 		ConcurrentQueueSpec specification = new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT);
 		this.queue = QueueFactory.newQueue(specification);
