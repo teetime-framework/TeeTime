@@ -78,8 +78,9 @@
 	<contributors>
 	<contributor>
 			<name>Robin Mohr</name>
-			<email>rmo@informatik.uni-kiel.de</email>
-			<organization>Kiel University</organization>
+			<email></email>
+			<organization></organization>
+			<organizationUrl></organizationUrl>
 			<timezone>Europe/Berlin</timezone>
 			<roles>
 				<role>Committer</role>
@@ -87,8 +88,9 @@
 	</contributor>
 	<contributor>
 			<name>Christian Claus Wiechmann</name>
-			<email>ccw@informatik.uni-kiel.de</email>
-			<organization>Kiel University</organization>
+			<email></email>
+			<organization></organization>
+			<organizationUrl></organizationUrl>
 			<timezone>Europe/Berlin</timezone>
 			<roles>
 				<role>Committer</role>
