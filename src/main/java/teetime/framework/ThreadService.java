@@ -85,7 +85,7 @@ class ThreadService extends AbstractService<ThreadService> {
 
 		threadableStages.addAll(newThreadableStages);
 		if (threadableStages.isEmpty()) {
-			throw new IllegalStateException("No stage was added using the addThreadableStage(..) method. Add at least one stage.");
+			throw new IllegalStateException("1004 - No threadable stages in this configuration.");
 		}
 
 		A2InvalidThreadAssignmentCheck checker = new A2InvalidThreadAssignmentCheck(newThreadableStages);

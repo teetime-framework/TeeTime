@@ -59,6 +59,13 @@ public abstract class AbstractCompositeStage {
 	 *            the type of elements to be sent
 	 */
 	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+		if (sourcePort == null) {
+			throw new IllegalArgumentException("1002 - sourcePort may not be null");
+		}
+		if (targetPort == null) {
+			throw new IllegalArgumentException("1003 - targetPort may not be null");
+		}
+
 		if (sourcePort.getOwningStage().getInputPorts().size() == 0) {
 			if (sourcePort.getOwningStage().getOwningThread() == null) {
 				sourcePort.getOwningStage().declareActive();

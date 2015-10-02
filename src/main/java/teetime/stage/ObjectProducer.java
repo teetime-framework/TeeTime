@@ -37,7 +37,7 @@ public final class ObjectProducer<T> extends AbstractProducerStage<T> {
 	 */
 	public ObjectProducer(final long numInputObjects, final ConstructorClosure<T> inputObjectCreator) {
 		if (numInputObjects < 0) {
-			throw new IllegalArgumentException("numInputObjects must be non-negative.");
+			throw new IllegalArgumentException("4001 - numInputObjects must be non-negative.");
 		}
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;
