@@ -17,7 +17,7 @@ package teetime.stage.basic.merger.dynamic;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.pipe.SpScPipe;
+import teetime.framework.pipe.BoundedSynchedPipe;
 import teetime.util.framework.port.PortAction;
 
 public class CreatePortAction<T> implements PortAction<DynamicMerger<T>> {
@@ -36,6 +36,6 @@ public class CreatePortAction<T> implements PortAction<DynamicMerger<T>> {
 	}
 
 	private void onInputPortCreated(final InputPort<T> newInputPort) {
-		new SpScPipe<T>(outputPort, newInputPort);
+		new BoundedSynchedPipe<T>(outputPort, newInputPort);
 	}
 }

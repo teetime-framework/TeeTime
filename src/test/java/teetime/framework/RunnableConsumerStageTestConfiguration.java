@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import teetime.framework.pipe.IPipe;
-import teetime.framework.pipe.SpScPipe;
+import teetime.framework.pipe.BoundedSynchedPipe;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 
@@ -38,7 +38,7 @@ public class RunnableConsumerStageTestConfiguration extends Configuration {
 		collectorSink.declareActive();
 
 		// Can not use createPorts, as the if condition above will lead to an exception
-		IPipe pipe = new SpScPipe(producer.getOutputPort(), collectorSink.getInputPort());
+		IPipe pipe = new BoundedSynchedPipe(producer.getOutputPort(), collectorSink.getInputPort());
 		registerCustomPipe((AbstractPipe<?>) pipe);
 
 		this.collectorSink = collectorSink;

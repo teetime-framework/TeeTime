@@ -15,43 +15,50 @@
  */
 package teetime.framework.pipe;
 
-import teetime.framework.AbstractIntraThreadPipe;
+import java.util.Queue;
+
+import org.jctools.queues.QueueFactory;
+import org.jctools.queues.spec.ConcurrentQueueSpec;
+import org.jctools.queues.spec.Ordering;
+import org.jctools.queues.spec.Preference;
+
+import teetime.framework.AbstractInterThreadPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class SingleElementPipe<T> extends AbstractIntraThreadPipe<T> {
+public final class UnboundedSynchedPipe<T> extends AbstractInterThreadPipe<T> {
 
-	private Object element;
+	private final Queue<Object> queue;
 
-	public SingleElementPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		super(sourcePort, targetPort, 1);
+	public UnboundedSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		super(sourcePort, targetPort, Integer.MAX_VALUE);
+		ConcurrentQueueSpec specification = new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT);
+		this.queue = QueueFactory.newQueue(specification);
 	}
 
 	@Override
 	public boolean add(final Object element) {
-		if (null == element) {
-			throw new IllegalArgumentException("Parameter 'element' is null, but must be non-null.");
-		}
-		this.element = element;
-		this.reportNewElement();
-		return true;
+		return this.queue.offer(element);
+	}
+
+	@Override
+	public boolean addNonBlocking(final Object element) {
+		return add(element);
 	}
 
 	@Override
 	public Object removeLast() {
-		final Object temp = this.element;
-		this.element = null;
-		return temp;
+		return this.queue.poll();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return this.element == null;
+		return this.queue.isEmpty();
 	}
 
 	@Override
 	public int size() {
-		return (this.element == null) ? 0 : 1;
+		return this.queue.size();
 	}
 
 }

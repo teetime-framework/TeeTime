@@ -25,9 +25,9 @@ import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.InstantiationPipe;
-import teetime.framework.pipe.SingleElementPipe;
-import teetime.framework.pipe.SpScPipe;
-import teetime.framework.pipe.UnboundedSpScPipe;
+import teetime.framework.pipe.UnsynchedPipe;
+import teetime.framework.pipe.BoundedSynchedPipe;
+import teetime.framework.pipe.UnboundedSynchedPipe;
 
 /**
  * Automatically instantiates the correct pipes
@@ -67,19 +67,19 @@ class A3PipeInstantiation implements ITraverserVisitor {
 		if (targetStageThread != null && sourceStageThread != targetStageThread) {
 			// inter
 			if (pipe.capacity() != 0) {
-				new UnboundedSpScPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
+				new UnboundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
 				if (LOGGER.isDebugEnabled()) {
 					LOGGER.debug("Connected (bounded) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
 				}
 			} else {
-				new SpScPipe<T>(pipe.getSourcePort(), pipe.getTargetPort(), pipe.capacity());
+				new BoundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort(), pipe.capacity());
 				if (LOGGER.isDebugEnabled()) {
 					LOGGER.debug("Connected (unbounded) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
 				}
 			}
 		} else {
 			// normal or reflexive pipe => intra
-			new SingleElementPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
+			new UnsynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Connected (unsynch) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
 			}

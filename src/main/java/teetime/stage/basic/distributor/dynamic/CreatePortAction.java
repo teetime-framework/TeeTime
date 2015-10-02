@@ -21,7 +21,7 @@ import java.util.List;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.RuntimeServiceFacade;
-import teetime.framework.pipe.SpScPipe;
+import teetime.framework.pipe.BoundedSynchedPipe;
 import teetime.framework.signal.StartingSignal;
 import teetime.util.framework.port.PortAction;
 
@@ -44,7 +44,7 @@ public class CreatePortAction<T> implements PortAction<DynamicDistributor<T>> {
 	}
 
 	private void processOutputPort(final DynamicDistributor<T> dynamicDistributor, final OutputPort<T> newOutputPort) {
-		new SpScPipe<T>(newOutputPort, inputPort);
+		new BoundedSynchedPipe<T>(newOutputPort, inputPort);
 
 		RuntimeServiceFacade.INSTANCE.startWithinNewThread(dynamicDistributor, inputPort.getOwningStage());
 

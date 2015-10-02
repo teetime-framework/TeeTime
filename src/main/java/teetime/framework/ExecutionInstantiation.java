@@ -20,9 +20,9 @@ import java.util.Map;
 import java.util.Set;
 
 import teetime.framework.pipe.InstantiationPipe;
-import teetime.framework.pipe.SingleElementPipe;
-import teetime.framework.pipe.SpScPipe;
-import teetime.framework.pipe.UnboundedSpScPipe;
+import teetime.framework.pipe.UnsynchedPipe;
+import teetime.framework.pipe.BoundedSynchedPipe;
+import teetime.framework.pipe.UnboundedSynchedPipe;
 
 class ExecutionInstantiation {
 
@@ -83,9 +83,9 @@ class ExecutionInstantiation {
 
 			if (threadableStages.contains(targetStage) && targetColor != color) {
 				if (pipe.capacity() != 0) {
-					new SpScPipe(outputPort, pipe.getTargetPort(), pipe.capacity());
+					new BoundedSynchedPipe(outputPort, pipe.getTargetPort(), pipe.capacity());
 				} else {
-					new UnboundedSpScPipe(outputPort, pipe.getTargetPort());
+					new UnboundedSynchedPipe(outputPort, pipe.getTargetPort());
 				}
 				numCreatedConnections = 0;
 			} else {
@@ -94,7 +94,7 @@ class ExecutionInstantiation {
 						throw new IllegalStateException("Crossing threads"); // One stage is connected to a stage of another thread (but not its "headstage")
 					}
 				}
-				new SingleElementPipe(outputPort, pipe.getTargetPort());
+				new UnsynchedPipe(outputPort, pipe.getTargetPort());
 				colors.put(targetStage, color);
 				numCreatedConnections = colorAndConnectStages(targetStage);
 			}
