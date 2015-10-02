@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import teetime.framework.AbstractInterThreadPipe;
+import teetime.framework.AbstractSynchedPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
@@ -41,7 +41,7 @@ public class BoundedSynchedPipeTest {
 		Merger<Object> portSource = new Merger<Object>();
 		OutputPort<Object> sourcePort = portSource.getOutputPort();
 		InputPort<Object> targetPort = portSource.getNewInputPort();
-		AbstractInterThreadPipe pipe = new BoundedSynchedPipe(sourcePort, targetPort, 1); // IPipe does not provide getSignal method
+		AbstractSynchedPipe pipe = new BoundedSynchedPipe(sourcePort, targetPort, 1); // IPipe does not provide getSignal method
 
 		List<ISignal> signals = new ArrayList<ISignal>();
 		signals.add(new StartingSignal());

@@ -22,11 +22,11 @@ import org.jctools.queues.spec.ConcurrentQueueSpec;
 import org.jctools.queues.spec.Ordering;
 import org.jctools.queues.spec.Preference;
 
-import teetime.framework.AbstractInterThreadPipe;
+import teetime.framework.AbstractSynchedPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class UnboundedSynchedPipe<T> extends AbstractInterThreadPipe<T> {
+public final class UnboundedSynchedPipe<T> extends AbstractSynchedPipe<T> {
 
 	private final Queue<Object> queue;
 

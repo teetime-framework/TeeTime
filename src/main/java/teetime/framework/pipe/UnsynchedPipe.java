@@ -15,11 +15,11 @@
  */
 package teetime.framework.pipe;
 
-import teetime.framework.AbstractIntraThreadPipe;
+import teetime.framework.AbstractUnsynchedPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class UnsynchedPipe<T> extends AbstractIntraThreadPipe<T> {
+public final class UnsynchedPipe<T> extends AbstractUnsynchedPipe<T> {
 
 	private Object element;
 

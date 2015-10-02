@@ -15,14 +15,14 @@
  */
 package teetime.framework.pipe;
 
-import teetime.framework.AbstractInterThreadPipe;
+import teetime.framework.AbstractSynchedPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.StageState;
 import teetime.framework.exceptionHandling.TerminateException;
 import teetime.util.framework.concurrent.queue.ObservableSpScArrayQueue;
 
-public class BoundedSynchedPipe<T> extends AbstractInterThreadPipe<T>implements IMonitorablePipe {
+public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T>implements IMonitorablePipe {
 
 	// private static final Logger LOGGER = LoggerFactory.getLogger(SpScPipe.class);
 
