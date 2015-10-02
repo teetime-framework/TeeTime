@@ -53,8 +53,7 @@
 			<item name="Wiki" href="wiki/home.html" />
 		</links>
 		<menu name="Documentation">
-			<item name="JavaDoc"
-				href="stabledocs/index.html" />
+			<item name="JavaDoc" href="stabledocs/index.html" />
 			<item name="Release Notes" href="changes-report.html" />
 			<item name="Project Dependencies" href="dependencies.html" />
 			<item name="License" href="license.html" />
@@ -151,6 +150,10 @@
 					<tocTopMax>4</tocTopMax>
 					<shortTitle>Wiki</shortTitle>
 				</wiki-home>
+				<wiki-errors>
+					<toc>sidebar</toc>
+					<tocTopMax>4</tocTopMax>
+				</wiki-errors>
 			</pages>
 		</reflowSkin>
 	</custom>
