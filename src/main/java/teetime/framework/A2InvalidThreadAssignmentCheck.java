@@ -82,7 +82,8 @@ public class A2InvalidThreadAssignmentCheck {
 			} else {
 				if (colors.containsKey(targetStage)) {
 					if (colors.get(targetStage) != color) {
-						throw new IllegalStateException("Crossing threads"); // One stage is connected to a stage of another thread (but not its "headstage")
+						throw new IllegalStateException("1001 - Crossing threads in " + targetStage.getId()); // One stage is connected to a stage of another thread
+																												// (but not its "headstage")
 					}
 				}
 				colors.put(targetStage, color);

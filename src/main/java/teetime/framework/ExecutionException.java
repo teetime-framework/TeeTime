@@ -31,7 +31,7 @@ public class ExecutionException extends RuntimeException {
 	private final Map<Thread, List<Exception>> exceptions;
 
 	public ExecutionException(final Map<Thread, List<Exception>> exceptions) {
-		super((exceptions.size() == 1) ? exceptions.toString() : exceptions.size() + " error(s) while execution. Check thrown exception(s).");
+		super("3003 - " + ((exceptions.size() == 1) ? exceptions.toString() : exceptions.size()) + " error(s) occurred while execution. Check thrown exception(s).");
 		this.exceptions = exceptions;
 	}
 

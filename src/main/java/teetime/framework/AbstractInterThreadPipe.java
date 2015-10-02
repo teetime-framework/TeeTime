@@ -68,7 +68,8 @@ public abstract class AbstractInterThreadPipe<T> extends AbstractPipe<T> {
 	public final void waitForStartSignal() throws InterruptedException {
 		final ISignal signal = signalQueue.take();
 		if (!(signal instanceof StartingSignal)) {
-			throw new IllegalStateException("Expected StartingSignal, but was " + signal.getClass().getSimpleName());
+			throw new IllegalStateException(
+					"2001 - Expected StartingSignal, but was " + signal.getClass().getSimpleName() + " in " + getTargetPort().getOwningStage().getId());
 		}
 		cachedTargetStage.onSignal(signal, getTargetPort());
 	}
