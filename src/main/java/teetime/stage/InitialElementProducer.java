@@ -29,7 +29,7 @@ public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 
 	public InitialElementProducer(final Iterable<T> elements) {
 		if (elements == null) {
-			throw new IllegalArgumentException("The given iterable must not be null");
+			throw new IllegalArgumentException("4002 - The given iterable must not be null.");
 		}
 		this.elements = elements;
 	}
