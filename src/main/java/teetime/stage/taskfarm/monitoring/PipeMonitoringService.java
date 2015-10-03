@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import teetime.framework.pipe.IMonitorablePipe;
+import teetime.stage.taskfarm.adaptation.history.TaskFarmHistoryService;
 
 public class PipeMonitoringService implements IMonitoringService<IMonitorablePipe, PipeMonitoringData> {
 
@@ -27,6 +28,11 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 	private long startingTimestamp = INIT;
 	private final List<IMonitorablePipe> pipes = new LinkedList<IMonitorablePipe>();
 	private final List<PipeMonitoringDataContainer> containers = new LinkedList<PipeMonitoringDataContainer>();
+	private final TaskFarmHistoryService<?, ?, ?> history;
+
+	public PipeMonitoringService(final TaskFarmHistoryService<?, ?, ?> history) {
+		this.history = history;
+	}
 
 	@Override
 	public List<PipeMonitoringDataContainer> getData() {
@@ -52,17 +58,31 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 		for (int i = 0; i < this.pipes.size(); i++) {
 			IMonitorablePipe pipe = this.pipes.get(i);
 			if (pipe != null) {
-				PipeMonitoringData monitoringData = new PipeMonitoringData(pipe.getNumPushes(),
-						pipe.getNumPulls(),
-						pipe.size(),
-						pipe.capacity(),
-						pipe.getPushThroughput(),
-						pipe.getPullThroughput(),
-						pipe.getNumWaits(),
-						i
-						);
+				if (history == null) {
+					PipeMonitoringData monitoringData = new PipeMonitoringData(pipe.getNumPushes(),
+							pipe.getNumPulls(),
+							pipe.size(),
+							pipe.capacity(),
+							pipe.getPushThroughput(),
+							pipe.getPullThroughput(),
+							pipe.getNumWaits(),
+							i
+							);
 
-				container.addMonitoringData(monitoringData);
+					container.addMonitoringData(monitoringData);
+				} else {
+					PipeMonitoringData monitoringData = new PipeMonitoringData(pipe.getNumPushes(),
+							pipe.getNumPulls(),
+							pipe.size(),
+							pipe.capacity(),
+							history.getLastPushThroughputOfPipe(pipe),
+							history.getLastPullThroughputOfPipe(pipe),
+							pipe.getNumWaits(),
+							i
+							);
+
+					container.addMonitoringData(monitoringData);
+				}
 			}
 		}
 

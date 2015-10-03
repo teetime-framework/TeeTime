@@ -21,6 +21,7 @@ import java.util.List;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
+import teetime.stage.taskfarm.adaptation.history.TaskFarmHistoryService;
 import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
 
 public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskFarmStage<?, ?, ?>, TaskFarmMonitoringData> {
@@ -31,11 +32,13 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 
 	private final List<TaskFarmMonitoringData> monitoredDatas = new LinkedList<TaskFarmMonitoringData>();
 	private final TaskFarmStage<?, ?, ?> taskFarmStage;
+	private final TaskFarmHistoryService<?, ?, ?> history;
 
 	private int maxNumberOfStages = 0;
 
-	public SingleTaskFarmMonitoringService(final TaskFarmStage<?, ?, ?> taskFarmStage) {
+	public SingleTaskFarmMonitoringService(final TaskFarmStage<?, ?, ?> taskFarmStage, final TaskFarmHistoryService<?, ?, ?> history) {
 		this.taskFarmStage = taskFarmStage;
+		this.history = history;
 	}
 
 	@Override
@@ -86,15 +89,28 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 			for (ITaskFarmDuplicable<?, ?> enclosedStage : taskFarmStage.getEnclosedStageInstances()) {
 				IMonitorablePipe inputPipe = (IMonitorablePipe) enclosedStage.getInputPort().getPipe();
 				if (inputPipe != null) {
-					switch (type) {
-					case PULL:
-						sum += inputPipe.getPullThroughput();
-						break;
-					case PUSH:
-						sum += inputPipe.getPushThroughput();
-						break;
-					default:
-						break;
+					if (history == null) {
+						switch (type) {
+						case PULL:
+							sum += inputPipe.getPullThroughput();
+							break;
+						case PUSH:
+							sum += inputPipe.getPushThroughput();
+							break;
+						default:
+							break;
+						}
+					} else {
+						switch (type) {
+						case PULL:
+							sum += history.getLastPullThroughputOfPipe(inputPipe);
+							break;
+						case PUSH:
+							sum += history.getLastPushThroughputOfPipe(inputPipe);
+							break;
+						default:
+							break;
+						}
 					}
 
 					count++;

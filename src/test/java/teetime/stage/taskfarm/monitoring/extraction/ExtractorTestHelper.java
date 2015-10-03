@@ -34,7 +34,7 @@ final class ExtractorTestHelper {
 		ExtractionTestPipe<Integer> pipe3 = new ExtractionTestPipe<Integer>();
 		ExtractionTestPipe<Integer> pipe4 = new ExtractionTestPipe<Integer>();
 
-		PipeMonitoringService service = new PipeMonitoringService();
+		PipeMonitoringService service = new PipeMonitoringService(null);
 
 		// Plan:
 		// Pipe 1: Tick 1-7
@@ -73,7 +73,7 @@ final class ExtractorTestHelper {
 		ExtractionTestPipe<Integer> pipe4 = new ExtractionTestPipe<Integer>();
 		ExtractionTestPipe<Integer> pipe5 = new ExtractionTestPipe<Integer>();
 
-		PipeMonitoringService service = new PipeMonitoringService();
+		PipeMonitoringService service = new PipeMonitoringService(null);
 		service.addMonitoredItem(pipe1);
 		service.addMonitoredItem(pipe2);
 		service.addMonitoredItem(pipe3);
@@ -87,7 +87,7 @@ final class ExtractorTestHelper {
 	static SingleTaskFarmMonitoringService generateSingleTaskFarmMonitoringServiceWithBehavior() {
 		@SuppressWarnings("unchecked")
 		TaskFarmStage<Integer, Integer, ?> taskFarmStage = (TaskFarmStage<Integer, Integer, ?>) createDummyTaskFarm();
-		SingleTaskFarmMonitoringService service = new SingleTaskFarmMonitoringService(taskFarmStage);
+		SingleTaskFarmMonitoringService service = new SingleTaskFarmMonitoringService(taskFarmStage, null);
 
 		// Plan (boundary=0.4):
 		// Enclosed Stage 1: Tick 1-9
@@ -121,7 +121,7 @@ final class ExtractorTestHelper {
 
 	static SingleTaskFarmMonitoringService generateEmptySingleTaskFarmMonitoringService() {
 		TaskFarmStage<?, ?, ?> taskFarmStage = createDummyTaskFarm();
-		SingleTaskFarmMonitoringService service = new SingleTaskFarmMonitoringService(taskFarmStage);
+		SingleTaskFarmMonitoringService service = new SingleTaskFarmMonitoringService(taskFarmStage, null);
 
 		return service;
 	}

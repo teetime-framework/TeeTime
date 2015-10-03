@@ -78,4 +78,8 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 		interrupt();
 		LOGGER.debug("Adaptation thread stop signal sent");
 	}
+
+	public TaskFarmHistoryService<I, O, T> getHistoryService() {
+		return historyService;
+	}
 }

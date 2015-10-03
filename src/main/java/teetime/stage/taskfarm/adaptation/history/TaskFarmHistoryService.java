@@ -15,6 +15,9 @@
  */
 package teetime.stage.taskfarm.adaptation.history;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
@@ -24,6 +27,9 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	private final TaskFarmStage<I, O, T> taskFarmStage;
 	private final ThroughputHistory history;
+
+	private Map<IMonitorablePipe, Long> lastPushThroughputs;
+	private Map<IMonitorablePipe, Long> lastPullThroughputs;
 
 	public TaskFarmHistoryService(final TaskFarmStage<I, O, T> taskFarmStage) {
 		this.taskFarmStage = taskFarmStage;
@@ -39,13 +45,19 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	}
 
 	private double getSumOfPipePushThroughputs() {
+		lastPullThroughputs = new HashMap<IMonitorablePipe, Long>();
+		lastPushThroughputs = new HashMap<IMonitorablePipe, Long>();
 		double sum = 0;
 
 		try {
 			for (ITaskFarmDuplicable<I, O> enclosedStage : taskFarmStage.getEnclosedStageInstances()) {
 				IMonitorablePipe inputPipe = (IMonitorablePipe) enclosedStage.getInputPort().getPipe();
 				if (inputPipe != null) {
-					sum += inputPipe.getPushThroughput();
+					long pushThroughput = inputPipe.getPushThroughput();
+					lastPushThroughputs.put(inputPipe, pushThroughput);
+					long pullThroughput = inputPipe.getPullThroughput();
+					lastPullThroughputs.put(inputPipe, pullThroughput);
+					sum += pullThroughput;
 				}
 			}
 		} catch (ClassCastException e) {
@@ -55,5 +67,21 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		}
 
 		return sum;
+	}
+
+	public long getLastPullThroughputOfPipe(final IMonitorablePipe pipe) {
+		long result = 0;
+		if (lastPullThroughputs.containsKey(pipe)) {
+			result = lastPullThroughputs.get(pipe);
+		}
+		return result;
+	}
+
+	public long getLastPushThroughputOfPipe(final IMonitorablePipe pipe) {
+		long result = 0;
+		if (lastPushThroughputs.containsKey(pipe)) {
+			result = lastPushThroughputs.get(pipe);
+		}
+		return result;
 	}
 }

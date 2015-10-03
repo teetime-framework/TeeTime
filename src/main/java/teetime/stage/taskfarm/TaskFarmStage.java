@@ -52,7 +52,7 @@ public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 
 	private final AdaptationThread<I, O, T> adaptationThread;
 
-	private final PipeMonitoringService pipeMonitoringService = new PipeMonitoringService();
+	private final PipeMonitoringService pipeMonitoringService;
 	private final SingleTaskFarmMonitoringService taskFarmMonitoringService;
 
 	public TaskFarmStage(final T workerStage) {
@@ -88,8 +88,9 @@ public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 			this.merger = merger;
 		}
 
-		taskFarmMonitoringService = new SingleTaskFarmMonitoringService(this);
 		adaptationThread = new AdaptationThread<I, O, T>(this);
+		taskFarmMonitoringService = new SingleTaskFarmMonitoringService(this, adaptationThread.getHistoryService());
+		pipeMonitoringService = new PipeMonitoringService(adaptationThread.getHistoryService());
 
 		configuration.setPipeCapacity(pipeCapacity);
 
