@@ -19,12 +19,22 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.Sink;
 
 public class TerminationTest {
+
+	@Ignore
+	@Test(timeout = 5000)
+	public void terminatesMultiInputPort() {
+		new Execution<Configuration>(new MultiInputConfig()).executeBlocking();
+	}
 
 	@Test(timeout = 1000)
 	public void correctAbort() throws InterruptedException {
@@ -118,6 +128,46 @@ public class TerminationTest {
 			time = System.currentTimeMillis();
 			super.onTerminating();
 		}
+	}
+
+	private class MultiInputConsumer extends AbstractConsumerStage<Object> {
+
+		public final InputPort<Object> secondInputPort = createInputPort(Object.class);
+
+		private int count = 0;
+
+		@Override
+		protected void execute(final Object element) {
+			Object received = secondInputPort.receive();
+			if (received != null) {
+				count++;
+			}
+			if (count > 3) {
+				this.terminate();
+			}
+		}
+
+	}
+
+	private class MultiInputConfig extends Configuration {
+
+		public MultiInputConfig() {
+			List<Integer> array = new ArrayList<Integer>();
+			for (int i = 0; i < 10000; i++) {
+				array.add(new Integer(0));
+			}
+			InitialElementProducer<Object> firstInit = new InitialElementProducer<Object>(new Object());
+			InitialElementProducer<Integer> secondInit = new InitialElementProducer<Integer>(array);
+			MultiInputConsumer miConsumer = new MultiInputConsumer();
+
+			connectPorts(firstInit.getOutputPort(), miConsumer.getInputPort());
+			connectPorts(secondInit.getOutputPort(), miConsumer.secondInputPort);
+
+			firstInit.declareActive();
+			secondInit.declareActive();
+			miConsumer.declareActive();
+		}
+
 	}
 
 }
