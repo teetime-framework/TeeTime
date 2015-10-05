@@ -15,7 +15,7 @@
  */
 package teetime.util;
 
-public class StacklessException extends RuntimeException {
+public abstract class StacklessException extends RuntimeException {
 
 	private static final long serialVersionUID = -9040980547278981254L;
 
