@@ -3,7 +3,7 @@
 
 TeeTime is a Pipe-and-Filter framework for Java.
 
-Informations on how to use it can be found on http://teetime.sourceforge.net.
+Informations on how to use it can be found on http://teetime-framework.github.io.
 
 ## Build
 
@@ -31,17 +31,17 @@ If you use Maven, simply add following lines to your ``pom.xml``:
 <dependency>
 	<groupId>net.sourceforge.teetime</groupId>
 	<artifactId>teetime</artifactId>
-	<version>1.1.2</version>
+	<version>2.0</version>
 </dependency>
 ```
 
 #### Binaries and sources
 
-The latest TeeTime release can be downloaded directly from [Sourceforge](https://sourceforge.net/projects/teetime/files/latest/download). If you also want to download the source and/or JavaDoc, you can also get a summary of available files on [Sourceforge](https://sourceforge.net/projects/teetime/files/) or [the Central Repository](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22net.sourceforge.teetime%22%20AND%20a%3A%22teetime%22).
+The latest TeeTime release can be downloaded directly from [GitHub](https://github.com/teetime-framework/teetime/releases/latest). If you also want to download the source and/or JavaDoc, you can also get a summary of available files on [GitHub](https://github.com/teetime-framework/teetime/releases/) or [the Central Repository](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22net.sourceforge.teetime%22%20AND%20a%3A%22teetime%22).
 
 ### Snapshot
 
-TeeTime is built upon a daily basis. All these nightly builds are accessible to the public. A documentation is provided [here](http://teetime.sourceforge.net/apidocs/index.html).
+TeeTime is built upon a daily basis. All these nightly builds are accessible to the public. A documentation is provided [here](http://teetime-framework.github.io/apidocs/index.html).
 
 Please do not forget, that this releases are not intended for daily use. These builds may be unstable.
 
@@ -55,7 +55,7 @@ To download these builds, add following lines to your project's ``pom.xml``:
 <dependency>
 	<groupId>net.sourceforge.teetime</groupId>
   	<artifactId>teetime</artifactId>
-  	<version>2.0-SNAPSHOT</version>
+  	<version>2.1-SNAPSHOT</version>
 </dependency>
 ```
 
