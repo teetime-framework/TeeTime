@@ -15,24 +15,43 @@
  */
 package teetime.framework.pipe;
 
+import teetime.framework.AbstractUnsynchedPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class SpScPipeFactory implements IPipeFactory {
+public final class UnsynchedPipe<T> extends AbstractUnsynchedPipe<T> {
 
-	@Override
-	public <T> IPipe<T> create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		return this.create(sourcePort, targetPort, 4);
+	private Object element;
+
+	public UnsynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		super(sourcePort, targetPort, 1);
 	}
 
 	@Override
-	public <T> IPipe<T> create(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		return new SpScPipe<T>(sourcePort, targetPort, capacity);
+	public boolean add(final Object element) {
+		if (null == element) {
+			throw new IllegalArgumentException("Parameter 'element' is null, but must be non-null.");
+		}
+		this.element = element;
+		this.reportNewElement();
+		return true;
 	}
 
 	@Override
-	public boolean isGrowable() {
-		return false;
+	public Object removeLast() {
+		final Object temp = this.element;
+		this.element = null;
+		return temp;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return this.element == null;
+	}
+
+	@Override
+	public int size() {
+		return (this.element == null) ? 0 : 1;
 	}
 
 }

@@ -19,18 +19,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.InstantiationPipe;
-import teetime.framework.pipe.SingleElementPipeFactory;
-import teetime.framework.pipe.SpScPipeFactory;
-import teetime.framework.pipe.UnboundedSpScPipeFactory;
+import teetime.framework.pipe.UnsynchedPipe;
+import teetime.framework.pipe.BoundedSynchedPipe;
+import teetime.framework.pipe.UnboundedSynchedPipe;
 
 class ExecutionInstantiation {
 
 	private static final int DEFAULT_COLOR = 0;
-	private static final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
-	private static final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
-	private static final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
 
 	private final ConfigurationContext context;
 
@@ -87,9 +83,9 @@ class ExecutionInstantiation {
 
 			if (threadableStages.contains(targetStage) && targetColor != color) {
 				if (pipe.capacity() != 0) {
-					interBoundedThreadPipeFactory.create(outputPort, pipe.getTargetPort(), pipe.capacity());
+					new BoundedSynchedPipe(outputPort, pipe.getTargetPort(), pipe.capacity());
 				} else {
-					interUnboundedThreadPipeFactory.create(outputPort, pipe.getTargetPort(), 4);
+					new UnboundedSynchedPipe(outputPort, pipe.getTargetPort());
 				}
 				numCreatedConnections = 0;
 			} else {
@@ -99,7 +95,7 @@ class ExecutionInstantiation {
 																												// (but not its "headstage")
 					}
 				}
-				intraThreadPipeFactory.create(outputPort, pipe.getTargetPort());
+				new UnsynchedPipe(outputPort, pipe.getTargetPort());
 				colors.put(targetStage, color);
 				numCreatedConnections = colorAndConnectStages(targetStage);
 			}

@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import teetime.framework.AbstractInterThreadPipe;
+import teetime.framework.AbstractSynchedPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
@@ -32,7 +32,7 @@ import teetime.framework.signal.TerminatingSignal;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.stage.basic.merger.Merger;
 
-public class SpScPipeTest {
+public class BoundedSynchedPipeTest {
 
 	// @Ignore
 	// ignore as long as this test passes null ports to SpScPipe
@@ -41,7 +41,7 @@ public class SpScPipeTest {
 		Merger<Object> portSource = new Merger<Object>();
 		OutputPort<Object> sourcePort = portSource.getOutputPort();
 		InputPort<Object> targetPort = portSource.getNewInputPort();
-		AbstractInterThreadPipe pipe = new SpScPipe(sourcePort, targetPort, 1); // IPipe does not provide getSignal method
+		AbstractSynchedPipe pipe = new BoundedSynchedPipe(sourcePort, targetPort, 1); // IPipe does not provide getSignal method
 
 		List<ISignal> signals = new ArrayList<ISignal>();
 		signals.add(new StartingSignal());
@@ -71,7 +71,7 @@ public class SpScPipeTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testAdd() throws Exception {
-		SpScPipe pipe = new SpScPipe(null, null, 4);
+		BoundedSynchedPipe pipe = new BoundedSynchedPipe(null, null, 4);
 		assertFalse(pipe.add(null));
 	}
 }
