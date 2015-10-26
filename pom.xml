@@ -24,7 +24,7 @@
 		<javadocOutputDir>apidocs</javadocOutputDir>
 
 		<java.version>1.6</java.version>
-		<checkstyle.version>2.16</checkstyle.version>
+		<checkstyle.version>2.17</checkstyle.version>
 		<findbugs.version>3.0.2</findbugs.version>
 		<pmd.version>3.5</pmd.version>
 		<javadoc.version>2.10.3</javadoc.version>
@@ -74,9 +74,9 @@
 			</roles>
 		</developer>
 	</developers>
-	
+
 	<contributors>
-	<contributor>
+		<contributor>
 			<name>Robin Mohr</name>
 			<email>-</email>
 			<organization>-</organization>
@@ -85,8 +85,8 @@
 			<roles>
 				<role>Committer</role>
 			</roles>
-	</contributor>
-	<contributor>
+		</contributor>
+		<contributor>
 			<name>Christian Claus Wiechmann</name>
 			<email>ccw@informatik.uni-kiel.de</email>
 			<organization>-</organization>
@@ -95,7 +95,7 @@
 			<roles>
 				<role>Committer</role>
 			</roles>
-	</contributor>
+		</contributor>
 	</contributors>
 
 	<scm>
@@ -108,13 +108,6 @@
 		<system>Jenkins</system>
 		<url>https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/</url>
 	</ciManagement>
-
-	<repositories>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -145,17 +138,10 @@
 			<artifactId>guava</artifactId>
 			<version>18.0</version>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>org.jctools</groupId> -->
-		<!-- <artifactId>jctools-core</artifactId> -->
-		<!-- <version>1.0</version> -->
-		<!-- <version>1.1-SNAPSHOT</version> -->
-		<!-- </dependency> -->
 		<dependency>
-			<groupId>com.github.JCTools</groupId>
-			<artifactId>JCTools</artifactId>
-			<!-- SNAPSHOT master version -->
-			<version>7239659ba0</version>
+			<groupId>org.jctools</groupId>
+			<artifactId>jctools-core</artifactId>
+			<version>1.1</version>
 		</dependency>
 
 		<dependency>
