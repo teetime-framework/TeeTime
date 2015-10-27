@@ -15,7 +15,7 @@
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
-			<url>http://christianwulf.github.io/teetime/LICENSE.txt</url>
+			<url>http://teetime-framework.github.io/LICENSE.txt</url>
 		</license>
 	</licenses>
 
@@ -47,7 +47,7 @@
 
 	<issueManagement>
 		<system>GitLab</system>
-		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/issues/</url>
+		<url>https://build.se.informatik.uni-kiel.de/gitlab/teetime/teetime/issues/</url>
 	</issueManagement>
 
 	<developers>
@@ -77,16 +77,6 @@
 
 	<contributors>
 		<contributor>
-			<name>Robin Mohr</name>
-			<email>-</email>
-			<organization>-</organization>
-			<organizationUrl>-</organizationUrl>
-			<timezone>Europe/Berlin</timezone>
-			<roles>
-				<role>Committer</role>
-			</roles>
-		</contributor>
-		<contributor>
 			<name>Christian Claus Wiechmann</name>
 			<email>ccw@informatik.uni-kiel.de</email>
 			<organization>-</organization>
@@ -99,9 +89,9 @@
 	</contributors>
 
 	<scm>
-		<connection>scm:git:https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime.git</connection>
-		<developerConnection>scm:git:ssh://gitlab@build.se.informatik.uni-kiel.de:chw/teetime.git</developerConnection>
-		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/</url>
+		<connection>scm:git:https://build.se.informatik.uni-kiel.de/gitlab/teetime/teetime.git</connection>
+		<developerConnection>scm:git:ssh://gitlab@build.se.informatik.uni-kiel.de:teetime/teetime.git</developerConnection>
+		<url>https://build.se.informatik.uni-kiel.de/gitlab/teetime/teetime/</url>
 	</scm>
 
 	<ciManagement>

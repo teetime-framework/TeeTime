@@ -9,16 +9,16 @@ You can also download the source code from our Git repository.
 Following URL's will give you read-only access to our server:
 
 ```xml
-ssh://gitlab@build.se.informatik.uni-kiel.de:chw/teetime.git
+ssh://gitlab@build.se.informatik.uni-kiel.de:teetime/teetime.git
 ```
 
 or
 
 ```xml
-http://build.se.informatik.uni-kiel.de/gitlab/chw/teetime.git
+http://build.se.informatik.uni-kiel.de/gitlab/teetime/teetime.git
 ```
 
-Last, but not least, TeeTime is also available on [GitHub](https://github.com/ChristianWulf/teetime).
+Last, but not least, TeeTime is also available on [GitHub](https://github.com/teetime-framework/teetime).
 
 ### Workflow
 
@@ -32,7 +32,7 @@ If you contribute, please follow our guidelines to comply to our quality standar
 
 - Create a new branch for every code modification you want to perform.
 
-- Contribute your changes and fixes by using the [merge request](https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/merge_requests) function in GitLab.
+- Contribute your changes and fixes by using the [merge request](https://build.se.informatik.uni-kiel.de/gitlab/teetime/teetime/merge_requests) function in GitLab.
 
 - Last, but not least, participate in discussions within our issue tracking system. 
 
