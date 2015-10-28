@@ -28,9 +28,9 @@ import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
 /**
- * The TaskFarmStage implements the task farm parallelization pattern in
+ * Represents the task farm parallelization pattern in
  * TeeTime. It dynamically adds CPU resources at runtime depending on
- * the current CPU load and the behavior of the enclosed stage.
+ * the current CPU load and the behavior of the parallelized stage.
  *
  * @author Christian Claus Wiechmann
  *
@@ -39,31 +39,52 @@ import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
  * @param <O>
  *            Output type of Task Farm
  * @param <T>
- *            Type of enclosed stage
+ *            Type of the parallelized stage
  */
 public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends AbstractCompositeStage {
 
+	/** currently existing worker stages **/
 	private final List<ITaskFarmDuplicable<I, O>> enclosedStageInstances = new LinkedList<ITaskFarmDuplicable<I, O>>();
 
+	/** merger instance **/
 	private final DynamicDistributor<I> distributor = new DynamicDistributor<I>();
+	/** distributor instance **/
 	private final DynamicMerger<O> merger;
 
+	/** configuration of the task farm **/
 	private final TaskFarmConfiguration<I, O, T> configuration = new TaskFarmConfiguration<I, O, T>();
 
+	/** adaptation thread belonging to this task farm **/
 	private final AdaptationThread<I, O, T> adaptationThread;
 
+	/** monitoring service regarding pipe throughputs **/
 	private final PipeMonitoringService pipeMonitoringService;
+	/** monitoring service regarding performance of the whole task farm **/
 	private final SingleTaskFarmMonitoringService taskFarmMonitoringService;
 
+	/**
+	 * Create a task farm using a worker stage with a pipe capacity of 100.
+	 *
+	 * @param workerStage
+	 *            stage to be parallelized by the task farm
+	 */
 	public TaskFarmStage(final T workerStage) {
 		this(workerStage, null, 100);
 	}
 
+	/**
+	 * Create a task farm using a worker stage with a given pipe capacity.
+	 *
+	 * @param workerStage
+	 *            stage to be parallelized by the task farm
+	 * @param pipeCapacity
+	 *            pipe capacity to be used
+	 */
 	public TaskFarmStage(final T workerStage, final int pipeCapacity) {
 		this(workerStage, null, pipeCapacity);
 	}
 
-	public TaskFarmStage(final T workerStage, final DynamicMerger<O> merger, final int pipeCapacity) {
+	TaskFarmStage(final T workerStage, final DynamicMerger<O> merger, final int pipeCapacity) {
 		super();
 
 		if (null == workerStage) {
@@ -110,38 +131,83 @@ public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 		enclosedStageInstances.add(includedStage);
 	}
 
+	/**
+	 * Returns the input port of the task farm/distributor of the task farm.
+	 *
+	 * @return input port of the task farm
+	 */
 	public InputPort<I> getInputPort() {
 		return this.distributor.getInputPort();
 	}
 
+	/**
+	 * Returns the output port of the task farm/merger of the task farm.
+	 *
+	 * @return output port of the task farm
+	 */
 	public OutputPort<O> getOutputPort() {
 		return this.merger.getOutputPort();
 	}
 
+	/**
+	 * Returns the configuration parameters of the task farm.
+	 *
+	 * @return configuration parameters
+	 */
 	public TaskFarmConfiguration<I, O, T> getConfiguration() {
 		return this.configuration;
 	}
 
+	/**
+	 * Returns the first instance of the worker stages enclosed in the task farm.
+	 *
+	 * @return first instance of the worker stages
+	 */
 	public ITaskFarmDuplicable<I, O> getBasicEnclosedStage() {
 		return this.enclosedStageInstances.get(0);
 	}
 
+	/**
+	 * Returns a list of all currently existing worker stages in this task farm.
+	 *
+	 * @return list of all existing worker stages
+	 */
 	public List<ITaskFarmDuplicable<I, O>> getEnclosedStageInstances() {
 		return this.enclosedStageInstances;
 	}
 
+	/**
+	 * Returns the distributor instance of this task farm.
+	 *
+	 * @return distributor instance
+	 */
 	public DynamicDistributor<I> getDistributor() {
 		return this.distributor;
 	}
 
+	/**
+	 * Returns the merger instance of this task farm.
+	 *
+	 * @return merger instance
+	 */
 	public DynamicMerger<O> getMerger() {
 		return this.merger;
 	}
 
+	/**
+	 * Returns the monitoring service of this task farm regarding pipe throughputs.
+	 *
+	 * @return monitoring service regarding pipe throughputs
+	 */
 	public PipeMonitoringService getPipeMonitoringService() {
 		return this.pipeMonitoringService;
 	}
 
+	/**
+	 * Returns the monitoring service of this task farm regarding performance of the whole task farm.
+	 *
+	 * @return monitoring service regarding performance of the whole task farm
+	 */
 	public SingleTaskFarmMonitoringService getTaskFarmMonitoringService() {
 		return this.taskFarmMonitoringService;
 	}
