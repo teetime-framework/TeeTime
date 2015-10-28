@@ -16,7 +16,7 @@
 package teetime.stage.taskfarm.adaptation.analysis.algorithm;
 
 import teetime.stage.taskfarm.TaskFarmConfiguration;
-import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAnalysisAlgorithm;
+import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAlgorithm;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 /**
@@ -27,7 +27,7 @@ import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
  * @author Christian Claus Wiechmann
  *
  */
-public class WeightedAlgorithm extends AbstractThroughputAnalysisAlgorithm {
+public class WeightedAlgorithm extends AbstractThroughputAlgorithm {
 
 	/**
 	 * This enumeration contains values for logarithmic, exponential

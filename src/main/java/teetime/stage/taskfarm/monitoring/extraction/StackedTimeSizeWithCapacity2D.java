@@ -22,7 +22,7 @@ import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService.PipeMonitoringDataContainer;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
-public class StackedTimeSizeWithCapacity2D extends AbstractStackedMonitoring {
+public class StackedTimeSizeWithCapacity2D extends AbstractStackedCSVExporter {
 
 	public StackedTimeSizeWithCapacity2D(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		super(pipeMonitoringService, taskFarmMonitoringService);

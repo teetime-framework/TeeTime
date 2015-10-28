@@ -22,9 +22,9 @@ import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringData;
 
-public abstract class AbstractSingleTaskFarmMonitoring extends AbstractMonitoringDataExtraction {
+public abstract class AbstractGeneralCSVExporter extends AbstractMonitoringDataExporter {
 
-	public AbstractSingleTaskFarmMonitoring(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
+	public AbstractGeneralCSVExporter(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		super(pipeMonitoringService, taskFarmMonitoringService);
 	}
 

@@ -23,7 +23,7 @@ import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringData;
 
-public class TimeBoundaryMSPullThroughput3D extends AbstractSingleTaskFarmMonitoring {
+public class TimeBoundaryMSPullThroughput3D extends AbstractGeneralCSVExporter {
 
 	public TimeBoundaryMSPullThroughput3D(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		super(pipeMonitoringService, taskFarmMonitoringService);

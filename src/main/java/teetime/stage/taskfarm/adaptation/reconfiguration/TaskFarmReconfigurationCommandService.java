@@ -19,15 +19,15 @@ import teetime.framework.pipe.IMonitorablePipe;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.TaskFarmStage;
-import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAnalysisAlgorithm;
+import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAlgorithm;
 
-class ReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<I, O>> {
+class TaskFarmReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	private final TaskFarmStage<I, O, T> taskFarmStage;
 	private int samplesUntilRemove;
 	private ReconfigurationMode currentMode = ReconfigurationMode.ADDING;
 
-	ReconfigurationCommandService(final TaskFarmStage<I, O, T> taskFarmStage) {
+	TaskFarmReconfigurationCommandService(final TaskFarmStage<I, O, T> taskFarmStage) {
 		this.taskFarmStage = taskFarmStage;
 		this.samplesUntilRemove = TaskFarmConfiguration.INIT_SAMPLES_UNTIL_REMOVE;
 	}
@@ -55,7 +55,7 @@ class ReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 			this.currentMode = ReconfigurationMode.REMOVING;
 			command = TaskFarmReconfigurationCommand.NONE;
 		} else {
-			if (throughputScore != AbstractThroughputAnalysisAlgorithm.INVALID_SCORE) {
+			if (throughputScore != AbstractThroughputAlgorithm.INVALID_SCORE) {
 				if (samplesUntilRemove == TaskFarmConfiguration.INIT_SAMPLES_UNTIL_REMOVE) {
 					// new execution, start adding stages
 					samplesUntilRemove = taskFarmStage.getConfiguration().getMaxSamplesUntilRemove();

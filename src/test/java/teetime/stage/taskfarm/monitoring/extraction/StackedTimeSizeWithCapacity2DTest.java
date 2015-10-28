@@ -33,7 +33,7 @@ public class StackedTimeSizeWithCapacity2DTest {
 	public void testWorkingService() {
 		PipeMonitoringService service = ExtractorTestHelper.generate4PipeMonitoringServiceWithBehavior();
 
-		AbstractMonitoringDataExtraction extraction = new StackedTimeSizeWithCapacity2D(service, null);
+		AbstractMonitoringDataExporter extraction = new StackedTimeSizeWithCapacity2D(service, null);
 		String result = extraction.extractToString();
 
 		List<String> outputValues = new LinkedList<String>();
@@ -53,7 +53,7 @@ public class StackedTimeSizeWithCapacity2DTest {
 	public void testEmptyService() {
 		PipeMonitoringService service = ExtractorTestHelper.generateEmpty5PipeMonitoringService();
 
-		AbstractMonitoringDataExtraction extraction = new StackedTimeSizeWithCapacity2D(service, null);
+		AbstractMonitoringDataExporter extraction = new StackedTimeSizeWithCapacity2D(service, null);
 		String result = extraction.extractToString();
 
 		String header = "time,capacity,size0,size1,size2,size3,size4"

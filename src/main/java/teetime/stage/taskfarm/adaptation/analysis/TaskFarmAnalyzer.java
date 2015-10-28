@@ -31,14 +31,14 @@ public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	private final TaskFarmConfiguration<I, O, T> configuration;
 	private double throughputScore;
-	private AbstractThroughputAnalysisAlgorithm lastUsedAlgorithm = null;
+	private AbstractThroughputAlgorithm lastUsedAlgorithm = null;
 
 	public TaskFarmAnalyzer(final TaskFarmConfiguration<I, O, T> configuration) {
 		this.configuration = configuration;
 	}
 
 	public void analyze(final ThroughputHistory history) {
-		AbstractThroughputAnalysisAlgorithm algorithm = null;
+		AbstractThroughputAlgorithm algorithm = null;
 
 		algorithm = createAlgorithm(configuration.getThroughputAlgorithm());
 		lastUsedAlgorithm = algorithm;
@@ -50,10 +50,10 @@ public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		return throughputScore;
 	}
 
-	private AbstractThroughputAnalysisAlgorithm createAlgorithm(final String algorithmClassName) {
+	private AbstractThroughputAlgorithm createAlgorithm(final String algorithmClassName) {
 		String fullyQualifiedPath = THROUGHPUT_ALGORITHM_PATH + "." + algorithmClassName;
 
-		AbstractThroughputAnalysisAlgorithm algorithm = null;
+		AbstractThroughputAlgorithm algorithm = null;
 
 		try {
 			Class<?> algorithmClass = Class.forName(fullyQualifiedPath);
@@ -63,7 +63,7 @@ public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 			Constructor<?> algorithmConstructor = algorithmClass.getConstructor(constructorParameterClasses);
 
-			algorithm = (AbstractThroughputAnalysisAlgorithm) algorithmConstructor.newInstance(constructorParameterObjects);
+			algorithm = (AbstractThroughputAlgorithm) algorithmConstructor.newInstance(constructorParameterObjects);
 		} catch (ClassNotFoundException e) {
 			throw new TaskFarmAnalysisException("The ThroughputAlgorithm \""
 					+ fullyQualifiedPath
@@ -99,7 +99,7 @@ public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		return algorithm;
 	}
 
-	public AbstractThroughputAnalysisAlgorithm getLastUsedAlgorithm() {
+	public AbstractThroughputAlgorithm getLastUsedAlgorithm() {
 		return lastUsedAlgorithm;
 	}
 }

@@ -22,7 +22,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAnalysisAlgorithm;
+import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAlgorithm;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 public class RegressionAlgorithmTest {
@@ -43,7 +43,7 @@ public class RegressionAlgorithmTest {
 		Thread.sleep(100);
 		history.add(5);
 
-		final AbstractThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(null);
+		final AbstractThroughputAlgorithm algorithm = new RegressionAlgorithm(null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
 	}
@@ -62,7 +62,7 @@ public class RegressionAlgorithmTest {
 		Thread.sleep(100);
 		history.add(2);
 
-		final AbstractThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(null);
+		final AbstractThroughputAlgorithm algorithm = new RegressionAlgorithm(null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
 	}
@@ -81,7 +81,7 @@ public class RegressionAlgorithmTest {
 		Thread.sleep(100);
 		history.add(0);
 
-		final AbstractThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(null);
+		final AbstractThroughputAlgorithm algorithm = new RegressionAlgorithm(null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertThat(thoughputScore, is(closeTo(0, EPSILON)));
 	}
@@ -100,7 +100,7 @@ public class RegressionAlgorithmTest {
 		Thread.sleep(100);
 		history.add(13);
 
-		final AbstractThroughputAnalysisAlgorithm algorithm = new RegressionAlgorithm(null);
+		final AbstractThroughputAlgorithm algorithm = new RegressionAlgorithm(null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(history);
 		assertThat(thoughputScore, is(lessThan(-0.3d)));
 	}

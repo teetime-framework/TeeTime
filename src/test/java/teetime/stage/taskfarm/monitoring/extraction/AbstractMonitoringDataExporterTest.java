@@ -26,13 +26,13 @@ import java.util.Scanner;
 
 import org.junit.Test;
 
-public class AbstractMonitoringDataExtractionTest {
+public class AbstractMonitoringDataExporterTest {
 
 	private final static String NEWLINE = System.getProperty("line.separator");
 
 	@Test
 	public void toStringTest() {
-		AbstractMonitoringDataExtraction extractor = new TestExtractionImpl();
+		AbstractMonitoringDataExporter extractor = new TestExtractionImpl();
 		String result = extractor.extractToString();
 
 		String outputToBe = "foo,poo"
@@ -48,7 +48,7 @@ public class AbstractMonitoringDataExtractionTest {
 			File file = File.createTempFile("abstractmonitoringdataextractiontest", ".tmp");
 			file.deleteOnExit();
 
-			AbstractMonitoringDataExtraction extractor = new TestExtractionImpl();
+			AbstractMonitoringDataExporter extractor = new TestExtractionImpl();
 			extractor.extractToFile(file);
 
 			String result = readFileToString(file.getAbsolutePath());
@@ -67,7 +67,7 @@ public class AbstractMonitoringDataExtractionTest {
 		try {
 			String file = System.getProperty("java.io.tmpdir") + "abstractmonitoringdataextractiontest.tmp";
 
-			AbstractMonitoringDataExtraction extractor = new TestExtractionImpl();
+			AbstractMonitoringDataExporter extractor = new TestExtractionImpl();
 			extractor.extractToFile(file);
 
 			String result = readFileToString(file);
@@ -102,7 +102,7 @@ public class AbstractMonitoringDataExtractionTest {
 		}
 	}
 
-	private class TestExtractionImpl extends AbstractMonitoringDataExtraction {
+	private class TestExtractionImpl extends AbstractMonitoringDataExporter {
 
 		public TestExtractionImpl() {
 			super(null, null);

@@ -18,7 +18,7 @@ package teetime.stage.taskfarm.adaptation.analysis.algorithm;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import teetime.stage.taskfarm.TaskFarmConfiguration;
-import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAnalysisAlgorithm;
+import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAlgorithm;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 /**
@@ -31,7 +31,7 @@ import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
  * @author Christian Claus Wiechmann
  *
  */
-public class RegressionAlgorithm extends AbstractThroughputAnalysisAlgorithm {
+public class RegressionAlgorithm extends AbstractThroughputAlgorithm {
 
 	/**
 	 * Constructor.

@@ -33,7 +33,7 @@ public class StackedTimePushThroughput2DTest {
 	public void testWorkingService() {
 		PipeMonitoringService service = ExtractorTestHelper.generate4PipeMonitoringServiceWithBehavior();
 
-		AbstractMonitoringDataExtraction extraction = new StackedTimePushThroughput2D(service, null);
+		AbstractMonitoringDataExporter extraction = new StackedTimePushThroughput2D(service, null);
 		String result = extraction.extractToString();
 
 		List<String> outputValues = new LinkedList<String>();
@@ -53,7 +53,7 @@ public class StackedTimePushThroughput2DTest {
 	public void testEmptyService() {
 		PipeMonitoringService service = ExtractorTestHelper.generateEmpty5PipeMonitoringService();
 
-		AbstractMonitoringDataExtraction extraction = new StackedTimePushThroughput2D(service, null);
+		AbstractMonitoringDataExporter extraction = new StackedTimePushThroughput2D(service, null);
 		String result = extraction.extractToString();
 
 		String header = "time,pushthroughput0,pushthroughput1,pushthroughput2,pushthroughput3,pushthroughput4"

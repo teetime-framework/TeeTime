@@ -52,7 +52,7 @@ public class TaskFarmAnalyzerTest {
 		configuration.setThroughputAlgorithm(algorithmName);
 		analyzer.analyze(history);
 		throughputScore = analyzer.getThroughputScore();
-		assertThat(throughputScore, is(equalTo((double) AbstractThroughputAnalysisAlgorithm.INVALID_SCORE)));
+		assertThat(throughputScore, is(equalTo((double) AbstractThroughputAlgorithm.INVALID_SCORE)));
 		assertThat(analyzer.getLastUsedAlgorithm(), is(instanceOf(algorithmClass)));
 	}
 

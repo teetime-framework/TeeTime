@@ -33,7 +33,7 @@ public class TimeBoundaryStages3DTest {
 	public void testWorkingService() {
 		SingleTaskFarmMonitoringService service = ExtractorTestHelper.generateSingleTaskFarmMonitoringServiceWithBehavior();
 
-		AbstractMonitoringDataExtraction extraction = new TimeBoundaryStages3D(null, service);
+		AbstractMonitoringDataExporter extraction = new TimeBoundaryStages3D(null, service);
 		String result = extraction.extractToString();
 
 		List<String> outputValues = new LinkedList<String>();
@@ -54,7 +54,7 @@ public class TimeBoundaryStages3DTest {
 	public void testEmptyService() {
 		SingleTaskFarmMonitoringService service = ExtractorTestHelper.generateEmptySingleTaskFarmMonitoringService();
 
-		AbstractMonitoringDataExtraction extraction = new TimeBoundaryStages3D(null, service);
+		AbstractMonitoringDataExporter extraction = new TimeBoundaryStages3D(null, service);
 		String result = extraction.extractToString();
 
 		String header = "time,boundary,stages"

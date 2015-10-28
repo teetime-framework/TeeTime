@@ -26,7 +26,7 @@ import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
  * @author Christian Claus Wiechmann
  *
  */
-public abstract class AbstractThroughputAnalysisAlgorithm {
+public abstract class AbstractThroughputAlgorithm {
 
 	/**
 	 * Number of recently measured throughput values that we will analyze.
@@ -42,7 +42,7 @@ public abstract class AbstractThroughputAnalysisAlgorithm {
 	 *            TaskFarmConfiguration of the Task Farm which
 	 *            this algorithm is used for
 	 */
-	protected AbstractThroughputAnalysisAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
+	protected AbstractThroughputAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
 		if (configuration == null) {
 			// for testing purposes
 			window = 3;

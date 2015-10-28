@@ -25,13 +25,13 @@ import teetime.stage.basic.AbstractFilter;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
 
-public class ReconfigurationCommandServiceTest {
+public class TaskFarmReconfigurationCommandServiceTest {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void executionPlanTestA() {
 		TaskFarmStage taskFarmStage = createTaskFarm();
-		ReconfigurationCommandService commandService = new ReconfigurationCommandService(taskFarmStage);
+		TaskFarmReconfigurationCommandService commandService = new TaskFarmReconfigurationCommandService(taskFarmStage);
 
 		assertThat(commandService.decideExecutionPlan(0.5d), is(equalTo(TaskFarmReconfigurationCommand.ADD)));
 		for (int i = 0; i < taskFarmStage.getConfiguration().getMaxSamplesUntilRemove(); i++) {
@@ -44,7 +44,7 @@ public class ReconfigurationCommandServiceTest {
 	@Test
 	public void executionPlanTestB() {
 		TaskFarmStage taskFarmStage = createTaskFarm();
-		ReconfigurationCommandService commandService = new ReconfigurationCommandService(taskFarmStage);
+		TaskFarmReconfigurationCommandService commandService = new TaskFarmReconfigurationCommandService(taskFarmStage);
 
 		assertThat(commandService.decideExecutionPlan(0.5d), is(equalTo(TaskFarmReconfigurationCommand.ADD)));
 		assertThat(commandService.decideExecutionPlan(0.1d), is(equalTo(TaskFarmReconfigurationCommand.NONE)));

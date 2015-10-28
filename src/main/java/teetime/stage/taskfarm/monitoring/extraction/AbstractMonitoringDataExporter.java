@@ -24,13 +24,13 @@ import java.io.Writer;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
-public abstract class AbstractMonitoringDataExtraction {
+public abstract class AbstractMonitoringDataExporter {
 
 	private final static String NEWLINE = System.getProperty("line.separator");
 	private final PipeMonitoringService pipeMonitoringService;
 	private final SingleTaskFarmMonitoringService taskFarmMonitoringService;
 
-	public AbstractMonitoringDataExtraction(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
+	public AbstractMonitoringDataExporter(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		this.pipeMonitoringService = pipeMonitoringService;
 		this.taskFarmMonitoringService = taskFarmMonitoringService;
 	}

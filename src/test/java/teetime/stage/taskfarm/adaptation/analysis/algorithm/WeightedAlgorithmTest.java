@@ -22,7 +22,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
-import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAnalysisAlgorithm;
+import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAlgorithm;
 import teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm.WeightMethod;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
@@ -45,21 +45,21 @@ public class WeightedAlgorithmTest {
 
 	@Test
 	public void exponentialTest() {
-		final AbstractThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.EXPONENTIAL, null);
+		final AbstractThroughputAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.EXPONENTIAL, null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(this.history);
 		assertThat(thoughputScore, is(greaterThan(0.52)));
 	}
 
 	@Test
 	public void linearTest() {
-		final AbstractThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LINEAR, null);
+		final AbstractThroughputAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LINEAR, null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(this.history);
 		assertThat(thoughputScore, is(greaterThan(0.59)));
 	}
 
 	@Test
 	public void logarithmicTest() {
-		final AbstractThroughputAnalysisAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LOGARITHMIC, null);
+		final AbstractThroughputAlgorithm algorithm = new WeightedAlgorithm(WeightMethod.LOGARITHMIC, null);
 		final double thoughputScore = algorithm.getTroughputAnalysis(this.history);
 		assertThat(thoughputScore, is(greaterThan(0.63)));
 	}

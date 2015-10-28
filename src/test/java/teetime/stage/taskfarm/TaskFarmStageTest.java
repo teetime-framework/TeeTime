@@ -28,7 +28,7 @@ import org.junit.Test;
 import teetime.framework.Execution;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
-import teetime.stage.taskfarm.monitoring.extraction.AbstractMonitoringDataExtraction;
+import teetime.stage.taskfarm.monitoring.extraction.AbstractMonitoringDataExporter;
 import teetime.stage.taskfarm.monitoring.extraction.StackedTimePullThroughput2D;
 import teetime.stage.taskfarm.monitoring.extraction.StackedTimePushThroughput2D;
 import teetime.stage.taskfarm.monitoring.extraction.StackedTimeSizeWithCapacity2D;
@@ -69,7 +69,7 @@ public class TaskFarmStageTest {
 		extractToTempFile(new TimeBoundaryStages3D(pipeService, taskFarmService));
 	}
 
-	private void extractToTempFile(final AbstractMonitoringDataExtraction extractor) throws IOException {
+	private void extractToTempFile(final AbstractMonitoringDataExporter extractor) throws IOException {
 		File tempFile = File.createTempFile(extractor.getClass().getSimpleName(), ".tmp");
 		tempFile.deleteOnExit();
 

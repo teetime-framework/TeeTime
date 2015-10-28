@@ -23,7 +23,7 @@ import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringData;
 
-public class TimeBoundary2D extends AbstractSingleTaskFarmMonitoring {
+public class TimeBoundary2D extends AbstractGeneralCSVExporter {
 
 	public TimeBoundary2D(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		super(pipeMonitoringService, taskFarmMonitoringService);

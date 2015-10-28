@@ -33,7 +33,7 @@ public class TimeBoundary2DTest {
 	public void testWorkingService() {
 		SingleTaskFarmMonitoringService service = ExtractorTestHelper.generateSingleTaskFarmMonitoringServiceWithBehavior();
 
-		AbstractMonitoringDataExtraction extraction = new TimeBoundary2D(null, service);
+		AbstractMonitoringDataExporter extraction = new TimeBoundary2D(null, service);
 		String result = extraction.extractToString();
 
 		List<String> outputValues = new LinkedList<String>();
@@ -46,7 +46,7 @@ public class TimeBoundary2DTest {
 	public void testEmptyService() {
 		SingleTaskFarmMonitoringService service = ExtractorTestHelper.generateEmptySingleTaskFarmMonitoringService();
 
-		AbstractMonitoringDataExtraction extraction = new TimeBoundary2D(null, service);
+		AbstractMonitoringDataExporter extraction = new TimeBoundary2D(null, service);
 		String result = extraction.extractToString();
 
 		String header = "time,boundary"
