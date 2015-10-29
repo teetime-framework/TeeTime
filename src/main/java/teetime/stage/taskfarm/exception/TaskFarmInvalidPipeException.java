@@ -15,10 +15,25 @@
  */
 package teetime.stage.taskfarm.exception;
 
+/**
+ * Represents an exception thrown by the task farm. It
+ * gets thrown if the user tries to monitor a pipe which
+ * does not implement {@link teetime.framework.pipe.IMonitorablePipe IMonitorablePipe}.
+ *
+ * @author Christian Claus Wiechmann
+ */
 public class TaskFarmInvalidPipeException extends RuntimeException {
 
 	private static final long serialVersionUID = 219434999064433531L;
 
+	/**
+	 * Represents an exception thrown by the task farm. It
+	 * gets thrown if the user tries to monitor a pipe which
+	 * does not implement {@link teetime.framework.pipe.IMonitorablePipe IMonitorablePipe}.
+	 * 
+	 * @param s
+	 *            error message
+	 */
 	public TaskFarmInvalidPipeException(final String s) {
 		super(s);
 	}

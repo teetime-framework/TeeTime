@@ -15,10 +15,25 @@
  */
 package teetime.stage.taskfarm.exception;
 
+/**
+ * Represents an exception thrown by the task farm reconfiguration component. It
+ * gets thrown if the reconfiguration component is not able to add or remove a
+ * worker stage.
+ *
+ * @author Christian Claus Wiechmann
+ */
 public class TaskFarmControllerException extends RuntimeException {
 
 	private static final long serialVersionUID = 7394932513863758925L;
 
+	/**
+	 * Represents an exception thrown by the task farm reconfiguration component. It
+	 * gets thrown if the reconfiguration component is not able to add or remove a
+	 * worker stage.
+	 * 
+	 * @param s
+	 *            error message
+	 */
 	public TaskFarmControllerException(final String s) {
 		super(s);
 	}

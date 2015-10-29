@@ -15,10 +15,25 @@
  */
 package teetime.stage.taskfarm.exception;
 
+/**
+ * Represents an exception thrown by the task farm analysis component. It
+ * gets thrown if the analysis component was unable to find the chosen
+ * throughput algorithm.
+ *
+ * @author Christian Claus Wiechmann
+ */
 public class TaskFarmAnalysisException extends RuntimeException {
 
 	private static final long serialVersionUID = -6942717933114070898L;
 
+	/**
+	 * Represents an exception thrown by the task farm analysis component. It
+	 * gets thrown if the analysis component was unable to find the chosen
+	 * throughput algorithm.
+	 * 
+	 * @param s
+	 *            error message
+	 */
 	public TaskFarmAnalysisException(final String s) {
 		super(s);
 	}
