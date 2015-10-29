@@ -17,26 +17,55 @@ package teetime.stage.taskfarm.adaptation.reconfiguration;
 
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
+import teetime.stage.taskfarm.adaptation.analysis.TaskFarmAnalysisService;
 
+/**
+ * Represents a service to start the reconfiguration process for the task farm
+ * using a particular throughput score. Should be called after the {@link TaskFarmAnalysisService}.
+ *
+ * @author Christian Claus Wiechmann
+ *
+ * @param <I>
+ *            Input type of Task Farm
+ * @param <O>
+ *            Output type of Task Farm
+ * @param <T>
+ *            Type of the parallelized stage
+ */
 public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
+	/** corresponding command service which includes the decision tree **/
 	private final TaskFarmReconfigurationCommandService<I, O, T> reconfigurationCommandService;
+	/** corresponding controller to actually add or remove worker stages of the task farm **/
 	private final TaskFarmController<I, O> controller;
 
+	/**
+	 * Create a task farm reconfiguration service for a specified task farm.
+	 *
+	 * @param taskFarmStage
+	 *            specified task farm
+	 */
 	public TaskFarmReconfigurationService(final TaskFarmStage<I, O, T> taskFarmStage) {
 		this.reconfigurationCommandService = new TaskFarmReconfigurationCommandService<I, O, T>(taskFarmStage);
 		this.controller = new TaskFarmController<I, O>(taskFarmStage);
 	}
 
+	/**
+	 * Starts the reconfiguration process of the corresponding task farm for the specified throughput score.
+	 *
+	 * @param throughputScore
+	 *            specified throughput score
+	 * @throws InterruptedException
+	 */
 	public void reconfigure(final double throughputScore) throws InterruptedException {
-		TaskFarmReconfigurationCommand command = reconfigurationCommandService.decideExecutionPlan(throughputScore);
+		TaskFarmReconfigurationCommand command = this.reconfigurationCommandService.decideExecutionPlan(throughputScore);
 
 		switch (command) {
 		case ADD:
-			controller.addStageToTaskFarm();
+			this.controller.addStageToTaskFarm();
 			break;
 		case REMOVE:
-			controller.removeStageFromTaskFarm();
+			this.controller.removeStageFromTaskFarm();
 			break;
 		case NONE:
 		default:

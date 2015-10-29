@@ -16,14 +16,16 @@
 package teetime.stage.taskfarm.adaptation.history;
 
 /**
- * A ThroughputEntry is a measured throughput value with its timestamp.
+ * Represents a measured throughput sum with its timestamp.
  *
  * @author Christian Claus Wiechmann
  *
  */
 class ThroughputEntry {
 
+	/** timestamp of measurement **/
 	private long timestamp;
+	/** throughput sum of all monitored pipes **/
 	private double throughput;
 
 	/**
@@ -39,18 +41,32 @@ class ThroughputEntry {
 		this.throughput = throughput;
 	}
 
+	/**
+	 * @return timestamp of measurement
+	 */
 	public long getTimestamp() {
 		return this.timestamp;
 	}
 
+	/**
+	 * @param timestamp
+	 *            timestamp of measurement
+	 */
 	public void setTimestamp(final long timestamp) {
 		this.timestamp = timestamp;
 	}
 
+	/**
+	 * @return throughput sum of all monitored pipes
+	 */
 	public double getThroughput() {
 		return this.throughput;
 	}
 
+	/**
+	 * @param throughput
+	 *            throughput sum of all monitored pipes
+	 */
 	public void setThroughput(final double throughput) {
 		this.throughput = throughput;
 	}

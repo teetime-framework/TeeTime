@@ -21,25 +21,39 @@ import java.util.List;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
 
 /**
- * The ThroughputHistory contains a relevant number of {@link ThroughputEntry}s.
+ * Represents a container of multiple {@link ThroughputEntry}.
  *
  * @author Christian Claus Wiechmann
  *
  */
 public class ThroughputHistory {
 
+	/** analysis window **/
 	private final int maxEntries;
 
+	/** throughput sums **/
 	private final LinkedList<ThroughputEntry> entries = new LinkedList<ThroughputEntry>();
 
+	/**
+	 * Creates a new throughput history with the analysis window specified in the configuration.
+	 *
+	 * @param configuration
+	 *            configuration of corresponding task farm
+	 */
 	public ThroughputHistory(final TaskFarmConfiguration<?, ?, ?> configuration) {
 		maxEntries = configuration.getAnalysisWindow() + 1;
 	}
 
+	/**
+	 * Creates a new throughput history with the analysis window of 20 (for testing purposes)
+	 */
 	public ThroughputHistory() {
 		maxEntries = 20;
 	}
 
+	/**
+	 * @return all measurements of the throughput history.
+	 */
 	public List<ThroughputEntry> getEntries() {
 		return this.entries;
 	}
@@ -58,13 +72,13 @@ public class ThroughputHistory {
 
 	private void addEntry(final ThroughputEntry entry) {
 		this.entries.addFirst(entry);
-		if (this.entries.size() > maxEntries) {
+		if (this.entries.size() > this.maxEntries) {
 			this.entries.removeLast();
 		}
 	}
 
 	/**
-	 * Gets the throughput value in a given history position.
+	 * Gets the throughput value at a given history position.
 	 *
 	 * @param entry
 	 *            history index
@@ -75,7 +89,7 @@ public class ThroughputHistory {
 	}
 
 	/**
-	 * Gets the timestamp value in a given history position.
+	 * Gets the timestamp value at a given history position.
 	 *
 	 * @param entry
 	 *            history index

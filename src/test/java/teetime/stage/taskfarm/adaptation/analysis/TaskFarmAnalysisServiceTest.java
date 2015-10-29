@@ -16,7 +16,6 @@
 package teetime.stage.taskfarm.adaptation.analysis;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -31,12 +30,12 @@ import teetime.stage.taskfarm.adaptation.analysis.algorithm.RegressionAlgorithm;
 import teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
-public class TaskFarmAnalyzerTest {
+public class TaskFarmAnalysisServiceTest {
 
 	@SuppressWarnings("rawtypes")
 	private final TaskFarmConfiguration configuration = createConfiguration();
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private final TaskFarmAnalyzer analyzer = new TaskFarmAnalyzer(configuration);
+	private final TaskFarmAnalysisService analyzer = new TaskFarmAnalysisService(configuration);
 	private final ThroughputHistory history = new ThroughputHistory();
 	private double throughputScore = 0;
 
@@ -53,7 +52,6 @@ public class TaskFarmAnalyzerTest {
 		analyzer.analyze(history);
 		throughputScore = analyzer.getThroughputScore();
 		assertThat(throughputScore, is(equalTo((double) AbstractThroughputAlgorithm.INVALID_SCORE)));
-		assertThat(analyzer.getLastUsedAlgorithm(), is(instanceOf(algorithmClass)));
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

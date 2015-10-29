@@ -21,17 +21,46 @@ import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.TaskFarmStage;
 import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAlgorithm;
 
+/**
+ * Represents the decision tree which decides if a worker stage is to be
+ * added to or removed from a task farm.
+ *
+ * @author Christian Claus Wiechmann
+ *
+ * @param <I>
+ *            Input type of Task Farm
+ * @param <O>
+ *            Output type of Task Farm
+ * @param <T>
+ *            Type of the parallelized stage
+ */
 class TaskFarmReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
+	/** corresponding task farm to be reconfigured **/
 	private final TaskFarmStage<I, O, T> taskFarmStage;
+	/** remaining time for the performance increase to occur before stage removal **/
 	private int samplesUntilRemove;
+	/** current reconfiguration mode, at the beginning we want to add stages **/
 	private ReconfigurationMode currentMode = ReconfigurationMode.ADDING;
 
+	/**
+	 * Creates a task farm reconfiguration command service for the specified task farm.
+	 *
+	 * @param taskFarmStage
+	 *            specified task farm
+	 */
 	TaskFarmReconfigurationCommandService(final TaskFarmStage<I, O, T> taskFarmStage) {
 		this.taskFarmStage = taskFarmStage;
 		this.samplesUntilRemove = TaskFarmConfiguration.INIT_SAMPLES_UNTIL_REMOVE;
 	}
 
+	/**
+	 * Decides if we want to add or remove a stage using a specified throughput score.
+	 *
+	 * @param throughputScore
+	 *            specified throughput score
+	 * @return {@link TaskFarmReconfigurationCommand} showing if we want to add or remove a stage
+	 */
 	public TaskFarmReconfigurationCommand decideExecutionPlan(final double throughputScore) {
 		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE;
 
@@ -111,7 +140,9 @@ class TaskFarmReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<
 	}
 
 	private enum ReconfigurationMode {
+		/** add new worker stages as long as the throughput is increased because of it **/
 		ADDING,
+		/** remove unused stages to reduce overhead **/
 		REMOVING
 	}
 }

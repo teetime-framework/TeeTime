@@ -20,7 +20,7 @@ import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAlgorithm;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 /**
- * WeightedAlgorithm analyzes the throughput of a certain amount of items
+ * Represents the analysis of the throughput of a certain amount of items
  * while giving more weight to more recent items. The weighting can
  * be calculated either logarithmically, linearly or exponentially.
  *

@@ -15,10 +15,18 @@
  */
 package teetime.stage.taskfarm.adaptation.reconfiguration;
 
+/**
+ * Represents the current plan of the task farm reconfiguration service.
+ * Possible values are addition or removal of a stage. Furthermore, no
+ * action at all can be taken.
+ *
+ * @author Christian Claus Wiechmann
+ */
 enum TaskFarmReconfigurationCommand {
-
+	/** Represents the addition of a new stage. **/
 	ADD,
+	/** Represents the removal of an existing stage. **/
 	REMOVE,
+	/** Represents that no action at all should be taken. **/
 	NONE
-
 }

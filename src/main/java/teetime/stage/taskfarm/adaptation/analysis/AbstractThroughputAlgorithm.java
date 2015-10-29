@@ -19,9 +19,9 @@ import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 /**
- * This abstract class calculates the Throughput analysis score
- * by means of the prediction value of the implemented Throughput
- * Algorithm.
+ * Represents the calculation of the throughput score
+ * by means of the prediction value calculated by the
+ * concrete Throughput Algorithm.
  *
  * @author Christian Claus Wiechmann
  *
@@ -33,6 +33,7 @@ public abstract class AbstractThroughputAlgorithm {
 	 */
 	protected final int window;
 
+	/** represents an invalid throughput score **/
 	public static final int INVALID_SCORE = -2;
 
 	/**

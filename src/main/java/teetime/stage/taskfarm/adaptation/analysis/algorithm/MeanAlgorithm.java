@@ -20,7 +20,7 @@ import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAlgorithm;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 /**
- * MeanAlgorithm analyzes the throughput of a certain amount of
+ * Represents the analysis of the throughput of a certain amount of
  * items and predicts the next value based on the mean value.
  *
  * @author Christian Claus Wiechmann

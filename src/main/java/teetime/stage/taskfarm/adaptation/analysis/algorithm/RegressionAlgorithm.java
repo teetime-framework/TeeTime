@@ -22,7 +22,7 @@ import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAlgorithm;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 /**
- * RegressionAlgorithm analyzes the throughput of a certain amount of
+ * Represents the analysis of the throughput of a certain amount of
  * items and uses a linear regression analysis to predict the next value.
  * This algorithm is more exact than MeanAlgorithm and WeightedAlgorithm,
  * because it uses the timestamp instead of the relative positioning

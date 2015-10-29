@@ -20,32 +20,65 @@ import java.lang.reflect.InvocationTargetException;
 
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
+import teetime.stage.taskfarm.adaptation.history.TaskFarmHistoryService;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 import teetime.stage.taskfarm.exception.TaskFarmAnalysisException;
 
 import com.google.common.base.Throwables;
 
-public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
+/**
+ * Represents an interface to call a throughput algorithm
+ * by using the throughput algorithm class name. Also provides
+ * access to calculated throughput scores. Should be called
+ * after a {@link TaskFarmHistoryService}
+ *
+ * @author Christian Claus Wiechmann
+ *
+ * @param <I>
+ *            Input type of Task Farm
+ * @param <O>
+ *            Output type of Task Farm
+ * @param <T>
+ *            Type of the parallelized stage
+ */
+public class TaskFarmAnalysisService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
+	/** path to the concrete throughput algorithms **/
 	private final static String THROUGHPUT_ALGORITHM_PATH = "teetime.stage.taskfarm.adaptation.analysis.algorithm";
 
+	/** configuration of the corresponding task farm **/
 	private final TaskFarmConfiguration<I, O, T> configuration;
+	/** last calculated throughput score **/
 	private double throughputScore;
-	private AbstractThroughputAlgorithm lastUsedAlgorithm = null;
 
-	public TaskFarmAnalyzer(final TaskFarmConfiguration<I, O, T> configuration) {
+	/**
+	 * Create a new task farm analysis service using the specified task farm configuration.
+	 *
+	 * @param configuration
+	 *            specified configuration of the task farm
+	 */
+	public TaskFarmAnalysisService(final TaskFarmConfiguration<I, O, T> configuration) {
 		this.configuration = configuration;
 	}
 
+	/**
+	 * Calculates the throughput score for the specified throughput history.
+	 * Afterwards, the calculated throughput score can be read by calling {@link #getThroughputScore() getThroughputScore()}.
+	 *
+	 * @param history
+	 *            specified throughput history
+	 */
 	public void analyze(final ThroughputHistory history) {
 		AbstractThroughputAlgorithm algorithm = null;
 
 		algorithm = createAlgorithm(configuration.getThroughputAlgorithm());
-		lastUsedAlgorithm = algorithm;
 
 		throughputScore = algorithm.getTroughputAnalysis(history);
 	}
 
+	/**
+	 * @return last calculated throughput score
+	 */
 	public double getThroughputScore() {
 		return throughputScore;
 	}
@@ -56,6 +89,7 @@ public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		AbstractThroughputAlgorithm algorithm = null;
 
 		try {
+			// get throughput algorithm class by using reflection
 			Class<?> algorithmClass = Class.forName(fullyQualifiedPath);
 
 			Class<?>[] constructorParameterClasses = new Class[] { TaskFarmConfiguration.class };
@@ -97,9 +131,5 @@ public class TaskFarmAnalyzer<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		}
 
 		return algorithm;
-	}
-
-	public AbstractThroughputAlgorithm getLastUsedAlgorithm() {
-		return lastUsedAlgorithm;
 	}
 }

@@ -23,40 +23,70 @@ import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmStage;
 import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
 
+/**
+ * Represents the history service which provides the other
+ * adaptation thread services with performance measurements.
+ *
+ * @author Christian Claus Wiechmann
+ *
+ * @param <I>
+ *            Input type of Task Farm
+ * @param <O>
+ *            Output type of Task Farm
+ * @param <T>
+ *            Type of the parallelized stage
+ */
 public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
+	/** corresponding task farm **/
 	private final TaskFarmStage<I, O, T> taskFarmStage;
+	/** measurement container **/
 	private final ThroughputHistory history;
 
+	// contains push/pull throughput of each pipe for the previous measurement
 	private Map<IMonitorablePipe, Long> lastPushThroughputs;
 	private Map<IMonitorablePipe, Long> lastPullThroughputs;
 
+	/**
+	 * Create a task farm history service for the specified task farm.
+	 *
+	 * @param taskFarmStage
+	 *            specified task farm
+	 */
 	public TaskFarmHistoryService(final TaskFarmStage<I, O, T> taskFarmStage) {
 		this.taskFarmStage = taskFarmStage;
-		history = new ThroughputHistory(taskFarmStage.getConfiguration());
+		this.history = new ThroughputHistory(taskFarmStage.getConfiguration());
 	}
 
+	/**
+	 * @return the measurement container of this history service
+	 */
 	public ThroughputHistory getHistory() {
-		return history;
+		return this.history;
 	}
 
+	/**
+	 * Records another throughput sum measurement of all pipes in the task farm of this service.
+	 */
 	public void monitorPipes() {
-		history.add(getSumOfPipePushThroughputs());
+		this.history.add(getSumOfPipePushThroughputs());
 	}
 
 	private double getSumOfPipePushThroughputs() {
-		lastPullThroughputs = new HashMap<IMonitorablePipe, Long>();
-		lastPushThroughputs = new HashMap<IMonitorablePipe, Long>();
+		this.lastPullThroughputs = new HashMap<IMonitorablePipe, Long>();
+		this.lastPushThroughputs = new HashMap<IMonitorablePipe, Long>();
 		double sum = 0;
 
 		try {
-			for (ITaskFarmDuplicable<I, O> enclosedStage : taskFarmStage.getEnclosedStageInstances()) {
+			for (ITaskFarmDuplicable<I, O> enclosedStage : this.taskFarmStage.getEnclosedStageInstances()) {
 				IMonitorablePipe inputPipe = (IMonitorablePipe) enclosedStage.getInputPort().getPipe();
 				if (inputPipe != null) {
+					// we record the throughput measurements as a sum in the history
+					// and separately in maps for further use
 					long pushThroughput = inputPipe.getPushThroughput();
-					lastPushThroughputs.put(inputPipe, pushThroughput);
+					this.lastPushThroughputs.put(inputPipe, pushThroughput);
 					long pullThroughput = inputPipe.getPullThroughput();
-					lastPullThroughputs.put(inputPipe, pullThroughput);
+					this.lastPullThroughputs.put(inputPipe, pullThroughput);
 					sum += pullThroughput;
 				}
 			}
@@ -69,18 +99,30 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		return sum;
 	}
 
+	/**
+	 * @param pipe
+	 *            specified monitorable pipe
+	 * @return last pull throughput measurement of specified pipe
+	 *         (zero if no throughput value for the pipe has been recorded at the last measurement)
+	 */
 	public long getLastPullThroughputOfPipe(final IMonitorablePipe pipe) {
 		long result = 0;
-		if (lastPullThroughputs.containsKey(pipe)) {
-			result = lastPullThroughputs.get(pipe);
+		if (this.lastPullThroughputs.containsKey(pipe)) {
+			result = this.lastPullThroughputs.get(pipe);
 		}
 		return result;
 	}
 
+	/**
+	 * @param pipe
+	 *            specified monitorable pipe
+	 * @return last push throughput measurement of specified pipe
+	 *         (zero if no throughput value for the pipe has been recorded at the last measurement)
+	 */
 	public long getLastPushThroughputOfPipe(final IMonitorablePipe pipe) {
 		long result = 0;
-		if (lastPushThroughputs.containsKey(pipe)) {
-			result = lastPushThroughputs.get(pipe);
+		if (this.lastPushThroughputs.containsKey(pipe)) {
+			result = this.lastPushThroughputs.get(pipe);
 		}
 		return result;
 	}

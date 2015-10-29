@@ -28,7 +28,7 @@ import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
 /**
- * Represents the task farm parallelization pattern in
+ * Represents the self-adaptive task farm parallelization pattern in
  * TeeTime. It dynamically adds CPU resources at runtime depending on
  * the current CPU load and the behavior of the parallelized stage.
  *

@@ -34,7 +34,7 @@ import teetime.stage.taskfarm.exception.TaskFarmControllerException;
 import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
 
 /**
- * The TaskFarmController is able to dynamically add stages to and remove
+ * Represents the ability to dynamically add stages to and remove
  * stages from a Task Farm with the same type at runtime.
  *
  * @author Christian Claus Wiechmann
@@ -50,6 +50,7 @@ class TaskFarmController<I, O> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskFarmController.class);
 
+	/** corresponding task farm to be reconfigured **/
 	private final TaskFarmStage<I, O, ?> taskFarmStage;
 
 	/**
@@ -75,16 +76,13 @@ class TaskFarmController<I, O> {
 		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort(),
 				taskFarmStage.getConfiguration().getPipeCapacity());
 		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
-		LOGGER.debug("distributor port created, before wait");
-		LOGGER.debug("state of distributor: " + this.taskFarmStage.getDistributor().getCurrentState().toString());
+
 		try {
 			distributorPortAction.waitForCompletion();
 		} catch (InterruptedException e) {
 			// Adaptation Thread was asked to terminate
-			LOGGER.debug("Interrupted while waiting for completion", e);
 			return;
 		}
-		LOGGER.debug("distributor port created");
 
 		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort(),
 				taskFarmStage.getConfiguration().getPipeCapacity());
@@ -93,17 +91,13 @@ class TaskFarmController<I, O> {
 			mergerPortAction.waitForCompletion();
 		} catch (InterruptedException e) {
 			// Adaptation Thread was asked to terminate
-			LOGGER.debug("Interrupted while waiting for completion", e);
 			return;
 		}
-		LOGGER.debug("merger port created");
 
 		RuntimeServiceFacade.INSTANCE.startWithinNewThread(taskFarmStage.getDistributor(), newStage.getInputPort().getOwningStage());
-		LOGGER.debug("Started new thread");
 
 		this.addNewEnclosedStageInstance(newStage);
 		this.addNewPipeToMonitoring(newStage);
-		LOGGER.debug("Finished: Add stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
 	}
 
 	private void addNewPipeToMonitoring(final ITaskFarmDuplicable<I, O> newStage) {
@@ -139,16 +133,12 @@ class TaskFarmController<I, O> {
 			final RemovePortActionDistributor<I> distributorPortAction = new RemovePortActionDistributor<I>((OutputPort<I>) distributorOutputPort);
 			this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 			this.taskFarmStage.getEnclosedStageInstances().remove(stageToBeRemoved);
-			LOGGER.debug("WAIT for " + distributorPortAction);
 			try {
 				distributorPortAction.waitForCompletion();
 			} catch (InterruptedException e) {
 				// Adaptation Thread was asked to terminate
-				LOGGER.debug("Interrupted while waiting for completion", e);
 				return;
 			}
-
-			LOGGER.debug("Finished: Remove stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
 		} catch (ClassCastException e) {
 			throw new TaskFarmControllerException("Merger and Distributor have a different type than the Task Farm or the Task Farm Controller.");
 		}
@@ -195,7 +185,6 @@ class TaskFarmController<I, O> {
 			}
 		}
 
-		LOGGER.debug("Remove stage (currentMinumumStageIndex: " + currentMinumumStageIndex + ")");
 		return currentMinumumStageIndex;
 	}
 }
