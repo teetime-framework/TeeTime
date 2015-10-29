@@ -42,27 +42,27 @@ final class ExtractorTestHelper {
 		// Pipe 3: Tick 4-5
 		// Pipe 4: Tick 7
 		service.addMonitoredItem(pipe1);
-		service.addMonitoringData();
+		service.doMeasurement();
 		wait50Millis();
-		service.addMonitoringData();
+		service.doMeasurement();
 		wait50Millis();
 
 		service.addMonitoredItem(pipe2);
-		service.addMonitoringData();
+		service.doMeasurement();
 		wait50Millis();
 
 		service.addMonitoredItem(pipe3);
 		pipe2.setActive(false);
-		service.addMonitoringData();
+		service.doMeasurement();
 		wait50Millis();
-		service.addMonitoringData();
+		service.doMeasurement();
 		wait50Millis();
 		pipe3.setActive(false);
-		service.addMonitoringData();
+		service.doMeasurement();
 		wait50Millis();
 
 		service.addMonitoredItem(pipe4);
-		service.addMonitoringData();
+		service.doMeasurement();
 		return service;
 	}
 
@@ -94,27 +94,27 @@ final class ExtractorTestHelper {
 		// Enclosed Stage 2: Tick 4-9
 		// Enclosed Stage 3: Tick 7-9
 		taskFarmStage.getConfiguration().setThroughputScoreBoundary(0.4);
-		service.addMonitoringData();
+		service.doMeasurement();
 		wait50Millis();
-		service.addMonitoringData();
+		service.doMeasurement();
 		wait50Millis();
-		service.addMonitoringData();
-		wait50Millis();
-
-		taskFarmStage.getEnclosedStageInstances().add(createDummyEnclosedStage());
-		service.addMonitoringData();
-		wait50Millis();
-		service.addMonitoringData();
-		wait50Millis();
-		service.addMonitoringData();
+		service.doMeasurement();
 		wait50Millis();
 
 		taskFarmStage.getEnclosedStageInstances().add(createDummyEnclosedStage());
-		service.addMonitoringData();
+		service.doMeasurement();
 		wait50Millis();
-		service.addMonitoringData();
+		service.doMeasurement();
 		wait50Millis();
-		service.addMonitoringData();
+		service.doMeasurement();
+		wait50Millis();
+
+		taskFarmStage.getEnclosedStageInstances().add(createDummyEnclosedStage());
+		service.doMeasurement();
+		wait50Millis();
+		service.doMeasurement();
+		wait50Millis();
+		service.doMeasurement();
 
 		return service;
 	}

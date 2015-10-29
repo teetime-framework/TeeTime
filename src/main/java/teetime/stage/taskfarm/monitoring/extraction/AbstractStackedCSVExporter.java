@@ -23,8 +23,21 @@ import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService.PipeMonitoringDataContainer;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
+/**
+ * Represents a CSV file concerning pipe monitoring measurements.
+ *
+ * @author Christian Claus Wiechmann
+ */
 abstract public class AbstractStackedCSVExporter extends AbstractMonitoringDataExporter {
 
+	/**
+	 * Constructor.
+	 *
+	 * @param pipeMonitoringService
+	 *            monitoring service concerning pipes
+	 * @param taskFarmMonitoringService
+	 *            monitoring service concerning a task farm
+	 */
 	public AbstractStackedCSVExporter(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		super(pipeMonitoringService, taskFarmMonitoringService);
 	}
@@ -39,7 +52,7 @@ abstract public class AbstractStackedCSVExporter extends AbstractMonitoringDataE
 
 			for (PipeMonitoringDataContainer container : containers) {
 				if (container.getCapacitiesWithPipeIds().size() > 0) {
-					addTripleToCSV(writer, maxNumberOfPipes, container);
+					addLineOfValuesToCSV(writer, maxNumberOfPipes, container);
 				}
 			}
 		} catch (IOException e) {
@@ -47,6 +60,12 @@ abstract public class AbstractStackedCSVExporter extends AbstractMonitoringDataE
 		}
 	}
 
+	/**
+	 * If a {@link String} in the given array is <code>null</code>, it is replaced with <code>"0"</code>.
+	 *
+	 * @param values
+	 *            array of {@link String} values
+	 */
 	protected void fillNullValuesWithZeros(final String[] values) {
 		for (int i = 0; i < values.length; i++) {
 			if (values[i] == null) {
@@ -55,8 +74,28 @@ abstract public class AbstractStackedCSVExporter extends AbstractMonitoringDataE
 		}
 	}
 
+	/**
+	 * Creates the header of a CSV file.
+	 *
+	 * @param writer
+	 *            writer for the header to be written to
+	 * @param maxNumberOfStages
+	 *            maximal number of stages of task farm measurements
+	 * @throws IOException
+	 */
 	protected abstract void createHeader(final Writer writer, final int maxNumberOfStages) throws IOException;
 
-	protected abstract void addTripleToCSV(final Writer writer, final int maxNumberOfPipes, final PipeMonitoringDataContainer container)
+	/**
+	 * Adds a line of values, separated by commas, to the {@link Writer}.
+	 *
+	 * @param writer
+	 *            writer to be written to
+	 * @param maxNumberOfPipes
+	 *            maximum amount of pipes monitored
+	 * @param container
+	 *            pipe measurement container
+	 * @throws IOException
+	 */
+	protected abstract void addLineOfValuesToCSV(final Writer writer, final int maxNumberOfPipes, final PipeMonitoringDataContainer container)
 			throws IOException;
 }

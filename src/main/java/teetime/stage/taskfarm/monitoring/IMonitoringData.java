@@ -15,6 +15,11 @@
  */
 package teetime.stage.taskfarm.monitoring;
 
+/**
+ * Represents a data container of a monitored object.
+ *
+ * @author Christian Claus Wiechmann
+ */
 public interface IMonitoringData {
 
 }

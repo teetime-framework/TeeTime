@@ -17,12 +17,34 @@ package teetime.stage.taskfarm.monitoring;
 
 import java.util.List;
 
+/**
+ * Represents an interface on a monitoring service used to monitor varying object, e.g. pipes.
+ *
+ * @author Christian Claus Wiechmann
+ *
+ * @param <K>
+ *            type of monitored item
+ * @param <V>
+ *            type of data container containing the monitored data
+ */
 public interface IMonitoringService<K, V extends IMonitoringData> {
 
+	/**
+	 * Add object to list of monitored elements.
+	 * 
+	 * @param item
+	 *            object to be monitored
+	 */
 	public void addMonitoredItem(final K item);
 
+	/**
+	 * @return all monitored data
+	 */
 	public List<?> getData();
 
-	public void addMonitoringData();
+	/**
+	 * Adds a new measurement.
+	 */
+	public void doMeasurement();
 
 }

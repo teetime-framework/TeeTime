@@ -24,19 +24,48 @@ import java.io.Writer;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
+/**
+ * Represents basic CSV export functionality for monitoring data exporters.
+ * Used for task farms.
+ *
+ * @author Christian Claus Wiechmann
+ */
 public abstract class AbstractMonitoringDataExporter {
 
 	private final static String NEWLINE = System.getProperty("line.separator");
+	/** monitoring service concerning pipes **/
 	private final PipeMonitoringService pipeMonitoringService;
+	/** monitoring service concerning a task farm **/
 	private final SingleTaskFarmMonitoringService taskFarmMonitoringService;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param pipeMonitoringService
+	 *            monitoring service concerning pipes
+	 * @param taskFarmMonitoringService
+	 *            monitoring service concerning a task farm
+	 */
 	public AbstractMonitoringDataExporter(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		this.pipeMonitoringService = pipeMonitoringService;
 		this.taskFarmMonitoringService = taskFarmMonitoringService;
 	}
 
+	/**
+	 * Writes the formatted monitored data to a {@link Writer}.
+	 *
+	 * @param writer
+	 *            writer to be written to
+	 */
 	protected abstract void extractToWriter(Writer writer);
 
+	/**
+	 * Saves the monitored data to a specified {@link File}.
+	 *
+	 * @param file
+	 *            specified file
+	 * @throws IOException
+	 */
 	public void extractToFile(final File file) throws IOException {
 		if (!file.exists()) {
 			file.createNewFile();
@@ -49,11 +78,23 @@ public abstract class AbstractMonitoringDataExporter {
 		writer.close();
 	}
 
+	/**
+	 * Creates a file at the specified path and saves the monitored data to it.
+	 *
+	 * @param filepath
+	 *            specified file path
+	 * @throws IOException
+	 */
 	public void extractToFile(final String filepath) throws IOException {
 		File file = new File(filepath);
 		extractToFile(file);
 	}
 
+	/**
+	 * Returns the formatted monitored data as a {@link String}.
+	 *
+	 * @return formatted monitored data
+	 */
 	public String extractToString() {
 		StringWriter writer = new StringWriter();
 
@@ -62,7 +103,16 @@ public abstract class AbstractMonitoringDataExporter {
 		return writer.toString();
 	}
 
-	public static void addCSVLineToWriter(final Writer writer, final String... args) throws IOException {
+	/**
+	 * Add a CSV line to the specified {@link Writer}. The specified arguments are separated by commas.
+	 *
+	 * @param writer
+	 *            writer to be written to
+	 * @param args
+	 *            values of the line
+	 * @throws IOException
+	 */
+	protected static void addCSVLineToWriter(final Writer writer, final String... args) throws IOException {
 		StringBuilder builder = new StringBuilder();
 
 		for (int i = 0; i < args.length; i++) {
@@ -77,11 +127,17 @@ public abstract class AbstractMonitoringDataExporter {
 		writer.append(builder.toString());
 	}
 
+	/**
+	 * @return monitoring service concerning pipes
+	 */
 	public PipeMonitoringService getPipeMonitoringService() {
-		return pipeMonitoringService;
+		return this.pipeMonitoringService;
 	}
 
+	/**
+	 * @return monitoring service concerning a task farm
+	 */
 	public SingleTaskFarmMonitoringService getTaskFarmMonitoringService() {
-		return taskFarmMonitoringService;
+		return this.taskFarmMonitoringService;
 	}
 }

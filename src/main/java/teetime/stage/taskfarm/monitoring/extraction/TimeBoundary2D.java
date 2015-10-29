@@ -23,8 +23,22 @@ import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringData;
 
+/**
+ * Represents a CSV file containing one time-boundary pair,
+ * showing the computation time with the given throughput boundary.
+ * 
+ * @author Christian Claus Wiechmann
+ */
 public class TimeBoundary2D extends AbstractGeneralCSVExporter {
 
+	/**
+	 * Constructor.
+	 *
+	 * @param pipeMonitoringService
+	 *            monitoring service concerning pipes
+	 * @param taskFarmMonitoringService
+	 *            monitoring service concerning a task farm
+	 */
 	public TimeBoundary2D(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		super(pipeMonitoringService, taskFarmMonitoringService);
 	}

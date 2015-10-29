@@ -22,14 +22,27 @@ import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService.PipeMonitoringDataContainer;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
+/**
+ * Represents a CSV file containing the time and the push throughput of each monitored pipe.
+ *
+ * @author Christian Claus Wiechmann
+ */
 public class StackedTimePushThroughput2D extends AbstractStackedCSVExporter {
 
+	/**
+	 * Constructor.
+	 *
+	 * @param pipeMonitoringService
+	 *            monitoring service concerning pipes
+	 * @param taskFarmMonitoringService
+	 *            monitoring service concerning a task farm
+	 */
 	public StackedTimePushThroughput2D(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		super(pipeMonitoringService, taskFarmMonitoringService);
 	}
 
 	@Override
-	protected void addTripleToCSV(final Writer writer, final int maxNumberOfPipes, final PipeMonitoringDataContainer container)
+	protected void addLineOfValuesToCSV(final Writer writer, final int maxNumberOfPipes, final PipeMonitoringDataContainer container)
 			throws IOException {
 		String[] entryStrings = new String[maxNumberOfPipes + 1];
 		entryStrings[0] = Long.toString(container.getTime());

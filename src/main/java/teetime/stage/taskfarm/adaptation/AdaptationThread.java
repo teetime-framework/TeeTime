@@ -87,8 +87,8 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 
 	private void doMonitoring() {
 		if (this.taskFarmStage.getConfiguration().isMonitoringEnabled()) {
-			this.taskFarmStage.getPipeMonitoringService().addMonitoringData();
-			this.taskFarmStage.getTaskFarmMonitoringService().addMonitoringData();
+			this.taskFarmStage.getPipeMonitoringService().doMeasurement();
+			this.taskFarmStage.getTaskFarmMonitoringService().doMeasurement();
 		}
 	}
 

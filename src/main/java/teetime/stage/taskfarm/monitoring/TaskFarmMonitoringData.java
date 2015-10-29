@@ -15,16 +15,46 @@
  */
 package teetime.stage.taskfarm.monitoring;
 
+/**
+ * Represents all parameters that are recorded per measurement for a task farm.
+ *
+ * @author Christian Claus Wiechmann
+ */
 public class TaskFarmMonitoringData implements IMonitoringData {
 
+	/** time of measurement **/
 	private final long time;
+	/** current number of worker stages **/
 	private final int stages;
+	/** current mean pull throughput of all pipes between distributor and a worker stage **/
 	private final double meanPullThroughput;
+	/** current mean push throughput of all pipes between distributor and a worker stage **/
 	private final double meanPushThroughput;
+	/** current total pull throughput of all pipes between distributor and a worker stage **/
 	private final double sumOfPullThroughput;
+	/** current total push throughput of all pipes between distributor and a worker stage **/
 	private final double sumOfPushThroughput;
+	/** current throughput boundary **/
 	private final double throughputBoundary;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param time
+	 *            time of measurement
+	 * @param stages
+	 *            current number of worker stages
+	 * @param meanPullThroughput
+	 *            current mean pull throughput of all pipes between distributor and a worker stage
+	 * @param meanPushThroughput
+	 *            current mean push throughput of all pipes between distributor and a worker stage
+	 * @param sumOfPullThroughput
+	 *            current total pull throughput of all pipes between distributor and a worker stage
+	 * @param sumOfPushThroughput
+	 *            current total push throughput of all pipes between distributor and a worker stage
+	 * @param throughputBoundary
+	 *            current throughput boundary
+	 */
 	TaskFarmMonitoringData(final long time, final int stages, final double meanPullThroughput, final double meanPushThroughput, final double sumOfPullThroughput,
 			final double sumOfPushThroughput, final double throughputBoundary) {
 		super();
@@ -37,31 +67,52 @@ public class TaskFarmMonitoringData implements IMonitoringData {
 		this.sumOfPushThroughput = sumOfPushThroughput;
 	}
 
+	/**
+	 * @return time of measurement
+	 */
 	public long getTime() {
-		return time;
+		return this.time;
 	}
 
+	/**
+	 * @return current number of worker stages
+	 */
 	public int getStages() {
-		return stages;
+		return this.stages;
 	}
 
+	/**
+	 * @return current mean pull throughput of all pipes between distributor and a worker stage
+	 */
 	public double getMeanPullThroughput() {
-		return meanPullThroughput;
+		return this.meanPullThroughput;
 	}
 
+	/**
+	 * @return current mean push throughput of all pipes between distributor and a worker stage
+	 */
 	public double getMeanPushThroughput() {
-		return meanPushThroughput;
+		return this.meanPushThroughput;
 	}
 
+	/**
+	 * @return current total pull throughput of all pipes between distributor and a worker stage
+	 */
 	public double getThroughputBoundary() {
-		return throughputBoundary;
+		return this.throughputBoundary;
 	}
 
+	/**
+	 * @return current total push throughput of all pipes between distributor and a worker stage
+	 */
 	public double getSumOfPullThroughput() {
-		return sumOfPullThroughput;
+		return this.sumOfPullThroughput;
 	}
 
+	/**
+	 * @return current throughput boundary
+	 */
 	public double getSumOfPushThroughput() {
-		return sumOfPushThroughput;
+		return this.sumOfPushThroughput;
 	}
 }

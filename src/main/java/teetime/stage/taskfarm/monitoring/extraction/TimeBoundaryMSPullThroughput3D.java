@@ -23,8 +23,21 @@ import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringData;
 
+/**
+ * Represents a CSV file containing time-boundary-mean pull throughput-total pull throughput-tuples.
+ * 
+ * @author Christian Claus Wiechmann
+ */
 public class TimeBoundaryMSPullThroughput3D extends AbstractGeneralCSVExporter {
 
+	/**
+	 * Constructor.
+	 *
+	 * @param pipeMonitoringService
+	 *            monitoring service concerning pipes
+	 * @param taskFarmMonitoringService
+	 *            monitoring service concerning a task farm
+	 */
 	public TimeBoundaryMSPullThroughput3D(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		super(pipeMonitoringService, taskFarmMonitoringService);
 	}

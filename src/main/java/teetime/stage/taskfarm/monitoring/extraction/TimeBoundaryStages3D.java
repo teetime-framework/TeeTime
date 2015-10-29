@@ -20,11 +20,24 @@ import java.io.Writer;
 import java.util.List;
 
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
-import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringData;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
+import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringData;
 
+/**
+ * Represents a CSV file containing time-boundary-amount of stages-tuples.
+ *
+ * @author Christian Claus Wiechmann
+ */
 public class TimeBoundaryStages3D extends AbstractGeneralCSVExporter {
 
+	/**
+	 * Constructor.
+	 *
+	 * @param pipeMonitoringService
+	 *            monitoring service concerning pipes
+	 * @param taskFarmMonitoringService
+	 *            monitoring service concerning a task farm
+	 */
 	public TimeBoundaryStages3D(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		super(pipeMonitoringService, taskFarmMonitoringService);
 	}

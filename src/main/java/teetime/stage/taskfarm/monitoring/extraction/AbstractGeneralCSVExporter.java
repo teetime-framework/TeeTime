@@ -22,8 +22,22 @@ import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringData;
 
+/**
+ * Represents a data exporter for general task farm measurements.
+ *
+ * @author ChristianClaus
+ *
+ */
 public abstract class AbstractGeneralCSVExporter extends AbstractMonitoringDataExporter {
 
+	/**
+	 * Constructor.
+	 *
+	 * @param pipeMonitoringService
+	 *            monitoring service concerning pipes
+	 * @param taskFarmMonitoringService
+	 *            monitoring service concerning a task farm
+	 */
 	public AbstractGeneralCSVExporter(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		super(pipeMonitoringService, taskFarmMonitoringService);
 	}
@@ -35,5 +49,13 @@ public abstract class AbstractGeneralCSVExporter extends AbstractMonitoringDataE
 		writeCSVData(writer, monitoredDataValues);
 	}
 
+	/**
+	 * Write and format CSV data to the specified {@link Writer} using the monitoring measurements.
+	 * 
+	 * @param writer
+	 *            writer to be written to
+	 * @param monitoredDataValues
+	 *            monitored measurements
+	 */
 	protected abstract void writeCSVData(final Writer writer, final List<TaskFarmMonitoringData> monitoredDataValues);
 }

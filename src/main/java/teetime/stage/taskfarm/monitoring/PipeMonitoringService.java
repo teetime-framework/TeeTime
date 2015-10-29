@@ -21,17 +21,40 @@ import java.util.List;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.stage.taskfarm.adaptation.history.TaskFarmHistoryService;
 
+/**
+ * Represents a monitoring service for implementations of {@link IMonitorablePipe}.
+ *
+ * @author Christian Claus Wiechmann
+ */
 public class PipeMonitoringService implements IMonitoringService<IMonitorablePipe, PipeMonitoringData> {
 
 	private static final long INIT = -1;
 
+	/** time of monitoring start to calculate elapsed time **/
 	private long startingTimestamp = INIT;
+	/** list of monitored pipes **/
 	private final List<IMonitorablePipe> pipes = new LinkedList<IMonitorablePipe>();
+	/** monitored data **/
 	private final List<PipeMonitoringDataContainer> containers = new LinkedList<PipeMonitoringDataContainer>();
+	/** task farm history service to access the latest throughput measurement **/
 	private final TaskFarmHistoryService<?, ?, ?> history;
 
+	/**
+	 * Creates a new pipe monitoring service for task farms using a specified
+	 * history service to access throughput measurements.
+	 *
+	 * @param history
+	 *            specified history service
+	 */
 	public PipeMonitoringService(final TaskFarmHistoryService<?, ?, ?> history) {
 		this.history = history;
+	}
+
+	/**
+	 * Creates a new general pipe monitoring service.
+	 */
+	public PipeMonitoringService() {
+		this(null);
 	}
 
 	@Override
@@ -47,7 +70,7 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 	}
 
 	@Override
-	public void addMonitoringData() {
+	public void doMeasurement() {
 		long currentTimestamp = System.currentTimeMillis();
 		if (this.startingTimestamp == INIT) {
 			this.startingTimestamp = currentTimestamp;
@@ -58,53 +81,76 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 		for (int i = 0; i < this.pipes.size(); i++) {
 			IMonitorablePipe pipe = this.pipes.get(i);
 			if (pipe != null) {
-				if (history == null) {
-					PipeMonitoringData monitoringData = new PipeMonitoringData(pipe.getNumPushes(),
-							pipe.getNumPulls(),
-							pipe.size(),
-							pipe.capacity(),
-							pipe.getPushThroughput(),
-							pipe.getPullThroughput(),
-							pipe.getNumWaits(),
-							i
-							);
+				// if we use a task farm, we want to use throughput measurements of the history service
+				long pullThroughput = 0;
+				long pushThroughput = 0;
 
-					container.addMonitoringData(monitoringData);
+				if (this.history == null) {
+					pullThroughput = pipe.getPullThroughput();
+					pushThroughput = pipe.getPushThroughput();
 				} else {
-					PipeMonitoringData monitoringData = new PipeMonitoringData(pipe.getNumPushes(),
-							pipe.getNumPulls(),
-							pipe.size(),
-							pipe.capacity(),
-							history.getLastPushThroughputOfPipe(pipe),
-							history.getLastPullThroughputOfPipe(pipe),
-							pipe.getNumWaits(),
-							i
-							);
-
-					container.addMonitoringData(monitoringData);
+					pullThroughput = this.history.getLastPullThroughputOfPipe(pipe);
+					pushThroughput = this.history.getLastPushThroughputOfPipe(pipe);
 				}
+
+				PipeMonitoringData monitoringData = new PipeMonitoringData(pipe.getNumPushes(),
+						pipe.getNumPulls(),
+						pipe.size(),
+						pipe.capacity(),
+						pushThroughput,
+						pullThroughput,
+						pipe.getNumWaits(),
+						i
+						);
+
+				container.addMonitoringData(monitoringData);
 			}
 		}
 
 		this.containers.add(container);
 	}
 
+	/**
+	 * @return a list of all monitored pipes
+	 */
 	public List<IMonitorablePipe> getPipes() {
 		return this.pipes;
 	}
 
+	/**
+	 * Represents a measurement that contains data for each monitored pipe.
+	 *
+	 * @author Christian Claus Wiechmann
+	 */
 	public class PipeMonitoringDataContainer {
+		/** time of measurement **/
 		private final Long time;
+		/** data of all pipes for this measurement **/
 		private final List<PipeMonitoringData> monitoringDatas = new LinkedList<PipeMonitoringData>();
 
+		/**
+		 * Constructor.
+		 *
+		 * @param time
+		 *            time of measurement
+		 */
 		public PipeMonitoringDataContainer(final Long time) {
 			this.time = time;
 		}
 
+		/**
+		 * Adds data to this measurement.
+		 *
+		 * @param data
+		 *            data to be added
+		 */
 		public void addMonitoringData(final PipeMonitoringData data) {
 			this.monitoringDatas.add(data);
 		}
 
+		/**
+		 * @return push throughput measurements with their corresponding pipe ids
+		 */
 		public List<ValueWithId<Long>> getPushThroughputsWithPipeIds() {
 			List<ValueWithId<Long>> results = new LinkedList<ValueWithId<Long>>();
 			for (PipeMonitoringData data : this.monitoringDatas) {
@@ -113,6 +159,9 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 			return results;
 		}
 
+		/**
+		 * @return pull throughput measurements with their corresponding pipe ids
+		 */
 		public List<ValueWithId<Long>> getPullThroughputsWithPipeIds() {
 			List<ValueWithId<Long>> results = new LinkedList<ValueWithId<Long>>();
 			for (PipeMonitoringData data : this.monitoringDatas) {
@@ -121,6 +170,9 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 			return results;
 		}
 
+		/**
+		 * @return pipe size measurements with their corresponding pipe ids
+		 */
 		public List<ValueWithId<Integer>> getSizesWithPipeIds() {
 			List<ValueWithId<Integer>> results = new LinkedList<ValueWithId<Integer>>();
 			for (PipeMonitoringData data : this.monitoringDatas) {
@@ -129,6 +181,9 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 			return results;
 		}
 
+		/**
+		 * @return pipe capacity measurements with their corresponding pipe ids
+		 */
 		public List<ValueWithId<Integer>> getCapacitiesWithPipeIds() {
 			List<ValueWithId<Integer>> results = new LinkedList<ValueWithId<Integer>>();
 			for (PipeMonitoringData data : this.monitoringDatas) {
@@ -137,24 +192,47 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 			return results;
 		}
 
+		/**
+		 * @return time of this measurement
+		 */
 		public Long getTime() {
-			return time;
+			return this.time;
 		}
 	}
 
+	/**
+	 * Represents a value-id-pair.
+	 *
+	 * @author Christian Claus Wiechmann
+	 *
+	 * @param <T>
+	 *            value type
+	 */
 	public class ValueWithId<T> {
 		private final T value;
 		private final Integer id;
 
+		/**
+		 * Constructor.
+		 *
+		 * @param value
+		 * @param id
+		 */
 		public ValueWithId(final T value, final Integer id) {
 			this.value = value;
 			this.id = id;
 		}
 
+		/**
+		 * @return value
+		 */
 		public T getValue() {
 			return this.value;
 		}
 
+		/**
+		 * @return id
+		 */
 		public Integer getId() {
 			return this.id;
 		}
