@@ -31,16 +31,34 @@ import org.w3c.dom.Document;
 
 import teetime.stage.basic.AbstractTransformation;
 
-public class ApplyXSLTStage extends AbstractTransformation<Document, String> {
+/**
+ * Represents a transformation stage. It accepts an XML {@link Document} and applies an XSL transformation. It then, if successful, sends the output as a
+ * {@link String} to the output port.
+ *
+ * @author Christian Claus Wiechmann
+ */
+public class ApplyXSLTToDocumentStage extends AbstractTransformation<Document, String> {
 
 	private final File xslt;
 	private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
-	public ApplyXSLTStage(final String xsltFile) {
+	/**
+	 * Constructor.
+	 *
+	 * @param xsltFile
+	 *            XSL transformation file path used for the transformations
+	 */
+	public ApplyXSLTToDocumentStage(final String xsltFile) {
 		this.xslt = new File(xsltFile);
 	}
 
-	public ApplyXSLTStage(final File xsltFile) {
+	/**
+	 * Constructor.
+	 *
+	 * @param xsltFile
+	 *            XSL transformation {@link File} used for the transformations
+	 */
+	public ApplyXSLTToDocumentStage(final File xsltFile) {
 		this.xslt = xsltFile;
 	}
 
@@ -54,9 +72,9 @@ public class ApplyXSLTStage extends AbstractTransformation<Document, String> {
 			Transformer transformer = transformerFactory.newTransformer(stylesheet);
 			transformer.transform(source, result);
 		} catch (TransformerConfigurationException e) {
-			e.printStackTrace();
+			throw new IllegalStateException(e);
 		} catch (TransformerException e) {
-			e.printStackTrace();
+			throw new IllegalStateException(e);
 		}
 
 		StringBuffer buffer = writer.getBuffer();

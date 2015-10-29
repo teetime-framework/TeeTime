@@ -32,14 +32,14 @@ import org.w3c.dom.NodeList;
 
 import teetime.framework.test.StageTester;
 
-public class LoadXMLStageTest {
+public class LoadXMLToDocumentStageTest {
 
 	@Test
 	public void loadXMLStageTest() {
 		try {
 			File xmlFile = createExampleXMLFile();
 
-			LoadXMLStage stage = new LoadXMLStage();
+			LoadXMLToDocumentStage stage = new LoadXMLToDocumentStage();
 			List<Document> documents = new ArrayList<Document>();
 
 			StageTester.test(stage).and()

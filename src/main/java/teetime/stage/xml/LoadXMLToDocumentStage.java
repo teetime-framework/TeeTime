@@ -27,7 +27,14 @@ import org.xml.sax.SAXException;
 
 import teetime.stage.basic.AbstractTransformation;
 
-public class LoadXMLStage extends AbstractTransformation<String, Document> {
+/**
+ * Represents a transformation stage. It accepts a file path and tries to
+ * interpret that file as an XML file. If successful, it is sent to the
+ * output port as a {@link Document}.
+ *
+ * @author Christian Claus Wiechmann
+ */
+public class LoadXMLToDocumentStage extends AbstractTransformation<String, Document> {
 
 	private final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
@@ -41,13 +48,13 @@ public class LoadXMLStage extends AbstractTransformation<String, Document> {
 			document = documentBuilder.parse(file);
 		} catch (ParserConfigurationException e) {
 			// parser cannot be build
-			e.printStackTrace();
+			throw new IllegalStateException(e);
 		} catch (SAXException e) {
 			// parser init error
-			e.printStackTrace();
+			throw new IllegalStateException(e);
 		} catch (IOException e) {
 			// i/o error
-			e.printStackTrace();
+			throw new IllegalStateException(e);
 		}
 
 		outputPort.send(document);
