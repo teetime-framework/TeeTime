@@ -38,15 +38,15 @@ public class TimeBoundaryMSPushThroughput3DTest {
 
 		List<String> outputValues = new LinkedList<String>();
 		outputValues.add("time,boundary,mpushthroughput,pushthroughputsum");
-		outputValues.add(",0.4,4.0,7.0");
-		outputValues.add(",0.4,10.0,13.0");
-		outputValues.add(",0.4,16.0,19.0");
-		outputValues.add(",0.4," + (22.0 + 4.0) / 2.0 + ",32.0");
-		outputValues.add(",0.4," + (28.0 + 10.0) / 2.0 + ",44.0");
-		outputValues.add(",0.4," + (34.0 + 16.0) / 2.0 + ",56.0");
-		outputValues.add(",0.4," + (40.0 + 22.0 + 4.0) / 3.0 + ",75.0");
-		outputValues.add(",0.4," + (46.0 + 28.0 + 10.0) / 3.0 + ",93.0");
-		outputValues.add(",0.4," + (52.0 + 34.0 + 16.0) / 3.0 + ",111.0");
+		outputValues.add(",0.4,7.0,13.0");
+		outputValues.add(",0.4,19.0,25.0");
+		outputValues.add(",0.4,31.0,37.0");
+		outputValues.add(",0.4," + (43.0 + 7.0) / 2.0 + ",62.0");
+		outputValues.add(",0.4," + (55.0 + 19.0) / 2.0 + ",86.0");
+		outputValues.add(",0.4," + (67.0 + 31.0) / 2.0 + ",110.0");
+		outputValues.add(",0.4," + (79.0 + 43.0 + 7.0) / 3.0 + ",147.0");
+		outputValues.add(",0.4," + (91.0 + 55.0 + 19.0) / 3.0 + ",183.0");
+		outputValues.add(",0.4," + (103.0 + 67.0 + 31.0) / 3.0 + ",219.0");
 		assertThat(result, stringContainsInOrder(outputValues));
 	}
 
