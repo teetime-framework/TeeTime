@@ -41,14 +41,14 @@ public class ThroughputHistory {
 	 *            configuration of corresponding task farm
 	 */
 	public ThroughputHistory(final TaskFarmConfiguration<?, ?, ?> configuration) {
-		maxEntries = configuration.getAnalysisWindow() + 1;
+		this.maxEntries = configuration.getAnalysisWindow() + 1;
 	}
 
 	/**
 	 * Creates a new throughput history with the analysis window of 20 (for testing purposes)
 	 */
 	public ThroughputHistory() {
-		maxEntries = 20;
+		this.maxEntries = 20;
 	}
 
 	/**

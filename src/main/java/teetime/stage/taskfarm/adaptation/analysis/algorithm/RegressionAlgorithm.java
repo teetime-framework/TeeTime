@@ -48,7 +48,7 @@ public class RegressionAlgorithm extends AbstractThroughputAlgorithm {
 	protected double doAnalysis(final ThroughputHistory history) {
 		final SimpleRegression regression = new SimpleRegression();
 
-		for (int i = 1; i <= window; i++) {
+		for (int i = 1; i <= this.window; i++) {
 			final double xaxis = history.getTimestampOfEntry(i);
 			final double yaxis = history.getThroughputOfEntry(i);
 

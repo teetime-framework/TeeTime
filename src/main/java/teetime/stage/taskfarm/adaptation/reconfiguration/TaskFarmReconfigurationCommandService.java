@@ -64,7 +64,7 @@ class TaskFarmReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<
 	public TaskFarmReconfigurationCommand decideExecutionPlan(final double throughputScore) {
 		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE;
 
-		switch (currentMode) {
+		switch (this.currentMode) {
 		case ADDING:
 			command = decideForAddingMode(throughputScore);
 			break;
@@ -79,27 +79,27 @@ class TaskFarmReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<
 	private TaskFarmReconfigurationCommand decideForAddingMode(final double throughputScore) {
 		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE;
 
-		if (taskFarmStage.getEnclosedStageInstances().size() >= taskFarmStage.getConfiguration().getMaxNumberOfCores()) {
+		if (this.taskFarmStage.getEnclosedStageInstances().size() >= this.taskFarmStage.getConfiguration().getMaxNumberOfCores()) {
 			// we do not want to parallelize more than we have (virtual) processors
 			this.currentMode = ReconfigurationMode.REMOVING;
 			command = TaskFarmReconfigurationCommand.NONE;
 		} else {
 			if (throughputScore != AbstractThroughputAlgorithm.INVALID_SCORE) {
-				if (samplesUntilRemove == TaskFarmConfiguration.INIT_SAMPLES_UNTIL_REMOVE) {
+				if (this.samplesUntilRemove == TaskFarmConfiguration.INIT_SAMPLES_UNTIL_REMOVE) {
 					// new execution, start adding stages
-					samplesUntilRemove = taskFarmStage.getConfiguration().getMaxSamplesUntilRemove();
+					this.samplesUntilRemove = taskFarmStage.getConfiguration().getMaxSamplesUntilRemove();
 					command = TaskFarmReconfigurationCommand.ADD;
 				} else {
-					if (samplesUntilRemove > 0) {
+					if (this.samplesUntilRemove > 0) {
 						// we still have to wait before removing a new stage again
 
-						if (throughputScore > taskFarmStage.getConfiguration().getThroughputScoreBoundary()) {
+						if (throughputScore > this.taskFarmStage.getConfiguration().getThroughputScoreBoundary()) {
 							// we could find a performance increase, add another stage
-							samplesUntilRemove = taskFarmStage.getConfiguration().getMaxSamplesUntilRemove();
+							samplesUntilRemove = this.taskFarmStage.getConfiguration().getMaxSamplesUntilRemove();
 							command = TaskFarmReconfigurationCommand.ADD;
 						} else {
 							// we did not find a performance increase, wait a bit longer
-							samplesUntilRemove--;
+							this.samplesUntilRemove--;
 							command = TaskFarmReconfigurationCommand.NONE;
 						}
 					} else {
@@ -118,8 +118,8 @@ class TaskFarmReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<
 		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE;
 
 		// we never want to remove the basic stage since it would destroy the pipeline
-		for (int i = 1; i < taskFarmStage.getEnclosedStageInstances().size() - 1; i++) {
-			ITaskFarmDuplicable<?, ?> stage = taskFarmStage.getEnclosedStageInstances().get(i);
+		for (int i = 1; i < this.taskFarmStage.getEnclosedStageInstances().size() - 1; i++) {
+			ITaskFarmDuplicable<?, ?> stage = this.taskFarmStage.getEnclosedStageInstances().get(i);
 
 			IMonitorablePipe monitorableInputPipe = (IMonitorablePipe) stage.getInputPort().getPipe();
 			int sizeOfInputQueue = monitorableInputPipe.size();
@@ -131,7 +131,7 @@ class TaskFarmReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<
 			}
 		}
 
-		if (throughputScore > taskFarmStage.getConfiguration().getThroughputScoreBoundary()) {
+		if (throughputScore > this.taskFarmStage.getConfiguration().getThroughputScoreBoundary()) {
 			// performance need has risen again, so we are parallelizing more
 			this.currentMode = ReconfigurationMode.ADDING;
 		}

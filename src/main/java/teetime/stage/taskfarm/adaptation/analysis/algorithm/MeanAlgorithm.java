@@ -43,11 +43,11 @@ public class MeanAlgorithm extends AbstractThroughputAlgorithm {
 	protected double doAnalysis(final ThroughputHistory history) {
 		double sum = 0;
 
-		for (int i = 1; i <= window; i++) {
+		for (int i = 1; i <= this.window; i++) {
 			final double current = history.getThroughputOfEntry(i);
 			sum += current;
 		}
 
-		return sum / window;
+		return sum / this.window;
 	}
 }

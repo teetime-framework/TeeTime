@@ -72,30 +72,30 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 	@Override
 	public void run() {
 		LOGGER.debug("Adaptation thread started");
-		while (!shouldTerminate) {
+		while (!this.shouldTerminate) {
 			try {
 				executeServices();
 				doMonitoring();
 
 				Thread.sleep(taskFarmStage.getConfiguration().getAdaptationWaitingTimeMillis());
 			} catch (InterruptedException e) {
-				shouldTerminate = true;
+				this.shouldTerminate = true;
 			}
 		}
 		LOGGER.debug("Adaptation thread stopped");
 	}
 
 	private void doMonitoring() {
-		if (taskFarmStage.getConfiguration().isMonitoringEnabled()) {
-			taskFarmStage.getPipeMonitoringService().addMonitoringData();
-			taskFarmStage.getTaskFarmMonitoringService().addMonitoringData();
+		if (this.taskFarmStage.getConfiguration().isMonitoringEnabled()) {
+			this.taskFarmStage.getPipeMonitoringService().addMonitoringData();
+			this.taskFarmStage.getTaskFarmMonitoringService().addMonitoringData();
 		}
 	}
 
 	private void executeServices() throws InterruptedException {
-		historyService.monitorPipes();
-		analysisService.analyze(historyService.getHistory());
-		reconfigurationService.reconfigure(analysisService.getThroughputScore());
+		this.historyService.monitorPipes();
+		this.analysisService.analyze(this.historyService.getHistory());
+		this.reconfigurationService.reconfigure(this.analysisService.getThroughputScore());
 	}
 
 	/**
@@ -103,7 +103,7 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 	 * the termination of the merger of the corresponding task farm.
 	 */
 	public void stopAdaptationThread() {
-		shouldTerminate = true;
+		this.shouldTerminate = true;
 		interrupt();
 		LOGGER.debug("Adaptation thread stop signal sent");
 	}
@@ -115,6 +115,6 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 	 * @return {@link teetime.stage.taskfarm.adaptation.history.TaskFarmHistoryService TaskFarmHistoryService} of this adaptation thread
 	 */
 	public TaskFarmHistoryService<I, O, T> getHistoryService() {
-		return historyService;
+		return this.historyService;
 	}
 }

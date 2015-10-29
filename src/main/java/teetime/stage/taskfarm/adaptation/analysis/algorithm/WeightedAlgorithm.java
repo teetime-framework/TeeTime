@@ -67,7 +67,7 @@ public class WeightedAlgorithm extends AbstractThroughputAlgorithm {
 		double totalWeights = 0;
 
 		// more recent entry means more weight
-		for (int i = window; i > 0; i--) {
+		for (int i = this.window; i > 0; i--) {
 			final double weight = this.getWeight(i - 1);
 			totalWeights += weight;
 			weightedSum += history.getThroughputOfEntry(i) * weight;
@@ -77,7 +77,7 @@ public class WeightedAlgorithm extends AbstractThroughputAlgorithm {
 	}
 
 	private double getWeight(final double distance) {
-		final double tempWeight = window - distance;
+		final double tempWeight = this.window - distance;
 		double finalWeight;
 
 		switch (this.weightMethod) {

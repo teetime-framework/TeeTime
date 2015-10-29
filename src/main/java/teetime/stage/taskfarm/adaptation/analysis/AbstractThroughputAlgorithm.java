@@ -46,7 +46,7 @@ public abstract class AbstractThroughputAlgorithm {
 	protected AbstractThroughputAlgorithm(final TaskFarmConfiguration<?, ?, ?> configuration) {
 		if (configuration == null) {
 			// for testing purposes
-			window = 3;
+			this.window = 3;
 		} else {
 			this.window = configuration.getAnalysisWindow();
 		}

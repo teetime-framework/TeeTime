@@ -70,11 +70,11 @@ class TaskFarmController<I, O> {
 	 * @throws InterruptedException
 	 */
 	public void addStageToTaskFarm() throws InterruptedException {
-		LOGGER.debug("Add stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
+		LOGGER.debug("Add stage (current amount of stages: " + this.taskFarmStage.getEnclosedStageInstances().size() + ")");
 		ITaskFarmDuplicable<I, O> newStage = this.taskFarmStage.getBasicEnclosedStage().duplicate();
 
 		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort(),
-				taskFarmStage.getConfiguration().getPipeCapacity());
+				this.taskFarmStage.getConfiguration().getPipeCapacity());
 		this.taskFarmStage.getDistributor().addPortActionRequest(distributorPortAction);
 
 		try {
@@ -85,7 +85,7 @@ class TaskFarmController<I, O> {
 		}
 
 		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort(),
-				taskFarmStage.getConfiguration().getPipeCapacity());
+				this.taskFarmStage.getConfiguration().getPipeCapacity());
 		this.taskFarmStage.getMerger().addPortActionRequest(mergerPortAction);
 		try {
 			mergerPortAction.waitForCompletion();
@@ -94,7 +94,7 @@ class TaskFarmController<I, O> {
 			return;
 		}
 
-		RuntimeServiceFacade.INSTANCE.startWithinNewThread(taskFarmStage.getDistributor(), newStage.getInputPort().getOwningStage());
+		RuntimeServiceFacade.INSTANCE.startWithinNewThread(this.taskFarmStage.getDistributor(), newStage.getInputPort().getOwningStage());
 
 		this.addNewEnclosedStageInstance(newStage);
 		this.addNewPipeToMonitoring(newStage);
@@ -116,11 +116,11 @@ class TaskFarmController<I, O> {
 	 * @throws InterruptedException
 	 */
 	public void removeStageFromTaskFarm() throws InterruptedException {
-		if (taskFarmStage.getEnclosedStageInstances().size() == 1) {
+		if (this.taskFarmStage.getEnclosedStageInstances().size() == 1) {
 			return;
 		}
 
-		LOGGER.debug("Remove stage (current amount of stages: " + taskFarmStage.getEnclosedStageInstances().size() + ")");
+		LOGGER.debug("Remove stage (current amount of stages: " + this.taskFarmStage.getEnclosedStageInstances().size() + ")");
 
 		ITaskFarmDuplicable<I, O> stageToBeRemoved = null;
 		OutputPort<?> distributorOutputPort = null;
@@ -162,11 +162,11 @@ class TaskFarmController<I, O> {
 
 	private int getStageIndexWithLeastRemainingInput() {
 		int currentMinimum = Integer.MAX_VALUE;
-		int currentMinumumStageIndex = taskFarmStage.getEnclosedStageInstances().size() - 1;
+		int currentMinumumStageIndex = this.taskFarmStage.getEnclosedStageInstances().size() - 1;
 
 		// do not remove basic stage
-		for (int i = 1; i < taskFarmStage.getEnclosedStageInstances().size(); i++) {
-			ITaskFarmDuplicable<I, O> instance = taskFarmStage.getEnclosedStageInstances().get(i);
+		for (int i = 1; i < this.taskFarmStage.getEnclosedStageInstances().size(); i++) {
+			ITaskFarmDuplicable<I, O> instance = this.taskFarmStage.getEnclosedStageInstances().get(i);
 			InputPort<I> port = instance.getInputPort();
 			IMonitorablePipe monitorablePipe = null;
 

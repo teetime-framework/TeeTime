@@ -71,16 +71,16 @@ public class TaskFarmAnalysisService<I, O, T extends ITaskFarmDuplicable<I, O>> 
 	public void analyze(final ThroughputHistory history) {
 		AbstractThroughputAlgorithm algorithm = null;
 
-		algorithm = createAlgorithm(configuration.getThroughputAlgorithm());
+		algorithm = createAlgorithm(this.configuration.getThroughputAlgorithm());
 
-		throughputScore = algorithm.getTroughputAnalysis(history);
+		this.throughputScore = algorithm.getTroughputAnalysis(history);
 	}
 
 	/**
 	 * @return last calculated throughput score
 	 */
 	public double getThroughputScore() {
-		return throughputScore;
+		return this.throughputScore;
 	}
 
 	private AbstractThroughputAlgorithm createAlgorithm(final String algorithmClassName) {
@@ -93,7 +93,7 @@ public class TaskFarmAnalysisService<I, O, T extends ITaskFarmDuplicable<I, O>> 
 			Class<?> algorithmClass = Class.forName(fullyQualifiedPath);
 
 			Class<?>[] constructorParameterClasses = new Class[] { TaskFarmConfiguration.class };
-			Object[] constructorParameterObjects = new Object[] { configuration };
+			Object[] constructorParameterObjects = new Object[] { this.configuration };
 
 			Constructor<?> algorithmConstructor = algorithmClass.getConstructor(constructorParameterClasses);
 

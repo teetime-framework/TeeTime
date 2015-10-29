@@ -90,7 +90,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 * @return used throughput algorithm (has to exist in the package <code>teetime.stage.taskfarm.adaptation.analysis.algorithm</code>)
 	 */
 	public String getThroughputAlgorithm() {
-		return throughputAlgorithm;
+		return this.throughputAlgorithm;
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 *         {@link teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm.WeightMethod WeightMethod} is used
 	 */
 	public WeightMethod getWeightedAlgorithmMethod() {
-		return weightedAlgorithmMethod;
+		return this.weightedAlgorithmMethod;
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 *         added
 	 */
 	public int getMaxSamplesUntilRemove() {
-		return maxSamplesUntilRemove;
+		return this.maxSamplesUntilRemove;
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 * @return throughput boundary of this task farm
 	 */
 	public double getThroughputScoreBoundary() {
-		return throughputScoreBoundary;
+		return this.throughputScoreBoundary;
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 * @return should the monitoring services be activated (does not affect the adaptation thread!)?
 	 */
 	public boolean isMonitoringEnabled() {
-		return monitoringEnabled;
+		return this.monitoringEnabled;
 	}
 
 	/**
@@ -181,7 +181,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 * @return the waiting time between each iteration of the adaptation thread
 	 */
 	public int getAdaptationWaitingTimeMillis() {
-		return adaptationWaitingTimeMillis;
+		return this.adaptationWaitingTimeMillis;
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 * @return pipe capacity of all pipes inside the task farm
 	 */
 	public int getPipeCapacity() {
-		return pipeCapacity;
+		return this.pipeCapacity;
 	}
 
 	/**
@@ -215,7 +215,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 * @return the maximum number of worker stages the task farm may have
 	 */
 	public int getMaxNumberOfCores() {
-		return maxNumberOfCores;
+		return this.maxNumberOfCores;
 	}
 
 	/**

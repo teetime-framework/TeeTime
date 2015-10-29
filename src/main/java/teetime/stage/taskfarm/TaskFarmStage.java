@@ -109,26 +109,26 @@ public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 			this.merger = merger;
 		}
 
-		adaptationThread = new AdaptationThread<I, O, T>(this);
-		taskFarmMonitoringService = new SingleTaskFarmMonitoringService(this, adaptationThread.getHistoryService());
-		pipeMonitoringService = new PipeMonitoringService(adaptationThread.getHistoryService());
+		this.adaptationThread = new AdaptationThread<I, O, T>(this);
+		this.taskFarmMonitoringService = new SingleTaskFarmMonitoringService(this, this.adaptationThread.getHistoryService());
+		this.pipeMonitoringService = new PipeMonitoringService(this.adaptationThread.getHistoryService());
 
-		configuration.setPipeCapacity(pipeCapacity);
+		this.configuration.setPipeCapacity(pipeCapacity);
 
 		this.init(workerStage);
 	}
 
 	private void init(final T includedStage) {
 		final InputPort<I> stageInputPort = includedStage.getInputPort();
-		connectPorts(this.distributor.getNewOutputPort(), stageInputPort, configuration.getPipeCapacity());
+		connectPorts(this.distributor.getNewOutputPort(), stageInputPort, this.configuration.getPipeCapacity());
 
 		final OutputPort<O> stageOutputPort = includedStage.getOutputPort();
-		connectPorts(stageOutputPort, this.merger.getNewInputPort(), configuration.getPipeCapacity());
+		connectPorts(stageOutputPort, this.merger.getNewInputPort(), this.configuration.getPipeCapacity());
 
 		addThreadableStage(this.merger);
 		addThreadableStage(includedStage.getInputPort().getOwningStage());
 
-		enclosedStageInstances.add(includedStage);
+		this.enclosedStageInstances.add(includedStage);
 	}
 
 	/**
