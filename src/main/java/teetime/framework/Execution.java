@@ -15,6 +15,7 @@
  */
 package teetime.framework;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -166,4 +167,32 @@ public final class Execution<T extends Configuration> {
 		return this.configuration;
 	}
 
+	private static List<Configuration> configLoader(final String[] args) {
+		List<Configuration> instances = new ArrayList<Configuration>();
+		for (String each : args) {
+			try {
+				Class<?> clazz = Class.forName(each);
+				Object obj = clazz.newInstance();
+				if (obj instanceof Configuration) {
+					instances.add((Configuration) obj);
+				}
+			} catch (ClassNotFoundException e) {
+				System.out.println("Could not find class: " + each);
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return instances;
+	}
+
+	public static void main(final String[] args) {
+		List<Configuration> instances = configLoader(args);
+		for (Configuration configuration : instances) {
+			new Execution<Configuration>(configuration).executeBlocking();
+		}
+	}
 }
