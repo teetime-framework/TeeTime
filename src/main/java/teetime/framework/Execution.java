@@ -22,6 +22,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 
@@ -41,7 +44,7 @@ import teetime.framework.validation.AnalysisNotValidException;
  */
 public final class Execution<T extends Configuration> {
 
-	// private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
 
 	private final T configuration;
 	private final ConfigurationContext configurationContext;
@@ -177,13 +180,11 @@ public final class Execution<T extends Configuration> {
 					instances.add((Configuration) obj);
 				}
 			} catch (ClassNotFoundException e) {
-				System.out.println("Could not find class: " + each);
+				LOGGER.error("Could not find class " + each);
 			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Could not instantiate class " + each, e);
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("IllegalAccessException arised while instantiating class " + each, e);
 			}
 		}
 		return instances;
