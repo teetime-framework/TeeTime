@@ -208,7 +208,7 @@ public class ExecutionTest {
 	@Test
 	public void mainMethod() {
 		assertFalse(MainMethodTestConfig.executed);
-		Execution.main(new String[] { "teetime.framework.RunnerConfig" });
+		Execution.main("teetime.framework.MainMethodTestConfig");
 		assertTrue(MainMethodTestConfig.executed);
 	}
 

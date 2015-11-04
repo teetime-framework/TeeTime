@@ -170,7 +170,7 @@ public final class Execution<T extends Configuration> {
 		return this.configuration;
 	}
 
-	private static List<Configuration> configLoader(final String[] args) {
+	private static List<Configuration> configLoader(final String... args) {
 		List<Configuration> instances = new ArrayList<Configuration>();
 		for (String each : args) {
 			try {
@@ -190,10 +190,10 @@ public final class Execution<T extends Configuration> {
 		return instances;
 	}
 
-	public static void main(final String[] args) {
+	public static void main(final String... args) {
 		List<Configuration> instances = configLoader(args);
 		for (Configuration configuration : instances) {
-			new Execution<Configuration>(configuration).executeBlocking();
+			new Execution<Configuration>(configuration).executeBlocking(); // NOPMD
 		}
 	}
 }
