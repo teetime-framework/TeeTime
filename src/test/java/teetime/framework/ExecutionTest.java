@@ -205,4 +205,11 @@ public class ExecutionTest {
 		new Execution<NameConfig>(configuration); // do not execute, but just initialize the execution
 	}
 
+	@Test
+	public void mainMethod() {
+		assertFalse(MainMethodTestConfig.executed);
+		Execution.main(new String[] { "teetime.framework.RunnerConfig" });
+		assertTrue(MainMethodTestConfig.executed);
+	}
+
 }

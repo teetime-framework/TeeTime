@@ -2,11 +2,11 @@ package teetime.framework;
 
 import teetime.stage.InitialElementProducer;
 
-public class RunnerConfig extends Configuration {
+public class MainMethodTestConfig extends Configuration {
 
 	public static boolean executed = false;
 
-	public RunnerConfig() {
+	public MainMethodTestConfig() {
 		connectPorts(new InitialElementProducer<Object>(new Object()).getOutputPort(), new StaticSetter().getInputPort());
 	}
 
