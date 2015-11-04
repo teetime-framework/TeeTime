@@ -9,6 +9,9 @@
 			<action dev="ntd" type="add" issue="163">
 				Introduced error codes.
 			</action>
+			<action dev="ntd" type="add" issue="247">
+				Configuration can now be executed from command line.
+			</action>
 		</release>
 		<release version="2.0" date="30.09.2015" description="Camellia Release">
 			<action dev="ntd" type="add" issue="93">
