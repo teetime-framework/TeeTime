@@ -31,10 +31,6 @@
 	</properties>
 
 	<distributionManagement>
-		<site>
-			<id>teetime.sf.net</id>
-			<url>scp://shell.sourceforge.net/home/project-web/teetime/htdocs</url>
-		</site>
 		<snapshotRepository>
 			<id>teetime-deployment</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
