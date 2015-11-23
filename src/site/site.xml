@@ -7,10 +7,10 @@
 	<bannerLeft>
 		<name>
 			<![CDATA[
-					<img src="http://teetime-framework.github.io/images/teetime-path.svg" id="logo">
+					<img src="https://teetime-framework.github.io/images/teetime-path.svg" id="logo">
 					]]>
 		</name>
-		<href>http://teetime-framework.github.io/</href>
+		<href>https://teetime-framework.github.io/</href>
 	</bannerLeft>
 	<poweredBy>
 		<logo name="Maven" href="http://maven.apache.org/"
@@ -81,9 +81,10 @@
 			<topNav>News|Download|Wiki|Documentation|Get Involved</topNav>
 			<!-- <toc>sidebar</toc> -->
 			<!-- <tocTopMax>4</tocTopMax> -->
-			<absoluteResourceURL>http://teetime-framework.github.io/
+			<absoluteResourceURL>https://teetime-framework.github.io/
 			</absoluteResourceURL>
 			<theme>default</theme>
+			<localResources>true</localResources>
 			<highlightJs>true</highlightJs>
 			<highlightJsTheme>xcode</highlightJsTheme>
 			<brand>
