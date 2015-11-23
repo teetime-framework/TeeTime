@@ -41,7 +41,7 @@ public class BoundedSynchedPipeTest {
 		Merger<Object> portSource = new Merger<Object>();
 		OutputPort<Object> sourcePort = portSource.getOutputPort();
 		InputPort<Object> targetPort = portSource.getNewInputPort();
-		AbstractSynchedPipe pipe = new BoundedSynchedPipe(sourcePort, targetPort, 1); // IPipe does not provide getSignal method
+		AbstractSynchedPipe<?> pipe = new BoundedSynchedPipe<Object>(sourcePort, targetPort, 1); // IPipe does not provide getSignal method
 
 		List<ISignal> signals = new ArrayList<ISignal>();
 		signals.add(new StartingSignal());
@@ -71,7 +71,7 @@ public class BoundedSynchedPipeTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testAdd() throws Exception {
-		BoundedSynchedPipe pipe = new BoundedSynchedPipe(null, null, 4);
+		BoundedSynchedPipe<?> pipe = new BoundedSynchedPipe<Object>(null, null, 4);
 		assertFalse(pipe.add(null));
 	}
 }

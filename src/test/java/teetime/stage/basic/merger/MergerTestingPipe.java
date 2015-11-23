@@ -22,7 +22,7 @@ import teetime.framework.signal.ISignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
-class MergerTestingPipe implements IPipe {
+class MergerTestingPipe implements IPipe<Object> {
 
 	private boolean startSent = false;
 	private boolean terminateSent = false;
@@ -85,7 +85,7 @@ class MergerTestingPipe implements IPipe {
 	}
 
 	@Override
-	public InputPort<?> getTargetPort() {
+	public InputPort<Object> getTargetPort() {
 		return null;
 	}
 
