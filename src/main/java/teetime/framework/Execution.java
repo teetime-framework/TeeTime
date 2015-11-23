@@ -15,11 +15,15 @@
  */
 package teetime.framework;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
@@ -40,7 +44,7 @@ import teetime.framework.validation.AnalysisNotValidException;
  */
 public final class Execution<T extends Configuration> {
 
-	// private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
 
 	private final T configuration;
 	private final ConfigurationContext configurationContext;
@@ -166,4 +170,30 @@ public final class Execution<T extends Configuration> {
 		return this.configuration;
 	}
 
+	private static List<Configuration> configLoader(final String... args) {
+		List<Configuration> instances = new ArrayList<Configuration>();
+		for (String each : args) {
+			try {
+				Class<?> clazz = Class.forName(each);
+				Object obj = clazz.newInstance();
+				if (obj instanceof Configuration) {
+					instances.add((Configuration) obj);
+				}
+			} catch (ClassNotFoundException e) {
+				LOGGER.error("Could not find class " + each);
+			} catch (InstantiationException e) {
+				LOGGER.error("Could not instantiate class " + each, e);
+			} catch (IllegalAccessException e) {
+				LOGGER.error("IllegalAccessException arised while instantiating class " + each, e);
+			}
+		}
+		return instances;
+	}
+
+	public static void main(final String... args) {
+		List<Configuration> instances = configLoader(args);
+		for (Configuration configuration : instances) {
+			new Execution<Configuration>(configuration).executeBlocking(); // NOPMD
+		}
+	}
 }
