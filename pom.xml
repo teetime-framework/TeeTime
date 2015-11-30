@@ -95,6 +95,13 @@
 		<url>https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/</url>
 	</ciManagement>
 
+    <repositories>
+	    <repository>
+	    	<id>sonatype.oss.snapshots</id>
+	    	<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    	</repository>
+    </repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
