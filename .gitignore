@@ -5,8 +5,9 @@
 
 
 # TeeTime specific
+src/test/resources/data/output.txt
 teetime.log
-/src/main/resources/hugetext.txt
+src/main/resources/hugetext.txt
 
 # Java
 *.class
