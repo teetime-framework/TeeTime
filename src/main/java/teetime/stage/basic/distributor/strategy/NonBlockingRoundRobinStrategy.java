@@ -21,22 +21,47 @@ import teetime.framework.OutputPort;
 import teetime.stage.basic.distributor.Distributor;
 
 /**
- * @author Nils Christian Ehmke
+ * Backoff strategy
  *
- * @since 1.0
+ * @author Christian Wulf
+ *
+ * @since 1.1
  */
-public final class RoundRobinStrategy implements IDistributorStrategy {
+public final class NonBlockingRoundRobinStrategy implements IDistributorStrategy {
 
 	private int index;
+	private int numWaits;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> boolean distribute(final List<OutputPort<?>> outputPorts, final T element) {
-		final OutputPort<T> outputPort = (OutputPort<T>) this.getNextPortInRoundRobinOrder(outputPorts);
+		final int numOutputPorts = outputPorts.size();
+		int numLoops = numOutputPorts;
 
-		outputPort.send(element);
+		boolean success;
+		OutputPort<T> outputPort;
+		do {
+			outputPort = (OutputPort<T>) getNextPortInRoundRobinOrder(outputPorts);
+			success = outputPort.sendNonBlocking(element);
+			if (0 == numLoops) {
+				numWaits++;
+				backoff();
+				numLoops = numOutputPorts;
+			}
+			numLoops--;
+		} while (!success);
 
 		return true;
+	}
+
+	private void backoff() {
+		try {
+			Thread.sleep(1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// Thread.yield();
 	}
 
 	private OutputPort<?> getNextPortInRoundRobinOrder(final List<OutputPort<?>> outputPorts) {
@@ -47,11 +72,16 @@ public final class RoundRobinStrategy implements IDistributorStrategy {
 		return outputPort;
 	}
 
+	public int getNumWaits() {
+		return numWaits;
+	}
+
 	@Override
 	public void onPortRemoved(final OutputPort<?> removedOutputPort) {
 		Distributor<?> distributor = (Distributor<?>) removedOutputPort.getOwningStage();
 		// correct the index if it is out-of-bounds
-		this.index = this.index % distributor.getOutputPorts().size();
+		List<OutputPort<?>> outputPorts = distributor.getOutputPorts();
+		this.index = this.index % outputPorts.size();
 	}
 
 }

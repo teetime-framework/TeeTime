@@ -25,7 +25,7 @@ import teetime.framework.MonitoringThread;
 import teetime.stage.CountingMapMerger;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.distributor.Distributor;
-import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
+import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
 import teetime.stage.basic.merger.Merger;
 import teetime.stage.io.File2SeqOfWords;
 import teetime.stage.string.WordCounter;
@@ -61,7 +61,7 @@ public class WordCounterConfiguration extends Configuration {
 		final InitialElementProducer<File> init = new InitialElementProducer<File>(input);
 		// final File2Lines f2b = new File2Lines();
 		final File2SeqOfWords f2b = new File2SeqOfWords("UTF-8", 512);
-		distributor = new Distributor<String>(new RoundRobinStrategy2());
+		distributor = new Distributor<String>(new NonBlockingRoundRobinStrategy());
 
 		// last part
 		final Merger<CountingMap<String>> merger = new Merger<CountingMap<String>>();

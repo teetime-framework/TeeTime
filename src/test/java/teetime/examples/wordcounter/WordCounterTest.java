@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.AbstractPort;
 import teetime.framework.Execution;
 import teetime.framework.pipe.IMonitorablePipe;
-import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
+import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
 import teetime.stage.util.CountingMap;
 import teetime.util.StopWatch;
 
@@ -121,6 +121,6 @@ public class WordCounterTest {
 			System.out.println("numWaits: " + spscPipe.getNumWaits());
 		}
 
-		System.out.println("distributor waits: " + ((RoundRobinStrategy2) wcc.getDistributor().getStrategy()).getNumWaits());
+		System.out.println("distributor waits: " + ((NonBlockingRoundRobinStrategy) wcc.getDistributor().getStrategy()).getNumWaits());
 	}
 }

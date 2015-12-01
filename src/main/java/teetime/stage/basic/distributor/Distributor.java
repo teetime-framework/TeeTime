@@ -20,7 +20,7 @@ import java.util.List;
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 import teetime.stage.basic.distributor.strategy.IDistributorStrategy;
-import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
+import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
 
 /**
  * New output ports can be created by calling {@link #getNewOutputPort()}.
@@ -59,7 +59,7 @@ public class Distributor<T> extends AbstractConsumerStage<T> {
 	protected IDistributorStrategy strategy;
 
 	public Distributor() {
-		this(new RoundRobinStrategy2());
+		this(new NonBlockingRoundRobinStrategy());
 	}
 
 	public Distributor(final IDistributorStrategy strategy) {

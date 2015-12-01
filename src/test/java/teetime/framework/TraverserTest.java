@@ -29,7 +29,7 @@ import org.junit.Test;
 import teetime.stage.CountingMapMerger;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.distributor.Distributor;
-import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
+import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
 import teetime.stage.basic.merger.Merger;
 import teetime.stage.io.File2SeqOfWords;
 import teetime.stage.string.WordCounter;
@@ -66,7 +66,7 @@ public class TraverserTest {
 			int threads = 2;
 			init = new InitialElementProducer<File>(new File(""));
 			f2b = new File2SeqOfWords("UTF-8", 512);
-			distributor = new Distributor<String>(new RoundRobinStrategy2());
+			distributor = new Distributor<String>(new NonBlockingRoundRobinStrategy());
 			CountingMapMerger<String> result = new CountingMapMerger<String>();
 
 			// last part
