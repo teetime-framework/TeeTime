@@ -285,6 +285,9 @@ public abstract class AbstractStage {
 	 */
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public void onStarting() throws Exception {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Stage " + getId() + " within thread " + getOwningThread().getId());
+		}
 		changeState(StageState.STARTED);
 		calledOnStarting = true;
 	}

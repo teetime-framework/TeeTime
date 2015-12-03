@@ -66,7 +66,7 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	}
 
 	@Override
-	public final int capacity() {
+	public int capacity() {
 		return capacity;
 	}
 

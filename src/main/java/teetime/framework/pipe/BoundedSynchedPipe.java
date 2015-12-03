@@ -22,7 +22,7 @@ import teetime.framework.StageState;
 import teetime.framework.exceptionHandling.TerminateException;
 import teetime.util.framework.concurrent.queue.ObservableSpScArrayQueue;
 
-public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T>implements IMonitorablePipe {
+public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
 
 	// private static final Logger LOGGER = LoggerFactory.getLogger(SpScPipe.class);
 
@@ -58,6 +58,11 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T>implements IMon
 		// this.reportNewElement();
 		return true;
 	}
+
+	@Override
+	public int capacity() {
+		return this.queue.capacity();
+	};
 
 	@Override
 	public boolean addNonBlocking(final Object element) {
