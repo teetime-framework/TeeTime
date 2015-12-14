@@ -18,6 +18,23 @@
 	</poweredBy>
 	<body>
 		<head>
+			<script>window.twttr = (function(d, s, id) {
+				var js, fjs = d.getElementsByTagName(s)[0],
+				t = window.twttr || {};
+				if (d.getElementById(id)) return t;
+				js = d.createElement(s);
+				js.id = id;
+				js.src = "https://platform.twitter.com/widgets.js";
+				fjs.parentNode.insertBefore(js, fjs);
+
+				t._e = [];
+				t.ready = function(f) {
+				t._e.push(f);
+				};
+
+				return t;
+				}(document, "script", "twitter-wjs"));
+			</script>
 			<link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png" />
 			<link rel="apple-touch-icon" sizes="114x114"
 				href="/apple-touch-icon-114x114.png" />
@@ -106,6 +123,7 @@
 			</bottomNav>
 			<bottomDescription>
 				<![CDATA[
+				<a class="twitter-follow-button" data-show-count="false" href="https://twitter.com/TeeTime_Fwrk">Follow @TeeTime_Fwrk</a>
 				Snapshot state:
 				<br />
 				<a href="https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nightly-release/"><img alt="Jenkins build status" src="https://img.shields.io/jenkins/s/https/build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/teetime-nightly-release.svg?style=flat-square"></a>
