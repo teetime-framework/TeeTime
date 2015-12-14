@@ -18,7 +18,6 @@ Predefined stages are provided within the source code. You can immediatly start 
 
 ---
 
-
 ## What is it?
 
 TeeTime is a Pipe-and-Filter Framework for Java.
@@ -37,6 +36,10 @@ In particular, it features...
 - threads can be assigned to stages arbitrarily
 
 - and many more...
+
+## News
+
+<a class="twitter-timeline" href="https://twitter.com/TeeTime_Fwrk">Tweets von @TeeTime_Fwrk </a>
 
 ## Where to get it?
 
