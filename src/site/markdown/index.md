@@ -39,7 +39,7 @@ In particular, it features...
 
 ## News
 
-<a class="twitter-timeline" href="https://twitter.com/TeeTime_Fwrk">Tweets von @TeeTime_Fwrk </a>
+<a class="twitter-timeline" href="https://twitter.com/TeeTime_Fwrk">Tweets by @TeeTime_Fwrk</a>
 
 ## Where to get it?
 
@@ -63,6 +63,4 @@ You can take a closer look at:
 
 - [TeeTime's Wiki](wiki/home.html), or 
 
-- [API Documentation](stabledocs/index.html). 
-
-	 
+- [API Documentation](stabledocs/index.html).
