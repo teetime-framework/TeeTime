@@ -285,6 +285,15 @@ public abstract class AbstractStage {
 	 */
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public void onStarting() throws Exception {
+		for (InputPort<?> port : getInputPorts()) {
+			Class<?> targetType = port.getType();
+			Class<?> sourceType = port.pipe.getSourcePort().getType();
+			if (targetType != null && sourceType != null) {
+				if (targetType.isAssignableFrom(sourceType)) {
+					throw new IllegalStateException("Invalid pipe: " + targetType + " is not a superclass/type of " + sourceType);
+				}
+			}
+		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("Stage " + getId() + " within thread " + getOwningThread().getId());
 		}
