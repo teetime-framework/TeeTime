@@ -107,8 +107,8 @@
 			<!-- <tocTopMax>4</tocTopMax> -->
 			<absoluteResourceURL>https://teetime-framework.github.io
 			</absoluteResourceURL>
+			<protocolRelativeURLs>true</protocolRelativeURLs>
 			<theme>default</theme>
-			<localResources>true</localResources>
 			<highlightJs>true</highlightJs>
 			<highlightJsTheme>xcode</highlightJsTheme>
 			<brand>
