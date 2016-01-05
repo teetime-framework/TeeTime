@@ -2,7 +2,7 @@ package teetime.examples.filecounter;
 
 import teetime.framework.AbstractConsumerStage;
 
-class PrintResult extends AbstractConsumerStage<Integer> {
+class ResultPrinter extends AbstractConsumerStage<Integer> {
 
 	@Override
 	protected void execute(final Integer element) {

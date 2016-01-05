@@ -10,15 +10,16 @@ public class PrintResultConfig extends Configuration {
 	public PrintResultConfig(final File dir) {
 		DirReader dirReader = new DirReader(dir);
 		FileCounter fileCounter = new FileCounter();
-		PrintResult printResult = new PrintResult();
+		ResultPrinter resultPrinter = new ResultPrinter();
 
 		// Connect stages
 		connectPorts(dirReader.getOutputPort(), fileCounter.getInputPort());
-		connectPorts(fileCounter.getOutputPort(), printResult.getInputPort());
+		connectPorts(fileCounter.getOutputPort(), resultPrinter.getInputPort());
 	}
 
 	public static void main(final String[] args) {
-		Execution<PrintResultConfig> execution = new Execution<PrintResultConfig>(new PrintResultConfig(new File(".")));
+		PrintResultConfig config = new PrintResultConfig(new File("."));
+		Execution<PrintResultConfig> execution = new Execution<PrintResultConfig>(config);
 		execution.executeBlocking();
 	}
 }
