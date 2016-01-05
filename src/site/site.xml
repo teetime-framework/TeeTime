@@ -20,9 +20,11 @@
 		<head>
 			<script>
 				window.twttr = (function(d, s, id) {
-				var js, fjs = d.getElementsByTagName(s)[0],
+				var js, fjs =
+				d.getElementsByTagName(s)[0],
 				t = window.twttr || {};
-				if (d.getElementById(id)) return t;
+				if
+				(d.getElementById(id)) return t;
 				js =
 				d.createElement(s);
 				js.id = id;
@@ -39,7 +41,8 @@
 				"676369168816578560",
 				document.getElementById("twitter-container"),
 				{
-				screenName: "TeeTime_Fwrk"
+				screenName:
+				"TeeTime_Fwrk"
 				}
 				);
 				return t;
@@ -149,7 +152,9 @@
 			</bottomDescription>
 			<pages>
 				<index>
-					<localResources>true</localResources>
+					<endContent>
+						<script src="$resourcePath/js/twitter.js"></script>
+					</endContent>
 					<breadcrumbs>false</breadcrumbs>
 					<sections>
 						<carousel />
