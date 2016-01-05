@@ -41,7 +41,7 @@
 				}(document, "script", "twitter-wjs"));
 			</script>
 			<link rel="stylesheet"
-				href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/default.min.css" />
+				href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/xcode.min.css" />
 			<script
 				src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/highlight.min.js"></script>
 			<link rel="apple-touch-icon" sizes="57x57"
@@ -119,7 +119,6 @@
 			<protocolRelativeURLs>true</protocolRelativeURLs>
 			<theme>default</theme>
 			<highlightJs>false</highlightJs>
-			<highlightJsTheme>xcode</highlightJsTheme>
 			<brand>
 				<name>
 					TeeTime
