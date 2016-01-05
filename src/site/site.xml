@@ -37,14 +37,6 @@
 				{
 				t._e.push(f);
 				};
-				twttr.widgets.createTimeline(
-				"676369168816578560",
-				document.getElementById("twitter-container"),
-				{
-				screenName:
-				"TeeTime_Fwrk"
-				}
-				);
 				return t;
 				}(document, "script", "twitter-wjs"));
 			</script>
