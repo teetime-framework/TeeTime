@@ -37,7 +37,7 @@ In particular, it features...
 
 - and many more...
 
-## News
+## Latest news
 
 <a class="twitter-timeline" href="https://twitter.com/TeeTime_Fwrk">Tweets by @TeeTime_Fwrk</a>
 
