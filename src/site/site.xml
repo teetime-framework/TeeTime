@@ -155,7 +155,7 @@
 			<pages>
 				<index>
 					<endContent>
-						<script src="$resourcePath/js/twitter.js"></script>
+						<script src="$resourcePath/js/twitter_index.js"></script>
 					</endContent>
 					<breadcrumbs>false</breadcrumbs>
 					<sections>
@@ -165,9 +165,11 @@
 					</sections>
 					<shortTitle>Welcome</shortTitle>
 				</index>
-				<license>
-					<highlightJs>false</highlightJs>
-				</license>
+				<timeline>
+					<endContent>
+						<script src="$resourcePath/js/twitter_news.js"></script>
+					</endContent>
+				</timeline>
 				<release>
 					<toc>sidebar</toc>
 					<tocTopMax>4</tocTopMax>
