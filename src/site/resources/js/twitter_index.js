@@ -6,7 +6,5 @@
 
 cheet('t e a t i m e', function() {
      alertify
-  		.alert("Noooo... It's TeeTime!", function(){
-    		alertify.message('OK, I was wrong');
-  		});
+  		.alert("Noooo...", "It's \"TeeTime\"!", cheet('t e e t i m e', function(){alertify.alert("Finally!", "You got it right!")}));
 });
