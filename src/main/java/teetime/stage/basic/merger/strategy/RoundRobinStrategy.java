@@ -59,5 +59,4 @@ public final class RoundRobinStrategy implements IMergerStrategy {
 		// correct the index if it is out-of-bounds
 		this.index = (this.index + 1) % merger.getInputPorts().size();
 	}
-
 }

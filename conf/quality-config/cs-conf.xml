@@ -1039,7 +1039,7 @@
 		<module name="ParenPad">
 			<property name="option" value="nospace" />
 			<property name="tokens"
-				value="CTOR_CALL, LPAREN, METHOD_CALL, RPAREN, SUPER_CTOR_CALL" />
+				value="CTOR_CALL, METHOD_CALL, SUPER_CTOR_CALL" />
 		</module>
 
 		<!-- Checks the policy on the padding of parentheses for typecasts. ! -->

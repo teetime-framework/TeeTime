@@ -20,7 +20,7 @@ import java.util.List;
 
 public final class ListContainerPool<T> implements ObjectPool<ListContainer<T>> {
 
-	private final List<ListContainer<T>> pool = new ArrayList<ListContainer<T>>(); // NOPMD
+	private final List<ListContainer<T>> pool = new ArrayList<ListContainer<T>>(); 
 
 	public ListContainerPool(int initialPoolSize) {
 		while (initialPoolSize-- > 0) {

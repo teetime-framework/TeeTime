@@ -15,6 +15,15 @@
  */
 package teetime.stage.basic;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ * @param <E>
+ *            the type of both the input port and the output port
+ *
+ * @since 2.0
+ */
 public abstract class AbstractFilter<E> extends AbstractTransformation<E, E> {
 
 	protected AbstractFilter() {

@@ -17,13 +17,13 @@ package teetime.framework.pipe;
 
 public interface IMonitorablePipe {
 
-	long getNumPushes();
-
-	long getNumPulls();
-
 	int size();
 
 	int capacity();
+
+	long getNumPushes();
+
+	long getNumPulls();
 
 	long getPushThroughput();
 

@@ -78,6 +78,7 @@ public class InstantiationPipe<T> implements IPipe<T> {
 
 	@Override
 	public void sendSignal(final ISignal signal) {
+		// throw new IllegalStateException(ERROR_MESSAGE + ": " + sourcePort.getOwningStage());
 		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 

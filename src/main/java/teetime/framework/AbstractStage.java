@@ -233,6 +233,7 @@ public abstract class AbstractStage {
 					}
 				}
 			} catch (Exception e) {
+				this.logger.error("Could not trigger signal.", e);
 				this.getOwningContext().abortConfigurationRun();
 			}
 			for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
@@ -286,7 +287,7 @@ public abstract class AbstractStage {
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public void onStarting() throws Exception {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Stage " + getId() + " within thread " + getOwningThread().getId());
+			logger.debug("Stage {} within thread {}", getId(), getOwningThread().getId());
 		}
 		changeState(StageState.STARTED);
 		calledOnStarting = true;
