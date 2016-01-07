@@ -5,42 +5,102 @@
 		<title>Release Notes</title>
 	</properties>
 	<body>
-		<release version="Snapshot" date="Daily basis"
-			description="Unstable preview of oncoming versions - 2.0-SNAPSHOT">
+		<release version="2.1-SNAPSHOT" description="Nightly builds">
+			<action dev="ntd" type="add" issue="163">
+				Introduced error codes.
+			</action>
+			<action dev="ntd" type="add" issue="247">
+				Configuration can now be executed from command line.
+			</action>
+		</release>
+		<release version="2.0" date="30.09.2015" description="Camellia Release">
+			<action dev="ntd" type="add" issue="93">
+				New concept: composite
+				stages.
+			</action>
 			<action dev="ntd" type="add" issue="33">
-				TeeTime automatically
+				New concept: TeeTime
+				automatically
 				chooses the correct type of pipe for all connections.
+			</action>
+			<action dev="chw" type="add" issue="207">
+				Added capacity to IPipe.
+			</action>
+			<action dev="chw" type="add" issue="197">
+				Added the ability to add
+				ports to a merger at runtime.
+			</action>
+			<action dev="chw" type="add" issue="172">
+				Added the ability to add
+				ports to a distributor at runtime.
+			</action>
+			<action dev="chw" type="add" issue="183">
+				Threads can be added at
+				runtime.
+			</action>
+			<action dev="ntd" type="add" issue="195">
+				Configurations can only be
+				executed once.
+			</action>
+			<action dev="ntd" type="add" issue="165">
+				Ports can be named for
+				better debugging.
 			</action>
 			<action dev="ntd" type="add">
 				Stages without any input port are
 				automatically executed in a dedicated thread.
 			</action>
-			<action dev="ntd" type="fix" issue="93">
-				Introduced a new concept
-				for composing stages.
-			</action>
 			<action dev="ntd" type="add" issue="171">
 				Configurations are now
 				built within the Configuration class.
-				This removes any constraints on CompositeStages and
-				enables therefore multiple connections and multithreading in such stages.
-			</action>
-			<action dev="ntd" type="update">
-				Renamed Analysis to Execution
-			</action>
-			<action dev="ntd" type="remove">
-				Removed pair class.
+				This removes any constraints on
+				CompositeStages and
+				enables therefore multiple connections and
+				multithreading in such stages.
 			</action>
 			<action dev="ntd" type="add" issue="154">
 				All stages will be
 				initialized before starting the analysis.
 			</action>
 			<action dev="ntd" type="add" issue="122">
-				Threads can be named for better debugging.
+				Threads can be named for
+				better debugging.
+			</action>
+			<action dev="ntd" type="add" issue="170">
+				Exceptions within the
+				initialization will now terminate the execution.
 			</action>
 			<action dev="ntd" type="add" issue="211">
 				Added Services.
-				Any Execution can now be aborted.
+				Any
+				Execution can now be aborted.
+			</action>
+
+			<action dev="ntd" type="update" issue="224">
+				Merged Stage into
+				AbstractStage.
+			</action>
+			<action dev="chw" type="update" issue="189">
+				Merger and Distributor
+				strategies are moved to a separate package.
+			</action>
+			<action dev="ntd" type="update" issue="185">
+				TerminatingExceptionListener is now the default listener.
+			</action>
+			<action dev="ntd" type="update" issue="174">
+				Removed
+				addThreadableStage and replaced it by AbstractStage.declareActive().
+			</action>
+			<action dev="ntd" type="update">
+				Renamed Analysis to Execution.
+			</action>
+
+			<action dev="ntd" type="remove" issue="217">
+				Removed
+				InitializingSignal.
+			</action>
+			<action dev="ntd" type="remove">
+				Removed pair class.
 			</action>
 		</release>
 
@@ -61,7 +121,7 @@
 
 		</release>
 
-		<release version="1.1" date="30.04.2015" description="Second release">
+		<release version="1.1" date="30.04.2015" description="Black release">
 			<action dev="ntd" type="add" issue="32">
 				New concept: exception
 				handling incl. Wiki tutorial.
@@ -93,7 +153,14 @@
 				Removed
 				IterableProducer. Use InitialElementProducer instead.
 			</action>
-
+			<action dev="chw" type="update" issue="141">
+				Updated dependencies.
+			</action>
+			<action dev="ntd" type="update" issue="72">
+				Jar is not only
+				published via the Central Maven Repository, but also via our CI
+				server Jenkins.
+			</action>
 
 			<action dev="chw" type="fix" issue="143">
 				#143 Null values can block
@@ -107,19 +174,9 @@
 				#75 Signal passing is
 				incorrect.
 			</action>
-
-
-			<action dev="chw" type="update" issue="141">
-				Updated dependencies.
-			</action>
-			<action dev="ntd" type="update" issue="72">
-				Jar is not only
-				published via the Central Maven Repository, but also via our CI
-				server Jenkins.
-			</action>
 		</release>
 
-		<release version="1.0" date="19.12.2014" description="Initial release">
+		<release version="1.0" date="19.12.2014" description="Assam release">
 			<action dev="ntd" type="add" issue="66">
 				Created a new site to
 				promote TeeTime.

@@ -4,18 +4,18 @@
 
 	<groupId>net.sourceforge.teetime</groupId>
 	<artifactId>teetime</artifactId>
-	<version>ccw</version>
+	<version>2.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>TeeTime</name>
 	<description>TeeTime is a Pipe-and-Filter framework for Java</description>
-	<url>http://christianwulf.github.io/teetime/</url>
+	<url>http://teetime-framework.github.io</url>
 	<inceptionYear>2015</inceptionYear>
 
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
-			<url>http://christianwulf.github.io/teetime/LICENSE.txt</url>
+			<url>http://teetime-framework.github.io/LICENSE.txt</url>
 		</license>
 	</licenses>
 
@@ -24,17 +24,13 @@
 		<javadocOutputDir>apidocs</javadocOutputDir>
 
 		<java.version>1.6</java.version>
-		<checkstyle.version>2.16</checkstyle.version>
-		<findbugs.version>3.0.1</findbugs.version>
+		<checkstyle.version>2.17</checkstyle.version>
+		<findbugs.version>3.0.3</findbugs.version>
 		<pmd.version>3.5</pmd.version>
 		<javadoc.version>2.10.3</javadoc.version>
 	</properties>
 
 	<distributionManagement>
-		<site>
-			<id>teetime.sf.net</id>
-			<url>scp://shell.sourceforge.net/home/project-web/teetime/htdocs</url>
-		</site>
 		<snapshotRepository>
 			<id>teetime-deployment</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -47,7 +43,7 @@
 
 	<issueManagement>
 		<system>GitLab</system>
-		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/issues/</url>
+		<url>https://build.se.informatik.uni-kiel.de/gitlab/teetime/teetime/issues/</url>
 	</issueManagement>
 
 	<developers>
@@ -55,22 +51,43 @@
 			<id>chw</id>
 			<name>Christian Wulf</name>
 			<email>chw@informatik.uni-kiel.de</email>
-			<organization>Christian-Albrechts-Universitaet zu Kiel</organization>
+			<organization>Kiel University</organization>
 			<organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/christian-wulf</organizationUrl>
+			<timezone>Europe/Berlin</timezone>
+			<roles>
+				<role>PMC Member</role>
+			</roles>
 		</developer>
 		<developer>
 			<id>ntd</id>
 			<name>Nelson Tavares de Sousa</name>
 			<email>ntd@informatik.uni-kiel.de</email>
-			<organization>Christian-Albrechts-Universitaet zu Kiel</organization>
+			<organization>Kiel University</organization>
 			<organizationUrl>https://www.informatik.uni-kiel.de/~ntd/</organizationUrl>
+			<timezone>Europe/Berlin</timezone>
+			<roles>
+				<role>PMC Member</role>
+			</roles>
 		</developer>
 	</developers>
 
+	<contributors>
+		<contributor>
+			<name>Christian Claus Wiechmann</name>
+			<email>ccw@informatik.uni-kiel.de</email>
+			<organization>-</organization>
+			<organizationUrl>-</organizationUrl>
+			<timezone>Europe/Berlin</timezone>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</contributor>
+	</contributors>
+
 	<scm>
-		<connection>scm:git:https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime.git</connection>
-		<developerConnection>scm:git:ssh://gitlab@build.se.informatik.uni-kiel.de:chw/teetime.git</developerConnection>
-		<url>https://build.se.informatik.uni-kiel.de/gitlab/chw/teetime/</url>
+		<connection>scm:git:https://build.se.informatik.uni-kiel.de/gitlab/teetime/teetime.git</connection>
+		<developerConnection>scm:git:ssh://gitlab@build.se.informatik.uni-kiel.de:teetime/teetime.git</developerConnection>
+		<url>https://build.se.informatik.uni-kiel.de/gitlab/teetime/teetime/</url>
 	</scm>
 
 	<ciManagement>
@@ -80,8 +97,8 @@
 
 	<repositories>
 		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
+			<id>sonatype.oss.snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 		</repository>
 	</repositories>
 
@@ -101,7 +118,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.12</version>
+			<version>1.7.13</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -112,19 +129,12 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>18.0</version>
+			<version>19.0</version>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>org.jctools</groupId> -->
-		<!-- <artifactId>jctools-core</artifactId> -->
-		<!-- <version>1.0</version> -->
-		<!-- <version>1.1-SNAPSHOT</version> -->
-		<!-- </dependency> -->
 		<dependency>
-			<groupId>com.github.JCTools</groupId>
-			<artifactId>JCTools</artifactId>
-			<!-- SNAPSHOT master version -->
-			<version>7239659ba0</version>
+			<groupId>org.jctools</groupId>
+			<artifactId>jctools-core</artifactId>
+			<version>1.1</version>
 		</dependency>
 
 		<dependency>
@@ -132,7 +142,6 @@
 			<artifactId>hppc</artifactId>
 			<version>0.7.1</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-math3</artifactId>
@@ -142,6 +151,24 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<phase>package</phase> <!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
@@ -196,6 +223,25 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${javadoc.version}</version>
+				<configuration>
+					<tags>
+						<tag>
+							<name>stage.input</name>
+							<placement>t</placement>
+							<head>Stage input:</head>
+						</tag>
+						<tag>
+							<name>stage.output</name>
+							<placement>t</placement>
+							<head>Stage output:</head>
+						</tag>
+						<tag>
+							<name>stage.sketch</name>
+							<placement>t</placement>
+							<head>Stage sketch:</head>
+						</tag>
+					</tags>
+				</configuration>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -209,7 +255,7 @@
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.5</version>
+				<version>1.6.6</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>teetime-deployment</serverId>
@@ -345,7 +391,7 @@
 					<header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
 					<properties>
 						<owner>Christian Wulf, Nelson Tavares de Sousa</owner>
-						<email>http://christianwulf.github.io/teetime</email>
+						<email>http://teetime-framework.github.io</email>
 					</properties>
 					<includes>
 						<include>**/*.java</include>
@@ -364,7 +410,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.8</version>
+				<version>2.8.1</version>
 			</plugin>
 		</plugins>
 	</build>
@@ -420,6 +466,23 @@
 				<version>${javadoc.version}</version>
 				<configuration>
 					<destDir>${javadocOutputDir}</destDir>
+					<tags>
+						<tag>
+							<name>stage.input</name>
+							<placement>t</placement>
+							<head>Stage input:</head>
+						</tag>
+						<tag>
+							<name>stage.output</name>
+							<placement>t</placement>
+							<head>Stage output:</head>
+						</tag>
+						<tag>
+							<name>stage.sketch</name>
+							<placement>t</placement>
+							<head>Stage sketch:</head>
+						</tag>
+					</tags>
 				</configuration>
 			</plugin>
 		</plugins>

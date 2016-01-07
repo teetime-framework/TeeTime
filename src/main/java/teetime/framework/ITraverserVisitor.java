@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,14 @@
 package teetime.framework;
 
 import teetime.framework.Traverser.VisitorBehavior;
+import teetime.framework.pipe.DummyPipe;
 
 public interface ITraverserVisitor {
 
-	VisitorBehavior visit(Stage stage);
+	VisitorBehavior visit(AbstractStage stage);
 
 	VisitorBehavior visit(AbstractPort<?> port);
+
+	void visit(DummyPipe pipe, AbstractPort<?> port);
 
 }

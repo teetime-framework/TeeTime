@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,18 @@ package teetime.framework.exceptionHandling;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
 class TerminatingExceptionListener extends AbstractExceptionListener {
 
 	private final List<Exception> exceptions = new ArrayList<Exception>();
 
 	TerminatingExceptionListener() {
-		// should only be instantiated by its factory
+		super(true);
 	}
 
 	@Override
-	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {
+	public FurtherExecution onStageException(final Exception e, final AbstractStage throwingStage) {
 		if (logger.isWarnEnabled()) {
 			logger.warn("Exception occurred in " + throwingStage.getId(), e);
 		}

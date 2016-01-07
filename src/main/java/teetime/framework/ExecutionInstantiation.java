@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.InstantiationPipe;
-import teetime.framework.pipe.SingleElementPipeFactory;
-import teetime.framework.pipe.SpScPipeFactory;
-import teetime.framework.pipe.UnboundedSpScPipeFactory;
+import teetime.framework.pipe.UnsynchedPipe;
+import teetime.framework.pipe.BoundedSynchedPipe;
+import teetime.framework.pipe.UnboundedSynchedPipe;
 
 class ExecutionInstantiation {
 
 	private static final int DEFAULT_COLOR = 0;
-	private static final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
-	private static final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
-	private static final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
 
 	private final ConfigurationContext context;
 
@@ -40,9 +36,9 @@ class ExecutionInstantiation {
 
 	void instantiatePipes() {
 		int color = DEFAULT_COLOR;
-		Map<Stage, Integer> colors = new HashMap<Stage, Integer>();
-		Set<Stage> threadableStages = context.getThreadableStages();
-		for (Stage threadableStage : threadableStages) {
+		Map<AbstractStage, Integer> colors = new HashMap<AbstractStage, Integer>();
+		Set<AbstractStage> threadableStages = context.getThreadableStages();
+		for (AbstractStage threadableStage : threadableStages) {
 			color++;
 			colors.put(threadableStage, color);
 
@@ -53,18 +49,18 @@ class ExecutionInstantiation {
 
 	private static class ThreadPainter {
 
-		private final Map<Stage, Integer> colors;
+		private final Map<AbstractStage, Integer> colors;
 		private final int color;
-		private final Set<Stage> threadableStages;
+		private final Set<AbstractStage> threadableStages;
 
-		public ThreadPainter(final Map<Stage, Integer> colors, final int color, final Set<Stage> threadableStages) {
+		public ThreadPainter(final Map<AbstractStage, Integer> colors, final int color, final Set<AbstractStage> threadableStages) {
 			super();
 			this.colors = colors;
 			this.color = color;
 			this.threadableStages = threadableStages;
 		}
 
-		public int colorAndConnectStages(final Stage stage) {
+		public int colorAndConnectStages(final AbstractStage stage) {
 			int createdConnections = 0;
 
 			for (OutputPort<?> outputPort : stage.getOutputPorts()) {
@@ -82,23 +78,24 @@ class ExecutionInstantiation {
 		private int processPipe(final OutputPort outputPort, final InstantiationPipe pipe) {
 			int numCreatedConnections;
 
-			Stage targetStage = pipe.getTargetPort().getOwningStage();
+			AbstractStage targetStage = pipe.getTargetPort().getOwningStage();
 			int targetColor = colors.containsKey(targetStage) ? colors.get(targetStage) : DEFAULT_COLOR;
 
 			if (threadableStages.contains(targetStage) && targetColor != color) {
 				if (pipe.capacity() != 0) {
-					interBoundedThreadPipeFactory.create(outputPort, pipe.getTargetPort(), pipe.capacity());
+					new BoundedSynchedPipe(outputPort, pipe.getTargetPort(), pipe.capacity());
 				} else {
-					interUnboundedThreadPipeFactory.create(outputPort, pipe.getTargetPort(), 4);
+					new UnboundedSynchedPipe(outputPort, pipe.getTargetPort());
 				}
 				numCreatedConnections = 0;
 			} else {
 				if (colors.containsKey(targetStage)) {
 					if (!colors.get(targetStage).equals(color)) {
-						throw new IllegalStateException("Crossing threads"); // One stage is connected to a stage of another thread (but not its "headstage")
+						throw new IllegalStateException("1001 - Crossing threads in " + targetStage.getId()); // One stage is connected to a stage of another thread
+																												// (but not its "headstage")
 					}
 				}
-				intraThreadPipeFactory.create(outputPort, pipe.getTargetPort());
+				new UnsynchedPipe(outputPort, pipe.getTargetPort());
 				colors.put(targetStage, color);
 				numCreatedConnections = colorAndConnectStages(targetStage);
 			}

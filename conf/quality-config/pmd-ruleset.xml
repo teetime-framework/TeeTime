@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 	<description>This ruleset checks my code for bad stuff</description>
-
+	<exclude-pattern>.*/target/.*</exclude-pattern>
 	<!-- warning: if you reference a pmd rulesets xml file more than once, only 
 		the first rule is applied; so check for duplicates -->
 

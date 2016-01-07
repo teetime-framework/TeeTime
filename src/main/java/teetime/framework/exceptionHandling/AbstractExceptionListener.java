@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,23 @@
  */
 package teetime.framework.exceptionHandling;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
 /**
  * Represents a minimalistic StageExceptionListener.
  * Listener which extend from this one, must a least implement this functionality.
- * This abstract class provides a Logger {@link #logger} and the method {@link #onStageException(Exception, Stage)} which is called on every raised exception.
+ * This abstract class provides a Logger {@link #logger} and the method {@link #onStageException(Exception, AbstractStage)} which is called on every raised exception.
  */
 public abstract class AbstractExceptionListener {
+
+	private final List<Exception> exceptionsList = new ArrayList<Exception>();
+	private final boolean logExceptions;
 
 	public enum FurtherExecution {
 		CONTINUE, TERMINATE
@@ -36,8 +42,9 @@ public abstract class AbstractExceptionListener {
 	 */
 	protected final Logger logger;
 
-	public AbstractExceptionListener() {
+	protected AbstractExceptionListener(final boolean shouldLogExceptions) {
 		this.logger = LoggerFactory.getLogger(this.getClass().getCanonicalName());
+		this.logExceptions = shouldLogExceptions;
 	}
 
 	/**
@@ -50,6 +57,17 @@ public abstract class AbstractExceptionListener {
 	 * @return
 	 * 		true, if the thread should be terminated, false otherwise
 	 */
-	public abstract FurtherExecution onStageException(Exception e, Stage throwingStage);
+	public abstract FurtherExecution onStageException(Exception e, AbstractStage throwingStage);
+
+	public List<Exception> getLoggedExceptions() {
+		return exceptionsList;
+	}
+
+	public FurtherExecution reportException(final Exception e, final AbstractStage stage) {
+		if (logExceptions) {
+			exceptionsList.add(e);
+		}
+		return onStageException(e, stage);
+	}
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,23 +19,18 @@ import java.util.List;
 import java.util.Set;
 
 import teetime.framework.InputPort;
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
-public final class StartingSignal extends AbstractSignal {
+public final class StartingSignal implements ISignal {
 
 	@Override
-	public void trigger(final Stage stage) {
-		try {
-			stage.onStarting();
-		} catch (final Exception e) { // NOCS NOPMD (Stages can throw any arbitrary Exception)
-			this.catchedExceptions.add(e);
-			LOGGER.error("Exception while sending the start signal", e);
-		}
+	public void trigger(final AbstractStage stage) throws Exception {
+		stage.onStarting();
 	}
 
 	@Override
 	public boolean mayBeTriggered(final Set<InputPort<?>> receivedInputPorts, final List<InputPort<?>> allInputPorts) {
-		return true;
+		return receivedInputPorts.size() == 1;
 	}
 
 }

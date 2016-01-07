@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,45 +31,37 @@ import org.junit.Test;
  */
 public class InitialElementProducerTest {
 
-	private InitialElementProducer<Integer> producer;
-
-	// @Before
-	public void initializeProducer() {
-		producer = new InitialElementProducer<Integer>();
-	}
-
 	@Test
 	public void producerShouldByDefaultSendNothing() {
-		initializeProducer();
+		InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>();
 		List<Integer> results = new ArrayList<Integer>();
 
 		test(producer).and().receive(results).from(producer.getOutputPort()).start();
 		assertThat(results, is(empty()));
 	}
 
-	@Test
-	public void testSetIterArray() {
-		initializeProducer();
-		producer.setIter(new Integer[] { 1, 2, 3 });
-		List<Integer> results = new ArrayList<Integer>();
-
-		test(producer).and().receive(results).from(producer.getOutputPort()).start();
-		assertThat(results, contains(1, 2, 3));
-	}
-
-	@Test
-	public void testSetIterVarargs() {
-		initializeProducer();
-		producer.setIter(1, 2, 3);
-		List<Integer> results = new ArrayList<Integer>();
-
-		test(producer).and().receive(results).from(producer.getOutputPort()).start();
-		assertThat(results, contains(1, 2, 3));
-	}
+	// @Test
+	// public void testSetIterArray() {
+	// InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>(new Integer[] { 1, 2, 3 });
+	//
+	// List<Integer> results = new ArrayList<Integer>();
+	//
+	// test(producer).and().receive(results).from(producer.getOutputPort()).start();
+	// assertThat(results, contains(1, 2, 3));
+	// }
+	//
+	// @Test
+	// public void testSetIterVarargs() {
+	// InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>(1, 2, 3);
+	// List<Integer> results = new ArrayList<Integer>();
+	//
+	// test(producer).and().receive(results).from(producer.getOutputPort()).start();
+	// assertThat(results, contains(1, 2, 3));
+	// }
 
 	@Test
 	public void instantiateWithArray() {
-		producer = new InitialElementProducer<Integer>(new Integer[] { 1, 2, 3 });
+		InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>(new Integer[] { 1, 2, 3 });
 		List<Integer> results = new ArrayList<Integer>();
 
 		test(producer).and().receive(results).from(producer.getOutputPort()).start();
@@ -78,7 +70,7 @@ public class InitialElementProducerTest {
 
 	@Test
 	public void instantiateWithVarargs() {
-		producer = new InitialElementProducer<Integer>(1, 2, 3);
+		InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>(1, 2, 3);
 		List<Integer> results = new ArrayList<Integer>();
 
 		test(producer).and().receive(results).from(producer.getOutputPort()).start();
@@ -91,7 +83,7 @@ public class InitialElementProducerTest {
 		testIntegers.add(1);
 		testIntegers.add(2);
 		testIntegers.add(3);
-		producer = new InitialElementProducer<Integer>(testIntegers);
+		InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>(testIntegers);
 		List<Integer> results = new ArrayList<Integer>();
 
 		test(producer).and().receive(results).from(producer.getOutputPort()).start();

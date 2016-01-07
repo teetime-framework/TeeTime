@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import teetime.framework.InputPort;
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 import teetime.framework.validation.InvalidPortConnection;
 
 public final class ValidatingSignal implements ISignal {
@@ -28,7 +28,7 @@ public final class ValidatingSignal implements ISignal {
 	private final List<InvalidPortConnection> invalidPortConnections = new LinkedList<InvalidPortConnection>();
 
 	@Override
-	public void trigger(final Stage stage) {
+	public void trigger(final AbstractStage stage) {
 		stage.onValidating(this.invalidPortConnections);
 	}
 

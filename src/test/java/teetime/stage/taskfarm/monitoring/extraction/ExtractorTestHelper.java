@@ -127,8 +127,8 @@ final class ExtractorTestHelper {
 	}
 
 	private static TaskFarmStage<?, ?, ?> createDummyTaskFarm() {
-		TaskFarmStage<Integer, Integer, ITaskFarmDuplicable<Integer, Integer>> taskFarmStage =
-				new TaskFarmStage<Integer, Integer, ITaskFarmDuplicable<Integer, Integer>>(createDummyEnclosedStage());
+		TaskFarmStage<Integer, Integer, ITaskFarmDuplicable<Integer, Integer>> taskFarmStage = new TaskFarmStage<Integer, Integer, ITaskFarmDuplicable<Integer, Integer>>(
+				createDummyEnclosedStage());
 
 		return taskFarmStage;
 	}

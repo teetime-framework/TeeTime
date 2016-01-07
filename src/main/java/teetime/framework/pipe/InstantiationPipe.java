@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,11 +99,6 @@ public class InstantiationPipe<T> implements IPipe<T> {
 
 	@Override
 	public void waitForStartSignal() throws InterruptedException {
-		throw new IllegalStateException(ERROR_MESSAGE);
-	}
-
-	@Override
-	public void waitForInitializingSignal() throws InterruptedException {
 		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 

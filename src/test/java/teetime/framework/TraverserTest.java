@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.junit.Test;
 import teetime.stage.CountingMapMerger;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.distributor.Distributor;
-import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
+import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
 import teetime.stage.basic.merger.Merger;
 import teetime.stage.io.File2SeqOfWords;
 import teetime.stage.string.WordCounter;
@@ -45,7 +45,7 @@ public class TraverserTest {
 		Traverser traversor = new Traverser(new IntraStageCollector(tc.init));
 		traversor.traverse(tc.init);
 
-		Set<Stage> comparingStages = new HashSet<Stage>();
+		Set<AbstractStage> comparingStages = new HashSet<AbstractStage>();
 		comparingStages.add(tc.init);
 		comparingStages.add(tc.f2b);
 		comparingStages.add(tc.distributor);
@@ -66,7 +66,7 @@ public class TraverserTest {
 			int threads = 2;
 			init = new InitialElementProducer<File>(new File(""));
 			f2b = new File2SeqOfWords("UTF-8", 512);
-			distributor = new Distributor<String>(new RoundRobinStrategy2());
+			distributor = new Distributor<String>(new NonBlockingRoundRobinStrategy());
 			CountingMapMerger<String> result = new CountingMapMerger<String>();
 
 			// last part
@@ -86,14 +86,14 @@ public class TraverserTest {
 				connectPorts(distributor.getNewOutputPort(), wc.getInputPort());
 				connectPorts(wc.getOutputPort(), merger.getNewInputPort());
 				// Add WordCounter as a threadable stage, so it runs in its own thread
-				addThreadableStage(wc.getInputPort().getOwningStage());
+				wc.getInputPort().getOwningStage().declareActive();
 			}
 
 			// Connect the stages of the last part
 			connectPorts(merger.getOutputPort(), result.getInputPort());
 
 			// Add the first and last part to the threadable stages
-			addThreadableStage(merger);
+			merger.declareActive();
 		}
 
 	}

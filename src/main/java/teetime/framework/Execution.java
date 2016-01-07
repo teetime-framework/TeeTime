@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,11 @@
  */
 package teetime.framework;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -65,10 +70,10 @@ public final class Execution<T extends Configuration> {
 	public Execution(final T configuration, final boolean validationEnabled) {
 		this.configuration = configuration;
 		this.configurationContext = configuration.getContext();
-		if (configuration.isExecuted()) {
-			throw new IllegalStateException("Configuration was already executed");
+		if (configuration.isInitialized()) {
+			throw new IllegalStateException("3001 - Configuration has already been used.");
 		}
-		configuration.setExecuted(true);
+		configuration.setInitialized(true);
 		if (validationEnabled) {
 			validateStages();
 		}
@@ -77,8 +82,8 @@ public final class Execution<T extends Configuration> {
 
 	// BETTER validate concurrently
 	private void validateStages() {
-		final Set<Stage> threadableStages = configurationContext.getThreadableStages();
-		for (Stage stage : threadableStages) {
+		final Set<AbstractStage> threadableStages = configurationContext.getThreadableStages();
+		for (AbstractStage stage : threadableStages) {
 			// // portConnectionValidator.validate(stage);
 			// }
 
@@ -95,10 +100,6 @@ public final class Execution<T extends Configuration> {
 	 *
 	 */
 	private final void init() {
-		// ExecutionInstantiation executionInstantiation = new ExecutionInstantiation(configurationContext);
-		// executionInstantiation.instantiatePipes();
-
-		// configurationContext.initializeContext();
 		configurationContext.initializeServices();
 	}
 
@@ -112,6 +113,19 @@ public final class Execution<T extends Configuration> {
 	 */
 	public void waitForTermination() {
 		configurationContext.waitForConfigurationToTerminate();
+
+		Map<Thread, List<Exception>> threadExceptionsMap = configuration.getFactory().getThreadExceptionsMap();
+		Iterator<Entry<Thread, List<Exception>>> iterator = threadExceptionsMap.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<Thread, List<Exception>> entry = iterator.next();
+			if (entry.getValue().isEmpty()) {
+				iterator.remove();
+			}
+		}
+
+		if (!threadExceptionsMap.isEmpty()) {
+			throw new ExecutionException(threadExceptionsMap);
+		}
 	}
 
 	// TODO: implement
@@ -140,6 +154,10 @@ public final class Execution<T extends Configuration> {
 	 * @since 2.0
 	 */
 	public void executeNonBlocking() {
+		if (configuration.isExecuted()) {
+			throw new IllegalStateException("3002 - Any configuration instance may only be executed once.");
+		}
+		configuration.setExecuted(true);
 		configurationContext.executeConfiguration();
 	}
 
@@ -152,4 +170,30 @@ public final class Execution<T extends Configuration> {
 		return this.configuration;
 	}
 
+	private static List<Configuration> configLoader(final String... args) {
+		List<Configuration> instances = new ArrayList<Configuration>();
+		for (String each : args) {
+			try {
+				Class<?> clazz = Class.forName(each);
+				Object obj = clazz.newInstance();
+				if (obj instanceof Configuration) {
+					instances.add((Configuration) obj);
+				}
+			} catch (ClassNotFoundException e) {
+				LOGGER.error("Could not find class " + each);
+			} catch (InstantiationException e) {
+				LOGGER.error("Could not instantiate class " + each, e);
+			} catch (IllegalAccessException e) {
+				LOGGER.error("IllegalAccessException arised while instantiating class " + each, e);
+			}
+		}
+		return instances;
+	}
+
+	public static void main(final String... args) {
+		List<Configuration> instances = configLoader(args);
+		for (Configuration configuration : instances) {
+			new Execution<Configuration>(configuration).executeBlocking(); // NOPMD
+		}
+	}
 }

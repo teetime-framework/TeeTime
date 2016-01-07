@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,24 +18,28 @@ package teetime.framework;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import teetime.framework.Traverser.VisitorBehavior;
+import teetime.framework.pipe.BoundedSynchedPipe;
+import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
-import teetime.framework.pipe.IPipeFactory;
 import teetime.framework.pipe.InstantiationPipe;
-import teetime.framework.pipe.SingleElementPipeFactory;
-import teetime.framework.pipe.SpScPipeFactory;
-import teetime.framework.pipe.UnboundedSpScPipeFactory;
+import teetime.framework.pipe.UnboundedSynchedPipe;
+import teetime.framework.pipe.UnsynchedPipe;
 
-public class A3PipeInstantiation implements ITraverserVisitor {
+/**
+ * Automatically instantiates the correct pipes
+ */
+class A3PipeInstantiation implements ITraverserVisitor {
 
-	private static final IPipeFactory interBoundedThreadPipeFactory = new SpScPipeFactory();
-	private static final IPipeFactory interUnboundedThreadPipeFactory = new UnboundedSpScPipeFactory();
-	private static final IPipeFactory intraThreadPipeFactory = new SingleElementPipeFactory();
+	private static final Logger LOGGER = LoggerFactory.getLogger(A3PipeInstantiation.class);
 
 	private final Set<IPipe<?>> visitedPipes = new HashSet<IPipe<?>>();
 
 	@Override
-	public VisitorBehavior visit(final Stage stage) {
+	public VisitorBehavior visit(final AbstractStage stage) {
 		return VisitorBehavior.CONTINUE;
 	}
 
@@ -63,16 +67,31 @@ public class A3PipeInstantiation implements ITraverserVisitor {
 		if (targetStageThread != null && sourceStageThread != targetStageThread) {
 			// inter
 			if (pipe.capacity() != 0) {
-				interBoundedThreadPipeFactory.create(pipe.getSourcePort(), pipe.getTargetPort(), pipe.capacity());
+				new BoundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort(), pipe.capacity());
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug("Connected (bounded) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
+				}
 			} else {
-				interUnboundedThreadPipeFactory.create(pipe.getSourcePort(), pipe.getTargetPort(), 4);
+				new UnboundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug("Connected (unbounded) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
+				}
 			}
-			return;
 		} else {
 			// normal or reflexive pipe => intra
+			new UnsynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Connected (unsynch) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
+			}
 		}
 
-		intraThreadPipeFactory.create(pipe.getSourcePort(), pipe.getTargetPort(), 4);
+	}
+
+	@Override
+	public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Unconnected port " + port + " in stage " + port.getOwningStage().getId());
+		}
 	}
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package teetime.stage.string;
+
+import java.util.Locale;
 
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
@@ -31,8 +33,7 @@ public final class ToLowerCase extends AbstractConsumerStage<String> {
 
 	@Override
 	protected void execute(final String element) {
-		this.outputPort.send(element.toLowerCase());
-
+		this.outputPort.send(element.toLowerCase(Locale.ENGLISH));
 	}
 
 	public OutputPort<String> getOutputPort() {

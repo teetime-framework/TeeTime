@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public final class ObjectProducer<T> extends AbstractProducerStage<T> {
 	 */
 	public ObjectProducer(final long numInputObjects, final ConstructorClosure<T> inputObjectCreator) {
 		if (numInputObjects < 0) {
-			throw new IllegalArgumentException("numInputObjects must be non-negative.");
+			throw new IllegalArgumentException("4001 - numInputObjects must be non-negative.");
 		}
 		this.numInputObjects = numInputObjects;
 		this.inputObjectCreator = inputObjectCreator;

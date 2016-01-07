@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package teetime.framework;
 
+import teetime.framework.pipe.DummyPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
@@ -29,8 +30,9 @@ import teetime.framework.signal.TerminatingSignal;
  */
 public class OutputPort<T> extends AbstractPort<T> {
 
-	OutputPort(final Class<T> type, final Stage owningStage, final String portName) {
+	OutputPort(final Class<T> type, final AbstractStage owningStage, final String portName) {
 		super(type, owningStage, portName);
+		setPipe(DummyPipe.INSTANCE);
 	}
 
 	/**

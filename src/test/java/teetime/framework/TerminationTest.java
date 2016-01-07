@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,22 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.Sink;
 
 public class TerminationTest {
+
+	@Ignore
+	@Test(timeout = 5000)
+	public void terminatesMultiInputPort() {
+		new Execution<Configuration>(new MultiInputConfig()).executeBlocking();
+	}
 
 	@Test(timeout = 1000)
 	public void correctAbort() throws InterruptedException {
@@ -42,54 +51,33 @@ public class TerminationTest {
 		execution.executeNonBlocking();
 		Thread.sleep(100);
 		execution.abortEventually();
-		assertThat(configuration.sinkStage.time - 450, is(greaterThan(configuration.init.time)));
+		assertThat(configuration.finalProp.time - 450, is(greaterThan(configuration.firstProp.time)));
 	}
 
 	private class TerminationConfig extends Configuration {
 		InitialElementProducer<Integer> init = new InitialElementProducer<Integer>(1, 2, 3, 4, 5, 6);
+		Propagator firstProp = new Propagator();
 		DoesNotRetrieveElements sinkStage = new DoesNotRetrieveElements();
+		Propagator finalProp = new Propagator();
 
 		public TerminationConfig(final int capacity) {
 			if (capacity == 1) {
-				connectPorts(init.getOutputPort(), sinkStage.getInputPort(), capacity);
-				addThreadableStage(sinkStage);
+				connectPorts(init.getOutputPort(), firstProp.getInputPort());
+				connectPorts(firstProp.getOutputPort(), sinkStage.getInputPort(), capacity);
+				connectPorts(sinkStage.getOutputPort(), finalProp.getInputPort());
+				sinkStage.declareActive();
 			} else {
 				Sink<Integer> sink = new Sink<Integer>();
 				connectPorts(init.getOutputPort(), sink.getInputPort(), capacity);
-				addThreadableStage(sink);
+				sink.declareActive();
 			}
-		}
-
-	}
-
-	private final class InitialElementProducer<T> extends AbstractProducerStage<T> {
-
-		private final Iterable<T> elements;
-		public long time;
-
-		public InitialElementProducer(final T... elements) {
-			this.elements = Arrays.asList(elements);
-		}
-
-		@Override
-		protected void execute() {
-			for (final T element : this.elements) {
-				this.outputPort.send(element);
-			}
-			this.terminate();
-		}
-
-		@Override
-		protected void terminate() {
-			time = System.currentTimeMillis();
-			super.terminate();
 		}
 
 	}
 
 	private class DoesNotRetrieveElements extends AbstractConsumerStage<Integer> {
 
-		public long time;
+		private final OutputPort<Integer> output = createOutputPort();
 
 		@Override
 		protected void execute(final Integer element) {
@@ -102,16 +90,83 @@ public class TerminationTest {
 					// First sleep will throw this
 				}
 				if (i > 1) {
-					Thread.currentThread().interrupt();
-					time = System.currentTimeMillis();
+					super.terminate();
 					break;
 				}
 			}
 
 		}
 
+		public OutputPort<? extends Integer> getOutputPort() {
+			return output;
+		}
+
 		@Override
 		protected void terminate() {}
+
+		@Override
+		protected void abort() {}
+
+	}
+
+	private class Propagator extends AbstractConsumerStage<Integer> {
+
+		public long time;
+		private final OutputPort<Integer> output = createOutputPort();
+
+		@Override
+		protected void execute(final Integer element) {
+			output.send(element);
+		}
+
+		public OutputPort<? extends Integer> getOutputPort() {
+			return output;
+		}
+
+		@Override
+		public void onTerminating() throws Exception {
+			time = System.currentTimeMillis();
+			super.onTerminating();
+		}
+	}
+
+	private class MultiInputConsumer extends AbstractConsumerStage<Object> {
+
+		public final InputPort<Object> secondInputPort = createInputPort(Object.class);
+
+		private int count = 0;
+
+		@Override
+		protected void execute(final Object element) {
+			Object received = secondInputPort.receive();
+			if (received != null) {
+				count++;
+			}
+			if (count > 3) {
+				this.terminate();
+			}
+		}
+
+	}
+
+	private class MultiInputConfig extends Configuration {
+
+		public MultiInputConfig() {
+			List<Integer> array = new ArrayList<Integer>();
+			for (int i = 0; i < 10000; i++) {
+				array.add(new Integer(0));
+			}
+			InitialElementProducer<Object> firstInit = new InitialElementProducer<Object>(new Object());
+			InitialElementProducer<Integer> secondInit = new InitialElementProducer<Integer>(array);
+			MultiInputConsumer miConsumer = new MultiInputConsumer();
+
+			connectPorts(firstInit.getOutputPort(), miConsumer.getInputPort());
+			connectPorts(secondInit.getOutputPort(), miConsumer.secondInputPort);
+
+			firstInit.declareActive();
+			secondInit.declareActive();
+			miConsumer.declareActive();
+		}
 
 	}
 

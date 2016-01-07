@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 package teetime.util.framework.port;
 
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
-public interface PortAction<T extends Stage> {
+public interface PortAction<T extends AbstractStage> {
 
 	public abstract void execute(final T stage);
 

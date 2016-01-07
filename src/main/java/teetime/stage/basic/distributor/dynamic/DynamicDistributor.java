@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import teetime.framework.OutputPort;
 import teetime.framework.signal.TerminatingSignal;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.distributor.strategy.IDistributorStrategy;
-import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
+import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
 import teetime.util.framework.port.PortAction;
 import teetime.util.framework.port.PortActionHelper;
 import teetime.util.framework.port.PortRemovedListener;
@@ -31,10 +31,10 @@ public class DynamicDistributor<T> extends Distributor<T> implements PortRemoved
 	protected final BlockingQueue<PortAction<DynamicDistributor<T>>> portActions;
 
 	/**
-	 * Uses {@link RoundRobinStrategy2} as default distributor strategy.
+	 * Uses {@link NonBlockingRoundRobinStrategy} as default distributor strategy.
 	 */
 	public DynamicDistributor() {
-		this(new RoundRobinStrategy2());
+		this(new NonBlockingRoundRobinStrategy());
 	}
 
 	public DynamicDistributor(final IDistributorStrategy strategy) {

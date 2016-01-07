@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package teetime.framework;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.pipe.SpScPipeFactory;
+import teetime.framework.pipe.BoundedSynchedPipe;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 
@@ -30,14 +30,15 @@ public class RunnableConsumerStageTestConfiguration extends Configuration {
 	public RunnableConsumerStageTestConfiguration(final Integer... inputElements) {
 		InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>(inputElements);
 		if (inputElements.length > 0) {
-			addThreadableStage(producer);
+			producer.declareActive();
 		}
 
 		CollectorSink<Integer> collectorSink = new CollectorSink<Integer>(collectedElements);
-		addThreadableStage(collectorSink);
+		collectorSink.declareActive();
 
 		// Can not use createPorts, as the if condition above will lead to an exception
-		new SpScPipeFactory().create(producer.getOutputPort(), collectorSink.getInputPort());
+		AbstractPipe<Integer> pipe = new BoundedSynchedPipe<Integer>(producer.getOutputPort(), collectorSink.getInputPort());
+		registerCustomPipe(pipe);
 
 		this.collectorSink = collectorSink;
 	}

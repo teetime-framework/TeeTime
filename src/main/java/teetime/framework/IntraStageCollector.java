@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,19 @@
 package teetime.framework;
 
 import teetime.framework.Traverser.VisitorBehavior;
+import teetime.framework.pipe.DummyPipe;
 
 public class IntraStageCollector implements ITraverserVisitor {
 
-	private final Stage startStage;
+	private final AbstractStage startStage;
 
-	public IntraStageCollector(final Stage startStage) {
+	public IntraStageCollector(final AbstractStage startStage) {
 		super();
 		this.startStage = startStage;
 	}
 
 	@Override
-	public VisitorBehavior visit(final Stage stage) {
+	public VisitorBehavior visit(final AbstractStage stage) {
 		if (stage == startStage || stage.getOwningThread() == null /* before execution */
 				|| stage.getOwningThread() == startStage.getOwningThread() /* while execution */) {
 			return VisitorBehavior.CONTINUE;
@@ -38,6 +39,12 @@ public class IntraStageCollector implements ITraverserVisitor {
 	@Override
 	public VisitorBehavior visit(final AbstractPort<?> port) {
 		return VisitorBehavior.CONTINUE;
+	}
+
+	@Override
+	public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

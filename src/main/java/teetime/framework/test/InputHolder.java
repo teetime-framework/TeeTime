@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,18 @@
 package teetime.framework.test;
 
 import teetime.framework.InputPort;
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
 public final class InputHolder<I> {
 
 	private final StageTester stageTester;
-	private final Stage stage;
+	private final AbstractStage stage;
 	private final Iterable<Object> input;
 
 	private InputPort<Object> port;
 
 	@SuppressWarnings("unchecked")
-	InputHolder(final StageTester stageTester, final Stage stage, final Iterable<I> input) {
+	InputHolder(final StageTester stageTester, final AbstractStage stage, final Iterable<I> input) {
 		this.stageTester = stageTester;
 		this.stage = stage;
 		this.input = (Iterable<Object>) input;

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,29 @@
  */
 package teetime.framework;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.exceptionHandling.TerminateException;
+import teetime.util.StopWatch;
 
 abstract class AbstractRunnableStage implements Runnable {
 
 	private static final String TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION = "Terminating thread due to the following exception: ";
 
-	protected final Stage stage;
+	private final StopWatch stopWatch = new StopWatch();
+
+	protected final AbstractStage stage;
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
-	protected AbstractRunnableStage(final Stage stage) {
+	public static final Map<AbstractStage, Long> durationsInNs = Collections.synchronizedMap(new LinkedHashMap<AbstractStage, Long>());
+
+	protected AbstractRunnableStage(final AbstractStage stage) {
 		if (stage == null) {
 			throw new IllegalArgumentException("Argument stage may not be null");
 		}
@@ -39,8 +48,10 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	@Override
 	public final void run() {
-		final Stage stage = this.stage; // should prevent the stage to be reloaded after a volatile read
-		this.logger.debug("Executing runnable stage...");
+		final AbstractStage stage = this.stage; // should prevent the stage to be reloaded after a volatile read
+		final Logger logger = this.logger; // should prevent the logger to be reloaded after a volatile read
+
+		logger.debug("Executing runnable stage...");
 
 		try {
 			try {
@@ -48,22 +59,25 @@ abstract class AbstractRunnableStage implements Runnable {
 				if (stage.getOwningContext() == null) {
 					throw new IllegalArgumentException("Argument stage may not have a nullable owning context");
 				}
+				stopWatch.start();
 				try {
-					do {
+					while (!stage.shouldBeTerminated()) {
 						executeStage();
-					} while (!Thread.currentThread().isInterrupted());
+					}
 				} catch (TerminateException e) {
-					this.stage.terminate();
+					stage.abort();
 					stage.getOwningContext().abortConfigurationRun();
 				} finally {
+					stopWatch.end();
+					durationsInNs.put(stage, stopWatch.getDurationInNs());
 					afterStageExecution();
 				}
 
 			} catch (RuntimeException e) {
-				this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
+				logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
 				throw e;
 			} catch (InterruptedException e) {
-				this.logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
+				logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
 			}
 		} finally {
 			if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
@@ -71,7 +85,9 @@ abstract class AbstractRunnableStage implements Runnable {
 			}
 		}
 
-		logger.debug("Finished runnable stage. (" + stage.getId() + ")");
+		if (logger.isDebugEnabled()) {
+			logger.debug("Finished runnable stage. (" + stage.getId() + ")");
+		}
 	}
 
 	protected abstract void beforeStageExecution() throws InterruptedException;
@@ -80,8 +96,8 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	protected abstract void afterStageExecution();
 
-	public static AbstractRunnableStage create(final Stage stage) {
-		if (stage.getTerminationStrategy() == TerminationStrategy.BY_SIGNAL) {
+	static AbstractRunnableStage create(final AbstractStage stage) {
+		if (stage.getInputPorts().size() > 0) {
 			return new RunnableConsumerStage(stage);
 		} else {
 			return new RunnableProducerStage(stage);

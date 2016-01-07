@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package teetime.framework;
 
-public final class NotEnoughInputException extends RuntimeException {
+final class NotEnoughInputException extends RuntimeException {
 
 	private static final long serialVersionUID = -2517233596919204396L;
 

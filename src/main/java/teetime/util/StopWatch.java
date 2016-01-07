@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,10 @@ public final class StopWatch {
 	}
 
 	public long getDurationInMs() {
-		return TimeUnit.NANOSECONDS.toMillis(getDurationInNs());
+		return getDuration(TimeUnit.MILLISECONDS);
+	}
+
+	public long getDuration(final TimeUnit timeUnit) {
+		return timeUnit.convert(getDurationInNs(), TimeUnit.NANOSECONDS);
 	}
 }

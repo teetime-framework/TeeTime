@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,22 +21,17 @@ import teetime.framework.AbstractProducerStage;
 
 public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 
-	private Iterable<T> elements;
+	private final Iterable<T> elements;
 
 	public InitialElementProducer(final T... elements) {
-		this.elements = Arrays.asList(elements);
+		this(Arrays.asList(elements));
 	}
 
 	public InitialElementProducer(final Iterable<T> elements) {
-		this.elements = elements;
-	}
-
-	@Override
-	public void onStarting() throws Exception {
 		if (elements == null) {
-			throw new IllegalArgumentException("The given iterable must not be null");
+			throw new IllegalArgumentException("4002 - The given iterable must not be null.");
 		}
-		super.onStarting();
+		this.elements = elements;
 	}
 
 	@Override
@@ -45,14 +40,6 @@ public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 			this.outputPort.send(element);
 		}
 		this.terminate();
-	}
-
-	public void setIter(final T... elements) {
-		this.elements = Arrays.asList(elements);
-	}
-
-	public void setIter(final Iterable<T> elements) {
-		this.elements = elements;
 	}
 
 }

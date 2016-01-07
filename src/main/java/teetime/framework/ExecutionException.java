@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,23 @@
  */
 package teetime.framework;
 
-import java.util.Collection;
-
-import teetime.util.ThreadThrowableContainer;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a exception, which is thrown by an analysis, if any problems occured within its execution.
  * A collection of thrown exceptions within the analysis can be retrieved with {@link #getThrownExceptions()}.
  *
- * @since 1.1
+ * @since 2.0
  */
 public class ExecutionException extends RuntimeException {
 
 	private static final long serialVersionUID = 7486086437171884298L;
 
-	private final Collection<ThreadThrowableContainer> exceptions;
+	private final Map<Thread, List<Exception>> exceptions;
 
-	public ExecutionException(final Collection<ThreadThrowableContainer> exceptions) {
-		super((exceptions.size() == 1) ? exceptions.toString() : "Error(s) while execution. Check thrown exception(s).");
+	public ExecutionException(final Map<Thread, List<Exception>> exceptions) {
+		super("3003 - " + ((exceptions.size() == 1) ? exceptions.toString() : exceptions.size()) + " error(s) occurred while execution. Check thrown exception(s).");
 		this.exceptions = exceptions;
 	}
 
@@ -40,9 +39,9 @@ public class ExecutionException extends RuntimeException {
 	 * Returns all exceptions thrown within the execution.
 	 * These are passed on as pairs of threads and throwables, to indicate a exception's context.
 	 *
-	 * @return a collection of pairs
+	 * @return a thread-exceptionlist-map
 	 */
-	public Collection<ThreadThrowableContainer> getThrownExceptions() {
+	public Map<Thread, List<Exception>> getThrownExceptions() {
 		return exceptions;
 	}
 

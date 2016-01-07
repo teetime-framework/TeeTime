@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,14 +28,14 @@ class WaitStrategyConfiguration extends Configuration {
 
 	public WaitStrategyConfiguration(final long initialDelayInMs, final Object... elements) {
 
-		Stage producer = buildProducer(elements);
-		addThreadableStage(producer);
+		AbstractStage producer = buildProducer(elements);
+		producer.declareActive();
 
-		Stage consumer = buildConsumer(delay);
-		addThreadableStage(consumer);
+		AbstractStage consumer = buildConsumer(delay);
+		consumer.declareActive();
 
 		Clock clock = buildClock(initialDelayInMs, delay);
-		addThreadableStage(clock);
+		clock.declareActive();
 	}
 
 	private Clock buildClock(final long initialDelayInMs, final Delay<Object> delay) {
@@ -47,7 +47,7 @@ class WaitStrategyConfiguration extends Configuration {
 		return clock;
 	}
 
-	private Stage buildProducer(final Object... elements) {
+	private AbstractStage buildProducer(final Object... elements) {
 		InitialElementProducer<Object> initialElementProducer = new InitialElementProducer<Object>(elements);
 		delay = new Delay<Object>();
 

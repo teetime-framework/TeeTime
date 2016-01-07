@@ -181,11 +181,6 @@ class ExtractionTestPipe<T> implements IMonitorablePipe, IPipe<T> {
 	}
 
 	@Override
-	public void waitForInitializingSignal() throws InterruptedException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void close() {
 		throw new UnsupportedOperationException();
 	}

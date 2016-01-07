@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.Set;
 
 import teetime.framework.InputPort;
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
 public interface ISignal {
 
-	void trigger(Stage stage);
+	void trigger(AbstractStage stage) throws Exception;
 
 	// Only used by the merger so far
 	boolean mayBeTriggered(Set<InputPort<?>> receivedInputPorts, List<InputPort<?>> allInputPorts);

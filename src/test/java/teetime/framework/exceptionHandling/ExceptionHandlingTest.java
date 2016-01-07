@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,14 @@
  */
 package teetime.framework.exceptionHandling;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static teetime.testutil.AssertHelper.assertInstanceOf;
 
-import org.junit.Ignore;
+import java.util.List;
+import java.util.Map.Entry;
+
 import org.junit.Test;
 
 import teetime.framework.Execution;
@@ -26,45 +30,20 @@ import teetime.framework.ExecutionException;
 
 public class ExceptionHandlingTest {
 
-	private Execution<ExceptionTestConfiguration> execution;
-
-	public ExceptionTestConfiguration newInstances() {
-		ExceptionTestConfiguration configuration = new ExceptionTestConfiguration();
-		execution = new Execution<ExceptionTestConfiguration>(configuration);
-		return configuration;
-	}
-
-	public void exceptionPassingAndTermination() {
-		newInstances();
-		execution.executeBlocking();
-		fail(); // Should never be executed
-	}
-
-	public void terminatesAllStages() {
-		ExceptionTestConfiguration config = newInstances();
-		execution.executeBlocking();
-		fail(); // Should never be executed
-	}
-
-	@Ignore
 	@Test
-	public void forAFewTimes() {
-		for (int i = 0; i < 100; i++) {
-			boolean exceptionArised = false;
-			try {
-				exceptionPassingAndTermination(); // listener did not kill thread too early;
-			} catch (ExecutionException e) {
-				exceptionArised = true;
-			}
-			assertTrue(exceptionArised);
+	public void testException() {
+		Execution<ExceptionPassingTestConfig> execution = new Execution<ExceptionPassingTestConfig>(new ExceptionPassingTestConfig());
+		try {
+			execution.executeBlocking();
+		} catch (ExecutionException e) {
+			Entry<Thread, List<Exception>> entry = e.getThrownExceptions().entrySet().iterator().next();
+			List<Exception> exceptions = entry.getValue();
+			IllegalStateException exception = assertInstanceOf(IllegalStateException.class, exceptions.get(0));
+			assertThat(exception.getMessage(), is(equalTo("Correct exception")));
 
-			exceptionArised = false;
-			try {
-				terminatesAllStages();
-			} catch (ExecutionException e) {
-				exceptionArised = true;
-			}
-			assertTrue(exceptionArised);
+			assertThat(exceptions.size(), is(1));
+			assertThat(e.getThrownExceptions().size(), is(1));
 		}
 	}
+
 }

@@ -17,13 +17,11 @@ package teetime.stage.basic.merger.dynamic;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.pipe.SpScPipeFactory;
+import teetime.framework.pipe.BoundedSynchedPipe;
 import teetime.util.framework.port.PortAction;
 import teetime.util.stage.OneTimeCondition;
 
 public class CreatePortActionMerger<T> implements PortAction<DynamicMerger<T>> {
-
-	private static final SpScPipeFactory INTER_THREAD_PIPE_FACTORY = new SpScPipeFactory();
 
 	private final OneTimeCondition condition = new OneTimeCondition();
 
@@ -40,7 +38,7 @@ public class CreatePortActionMerger<T> implements PortAction<DynamicMerger<T>> {
 	public void execute(final DynamicMerger<T> dynamicDistributor) {
 		InputPort<T> newInputPort = dynamicDistributor.getNewInputPort();
 
-		INTER_THREAD_PIPE_FACTORY.create(outputPort, newInputPort, capacity);
+		new BoundedSynchedPipe<T>(outputPort, newInputPort, capacity);
 
 		condition.signalAll();
 	}

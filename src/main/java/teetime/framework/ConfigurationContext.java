@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import java.util.Set;
 
 /**
  * Represents a context that is used by a configuration and composite stages to connect ports, for example.
- * Stages can be added by executing {@link #addThreadableStage(Stage)}.
+ * Stages can be added by executing {@link #declareActive(AbstractStage)}.
  *
  * @since 2.0
  */
@@ -37,7 +37,7 @@ final class ConfigurationContext {
 		this.threadService = new ThreadService(configuration);
 	}
 
-	Set<Stage> getThreadableStages() {
+	Set<AbstractStage> getThreadableStages() {
 		return threadService.getThreadableStages();
 	}
 

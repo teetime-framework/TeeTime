@@ -20,15 +20,12 @@ import java.util.List;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.pipe.SpScPipeFactory;
-import teetime.framework.signal.InitializingSignal;
+import teetime.framework.pipe.BoundedSynchedPipe;
 import teetime.framework.signal.StartingSignal;
 import teetime.util.framework.port.PortAction;
 import teetime.util.stage.OneTimeCondition;
 
 public class CreatePortActionDistributor<T> implements PortAction<DynamicDistributor<T>> {
-
-	private static final SpScPipeFactory INTER_THREAD_PIPE_FACTORY = new SpScPipeFactory();
 
 	private final List<PortActionListener<T>> listeners = new ArrayList<PortActionListener<T>>();
 	private final OneTimeCondition condition = new OneTimeCondition();
@@ -46,9 +43,9 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
 		OutputPort<T> newOutputPort = dynamicDistributor.getNewOutputPort();
 
-		INTER_THREAD_PIPE_FACTORY.create(newOutputPort, inputPort, capacity);
+		new BoundedSynchedPipe<T>(newOutputPort, inputPort, capacity);
 
-		newOutputPort.sendSignal(new InitializingSignal());
+		// newOutputPort.sendSignal(new InitializingSignal());
 		newOutputPort.sendSignal(new StartingSignal());
 
 		onOutputPortCreated(dynamicDistributor, newOutputPort);

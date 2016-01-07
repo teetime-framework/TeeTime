@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,7 +118,7 @@ public class ExecutionTest {
 		public AnalysisTestConfig(final boolean inter) {
 			connectPorts(init.getOutputPort(), sink.getInputPort());
 			if (inter) {
-				addThreadableStage(sink);
+				sink.declareActive();
 			}
 		}
 	}
@@ -143,7 +143,7 @@ public class ExecutionTest {
 			connectPorts(init.getOutputPort(), iof.getInputPort());
 			connectPorts(iof.getMatchedOutputPort(), sink.getInputPort());
 			connectPorts(init.createOutputPort(), sink.createInputPort());
-			addThreadableStage(iof);
+			iof.declareActive();
 		}
 	}
 
@@ -191,7 +191,7 @@ public class ExecutionTest {
 			stageWithNamedThread = new InitialElementProducer<Object>(new Object());
 			Sink<Object> sink = new Sink<Object>();
 
-			addThreadableStage(stageWithNamedThread, "TestName");
+			stageWithNamedThread.declareActive("TestName");
 
 			connectPorts(stageWithNamedThread.getOutputPort(), sink.getInputPort());
 		}
@@ -203,6 +203,13 @@ public class ExecutionTest {
 		NameConfig configuration = new NameConfig();
 		new Execution<NameConfig>(configuration);
 		new Execution<NameConfig>(configuration); // do not execute, but just initialize the execution
+	}
+
+	@Test
+	public void mainMethod() {
+		assertFalse(MainMethodTestConfig.executed);
+		Execution.main("teetime.framework.MainMethodTestConfig");
+		assertTrue(MainMethodTestConfig.executed);
 	}
 
 }

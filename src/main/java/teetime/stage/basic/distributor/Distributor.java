@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,46 @@ import java.util.List;
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 import teetime.stage.basic.distributor.strategy.IDistributorStrategy;
-import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
+import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
 
 /**
- * @author Christian Wulf
+ * New output ports can be created by calling {@link #getNewOutputPort()}.
+ *
+ * @stage.sketch
+ *
+ * 				<pre>
+ *     +----------------------------+
+ *     |                            |
+ *     |                          +---+
+ *     |           +------------&gt; |   |
+ *     |           |              +---+
+ *     |           |                |
+ *   +---+         |
+ *   |   | +-------+--- . . .       .
+ *   +---+         |
+ *     |           |                |
+ *     |           |              +---+
+ *     |           +------------&gt; |   |
+ *     |                          +---+
+ *     |                            |
+ *     +----------------------------+
+ *               </pre>
+ *
+ * @stage.output The incoming element will be passed to output ports, which are selected by a strategy.
+ *
+ * @author Christian Wulf, Nelson Tavares de Sousa
  *
  * @since 1.0
  *
- * @param T
- *            the type of the input port and the output ports
+ * @param <T>
+ *            the type of both the input and output ports
  */
 public class Distributor<T> extends AbstractConsumerStage<T> {
 
 	protected IDistributorStrategy strategy;
 
 	public Distributor() {
-		this(new RoundRobinStrategy2());
+		this(new NonBlockingRoundRobinStrategy());
 	}
 
 	public Distributor(final IDistributorStrategy strategy) {

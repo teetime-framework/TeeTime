@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,16 @@
  */
 package teetime.framework.exceptionHandling;
 
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 
 class IgnoringExceptionListener extends AbstractExceptionListener {
 
+	IgnoringExceptionListener() {
+		super(false);
+	}
+
 	@Override
-	public FurtherExecution onStageException(final Exception e, final Stage throwingStage) {
+	public FurtherExecution onStageException(final Exception e, final AbstractStage throwingStage) {
 		return FurtherExecution.CONTINUE;
 	}
 }

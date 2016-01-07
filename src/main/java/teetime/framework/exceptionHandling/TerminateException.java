@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,11 @@ package teetime.framework.exceptionHandling;
 import teetime.util.StacklessException;
 
 /**
- * Represents an Exception, which is thrown by stages in case of they import teetime.framework.Stage;
- * original exception, which was thrown, call {@link #getCause()}.
+ * Represents an exception that is used to terminate the running thread.
  *
  * @since 1.1
  */
-public class TerminateException extends StacklessException {
+public final class TerminateException extends StacklessException {
 
 	public static final TerminateException INSTANCE = new TerminateException("Framework Exception");
 
@@ -34,6 +33,6 @@ public class TerminateException extends StacklessException {
 
 	private TerminateException(final String string) {
 		super(string);
-	};
+	}
 
 }

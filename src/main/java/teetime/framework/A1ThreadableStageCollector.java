@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 import teetime.framework.Traverser.VisitorBehavior;
+import teetime.framework.pipe.DummyPipe;
 
-public class A1ThreadableStageCollector implements ITraverserVisitor {
+/**
+ * Searches for threadable stages
+ */
+class A1ThreadableStageCollector implements ITraverserVisitor {
 
-	private final Set<Stage> threadableStages = new HashSet<Stage>();
+	private final Set<AbstractStage> threadableStages = new HashSet<AbstractStage>();
 
-	public Set<Stage> getThreadableStages() {
+	public Set<AbstractStage> getThreadableStages() {
 		return threadableStages;
 	}
 
 	@Override
-	public VisitorBehavior visit(final Stage stage) {
+	public VisitorBehavior visit(final AbstractStage stage) {
 		if (stage.getOwningThread() != null && !threadableStages.contains(stage) && stage.getCurrentState() == StageState.CREATED) {
 			threadableStages.add(stage);
 		}
@@ -39,6 +43,12 @@ public class A1ThreadableStageCollector implements ITraverserVisitor {
 	@Override
 	public VisitorBehavior visit(final AbstractPort<?> port) {
 		return VisitorBehavior.CONTINUE;
+	}
+
+	@Override
+	public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

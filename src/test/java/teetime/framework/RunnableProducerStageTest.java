@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,12 +40,8 @@ public class RunnableProducerStageTest {
 
 		thread.start();
 
-		// Not running and not initialized
-		assertFalse(testStage.executed && testStage.initialized);
-		runnable.triggerInitializingSignal();
-
 		// Not running, but initialized
-		assertFalse(testStage.executed && !testStage.initialized);
+		assertFalse(testStage.executed);
 		runnable.triggerStartingSignal();
 
 		thread.join();

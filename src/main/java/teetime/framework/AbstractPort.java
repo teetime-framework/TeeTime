@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,10 @@ public abstract class AbstractPort<T> {
 	 * </p>
 	 */
 	private final Class<T> type;
-	private final Stage owningStage;
+	private final AbstractStage owningStage;
 	private final String name;
 
-	protected AbstractPort(final Class<T> type, final Stage owningStage, final String name) {
+	protected AbstractPort(final Class<T> type, final AbstractStage owningStage, final String name) {
 		super();
 		this.type = type;
 		this.owningStage = owningStage;
@@ -41,7 +41,7 @@ public abstract class AbstractPort<T> {
 		return this.type;
 	}
 
-	public Stage getOwningStage() {
+	public AbstractStage getOwningStage() {
 		return owningStage;
 	}
 

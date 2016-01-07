@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package teetime.framework;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
-public final class RunnableConsumerStage extends AbstractRunnableStage {
+final class RunnableConsumerStage extends AbstractRunnableStage {
 
 	/**
 	 * Creates a new instance.
@@ -26,16 +26,12 @@ public final class RunnableConsumerStage extends AbstractRunnableStage {
 	 * @param stage
 	 *            to execute within an own thread
 	 */
-	public RunnableConsumerStage(final Stage stage) {
+	public RunnableConsumerStage(final AbstractStage stage) {
 		super(stage);
 	}
 
 	@Override
 	protected void beforeStageExecution() throws InterruptedException {
-		logger.trace("waitForInitializingSignal");
-		for (InputPort<?> inputPort : stage.getInputPorts()) {
-			inputPort.waitForInitializingSignal();
-		}
 		logger.trace("waitForStartingSignal");
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			inputPort.waitForStartSignal();
@@ -51,7 +47,8 @@ public final class RunnableConsumerStage extends AbstractRunnableStage {
 		}
 	}
 
-	private void checkForTerminationSignal(final Stage stage) {
+	private void checkForTerminationSignal(final AbstractStage stage) {
+		// FIXME should getInputPorts() really be defined in Stage?
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			if (inputPort.isClosed()) {
 				// stage.removeDynamicPort(inputPort);
@@ -59,8 +56,6 @@ public final class RunnableConsumerStage extends AbstractRunnableStage {
 				return;
 			}
 		}
-		// System.out.println("checkForTerminationSignal: " + stage);
-		// FIXME should getInputPorts() really be defined in Stage?
 
 		stage.terminate();
 	}

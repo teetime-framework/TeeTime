@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,6 @@ public class TeeTimeThread extends Thread {
 	public TeeTimeThread(final AbstractRunnableStage runnable, final String name) {
 		super(runnable, name);
 		this.runnable = runnable;
-	}
-
-	public void sendInitializingSignal() {
-		if (runnable instanceof RunnableProducerStage) {
-			((RunnableProducerStage) runnable).triggerInitializingSignal();
-		}
 	}
 
 	public void sendStartingSignal() {

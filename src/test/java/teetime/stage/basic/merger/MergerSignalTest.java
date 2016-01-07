@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ public class MergerSignalTest {
 	@Before
 	public void beforeSignalTesting() {
 		merger = new Merger<Integer>();
+		merger.declareActive(); // necessary to initialize the owning thread
 
 		firstPort = merger.getNewInputPort();
 		secondPort = merger.getNewInputPort();

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.List;
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
 import teetime.framework.ExecutionException;
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 import teetime.framework.StageState;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
@@ -36,13 +36,13 @@ public final class StageTester {
 
 	private final List<InputHolder<?>> inputHolders = new ArrayList<InputHolder<?>>();
 	private final List<OutputHolder<?>> outputHolders = new ArrayList<OutputHolder<?>>();
-	private final Stage stage;
+	private final AbstractStage stage;
 
-	private StageTester(final Stage stage) {
+	private StageTester(final AbstractStage stage) {
 		this.stage = stage;
 	}
 
-	public static StageTester test(final Stage stage) {
+	public static StageTester test(final AbstractStage stage) {
 		if (stage.getCurrentState() != StageState.CREATED) {
 			throw new AssertionError("This stage has already been tested in this test method. Move this test into a new test method.");
 		}
@@ -85,13 +85,13 @@ public final class StageTester {
 
 	private final class TestConfiguration extends Configuration {
 
-		public TestConfiguration(final List<InputHolder<?>> inputHolders, final Stage stage, final List<OutputHolder<?>> outputHolders) {
+		public TestConfiguration(final List<InputHolder<?>> inputHolders, final AbstractStage stage, final List<OutputHolder<?>> outputHolders) {
 			for (InputHolder<?> inputHolder : inputHolders) {
 				final InitialElementProducer<Object> producer = new InitialElementProducer<Object>(inputHolder.getInput());
 				connectPorts(producer.getOutputPort(), inputHolder.getPort());
 			}
 
-			addThreadableStage(stage);
+			stage.declareActive();
 
 			for (OutputHolder<?> outputHolder : outputHolders) {
 				final CollectorSink<Object> sink = new CollectorSink<Object>(outputHolder.getOutputElements());

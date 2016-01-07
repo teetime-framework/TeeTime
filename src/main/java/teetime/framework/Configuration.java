@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package teetime.framework;
 
-import teetime.framework.exceptionHandling.IExceptionListenerFactory;
+import teetime.framework.exceptionHandling.AbstractExceptionListenerFactory;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 
 /**
@@ -28,37 +28,50 @@ import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
  */
 public abstract class Configuration extends AbstractCompositeStage {
 
-	private final IExceptionListenerFactory factory;
+	private final AbstractExceptionListenerFactory<?> factory;
 	private final ConfigurationContext context;
 
+	private boolean initialized;
 	private boolean executed;
-	private Stage startStage;
+	private AbstractStage startStage;
 
 	protected Configuration() {
 		this(new TerminatingExceptionListenerFactory());
 	}
 
-	protected Configuration(final IExceptionListenerFactory factory) {
+	protected Configuration(final AbstractExceptionListenerFactory<?> factory) {
 		this.factory = factory;
 		this.context = new ConfigurationContext(this);
 	}
 
-	boolean isExecuted() {
+	boolean isInitialized() {
+		return initialized;
+	}
+
+	void setInitialized(final boolean executed) {
+		this.initialized = executed;
+	}
+
+	public boolean isExecuted() {
 		return executed;
 	}
 
-	void setExecuted(final boolean executed) {
+	public void setExecuted(final boolean executed) {
 		this.executed = executed;
 	}
 
-	public IExceptionListenerFactory getFactory() {
+	public AbstractExceptionListenerFactory<?> getFactory() {
 		return factory;
 	}
 
-	@Override
-	protected void addThreadableStage(final Stage stage, final String threadName) {
-		startStage = stage; // memorize an arbitrary stage as starting point for traversing
-		super.addThreadableStage(stage, threadName);
+	/**
+	 * Register pipes if your configuration only relies on custom pipes and therefore {@link #connectPorts(OutputPort, InputPort)} is never called.
+	 *
+	 * @param pipe
+	 *            A custom pipe instance
+	 */
+	protected void registerCustomPipe(final AbstractPipe<?> pipe) {
+		startStage = pipe.getSourcePort().getOwningStage(); // memorize an arbitrary stage as starting point for traversing
 	}
 
 	@Override
@@ -71,7 +84,7 @@ public abstract class Configuration extends AbstractCompositeStage {
 		return context;
 	}
 
-	Stage getStartStage() {
+	AbstractStage getStartStage() {
 		return startStage;
 	}
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,14 +28,12 @@ import org.junit.Test;
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
 import teetime.framework.OutputPort;
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.util.framework.port.PortAction;
 
 public class DynamicDistributorTest {
-
-	private static final int DEFAULT_CAPACITY = 16;
 
 	@Test
 	public void shouldWorkWithoutActionTriggers() throws Exception {
@@ -53,7 +51,7 @@ public class DynamicDistributorTest {
 		assertThat(config.getOutputElements(), contains(0, 1, 2, 3, 4));
 	}
 
-	// @Test
+	@Test
 	public void shouldWorkWithCreateActionTriggers() throws Exception {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4);
 
@@ -77,7 +75,7 @@ public class DynamicDistributorTest {
 		assertValuesForIndex(inputActions[4], Collections.<Integer> emptyList());
 	}
 
-	// @Test
+	@Test
 	public void shouldWorkWithRemoveActionTriggers() throws Exception {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4, 5);
 
@@ -102,13 +100,13 @@ public class DynamicDistributorTest {
 
 		assertThat(config.getOutputElements(), contains(0, 1, 2, 4, 5));
 		assertValuesForIndex(inputActions[0], Collections.<Integer> emptyList());
-		assertValuesForIndex(inputActions[2], Arrays.asList(3)); // FIXME fails sometimes
+		assertValuesForIndex(inputActions[2], Arrays.asList(3));
 		assertValuesForIndex(inputActions[3], Collections.<Integer> emptyList());
 	}
 
-	private CreatePortActionDistributor<Integer> createPortCreateAction(final PortContainer<Integer> portContainer) {
+	private CreatePortAction<Integer> createPortCreateAction(final PortContainer<Integer> portContainer) {
 		CollectorSink<Integer> newStage = new CollectorSink<Integer>();
-		CreatePortActionDistributor<Integer> portAction = new CreatePortActionDistributor<Integer>(newStage.getInputPort(), DEFAULT_CAPACITY);
+		CreatePortAction<Integer> portAction = new CreatePortAction<Integer>(newStage.getInputPort());
 		portAction.addPortActionListener(new PortActionListener<Integer>() {
 			@Override
 			public void onOutputPortCreated(final DynamicDistributor<Integer> distributor, final OutputPort<Integer> port) {
@@ -119,12 +117,12 @@ public class DynamicDistributorTest {
 	}
 
 	private void assertValuesForIndex(final PortAction<DynamicDistributor<Integer>> ia, final List<Integer> values) {
-		Stage stage = ((CreatePortActionDistributor<Integer>) ia).getInputPort().getOwningStage();
+		AbstractStage stage = ((CreatePortAction<Integer>) ia).getInputPort().getOwningStage();
 
 		@SuppressWarnings("unchecked")
 		CollectorSink<Integer> collectorSink = (CollectorSink<Integer>) stage;
 
-		assertThat(collectorSink.getElements(), is(values)); // FIXME fails sometimes with a ConcurrentModificationException
+		assertThat(collectorSink.getElements(), is(values));
 	}
 
 	private static class DynamicDistributorTestConfig<T> extends Configuration {
@@ -139,8 +137,8 @@ public class DynamicDistributorTest {
 			connectPorts(initialElementProducer.getOutputPort(), distributor.getInputPort());
 			connectPorts(distributor.getNewOutputPort(), collectorSink.getInputPort());
 
-			addThreadableStage(distributor);
-			addThreadableStage(collectorSink);
+			distributor.declareActive();
+			collectorSink.declareActive();
 
 			for (PortAction<DynamicDistributor<T>> a : inputActions) {
 				distributor.addPortActionRequest(a);

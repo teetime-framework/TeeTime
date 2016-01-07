@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.jctools.queues.spec.ConcurrentQueueSpec;
 import org.jctools.queues.spec.Ordering;
 import org.jctools.queues.spec.Preference;
 
-import teetime.framework.Stage;
+import teetime.framework.AbstractStage;
 import teetime.util.framework.concurrent.queue.PCBlockingQueue;
 import teetime.util.framework.concurrent.queue.putstrategy.PutStrategy;
 import teetime.util.framework.concurrent.queue.putstrategy.YieldPutStrategy;
@@ -44,17 +44,17 @@ public final class PortActionHelper {
 		return portActions;
 	}
 
-	public static <T extends Stage> void checkForPendingPortActionRequest(final T stage, final BlockingQueue<PortAction<T>> portActions) {
+	public static <T extends AbstractStage> void checkForPendingPortActionRequest(final T stage, final BlockingQueue<PortAction<T>> portActions) {
 		PortAction<T> dynamicPortAction = portActions.poll();
 		if (null != dynamicPortAction) {
 			dynamicPortAction.execute(stage);
 		}
 	}
 
-	// public static <T extends Stage> void checkBlockingForPendingPortActionRequest(final T stage, final BlockingQueue<PortAction<T>> portActions)
-	// throws InterruptedException {
-	// PortAction<T> dynamicPortAction = portActions.take();
-	// dynamicPortAction.execute(stage);
-	// }
+	public static <T extends AbstractStage> void checkBlockingForPendingPortActionRequest(final T stage, final BlockingQueue<PortAction<T>> portActions)
+			throws InterruptedException {
+		PortAction<T> dynamicPortAction = portActions.take();
+		dynamicPortAction.execute(stage);
+	}
 
 }

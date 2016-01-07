@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class Traverser {
 		CONTINUE, STOP;
 	}
 
-	private final Set<Stage> visitedStages = new HashSet<Stage>();
+	private final Set<AbstractStage> visitedStages = new HashSet<AbstractStage>();
 
 	private final ITraverserVisitor traverserVisitor;
 	private final Direction direction;
@@ -61,7 +61,7 @@ public class Traverser {
 		this.direction = direction;
 	}
 
-	public void traverse(final Stage stage) {
+	public void traverse(final AbstractStage stage) {
 		VisitorBehavior behavior = traverserVisitor.visit(stage);
 		if (behavior == VisitorBehavior.STOP || !visitedStages.add(stage)) {
 			return;
@@ -82,6 +82,7 @@ public class Traverser {
 
 	private void visitAndTraverse(final AbstractPort<?> port, final Direction direction) {
 		if (port.getPipe() instanceof DummyPipe) {
+			traverserVisitor.visit((DummyPipe) port.getPipe(), port);
 			return;
 		}
 		VisitorBehavior behavior = traverserVisitor.visit(port);
@@ -92,7 +93,7 @@ public class Traverser {
 		}
 	}
 
-	public Set<Stage> getVisitedStages() {
+	public Set<AbstractStage> getVisitedStages() {
 		return visitedStages;
 	}
 }

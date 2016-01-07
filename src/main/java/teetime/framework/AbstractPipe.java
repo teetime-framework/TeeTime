@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	 * this.getPipe().getTargetPort().getOwningStage()
 	 * </pre>
 	 */
-	protected final Stage cachedTargetStage;
+	protected final AbstractStage cachedTargetStage;
 
 	private final OutputPort<? extends T> sourcePort;
 	private final InputPort<T> targetPort;
@@ -66,7 +66,7 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	}
 
 	@Override
-	public final int capacity() {
+	public int capacity() {
 		return capacity;
 	}
 

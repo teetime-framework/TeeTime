@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,8 @@ public final class RuntimeServiceFacade {
 		// singleton
 	}
 
-	public void startWithinNewThread(final Stage previousStage, final Stage stage) {
+	public void startWithinNewThread(final AbstractStage previousStage, final AbstractStage stage) {
 		previousStage.getOwningContext().getThreadService().startStageAtRuntime(stage);
 	}
+
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,11 +88,6 @@ public final class DummyPipe implements IPipe<Object> {
 
 	@Override
 	public void waitForStartSignal() throws InterruptedException {
-
-	}
-
-	@Override
-	public void waitForInitializingSignal() throws InterruptedException {
 
 	}
 

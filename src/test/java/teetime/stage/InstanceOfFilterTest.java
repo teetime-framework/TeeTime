@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import static org.junit.Assert.assertThat;
 import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
@@ -31,8 +30,6 @@ import org.junit.Test;
 
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
-import teetime.framework.ExecutionException;
-import teetime.util.ThreadThrowableContainer;
 
 /**
  * @author Nils Christian Ehmke
@@ -111,15 +108,10 @@ public class InstanceOfFilterTest {
 	}
 
 	@Test
-	public void filterShouldSendToBothOutputPorts() throws Exception {
+	public void filterShouldSendToBothOutputPorts() {
 		InstanceOfFilterTestConfig config = new InstanceOfFilterTestConfig();
 		Execution<InstanceOfFilterTestConfig> execution = new Execution<InstanceOfFilterTestConfig>(config);
-		try {
-			execution.executeBlocking();
-		} catch (ExecutionException e) {
-			Collection<ThreadThrowableContainer> thrownExceptions = e.getThrownExceptions();
-			// TODO: handle exception
-		}
+		execution.executeBlocking();
 	}
 
 	private static class InstanceOfFilterTestConfig extends Configuration {

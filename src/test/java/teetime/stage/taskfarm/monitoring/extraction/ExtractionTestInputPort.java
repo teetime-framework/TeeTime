@@ -15,8 +15,8 @@
  */
 package teetime.stage.taskfarm.monitoring.extraction;
 
+import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
-import teetime.framework.Stage;
 import teetime.framework.pipe.IPipe;
 import teetime.stage.NoopFilter;
 
@@ -29,12 +29,12 @@ class ExtractionTestInputPort<T> extends InputPort<T> {
 	}
 
 	@Override
-	public IPipe<T> getPipe() {
+	public IPipe getPipe() {
 		return inputPipe;
 	}
 
 	@Override
-	public Stage getOwningStage() {
+	public AbstractStage getOwningStage() {
 		return new NoopFilter<T>();
 	}
 }

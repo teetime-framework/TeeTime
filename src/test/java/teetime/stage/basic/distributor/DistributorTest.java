@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,8 @@ import org.junit.rules.ExpectedException;
 
 import teetime.stage.basic.distributor.strategy.CloneStrategy;
 import teetime.stage.basic.distributor.strategy.CopyByReferenceStrategy;
-import teetime.stage.basic.distributor.strategy.RoundRobinStrategy;
-import teetime.stage.basic.distributor.strategy.RoundRobinStrategy2;
+import teetime.stage.basic.distributor.strategy.BlockingRoundRobinStrategy;
+import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
 
 /**
  * @author Nils Christian Ehmke
@@ -58,7 +58,7 @@ public class DistributorTest {
 
 	@Test
 	public void roundRobinShouldWork() {
-		distributor.setStrategy(new RoundRobinStrategy());
+		distributor.setStrategy(new BlockingRoundRobinStrategy());
 
 		test(distributor).and().send(1, 2, 3, 4, 5).to(distributor.getInputPort()).and().receive(firstIntegers).from(distributor.getNewOutputPort()).and()
 				.receive(secondIntegers).from(distributor.getNewOutputPort()).start();
@@ -69,7 +69,7 @@ public class DistributorTest {
 
 	@Test
 	public void singleElementRoundRobinShouldWork() {
-		distributor.setStrategy(new RoundRobinStrategy());
+		distributor.setStrategy(new BlockingRoundRobinStrategy());
 
 		test(distributor).and().send(1).to(distributor.getInputPort()).and().receive(firstIntegers).from(distributor.getNewOutputPort()).and()
 				.receive(secondIntegers)
@@ -81,7 +81,7 @@ public class DistributorTest {
 
 	@Test
 	public void roundRobin2ShouldWork() {
-		distributor.setStrategy(new RoundRobinStrategy2());
+		distributor.setStrategy(new NonBlockingRoundRobinStrategy());
 
 		test(distributor).and().send(1, 2, 3, 4, 5).to(distributor.getInputPort()).and().receive(firstIntegers).from(distributor.getNewOutputPort()).and()
 				.receive(secondIntegers).from(distributor.getNewOutputPort()).start();
@@ -92,7 +92,7 @@ public class DistributorTest {
 
 	@Test
 	public void singleElementRoundRobin2ShouldWork() {
-		distributor.setStrategy(new RoundRobinStrategy2());
+		distributor.setStrategy(new NonBlockingRoundRobinStrategy());
 
 		test(distributor).and().send(1).to(distributor.getInputPort()).and().receive(firstIntegers).from(distributor.getNewOutputPort()).and()
 				.receive(secondIntegers)
