@@ -3,3 +3,7 @@
 	$('.twitter-timeline').attr('data-chrome', 'noborders nofooter transparent noscrollbar');
 	$('.twitter-timeline').attr('data-tweet-limit', '3');
 }(window.jQuery)
+
+cheet('↑ ↑ ↓ ↓ ← → ← → b a', function () {
+  alert('Voilà!');
+});
