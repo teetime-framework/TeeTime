@@ -8,3 +8,7 @@ cheet('t e a t i m e', function() {
      alertify
   		.alert("Noooo...", "It's \"TeeTime\"!", cheet('t e e t i m e', function(){alertify.alert("Finally!", "You got it right!")}));
 });
+
+cheet('m e e t', function() {
+	window.open("https://teetime-framework.github.io/wiki/Meeting", "_self");
+});
