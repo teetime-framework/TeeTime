@@ -5,5 +5,5 @@
 }(window.jQuery)
 
 cheet('↑ ↑ ↓ ↓ ← → ← → b a', function() {
-     $('body').jGravity();
+     window.open("https://img1.etsystatic.com/007/0/6415555/il_570xN.381780781_dtaz.jpg","_self");
 });
