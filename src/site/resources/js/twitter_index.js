@@ -4,6 +4,6 @@
 	$('.twitter-timeline').attr('data-tweet-limit', '3');
 }(window.jQuery)
 
-cheet('↑ ↑ ↓ ↓ ← → ← → b a', function () {
-  alert('Voilà!');
+cheet('↑ ↑ ↓ ↓ ← → ← → b a', function() {
+     $('body').jGravity();
 });

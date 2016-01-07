@@ -157,6 +157,7 @@
 					<endContent>
 						<script src="//cdn.rawgit.com/namuol/cheet.js/master/cheet.min.js"
         type="text/javascript"></script>
+        				<script src="https://raw.githubusercontent.com/tinybigideas/jGravity/master/jGravity-min.js"></script>
 						<script src="$resourcePath/js/twitter_index.js"></script>
 					</endContent>
 					<breadcrumbs>false</breadcrumbs>
