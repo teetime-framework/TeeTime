@@ -4,6 +4,9 @@
 	$('.twitter-timeline').attr('data-tweet-limit', '3');
 }(window.jQuery)
 
-cheet('↑ ↑ ↓ ↓ ← → ← → b a', function() {
-     window.open("https://img1.etsystatic.com/007/0/6415555/il_570xN.381780781_dtaz.jpg","_self");
+cheet('t e a t i m e', function() {
+     alertify
+  		.alert("Noooo... It's TeeTime!", function(){
+    		alertify.message('OK, I was wrong');
+  		});
 });
