@@ -65,7 +65,8 @@ public class AbstractMonitoringDataExporterTest {
 	@Test
 	public void toFileWithPathTest() {
 		try {
-			String file = System.getProperty("java.io.tmpdir") + "abstractmonitoringdataextractiontest.tmp";
+			// String file = System.getProperty("java.io.tmpdir") + "abstractmonitoringdataextractiontest.tmp";
+			String file = File.createTempFile("abstractmonitoringdataextractiontest", ".tmp").toString();
 
 			AbstractMonitoringDataExporter extractor = new TestExtractionImpl();
 			extractor.extractToFile(file);
