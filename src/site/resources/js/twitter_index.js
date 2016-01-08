@@ -12,3 +12,11 @@ cheet('t e a t i m e', function() {
 cheet('m e e t', function() {
 	window.open("https://teetime-framework.github.io/wiki/Meeting", "_self");
 });
+
+cheet('→', function() {
+	$('.carousel').carousel('next');
+});
+
+cheet('←', function() {
+	$('.carousel').carousel('previous');
+});
