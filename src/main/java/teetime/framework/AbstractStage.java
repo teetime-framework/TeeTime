@@ -202,6 +202,12 @@ public abstract class AbstractStage {
 
 	/**
 	 * May not be invoked outside of IPipe implementations
+	 *
+	 * @param signal
+	 *            The incoming signal
+	 *
+	 * @param inputPort
+	 *            The port which received the signal
 	 */
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	public final void onSignal(final ISignal signal, final InputPort<?> inputPort) {

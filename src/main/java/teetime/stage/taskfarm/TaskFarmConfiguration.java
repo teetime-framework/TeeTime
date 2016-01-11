@@ -32,8 +32,7 @@ import teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm.We
 public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
-	 * represents an initial value for the samples until remove for {@link teetime.stage.taskfarm.adaptation.reconfiguration.TaskFarmReconfigurationCommandService
-	 * TaskFarmReconfigurationCommandService}
+	 * represents an initial value for the samples until remove for TaskFarmReconfigurationCommandService
 	 **/
 	public static final int INIT_SAMPLES_UNTIL_REMOVE = -1;
 
@@ -123,8 +122,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @return the {@link teetime.stage.taskfarm.adaptation.reconfiguration.TaskFarmReconfigurationCommandService
-	 *         TaskFarmReconfigurationCommandService} waits this amount of adaptation thread iterations for performance improvements after a new worker stage is
+	 * @return the TaskFarmReconfigurationCommandService waits this amount of adaptation thread iterations for performance improvements after a new worker stage is
 	 *         added
 	 */
 	public int getMaxSamplesUntilRemove() {
@@ -134,8 +132,8 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	/**
 	 *
 	 * @param maxSamplesUntilRemove
-	 *            the {@link teetime.stage.taskfarm.adaptation.reconfiguration.TaskFarmReconfigurationCommandService
-	 *            TaskFarmReconfigurationCommandService} waits this amount of adaptation thread iterations for performance improvements after a new worker stage is
+	 *            the TaskFarmReconfigurationCommandService waits this amount of adaptation thread iterations for performance improvements after a new worker stage
+	 *            is
 	 *            added
 	 */
 	public void setMaxSamplesUntilRemove(final int maxSamplesUntilRemove) {
