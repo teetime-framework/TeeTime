@@ -18,5 +18,5 @@ cheet('→', function() {
 });
 
 cheet('←', function() {
-	$('.carousel').carousel('previous');
+	$('.carousel').carousel('prev');
 });
