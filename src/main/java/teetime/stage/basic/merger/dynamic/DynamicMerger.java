@@ -19,6 +19,7 @@ import java.util.concurrent.BlockingQueue;
 
 import teetime.framework.InputPort;
 import teetime.stage.basic.merger.Merger;
+import teetime.stage.basic.merger.strategy.BusyWaitingRoundRobinStrategy;
 import teetime.stage.basic.merger.strategy.IMergerStrategy;
 import teetime.util.framework.port.PortAction;
 import teetime.util.framework.port.PortActionHelper;
@@ -26,6 +27,10 @@ import teetime.util.framework.port.PortActionHelper;
 public class DynamicMerger<T> extends Merger<T> {
 
 	protected final BlockingQueue<PortAction<DynamicMerger<T>>> portActions;
+
+	public DynamicMerger() {
+		this(new BusyWaitingRoundRobinStrategy());
+	}
 
 	public DynamicMerger(final IMergerStrategy strategy) {
 		super(strategy);

@@ -202,6 +202,12 @@ public abstract class AbstractStage {
 
 	/**
 	 * May not be invoked outside of IPipe implementations
+	 *
+	 * @param signal
+	 *            The incoming signal
+	 *
+	 * @param inputPort
+	 *            The port which received the signal
 	 */
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	public final void onSignal(final ISignal signal, final InputPort<?> inputPort) {
@@ -233,6 +239,7 @@ public abstract class AbstractStage {
 					}
 				}
 			} catch (Exception e) {
+				this.logger.error("Could not trigger signal.", e);
 				this.getOwningContext().abortConfigurationRun();
 			}
 			for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
@@ -295,7 +302,7 @@ public abstract class AbstractStage {
 			}
 		}
 		if (logger.isDebugEnabled()) {
-			logger.debug("Stage " + getId() + " within thread " + getOwningThread().getId());
+			logger.debug("Stage {} within thread {}", getId(), getOwningThread().getId());
 		}
 		changeState(StageState.STARTED);
 		calledOnStarting = true;

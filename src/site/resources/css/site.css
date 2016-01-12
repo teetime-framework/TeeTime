@@ -14,3 +14,8 @@ body {
 .dropdown-backdrop{
 position: static;
 }
+
+tt {
+    background-color: #EFEFEF;
+    color: #000000;
+}

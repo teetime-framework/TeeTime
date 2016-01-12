@@ -35,6 +35,7 @@ public class MergerSignalTest {
 	@Before
 	public void beforeSignalTesting() {
 		merger = new Merger<Integer>();
+		merger.declareActive(); // necessary to initialize the owning thread for onStarting()
 
 		firstPort = merger.getNewInputPort();
 		secondPort = merger.getNewInputPort();

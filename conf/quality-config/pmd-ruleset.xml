@@ -102,10 +102,10 @@
 
 	<rule ref="rulesets/chw/basic.xml" />
 
-	<rule ref="rulesets/chw/basic.xml/NonHeaderCommentSize">
-		<properties>
-			<property name="maxLineLength" value="100" />
-		</properties>
-	</rule>
+<!-- 	<rule ref="rulesets/chw/basic.xml/NonHeaderCommentSize"> -->
+<!-- 		<properties> -->
+<!-- 			<property name="maxLineLength" value="100" /> -->
+<!-- 		</properties> -->
+<!-- 	</rule> -->
 
 </ruleset>

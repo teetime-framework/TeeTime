@@ -32,7 +32,7 @@ public final class CommittableResizableArrayQueue<T> implements CommittableQueue
 		this.elements = this.arrayPool.acquire(initialCapacity + 1);
 
 		this.elements[0] = (T) emptyObject; // optimization: avoids the use of an index out-of-bounds check
-		this.clear(); // NOPMD
+		this.clear(); 
 	}
 
 	@Override

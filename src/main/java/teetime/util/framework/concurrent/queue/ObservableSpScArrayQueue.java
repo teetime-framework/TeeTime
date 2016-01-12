@@ -25,23 +25,35 @@ public final class ObservableSpScArrayQueue<E> extends SpscArrayQueue<E> {
 		super(capacity);
 	}
 
-	public long getNumPushes() {
+	/**
+	 * @return the number of pushes to this queue since application start
+	 */
+	public long getNumPushesSinceAppStart() {
 		return currentProducerIndex();
 	}
 
-	public long getNumPulls() {
+	/**
+	 * @return the number of pulls from this queue since application start
+	 */
+	public long getNumPullsSinceAppStart() {
 		return currentConsumerIndex();
 	}
 
-	public long getProducerFrequency() {
-		final long currentProducerIndex = getNumPushes();
+	/**
+	 * @return the number of pushes to this queue since last method call
+	 */
+	public long getNumPushes() {
+		final long currentProducerIndex = getNumPushesSinceAppStart();
 		long diff = currentProducerIndex - lastProducerIndex;
 		lastProducerIndex = currentProducerIndex;
 		return diff;
 	}
 
-	public long getConsumerFrequency() {
-		final long currentConsumerIndex = getNumPulls();
+	/**
+	 * @return the number of pulls to this queue since last method call
+	 */
+	public long getNumPulls() {
+		final long currentConsumerIndex = getNumPullsSinceAppStart();
 		long diff = currentConsumerIndex - lastConsumerIndex;
 		lastConsumerIndex = currentConsumerIndex;
 		return diff;
