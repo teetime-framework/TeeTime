@@ -292,20 +292,28 @@ public abstract class AbstractStage {
 	 */
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public void onStarting() throws Exception {
-		for (InputPort<?> port : getInputPorts()) {
-			Class<?> targetType = port.getType();
-			Class<?> sourceType = port.pipe.getSourcePort().getType();
-			if (targetType != null && sourceType != null) {
-				if (targetType.isAssignableFrom(sourceType)) {
-					throw new IllegalStateException("Invalid pipe: " + targetType + " is not a superclass/type of " + sourceType);
-				}
-			}
-		}
+		checkTypeCompliance();
 		if (logger.isDebugEnabled()) {
 			logger.debug("Stage {} within thread {}", getId(), getOwningThread().getId());
 		}
 		changeState(StageState.STARTED);
 		calledOnStarting = true;
+	}
+
+	/**
+	 * Checks if connections to this pipe are correct in regards to type compliance.
+	 * Incoming elements must be instanceof input port type
+	 */
+	private void checkTypeCompliance() {
+		for (InputPort<?> port : getInputPorts()) {
+			Class<?> targetType = port.getType();
+			Class<?> sourceType = port.pipe.getSourcePort().getType();
+			if (targetType != null && sourceType != null) {
+				if (targetType.isAssignableFrom(sourceType)) { // kinda instanceof, but for Class class
+					throw new IllegalStateException("2002 - Invalid pipe: " + targetType + " is not a superclass/type of " + sourceType);
+				}
+			}
+		}
 	}
 
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
