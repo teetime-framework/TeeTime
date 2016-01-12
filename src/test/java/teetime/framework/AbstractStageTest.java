@@ -93,4 +93,31 @@ public class AbstractStageTest {
 
 	}
 
+	@Test
+	public void testCheckTypeCompliance() throws Exception {
+		new Execution<Configuration>(new TestConnectionsConfig(false));
+	}
+
+	private class TestConnectionsConfig extends Configuration {
+
+		TestConnectionsConfig(final boolean fails) {
+			if (fails) {
+				// Can not be tested in Eclipse
+			} else {
+				connectPorts(new EmptyStage().createOutputPort(Integer.class), new EmptyStage().createInputPort(Object.class));
+			}
+		}
+
+	}
+
+	private class EmptyStage extends AbstractStage {
+
+		@Override
+		protected void execute() {
+			// TODO Auto-generated method stub
+
+		}
+
+	}
+
 }
