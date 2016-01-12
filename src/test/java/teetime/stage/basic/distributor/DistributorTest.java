@@ -24,15 +24,17 @@ import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import teetime.framework.ExecutionException;
+import teetime.stage.basic.distributor.strategy.BlockingRoundRobinStrategy;
 import teetime.stage.basic.distributor.strategy.CloneStrategy;
 import teetime.stage.basic.distributor.strategy.CopyByReferenceStrategy;
-import teetime.stage.basic.distributor.strategy.BlockingRoundRobinStrategy;
 import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
 
 /**
@@ -128,11 +130,21 @@ public class DistributorTest {
 	@Test
 	public void cloneForIntegerShouldNotWork() throws Exception {
 		this.distributor.setStrategy(new CloneStrategy());
-		this.distributor.getNewOutputPort();
-		this.distributor.onStarting();
 
 		expectedException.expect(IllegalStateException.class);
-		this.distributor.execute(1);
+
+		try {
+			test(distributor).and().send(1).to(distributor.getInputPort()).and().receive(firstIntegers).from(distributor.getNewOutputPort()).and()
+					.start();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			for (Entry<Thread, List<Exception>> entry : e.getThrownExceptions().entrySet()) {
+				for (Exception value : entry.getValue()) {
+					throw value;
+				}
+			}
+		}
+
 	}
 
 	@Test
