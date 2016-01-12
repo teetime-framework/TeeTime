@@ -21,11 +21,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import teetime.framework.Configuration;
+import teetime.framework.Execution;
 import teetime.framework.InputPort;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
+import teetime.stage.InitialElementProducer;
+import teetime.stage.basic.Sink;
 
-public class MergerSignalTest {
+public class MergerSignalTest extends Configuration {
 
 	private Merger<Integer> merger;
 	private InputPort<Integer> firstPort;
@@ -36,9 +40,12 @@ public class MergerSignalTest {
 	public void beforeSignalTesting() {
 		merger = new Merger<Integer>();
 		merger.declareActive(); // necessary to initialize the owning thread for onStarting()
-
 		firstPort = merger.getNewInputPort();
 		secondPort = merger.getNewInputPort();
+		connectPorts(merger.getOutputPort(), new Sink<Integer>().getInputPort()); // We need to initialze the context to avoid NPE
+		connectPorts(new InitialElementProducer<Integer>(new Integer(1)).getOutputPort(), firstPort);
+		connectPorts(new InitialElementProducer<Integer>(new Integer(2)).getOutputPort(), secondPort);
+		new Execution<Configuration>(this);
 
 		mergerOutputPipe = new MergerTestingPipe();
 		merger.getOutputPort().setPipe(mergerOutputPipe);
