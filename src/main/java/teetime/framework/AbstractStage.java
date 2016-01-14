@@ -278,7 +278,7 @@ public abstract class AbstractStage {
 	}
 
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
-		this.checkTypeCompliance();
+		this.checkTypeCompliance(invalidPortConnections);
 		changeState(StageState.VALIDATED);
 	}
 
@@ -300,15 +300,20 @@ public abstract class AbstractStage {
 
 	/**
 	 * Checks if connections to this pipe are correct in regards to type compliance.
-	 * Incoming elements must be instanceof input port type
+	 * Incoming elements must be instanceof input port type.
+	 *
+	 * @param invalidPortConnections
+	 *            List of invalid connections. Adding invalid connections to this list is a performance advantage in comparison to returning a list by each stage.
 	 */
-	private void checkTypeCompliance() {
+	private void checkTypeCompliance(final List<InvalidPortConnection> invalidPortConnections) {
 		for (InputPort<?> port : getInputPorts()) {
 			Class<?> targetType = port.getType();
 			Class<?> sourceType = port.pipe.getSourcePort().getType();
 			if (targetType != null && sourceType != null) {
 				if (targetType.isAssignableFrom(sourceType)) { // kinda instanceof, but for Class class
-					throw new IllegalStateException("2002 - Invalid pipe at " + port.toString() + ": " + targetType + " is not a superclass/type of " + sourceType);
+					invalidPortConnections.add(new InvalidPortConnection(port.pipe.getSourcePort(), port));
+					// throw new IllegalStateException("2002 - Invalid pipe at " + port.toString() + ": " + targetType + " is not a superclass/type of " +
+					// sourceType);
 				}
 			}
 		}
