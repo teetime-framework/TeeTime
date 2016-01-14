@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExecution;
 import teetime.framework.exceptionHandling.TerminateException;
-import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
@@ -279,7 +278,7 @@ public abstract class AbstractStage {
 	}
 
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
-		this.validateOutputPorts(invalidPortConnections);
+		this.checkTypeCompliance();
 		changeState(StageState.VALIDATED);
 	}
 
@@ -292,7 +291,6 @@ public abstract class AbstractStage {
 	 */
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public void onStarting() throws Exception {
-		checkTypeCompliance();
 		if (logger.isDebugEnabled()) {
 			logger.debug("Stage {} within thread {}", getId(), getOwningThread().getId());
 		}
@@ -444,26 +442,6 @@ public abstract class AbstractStage {
 		final OutputPort<T> outputPort = new OutputPort<T>(type, this, name);
 		outputPorts.add(outputPort);
 		return outputPort;
-	}
-
-	/**
-	 * This should check, if the OutputPorts are connected correctly. This is needed to avoid NullPointerExceptions and other errors.
-	 *
-	 * @param invalidPortConnections
-	 *            <i>(Passed as parameter for performance reasons)</i>
-	 */
-	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-	public void validateOutputPorts(final List<InvalidPortConnection> invalidPortConnections) {
-		for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
-			final IPipe<?> pipe = outputPort.getPipe();
-
-			final Class<?> sourcePortType = outputPort.getType();
-			final Class<?> targetPortType = pipe.getTargetPort().getType();
-			if (null == sourcePortType || !sourcePortType.equals(targetPortType)) {
-				final InvalidPortConnection invalidPortConnection = new InvalidPortConnection(outputPort, pipe.getTargetPort());
-				invalidPortConnections.add(invalidPortConnection);
-			}
-		}
 	}
 
 	protected void terminate() {

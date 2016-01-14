@@ -95,7 +95,7 @@ public class AbstractStageTest {
 
 	@Test
 	public void testCheckTypeCompliance() throws Exception {
-		new Execution<Configuration>(new TestConnectionsConfig(false));
+		new Execution<Configuration>(new TestConnectionsConfig(false), true);
 	}
 
 	private class TestConnectionsConfig extends Configuration {
