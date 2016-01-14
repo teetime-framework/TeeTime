@@ -56,7 +56,7 @@ public final class Execution<T extends Configuration> {
 	 *            to be used for the analysis
 	 */
 	public Execution(final T configuration) {
-		this(configuration, false);
+		this(configuration, true);
 	}
 
 	/**
@@ -74,10 +74,10 @@ public final class Execution<T extends Configuration> {
 			throw new IllegalStateException("3001 - Configuration has already been used.");
 		}
 		configuration.setInitialized(true);
+		init();
 		if (validationEnabled) {
 			validateStages();
 		}
-		init();
 	}
 
 	// BETTER validate concurrently

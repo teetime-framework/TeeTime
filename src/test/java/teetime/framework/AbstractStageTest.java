@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,6 +29,7 @@ import org.junit.Test;
 
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
+import teetime.framework.validation.AnalysisNotValidException;
 import teetime.stage.Cache;
 import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
@@ -98,19 +100,26 @@ public class AbstractStageTest {
 
 	}
 
-	@Test
+	@Test(expected = AnalysisNotValidException.class)
 	public void testCheckTypeCompliance() throws Exception {
-		new Execution<Configuration>(new TestConnectionsConfig(false), true);
+		try {
+			new Execution<Configuration>(new TestConnectionsConfig(false), true).executeBlocking();
+		} catch (AnalysisNotValidException e) {
+			fail();
+		}
+		new Execution<Configuration>(new TestConnectionsConfig(true), true).executeBlocking();
 	}
 
 	private class TestConnectionsConfig extends Configuration {
 
 		TestConnectionsConfig(final boolean fails) {
+			EmptyStage stage = new EmptyStage();
 			if (fails) {
-				// Can not be tested in Eclipse
+				connectPorts((OutputPort) new EmptyStage().createOutputPort(Object.class), new EmptyStage().createInputPort(Integer.class));
 			} else {
-				connectPorts(new EmptyStage().createOutputPort(Integer.class), new EmptyStage().createInputPort(Object.class));
+				connectPorts(stage.createOutputPort(Integer.class), new EmptyStage().createInputPort(Object.class));
 			}
+			stage.declareActive();
 		}
 
 	}
@@ -119,8 +128,7 @@ public class AbstractStageTest {
 
 		@Override
 		protected void execute() {
-			// TODO Auto-generated method stub
-
+			terminate();
 		}
 	}
 	//
