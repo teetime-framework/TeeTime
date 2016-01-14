@@ -209,7 +209,7 @@ public abstract class AbstractStage {
 	 *            The port which received the signal
 	 */
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-	public final void onSignal(final ISignal signal, final InputPort<?> inputPort) {
+	final void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		Class<? extends ISignal> signalClass = signal.getClass();
 
 		Set<InputPort<?>> signalReceivedInputPorts;
