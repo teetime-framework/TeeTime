@@ -103,15 +103,18 @@ public class AbstractStageTest {
 	@Test(expected = AnalysisNotValidException.class)
 	public void testCheckTypeCompliance() throws Exception {
 		try {
+			// Correct connection
 			new Execution<Configuration>(new TestConnectionsConfig(false), true).executeBlocking();
 		} catch (AnalysisNotValidException e) {
 			fail();
 		}
+		// Incorrect connection should fail!
 		new Execution<Configuration>(new TestConnectionsConfig(true), true).executeBlocking();
 	}
 
 	private class TestConnectionsConfig extends Configuration {
 
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		TestConnectionsConfig(final boolean fails) {
 			EmptyStage stage = new EmptyStage();
 			if (fails) {

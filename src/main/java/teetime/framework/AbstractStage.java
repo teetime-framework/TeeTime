@@ -310,7 +310,7 @@ public abstract class AbstractStage {
 			Class<?> targetType = port.getType();
 			Class<?> sourceType = port.pipe.getSourcePort().getType();
 			if (targetType != null && sourceType != null) {
-				if (!targetType.isAssignableFrom(sourceType)) { // TODO: Is this correct? // kinda instanceof, but for Class class
+				if (!targetType.isAssignableFrom(sourceType)) { // if targetType is not superclass of sourceType
 					invalidPortConnections.add(new InvalidPortConnection(port.pipe.getSourcePort(), port));
 					// throw new IllegalStateException("2002 - Invalid pipe at " + port.toString() + ": " + targetType + " is not a superclass/type of " +
 					// sourceType);
