@@ -34,6 +34,7 @@ public class AnalysisNotValidException extends RuntimeException {
 	@Override
 	public String getMessage() {
 		final StringBuilder builder = new StringBuilder(this.invalidPortConnections.size() * 40);
+		builder.append("2002 - ");
 		builder.append(this.invalidPortConnections.size());
 		builder.append(" invalid port connections were detected.\n");
 		Joiner.on("\n").appendTo(builder, this.invalidPortConnections);

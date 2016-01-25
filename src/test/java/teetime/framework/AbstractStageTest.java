@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,6 +29,7 @@ import org.junit.Test;
 
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
+import teetime.framework.validation.AnalysisNotValidException;
 import teetime.stage.Cache;
 import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
@@ -98,6 +100,40 @@ public class AbstractStageTest {
 
 	}
 
+	@Test(expected = AnalysisNotValidException.class)
+	public void testCheckTypeCompliance() throws Exception {
+		try {
+			// Correct connection
+			new Execution<Configuration>(new TestConnectionsConfig(false), true).executeBlocking();
+		} catch (AnalysisNotValidException e) {
+			fail();
+		}
+		// Incorrect connection should fail!
+		new Execution<Configuration>(new TestConnectionsConfig(true), true).executeBlocking();
+	}
+
+	private class TestConnectionsConfig extends Configuration {
+
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		TestConnectionsConfig(final boolean fails) {
+			EmptyStage stage = new EmptyStage();
+			if (fails) {
+				connectPorts((OutputPort) new EmptyStage().createOutputPort(Object.class), new EmptyStage().createInputPort(Integer.class));
+			} else {
+				connectPorts(stage.createOutputPort(Integer.class), new EmptyStage().createInputPort(Object.class));
+			}
+			stage.declareActive();
+		}
+
+	}
+
+	private class EmptyStage extends AbstractStage {
+
+		@Override
+		protected void execute() {
+			terminate();
+		}
+	}
 	//
 	//
 	// Moved from MergerSignalTest

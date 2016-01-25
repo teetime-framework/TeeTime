@@ -25,6 +25,7 @@ import org.jctools.queues.spec.Preference;
 
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.StartingSignal;
+import teetime.framework.signal.ValidatingSignal;
 import teetime.util.framework.concurrent.queue.PCBlockingQueue;
 import teetime.util.framework.concurrent.queue.putstrategy.PutStrategy;
 import teetime.util.framework.concurrent.queue.putstrategy.YieldPutStrategy;
@@ -67,6 +68,10 @@ public abstract class AbstractSynchedPipe<T> extends AbstractPipe<T> {
 	@Override
 	public final void waitForStartSignal() throws InterruptedException {
 		final ISignal signal = signalQueue.take();
+		if (signal instanceof ValidatingSignal) {
+			this.waitForStartSignal();
+			return;
+		}
 		if (!(signal instanceof StartingSignal)) {
 			throw new IllegalStateException(
 					"2001 - Expected StartingSignal, but was " + signal.getClass().getSimpleName() + " in " + getTargetPort().getOwningStage().getId());
