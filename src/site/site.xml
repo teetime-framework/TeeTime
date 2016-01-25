@@ -1,4 +1,7 @@
 <project name="TeeTime">
+	
+	<googleAnalyticsAccountId>UA-72860916-1</googleAnalyticsAccountId>
+	
 	<skin>
 		<groupId>lt.velykis.maven.skins</groupId>
 		<artifactId>reflow-maven-skin</artifactId>
