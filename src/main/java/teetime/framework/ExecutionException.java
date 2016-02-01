@@ -19,8 +19,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a exception, which is thrown by an analysis, if any problems occured within its execution.
- * A collection of thrown exceptions within the analysis can be retrieved with {@link #getThrownExceptions()}.
+ * Represents a exception, which is thrown by an analysis,
+ * if any problems occured within its execution.
+ * A collection of thrown exceptions within the analysis
+ * can be retrieved with {@link #getThrownExceptions()}.
  *
  * @since 2.0
  */
@@ -37,7 +39,8 @@ public class ExecutionException extends RuntimeException {
 
 	/**
 	 * Returns all exceptions thrown within the execution.
-	 * These are passed on as pairs of threads and throwables, to indicate a exception's context.
+	 * These are passed on as pairs of threads and throwables,
+	 * to indicate a exception's context.
 	 *
 	 * @return a thread-exceptionlist-map
 	 */

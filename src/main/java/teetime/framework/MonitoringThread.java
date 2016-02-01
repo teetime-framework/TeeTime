@@ -42,9 +42,11 @@ public class MonitoringThread extends Thread {
 				final long pullThroughput = pipe.getPullThroughput();
 				final double ratio = (double) pushThroughput / pullThroughput;
 
-				LOGGER.info("pipe: " + "size=" + pipe.size() + ", " + "ratio: " + String.format("%.1f", ratio));
-				LOGGER.info("pushes: " + pushThroughput);
-				LOGGER.info("pulls: " + pullThroughput);
+				if (LOGGER.isInfoEnabled()) {
+					LOGGER.info("pipe: " + "size=" + pipe.size() + ", " + "ratio: " + String.format("%.1f", ratio));
+					LOGGER.info("pushes: " + pushThroughput);
+					LOGGER.info("pulls: " + pullThroughput);
+				}
 			}
 			LOGGER.info("------------------------------------");
 

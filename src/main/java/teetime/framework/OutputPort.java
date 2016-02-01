@@ -59,7 +59,8 @@ public class OutputPort<T> extends AbstractPort<T> {
 	 * @param element
 	 *            to be sent; May not be <code>null</code>.
 	 *
-	 * @return <code>true</code> iff the <code>element</code> was sent; <code>false</code> otherwise.
+	 * @return <code>true</code> iff the <code>element</code> was sent;
+	 *         <code>false</code> otherwise.
 	 *
 	 * @since 1.1
 	 */

@@ -18,18 +18,12 @@ package teetime.framework;
 import java.util.Set;
 
 /**
- * Represents a context that is used by a configuration and composite stages to connect ports, for example.
+ * Represents a context that is used by a configuration and composite stages to connect ports,for example.
  * Stages can be added by executing {@link #declareActive(AbstractStage)}.
  *
  * @since 2.0
  */
 final class ConfigurationContext {
-
-	// static final ConfigurationContext EMPTY_CONTEXT = new ConfigurationContext(null);
-
-	// private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationContext.class);
-
-	// private final Set<ConfigurationContext> children = new HashSet<ConfigurationContext>(); // parent-child-tree
 
 	private ThreadService threadService;
 

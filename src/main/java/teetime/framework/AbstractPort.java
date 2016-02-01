@@ -17,7 +17,7 @@ package teetime.framework;
 
 import teetime.framework.pipe.IPipe;
 
-public abstract class AbstractPort<T> {
+public class AbstractPort<T> {
 
 	protected IPipe<?> pipe;
 	/**

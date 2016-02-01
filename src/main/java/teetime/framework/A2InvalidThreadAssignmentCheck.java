@@ -40,12 +40,13 @@ public class A2InvalidThreadAssignmentCheck {
 	public void check() {
 		int color = DEFAULT_COLOR;
 		ObjectIntMap<AbstractStage> colors = new ObjectIntHashMap<AbstractStage>();
+		ThreadPainter threadPainter = new ThreadPainter();
 
 		for (AbstractStage threadableStage : threadableStages) {
 			color++;
 			colors.put(threadableStage, color);
 
-			ThreadPainter threadPainter = new ThreadPainter(colors, color, threadableStages);
+			threadPainter.reset(colors, color, threadableStages);
 			Traverser traverser = new Traverser(threadPainter);
 			traverser.traverse(threadableStage);
 		}
@@ -53,12 +54,11 @@ public class A2InvalidThreadAssignmentCheck {
 
 	private static class ThreadPainter implements ITraverserVisitor {
 
-		private final ObjectIntMap<AbstractStage> colors;
-		private final int color;
-		private final Set<AbstractStage> threadableStages;
+		private ObjectIntMap<AbstractStage> colors;
+		private int color;
+		private Set<AbstractStage> threadableStages;
 
-		public ThreadPainter(final ObjectIntMap<AbstractStage> colors, final int color, final Set<AbstractStage> threadableStages) {
-			super();
+		public void reset(final ObjectIntMap<AbstractStage> colors, final int color, final Set<AbstractStage> threadableStages) {
 			this.colors = colors;
 			this.color = color;
 			this.threadableStages = threadableStages;

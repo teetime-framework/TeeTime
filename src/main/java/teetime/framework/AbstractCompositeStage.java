@@ -66,10 +66,8 @@ public abstract class AbstractCompositeStage {
 			throw new IllegalArgumentException("1003 - targetPort may not be null");
 		}
 
-		if (sourcePort.getOwningStage().getInputPorts().size() == 0) {
-			if (sourcePort.getOwningStage().getOwningThread() == null) {
-				sourcePort.getOwningStage().declareActive();
-			}
+		if (sourcePort.getOwningStage().getInputPorts().size() == 0 && sourcePort.getOwningStage().getOwningThread() == null) {
+			sourcePort.getOwningStage().declareActive();
 		}
 
 		new InstantiationPipe<T>(sourcePort, targetPort, capacity);

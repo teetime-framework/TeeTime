@@ -75,8 +75,6 @@ class ThreadService extends AbstractService<ThreadService> {
 			throw new IllegalStateException("The start stage may not be null.");
 		}
 
-		// TODO use decorator pattern to combine all analyzes so that only one traverser pass is necessary
-
 		A1ThreadableStageCollector stageCollector = new A1ThreadableStageCollector();
 		Traverser traversor = new Traverser(stageCollector, Direction.BOTH);
 		traversor.traverse(startStage);
