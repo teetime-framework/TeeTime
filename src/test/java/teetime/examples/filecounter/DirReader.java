@@ -50,7 +50,11 @@ class DirReader extends AbstractProducerStage<File> {
 	 *            Dir to visit
 	 */
 	private void visit(final File element) {
-		for (File file : element.listFiles()) {
+		File[] listFiles = element.listFiles();
+		if (listFiles == null) {
+			return;
+		}
+		for (File file : listFiles) {
 			if (file.isDirectory()) {
 				this.visit(file); // Visit recursively all dirs
 			} else {
