@@ -21,9 +21,9 @@ import teetime.framework.OutputPort;
 
 abstract class AbstractTrigger<I, T, O> extends AbstractStage {
 
-	private final InputPort<I> inputPort = createInputPort();
-	private final InputPort<T> triggerInputPort = createInputPort();
-	private final OutputPort<O> outputPort = createOutputPort();
+	protected final InputPort<I> inputPort = createInputPort();
+	protected final InputPort<T> triggerInputPort = createInputPort();
+	protected final OutputPort<O> outputPort = createOutputPort();
 
 	protected AbstractTrigger() {
 		super();

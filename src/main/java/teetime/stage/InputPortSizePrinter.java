@@ -39,7 +39,7 @@ public class InputPortSizePrinter<T> extends AbstractConsumerStage<T> {
 		stopWatch.end();
 		if (stopWatch.getDurationInNs() >= thresholdInNs) {
 			if (logger.isDebugEnabled()) {
-				final IPipe pipe = inputPort.getPipe();
+				final IPipe<?> pipe = inputPort.getPipe();
 				logger.debug("pipe size: " + pipe.size());
 			}
 			stopWatch.start();

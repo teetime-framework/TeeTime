@@ -23,7 +23,7 @@ public class UnsynchedPipeTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testAdd() throws Exception {
-		UnsynchedPipe pipe = new UnsynchedPipe(null, null);
+		UnsynchedPipe<Object> pipe = new UnsynchedPipe<Object>(null, null);
 		assertFalse(pipe.add(null));
 	}
 

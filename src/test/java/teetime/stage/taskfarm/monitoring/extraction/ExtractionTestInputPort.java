@@ -29,7 +29,7 @@ class ExtractionTestInputPort<T> extends InputPort<T> {
 	}
 
 	@Override
-	public IPipe getPipe() {
+	public IPipe<?> getPipe() {
 		return inputPipe;
 	}
 

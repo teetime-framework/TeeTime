@@ -29,6 +29,7 @@ import teetime.stage.basic.merger.Merger;
 
 public class PrinterTest {
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testDefaultUsage() {
 		Printer<Merger<Object>> printer = new Printer<Merger<Object>>();

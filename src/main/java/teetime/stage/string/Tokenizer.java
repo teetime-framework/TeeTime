@@ -15,8 +15,6 @@
  */
 package teetime.stage.string;
 
-import java.util.regex.Pattern;
-
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
@@ -24,11 +22,11 @@ public final class Tokenizer extends AbstractConsumerStage<String> {
 
 	private final OutputPort<String> outputPort = this.createOutputPort();
 	private final String regex;
-	private final Pattern pattern;
+	// private final Pattern pattern;
 
 	public Tokenizer(final String regex) {
 		this.regex = regex;
-		pattern = Pattern.compile(regex);
+		// pattern = Pattern.compile(regex);
 	}
 
 	@Override

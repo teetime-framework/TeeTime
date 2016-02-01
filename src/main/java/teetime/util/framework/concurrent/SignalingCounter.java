@@ -40,7 +40,7 @@ public class SignalingCounter {
 		if (conditions.containsKey(number)) {
 			Object cond = conditions.get(number);
 			synchronized (cond) {
-				cond.notifyAll();
+				cond.notifyAll(); // If you came here because of FindBugs, go on, everything's ok here. You saw nothing!
 			}
 		}
 	}
