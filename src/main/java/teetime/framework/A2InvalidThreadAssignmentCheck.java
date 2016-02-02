@@ -37,17 +37,18 @@ public class A2InvalidThreadAssignmentCheck {
 		this.threadableStages = threadableStages;
 	}
 
+	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	public void check() {
 		int color = DEFAULT_COLOR;
 		ObjectIntMap<AbstractStage> colors = new ObjectIntHashMap<AbstractStage>();
 		ThreadPainter threadPainter = new ThreadPainter();
+		Traverser traverser = new Traverser(threadPainter);
 
 		for (AbstractStage threadableStage : threadableStages) {
 			color++;
 			colors.put(threadableStage, color);
 
 			threadPainter.reset(colors, color, threadableStages);
-			Traverser traverser = new Traverser(threadPainter);
 			traverser.traverse(threadableStage);
 		}
 	}
@@ -77,17 +78,13 @@ public class A2InvalidThreadAssignmentCheck {
 
 			int targetColor = colors.containsKey(targetStage) ? colors.get(targetStage) : DEFAULT_COLOR;
 
-			if (threadableStages.contains(targetStage) && targetColor != color) {
-				// do nothing
-			} else {
-				if (colors.containsKey(targetStage)) {
-					if (colors.get(targetStage) != color) {
-						throw new IllegalStateException("1001 - Crossing threads in " + targetStage.getId()); // One stage is connected to a stage of another thread
-																												// (but not its "headstage")
-					}
+			if (!threadableStages.contains(targetStage) || targetColor == color) {
+				if (colors.containsKey(targetStage) && colors.get(targetStage) != color) {
+					throw new IllegalStateException("1001 - Crossing threads in " + targetStage.getId()); // One stage is connected to a stage of another thread
+																											// (but not its "headstage")
 				}
 				colors.put(targetStage, color);
-				return VisitorBehavior.CONTINUE;
+				return VisitorBehavior.CONTINUE; // NOPMD makes it clearer
 			}
 			return VisitorBehavior.STOP;
 		}

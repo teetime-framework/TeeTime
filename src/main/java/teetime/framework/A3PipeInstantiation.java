@@ -47,7 +47,7 @@ class A3PipeInstantiation implements ITraverserVisitor {
 	public VisitorBehavior visit(final AbstractPort<?> port) {
 		IPipe<?> pipe = port.getPipe();
 		if (visitedPipes.contains(pipe)) {
-			return VisitorBehavior.STOP;
+			return VisitorBehavior.STOP; // NOPMD two returns are better
 		}
 		visitedPipes.add(pipe);
 
@@ -64,25 +64,26 @@ class A3PipeInstantiation implements ITraverserVisitor {
 		Thread sourceStageThread = pipe.getSourcePort().getOwningStage().getOwningThread();
 		Thread targetStageThread = pipe.getTargetPort().getOwningStage().getOwningThread();
 
-		if (targetStageThread != null && sourceStageThread != targetStageThread) {
-			// inter
-			if (pipe.capacity() != 0) {
-				new BoundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort(), pipe.capacity());
-				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Connected (bounded) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
-				}
-			} else {
-				new UnboundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
-				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Connected (unbounded) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
-				}
-			}
-		} else {
+		if (targetStageThread == null || sourceStageThread == targetStageThread) { // NOPMD .equals() can't be used here
 			// normal or reflexive pipe => intra
 			new UnsynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Connected (unsynch) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
 			}
+		} else {
+			// inter
+			if (pipe.capacity() == 0) {
+				new UnboundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug("Connected (unbounded) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
+				}
+			} else {
+				new BoundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort(), pipe.capacity());
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug("Connected (bounded) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
+				}
+			}
+
 		}
 
 	}
