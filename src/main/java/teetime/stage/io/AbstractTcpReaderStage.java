@@ -37,12 +37,13 @@ public abstract class AbstractTcpReaderStage<T> extends AbstractProducerStage<T>
 
 	@Override
 	protected void execute() {
-		ServerSocketChannel serversocket = null;
+		ServerSocketChannel serversocket = null; // NOPMD
 		try {
 			serversocket = ServerSocketChannel.open();
 			serversocket.socket().bind(new InetSocketAddress(this.port));
-			logger.debug("Listening on port " + this.port);
-
+			if (logger.isDebugEnabled()) {
+				logger.debug("Listening on port " + this.port);
+			}
 			final SocketChannel socketChannel = serversocket.accept();
 			try {
 				final ByteBuffer buffer = ByteBuffer.allocateDirect(bufferCapacity);
@@ -55,7 +56,7 @@ public abstract class AbstractTcpReaderStage<T> extends AbstractProducerStage<T>
 		} catch (final IOException ex) {
 			logger.error("Error while reading.", ex);
 		} finally {
-			if (null != serversocket) {
+			if (serversocket != null) {
 				try {
 					serversocket.close();
 				} catch (final IOException e) {
@@ -90,7 +91,8 @@ public abstract class AbstractTcpReaderStage<T> extends AbstractProducerStage<T>
 	/**
 	 * @param buffer
 	 *            to be read from
-	 * @return <ul>
+	 * @return
+	 * 		<ul>
 	 *         <li><code>true</code> when there were enough bytes to perform the read operation
 	 *         <li><code>false</code> otherwise. In this case, the buffer is reset, compacted, and filled with new content.
 	 *         </ul>
