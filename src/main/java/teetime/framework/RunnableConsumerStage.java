@@ -52,7 +52,7 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			if (inputPort.isClosed()) {
 				// stage.removeDynamicPort(inputPort);
-				break;
+				continue;
 			} else {
 				return;
 			}
