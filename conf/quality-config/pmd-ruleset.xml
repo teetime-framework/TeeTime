@@ -37,17 +37,6 @@
 	<rule ref="rulesets/java/unnecessary.xml" />
 	<rule ref="rulesets/java/unusedcode.xml" />
 
-	<rule ref="rulesets/ecmascript/basic.xml" />
-	<rule ref="rulesets/ecmascript/braces.xml" />
-
-	<rule ref="rulesets/jsp/basic-jsf.xml" />
-	<rule ref="rulesets/jsp/basic.xml" />
-
-	<!-- <rule ref="rulesets/vm/basic.xml" /> -->
-
-	<!-- <rule ref="rulesets/xml/basic.xml" /> -->
-
-	<!-- <rule ref="rulesets/xsl/xpath.xml" /> -->
 
 	<!-- custom adaptations -->
 
