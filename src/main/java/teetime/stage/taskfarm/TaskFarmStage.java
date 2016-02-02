@@ -18,7 +18,7 @@ package teetime.stage.taskfarm;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.framework.AbstractCompositeStage;
+import teetime.framework.CompositeStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
@@ -41,7 +41,7 @@ import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
  * @param <T>
  *            Type of the parallelized stage
  */
-public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends AbstractCompositeStage {
+public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends CompositeStage {
 
 	/** currently existing worker stages **/
 	private final List<ITaskFarmDuplicable<I, O>> enclosedStageInstances = new LinkedList<ITaskFarmDuplicable<I, O>>();

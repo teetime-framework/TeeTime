@@ -19,18 +19,23 @@ import teetime.framework.pipe.InstantiationPipe;
 
 /**
  * Represents a minimal stage that composes several other stages.
+ * In order to work with this class, you need to extend from it and work from within the extending class.
  *
  * @since 2.0
  *
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
  */
-public abstract class AbstractCompositeStage {
+public class CompositeStage {
 
 	/**
 	 * Default capacity for pipes
 	 */
 	private static final int DEFAULT_CAPACITY = 4;
+
+	protected CompositeStage() {
+		// prohibit instantiation of this class
+	}
 
 	/**
 	 * Connects two ports with a pipe with a default capacity of currently {@value #DEFAULT_CAPACITY}.

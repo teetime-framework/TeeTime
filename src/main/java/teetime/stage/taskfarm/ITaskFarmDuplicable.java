@@ -19,7 +19,7 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
 /**
- * Any {@link teetime.framework.AbstractStage AbstractStage} or {@link teetime.framework.AbstractCompositeStage AbstractCompositeStage} implementing this interface
+ * Any {@link teetime.framework.AbstractStage AbstractStage} or {@link teetime.framework.CompositeStage AbstractCompositeStage} implementing this interface
  * can be used by a Task Farm as an enclosed stage. The enclosed
  * stage may not have more than one input or output port each.
  *

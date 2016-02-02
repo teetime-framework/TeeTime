@@ -15,7 +15,7 @@
  */
 package teetime.stage.string;
 
-import teetime.framework.AbstractCompositeStage;
+import teetime.framework.CompositeStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.stage.MappingCounter;
@@ -31,7 +31,7 @@ import teetime.stage.util.CountingMap;
  * @author Nelson Tavares de Sousa
  *
  */
-public final class WordCounter extends AbstractCompositeStage implements ITaskFarmDuplicable<String, CountingMap<String>> {
+public final class WordCounter extends CompositeStage implements ITaskFarmDuplicable<String, CountingMap<String>> {
 
 	private final Tokenizer tokenizer;
 	private final MappingCounter<String> mapCounter;

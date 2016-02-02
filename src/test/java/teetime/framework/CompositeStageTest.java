@@ -40,7 +40,7 @@ import teetime.testutil.AssertHelper;
  * @author Christian Wulf
  *
  */
-public class AbstractCompositeStageTest {
+public class CompositeStageTest {
 
 	@Before
 	public void before() {

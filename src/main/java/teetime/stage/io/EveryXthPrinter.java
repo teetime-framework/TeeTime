@@ -18,7 +18,7 @@ package teetime.stage.io;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.AbstractCompositeStage;
+import teetime.framework.CompositeStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.AbstractStage;
@@ -26,7 +26,7 @@ import teetime.stage.EveryXthStage;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.distributor.strategy.CopyByReferenceStrategy;
 
-public final class EveryXthPrinter<T> extends AbstractCompositeStage {
+public final class EveryXthPrinter<T> extends CompositeStage {
 
 	private final Distributor<T> distributor;
 	private final List<AbstractStage> lastStages = new ArrayList<AbstractStage>();

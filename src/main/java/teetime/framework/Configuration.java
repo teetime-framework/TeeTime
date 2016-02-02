@@ -26,7 +26,7 @@ import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
  * @since 2.0
  *
  */
-public class Configuration extends AbstractCompositeStage {
+public class Configuration extends CompositeStage {
 
 	private final AbstractExceptionListenerFactory<?> factory;
 	private final ConfigurationContext context;

@@ -26,7 +26,7 @@ import teetime.stage.basic.merger.Merger;
  * @param <T>
  *            the element type of the producer
  */
-class CompositeProducerStage<T> extends AbstractCompositeStage {
+class CompositeProducerStage<T> extends CompositeStage {
 
 	private final Merger<T> merger;
 

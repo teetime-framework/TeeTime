@@ -15,7 +15,7 @@
  */
 package teetime.framework;
 
-class CompositeCounterIncrementer extends AbstractCompositeStage {
+class CompositeCounterIncrementer extends CompositeStage {
 
 	private final InputPort<CounterContainer> inputPort;
 	private final OutputPort<CounterContainer> outputPort;

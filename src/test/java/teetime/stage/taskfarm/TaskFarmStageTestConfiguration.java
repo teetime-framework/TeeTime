@@ -18,7 +18,7 @@ package teetime.stage.taskfarm;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.framework.AbstractCompositeStage;
+import teetime.framework.CompositeStage;
 import teetime.framework.Configuration;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
@@ -54,7 +54,7 @@ public class TaskFarmStageTestConfiguration extends Configuration {
 		connectPorts(taskFarmStage.getOutputPort(), sink.getInputPort());
 	}
 
-	private static class CompositeTestStage extends AbstractCompositeStage implements ITaskFarmDuplicable<Long, String> {
+	private static class CompositeTestStage extends CompositeStage implements ITaskFarmDuplicable<Long, String> {
 		private final PlusOneInStringStage pOne = new PlusOneInStringStage();
 		private final StringDuplicationStage sDup = new StringDuplicationStage();
 

@@ -40,7 +40,6 @@ import teetime.util.framework.port.PortRemovedListener;
  * Represents a minimal Stage, with some pre-defined methods.
  * Implemented stages need to adapt all abstract methods with own implementations.
  */
-@SuppressWarnings("PMD.AbstractNaming")
 public abstract class AbstractStage {
 
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
@@ -100,7 +99,6 @@ public abstract class AbstractStage {
 		return newId;
 	}
 
-	@SuppressWarnings("PMD.DefaultPackage")
 	static void clearInstanceCounters() {
 		INSTANCES_COUNTER.clear();
 	}
@@ -208,7 +206,6 @@ public abstract class AbstractStage {
 	 * @param inputPort
 	 *            The port which received the signal
 	 */
-	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	final void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		Class<? extends ISignal> signalClass = signal.getClass();
 
