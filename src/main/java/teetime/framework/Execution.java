@@ -180,11 +180,17 @@ public final class Execution<T extends Configuration> {
 					instances.add((Configuration) obj);
 				}
 			} catch (ClassNotFoundException e) {
-				LOGGER.error("Could not find class " + each);
+				if (LOGGER.isErrorEnabled()) {
+					LOGGER.error("Could not find class " + each);
+				}
 			} catch (InstantiationException e) {
-				LOGGER.error("Could not instantiate class " + each, e);
+				if (LOGGER.isErrorEnabled()) {
+					LOGGER.error("Could not instantiate class " + each, e);
+				}
 			} catch (IllegalAccessException e) {
-				LOGGER.error("IllegalAccessException arised while instantiating class " + each, e);
+				if (LOGGER.isErrorEnabled()) {
+					LOGGER.error("IllegalAccessException arised while instantiating class " + each, e);
+				}
 			}
 		}
 		return instances;

@@ -93,7 +93,8 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		} catch (ClassCastException e) {
 			throw new TaskFarmInvalidPipeException(
 					"The input pipe of an enclosed stage instance inside a Task Farm"
-							+ " does not implement IMonitorablePipe, which is required.");
+							+ " does not implement IMonitorablePipe, which is required.",
+					e);
 		}
 
 		return sum;

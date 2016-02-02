@@ -70,7 +70,9 @@ class TaskFarmController<I, O> {
 	 * @throws InterruptedException
 	 */
 	public void addStageToTaskFarm() throws InterruptedException {
-		LOGGER.debug("Add stage (current amount of stages: " + this.taskFarmStage.getEnclosedStageInstances().size() + ")");
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Add stage (current amount of stages: " + this.taskFarmStage.getEnclosedStageInstances().size() + ")");
+		}
 		ITaskFarmDuplicable<I, O> newStage = this.taskFarmStage.getBasicEnclosedStage().duplicate();
 
 		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort(),
@@ -105,7 +107,7 @@ class TaskFarmController<I, O> {
 			try {
 				this.taskFarmStage.getPipeMonitoringService().addMonitoredItem((IMonitorablePipe) newStage.getInputPort().getPipe());
 			} catch (ClassCastException e) {
-				throw new TaskFarmControllerException("A generated pipe is not monitorable.");
+				throw new TaskFarmControllerException("A generated pipe is not monitorable.", e);
 			}
 		}
 	}
@@ -120,10 +122,11 @@ class TaskFarmController<I, O> {
 			return;
 		}
 
-		LOGGER.debug("Remove stage (current amount of stages: " + this.taskFarmStage.getEnclosedStageInstances().size() + ")");
-
-		ITaskFarmDuplicable<I, O> stageToBeRemoved = null;
-		OutputPort<?> distributorOutputPort = null;
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Remove stage (current amount of stages: " + this.taskFarmStage.getEnclosedStageInstances().size() + ")");
+		}
+		ITaskFarmDuplicable<I, O> stageToBeRemoved;
+		OutputPort<?> distributorOutputPort;
 
 		stageToBeRemoved = this.getStageToBeRemoved();
 		distributorOutputPort = this.getRemoveableDistributorOutputPort(stageToBeRemoved);
@@ -140,7 +143,7 @@ class TaskFarmController<I, O> {
 				return;
 			}
 		} catch (ClassCastException e) {
-			throw new TaskFarmControllerException("Merger and Distributor have a different type than the Task Farm or the Task Farm Controller.");
+			throw new TaskFarmControllerException("Merger and Distributor have a different type than the Task Farm or the Task Farm Controller.", e);
 		}
 	}
 
@@ -161,14 +164,14 @@ class TaskFarmController<I, O> {
 	}
 
 	private int getStageIndexWithLeastRemainingInput() {
-		int currentMinimum = Integer.MAX_VALUE;
-		int currentMinumumStageIndex = this.taskFarmStage.getEnclosedStageInstances().size() - 1;
+		int currentMinimum = Integer.MAX_VALUE; // NOPMD DU caused by loop
+		int currentMinumumStageIndex = this.taskFarmStage.getEnclosedStageInstances().size() - 1; // NOPMD
 
 		// do not remove basic stage
 		for (int i = 1; i < this.taskFarmStage.getEnclosedStageInstances().size(); i++) {
 			ITaskFarmDuplicable<I, O> instance = this.taskFarmStage.getEnclosedStageInstances().get(i);
 			InputPort<I> port = instance.getInputPort();
-			IMonitorablePipe monitorablePipe = null;
+			IMonitorablePipe monitorablePipe;
 
 			try {
 				monitorablePipe = (IMonitorablePipe) port.getPipe();
@@ -176,13 +179,14 @@ class TaskFarmController<I, O> {
 				throw new TaskFarmInvalidPipeException(
 						"The input pipe of an enclosed stage instance inside a Task Farm"
 								+ " does not implement IMonitorablePipe, which is required. Instead, the type is "
-								+ port.getPipe().getClass().getSimpleName() + ".");
+								+ port.getPipe().getClass().getSimpleName() + ".",
+						e);
 			}
-
 			if (monitorablePipe != null && monitorablePipe.size() < currentMinimum) {
 				currentMinimum = monitorablePipe.size();
 				currentMinumumStageIndex = i;
 			}
+
 		}
 
 		return currentMinumumStageIndex;

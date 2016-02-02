@@ -30,12 +30,12 @@ public class TaskFarmInvalidPipeException extends RuntimeException {
 	 * Represents an exception thrown by the task farm. It
 	 * gets thrown if the user tries to monitor a pipe which
 	 * does not implement {@link teetime.framework.pipe.IMonitorablePipe IMonitorablePipe}.
-	 * 
+	 *
 	 * @param s
 	 *            error message
 	 */
-	public TaskFarmInvalidPipeException(final String s) {
-		super(s);
+	public TaskFarmInvalidPipeException(final String s, final Throwable cause) {
+		super(s, cause);
 	}
 
 }
