@@ -40,7 +40,7 @@ public final class UnsynchedPipe<T> extends AbstractUnsynchedPipe<T> {
 	@Override
 	public Object removeLast() {
 		final Object temp = this.element;
-		this.element = null;
+		this.element = null; // NOPMD
 		return temp;
 	}
 

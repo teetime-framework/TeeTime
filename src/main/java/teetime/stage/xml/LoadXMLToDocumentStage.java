@@ -41,11 +41,11 @@ public class LoadXMLToDocumentStage extends AbstractTransformation<String, Docum
 	@Override
 	protected void execute(final String filename) {
 		File file = new File(filename);
-		Document document = null;
+		Document document;
 
 		try {
 			DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-			document = documentBuilder.parse(file);
+			document = documentBuilder.parse(file); // NOPMD DU-Anomaly: must remain in try-scope
 		} catch (ParserConfigurationException e) {
 			// parser cannot be build
 			throw new IllegalStateException(e);

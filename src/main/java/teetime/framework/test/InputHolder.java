@@ -15,8 +15,8 @@
  */
 package teetime.framework.test;
 
-import teetime.framework.InputPort;
 import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
 
 public final class InputHolder<I> {
 
@@ -34,7 +34,7 @@ public final class InputHolder<I> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public StageTester to(final InputPort<? extends I> port) {
+	public StageTester to(final InputPort<? extends I> port) { // NOPMD deliberately choosen name
 		if (port.getOwningStage() != stage) {
 			throw new AssertionError();
 		}

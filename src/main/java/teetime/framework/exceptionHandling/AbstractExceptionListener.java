@@ -26,7 +26,8 @@ import teetime.framework.AbstractStage;
 /**
  * Represents a minimalistic StageExceptionListener.
  * Listener which extend from this one, must a least implement this functionality.
- * This abstract class provides a Logger {@link #logger} and the method {@link #onStageException(Exception, AbstractStage)} which is called on every raised exception.
+ * This abstract class provides a Logger {@link #logger} and the method {@link #onStageException(Exception, AbstractStage)} which is called on every raised
+ * exception.
  */
 public abstract class AbstractExceptionListener {
 
@@ -40,7 +41,7 @@ public abstract class AbstractExceptionListener {
 	/**
 	 * The default logger, which can be used by all subclasses
 	 */
-	protected final Logger logger;
+	protected final Logger logger; // NOPMD can't be static as it needs to be initialized in cstr
 
 	protected AbstractExceptionListener(final boolean shouldLogExceptions) {
 		this.logger = LoggerFactory.getLogger(this.getClass().getCanonicalName());
@@ -57,7 +58,7 @@ public abstract class AbstractExceptionListener {
 	 * @return
 	 * 		true, if the thread should be terminated, false otherwise
 	 */
-	public abstract FurtherExecution onStageException(Exception e, AbstractStage throwingStage);
+	public abstract FurtherExecution onStageException(Exception exception, AbstractStage throwingStage);
 
 	public List<Exception> getLoggedExceptions() {
 		return exceptionsList;

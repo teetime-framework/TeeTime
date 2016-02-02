@@ -87,7 +87,7 @@ public final class Execution<T extends Configuration> {
 			// // portConnectionValidator.validate(stage);
 			// }
 
-			final ValidatingSignal validatingSignal = new ValidatingSignal();
+			final ValidatingSignal validatingSignal = new ValidatingSignal(); // NOPMD we need a new instance every iteration
 			stage.onSignal(validatingSignal, null);
 			if (validatingSignal.getInvalidPortConnections().size() > 0) {
 				throw new AnalysisNotValidException(validatingSignal.getInvalidPortConnections());
@@ -99,7 +99,7 @@ public final class Execution<T extends Configuration> {
 	 * This initializes the analysis and needs to be run right before starting it.
 	 *
 	 */
-	private final void init() {
+	private void init() {
 		configurationContext.initializeServices();
 	}
 
@@ -180,11 +180,17 @@ public final class Execution<T extends Configuration> {
 					instances.add((Configuration) obj);
 				}
 			} catch (ClassNotFoundException e) {
-				LOGGER.error("Could not find class " + each);
+				if (LOGGER.isErrorEnabled()) {
+					LOGGER.error("Could not find class " + each);
+				}
 			} catch (InstantiationException e) {
-				LOGGER.error("Could not instantiate class " + each, e);
+				if (LOGGER.isErrorEnabled()) {
+					LOGGER.error("Could not instantiate class " + each, e);
+				}
 			} catch (IllegalAccessException e) {
-				LOGGER.error("IllegalAccessException arised while instantiating class " + each, e);
+				if (LOGGER.isErrorEnabled()) {
+					LOGGER.error("IllegalAccessException arised while instantiating class " + each, e);
+				}
 			}
 		}
 		return instances;

@@ -30,12 +30,12 @@ public class TaskFarmControllerException extends RuntimeException {
 	 * Represents an exception thrown by the task farm reconfiguration component. It
 	 * gets thrown if the reconfiguration component is not able to add or remove a
 	 * worker stage.
-	 * 
+	 *
 	 * @param s
 	 *            error message
 	 */
-	public TaskFarmControllerException(final String s) {
-		super(s);
+	public TaskFarmControllerException(final String s, final Throwable cause) {
+		super(s, cause);
 	}
 
 }

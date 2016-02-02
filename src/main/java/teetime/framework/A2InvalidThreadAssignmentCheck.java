@@ -37,28 +37,29 @@ public class A2InvalidThreadAssignmentCheck {
 		this.threadableStages = threadableStages;
 	}
 
+	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	public void check() {
 		int color = DEFAULT_COLOR;
 		ObjectIntMap<AbstractStage> colors = new ObjectIntHashMap<AbstractStage>();
+		ThreadPainter threadPainter = new ThreadPainter();
+		Traverser traverser = new Traverser(threadPainter);
 
 		for (AbstractStage threadableStage : threadableStages) {
 			color++;
 			colors.put(threadableStage, color);
 
-			ThreadPainter threadPainter = new ThreadPainter(colors, color, threadableStages);
-			Traverser traverser = new Traverser(threadPainter);
+			threadPainter.reset(colors, color, threadableStages);
 			traverser.traverse(threadableStage);
 		}
 	}
 
 	private static class ThreadPainter implements ITraverserVisitor {
 
-		private final ObjectIntMap<AbstractStage> colors;
-		private final int color;
-		private final Set<AbstractStage> threadableStages;
+		private ObjectIntMap<AbstractStage> colors;
+		private int color;
+		private Set<AbstractStage> threadableStages;
 
-		public ThreadPainter(final ObjectIntMap<AbstractStage> colors, final int color, final Set<AbstractStage> threadableStages) {
-			super();
+		public void reset(final ObjectIntMap<AbstractStage> colors, final int color, final Set<AbstractStage> threadableStages) {
 			this.colors = colors;
 			this.color = color;
 			this.threadableStages = threadableStages;
@@ -77,17 +78,13 @@ public class A2InvalidThreadAssignmentCheck {
 
 			int targetColor = colors.containsKey(targetStage) ? colors.get(targetStage) : DEFAULT_COLOR;
 
-			if (threadableStages.contains(targetStage) && targetColor != color) {
-				// do nothing
-			} else {
-				if (colors.containsKey(targetStage)) {
-					if (colors.get(targetStage) != color) {
-						throw new IllegalStateException("1001 - Crossing threads in " + targetStage.getId()); // One stage is connected to a stage of another thread
-																												// (but not its "headstage")
-					}
+			if (!threadableStages.contains(targetStage) || targetColor == color) {
+				if (colors.containsKey(targetStage) && colors.get(targetStage) != color) {
+					throw new IllegalStateException("1001 - Crossing threads in " + targetStage.getId()); // One stage is connected to a stage of another thread
+																											// (but not its "headstage")
 				}
 				colors.put(targetStage, color);
-				return VisitorBehavior.CONTINUE;
+				return VisitorBehavior.CONTINUE; // NOPMD makes it clearer
 			}
 			return VisitorBehavior.STOP;
 		}

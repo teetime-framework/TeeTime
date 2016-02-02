@@ -31,8 +31,10 @@ public class TeeTimeThread extends Thread {
 	}
 
 	@Override
-	public synchronized void start() {
-		runnable.stage.getOwningContext().getThreadService().getRunnableCounter().inc();
-		super.start();
+	public void start() {
+		synchronized (this) {
+			runnable.stage.getOwningContext().getThreadService().getRunnableCounter().inc();
+			super.start();
+		}
 	}
 }

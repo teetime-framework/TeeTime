@@ -18,13 +18,13 @@ package teetime.framework.signal;
 import java.util.List;
 import java.util.Set;
 
-import teetime.framework.InputPort;
 import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
 
 public final class TerminatingSignal implements ISignal {
 
 	@Override
-	public void trigger(final AbstractStage stage) throws Exception {
+	public void trigger(final AbstractStage stage) throws Exception { // NOPMD a stage may throw any arbitrary exception
 		stage.onTerminating();
 	}
 

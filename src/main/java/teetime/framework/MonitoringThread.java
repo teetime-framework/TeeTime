@@ -37,14 +37,16 @@ public class MonitoringThread extends Thread {
 		while (!terminated) {
 
 			for (final AbstractPort<?> port : monitoredPorts) {
-				IMonitorablePipe pipe = (IMonitorablePipe) port.getPipe();
-				final long pushThroughput = pipe.getPushThroughput();
-				final long pullThroughput = pipe.getPullThroughput();
-				final double ratio = (double) pushThroughput / pullThroughput;
 
-				LOGGER.info("pipe: " + "size=" + pipe.size() + ", " + "ratio: " + String.format("%.1f", ratio));
-				LOGGER.info("pushes: " + pushThroughput);
-				LOGGER.info("pulls: " + pullThroughput);
+				if (LOGGER.isInfoEnabled()) {
+					IMonitorablePipe pipe = (IMonitorablePipe) port.getPipe();
+					final long pushThroughput = pipe.getPushThroughput();
+					final long pullThroughput = pipe.getPullThroughput();
+					final double ratio = (double) pushThroughput / pullThroughput;
+					LOGGER.info("pipe: " + "size=" + pipe.size() + ", " + "ratio: " + String.format("%.1f", ratio));
+					LOGGER.info("pushes: " + pushThroughput);
+					LOGGER.info("pulls: " + pullThroughput);
+				}
 			}
 			LOGGER.info("------------------------------------");
 

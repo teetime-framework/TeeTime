@@ -89,6 +89,7 @@
 
 	<rule ref="rulesets/java/naming.xml">
 		<exclude name="LongVariable" />
+		<exclude name="PackageCase"/>
 	</rule>
 
 	<rule ref="rulesets/java/naming.xml/VariableNamingConventions">
@@ -100,7 +101,9 @@
 		<exclude name="SimplifyStartsWith" />
 	</rule>
 
-	<rule ref="rulesets/chw/basic.xml" />
+	<rule ref="rulesets/chw/basic.xml">
+		<exclude name="NonHeaderCommentSize"/>
+	</rule>
 
 <!-- 	<rule ref="rulesets/chw/basic.xml/NonHeaderCommentSize"> -->
 <!-- 		<properties> -->

@@ -138,7 +138,8 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 		} catch (ClassCastException e) {
 			throw new TaskFarmInvalidPipeException(
 					"The input pipe of an enclosed stage instance inside a Task Farm"
-							+ " does not implement IMonitorablePipe, which is required.");
+							+ " does not implement IMonitorablePipe, which is required.",
+					e);
 		}
 
 		// calculate the mean value if necessary

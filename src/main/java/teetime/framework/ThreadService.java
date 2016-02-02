@@ -15,7 +15,6 @@
  */
 package teetime.framework;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -35,7 +34,7 @@ import teetime.util.framework.concurrent.SignalingCounter;
  *
  * @since 2.0
  */
-class ThreadService extends AbstractService<ThreadService> {
+class ThreadService extends AbstractService<ThreadService> { // NOPMD
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ThreadService.class);
 
@@ -74,8 +73,6 @@ class ThreadService extends AbstractService<ThreadService> {
 		if (startStage == null) {
 			throw new IllegalStateException("The start stage may not be null.");
 		}
-
-		// TODO use decorator pattern to combine all analyzes so that only one traverser pass is necessary
 
 		A1ThreadableStageCollector stageCollector = new A1ThreadableStageCollector();
 		Traverser traversor = new Traverser(stageCollector, Direction.BOTH);
@@ -174,24 +171,24 @@ class ThreadService extends AbstractService<ThreadService> {
 			thread.interrupt();
 		}
 
-		List<Exception> exceptions = collectExceptions();
-		if (!exceptions.isEmpty()) {
-			// throw new ExecutionException(exceptions);
-		}
-	}
-
-	// TODO impl throw exception
-	private List<Exception> collectExceptions() {
-		// Collection<ThreadThrowableContainer> exceptions = new ConcurrentLinkedQueue<ThreadThrowableContainer>();
-		List<Exception> exceptions = new ArrayList<Exception>();
-
-		// for (Stage stage : threadableStages.keySet()) {
-		// List<Exception> stageExceptions = stage.exceptionListener.getExceptions();
-		// exceptions.addAll(stageExceptions);
+		// List<Exception> exceptions = collectExceptions();
+		// if (!exceptions.isEmpty()) {
+		// throw new ExecutionException(exceptions);
 		// }
-
-		return exceptions;
 	}
+
+	// TODO impl throw exception... see line 175
+	// private List<Exception> collectExceptions() {
+	// // Collection<ThreadThrowableContainer> exceptions = new ConcurrentLinkedQueue<ThreadThrowableContainer>();
+	// List<Exception> exceptions = new ArrayList<Exception>();
+	//
+	// // for (Stage stage : threadableStages.keySet()) {
+	// // List<Exception> stageExceptions = stage.exceptionListener.getExceptions();
+	// // exceptions.addAll(stageExceptions);
+	// // }
+	//
+	// return exceptions;
+	// }
 
 	Set<AbstractStage> getThreadableStages() {
 		return threadableStages;
