@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import teetime.framework.AbstractStage;
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
 import teetime.framework.ExecutionException;
-import teetime.framework.AbstractStage;
 import teetime.framework.StageState;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
@@ -42,7 +42,7 @@ public final class StageTester {
 		this.stage = stage;
 	}
 
-	public static StageTester test(final AbstractStage stage) {
+	public static StageTester test(final AbstractStage stage) { // NOPMD
 		if (stage.getCurrentState() != StageState.CREATED) {
 			throw new AssertionError("This stage has already been tested in this test method. Move this test into a new test method.");
 		}
@@ -85,6 +85,7 @@ public final class StageTester {
 
 	private final class TestConfiguration extends Configuration {
 
+		@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 		public TestConfiguration(final List<InputHolder<?>> inputHolders, final AbstractStage stage, final List<OutputHolder<?>> outputHolders) {
 			for (InputHolder<?> inputHolder : inputHolders) {
 				final InitialElementProducer<Object> producer = new InitialElementProducer<Object>(inputHolder.getInput());

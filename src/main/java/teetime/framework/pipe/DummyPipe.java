@@ -25,6 +25,7 @@ import teetime.framework.signal.ISignal;
  * @author Christian Wulf
  *
  */
+@SuppressWarnings("PMD")
 public final class DummyPipe implements IPipe<Object> {
 
 	public static final IPipe<?> INSTANCE = new DummyPipe();

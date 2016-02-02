@@ -89,6 +89,7 @@
 
 	<rule ref="rulesets/java/naming.xml">
 		<exclude name="LongVariable" />
+		<exclude name="PackageCase"/>
 	</rule>
 
 	<rule ref="rulesets/java/naming.xml/VariableNamingConventions">

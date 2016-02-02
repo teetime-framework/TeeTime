@@ -24,7 +24,7 @@ class IgnoringExceptionListener extends AbstractExceptionListener {
 	}
 
 	@Override
-	public FurtherExecution onStageException(final Exception e, final AbstractStage throwingStage) {
+	public FurtherExecution onStageException(final Exception exception, final AbstractStage throwingStage) {
 		return FurtherExecution.CONTINUE;
 	}
 }

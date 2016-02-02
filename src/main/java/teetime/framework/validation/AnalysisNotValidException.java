@@ -33,10 +33,10 @@ public class AnalysisNotValidException extends RuntimeException {
 
 	@Override
 	public String getMessage() {
-		final StringBuilder builder = new StringBuilder(this.invalidPortConnections.size() * 40);
-		builder.append("2002 - ");
-		builder.append(this.invalidPortConnections.size());
-		builder.append(" invalid port connections were detected.\n");
+		final StringBuilder builder = new StringBuilder(this.invalidPortConnections.size() * 40) // NOPMD PMD does not trigger correctly here
+				.append("2002 - ")
+				.append(this.invalidPortConnections.size())
+				.append(" invalid port connections were detected.\n");
 		Joiner.on("\n").appendTo(builder, this.invalidPortConnections);
 		return builder.toString();
 	}

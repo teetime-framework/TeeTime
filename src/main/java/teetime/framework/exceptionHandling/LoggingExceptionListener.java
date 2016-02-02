@@ -24,9 +24,9 @@ class LoggingExceptionListener extends AbstractExceptionListener {
 	}
 
 	@Override
-	public FurtherExecution onStageException(final Exception e, final AbstractStage throwingStage) {
+	public FurtherExecution onStageException(final Exception exception, final AbstractStage throwingStage) {
 		if (logger.isWarnEnabled()) {
-			logger.warn("Exception occurred in " + throwingStage.getId(), e);
+			logger.warn("Exception occurred in " + throwingStage.getId(), exception);
 		}
 		return FurtherExecution.CONTINUE;
 	}
