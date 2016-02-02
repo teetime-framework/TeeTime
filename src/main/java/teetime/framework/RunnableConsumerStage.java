@@ -52,6 +52,7 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			if (inputPort.isClosed()) {
 				// stage.removeDynamicPort(inputPort);
+				break;
 			} else {
 				return;
 			}
@@ -62,7 +63,7 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 
 	@Override
 	protected void afterStageExecution() {
-		final ISignal signal = new TerminatingSignal();
+		final ISignal signal = new TerminatingSignal(); // NOPMD DU caused by loop
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			stage.onSignal(signal, inputPort);
 		}

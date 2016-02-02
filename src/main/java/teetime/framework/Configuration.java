@@ -26,7 +26,7 @@ import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
  * @since 2.0
  *
  */
-public abstract class Configuration extends AbstractCompositeStage {
+public class Configuration extends AbstractCompositeStage {
 
 	private final AbstractExceptionListenerFactory<?> factory;
 	private final ConfigurationContext context;
@@ -35,11 +35,11 @@ public abstract class Configuration extends AbstractCompositeStage {
 	private boolean executed;
 	private AbstractStage startStage;
 
-	protected Configuration() {
+	public Configuration() {
 		this(new TerminatingExceptionListenerFactory());
 	}
 
-	protected Configuration(final AbstractExceptionListenerFactory<?> factory) {
+	public Configuration(final AbstractExceptionListenerFactory<?> factory) {
 		this.factory = factory;
 		this.context = new ConfigurationContext(this);
 	}
@@ -52,15 +52,15 @@ public abstract class Configuration extends AbstractCompositeStage {
 		this.initialized = executed;
 	}
 
-	public boolean isExecuted() {
+	boolean isExecuted() {
 		return executed;
 	}
 
-	public void setExecuted(final boolean executed) {
+	void setExecuted(final boolean executed) {
 		this.executed = executed;
 	}
 
-	public AbstractExceptionListenerFactory<?> getFactory() {
+	AbstractExceptionListenerFactory<?> getFactory() {
 		return factory;
 	}
 
@@ -70,12 +70,12 @@ public abstract class Configuration extends AbstractCompositeStage {
 	 * @param pipe
 	 *            A custom pipe instance
 	 */
-	protected void registerCustomPipe(final AbstractPipe<?> pipe) {
+	public void registerCustomPipe(final AbstractPipe<?> pipe) {
 		startStage = pipe.getSourcePort().getOwningStage(); // memorize an arbitrary stage as starting point for traversing
 	}
 
 	@Override
-	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	public <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		startStage = sourcePort.getOwningStage(); // memorize an arbitrary stage as starting point for traversing
 		super.connectPorts(sourcePort, targetPort, capacity);
 	}
