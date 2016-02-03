@@ -51,7 +51,7 @@ public abstract class AbstractExceptionListener {
 	/**
 	 * This method will be executed if an exception arises.
 	 *
-	 * @param e
+	 * @param exception
 	 *            thrown exception
 	 * @param throwingStage
 	 *            the stage, which has thrown the exception.
