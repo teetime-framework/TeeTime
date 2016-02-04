@@ -30,12 +30,12 @@ public class TaskFarmAnalysisException extends RuntimeException {
 	 * Represents an exception thrown by the task farm analysis component. It
 	 * gets thrown if the analysis component was unable to find the chosen
 	 * throughput algorithm.
-	 * 
-	 * @param s
+	 *
+	 * @param message
 	 *            error message
 	 */
-	public TaskFarmAnalysisException(final String s) {
-		super(s);
+	public TaskFarmAnalysisException(final String message, final Throwable cause) {
+		super(message, cause);
 	}
 
 }

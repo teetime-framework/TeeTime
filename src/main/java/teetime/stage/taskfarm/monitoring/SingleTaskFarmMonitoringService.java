@@ -44,7 +44,7 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 	private final TaskFarmHistoryService<?, ?, ?> history;
 
 	/** maximum number of worker stages used by the task farm over its whole execution **/
-	private int maxNumberOfStages = 0;
+	private int maxNumberOfStages;
 
 	/**
 	 * Constructor.
@@ -102,6 +102,7 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 		PUSH, PULL
 	}
 
+	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	private double getMeanAndSumThroughput(final TaskFarmStage<?, ?, ?> taskFarmStage, final MeanThroughputType type, final boolean mean) {
 		double sum = 0;
 		double count = 0;
@@ -143,10 +144,8 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 		}
 
 		// calculate the mean value if necessary
-		if (mean) {
-			if (count > 0) {
-				sum /= count;
-			}
+		if (mean && count > 0) {
+			sum /= count;
 		}
 
 		return sum;

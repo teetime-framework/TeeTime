@@ -25,7 +25,7 @@ import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringData;
 
 /**
  * Represents a CSV file containing time-boundary-mean pull throughput-total pull throughput-tuples.
- * 
+ *
  * @author Christian Claus Wiechmann
  */
 public class TimeBoundaryMSPullThroughput3D extends AbstractGeneralCSVExporter {
@@ -55,7 +55,7 @@ public class TimeBoundaryMSPullThroughput3D extends AbstractGeneralCSVExporter {
 						Double.toString(taskFarmMonitoringData.getSumOfPullThroughput()));
 			}
 		} catch (IOException e) {
-			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage());
+			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage(), e);
 		}
 	}
 }

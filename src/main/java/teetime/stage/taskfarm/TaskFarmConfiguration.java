@@ -37,7 +37,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	public static final int INIT_SAMPLES_UNTIL_REMOVE = -1;
 
 	/** should the monitoring services be activated (does not affect the adaptation thread!)? **/
-	private volatile boolean monitoringEnabled = false;
+	private volatile boolean monitoringEnabled;// = false;
 
 	/** the waiting time between each iteration of the adaptation thread **/
 	private volatile int adaptationWaitingTimeMillis = 50;
@@ -57,7 +57,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 **/
 	private volatile int maxSamplesUntilRemove = 5;
 	/** throughput boundary of this task farm **/
-	private volatile double throughputScoreBoundary = 0.2d;
+	private volatile double throughputScoreBoundary = 0.2d; // NOPMD error in PMD
 
 	/** pipe capacity of all pipes inside the task farm **/
 	private volatile int pipeCapacity = 100;
@@ -65,7 +65,9 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	/** the maximum number of worker stages the task farm may have **/
 	private volatile int maxNumberOfCores = Runtime.getRuntime().availableProcessors() - 2;
 
-	TaskFarmConfiguration() {}
+	TaskFarmConfiguration() {
+		// non-instantiable from outside
+	}
 
 	/**
 	 *

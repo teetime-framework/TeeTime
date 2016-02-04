@@ -54,7 +54,7 @@ public class TimeBoundaryStages3D extends AbstractGeneralCSVExporter {
 						Integer.toString(taskFarmMonitoringData.getStages()));
 			}
 		} catch (IOException e) {
-			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage());
+			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage(), e);
 		}
 	}
 }

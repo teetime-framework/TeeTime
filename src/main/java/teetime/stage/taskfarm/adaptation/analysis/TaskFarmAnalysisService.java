@@ -18,13 +18,13 @@ package teetime.stage.taskfarm.adaptation.analysis;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import com.google.common.base.Throwables;
+
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.adaptation.history.TaskFarmHistoryService;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 import teetime.stage.taskfarm.exception.TaskFarmAnalysisException;
-
-import com.google.common.base.Throwables;
 
 /**
  * Represents an interface to call a throughput algorithm
@@ -69,9 +69,7 @@ public class TaskFarmAnalysisService<I, O, T extends ITaskFarmDuplicable<I, O>> 
 	 *            specified throughput history
 	 */
 	public void analyze(final ThroughputHistory history) {
-		AbstractThroughputAlgorithm algorithm = null;
-
-		algorithm = createAlgorithm(this.configuration.getThroughputAlgorithm());
+		AbstractThroughputAlgorithm algorithm = createAlgorithm(this.configuration.getThroughputAlgorithm());
 
 		this.throughputScore = algorithm.getTroughputAnalysis(history);
 	}
@@ -86,7 +84,7 @@ public class TaskFarmAnalysisService<I, O, T extends ITaskFarmDuplicable<I, O>> 
 	private AbstractThroughputAlgorithm createAlgorithm(final String algorithmClassName) {
 		String fullyQualifiedPath = THROUGHPUT_ALGORITHM_PATH + "." + algorithmClassName;
 
-		AbstractThroughputAlgorithm algorithm = null;
+		AbstractThroughputAlgorithm algorithm;
 
 		try {
 			// get throughput algorithm class by using reflection
@@ -97,37 +95,37 @@ public class TaskFarmAnalysisService<I, O, T extends ITaskFarmDuplicable<I, O>> 
 
 			Constructor<?> algorithmConstructor = algorithmClass.getConstructor(constructorParameterClasses);
 
-			algorithm = (AbstractThroughputAlgorithm) algorithmConstructor.newInstance(constructorParameterObjects);
+			algorithm = (AbstractThroughputAlgorithm) algorithmConstructor.newInstance(constructorParameterObjects); // NOPMD: returns in outer block
 		} catch (ClassNotFoundException e) {
 			throw new TaskFarmAnalysisException("The ThroughputAlgorithm \""
 					+ fullyQualifiedPath
-					+ "\" could not be found.");
+					+ "\" could not be found.", e);
 		} catch (InstantiationException e) {
 			throw new TaskFarmAnalysisException("The ThroughputAlgorithm \""
 					+ fullyQualifiedPath
-					+ "\" is declared as abstract and cannot be instantiated");
+					+ "\" is declared as abstract and cannot be instantiated", e);
 		} catch (IllegalAccessException e) {
 			throw new TaskFarmAnalysisException("The constructor of \""
 					+ fullyQualifiedPath
-					+ "\" could not be accessed.");
+					+ "\" could not be accessed.", e);
 		} catch (IllegalArgumentException e) {
 			// should not happen at all
 			throw new TaskFarmAnalysisException("The constructor of \""
 					+ fullyQualifiedPath
-					+ "\" has not been called with the correct amount of arguments.");
+					+ "\" has not been called with the correct amount of arguments.", e);
 		} catch (InvocationTargetException e) {
 			throw new TaskFarmAnalysisException("The constructor of \""
 					+ fullyQualifiedPath
 					+ "\" has thrown an exception:\n"
-					+ Throwables.getStackTraceAsString(e));
+					+ Throwables.getStackTraceAsString(e), e);
 		} catch (NoSuchMethodException e) {
 			throw new TaskFarmAnalysisException("The ThroughputAlgorithm \""
 					+ fullyQualifiedPath
-					+ "\" does not have any constructor with exactly one TaskFarmConfiguration as its parameter.");
+					+ "\" does not have any constructor with exactly one TaskFarmConfiguration as its parameter.", e);
 		} catch (SecurityException e) {
 			throw new TaskFarmAnalysisException("A Security Manager is present and \""
 					+ fullyQualifiedPath
-					+ "\"does not have the correct class loader.");
+					+ "\"does not have the correct class loader.", e);
 		}
 
 		return algorithm;

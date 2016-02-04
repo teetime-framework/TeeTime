@@ -20,12 +20,12 @@ import java.io.File;
 /**
  * @author Christian Wulf
  */
-public final class TextLine {
+public final class TextLineContainer {
 
 	private final File textFile;
 	private final String textLine;
 
-	public TextLine(final File textFile, final String textLine) {
+	public TextLineContainer(final File textFile, final String textLine) {
 		this.textFile = textFile;
 		this.textLine = textLine;
 	}

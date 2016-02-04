@@ -26,7 +26,7 @@ import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringData;
 /**
  * Represents a CSV file containing one time-boundary pair,
  * showing the computation time with the given throughput boundary.
- * 
+ *
  * @author Christian Claus Wiechmann
  */
 public class TimeBoundary2D extends AbstractGeneralCSVExporter {
@@ -48,7 +48,7 @@ public class TimeBoundary2D extends AbstractGeneralCSVExporter {
 		try {
 			addCSVLineToWriter(writer, "time", "boundary");
 
-			if (monitoredDataValues.size() > 0) {
+			if (!monitoredDataValues.isEmpty()) {
 				// just add last time-boundary pair so that it will record the duration of the monitoring
 				TaskFarmMonitoringData taskFarmMonitoringData = monitoredDataValues.get(monitoredDataValues.size() - 1);
 				addCSVLineToWriter(writer,
@@ -56,7 +56,7 @@ public class TimeBoundary2D extends AbstractGeneralCSVExporter {
 						Double.toString(taskFarmMonitoringData.getThroughputBoundary()));
 			}
 		} catch (IOException e) {
-			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage());
+			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage(), e);
 		}
 	}
 

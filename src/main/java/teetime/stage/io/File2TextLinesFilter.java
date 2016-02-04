@@ -24,7 +24,7 @@ import java.io.InputStreamReader;
 
 import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
-import teetime.stage.util.TextLine;
+import teetime.stage.util.TextLineContainer;
 
 /**
  * @author Christian Wulf
@@ -34,7 +34,7 @@ import teetime.stage.util.TextLine;
  */
 public final class File2TextLinesFilter extends AbstractConsumerStage<File> {
 
-	private final OutputPort<TextLine> outputPort = this.createOutputPort();
+	private final OutputPort<TextLineContainer> outputPort = this.createOutputPort();
 
 	private final String charset;
 
@@ -70,7 +70,7 @@ public final class File2TextLinesFilter extends AbstractConsumerStage<File> {
 			while ((line = reader.readLine()) != null) {
 				line = line.trim();
 				if (line.length() != 0) {
-					outputPort.send(new TextLine(textFile, line));
+					outputPort.send(new TextLineContainer(textFile, line));
 				} // else: ignore empty line
 			}
 		} catch (final FileNotFoundException e) {
@@ -92,7 +92,7 @@ public final class File2TextLinesFilter extends AbstractConsumerStage<File> {
 		return this.charset;
 	}
 
-	public OutputPort<TextLine> getOutputPort() {
+	public OutputPort<TextLineContainer> getOutputPort() {
 		return outputPort;
 	}
 

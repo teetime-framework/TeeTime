@@ -62,22 +62,19 @@ class TaskFarmReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<
 	 * @return {@link TaskFarmReconfigurationCommand} showing if we want to add or remove a stage
 	 */
 	public TaskFarmReconfigurationCommand decideExecutionPlan(final double throughputScore) {
-		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE;
+		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE; // NOPMD
 
-		switch (this.currentMode) {
-		case ADDING:
+		if (this.currentMode == ReconfigurationMode.ADDING) {
 			command = decideForAddingMode(throughputScore);
-			break;
-		case REMOVING:
+		} else {
 			command = decideForRemovingMode(throughputScore);
-			break;
 		}
 
 		return command;
 	}
 
 	private TaskFarmReconfigurationCommand decideForAddingMode(final double throughputScore) {
-		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE;
+		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE; // NOPMD
 
 		if (this.taskFarmStage.getEnclosedStageInstances().size() >= this.taskFarmStage.getConfiguration().getMaxNumberOfCores()) {
 			// we do not want to parallelize more than we have (virtual) processors
@@ -115,7 +112,7 @@ class TaskFarmReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<
 	}
 
 	private TaskFarmReconfigurationCommand decideForRemovingMode(final double throughputScore) {
-		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE;
+		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE; // NOPMD
 
 		// we never want to remove the basic stage since it would destroy the pipeline
 		for (int i = 1; i < this.taskFarmStage.getEnclosedStageInstances().size() - 1; i++) {

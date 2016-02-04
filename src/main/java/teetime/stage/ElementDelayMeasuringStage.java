@@ -44,14 +44,14 @@ public final class ElementDelayMeasuringStage<T> extends AbstractConsumerStage<T
 	}
 
 	@Override
-	public void onStarting() throws Exception {
+	public void onStarting() throws Exception { // NOPMD
 		super.onStarting();
 		this.resetTimestamp(System.nanoTime());
 	}
 
 	private void computeElementDelay(final Long timestampInNs) {
-		long diffInNs = timestampInNs - this.lastTimestampInNs;
 		if (this.numPassedElements > 0) {
+			long diffInNs = timestampInNs - this.lastTimestampInNs;
 			long delayInNsPerElement = diffInNs / this.numPassedElements;
 			this.delays.add(delayInNsPerElement);
 			this.logger.info("Delay: " + delayInNsPerElement + " time units/element");

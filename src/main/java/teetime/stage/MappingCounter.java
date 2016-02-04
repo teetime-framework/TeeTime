@@ -41,7 +41,7 @@ public final class MappingCounter<T> extends AbstractConsumerStage<T> {
 	}
 
 	@Override
-	public void onTerminating() throws Exception {
+	public void onTerminating() throws Exception { // NOPMD forced by super method
 		port.send(counter);
 		super.onTerminating();
 	}

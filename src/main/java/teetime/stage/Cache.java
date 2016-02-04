@@ -35,7 +35,7 @@ public final class Cache<T> extends AbstractConsumerStage<T> {
 	}
 
 	@Override
-	public void onTerminating() throws Exception {
+	public void onTerminating() throws Exception { // NOPMD
 		this.logger.debug("Emitting " + this.cachedObjects.size() + " cached elements...");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();

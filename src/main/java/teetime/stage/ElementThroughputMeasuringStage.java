@@ -45,7 +45,7 @@ public final class ElementThroughputMeasuringStage<T> extends AbstractConsumerSt
 	}
 
 	@Override
-	public void onStarting() throws Exception {
+	public void onStarting() throws Exception { // NOPMD
 		super.onStarting();
 		this.resetTimestamp(System.nanoTime());
 	}

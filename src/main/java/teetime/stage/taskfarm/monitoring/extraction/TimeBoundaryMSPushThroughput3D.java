@@ -55,7 +55,7 @@ public class TimeBoundaryMSPushThroughput3D extends AbstractGeneralCSVExporter {
 						Double.toString(taskFarmMonitoringData.getSumOfPushThroughput()));
 			}
 		} catch (IOException e) {
-			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage());
+			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage(), e);
 		}
 	}
 }

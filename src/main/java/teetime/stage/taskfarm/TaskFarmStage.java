@@ -94,13 +94,13 @@ public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 		if (merger == null) {
 			this.merger = new DynamicMerger<O>() {
 				@Override
-				public void onStarting() throws Exception {
+				public void onStarting() throws Exception { // NOPMD
 					adaptationThread.start();
 					super.onStarting();
 				}
 
 				@Override
-				public void onTerminating() throws Exception {
+				public void onTerminating() throws Exception { // NOPMD
 					adaptationThread.stopAdaptationThread();
 					super.onTerminating();
 				}

@@ -100,8 +100,7 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 						pushThroughput,
 						pullThroughput,
 						pipe.getNumWaits(),
-						i
-						);
+						i);
 
 				container.addMonitoringData(monitoringData);
 			}

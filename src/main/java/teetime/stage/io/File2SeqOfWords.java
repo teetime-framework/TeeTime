@@ -59,17 +59,15 @@ public final class File2SeqOfWords extends AbstractConsumerStage<File> {
 
 	@Override
 	protected void execute(final File textFile) {
-		BufferedReader reader = null;
+		BufferedReader reader = null; // NOPMD
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(textFile), this.charset));
 			CharBuffer charBuffer = CharBuffer.allocate(bufferCapacity);
 			while (reader.read(charBuffer) != -1) {
 				final int position = getPreviousWhitespacePosition(charBuffer);
-				if (-1 == position) {
-					if (logger.isErrorEnabled()) {
-						logger.error("A word in the following text file is bigger than the buffer's capacity: " + textFile.getAbsolutePath());
-						return;
-					}
+				if (-1 == position && logger.isErrorEnabled()) {
+					logger.error("A word in the following text file is bigger than the buffer's capacity: " + textFile.getAbsolutePath());
+					return;
 				}
 				final int limit = charBuffer.limit();
 
@@ -97,16 +95,16 @@ public final class File2SeqOfWords extends AbstractConsumerStage<File> {
 	}
 
 	private int getPreviousWhitespacePosition(final CharBuffer charBuffer) {
-		char[] characters = charBuffer.array();
+		char[] characters = charBuffer.array(); // NOPMD Array issue
 		int index = charBuffer.arrayOffset() + charBuffer.position() - 1;
 
 		while (index >= 0) {
-			switch (characters[index]) {
+			switch (characters[index]) { // NOPMD break not needed
 			case ' ':
 			case '\n':
 			case '\r':
 			case '\t':
-				return index - charBuffer.arrayOffset();
+				return index - charBuffer.arrayOffset(); // NOPMD
 			default:
 				index--;
 			}

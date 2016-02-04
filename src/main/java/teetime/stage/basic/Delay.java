@@ -53,15 +53,15 @@ public final class Delay<T> extends AbstractStage {
 	}
 
 	@Override
-	public void onTerminating() throws Exception {
-		while (null == timestampTriggerInputPort.receive()) {
+	public void onTerminating() throws Exception { // NOPMD
+		while (null == timestampTriggerInputPort.receive()) { // NOPMD flushes input
 			// wait for the next trigger
 		}
 
 		sendAllBufferedEllements();
 
 		T element;
-		while (null != (element = inputPort.receive())) {
+		while (null != (element = inputPort.receive())) { // NOPMD
 			outputPort.send(element);
 		}
 

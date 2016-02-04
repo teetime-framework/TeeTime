@@ -75,7 +75,7 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	private double getSumOfPipePushThroughputs() {
 		this.lastPullThroughputs = new HashMap<IMonitorablePipe, Long>();
 		this.lastPushThroughputs = new HashMap<IMonitorablePipe, Long>();
-		double sum = 0;
+		double sum = 0; // NOPMD
 
 		try {
 			for (ITaskFarmDuplicable<I, O> enclosedStage : this.taskFarmStage.getEnclosedStageInstances()) {
@@ -107,7 +107,7 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 *         (zero if no throughput value for the pipe has been recorded at the last measurement)
 	 */
 	public long getLastPullThroughputOfPipe(final IMonitorablePipe pipe) {
-		long result = 0;
+		long result = 0; // NOPMD
 		if (this.lastPullThroughputs.containsKey(pipe)) {
 			result = this.lastPullThroughputs.get(pipe);
 		}
@@ -121,7 +121,7 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 *         (zero if no throughput value for the pipe has been recorded at the last measurement)
 	 */
 	public long getLastPushThroughputOfPipe(final IMonitorablePipe pipe) {
-		long result = 0;
+		long result = 0; // NOPMD
 		if (this.lastPushThroughputs.containsKey(pipe)) {
 			result = this.lastPushThroughputs.get(pipe);
 		}

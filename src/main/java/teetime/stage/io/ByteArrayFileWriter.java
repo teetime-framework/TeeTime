@@ -19,20 +19,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import teetime.framework.AbstractConsumerStage;
-
 import com.google.common.io.Files;
+
+import teetime.framework.AbstractConsumerStage;
 
 public final class ByteArrayFileWriter extends AbstractConsumerStage<byte[]> {
 
-	private final File file;
-	private FileOutputStream fo;
+	private FileOutputStream fileOutput;
 
 	public ByteArrayFileWriter(final File file) {
-		this.file = file;
 		try {
 			Files.touch(file);
-			fo = new FileOutputStream(this.file);
+			fileOutput = new FileOutputStream(file);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
@@ -41,8 +39,8 @@ public final class ByteArrayFileWriter extends AbstractConsumerStage<byte[]> {
 	@Override
 	protected void execute(final byte[] element) {
 		try {
-			fo.write(element);
-		} catch (Exception e) {
+			fileOutput.write(element);
+		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
 	}
@@ -50,7 +48,7 @@ public final class ByteArrayFileWriter extends AbstractConsumerStage<byte[]> {
 	@Override
 	public void onTerminating() {
 		try {
-			fo.close();
+			fileOutput.close();
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}

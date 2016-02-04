@@ -31,11 +31,11 @@ public class TaskFarmControllerException extends RuntimeException {
 	 * gets thrown if the reconfiguration component is not able to add or remove a
 	 * worker stage.
 	 *
-	 * @param s
+	 * @param message
 	 *            error message
 	 */
-	public TaskFarmControllerException(final String s, final Throwable cause) {
-		super(s, cause);
+	public TaskFarmControllerException(final String message, final Throwable cause) {
+		super(message, cause);
 	}
 
 }

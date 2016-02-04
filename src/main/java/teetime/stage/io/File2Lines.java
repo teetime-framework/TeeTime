@@ -56,13 +56,14 @@ public final class File2Lines extends AbstractConsumerStage<File> {
 		this.charset = charset;
 	}
 
+	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	@Override
 	protected void execute(final File textFile) {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(textFile), this.charset));
 			String line;
-			while ((line = reader.readLine()) != null) {
+			while ((line = reader.readLine()) != null) { // NOPMD
 				line = line.trim();
 				if (line.length() != 0) {
 					outputPort.send(line);

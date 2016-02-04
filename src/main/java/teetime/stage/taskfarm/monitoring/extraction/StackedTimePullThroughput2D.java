@@ -41,6 +41,7 @@ public class StackedTimePullThroughput2D extends AbstractStackedCSVExporter {
 		super(pipeMonitoringService, taskFarmMonitoringService);
 	}
 
+	@SuppressWarnings("PMD.DataflowAnomalyAnalysis") // PMD does not recognize arrays correctly
 	@Override
 	protected void addLineOfValuesToCSV(final Writer writer, final int maxNumberOfPipes, final PipeMonitoringDataContainer container)
 			throws IOException {
@@ -60,6 +61,7 @@ public class StackedTimePullThroughput2D extends AbstractStackedCSVExporter {
 		addCSVLineToWriter(writer, entryStrings);
 	}
 
+	@SuppressWarnings("PMD.DataflowAnomalyAnalysis") // PMD does not recognize arrays correctly
 	@Override
 	protected void createHeader(final Writer writer, final int maxNumberOfStages) throws IOException {
 		String[] headerStrings = new String[maxNumberOfStages + 1];

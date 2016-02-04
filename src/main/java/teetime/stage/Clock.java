@@ -40,7 +40,7 @@ import teetime.framework.TerminationStrategy;
  */
 public final class Clock extends AbstractProducerStage<Long> {
 
-	private boolean initialDelayExceeded = false;
+	private boolean initialDelayExceeded;// = false;
 
 	/**
 	 * Waiting time span until first sent element.
@@ -58,11 +58,11 @@ public final class Clock extends AbstractProducerStage<Long> {
 
 	@Override
 	protected void execute() {
-		if (!this.initialDelayExceeded) {
+		if (this.initialDelayExceeded) {
+			this.sleep(this.intervalDelayInMs);
+		} else {
 			this.initialDelayExceeded = true;
 			this.sleep(this.initialDelayInMs);
-		} else {
-			this.sleep(this.intervalDelayInMs);
 		}
 
 		// this.logger.debug("Emitting timestamp");
