@@ -82,6 +82,14 @@
 				<role>Committer</role>
 			</roles>
 		</contributor>
+		<contributor>
+			<name>Mathis Neumann</name>
+			<email>mail@madd.is</email>
+			<timezone>Europe/Berlin</timezone>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</contributor>
 	</contributors>
 
 	<scm>
