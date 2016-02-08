@@ -20,7 +20,7 @@ import java.io.File;
 /**
  * @author Christian Wulf
  */
-public final class TextLineContainer {
+public class TextLineContainer {
 
 	private final File textFile;
 	private final String textLine;
