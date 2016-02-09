@@ -39,6 +39,9 @@
 			<action dev="ntd" type="update" issue="240">
 				Reduced the visibility of the class NotEnoughInputException to package private.
 			</action>
+			<action type="add" due-to="Christian Claus Wiechmann" issue="178">
+				Introduced the concept of a task farm.
+			</action>
 		</release>
 		<release version="2.0" date="30.09.2015" description="Camellia Release">
 			<action dev="ntd" type="add" issue="93">
