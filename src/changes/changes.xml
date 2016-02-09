@@ -33,6 +33,12 @@
 			<action dev="ntd" type="add" issue="11">
 				Port connections can be validated before the execution of a configuration.
 			</action>
+			<action dev="ntd" type="update" issue="260">
+				Reduced the visibility of AbstractStage.onSignal() to package private.
+			</action>
+			<action dev="ntd" type="update" issue="240">
+				Reduced the visibility of the class NotEnoughInputException to package private.
+			</action>
 		</release>
 		<release version="2.0" date="30.09.2015" description="Camellia Release">
 			<action dev="ntd" type="add" issue="93">
