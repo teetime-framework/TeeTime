@@ -22,6 +22,8 @@ import java.io.File;
  *
  * @author Nelson Tavares de Sousa
  *
+ * @deprecated since 2.1. Use {@link TextLineContainer} instead.
+ *
  */
 @Deprecated // Set TextLineContainer to final after removal
 public class TextLine extends TextLineContainer {
