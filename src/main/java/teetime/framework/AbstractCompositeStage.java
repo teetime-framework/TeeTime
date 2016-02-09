@@ -16,9 +16,8 @@
 package teetime.framework;
 
 /**
- * Legacy class: was renamed to {@link CompositeStage}
- *
  * @author Nelson Tavares de Sousa
+ * @deprecated Since 2.1. Was renamed to {@link CompositeStage}.
  *
  */
 @Deprecated
