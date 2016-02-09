@@ -12,8 +12,26 @@
 			<action dev="ntd" type="add" issue="247">
 				Configuration can now be executed from command line.
 			</action>
-			<action dev="ntd" type="add">
+			<action dev="ntd" type="update">
 				Renamed AbstractCompositeStage to CompositeStage and made it non-abstract.
+			</action>
+			<action dev="ntd" type="update">
+				Renamed TextLine to TextLineContainer.
+			</action>
+			<action dev="ntd" type="update" issue="245">
+				Renamed Distributor strategies.
+			</action>
+			<action dev="ntd" type="remove" issue="232">
+				Removed IPipeFactory
+			</action>
+			<action dev="ntd" type="update" issue="222">
+				Method declareActive() was moved to the class Stage.
+			</action>
+			<action dev="ntd" type="update" issue="209">
+				Pipe classes were renamed.
+			</action>
+			<action dev="ntd" type="add" issue="11">
+				Port connections can be validated before the execution of a configuration.
 			</action>
 		</release>
 		<release version="2.0" date="30.09.2015" description="Camellia Release">
