@@ -18,7 +18,7 @@
 				Port connections can be validated before the execution of a configuration.
 			</action>
 			<action type="add" due-to="Christian Claus Wiechmann" issue="178">
-				Introduced the concept of a task farm.
+				New Concept: Task farm enables an automatic stage duplication.
 			</action>
 			<action type="add" due-to="Christian Claus Wiechmann" issue="162">
 				Enable monitoring of pipe instances.
