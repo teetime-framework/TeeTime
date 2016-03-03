@@ -126,12 +126,12 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.16</version>
+			<version>1.7.18</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.5</version>
+			<version>1.1.6</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -144,7 +144,6 @@
 			<artifactId>jctools-core</artifactId>
 			<version>1.1</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.carrotsearch</groupId>
 			<artifactId>hppc</artifactId>
@@ -228,7 +227,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.4</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -379,7 +378,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.4</version>
+				<version>3.5</version>
 				<dependencies>
 					<!-- for using markdown syntax gitlab@build.se.informatik.uni-kiel.de:nts/doxia-module-markdown-teetime.git -->
 					<dependency>
