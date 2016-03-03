@@ -28,7 +28,7 @@ import teetime.framework.OutputPort;
 public final class MultipleInstanceOfFilter<I> extends AbstractConsumerStage<I> {
 
 	private final Map<Class<? extends I>, OutputPort<? super I>> outputPortsMap = new HashMap<Class<? extends I>, OutputPort<? super I>>();
-	private Entry<Class<? extends I>, OutputPort<? super I>>[] cachedOutputPortsMap;
+	private Entry<Class<? extends I>, OutputPort<? super I>>[] cachedOutputPortsMaps;
 
 	@SuppressWarnings("unchecked")
 	public <T extends I> OutputPort<T> getOutputPortForType(final Class<T> clazz) {
@@ -43,12 +43,12 @@ public final class MultipleInstanceOfFilter<I> extends AbstractConsumerStage<I> 
 	public void onStarting() throws Exception { // NOPMD exception forced by super method
 		super.onStarting();
 		// We cache the map to avoid the creating of iterators during runtime
-		cachedOutputPortsMap = (Entry<Class<? extends I>, OutputPort<? super I>>[]) outputPortsMap.entrySet().toArray(new Entry<?, ?>[outputPortsMap.size()]);
+		cachedOutputPortsMaps = (Entry<Class<? extends I>, OutputPort<? super I>>[]) outputPortsMap.entrySet().toArray(new Entry<?, ?>[outputPortsMap.size()]);
 	}
 
 	@Override
 	protected void execute(final I element) {
-		for (Entry<Class<? extends I>, OutputPort<? super I>> outputPortMapEntry : cachedOutputPortsMap) {
+		for (Entry<Class<? extends I>, OutputPort<? super I>> outputPortMapEntry : cachedOutputPortsMaps) {
 			if (outputPortMapEntry.getKey().isInstance(element)) {
 				outputPortMapEntry.getValue().send(element);
 			}

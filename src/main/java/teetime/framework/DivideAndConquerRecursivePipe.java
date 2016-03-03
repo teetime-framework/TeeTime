@@ -7,7 +7,7 @@ import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 
 class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> implements
-		IPipe<P> {
+		IPipe<P> { // NOPMD
 
 	protected final DivideAndConquerStage<P, S> cachedTargetStage;
 

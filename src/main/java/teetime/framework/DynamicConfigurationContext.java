@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.pipe.BoundedSynchedPipe;
 import teetime.framework.pipe.UnboundedSynchedPipe;
 
-class DynamicConfigurationContext {
+final class DynamicConfigurationContext {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicConfigurationContext.class);
 
