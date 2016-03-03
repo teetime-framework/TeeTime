@@ -60,6 +60,7 @@ public final class StageTester {
 	}
 
 	public <O> OutputHolder<O> receive(final List<O> outputList) {
+
 		final OutputHolder<O> outputHolder = new OutputHolder<O>(this, outputList);
 		this.outputHolders.add(outputHolder);
 		return outputHolder;

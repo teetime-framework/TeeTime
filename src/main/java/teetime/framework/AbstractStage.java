@@ -206,7 +206,8 @@ public abstract class AbstractStage {
 	 * @param inputPort
 	 *            The port which received the signal
 	 */
-	final void onSignal(final ISignal signal, final InputPort<?> inputPort) {
+	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		Class<? extends ISignal> signalClass = signal.getClass();
 
 		Set<InputPort<?>> signalReceivedInputPorts;
@@ -490,5 +491,30 @@ public abstract class AbstractStage {
 	protected final void addInputPortRemovedListener(final PortRemovedListener<InputPort<?>> inputPortRemovedListener) {
 		inputPorts.addPortRemovedListener(inputPortRemovedListener);
 	}
+
+	private String getSimpleClassName() {
+		String simpleName = this.getClass().getSimpleName();
+		if (simpleName.isEmpty()) {
+			simpleName = this.getClass().getSuperclass().getSimpleName();
+		}
+		return simpleName;
+	}
+
+	protected int getInstanceCount() {
+		String simpleClassName = getSimpleClassName();
+		Integer numInstances = INSTANCES_COUNTER.get(simpleClassName);
+		if (null == numInstances) {
+			numInstances = 0;
+		}
+		return numInstances;
+	}
+	//
+	// /**
+	// * This should check, if the OutputPorts are connected correctly. This is needed to avoid NullPointerExceptions and other errors.
+	// *
+	// * @param invalidPortConnections
+	// * <i>(Passed as parameter for performance reasons)</i>
+	// */
+	// public abstract void validateOutputPorts(List<InvalidPortConnection> invalidPortConnections);
 
 }
