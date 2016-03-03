@@ -27,12 +27,12 @@ final class DynamicConfigurationContext {
 	 *            the type of elements to be sent
 	 */
 	public <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		if (sourcePort.getPipe() != null || targetPort.getPipe() != null) {
+		if ((sourcePort.getPipe() != null || targetPort.getPipe() != null) && LOGGER.isWarnEnabled()) {
 			LOGGER.warn("Overwriting existing pipe while connecting stages " +
 					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
 		}
 		// TODO: Unsynched?
-		new UnboundedSynchedPipe(sourcePort, targetPort);
+		new UnboundedSynchedPipe<T>(sourcePort, targetPort);
 	}
 
 	/**
@@ -48,10 +48,10 @@ final class DynamicConfigurationContext {
 	 *            the type of elements to be sent
 	 */
 	public <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		if (sourcePort.getPipe() != null || targetPort.getPipe() != null) {
+		if ((sourcePort.getPipe() != null || targetPort.getPipe() != null) && LOGGER.isWarnEnabled()) {
 			LOGGER.warn("Overwriting existing pipe while connecting stages " +
 					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
 		}
-		new BoundedSynchedPipe(sourcePort, targetPort, capacity);
+		new BoundedSynchedPipe<T>(sourcePort, targetPort, capacity);
 	}
 }
