@@ -378,7 +378,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.5</version>
+				<version>3.4</version>
 				<dependencies>
 					<!-- for using markdown syntax gitlab@build.se.informatik.uni-kiel.de:nts/doxia-module-markdown-teetime.git -->
 					<dependency>
