@@ -225,16 +225,7 @@ public abstract class AbstractStage {
 		if (signal.mayBeTriggered(signalReceivedInputPorts, getInputPorts())) {
 			try {
 				signal.trigger(this);
-				if (signal instanceof StartingSignal) {
-					if (!calledOnStarting) {
-						throw new SuperNotCalledException("The super method onStarting was not called in " + this.getId());
-					}
-				}
-				if (signal instanceof TerminatingSignal) {
-					if (!calledOnTerminating) {
-						throw new SuperNotCalledException("The super method onTerminating was not called in " + this.getId());
-					}
-				}
+				checkSuperCalls(signal);
 			} catch (Exception e) {
 				this.logger.error("Could not trigger signal.", e);
 				this.getOwningContext().abortConfigurationRun();
@@ -243,6 +234,19 @@ public abstract class AbstractStage {
 				outputPort.sendSignal(signal);
 			}
 
+		}
+	}
+
+	private void checkSuperCalls(final ISignal signal) {
+		if (signal instanceof StartingSignal) {
+			if (!calledOnStarting) {
+				throw new SuperNotCalledException("The super method onStarting was not called in " + this.getId());
+			}
+		}
+		if (signal instanceof TerminatingSignal) {
+			if (!calledOnTerminating) {
+				throw new SuperNotCalledException("The super method onTerminating was not called in " + this.getId());
+			}
 		}
 	}
 
