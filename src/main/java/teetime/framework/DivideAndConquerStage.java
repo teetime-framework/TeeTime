@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package teetime.framework;
 
+import com.carrotsearch.hppc.IntObjectHashMap;
+import com.carrotsearch.hppc.IntObjectMap;
+
 import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
 import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
 import teetime.framework.divideandconquer.DividedDCProblem;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
-
-import com.carrotsearch.hppc.IntObjectHashMap;
-import com.carrotsearch.hppc.IntObjectMap;
 
 /**
  * A stage to solve divide and conquer problems
@@ -78,9 +78,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	}
 
 	/**
-	 * @param <P>
-	 *            Type of input port.
-	 *
 	 * @return <code>InputPort</code>
 	 */
 	public final InputPort<P> getInputPort() {
@@ -88,9 +85,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	}
 
 	/**
-	 * @param <S>
-	 *            Type of input port.
-	 *
 	 * @return <code>InputPort</code>
 	 */
 	public final InputPort<S> getLeftInputPort() {
@@ -98,9 +92,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	}
 
 	/**
-	 * @param <S>
-	 *            Type of input port.
-	 *
 	 * @return <code>InputPort</code>
 	 */
 	public final InputPort<S> getRightInputPort() {
@@ -108,9 +99,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	}
 
 	/**
-	 * @param <S>
-	 *            Type of output port.
-	 *
 	 * @return <code>OutputPort</code>
 	 */
 	public final OutputPort<S> getOutputPort() {
@@ -118,9 +106,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	}
 
 	/**
-	 * @param <P>
-	 *            Type of output port.
-	 *
 	 * @return <code>OutputPort</code>
 	 */
 	public final OutputPort<P> getleftOutputPort() {
@@ -128,9 +113,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	}
 
 	/**
-	 * @param <P>
-	 *            Type of output port.
-	 *
 	 * @return <code>OutputPort</code>
 	 */
 	public final OutputPort<P> getrightOutputPort() {
@@ -170,8 +152,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	 * @param port
 	 *            The <code>InputPort</code> to receive solutions from.
 	 *
-	 * @param <S>
-	 *            Type of solutions.
 	 * @return
 	 *         <code>true</code> if there was input to receive, <code>false</code> otherwise
 	 */
@@ -211,8 +191,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	 * @param port
 	 *            The <code>InputPort</code> to receive problems from.
 	 *
-	 * @param <P>
-	 *            Type of problems.
 	 * @return
 	 *         <code>true</code> if there was input to receive, <code>false</code> otherwise
 	 */

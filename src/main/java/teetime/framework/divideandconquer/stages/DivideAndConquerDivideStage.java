@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,9 +44,6 @@ public class DivideAndConquerDivideStage<P extends AbstractDivideAndConquerProbl
 	}
 
 	/**
-	 * @param <P>
-	 *            Type of input port.
-	 *
 	 * @return <code>InputPort</code>
 	 */
 	public final InputPort<P> getInputPort() {
@@ -54,9 +51,6 @@ public class DivideAndConquerDivideStage<P extends AbstractDivideAndConquerProbl
 	}
 
 	/**
-	 * @param <P>
-	 *            Type of output port.
-	 *
 	 * @return <code>OutputPort</code>
 	 */
 	public final OutputPort<P> getFirstOutputPort() {
@@ -64,9 +58,6 @@ public class DivideAndConquerDivideStage<P extends AbstractDivideAndConquerProbl
 	}
 
 	/**
-	 * @param <P>
-	 *            Type of output port.
-	 *
 	 * @return <code>OutputPort</code>
 	 */
 	public final OutputPort<P> getSecondOutputPort() {

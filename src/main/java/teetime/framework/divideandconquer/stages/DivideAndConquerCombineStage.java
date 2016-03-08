@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://christianwulf.github.io/teetime)
+ * Copyright (C) 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package teetime.framework.divideandconquer.stages;
 
+import com.carrotsearch.hppc.IntObjectHashMap;
+import com.carrotsearch.hppc.IntObjectMap;
+
 import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
 import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
-
-import com.carrotsearch.hppc.IntObjectHashMap;
-import com.carrotsearch.hppc.IntObjectMap;
 
 /**
  * A simple stage to solve divide and conquer problems
@@ -48,9 +48,6 @@ public class DivideAndConquerCombineStage<P extends AbstractDivideAndConquerProb
 	}
 
 	/**
-	 * @param <S>
-	 *            Type of input port.
-	 *
 	 * @return <code>InputPort</code>
 	 */
 	public final InputPort<S> getFirstInputPort() {
@@ -58,9 +55,6 @@ public class DivideAndConquerCombineStage<P extends AbstractDivideAndConquerProb
 	}
 
 	/**
-	 * @param <S>
-	 *            Type of input port.
-	 *
 	 * @return <code>InputPort</code>
 	 */
 	public final InputPort<S> getSecondInputPort() {
@@ -68,9 +62,6 @@ public class DivideAndConquerCombineStage<P extends AbstractDivideAndConquerProb
 	}
 
 	/**
-	 * @param <S>
-	 *            Type of output port.
-	 *
 	 * @return <code>OutputPort</code>
 	 */
 	public final OutputPort<S> getOutputPort() {
@@ -90,8 +81,6 @@ public class DivideAndConquerCombineStage<P extends AbstractDivideAndConquerProb
 	 * @param port
 	 *            The <code>InputPort</code> to receive solutions from.
 	 *
-	 * @param <S>
-	 *            Type of solutions.
 	 * @return
 	 *         <code>true</code> if there was input to receive, <code>false</code> otherwise
 	 */
