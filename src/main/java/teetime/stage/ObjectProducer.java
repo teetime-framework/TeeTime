@@ -65,7 +65,7 @@ public final class ObjectProducer<T> extends AbstractProducerStage<T> {
 			T newObject = this.inputObjectCreator.create();
 			outputPort.send(newObject);
 		}
-		this.terminate();
+		this.terminateStage();
 	}
 
 }

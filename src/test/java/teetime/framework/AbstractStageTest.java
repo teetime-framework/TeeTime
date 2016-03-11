@@ -131,7 +131,7 @@ public class AbstractStageTest {
 
 		@Override
 		protected void execute() {
-			terminate();
+			terminateStage();
 		}
 	}
 	//

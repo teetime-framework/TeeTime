@@ -73,7 +73,7 @@ public final class Clock extends AbstractProducerStage<Long> {
 		try {
 			Thread.sleep(delayInMs);
 		} catch (InterruptedException e) {
-			this.terminate();
+			this.terminateStage();
 		}
 	}
 

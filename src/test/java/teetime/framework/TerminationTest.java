@@ -90,7 +90,7 @@ public class TerminationTest {
 					// First sleep will throw this
 				}
 				if (i > 1) {
-					super.terminate();
+					super.terminateStage();
 					break;
 				}
 			}
@@ -102,7 +102,7 @@ public class TerminationTest {
 		}
 
 		@Override
-		protected void terminate() {}
+		protected void terminateStage() {}
 
 		@Override
 		protected void abort() {}
@@ -143,7 +143,7 @@ public class TerminationTest {
 				count++;
 			}
 			if (count > 3) {
-				this.terminate();
+				this.terminateStage();
 			}
 		}
 

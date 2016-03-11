@@ -64,7 +64,7 @@ public abstract class AbstractTcpReaderStage<T> extends AbstractProducerStage<T>
 				}
 			}
 
-			this.terminate();
+			this.terminateStage();
 		}
 	}
 

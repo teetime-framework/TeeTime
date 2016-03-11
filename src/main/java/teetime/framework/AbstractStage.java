@@ -451,12 +451,23 @@ public abstract class AbstractStage {
 		return outputPort;
 	}
 
+	/**
+	 * @deprecated As of v2.1. Use {@link #terminateStage()} instead.
+	 */
+	@Deprecated
 	protected void terminate() {
+		this.terminateStage();
+	}
+
+	/**
+	 * Terminates the execution of the stage. After terminating the stage sends a signal for the following stages to terminate.
+	 */
+	protected void terminateStage() {
 		changeState(StageState.TERMINATING);
 	}
 
 	protected void abort() {
-		this.terminate();
+		this.terminateStage();
 		this.getOwningThread().interrupt();
 	};
 

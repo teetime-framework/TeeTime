@@ -22,7 +22,7 @@ class RunnableTestStage extends AbstractProducerStage<Object> {
 	@Override
 	protected void execute() {
 		executed = true;
-		this.terminate();
+		this.terminateStage();
 	}
 
 }

@@ -58,7 +58,7 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 			}
 		}
 
-		stage.terminate();
+		stage.terminateStage();
 	}
 
 	@Override

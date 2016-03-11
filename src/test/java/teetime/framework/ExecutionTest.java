@@ -169,7 +169,7 @@ public class ExecutionTest {
 			@Override
 			protected void execute() {
 				executed = true;
-				terminate();
+				terminateStage();
 			}
 
 		}

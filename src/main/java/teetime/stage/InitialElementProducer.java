@@ -39,7 +39,7 @@ public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 		for (final T element : this.elements) {
 			this.outputPort.send(element);
 		}
-		this.terminate();
+		this.terminateStage();
 	}
 
 }
