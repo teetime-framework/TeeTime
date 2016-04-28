@@ -6,6 +6,9 @@
 	</properties>
 	<body>
 		<release version="3.0-SNAPSHOT" description="Nightly builds">
+			<action dev="ntd" type="update" issue="270">
+				AbstractStage.terminate() renamed to terminateStage()
+			</action>
 		</release>
 		<release version="2.1" date="22.02.2016" description="Darjeeling Release">
 			<action dev="ntd" type="add" issue="163">
