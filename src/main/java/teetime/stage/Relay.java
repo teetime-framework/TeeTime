@@ -15,23 +15,13 @@
  */
 package teetime.stage;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractFilter;
 
-public final class Relay<T> extends AbstractConsumerStage<T> {
-
-	private final OutputPort<T> outputPort = this.createOutputPort();
+public final class Relay<T> extends AbstractFilter<T> {
 
 	@Override
 	protected void execute(final T element) {
-		if (null == element) {
-			returnNoElement();
-		}
 		outputPort.send(element);
-	}
-
-	public OutputPort<T> getOutputPort() {
-		return outputPort;
 	}
 
 }
