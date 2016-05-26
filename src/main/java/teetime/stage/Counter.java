@@ -15,12 +15,9 @@
  */
 package teetime.stage;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractFilter;
 
-public final class Counter<T> extends AbstractConsumerStage<T> {
-
-	private final OutputPort<T> outputPort = this.createOutputPort();
+public final class Counter<T> extends AbstractFilter<T> {
 
 	private int numElementsPassed;
 
@@ -31,16 +28,8 @@ public final class Counter<T> extends AbstractConsumerStage<T> {
 		outputPort.send(element);
 	}
 
-	/**
-	 * <i>Hint:</i> This method may not be invoked by another thread since it is not thread-safe.
-	 *
-	 * @return the number of passed elements
-	 */
 	public int getNumElementsPassed() {
 		return this.numElementsPassed;
 	}
 
-	public OutputPort<T> getOutputPort() {
-		return this.outputPort;
-	}
 }
