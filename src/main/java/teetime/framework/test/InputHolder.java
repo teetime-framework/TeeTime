@@ -15,6 +15,8 @@
  */
 package teetime.framework.test;
 
+import java.util.Collection;
+
 import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 
@@ -22,32 +24,30 @@ public final class InputHolder<I> {
 
 	private final StageTester stageTester;
 	private final AbstractStage stage;
-	private final Iterable<Object> input;
+	private final Collection<I> input;
 
-	private InputPort<Object> port;
+	private InputPort<I> port;
 
-	@SuppressWarnings("unchecked")
-	InputHolder(final StageTester stageTester, final AbstractStage stage, final Iterable<I> input) {
+	InputHolder(final StageTester stageTester, final AbstractStage stage, final Collection<I> input) {
 		this.stageTester = stageTester;
 		this.stage = stage;
-		this.input = (Iterable<Object>) input;
+		this.input = input;
 	}
 
-	@SuppressWarnings("unchecked")
-	public StageTester to(final InputPort<? extends I> port) { // NOPMD deliberately choosen name
+	public StageTester to(final InputPort<I> port) { // NOPMD deliberately chosen name
 		if (port.getOwningStage() != stage) {
 			throw new AssertionError();
 		}
-		this.port = (InputPort<Object>) port;
+		this.port = port;
 
 		return stageTester;
 	}
 
-	public Iterable<Object> getInput() {
+	public Collection<I> getInput() {
 		return input;
 	}
 
-	public InputPort<Object> getPort() {
+	public InputPort<I> getPort() {
 		return port;
 	}
 
