@@ -17,7 +17,7 @@ package teetime.stage.basic;
 
 import teetime.framework.AbstractConsumerStage;
 
-public final class Sink<T> extends AbstractConsumerStage<T> { // NOPMD Sink suits perfectly as a name for this stage
+public class Sink<T> extends AbstractConsumerStage<T> { // NOPMD Sink suits perfectly as a name for this stage
 
 	// PERFORMANCE let the sink remove all available input at once by using a new method receiveAll() that clears the pipe's buffer
 

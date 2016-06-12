@@ -91,8 +91,7 @@ public class A2InvalidThreadAssignmentCheck {
 
 		@Override
 		public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
-			// TODO Auto-generated method stub
-
+			// do nothing
 		}
 
 	}

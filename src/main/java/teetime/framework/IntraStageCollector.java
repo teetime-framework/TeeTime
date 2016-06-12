@@ -43,8 +43,7 @@ public class IntraStageCollector implements ITraverserVisitor {
 
 	@Override
 	public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 
 }

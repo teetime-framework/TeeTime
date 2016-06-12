@@ -34,9 +34,11 @@ class A1ThreadableStageCollector implements ITraverserVisitor {
 
 	@Override
 	public VisitorBehavior visit(final AbstractStage stage) {
-		if (stage.getOwningThread() != null && !threadableStages.contains(stage) && stage.getCurrentState() == StageState.CREATED) {
+		// if (stage.getOwningThread() != null && !threadableStages.contains(stage) && stage.getCurrentState() == StageState.CREATED) {
+		if (stage.isActive() && !threadableStages.contains(stage) && stage.getCurrentState() == StageState.CREATED) {
 			threadableStages.add(stage);
 		}
+		// visitor termination condition: stop if the stage already runs or has been terminated
 		return stage.getCurrentState() == StageState.CREATED ? VisitorBehavior.CONTINUE : VisitorBehavior.STOP;
 	}
 
@@ -47,8 +49,7 @@ class A1ThreadableStageCollector implements ITraverserVisitor {
 
 	@Override
 	public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 
 }

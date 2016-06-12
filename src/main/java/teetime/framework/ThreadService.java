@@ -114,7 +114,7 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 			consumerThreads.add(stage.getOwningThread());
 			break;
 		default:
-			LOGGER.warn("Unknown termination strategy '" + stage.getTerminationStrategy() + "' in stage " + stage);// NOPMD
+			LOGGER.warn("Unknown termination strategy '{}' in stage {}", stage.getTerminationStrategy(), stage);
 			break;
 		}
 	}
@@ -126,7 +126,7 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 	}
 
 	private void sendStartingSignal(final Set<AbstractStage> newThreadableStages) {
-		synchronized (newThreadableStages) {
+		synchronized (newThreadableStages) {// TODO why synchronized?
 			for (AbstractStage stage : newThreadableStages) {
 				((TeeTimeThread) stage.getOwningThread()).sendStartingSignal();
 			}

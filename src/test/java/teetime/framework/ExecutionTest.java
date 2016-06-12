@@ -191,7 +191,7 @@ public class ExecutionTest {
 			stageWithNamedThread = new InitialElementProducer<Object>(new Object());
 			Sink<Object> sink = new Sink<Object>();
 
-			stageWithNamedThread.declareActive("TestName");
+			stageWithNamedThread.declareActive();
 
 			connectPorts(stageWithNamedThread.getOutputPort(), sink.getInputPort());
 		}

@@ -103,10 +103,6 @@ public abstract class AbstractStage {
 		INSTANCES_COUNTER.clear();
 	}
 
-	// public abstract Stage getParentStage();
-	//
-	// public abstract void setParentStage(Stage parentStage, int index);
-
 	protected final void returnNoElement() {
 		throw NOT_ENOUGH_INPUT_EXCEPTION;
 	}
@@ -150,28 +146,15 @@ public abstract class AbstractStage {
 		return isActive;
 	}
 
-	void setActive(final boolean isActive) {
-		this.isActive = isActive;
-	}
-
 	/**
-	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
+	 * Declares this stage to be executed in an own thread.
 	 */
 	public void declareActive() {
-		declareActive(getId());
-	}
-
-	/**
-	 * Execute this method, to add a stage to the configuration, which should be executed in a own thread.
-	 *
-	 * @param threadName
-	 *            A string which can be used for debugging.
-	 */
-	public void declareActive(final String threadName) {
-		AbstractRunnableStage runnable = AbstractRunnableStage.create(this);
-		Thread newThread = new TeeTimeThread(runnable, threadName);
-		this.setOwningThread(newThread);
-		this.setActive(true);
+		this.isActive = true;
+		// AbstractStage threadableStage = this;
+		// AbstractRunnableStage runnable = AbstractRunnableStage.create(threadableStage);
+		// Thread newThread = new TeeTimeThread(runnable, "Thread for " + threadableStage.getId());
+		// threadableStage.setOwningThread(newThread);
 	}
 
 	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
@@ -293,9 +276,7 @@ public abstract class AbstractStage {
 	 */
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public void onStarting() throws Exception {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Stage {} within thread {}", getId(), getOwningThread().getId());
-		}
+		logger.debug("Stage {} within thread {}", getId(), getOwningThread().getId());
 		changeState(StageState.STARTED);
 		calledOnStarting = true;
 	}
