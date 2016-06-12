@@ -17,40 +17,54 @@ package teetime.stage;
 
 import java.nio.charset.Charset;
 
-import teetime.stage.basic.AbstractFilter;
-import teetime.stage.taskfarm.ITaskFarmDuplicable;
-
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
 
+import teetime.stage.basic.AbstractFilter;
+import teetime.stage.taskfarm.ITaskFarmDuplicable;
+
 public class MD5Stage extends AbstractFilter<String> implements ITaskFarmDuplicable<String, String> {
 
-	private final String encoding;
+	private final Charset charset;
 
 	/**
 	 * encoding = UTF-8
 	 */
 	public MD5Stage() {
-		this("UTF-8");
+		this(Charset.forName("UTF-8"));
 	}
 
+	/**
+	 * @deprecated As of 3.0. Use {{@link #MD5Stage(Charset)} instead.
+	 * @param encoding
+	 */
+	@Deprecated
 	public MD5Stage(final String encoding) {
-		this.encoding = encoding;
+		this.charset = Charset.forName(encoding);
+	}
+
+	/**
+	 * @param charset
+	 *            to be used by the hashing
+	 * @see {@link java.nio.charset.StandardCharsets} for available charsets
+	 */
+	public MD5Stage(final Charset charset) {
+		this.charset = charset;
 	}
 
 	@Override
 	protected void execute(final String element) {
 		Hasher hasher = Hashing.md5().newHasher();
-		hasher.putString(element, Charset.forName(encoding));
+		hasher.putString(element, charset);
 		outputPort.send(hasher.hash().toString());
 	}
 
 	public String getEncoding() {
-		return encoding;
+		return charset.displayName();
 	}
 
 	@Override
 	public ITaskFarmDuplicable<String, String> duplicate() {
-		return new MD5Stage(encoding);
+		return new MD5Stage(charset);
 	}
 }
