@@ -16,18 +16,20 @@
 package teetime.stage;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import teetime.framework.AbstractProducerStage;
 
 public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 
-	private final Iterable<T> elements;
+	// #281: not Iterable<T> since it would forbid to pass java.nio.Path as single object
+	private final Collection<T> elements;
 
 	public InitialElementProducer(final T... elements) {
 		this(Arrays.asList(elements));
 	}
 
-	public InitialElementProducer(final Iterable<T> elements) {
+	public InitialElementProducer(final Collection<T> elements) {
 		if (elements == null) {
 			throw new IllegalArgumentException("4002 - The given iterable must not be null.");
 		}

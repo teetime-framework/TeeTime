@@ -21,6 +21,8 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static teetime.framework.test.StageTester.test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +34,7 @@ import org.junit.Test;
 public class InitialElementProducerTest {
 
 	@Test
-	public void producerShouldByDefaultSendNothing() {
+	public void producerShouldSendNothingByDefault() {
 		InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>();
 		List<Integer> results = new ArrayList<Integer>();
 
@@ -78,7 +80,7 @@ public class InitialElementProducerTest {
 	}
 
 	@Test
-	public void instantiateWithIterable() {
+	public void instantiateWithCollection() {
 		List<Integer> testIntegers = new ArrayList<Integer>();
 		testIntegers.add(1);
 		testIntegers.add(2);
@@ -88,5 +90,16 @@ public class InitialElementProducerTest {
 
 		test(producer).and().receive(results).from(producer.getOutputPort()).start();
 		assertThat(results, contains(1, 2, 3));
+	}
+
+	@Test
+	public void instantiateWithIterableAsSingleObject() {
+		// Path is an Iterable<Path>, but should be handled as single object
+		Path path = Paths.get(".", "conf", "quality-config");
+		InitialElementProducer<Path> producer = new InitialElementProducer<Path>(path);
+		List<Path> results = new ArrayList<Path>();
+
+		test(producer).and().receive(results).from(producer.getOutputPort()).start();
+		assertThat(results, contains(path));
 	}
 }
