@@ -17,6 +17,7 @@ package teetime.framework.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import teetime.framework.AbstractStage;
@@ -49,14 +50,34 @@ public final class StageTester {
 		return new StageTester(stage);
 	}
 
-	public <I> InputHolder<I> send(final Iterable<I> input) {
-		final InputHolder<I> inputHolder = new InputHolder<I>(this, stage, input);
-		this.inputHolders.add(inputHolder);
-		return inputHolder;
+	/**
+	 * @param elements
+	 *            which serve as input. If nothing should be sent, pass
+	 *
+	 *            <pre>
+	 * Collections.&lt;your type&gt;emptyList()
+	 *            </pre>
+	 *
+	 * @return
+	 */
+	public <I> InputHolder<I> send(final I... elements) {
+		return this.send(Arrays.asList(elements));
 	}
 
-	public <I> InputHolder<I> send(final I... input) {
-		return this.send(Arrays.asList(input));
+	/**
+	 * @param elements
+	 *            which serve as input. If nothing should be sent, pass
+	 *
+	 *            <pre>
+	 * Collections.&lt;your type&gt;emptyList()
+	 *            </pre>
+	 *
+	 * @return
+	 */
+	public <I> InputHolder<I> send(final Collection<I> elements) {
+		final InputHolder<I> inputHolder = new InputHolder<I>(this, stage, elements);
+		this.inputHolders.add(inputHolder);
+		return inputHolder;
 	}
 
 	public <O> OutputHolder<O> receive(final List<O> outputList) {
@@ -78,17 +99,17 @@ public final class StageTester {
 	 *
 	 */
 	public void start() {
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		final Configuration configuration = new TestConfiguration(inputHolders, stage, outputHolders);
 		final Execution<Configuration> analysis = new Execution<Configuration>(configuration);
 		analysis.executeBlocking();
 	}
 
-	private final class TestConfiguration extends Configuration {
-
+	private final class TestConfiguration<I> extends Configuration {
 		@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-		public TestConfiguration(final List<InputHolder<?>> inputHolders, final AbstractStage stage, final List<OutputHolder<?>> outputHolders) {
-			for (InputHolder<?> inputHolder : inputHolders) {
-				final InitialElementProducer<Object> producer = new InitialElementProducer<Object>(inputHolder.getInput());
+		public TestConfiguration(final List<InputHolder<I>> inputHolders, final AbstractStage stage, final List<OutputHolder<?>> outputHolders) {
+			for (InputHolder<I> inputHolder : inputHolders) {
+				final InitialElementProducer<I> producer = new InitialElementProducer<I>(inputHolder.getInput());
 				connectPorts(producer.getOutputPort(), inputHolder.getPort());
 			}
 

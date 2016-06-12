@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThat;
 import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -44,7 +45,7 @@ public class MappingCounterTest {
 	public void countingMapForNoInputShouldBeEmpty() {
 		List<CountingMap<Integer>> results = new ArrayList<CountingMap<Integer>>();
 
-		test(counter).and().send().to(counter.getInputPort()).receive(results).from(counter.getOutputPort()).start();
+		test(counter).and().send(Collections.<Integer> emptyList()).to(counter.getInputPort()).and().receive(results).from(counter.getOutputPort()).start();
 
 		assertThat(results, hasSize(1));
 
