@@ -46,11 +46,12 @@ public final class ByteArrayFileWriter extends AbstractConsumerStage<byte[]> {
 	}
 
 	@Override
-	public void onTerminating() {
+	public void onTerminating() throws Exception {
 		try {
 			fileOutput.close();
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
+		super.onTerminating();
 	}
 }
