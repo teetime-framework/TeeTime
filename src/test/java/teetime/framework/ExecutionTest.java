@@ -171,16 +171,17 @@ public class ExecutionTest {
 				executed = true;
 				terminateStage();
 			}
-
 		}
-
 	}
 
 	@Test
 	public void threadNameing() {
 		NameConfig configuration = new NameConfig();
 		new Execution<NameConfig>(configuration); // do not execute, but just initialize the execution
-		assertThat(configuration.stageWithNamedThread.getOwningThread().getName(), is("TestName"));
+
+		String actualThreadName = configuration.stageWithNamedThread.getOwningThread().getName();
+		String expectedThreadName = "Thread for " + configuration.stageWithNamedThread.getId();
+		assertThat(actualThreadName, is(expectedThreadName));
 	}
 
 	private class NameConfig extends Configuration {

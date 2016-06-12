@@ -61,31 +61,23 @@ class A3PipeInstantiation implements ITraverserVisitor {
 			return;
 		}
 
-		Thread sourceStageThread = pipe.getSourcePort().getOwningStage().getOwningThread();
-		Thread targetStageThread = pipe.getTargetPort().getOwningStage().getOwningThread();
+		AbstractStage sourceStage = pipe.getSourcePort().getOwningStage();
+		AbstractStage targetStage = pipe.getTargetPort().getOwningStage();
 
-		if (targetStageThread == null || sourceStageThread == targetStageThread) { // NOPMD .equals() can't be used here
+		if (!targetStage.isActive() || sourceStage == targetStage) { // NOPMD .equals() can't be used here
 			// normal or reflexive pipe => intra
 			new UnsynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Connected (unsynch) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
-			}
+			LOGGER.debug("Connected (unsynch) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
 		} else {
 			// inter
 			if (pipe.capacity() == 0) {
 				new UnboundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
-				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Connected (unbounded) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
-				}
+				LOGGER.debug("Connected (unbounded) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
 			} else {
 				new BoundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort(), pipe.capacity());
-				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Connected (bounded) " + pipe.getSourcePort() + " and " + pipe.getTargetPort());
-				}
+				LOGGER.debug("Connected (bounded) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
 			}
-
 		}
-
 	}
 
 	@Override

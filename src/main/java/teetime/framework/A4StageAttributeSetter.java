@@ -48,12 +48,13 @@ class A4StageAttributeSetter {
 	private void setAttributes(final AbstractStage threadableStage, final Set<AbstractStage> intraStages) {
 		AbstractRunnableStage runnable = AbstractRunnableStage.create(threadableStage);
 		Thread newThread = new TeeTimeThread(runnable, "Thread for " + threadableStage.getId());
+
 		threadableStage.setOwningThread(newThread);
 		threadableStage.setExceptionHandler(configuration.getFactory().createInstance(threadableStage.getOwningThread()));
 		threadableStage.setOwningContext(configuration.getContext());
 
 		for (AbstractStage stage : intraStages) {
-			stage.setExceptionHandler(threadableStage.exceptionListener);
+			stage.setExceptionHandler(threadableStage.getExceptionListener());
 			stage.setOwningThread(threadableStage.getOwningThread());
 			stage.setOwningContext(threadableStage.getOwningContext());
 		}

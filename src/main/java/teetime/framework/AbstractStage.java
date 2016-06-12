@@ -52,7 +52,7 @@ public abstract class AbstractStage {
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
-	protected AbstractExceptionListener exceptionListener;
+	private AbstractExceptionListener exceptionListener;
 
 	/** The owning thread of this stage if this stage is directly executed by a {@link AbstractRunnableStage}, <code>null</code> otherwise. */
 	private Thread owningThread;
@@ -124,7 +124,8 @@ public abstract class AbstractStage {
 
 	protected abstract void execute();
 
-	public Thread getOwningThread() {
+	// package-private would suffice, but protected is necessary for unit tests
+	protected Thread getOwningThread() {
 		return owningThread;
 	}
 
@@ -140,6 +141,10 @@ public abstract class AbstractStage {
 
 	protected final void setExceptionHandler(final AbstractExceptionListener exceptionHandler) {
 		this.exceptionListener = exceptionHandler;
+	}
+
+	protected AbstractExceptionListener getExceptionListener() {
+		return exceptionListener;
 	}
 
 	public boolean isActive() {

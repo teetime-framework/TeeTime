@@ -58,8 +58,8 @@ public class AbstractStageTest {
 		TestConfig tc = new TestConfig();
 		new Execution<TestConfig>(tc);
 		assertEquals(tc.init.getOwningThread(), tc.delay.getOwningThread());
-		assertThat(tc.delay.exceptionListener, is(notNullValue()));
-		assertEquals(tc.init.exceptionListener, tc.delay.exceptionListener);
+		assertThat(tc.delay.getExceptionListener(), is(notNullValue()));
+		assertEquals(tc.init.getExceptionListener(), tc.delay.getExceptionListener());
 	}
 
 	@Test
