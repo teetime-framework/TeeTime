@@ -23,7 +23,7 @@ import com.google.common.hash.Hashing;
 import teetime.stage.basic.AbstractFilter;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 
-public class MD5Stage extends AbstractFilter<String> implements ITaskFarmDuplicable<String, String> {
+public class MD5Stage extends AbstractFilter<String>implements ITaskFarmDuplicable<String, String> {
 
 	private final Charset charset;
 
@@ -35,8 +35,9 @@ public class MD5Stage extends AbstractFilter<String> implements ITaskFarmDuplica
 	}
 
 	/**
-	 * @deprecated As of 3.0. Use {{@link #MD5Stage(Charset)} instead.
 	 * @param encoding
+	 *            of the input strings for hashing algorithm
+	 * @deprecated As of 3.0. Use {{@link #MD5Stage(Charset)} instead.
 	 */
 	@Deprecated
 	public MD5Stage(final String encoding) {
@@ -45,8 +46,8 @@ public class MD5Stage extends AbstractFilter<String> implements ITaskFarmDuplica
 
 	/**
 	 * @param charset
-	 *            to be used by the hashing
-	 * @see {@link java.nio.charset.StandardCharsets} for available charsets
+	 *            of the input strings for hashing algorithm
+	 * @see java.nio.charset.StandardCharsets Available charsets
 	 */
 	public MD5Stage(final Charset charset) {
 		this.charset = charset;
