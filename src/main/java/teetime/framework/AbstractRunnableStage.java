@@ -77,7 +77,8 @@ abstract class AbstractRunnableStage implements Runnable {
 				logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
 				throw e;
 			} catch (InterruptedException e) {
-				logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
+				// logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
+				stage.getExceptionListener().reportException(e, stage);
 			}
 		} finally {
 			if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {

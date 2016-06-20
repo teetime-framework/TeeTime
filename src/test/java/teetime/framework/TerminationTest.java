@@ -41,6 +41,7 @@ public class TerminationTest {
 		TerminationConfig configuration = new TerminationConfig(10);
 		Execution<TerminationConfig> execution = new Execution<TerminationConfig>(configuration);
 		execution.executeNonBlocking();
+		Thread.sleep(100);
 		execution.abortEventually();
 	}
 

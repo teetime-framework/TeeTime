@@ -39,6 +39,7 @@ public class ExceptionHandlingTest {
 			Entry<Thread, List<Exception>> entry = e.getThrownExceptions().entrySet().iterator().next();
 			List<Exception> exceptions = entry.getValue();
 			IllegalStateException exception = assertInstanceOf(IllegalStateException.class, exceptions.get(0));
+
 			assertThat(exception.getMessage(), is(equalTo("Correct exception")));
 
 			assertThat(exceptions.size(), is(1));

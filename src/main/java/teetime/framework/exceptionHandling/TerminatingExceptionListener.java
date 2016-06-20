@@ -15,14 +15,11 @@
  */
 package teetime.framework.exceptionHandling;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import teetime.framework.AbstractStage;
 
 class TerminatingExceptionListener extends AbstractExceptionListener {
-
-	private final List<Exception> exceptions = new ArrayList<Exception>();
 
 	TerminatingExceptionListener() {
 		super(true);
@@ -33,12 +30,11 @@ class TerminatingExceptionListener extends AbstractExceptionListener {
 		if (logger.isWarnEnabled()) {
 			logger.warn("Exception occurred in " + throwingStage.getId(), exception);
 		}
-		exceptions.add(exception);
 		return FurtherExecution.TERMINATE;
 	}
 
 	public List<Exception> getExceptions() {
-		return exceptions;
+		return getLoggedExceptions();
 	}
 
 }
