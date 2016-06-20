@@ -184,6 +184,7 @@
 				<download>
 					<toc>top</toc>
 					<tocTopMax>5</tocTopMax>
+					<imgLightbox>false</imgLightbox>
 				</download>
 				<contribute>
 					<highlightJs>false</highlightJs>

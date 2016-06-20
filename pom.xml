@@ -43,7 +43,7 @@
 
 	<issueManagement>
 		<system>GitLab</system>
-		<url>https://build.se.informatik.uni-kiel.de/gitlab/teetime/teetime/issues/</url>
+		<url>https://build.se.informatik.uni-kiel.de/teetime/teetime/issues/</url>
 	</issueManagement>
 
 	<developers>
