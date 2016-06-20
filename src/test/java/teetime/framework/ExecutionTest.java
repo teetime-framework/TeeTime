@@ -200,10 +200,18 @@ public class ExecutionTest {
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void executeConfigOnlyOnce() {
+	public void initializeConfigOnlyOnce() {
 		NameConfig configuration = new NameConfig();
 		new Execution<NameConfig>(configuration);
 		new Execution<NameConfig>(configuration); // do not execute, but just initialize the execution
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void executeConfigOnlyOnce() {
+		NameConfig configuration = new NameConfig();
+		Execution<NameConfig> execution = new Execution<NameConfig>(configuration);
+		execution.executeNonBlocking();
+		execution.executeNonBlocking();
 	}
 
 	@Test
