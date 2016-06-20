@@ -31,12 +31,12 @@ public class RunnableConsumerStageTest {
 
 	@Test
 	public void testWaitingInfinitely() throws Exception {
-		RunnableConsumerStageTestConfiguration configuration = new RunnableConsumerStageTestConfiguration();
+		final RunnableConsumerStageTestConfiguration configuration = new RunnableConsumerStageTestConfiguration();
 
-		final Execution<?> execution = new Execution<RunnableConsumerStageTestConfiguration>(configuration);
 		final Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
+				Execution<?> execution = new Execution<RunnableConsumerStageTestConfiguration>(configuration);
 				start(execution);
 			}
 		});

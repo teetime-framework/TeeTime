@@ -29,14 +29,10 @@ public class RunnableConsumerStageTestConfiguration extends Configuration {
 
 	public RunnableConsumerStageTestConfiguration(final Integer... inputElements) {
 		InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>(inputElements);
-		if (inputElements.length > 0) {
-			producer.declareActive();
-		}
 
 		CollectorSink<Integer> collectorSink = new CollectorSink<Integer>(collectedElements);
 		collectorSink.declareActive();
 
-		// Can not use createPorts, as the if condition above will lead to an exception
 		AbstractPipe<Integer> pipe = new BoundedSynchedPipe<Integer>(producer.getOutputPort(), collectorSink.getInputPort());
 		registerCustomPipe(pipe);
 
