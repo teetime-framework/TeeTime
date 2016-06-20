@@ -446,7 +446,7 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * Terminates the execution of the stage. After terminating the stage sends a signal for the following stages to terminate.
+	 * Terminates the execution of the stage. After terminating, this stage sends a signal to all its direct and indirect successor stages to terminate.
 	 */
 	protected void terminateStage() {
 		changeState(StageState.TERMINATING);
