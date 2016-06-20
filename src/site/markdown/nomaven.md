@@ -4,7 +4,9 @@ Please make sure you use Maven’s central repository. Help on how to add it, ca
 
 ### Apache Buildr
 
-```'net.sourceforge.teetime:teetime:jar:${teetime.stableversion}'```
+```
+'net.sourceforge.teetime:teetime:jar:${teetime.stableversion}'
+```
 
 ### Apache Ivy
 
@@ -24,12 +26,18 @@ Please make sure you use Maven’s central repository. Help on how to add it, ca
 
 ### Grails
 
-```compile 'net.sourceforge.teetime:teetime:${teetime.stableversion}'```
+```
+compile 'net.sourceforge.teetime:teetime:${teetime.stableversion}'
+```
 
 ### Leiningen
 
-```[net.sourceforge.teetime/teetime "${teetime.stableversion}"]```
+```
+[net.sourceforge.teetime/teetime "${teetime.stableversion}"]
+```
 
 ### SBT
 
-```libraryDependencies += "net.sourceforge.teetime" % "teetime" % "${teetime.stableversion}"```
+```
+libraryDependencies += "net.sourceforge.teetime" % "teetime" % "${teetime.stableversion}"
+```
