@@ -15,22 +15,20 @@
  */
 package teetime.framework;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import teetime.framework.pipe.BoundedSynchedPipe;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 
-public class RunnableConsumerStageTestConfiguration extends Configuration {
+class RunnableConsumerStageTestConfig extends Configuration {
 
-	private final List<Integer> collectedElements = new ArrayList<Integer>();
 	private final CollectorSink<Integer> collectorSink;
 
-	public RunnableConsumerStageTestConfiguration(final Integer... inputElements) {
+	public RunnableConsumerStageTestConfig(final Integer... inputElements) {
 		InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>(inputElements);
 
-		CollectorSink<Integer> collectorSink = new CollectorSink<Integer>(collectedElements);
+		CollectorSink<Integer> collectorSink = new CollectorSink<Integer>();
 		collectorSink.declareActive();
 
 		AbstractPipe<Integer> pipe = new BoundedSynchedPipe<Integer>(producer.getOutputPort(), collectorSink.getInputPort());
@@ -39,8 +37,12 @@ public class RunnableConsumerStageTestConfiguration extends Configuration {
 		this.collectorSink = collectorSink;
 	}
 
+	public CollectorSink<Integer> getCollectorSink() {
+		return collectorSink;
+	}
+
 	public List<Integer> getCollectedElements() {
-		return collectedElements;
+		return collectorSink.getElements();
 	}
 
 	public Thread getConsumerThread() {

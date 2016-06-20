@@ -18,9 +18,10 @@ package teetime.framework;
 public enum StageState {
 
 	/** First state of a stage */
-	CREATED,
-	INITIALIZED,
-	VALIDATING, VALIDATED,
-	STARTING, STARTED,
-	TERMINATING, TERMINATED
+	CREATED, /** Second state of a stage */
+	INITIALIZED, /** Third state of a stage */
+	VALIDATED, /** Fourth state of a stage */
+	STARTED, /** Fifth state of a stage */
+	TERMINATING, /** Sixth state of a stage */
+	TERMINATED,
 }

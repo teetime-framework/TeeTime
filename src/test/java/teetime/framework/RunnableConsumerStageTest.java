@@ -15,118 +15,42 @@
  */
 package teetime.framework;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.lang.Thread.State;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class RunnableConsumerStageTest {
 
-	private Map<Thread, List<Exception>> exceptions = new HashMap<Thread, List<Exception>>();
-
 	@Test
 	public void testWaitingInfinitely() throws Exception {
-		final RunnableConsumerStageTestConfiguration configuration = new RunnableConsumerStageTestConfiguration();
+		final RunnableConsumerStageTestConfig configuration = new RunnableConsumerStageTestConfig(0, 1, 2, 3, 5);
 
-		final Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				Execution<?> execution = new Execution<RunnableConsumerStageTestConfiguration>(configuration);
-				start(execution);
-			}
-		});
-		thread.start();
+		assertThat(configuration.getCollectorSink().getCurrentState(), is(StageState.CREATED));
+		assertThat(configuration.getConsumerThread(), is(nullValue()));
+
+		// starts the threads, but does not send the start signal
+		new Execution<RunnableConsumerStageTestConfig>(configuration);
+		assertThat(configuration.getCollectorSink().getCurrentState(), is(StageState.VALIDATED));
 
 		Thread.sleep(200);
 
-		assertEquals(State.WAITING, configuration.getConsumerThread().getState());
-		assertEquals(0, configuration.getCollectedElements().size());
-
-		// clean up
-		configuration.getConsumerThread().interrupt();
-		configuration.getConsumerThread().join();
-		thread.join();
-		assertEquals(0, exceptions.size());
+		assertThat(configuration.getCollectorSink().getCurrentState(), is(StageState.VALIDATED)); // still validated
+		assertThat(configuration.getConsumerThread().getState(), is(State.WAITING));
+		assertThat(configuration.getCollectedElements().size(), is(0));
 	}
 
 	@Test
 	public void testCorrectStartAndTerminatation() throws Exception {
-		RunnableConsumerStageTestConfiguration configuration = new RunnableConsumerStageTestConfiguration(0, 1, 2, 3, 5);
+		RunnableConsumerStageTestConfig configuration = new RunnableConsumerStageTestConfig(0, 1, 2, 3, 5);
 
-		final Execution<?> execution = new Execution<RunnableConsumerStageTestConfiguration>(configuration);
-		start(execution);
+		final Execution<?> execution = new Execution<RunnableConsumerStageTestConfig>(configuration);
+		execution.executeBlocking();
 
-		assertEquals(5, configuration.getCollectedElements().size());
-		assertEquals(0, exceptions.size());
+		assertThat(configuration.getCollectedElements().size(), is(5));
 	}
 
-	// @Test
-	// public void testWaitingInfinitely() throws Exception {
-	// WaitStrategyConfiguration waitStrategyConfiguration = new WaitStrategyConfiguration(300, 42);
-	//
-	// final Execution analysis = new Execution(waitStrategyConfiguration);
-	// Thread thread = new Thread(new Runnable() {
-	// @Override
-	// public void run() {
-	// start(analysis); // FIXME react on exceptions
-	// }
-	// });
-	// thread.start();
-	//
-	// Thread.sleep(200);
-	//
-	// assertEquals(State.WAITING, thread.getState());
-	// assertEquals(0, waitStrategyConfiguration.getCollectorSink().getElements().size());
-	// }
-
-	// @Test
-	// public void testWaitingFinitely() throws Exception {
-	// WaitStrategyConfiguration waitStrategyConfiguration = new WaitStrategyConfiguration(300, 42);
-	//
-	// final Execution analysis = new Execution(waitStrategyConfiguration);
-	// Thread thread = new Thread(new Runnable() {
-	// @Override
-	// public void run() {
-	// start(analysis); // FIXME react on exceptions
-	// }
-	// });
-	// thread.start();
-	//
-	// Thread.sleep(400);
-	//
-	// assertEquals(State.TERMINATED, thread.getState());
-	// assertEquals(42, waitStrategyConfiguration.getCollectorSink().getElements().get(0));
-	// assertEquals(1, waitStrategyConfiguration.getCollectorSink().getElements().size());
-	// }
-
-	@Ignore
-	// @Test
-	public void testYieldRun() throws Exception {
-		YieldStrategyConfiguration waitStrategyConfiguration = new YieldStrategyConfiguration(42);
-
-		final Execution<?> execution = new Execution<YieldStrategyConfiguration>(waitStrategyConfiguration);
-
-		start(execution);
-
-		assertEquals(42, waitStrategyConfiguration.getCollectorSink().getElements().get(0));
-		assertEquals(1, waitStrategyConfiguration.getCollectorSink().getElements().size());
-	}
-
-	private void start(final Execution<?> execution) {
-		try {
-			execution.executeBlocking();
-		} catch (ExecutionException e) {
-			exceptions = e.getThrownExceptions();
-		}
-		// for (ThreadThrowableContainer pair : exceptions) {
-		// System.err.println(pair.getThrowable());
-		// System.err.println(Joiner.on("\n").join(pair.getThrowable().getStackTrace()));
-		// throw new AssertionError(pair.getThrowable());
-		// }
-	}
 }
