@@ -1,6 +1,6 @@
 ## Dependency Information
 
-Please make sure you use Maven’s central repository. Help on how to add it, can be found (http://central.sonatype.org/pages/consumers.html)[here].
+Please make sure you use Maven’s central repository. Help on how to add it, can be found [here](http://central.sonatype.org/pages/consumers.html).
 
 ### Apache Buildr
 
