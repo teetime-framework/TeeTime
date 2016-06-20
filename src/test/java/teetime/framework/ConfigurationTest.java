@@ -1,0 +1,60 @@
+package teetime.framework;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Test;
+
+import teetime.framework.pipe.BoundedSynchedPipe;
+import teetime.stage.CollectorSink;
+import teetime.stage.InitialElementProducer;
+
+public class ConfigurationTest {
+
+	public static final Integer[] INPUT_ELEMENTS = { 1, 2, 3 }; // NOPMD
+	public static final List<Integer> EXPECTED_OUTPUT_ELEMENTS = Arrays.asList(INPUT_ELEMENTS); // NOPMD
+
+	private static class ConfigurationWithProvidedOrCustomPipe extends Configuration {
+
+		private final CollectorSink<Integer> collectorSink;
+
+		public ConfigurationWithProvidedOrCustomPipe(final boolean withProvidedPipe) {
+			InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>(INPUT_ELEMENTS);
+			CollectorSink<Integer> collectorSink = new CollectorSink<Integer>();
+
+			collectorSink.declareActive();
+
+			if (withProvidedPipe) {
+				connectPorts(producer.getOutputPort(), collectorSink.getInputPort());
+			} else {
+				AbstractPipe<Integer> pipe = new BoundedSynchedPipe<Integer>(producer.getOutputPort(), collectorSink.getInputPort());
+				registerCustomPipe(pipe);
+			}
+
+			this.collectorSink = collectorSink;
+		}
+
+		List<Integer> getOutputElements() {
+			return collectorSink.getElements();
+		}
+	}
+
+	@Test
+	public void configWithProvidedPipeShouldBeExecutable() throws Exception {
+		ConfigurationWithProvidedOrCustomPipe configuration = new ConfigurationWithProvidedOrCustomPipe(true);
+		Execution<Configuration> execution = new Execution<Configuration>(configuration);
+		execution.executeBlocking();
+		assertThat(configuration.getOutputElements(), is(EXPECTED_OUTPUT_ELEMENTS));
+	}
+
+	@Test
+	public void configWithCustomPipeShouldBeExecutable() throws Exception {
+		ConfigurationWithProvidedOrCustomPipe configuration = new ConfigurationWithProvidedOrCustomPipe(false);
+		Execution<Configuration> execution = new Execution<Configuration>(configuration);
+		execution.executeBlocking();
+		assertThat(configuration.getOutputElements(), is(EXPECTED_OUTPUT_ELEMENTS));
+	}
+}
