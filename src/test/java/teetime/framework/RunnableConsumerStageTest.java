@@ -29,7 +29,6 @@ public class RunnableConsumerStageTest {
 
 	private Map<Thread, List<Exception>> exceptions = new HashMap<Thread, List<Exception>>();
 
-	@Ignore
 	@Test
 	public void testWaitingInfinitely() throws Exception {
 		RunnableConsumerStageTestConfiguration configuration = new RunnableConsumerStageTestConfiguration();
@@ -45,7 +44,6 @@ public class RunnableConsumerStageTest {
 
 		Thread.sleep(200);
 
-		// assertEquals(State.WAITING, thread.getState());
 		assertEquals(State.WAITING, configuration.getConsumerThread().getState());
 		assertEquals(0, configuration.getCollectedElements().size());
 

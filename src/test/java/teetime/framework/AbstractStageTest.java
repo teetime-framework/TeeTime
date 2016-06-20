@@ -65,6 +65,10 @@ public class AbstractStageTest {
 	@Test
 	public void testActiveFlag() {
 		TestConfig config = new TestConfig();
+		assertFalse(config.init.isActive());
+		assertFalse(config.delay.isActive());
+
+		new Execution<Configuration>(config);
 		assertTrue(config.init.isActive());
 		assertFalse(config.delay.isActive());
 	}
