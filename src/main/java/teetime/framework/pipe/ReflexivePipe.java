@@ -1,0 +1,48 @@
+package teetime.framework.pipe;
+
+import teetime.framework.AbstractUnsynchedPipe;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
+
+/**
+ * Represents an unsynchronized pipe with a capacity of 1. In contrast to the {@link UnsynchedPipe}, this pipe does not execute its successor stage if an element has
+ * been added. This pipe has only rare application scenarios. Its main purpose is to connect an output port and an input port of the same stage.
+ *
+ * @author Christian Wulf (chw)
+ *
+ * @param <T>
+ *            the type of the elements which this pipe should transfer.
+ */
+public class ReflexivePipe<T> extends AbstractUnsynchedPipe<T> {
+
+	private Object element;
+
+	public ReflexivePipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		super(sourcePort, targetPort, 1);
+	}
+
+	@Override
+	public boolean add(final Object element) {
+		this.element = element;
+		// do not report new element
+		return true;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return this.element == null;
+	}
+
+	@Override
+	public int size() {
+		return (this.element == null) ? 0 : 1;
+	}
+
+	@Override
+	public Object removeLast() {
+		final Object temp = this.element;
+		this.element = null; // NOPMD
+		return temp;
+	}
+
+}
