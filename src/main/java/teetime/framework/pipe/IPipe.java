@@ -25,11 +25,11 @@ import teetime.framework.signal.ISignal;
 public interface IPipe<T> {
 
 	/**
-	 * Adds an element to the Pipe.
+	 * Adds an element to the pipe.
 	 *
 	 * @param element
-	 *            Element which will be added
-	 * @return <code>true</code> if the element could be added, false otherwise
+	 *            which should be added
+	 * @return <code>true</code> if the element could be added, <code>false</code> otherwise.
 	 */
 	boolean add(Object element); // TODO correct javadoc: no return type since guarantee of element delivery
 
