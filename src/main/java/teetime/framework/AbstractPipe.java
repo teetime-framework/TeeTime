@@ -17,6 +17,14 @@ package teetime.framework;
 
 import teetime.framework.pipe.IPipe;
 
+/**
+ * Represents an abstract implementation of a {@link IPipe}.
+ *
+ * @author Christian Wulf (chw)
+ *
+ * @param <T>
+ *            the type of the elements which this pipe should transfer.
+ */
 public abstract class AbstractPipe<T> implements IPipe<T> {
 
 	/**

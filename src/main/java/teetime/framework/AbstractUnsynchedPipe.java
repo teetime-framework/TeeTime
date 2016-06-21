@@ -17,6 +17,14 @@ package teetime.framework;
 
 import teetime.framework.signal.ISignal;
 
+/**
+ * Represents an unsynchronized pipe which can be used to connect stages within the same thread.
+ *
+ * @author Christian Wulf (chw)
+ *
+ * @param <T>
+ *            the type of the elements which this pipe should transfer.
+ */
 public abstract class AbstractUnsynchedPipe<T> extends AbstractPipe<T> {
 
 	private boolean closed;

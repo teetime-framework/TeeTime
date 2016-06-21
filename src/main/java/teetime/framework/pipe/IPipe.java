@@ -21,6 +21,11 @@ import teetime.framework.signal.ISignal;
 
 /**
  * Represents a pipe that connects an output port with an input port.
+ *
+ * @author Christian Wulf (chw)
+ *
+ * @param <T>
+ *            the type of the elements which this pipe should transfer.
  */
 public interface IPipe<T> {
 
