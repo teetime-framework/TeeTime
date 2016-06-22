@@ -38,7 +38,6 @@ class A1ThreadableStageCollector implements ITraverserVisitor {
 			stage.declareActive();
 		}
 
-		// if (stage.getOwningThread() != null && !threadableStages.contains(stage) && stage.getCurrentState() == StageState.CREATED) {
 		if (stage.isActive() && !threadableStages.contains(stage) && stage.getCurrentState() == StageState.CREATED) {
 			threadableStages.add(stage);
 		}
