@@ -84,7 +84,10 @@ public class Traverser {
 		if (port.getPipe() instanceof DummyPipe) {
 			traverserVisitor.visit((DummyPipe) port.getPipe(), port);
 			return;
+		} else if (port.getPipe() == null) {
+			throw new IllegalStateException("2003 - The port " + port + " is not connected with another port.");
 		}
+
 		VisitorBehavior behavior = traverserVisitor.visit(port);
 
 		if (behavior == VisitorBehavior.CONTINUE) {

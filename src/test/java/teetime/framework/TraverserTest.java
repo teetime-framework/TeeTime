@@ -26,8 +26,10 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import teetime.stage.Counter;
 import teetime.stage.CountingMapMerger;
 import teetime.stage.InitialElementProducer;
+import teetime.stage.basic.Sink;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
 import teetime.stage.basic.merger.Merger;
@@ -96,6 +98,20 @@ public class TraverserTest {
 			merger.declareActive();
 		}
 
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void unconnectedInputPortShouldThrowException() throws Exception {
+		UnconnectedInputPortConfig config = new UnconnectedInputPortConfig();
+		new Execution<Configuration>(config);
+	}
+
+	private static class UnconnectedInputPortConfig extends Configuration {
+		public UnconnectedInputPortConfig() {
+			Counter<Object> counter = new Counter<Object>();
+			Sink<Object> sink = new Sink<Object>();
+			connectPorts(counter.getOutputPort(), sink.getInputPort());
+		}
 	}
 
 }
