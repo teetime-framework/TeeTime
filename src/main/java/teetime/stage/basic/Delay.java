@@ -15,20 +15,20 @@
  */
 package teetime.stage.basic;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class Delay<T> extends AbstractStage {
+public class Delay<T> extends AbstractStage {
 
 	private final InputPort<T> inputPort = this.createInputPort();
 	private final InputPort<Long> timestampTriggerInputPort = this.createInputPort();
 	private final OutputPort<T> outputPort = this.createOutputPort();
 
-	private final List<T> bufferedElements = new LinkedList<T>();
+	private final List<T> bufferedElements = new ArrayList<T>();
 
 	@Override
 	protected void execute() {
@@ -39,7 +39,7 @@ public final class Delay<T> extends AbstractStage {
 
 		Long timestampTrigger = this.timestampTriggerInputPort.receive();
 		if (null == timestampTrigger) {
-			return; // BETTER use returnNoElement(). so far, RunnableProducerStages cannot handle the NOT_ENOUGH__INPUT_EXCEPTION
+			returnNoElement();
 		}
 
 		sendAllBufferedEllements();
