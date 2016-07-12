@@ -39,7 +39,7 @@ public final class PCBlockingQueue<E> implements BlockingQueue<E> {
 
 	@Override
 	public void put(final E e) throws InterruptedException {
-		putStrategy.backoffOffer(q, e);
+		putStrategy.backoffOffer(q, e); // internally calls "offer(e)"
 	}
 
 	@Override
