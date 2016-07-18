@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import teetime.framework.ExecutionException;
-import teetime.stage.basic.distributor.strategy.BlockingRoundRobinStrategy;
+import teetime.stage.basic.distributor.strategy.BlockingBusyWaitingRoundRobinStrategy;
 import teetime.stage.basic.distributor.strategy.CloneStrategy;
 import teetime.stage.basic.distributor.strategy.CopyByReferenceStrategy;
 import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
@@ -60,7 +60,7 @@ public class DistributorTest {
 
 	@Test
 	public void roundRobinShouldWork() {
-		distributor.setStrategy(new BlockingRoundRobinStrategy());
+		distributor.setStrategy(new BlockingBusyWaitingRoundRobinStrategy());
 
 		test(distributor).and().send(1, 2, 3, 4, 5).to(distributor.getInputPort()).and().receive(firstIntegers).from(distributor.getNewOutputPort()).and()
 				.receive(secondIntegers).from(distributor.getNewOutputPort()).start();
@@ -71,7 +71,7 @@ public class DistributorTest {
 
 	@Test
 	public void singleElementRoundRobinShouldWork() {
-		distributor.setStrategy(new BlockingRoundRobinStrategy());
+		distributor.setStrategy(new BlockingBusyWaitingRoundRobinStrategy());
 
 		test(distributor).and().send(1).to(distributor.getInputPort()).and().receive(firstIntegers).from(distributor.getNewOutputPort()).and()
 				.receive(secondIntegers)
