@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -80,6 +81,53 @@ public class CompositeStageTest {
 		execution.executeBlocking();
 
 		assertThat(execution.getConfiguration().getResultElements(), containsInAnyOrder(5, 0, 6, 1, 7, 2, 8, 3, 9, 4));
+	}
+
+	@Test
+	public void reconnectingPortsIsForbidden() {
+		boolean sourceConnectedTwice = false;
+		boolean targetConnectedTwice = false;
+
+		new TestConnectPortsStage(1);
+		try {
+			new TestConnectPortsStage(2);
+		} catch (IllegalStateException e) {
+			sourceConnectedTwice = true;
+		}
+		try {
+			new TestConnectPortsStage(3);
+		} catch (IllegalStateException e) {
+			targetConnectedTwice = true;
+		}
+
+		assertTrue(sourceConnectedTwice);
+		assertTrue(targetConnectedTwice);
+	}
+
+	private class TestConnectPortsStage extends CompositeStage {
+
+		public TestConnectPortsStage(final int i) {
+			InitialElementProducer<Object> initOne = new InitialElementProducer<Object>();
+			InitialElementProducer<Object> initTwo = new InitialElementProducer<Object>();
+			Sink<Object> sinkOne = new Sink<Object>();
+			Sink<Object> sinkTwo = new Sink<Object>();
+			switch (i) {
+			case 1:
+				connectPorts(initOne.getOutputPort(), sinkOne.getInputPort());
+				break;
+			case 2:
+				connectPorts(initOne.getOutputPort(), sinkOne.getInputPort());
+				connectPorts(initOne.getOutputPort(), sinkTwo.getInputPort());
+				break;
+			case 3:
+				connectPorts(initOne.getOutputPort(), sinkOne.getInputPort());
+				connectPorts(initTwo.getOutputPort(), sinkOne.getInputPort());
+				break;
+			default:
+				break;
+			}
+		}
+
 	}
 
 	private InitialElementProducer<CounterContainer> assertFirstStage(final Execution<CompositeCounterPipelineConfig> execution) {

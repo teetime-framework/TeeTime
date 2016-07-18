@@ -33,13 +33,13 @@ class CompositeCounterIncrementer extends CompositeStage {
 			CompositeCounterIncrementer lastStage = new CompositeCounterIncrementer(depth - 1);
 			lastStageInputPort = lastStage.getInputPort();
 			outputPort = lastStage.getOutputPort();
+			connectPorts(incrementer.getOutputPort(), lastStageInputPort);
 		} else {
 			CounterIncrementer lastStage = incrementer;
 			lastStageInputPort = lastStage.getInputPort();
 			outputPort = lastStage.getOutputPort();
 		}
 
-		connectPorts(incrementer.getOutputPort(), lastStageInputPort);
 	}
 
 	public InputPort<CounterContainer> getInputPort() {

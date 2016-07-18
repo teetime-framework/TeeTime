@@ -23,12 +23,14 @@ import static org.junit.Assert.assertThat;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
 public class TimeBoundary2DTest {
 
+	@Ignore
 	@Test
 	public void testWorkingService() {
 		SingleTaskFarmMonitoringService service = ExtractorTestHelper.generateSingleTaskFarmMonitoringServiceWithBehavior();
@@ -42,6 +44,7 @@ public class TimeBoundary2DTest {
 		assertThat(result, stringContainsInOrder(outputValues));
 	}
 
+	@Ignore
 	@Test
 	public void testEmptyService() {
 		SingleTaskFarmMonitoringService service = ExtractorTestHelper.generateEmptySingleTaskFarmMonitoringService();

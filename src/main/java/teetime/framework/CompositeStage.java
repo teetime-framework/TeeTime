@@ -15,6 +15,7 @@
  */
 package teetime.framework;
 
+import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.InstantiationPipe;
 
 /**
@@ -70,7 +71,9 @@ public class CompositeStage {
 		if (targetPort == null) {
 			throw new IllegalArgumentException("1003 - targetPort may not be null");
 		}
-
+		if (targetPort.getPipe() != null || sourcePort.getPipe() != DummyPipe.INSTANCE) {
+			throw new IllegalStateException("1005 - Ports may not be reconnected");
+		}
 		new InstantiationPipe<T>(sourcePort, targetPort, capacity);
 	}
 
