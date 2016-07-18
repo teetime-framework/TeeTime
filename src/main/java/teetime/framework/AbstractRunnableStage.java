@@ -97,12 +97,12 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	protected abstract void afterStageExecution();
 
-	static AbstractRunnableStage create(final AbstractStage stage) {
-		if (stage.getInputPorts().size() > 0) {
-			return new RunnableConsumerStage(stage);
-		} else {
-			return new RunnableProducerStage(stage);
-		}
-	}
+	// static AbstractRunnableStage create(final AbstractStage stage) {
+	// if (stage.getInputPorts().size() > 0) {
+	// return new RunnableConsumerStage(stage);
+	// } else {
+	// return new RunnableProducerStage(stage);
+	// }
+	// }
 
 }

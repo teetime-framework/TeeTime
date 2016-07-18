@@ -46,7 +46,12 @@ class A4StageAttributeSetter {
 	}
 
 	private void setAttributes(final AbstractStage threadableStage, final Set<AbstractStage> intraStages) {
-		AbstractRunnableStage runnable = AbstractRunnableStage.create(threadableStage);
+		AbstractRunnableStage runnable;
+		if (threadableStage.getInputPorts().size() > 0) {
+			runnable = new RunnableConsumerStage(threadableStage);
+		} else {
+			runnable = new RunnableProducerStage(threadableStage);
+		}
 		Thread newThread = new TeeTimeThread(runnable, "Thread for " + threadableStage.getId());
 
 		threadableStage.setOwningThread(newThread);
