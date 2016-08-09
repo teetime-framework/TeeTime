@@ -3,8 +3,6 @@
 
 <module name="Checker">
 
-	<property name="cacheFile" value="target/cachefile" />
-
 	<module name="TreeWalker">
 		<property name="tabWidth" value="4" />
 
