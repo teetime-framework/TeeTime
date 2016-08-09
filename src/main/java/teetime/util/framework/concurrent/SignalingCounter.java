@@ -31,6 +31,11 @@ public class SignalingCounter {
 		conditionalNotifyAll(counter);
 	}
 
+	public synchronized void inc(final SignalingCounter otherCounter) {
+		counter += otherCounter.counter;
+		conditionalNotifyAll(counter);
+	}
+
 	public synchronized void dec() {
 		counter--;
 		conditionalNotifyAll(counter);
@@ -59,11 +64,6 @@ public class SignalingCounter {
 				cond.wait();
 			}
 		}
-	}
-
-	public synchronized void inc(final SignalingCounter otherCounter) {
-		counter += otherCounter.counter;
-		conditionalNotifyAll(counter);
 	}
 
 	@Override

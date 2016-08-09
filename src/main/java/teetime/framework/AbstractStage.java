@@ -481,12 +481,12 @@ public abstract class AbstractStage {
 		outputPorts.remove(outputPort); // TODO update setIndex IF it is still used
 	}
 
-	protected final void addOutputPortRemovedListener(final PortRemovedListener<OutputPort<?>> outputPortRemovedListener) {
-		outputPorts.addPortRemovedListener(outputPortRemovedListener);
-	}
-
 	protected void removeDynamicPort(final InputPort<?> inputPort) {
 		inputPorts.remove(inputPort); // TODO update setIndex IF it is still used
+	}
+
+	protected final void addOutputPortRemovedListener(final PortRemovedListener<OutputPort<?>> outputPortRemovedListener) {
+		outputPorts.addPortRemovedListener(outputPortRemovedListener);
 	}
 
 	protected final void addInputPortRemovedListener(final PortRemovedListener<InputPort<?>> inputPortRemovedListener) {

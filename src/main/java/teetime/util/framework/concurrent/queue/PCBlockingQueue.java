@@ -57,17 +57,17 @@ public final class PCBlockingQueue<E> implements BlockingQueue<E> {
 	}
 
 	@Override
+	public boolean offer(final E e, final long timeout, final TimeUnit unit) throws InterruptedException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public E poll() {
 		E e = q.poll();
 		if (e != null) {
 			putStrategy.signal();
 		}
 		return e;
-	}
-
-	@Override
-	public boolean offer(final E e, final long timeout, final TimeUnit unit) throws InterruptedException {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -128,8 +128,18 @@ public final class PCBlockingQueue<E> implements BlockingQueue<E> {
 	}
 
 	@Override
+	public boolean remove(final Object o) {
+		return q.remove(o);
+	}
+
+	@Override
 	public E remove() {
 		return q.remove();
+	}
+
+	@Override
+	public <T> T[] toArray(final T[] a) {
+		return q.toArray(a);
 	}
 
 	@Override
@@ -145,16 +155,6 @@ public final class PCBlockingQueue<E> implements BlockingQueue<E> {
 	@Override
 	public E peek() {
 		return q.peek();
-	}
-
-	@Override
-	public <T> T[] toArray(final T[] a) {
-		return q.toArray(a);
-	}
-
-	@Override
-	public boolean remove(final Object o) {
-		return q.remove(o);
 	}
 
 	@Override

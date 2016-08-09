@@ -56,6 +56,13 @@ class A3PipeInstantiation implements ITraverserVisitor {
 		return VisitorBehavior.CONTINUE;
 	}
 
+	@Override
+	public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Unconnected port " + port + " in stage " + port.getOwningStage().getId());
+		}
+	}
+
 	private <T> void instantiatePipe(final IPipe<T> pipe) {
 		if (!(pipe instanceof InstantiationPipe)) { // if manually connected
 			return;
@@ -77,13 +84,6 @@ class A3PipeInstantiation implements ITraverserVisitor {
 				new BoundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort(), pipe.capacity());
 				LOGGER.debug("Connected (bounded) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
 			}
-		}
-	}
-
-	@Override
-	public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
-		if (LOGGER.isInfoEnabled()) {
-			LOGGER.info("Unconnected port " + port + " in stage " + port.getOwningStage().getId());
 		}
 	}
 
