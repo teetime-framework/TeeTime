@@ -26,7 +26,7 @@ public final class InputHolder<I> {
 	private final AbstractStage stage;
 	private final Collection<I> input;
 
-	private InputPort<I> port;
+	private InputPort<? super I> port;
 
 	InputHolder(final StageTester stageTester, final AbstractStage stage, final Collection<I> input) {
 		this.stageTester = stageTester;
@@ -34,7 +34,7 @@ public final class InputHolder<I> {
 		this.input = input;
 	}
 
-	public StageTester to(final InputPort<I> port) { // NOPMD deliberately chosen name
+	public StageTester to(final InputPort<? super I> port) { // NOPMD deliberately chosen name
 		if (port.getOwningStage() != stage) {
 			throw new AssertionError();
 		}
@@ -47,7 +47,7 @@ public final class InputHolder<I> {
 		return input;
 	}
 
-	public InputPort<I> getPort() {
+	public InputPort<? super I> getPort() {
 		return port;
 	}
 
