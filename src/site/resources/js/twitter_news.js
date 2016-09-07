@@ -3,9 +3,3 @@
 	$('.twitter-timeline').attr('data-chrome', 'noborders nofooter transparent');
 }(window.jQuery)
 
-$(document).ready(function() {
-        $.cookiesDirective({
-            privacyPolicyUri: 'privacy.html',
-            position: 'bottom'
-        });
-});

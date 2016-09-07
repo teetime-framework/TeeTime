@@ -42,6 +42,13 @@
 				};
 				return t;
 				}(document, "script", "twitter-wjs"));
+				
+				$(document).ready(function() {
+        			$.cookiesDirective({
+            			privacyPolicyUri: 'privacy.html',
+            			position: 'bottom'
+       			 });
+});
 			</script>
 			<link rel="stylesheet"
 				href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/xcode.min.css" />
