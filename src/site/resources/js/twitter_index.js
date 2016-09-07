@@ -20,3 +20,9 @@ cheet('→', function() {
 cheet('←', function() {
 	$('.carousel').carousel('prev');
 });
+
+$(document).ready(function() {
+        $.cookiesDirective({
+            privacyPolicyUri: 'privacy.html'
+        });
+});
