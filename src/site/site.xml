@@ -42,13 +42,6 @@
 				};
 				return t;
 				}(document, "script", "twitter-wjs"));
-				
-				$(document).ready(function() {
-        			$.cookiesDirective({
-            			privacyPolicyUri: 'privacy.html',
-            			position: 'bottom'
-       			 });
-});
 			</script>
 			<link rel="stylesheet"
 				href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/xcode.min.css" />
@@ -170,6 +163,7 @@
         				<script src="//cdn.jsdelivr.net/alertifyjs/1.6.0/alertify.min.js"></script>
 						<script src="$resourcePath/js/twitter_index.js"></script>
 						<script src="$resourcePath/js/jquery.cookiesdirective.js"></script>
+						<script src="$resourcePath/js/teetime.js"></script>
 					</endContent>
 					<breadcrumbs>false</breadcrumbs>
 					<sections>
