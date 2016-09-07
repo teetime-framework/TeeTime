@@ -21,9 +21,6 @@ import static teetime.framework.test.StageTester.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.framework.DivideAndConquerStage;
@@ -38,7 +35,7 @@ public class DivideAndConquerStageTest {
 	List<QuicksortSolution> solutions;
 	List<QuicksortProblem> problems;
 
-	@Before
+	// @Before
 	public void initialize() {
 		quicksortStage = new DivideAndConquerStage<QuicksortProblem, QuicksortSolution>();
 
@@ -51,8 +48,7 @@ public class DivideAndConquerStageTest {
 		solutions = new ArrayList<QuicksortSolution>();
 	}
 
-	@Test
-	@Ignore
+	// @Test
 	// FIXME runs infinitely so far
 	public void quicksortImplementationShouldSortArray() {
 		test(this.quicksortStage).and()
@@ -61,7 +57,16 @@ public class DivideAndConquerStageTest {
 				.start();
 	}
 
-	@After
+	@Test
+	public void tester() {
+		for (int i = 0; i < 10000; i++) {
+			initialize();
+			quicksortImplementationShouldSortArray();
+			evaluate();
+		}
+	}
+
+	// @After
 	public void evaluate() {
 		int[] sortedNumbers = new int[] { 1, 2, 3, 4, 5 };
 		assertArrayEquals(solutions.get(0).getNumbers(), sortedNumbers);
