@@ -166,9 +166,12 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 			}
 		}
 
-		LOGGER.debug("Interrupting infiniteProducerThreads...");
-		for (Thread thread : this.infiniteProducerThreads) {
-			thread.interrupt();
+		if (!this.infiniteProducerThreads.isEmpty()) {
+			LOGGER.debug("Interrupting infiniteProducerThreads...");
+			for (Thread thread : this.infiniteProducerThreads) {
+				thread.interrupt();
+			}
+			LOGGER.debug("infiniteProducerThreads have been terminated");
 		}
 
 		// List<Exception> exceptions = collectExceptions();
