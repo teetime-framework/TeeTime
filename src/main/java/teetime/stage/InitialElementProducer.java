@@ -31,7 +31,10 @@ public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 
 	public InitialElementProducer(final Collection<T> elements) {
 		if (elements == null) {
-			throw new IllegalArgumentException("4002 - The given iterable must not be null.");
+			throw new IllegalArgumentException("4002 - The given collection must not be null.");
+		}
+		if (elements.isEmpty()) {
+			logger.warn("The given collection is empty! This stage will not output anything.");
 		}
 		this.elements = elements;
 	}
