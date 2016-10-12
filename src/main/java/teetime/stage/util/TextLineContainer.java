@@ -24,10 +24,12 @@ public class TextLineContainer {
 
 	private final File textFile;
 	private final String textLine;
+	private final int lineNumber;
 
-	public TextLineContainer(final File textFile, final String textLine) {
+	public TextLineContainer(final File textFile, final String textLine, final int lineNumber) {
 		this.textFile = textFile;
 		this.textLine = textLine;
+		this.lineNumber = lineNumber;
 	}
 
 	public File getTextFile() {
@@ -36,5 +38,10 @@ public class TextLineContainer {
 
 	public String getTextLine() {
 		return this.textLine;
+	}
+
+	@Override
+	public String toString() {
+		return "Line " + lineNumber + ": " + textLine;
 	}
 }

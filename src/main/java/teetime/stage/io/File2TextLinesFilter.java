@@ -63,15 +63,17 @@ public final class File2TextLinesFilter extends AbstractConsumerStage<File> {
 
 	@Override
 	protected void execute(final File textFile) {
+		int lineNumber = 1;
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(textFile), this.charset));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				line = line.trim();
-				if (line.length() != 0) {
-					outputPort.send(new TextLineContainer(textFile, line));
+			String textLine;
+			while ((textLine = reader.readLine()) != null) {
+				textLine = textLine.trim();
+				if (textLine.length() != 0) {
+					outputPort.send(new TextLineContainer(textFile, textLine, lineNumber));
 				} // else: ignore empty line
+				lineNumber++;
 			}
 		} catch (final FileNotFoundException e) {
 			this.logger.error("", e);
