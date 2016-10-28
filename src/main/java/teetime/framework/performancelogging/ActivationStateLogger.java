@@ -1,0 +1,146 @@
+package teetime.framework.performancelogging;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+/**
+ * This class serves as storage for information about active and inactive times of objects.
+ *
+ * @author Adrian
+ *
+ */
+public class ActivationStateLogger {
+
+	/**
+	 * Singleton Instance Holder
+	 */
+	private final static ActivationStateLogger INSTANCE = new ActivationStateLogger();
+	/**
+	 * Set of registered Stages
+	 */
+	private final Set<StateLoggable> stages = new LinkedHashSet<StateLoggable>();
+	/**
+	 * A Integer trhat holds the longest of all registered simple Stage names.
+	 */
+	private int longestName = 0;
+
+	private IFormatingStrategy formatingStrategy = new CumulativeActivePassivTime(this);
+
+	private ActivationStateLogger() {
+		// singleton
+	}
+
+	public static ActivationStateLogger getInstance() {
+		return ActivationStateLogger.INSTANCE;
+	}
+
+	/**
+	 * Any stage can register itself here. It will be stored with an empty List of States.
+	 *
+	 * @param stage
+	 *            Stage to be registered.
+	 */
+	public void register(final StateLoggable stage) {
+		this.setLongestName(stage.getClass().getSimpleName().length());
+		stages.add(stage);
+	}
+
+	/**
+	 * Will return the simple name of the given stage and added enough spaces to match the longest name.
+	 *
+	 * @param stage
+	 *            Stage which name should be formated.
+	 * @return Simple name of the given stage plus spaces to match the longest name.
+	 */
+	String formateName(final StateLoggable stage) {
+		return stage.getClass().getSimpleName() + ";";
+	}
+
+	public void logToFile() throws UnsupportedEncodingException, FileNotFoundException {
+		this.logToFile("StateLogs/");
+	}
+
+	public void logToFile(final String path) throws UnsupportedEncodingException, FileNotFoundException {
+		Calendar now = Calendar.getInstance();
+		DateFormat formatter = new SimpleDateFormat();
+		String date = formatter.format(now.getTime()).replace('.', '-').replace(':', '.').replace(' ', '_');
+
+		String filename = "StateLog_" + date + ".txt";
+		this.logToFile(path, filename);
+	}
+
+	public void logToFile(final String path, final String filename) throws UnsupportedEncodingException, FileNotFoundException {
+		this.logToFile(new File(path + filename));
+	}
+
+	public void logToFile(final File file) throws UnsupportedEncodingException, FileNotFoundException {
+		try {
+			this.printToFile(file);
+		} catch (FileNotFoundException e) {
+			try {
+				if (file.createNewFile()) {
+					this.printToFile(file);
+				} else {
+					System.err.println("File wasn't created!");
+				}
+			} catch (IOException ioe) {
+				System.err.println("Error creating " + file.toString());
+			}
+
+		}
+	}
+
+	private void printToFile(final File file) throws UnsupportedEncodingException, FileNotFoundException {
+		PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(file, true), 8192 * 8), false, "UTF-8");
+		ps.print(this);
+		ps.close();
+		System.out.println("Log saved to File: " + file.getAbsolutePath());
+	}
+	// getter and setter:
+
+	public Set<StateLoggable> getStages() {
+		return stages;
+	}
+
+	public int getLongestName() {
+		return longestName;
+	}
+
+	public void setLongestName(final int longestName) {
+		if (longestName > this.longestName) {
+			this.longestName = longestName;
+		}
+	}
+
+	public IFormatingStrategy getFormatingStrategy() {
+		return formatingStrategy;
+	}
+
+	public void setFormatingStrategy(final IFormatingStrategy formatingStrategy) {
+		this.formatingStrategy = formatingStrategy;
+	}
+
+	// toString and inner classes
+	@Override
+	public String toString() {
+		String result = "";
+
+		result += this.formatingStrategy.formatData();
+		return result;
+	}
+
+	public interface IFormatingStrategy {
+		public String formatData();
+	}
+
+}

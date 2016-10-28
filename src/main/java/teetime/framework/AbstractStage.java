@@ -15,6 +15,7 @@
  */
 package teetime.framework;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExecution;
 import teetime.framework.exceptionHandling.TerminateException;
+import teetime.framework.performancelogging.ActivationState;
+import teetime.framework.performancelogging.StateLoggable;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
@@ -40,7 +43,7 @@ import teetime.util.framework.port.PortRemovedListener;
  * Represents a minimal Stage, with some pre-defined methods.
  * Implemented stages need to adapt all abstract methods with own implementations.
  */
-public abstract class AbstractStage {
+public abstract class AbstractStage implements StateLoggable {
 
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
 	private static final NotEnoughInputException NOT_ENOUGH_INPUT_EXCEPTION = new NotEnoughInputException();
@@ -104,10 +107,18 @@ public abstract class AbstractStage {
 	}
 
 	protected final void returnNoElement() {
+		// If the stage get null-element it can't be active. If it's the first time
+		// after being active the according time stamp is saved so that one can gather
+		// information about the time the stage was in one state uninterrupted.
+		if (newStateRequired(ActivationState.BLOCKED)) {
+			ActivationState newState = new ActivationState(ActivationState.BLOCKED, this.getActualTimeStamp(), ActivationState.PULLING_FAILED);
+			this.addState(newState);
+		}
 		throw NOT_ENOUGH_INPUT_EXCEPTION;
 	}
 
 	protected final void executeStage() {
+		// this.setActualTimeStamp(System.nanoTime());
 		try {
 			this.execute();
 		} catch (NotEnoughInputException e) {
@@ -309,6 +320,7 @@ public abstract class AbstractStage {
 
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public void onTerminating() throws Exception {
+		this.addState(ActivationState.TERMINATED);
 		changeState(StageState.TERMINATED);
 		calledOnTerminating = true;
 	}
@@ -517,5 +529,106 @@ public abstract class AbstractStage {
 	// * <i>(Passed as parameter for performance reasons)</i>
 	// */
 	// public abstract void validateOutputPorts(List<InvalidPortConnection> invalidPortConnections);
+
+	/**
+	 * A list which save a timestamp and an associated state (active or inactive). This Information can be used for Bottleneck analysis.
+	 *
+	 * @author Adrian Pegler
+	 */
+	private final List<ActivationState> states = new ArrayList<ActivationState>();
+
+	/**
+	 * @author Adrian Pegler
+	 */
+	private ActivationState lastState;
+
+	/**
+	 * @author Adrian Pegler
+	 */
+	private long actualTimeStamp;
+
+	/**
+	 * Deactivated if performance logging does not reduce the performance. must be measured first. (28.10.2016)
+	 *
+	 * @author Christian Wulf (chw)
+	 */
+	private final boolean performanceLoggingEnabled = false;
+
+	/**
+	 * @author Adrian Pegler
+	 */
+	@Override
+	public List<ActivationState> getStates() {
+		return states;
+	}
+
+	/**
+	 * @author Adrian Pegler
+	 */
+	protected void addState(final int stateCode) {
+		ActivationState state = new ActivationState(stateCode);
+		this.states.add(state);
+	}
+
+	/**
+	 * @author Adrian Pegler
+	 */
+	protected void addState(final ActivationState state) {
+		this.states.add(state);
+	}
+
+	/**
+	 * @author Adrian Pegler
+	 */
+	protected boolean newStateRequired(final int state) {
+		if (!performanceLoggingEnabled) {
+			return false;
+		}
+		return ((this.lastState == null) || (this.lastState.getState() != state));
+	}
+
+	/**
+	 * @author Adrian Pegler
+	 */
+	@Override
+	public void sendingFailed() {
+		if (newStateRequired(ActivationState.BLOCKED)) {
+			this.addState(new ActivationState(ActivationState.BLOCKED, ActivationState.SENDING_FAILED));
+		}
+	}
+
+	/**
+	 * @author Adrian Pegler
+	 */
+	@Override
+	public void sendingSucceeded() {
+		if (newStateRequired(ActivationState.ACTIV_WAITING)) {
+			this.addState(ActivationState.ACTIV_WAITING);
+		}
+	}
+
+	/**
+	 * @author Adrian Pegler
+	 */
+	@Override
+	public void sendingReturned() {
+		if (newStateRequired(ActivationState.ACTIV)) {
+			this.addState(ActivationState.ACTIV);
+		}
+	}
+
+	/**
+	 * @author Adrian Pegler
+	 */
+	public long getActualTimeStamp() {
+		return actualTimeStamp;
+	}
+
+	/**
+	 * @author Adrian Pegler
+	 */
+	public void setActualTimeStamp(final long actualTimeStamp) {
+		this.actualTimeStamp = actualTimeStamp;
+	}
 
 }

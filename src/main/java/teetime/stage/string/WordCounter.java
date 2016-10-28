@@ -18,6 +18,8 @@ package teetime.stage.string;
 import teetime.framework.CompositeStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.performancelogging.CompositeStateLoggable;
+import teetime.framework.performancelogging.ActivationStateLogger;
 import teetime.stage.MappingCounter;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.util.CountingMap;
@@ -31,7 +33,7 @@ import teetime.stage.util.CountingMap;
  * @author Nelson Tavares de Sousa
  *
  */
-public final class WordCounter extends CompositeStage implements ITaskFarmDuplicable<String, CountingMap<String>> {
+public class WordCounter extends CompositeStage implements ITaskFarmDuplicable<String, CountingMap<String>>, CompositeStateLoggable {
 
 	private final Tokenizer tokenizer;
 	private final MappingCounter<String> mapCounter;
@@ -60,4 +62,10 @@ public final class WordCounter extends CompositeStage implements ITaskFarmDuplic
 		return new WordCounter();
 	}
 
+	@Override
+	public void registerStatebles() {
+		ActivationStateLogger.getInstance().register(tokenizer);
+		ActivationStateLogger.getInstance().register(tokenizer.getOutputPort().getPipe().getTargetPort().getOwningStage());
+		ActivationStateLogger.getInstance().register(mapCounter);
+	}
 }
