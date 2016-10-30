@@ -496,6 +496,13 @@
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>${pmd.version}</version>
 			</plugin>
+			<!-- resolves PMD issue: [WARNING] Unable to locate Source XRef to link 
+				to - DISABLED -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.5</version>
+			</plugin>
 			<!-- generate javadoc html files -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

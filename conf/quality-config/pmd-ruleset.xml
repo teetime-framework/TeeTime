@@ -67,6 +67,7 @@
 
 	<rule ref="rulesets/java/coupling.xml">
 		<exclude name="LawOfDemeter" />
+		<exclude name="LoosePackageCoupling" />
 	</rule>
 
 	<rule ref="rulesets/java/j2ee.xml">
