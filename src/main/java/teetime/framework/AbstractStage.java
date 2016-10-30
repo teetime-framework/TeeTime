@@ -533,53 +533,32 @@ public abstract class AbstractStage implements StateLoggable {
 	/**
 	 * A list which save a timestamp and an associated state (active or inactive). This Information can be used for Bottleneck analysis.
 	 *
-	 * @author Adrian Pegler
 	 */
 	private final List<ActivationState> states = new ArrayList<ActivationState>();
 
-	/**
-	 * @author Adrian Pegler
-	 */
 	private ActivationState lastState;
 
-	/**
-	 * @author Adrian Pegler
-	 */
 	private long actualTimeStamp;
 
 	/**
 	 * Deactivated if performance logging does not reduce the performance. must be measured first. (28.10.2016)
-	 *
-	 * @author Christian Wulf (chw)
 	 */
 	private final boolean performanceLoggingEnabled = false;
 
-	/**
-	 * @author Adrian Pegler
-	 */
 	@Override
 	public List<ActivationState> getStates() {
 		return states;
 	}
 
-	/**
-	 * @author Adrian Pegler
-	 */
 	protected void addState(final int stateCode) {
 		ActivationState state = new ActivationState(stateCode);
 		this.states.add(state);
 	}
 
-	/**
-	 * @author Adrian Pegler
-	 */
 	protected void addState(final ActivationState state) {
 		this.states.add(state);
 	}
 
-	/**
-	 * @author Adrian Pegler
-	 */
 	protected boolean newStateRequired(final int state) {
 		if (!performanceLoggingEnabled) {
 			return false;
@@ -587,9 +566,6 @@ public abstract class AbstractStage implements StateLoggable {
 		return ((this.lastState == null) || (this.lastState.getState() != state));
 	}
 
-	/**
-	 * @author Adrian Pegler
-	 */
 	@Override
 	public void sendingFailed() {
 		if (newStateRequired(ActivationState.BLOCKED)) {
@@ -597,9 +573,6 @@ public abstract class AbstractStage implements StateLoggable {
 		}
 	}
 
-	/**
-	 * @author Adrian Pegler
-	 */
 	@Override
 	public void sendingSucceeded() {
 		if (newStateRequired(ActivationState.ACTIV_WAITING)) {
@@ -607,9 +580,6 @@ public abstract class AbstractStage implements StateLoggable {
 		}
 	}
 
-	/**
-	 * @author Adrian Pegler
-	 */
 	@Override
 	public void sendingReturned() {
 		if (newStateRequired(ActivationState.ACTIV)) {
@@ -617,16 +587,10 @@ public abstract class AbstractStage implements StateLoggable {
 		}
 	}
 
-	/**
-	 * @author Adrian Pegler
-	 */
 	public long getActualTimeStamp() {
 		return actualTimeStamp;
 	}
 
-	/**
-	 * @author Adrian Pegler
-	 */
 	public void setActualTimeStamp(final long actualTimeStamp) {
 		this.actualTimeStamp = actualTimeStamp;
 	}
