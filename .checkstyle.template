@@ -8,13 +8,13 @@
     <property name="checkstyle.cache.file" value="${project_loc}/target/checkstyle-cachefile"/>
     <property name="checkstyle.header.file" value="C:\Users\chw\Repositories\teetime\target\checkstyle-header-default.txt"/>
   </local-check-config>
-  <local-check-config name="maven-checkstyle-plugin validate" location="file:/I:/Repositories/teetime-master/conf/quality-config/cs-conf.xml" type="remote" description="maven-checkstyle-plugin configuration validate">
+  <local-check-config name="maven-checkstyle-plugin validate" location="file:/C:/Users/chw/git/teetime/conf/quality-config/cs-conf.xml" type="remote" description="maven-checkstyle-plugin configuration validate">
     <property name="checkstyle.cache.file" value="${project_loc}/target/checkstyle-cachefile"/>
-    <property name="checkstyle.header.file" value="C:\Users\Nogge\workspace-phd\.metadata\.plugins\org.eclipse.core.resources\.projects\teetime\com.basistech.m2e.code.quality.checkstyleConfigurator\checkstyle-header-validate.txt"/>
+    <property name="checkstyle.header.file" value="C:\Users\chw\workspace\.metadata\.plugins\org.eclipse.core.resources\.projects\teetime\com.basistech.m2e.code.quality.checkstyleConfigurator\checkstyle-header-validate.txt"/>
   </local-check-config>
   <fileset name="java-sources-validate" enabled="true" check-config-name="maven-checkstyle-plugin validate" local="true">
-    <file-match-pattern match-pattern="^src/main/java/.*\.java" include-pattern="true"/>
     <file-match-pattern match-pattern="^src/test/java/.*\.java" include-pattern="true"/>
+    <file-match-pattern match-pattern="^src/main/java/.*\.java" include-pattern="true"/>
     <file-match-pattern match-pattern="^src/main/resources/.*\.properties" include-pattern="true"/>
     <file-match-pattern match-pattern="^src/test/resources/.*\.properties" include-pattern="true"/>
   </fileset>
