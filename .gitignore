@@ -47,3 +47,4 @@ tmp/
 local.properties
 .settings/
 .loadpath
+/.checkstyle

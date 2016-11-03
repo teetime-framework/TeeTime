@@ -1,23 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<fileset-config file-format-version="1.2.0" simple-config="false" sync-formatter="false">
-  <local-check-config name="TeeTime" location="conf/quality-config/cs-conf.xml" type="project" description="">
+<fileset-config file-format-version="1.2.0" simple-config="true" sync-formatter="false">
+  <local-check-config name="teetime-cs" location="conf/quality-config/cs-conf.xml" type="project" description="">
     <additional-data name="protect-config-file" value="false"/>
   </local-check-config>
-  <local-check-config name="maven-checkstyle-plugin default" location="file:/C:/Users/chw/Repositories/teetime/conf/quality-config/cs-conf.xml" type="remote" description="maven-checkstyle-plugin configuration default">
-    <property name="checkstyle.cache.file" value="${project_loc}/target/checkstyle-cachefile"/>
-    <property name="checkstyle.header.file" value="C:\Users\chw\Repositories\teetime\target\checkstyle-header-default.txt"/>
-  </local-check-config>
-  <local-check-config name="maven-checkstyle-plugin validate" location="file:/C:/Users/chw/git/teetime/conf/quality-config/cs-conf.xml" type="remote" description="maven-checkstyle-plugin configuration validate">
-    <property name="checkstyle.cache.file" value="${project_loc}/target/checkstyle-cachefile"/>
-    <property name="checkstyle.header.file" value="C:\Users\chw\workspace\.metadata\.plugins\org.eclipse.core.resources\.projects\teetime\com.basistech.m2e.code.quality.checkstyleConfigurator\checkstyle-header-validate.txt"/>
-  </local-check-config>
-  <fileset name="java-sources-validate" enabled="true" check-config-name="maven-checkstyle-plugin validate" local="true">
-    <file-match-pattern match-pattern="^src/test/java/.*\.java" include-pattern="true"/>
-    <file-match-pattern match-pattern="^src/main/java/.*\.java" include-pattern="true"/>
-    <file-match-pattern match-pattern="^src/main/resources/.*\.properties" include-pattern="true"/>
-    <file-match-pattern match-pattern="^src/test/resources/.*\.properties" include-pattern="true"/>
+  <fileset name="all" enabled="true" check-config-name="teetime-cs" local="true">
+    <file-match-pattern match-pattern="." include-pattern="true"/>
   </fileset>
-  <filter name="WriteProtectedFiles" enabled="true"/>
-  <filter name="DerivedFiles" enabled="true"/>
 </fileset-config>
