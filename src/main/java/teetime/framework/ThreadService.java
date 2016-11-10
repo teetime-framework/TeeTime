@@ -15,6 +15,8 @@
  */
 package teetime.framework;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -53,30 +55,33 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 
 	@Override
 	void onInitialize() {
-		AbstractStage startStage = configuration.getStartStage();
+		Collection<AbstractStage> startStages = configuration.getStartStages();
 
-		Set<AbstractStage> newThreadableStages = initialize(startStage);
+		Set<AbstractStage> newThreadableStages = initialize(startStages);
 		startThreads(newThreadableStages);
 	}
 
 	void startStageAtRuntime(final AbstractStage newStage) {
 		newStage.declareActive();
+		List<AbstractStage> newStages = Arrays.asList(newStage);
 
-		Set<AbstractStage> newThreadableStages = initialize(newStage);
+		Set<AbstractStage> newThreadableStages = initialize(newStages);
 		startThreads(newThreadableStages);
 
 		sendStartingSignal(newThreadableStages);
 	}
 
 	// extracted for runtime use
-	private Set<AbstractStage> initialize(final AbstractStage startStage) {
-		if (startStage == null) {
+	private Set<AbstractStage> initialize(final Collection<AbstractStage> startStages) {
+		if (startStages.isEmpty()) {
 			throw new IllegalStateException("The start stage may not be null.");
 		}
 
 		A1ThreadableStageCollector stageCollector = new A1ThreadableStageCollector();
 		Traverser traversor = new Traverser(stageCollector, Direction.BOTH);
-		traversor.traverse(startStage);
+		for (AbstractStage startStage : startStages) {
+			traversor.traverse(startStage);
+		}
 
 		Set<AbstractStage> newThreadableStages = stageCollector.getThreadableStages();
 
@@ -90,7 +95,9 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 
 		A3PipeInstantiation pipeVisitor = new A3PipeInstantiation();
 		traversor = new Traverser(pipeVisitor, Direction.BOTH);
-		traversor.traverse(startStage);
+		for (AbstractStage startStage : startStages) {
+			traversor.traverse(startStage);
+		}
 
 		A4StageAttributeSetter attributeSetter = new A4StageAttributeSetter(configuration, newThreadableStages);
 		attributeSetter.setAttributes();

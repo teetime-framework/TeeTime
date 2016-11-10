@@ -15,6 +15,10 @@
  */
 package teetime.framework;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import teetime.framework.exceptionHandling.AbstractExceptionListenerFactory;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 
@@ -30,10 +34,10 @@ public class Configuration extends CompositeStage {
 
 	private final AbstractExceptionListenerFactory<?> factory;
 	private final ConfigurationContext context;
+	private final Set<AbstractStage> startStages;
 
 	private boolean initialized;
 	private boolean executed;
-	private AbstractStage startStage;
 
 	public Configuration() {
 		this(new TerminatingExceptionListenerFactory());
@@ -42,6 +46,7 @@ public class Configuration extends CompositeStage {
 	public Configuration(final AbstractExceptionListenerFactory<?> factory) {
 		this.factory = factory;
 		this.context = new ConfigurationContext(this);
+		this.startStages = new HashSet<AbstractStage>();
 	}
 
 	boolean isInitialized() {
@@ -71,12 +76,12 @@ public class Configuration extends CompositeStage {
 	 *            A custom pipe instance
 	 */
 	public void registerCustomPipe(final AbstractPipe<?> pipe) {
-		startStage = pipe.getSourcePort().getOwningStage(); // memorize an arbitrary stage as starting point for traversing
+		startStages.add(pipe.getSourcePort().getOwningStage()); // memorize all source stages as starting point for traversing
 	}
 
 	@Override
 	public <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		startStage = sourcePort.getOwningStage(); // memorize an arbitrary stage as starting point for traversing
+		startStages.add(sourcePort.getOwningStage()); // memorize all source stages as starting point for traversing
 		super.connectPorts(sourcePort, targetPort, capacity);
 	}
 
@@ -84,8 +89,8 @@ public class Configuration extends CompositeStage {
 		return context;
 	}
 
-	AbstractStage getStartStage() {
-		return startStage;
+	public Collection<AbstractStage> getStartStages() {
+		return startStages;
 	}
 
 }
