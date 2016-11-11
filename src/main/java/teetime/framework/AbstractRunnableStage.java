@@ -54,40 +54,34 @@ abstract class AbstractRunnableStage implements Runnable {
 		logger.debug("Executing runnable stage...");
 
 		try {
+			beforeStageExecution();
+			if (stage.getOwningContext() == null) {
+				throw new IllegalArgumentException("Argument stage may not have a nullable owning context");
+			}
+			stopWatch.start();
 			try {
-				beforeStageExecution();
-				if (stage.getOwningContext() == null) {
-					throw new IllegalArgumentException("Argument stage may not have a nullable owning context");
+				while (!stage.shouldBeTerminated()) {
+					executeStage();
 				}
-				stopWatch.start();
-				try {
-					while (!stage.shouldBeTerminated()) {
-						executeStage();
-					}
-				} catch (TerminateException e) {
-					stage.abort();
-					stage.getOwningContext().abortConfigurationRun();
-				} finally {
-					stopWatch.end();
-					durationsInNs.put(stage, stopWatch.getDurationInNs());
-					afterStageExecution();
-				}
+			} catch (TerminateException e) {
+				stage.abort();
+				stage.getOwningContext().abortConfigurationRun();
+			} finally {
+				stopWatch.end();
+				durationsInNs.put(stage, stopWatch.getDurationInNs());
+				afterStageExecution();
+			}
 
-			} catch (RuntimeException e) {
-				logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
-				throw e;
-			} catch (InterruptedException e) {
-				// logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
-				stage.getExceptionListener().reportException(e, stage);
-			}
-		} finally {
-			if (stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
-				stage.getOwningContext().getThreadService().getRunnableCounter().dec();
-			}
+		} catch (RuntimeException e) {
+			logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
+			throw e;
+		} catch (InterruptedException e) {
+			// logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
+			stage.getExceptionListener().reportException(e, stage);
 		}
 
 		if (logger.isDebugEnabled()) {
-			logger.debug("Finished runnable stage. (" + stage.getId() + ")");
+			logger.debug("Finished runnable stage. ({})", stage.getId());
 		}
 	}
 
@@ -96,13 +90,5 @@ abstract class AbstractRunnableStage implements Runnable {
 	protected abstract void executeStage();
 
 	protected abstract void afterStageExecution();
-
-	// static AbstractRunnableStage create(final AbstractStage stage) {
-	// if (stage.getInputPorts().size() > 0) {
-	// return new RunnableConsumerStage(stage);
-	// } else {
-	// return new RunnableProducerStage(stage);
-	// }
-	// }
 
 }
