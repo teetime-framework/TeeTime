@@ -33,8 +33,21 @@ public class TeeTimeThread extends Thread {
 	@Override
 	public void start() {
 		synchronized (this) {
-			runnable.stage.getOwningContext().getThreadService().getRunnableCounter().inc();
+			if (runnable.stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
+				runnable.stage.getOwningContext().getThreadService().getRunnableCounter().inc();
+			}
 			super.start();
+		}
+	}
+
+	@Override
+	public void run() {
+		try {
+			super.run();
+		} finally {
+			if (runnable.stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
+				runnable.stage.getOwningContext().getThreadService().getRunnableCounter().dec();
+			}
 		}
 	}
 }
