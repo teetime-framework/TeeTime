@@ -70,9 +70,8 @@ class TaskFarmController<I, O> {
 	 * @throws InterruptedException
 	 */
 	public void addStageToTaskFarm() throws InterruptedException {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Add stage (current amount of stages: " + this.taskFarmStage.getEnclosedStageInstances().size() + ")");
-		}
+		LOGGER.debug("Add stage (current amount of stages: {})", this.taskFarmStage.getEnclosedStageInstances().size());
+
 		ITaskFarmDuplicable<I, O> newStage = this.taskFarmStage.getBasicEnclosedStage().duplicate();
 
 		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort(),
