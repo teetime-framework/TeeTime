@@ -33,7 +33,7 @@ class CumulativeActivePassivTime implements ActivationStateLogger.IFormatingStra
 			long cumulativeBlockedTime = 0;
 
 			// go through all states of this stage and sum up the active times while counting the number of active times
-			for (ActivationState state : stage.getStates()) {
+			for (StateChange state : stage.getStates()) {
 				long actualTimeStamp = state.getTimeStamp();
 
 				if (actualTimeStamp < earliestTimeStamp) {
@@ -45,14 +45,14 @@ class CumulativeActivePassivTime implements ActivationStateLogger.IFormatingStra
 
 				long elapsedTime = actualTimeStamp - lastTimeStamp;
 
-				switch (state.getState()) {
-				case ActivationState.ACTIV:
+				switch (state.getExecutionState()) {
+				case ACTIVE:
 					cumulativeActiveTime += elapsedTime;
 					break;
-				case ActivationState.ACTIV_WAITING:
+				case ACTIVE_WAITING:
 					cumulativeActiveWaitingTime += elapsedTime;
 					break;
-				case ActivationState.BLOCKED:
+				case BLOCKED:
 					cumulativeBlockedTime += elapsedTime;
 					break;
 				default:

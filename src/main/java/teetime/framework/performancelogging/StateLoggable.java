@@ -9,7 +9,7 @@ public interface StateLoggable {
 	 *
 	 * @return List of states this stage saved during its run.
 	 */
-	public List<ActivationState> getStates();
+	public List<StateChange> getStates();
 
 	/**
 	 * This method is called by Pipes if the sending of the next element needs to be delayed because of full Queue.

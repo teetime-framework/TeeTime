@@ -37,8 +37,8 @@ class RNTFormating implements IFormatingStrategy {
 			boolean lastActive = false;
 
 			// go through all states of this stage and sum up the active times while counting the number of active times
-			for (ActivationState state : stage.getStates()) {
-				if (state.getCause() == ActivationState.NOTHING_FAILED) {
+			for (StateChange state : stage.getStates()) {
+				if (state.getCause() == StateChange.NOTHING_FAILED) {
 					if (!lastActive) {
 						lastActiveTimeStamp = state.getTimeStamp();
 					}

@@ -27,9 +27,9 @@ class PercentageOfActiveTime implements ActivationStateLogger.IFormatingStrategy
 			long lastActiveTimeStamp = 0;
 			boolean lastActive = false;
 
-			for (ActivationState state : stage.getStates()) {
+			for (StateChange state : stage.getStates()) {
 				long currentTimeStamp = state.getTimeStamp();
-				if (state.getCause() == ActivationState.NOTHING_FAILED) {
+				if (state.getCause() == StateChange.NOTHING_FAILED) {
 					if (!lastActive) {
 						lastActiveTimeStamp = currentTimeStamp;
 					}

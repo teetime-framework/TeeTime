@@ -30,7 +30,8 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExecution;
 import teetime.framework.exceptionHandling.TerminateException;
-import teetime.framework.performancelogging.ActivationState;
+import teetime.framework.performancelogging.StateChange;
+import teetime.framework.performancelogging.StateChange.ExecutionState;
 import teetime.framework.performancelogging.StateLoggable;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.StartingSignal;
@@ -110,15 +111,18 @@ public abstract class AbstractStage implements StateLoggable {
 		// If the stage get null-element it can't be active. If it's the first time
 		// after being active the according time stamp is saved so that one can gather
 		// information about the time the stage was in one state uninterrupted.
-		if (newStateRequired(ActivationState.BLOCKED)) {
-			ActivationState newState = new ActivationState(ActivationState.BLOCKED, this.getActualTimeStamp(), ActivationState.PULLING_FAILED);
+		if (newStateRequired(ExecutionState.BLOCKED)) {
+			StateChange newState = new StateChange(ExecutionState.BLOCKED, this.getActualTimeStamp(), StateChange.PULLING_FAILED);
 			this.addState(newState);
 		}
 		throw NOT_ENOUGH_INPUT_EXCEPTION;
 	}
 
 	protected final void executeStage() {
-		// this.setActualTimeStamp(System.nanoTime());
+		if (performanceLoggingEnabled) {
+			this.setActualTimeStamp(System.nanoTime());
+		}
+
 		try {
 			this.execute();
 		} catch (NotEnoughInputException e) {
@@ -320,7 +324,7 @@ public abstract class AbstractStage implements StateLoggable {
 
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public void onTerminating() throws Exception {
-		this.addState(ActivationState.TERMINATED);
+		this.addState(ExecutionState.TERMINATED);
 		changeState(StageState.TERMINATED);
 		calledOnTerminating = true;
 	}
@@ -534,9 +538,9 @@ public abstract class AbstractStage implements StateLoggable {
 	 * A list which save a timestamp and an associated state (active or inactive). This Information can be used for Bottleneck analysis.
 	 *
 	 */
-	private final List<ActivationState> states = new ArrayList<ActivationState>();
+	private final List<StateChange> states = new ArrayList<StateChange>();
 
-	private ActivationState lastState;
+	private StateChange lastState = new StateChange(ExecutionState.INITIALIZED);
 
 	private long actualTimeStamp;
 
@@ -546,44 +550,45 @@ public abstract class AbstractStage implements StateLoggable {
 	private final boolean performanceLoggingEnabled = false;
 
 	@Override
-	public List<ActivationState> getStates() {
+	public List<StateChange> getStates() {
 		return states;
 	}
 
-	protected void addState(final int stateCode) {
-		ActivationState state = new ActivationState(stateCode);
-		this.states.add(state);
+	protected void addState(final ExecutionState stateCode) {
+		StateChange state = new StateChange(stateCode);
+		addState(state);
 	}
 
-	protected void addState(final ActivationState state) {
+	protected void addState(final StateChange state) {
 		this.states.add(state);
+		this.lastState = state;
 	}
 
-	protected boolean newStateRequired(final int state) {
+	protected boolean newStateRequired(final ExecutionState state) {
 		if (!performanceLoggingEnabled) {
 			return false;
 		}
-		return ((this.lastState == null) || (this.lastState.getState() != state));
+		return (this.lastState.getExecutionState() != state);
 	}
 
 	@Override
 	public void sendingFailed() {
-		if (newStateRequired(ActivationState.BLOCKED)) {
-			this.addState(new ActivationState(ActivationState.BLOCKED, ActivationState.SENDING_FAILED));
+		if (newStateRequired(ExecutionState.BLOCKED)) {
+			this.addState(new StateChange(ExecutionState.BLOCKED, StateChange.SENDING_FAILED));
 		}
 	}
 
 	@Override
 	public void sendingSucceeded() {
-		if (newStateRequired(ActivationState.ACTIV_WAITING)) {
-			this.addState(ActivationState.ACTIV_WAITING);
+		if (newStateRequired(ExecutionState.ACTIVE_WAITING)) {
+			this.addState(ExecutionState.ACTIVE_WAITING);
 		}
 	}
 
 	@Override
 	public void sendingReturned() {
-		if (newStateRequired(ActivationState.ACTIV)) {
-			this.addState(ActivationState.ACTIV);
+		if (newStateRequired(ExecutionState.ACTIVE)) {
+			this.addState(ExecutionState.ACTIVE);
 		}
 	}
 
