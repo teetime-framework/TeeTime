@@ -21,8 +21,22 @@ import teetime.framework.divideandconquer.DividedDCProblem;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 
+/**
+ * <pre>
+ * p -> |pipe| -> s
+ * </pre>
+ *
+ * @author Christian Wulf
+ *
+ * @param <P>
+ *            D&C problem
+ * @param <S>
+ *            D&C solution
+ */
+// p (? extends s) -> |pipe| -> s
+@SuppressWarnings("PMD.TooManyMethods")
 class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> implements
-		IPipe<P> { // NOPMD
+		IPipe<P> {
 
 	protected final DivideAndConquerStage<P, S> cachedTargetStage;
 
@@ -76,15 +90,15 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 		this.cachedTargetStage.onSignal(signal, this.targetPort);
 	}
 
-	@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+	// @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
 	@Override
 	public void waitForStartSignal() throws InterruptedException {
-
+		// do nothing
 	}
 
 	@Override
 	public final void reportNewElement() {
-
+		// no nothing
 	}
 
 	@Override
@@ -105,7 +119,7 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 	@Override
 	public Object removeLast() {
 		final Object temp = this.element;
-		this.element = null;
+		this.element = null; // NOPMD (indicates an empty pipe)
 		return temp;
 	}
 
@@ -131,13 +145,15 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 	}
 
 	private S solve(final P problem) {
+		S solution;
 		if (problem.isBaseCase()) {
-			return problem.baseSolve();
+			solution = problem.baseSolve();
 		} else {
 			DividedDCProblem<P> dividedProblem = problem.divide();
 			S firstSolution = solve(dividedProblem.leftProblem); // recursive call
 			S secondSolution = solve(dividedProblem.rightProblem); // recursive call
-			return firstSolution.combine(secondSolution);
+			solution = firstSolution.combine(secondSolution);
 		}
+		return solution;
 	}
 }
