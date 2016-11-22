@@ -30,7 +30,7 @@ import teetime.framework.OutputPort;
  * @author Nelson Tavares de Sousa
  *
  */
-public final class ZipByteArray extends AbstractConsumerStage<byte[]> {
+public class ZipByteArray extends AbstractConsumerStage<byte[]> {
 
 	private final OutputPort<byte[]> outputPort = this.createOutputPort();
 	private final ZipMode mode;
@@ -44,9 +44,10 @@ public final class ZipByteArray extends AbstractConsumerStage<byte[]> {
 	}
 
 	@Override
-	protected void execute(final byte[] element) {
+	protected void execute(final byte[] elementInBytes) {
 		try {
-			outputPort.send((mode == ZipMode.COMP) ? compress(element) : decompress(element));
+			byte[] processedElementInBytes = (mode == ZipMode.COMP) ? compress(elementInBytes) : decompress(elementInBytes);
+			outputPort.send(processedElementInBytes);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
