@@ -32,6 +32,10 @@ public final class QuicksortProblem extends AbstractDivideAndConquerProblem<Quic
 	private final int high;
 	private final int[] numbers;
 
+	public QuicksortProblem(final int... numbers) {
+		this(0, numbers.length - 1, numbers);
+	}
+
 	/**
 	 * An implementation of a quicksort problem.
 	 *

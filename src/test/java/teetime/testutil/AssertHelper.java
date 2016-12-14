@@ -30,4 +30,14 @@ public final class AssertHelper {
 		assertThat(object, is(instanceOf(expectedClazz)));
 		return (T) object;
 	}
+
+	public static void assertSorted(final int[] values) {
+		int previousValue = values[0];
+		for (int i = 0; i < values.length; i++) {
+			if (previousValue > values[i]) {
+				String message = String.format("%d at index %d is smaller than its previous value %d", values[i], i, previousValue);
+				throw new AssertionError(message);
+			}
+		}
+	}
 }
