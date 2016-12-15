@@ -107,6 +107,7 @@ public abstract class AbstractStage implements StateLoggable {
 		INSTANCES_COUNTER.clear();
 	}
 
+	// only used by consumer stages
 	protected final void returnNoElement() {
 		// If the stage get null-element it can't be active. If it's the first time
 		// after being active the according time stamp is saved so that one can gather
@@ -196,6 +197,9 @@ public abstract class AbstractStage implements StateLoggable {
 		return outputPorts.getOpenedPorts(); // TODO consider to publish a read-only version
 	}
 
+	/**
+	 * @threadsafe
+	 */
 	public StageState getCurrentState() {
 		return currentState;
 	}
@@ -225,6 +229,7 @@ public abstract class AbstractStage implements StateLoggable {
 			this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
 			return;
 		}
+
 		if (signal.mayBeTriggered(signalReceivedInputPorts, getInputPorts())) {
 			try {
 				signal.trigger(this);
@@ -236,7 +241,6 @@ public abstract class AbstractStage implements StateLoggable {
 			for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
 				outputPort.sendSignal(signal);
 			}
-
 		}
 	}
 
@@ -264,11 +268,11 @@ public abstract class AbstractStage implements StateLoggable {
 		final boolean signalAlreadyReceived = this.triggeredSignalTypes.contains(signal.getClass());
 		if (signalAlreadyReceived) {
 			if (logger.isTraceEnabled()) {
-				logger.trace("Got signal again: " + signal + " from input port: " + inputPort);
+				logger.trace("Got signal again: {} from input port: {}", signal, inputPort);
 			}
 		} else {
 			if (logger.isTraceEnabled()) {
-				logger.trace("Got signal: " + signal + " from input port: " + inputPort);
+				logger.trace("Got signal: {} from input port: {}", signal, inputPort);
 			}
 			this.triggeredSignalTypes.add(signal.getClass());
 		}
@@ -471,7 +475,7 @@ public abstract class AbstractStage implements StateLoggable {
 	protected void abort() {
 		this.terminateStage();
 		this.getOwningThread().interrupt();
-	};
+	}
 
 	protected boolean shouldBeTerminated() {
 		return (getCurrentState() == StageState.TERMINATING);
@@ -509,22 +513,6 @@ public abstract class AbstractStage implements StateLoggable {
 		inputPorts.addPortRemovedListener(inputPortRemovedListener);
 	}
 
-	private String getSimpleClassName() {
-		String simpleName = this.getClass().getSimpleName();
-		if (simpleName.isEmpty()) {
-			simpleName = this.getClass().getSuperclass().getSimpleName();
-		}
-		return simpleName;
-	}
-
-	protected int getInstanceCount() {
-		String simpleClassName = getSimpleClassName();
-		Integer numInstances = INSTANCES_COUNTER.get(simpleClassName);
-		if (null == numInstances) {
-			numInstances = 0;
-		}
-		return numInstances;
-	}
 	//
 	// /**
 	// * This should check, if the OutputPorts are connected correctly. This is needed to avoid NullPointerExceptions and other errors.

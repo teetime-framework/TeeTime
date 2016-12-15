@@ -27,10 +27,6 @@ import teetime.framework.signal.StartingSignal;
  */
 public class DivideAndConquerStageFactory {
 
-	private enum parallelismMode {
-		ALL, DIVIDE, COMBINE
-	};
-
 	private DivideAndConquerStageFactory() {}
 
 	/**
@@ -71,7 +67,7 @@ public class DivideAndConquerStageFactory {
 		if (callingStage.isThresholdReached()) {
 			new DivideAndConquerRecursivePipe<P, S>(outputPort, inputPort);
 		} else {
-			DivideAndConquerStage<P, S> newStage = new DivideAndConquerStage<P, S>();
+			DivideAndConquerStage<P, S> newStage = new DivideAndConquerStage<P, S>(callingStage.getNumInstances(), callingStage.getThreshold());
 			DynamicConfigurationContext.INSTANCE.connectPorts(outputPort, newStage.getInputPort());
 			DynamicConfigurationContext.INSTANCE.connectPorts(newStage.getOutputPort(), inputPort);
 			outputPort.sendSignal(new StartingSignal());
