@@ -25,11 +25,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Identifiable {
 
-	private static AtomicInteger nextId = new AtomicInteger();
+	private static final AtomicInteger ID_GENERATOR = new AtomicInteger();
+
 	private final int identifier;
 
 	protected Identifiable() {
-		this.identifier = nextId.incrementAndGet();
+		this.identifier = ID_GENERATOR.incrementAndGet();
 	}
 
 	protected Identifiable(final int newID) {

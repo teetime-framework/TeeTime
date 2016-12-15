@@ -24,12 +24,13 @@ import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
 import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
 import teetime.framework.divideandconquer.DividedDCProblem;
 import teetime.framework.signal.ISignal;
+import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
 /**
  * A stage to solve divide and conquer problems
  *
- * @author Robin Mohr
+ * @author Robin Mohr, Christian Wulf
  *
  * @param <P>
  *            type of elements that represent a problem to be solved.
@@ -39,8 +40,10 @@ import teetime.framework.signal.TerminatingSignal;
  */
 public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage {
 
-	private final AtomicInteger numInstances;
-	private int threshold;
+	private static final int DEFAULT_THRESHOLD = Runtime.getRuntime().availableProcessors();
+
+	private final AtomicInteger numCopiedInstances;
+	private final int threshold;
 	private boolean firstExecution;
 
 	private final IntObjectMap<S> solutionBuffer = new IntObjectHashMap<S>();
@@ -54,30 +57,37 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	private final OutputPort<P> rightOutputPort = this.createOutputPort();
 
 	/**
-	 * Creates a new divide and conquer stage and connects the additional in- and output ports with {@link teetime.framework.DivideAndConquerRecursivePipe}.
-	 *
+	 * Creates a new divide and conquer stage and connects the additional in- and output ports with {@link teetime.framework.DivideAndConquerRecursivePipe} with a
+	 * default threshold of {@code Runtime.getRuntime().availableProcessors()}.
 	 */
 	public DivideAndConquerStage() {
-		this(new AtomicInteger(0), Runtime.getRuntime().availableProcessors() - 1);
+		this(DEFAULT_THRESHOLD);
+	}
+
+	/**
+	 * Creates a new divide and conquer stage and connects the additional in- and output ports with {@link teetime.framework.DivideAndConquerRecursivePipe}.
+	 */
+	public DivideAndConquerStage(final int threshold) {
+		this(new AtomicInteger(-1), threshold);
 	}
 
 	/**
 	 *
-	 * @param numInstances
+	 * @param numCopiedInstances
 	 *            shared atomic counter
 	 * @param threshold
 	 *            positive number indicated the maximal number of threads
 	 */
-	DivideAndConquerStage(final AtomicInteger numInstances, final int threshold) {
+	DivideAndConquerStage(final AtomicInteger numCopiedInstances, final int threshold) {
 		new DivideAndConquerRecursivePipe<P, S>(this.leftOutputPort, this.leftInputPort);
 		new DivideAndConquerRecursivePipe<P, S>(this.rightOutputPort, this.rightInputPort);
-		this.numInstances = numInstances;
+		this.numCopiedInstances = numCopiedInstances;
 		// threshold should be odd: 1 for the root and each 2 for the divided instances
 		this.threshold = (threshold % 2 != 0) ? threshold : threshold - 1; // NOPMD (reasonable use of the ternary operator)
 		this.firstExecution = true;
 
-		numInstances.incrementAndGet();
-		logger.debug("New number of instances: {}", numInstances.get());
+		numCopiedInstances.incrementAndGet();
+		logger.debug("New number of instances: {}", numCopiedInstances.get());
 	}
 
 	@Override
@@ -92,6 +102,8 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 				// logger.debug("left: {}, right: {}", leftInputPort.isClosed(), rightInputPort.isClosed());
 				leftOutputPort.getPipe().close();
 				rightOutputPort.getPipe().close();
+				// leftOutputPort.sendSignal(new TerminatingSignal());
+				// rightOutputPort.sendSignal(new TerminatingSignal());
 			}
 
 			returnNoElement();
@@ -103,18 +115,10 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		if (signal instanceof TerminatingSignal && inputPort == this.inputPort) {
 			leftOutputPort.getPipe().close();
 			rightOutputPort.getPipe().close();
+			// leftOutputPort.sendSignal(signal);
+			// rightOutputPort.sendSignal(signal);
 		}
 		super.onSignal(signal, inputPort);
-	}
-
-	/**
-	 * Sets the threshold for parallelism to the specified value.
-	 *
-	 * @param threshold
-	 *            Number of new threads to create.
-	 */
-	public void setThreshold(final int threshold) {
-		this.threshold = threshold;
 	}
 
 	/**
@@ -224,24 +228,28 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		return problem != null;
 	}
 
-	/**
-	 * A method to add a new copy (new instance) of this stage to the configuration, which should be executed in a own thread.
-	 */
 	private void createCopies() {
-		DivideAndConquerStageFactory.getInstance().makeCopy(leftOutputPort, leftInputPort, this);
-		DivideAndConquerStageFactory.getInstance().makeCopy(rightOutputPort, rightInputPort, this);
+		if (isThresholdReached()) {
+			new DivideAndConquerRecursivePipe<P, S>(leftOutputPort, leftInputPort);
+			new DivideAndConquerRecursivePipe<P, S>(rightOutputPort, rightInputPort);
+		} else {
+			copy(leftOutputPort, leftInputPort, this);
+			copy(rightOutputPort, rightInputPort, this);
+		}
+
 		this.firstExecution = false;
 	}
 
-	protected boolean isThresholdReached() {
-		return threshold - numInstances.get() <= 0;
+	private void copy(final OutputPort<P> outputPort, final InputPort<S> inputPort, final DivideAndConquerStage<P, S> callingStage) {
+		DivideAndConquerStage<P, S> newStage = new DivideAndConquerStage<P, S>(numCopiedInstances, threshold);
+		DynamicConfigurationContext.INSTANCE.connectPorts(outputPort, newStage.getInputPort());
+		DynamicConfigurationContext.INSTANCE.connectPorts(newStage.getOutputPort(), inputPort);
+		outputPort.sendSignal(new StartingSignal());
+		RuntimeServiceFacade.INSTANCE.startWithinNewThread(callingStage, newStage);
 	}
 
-	AtomicInteger getNumInstances() { // NOPMD (package-private)
-		return numInstances;
+	private boolean isThresholdReached() {
+		return threshold - numCopiedInstances.get() <= 0;
 	}
 
-	int getThreshold() { // NOPMD (package-private)
-		return threshold;
-	}
 }

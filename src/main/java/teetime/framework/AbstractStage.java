@@ -198,7 +198,7 @@ public abstract class AbstractStage implements StateLoggable {
 	}
 
 	/**
-	 * @threadsafe
+	 * <i>This method is threadsafe.</i>
 	 */
 	public StageState getCurrentState() {
 		return currentState;

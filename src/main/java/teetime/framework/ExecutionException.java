@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * Represents a exception, which is thrown by an analysis,
- * if any problems occured within its execution.
+ * if any problems occurred within its execution.
  * A collection of thrown exceptions within the analysis
  * can be retrieved with {@link #getThrownExceptions()}.
  *
@@ -33,7 +33,8 @@ public class ExecutionException extends RuntimeException {
 	private final Map<Thread, List<Exception>> exceptions;
 
 	public ExecutionException(final Map<Thread, List<Exception>> exceptions) {
-		super("3003 - " + ((exceptions.size() == 1) ? exceptions.toString() : exceptions.size()) + " error(s) occurred while execution. Check thrown exception(s).");
+		super("3003 - " + ((exceptions.size() == 1) ? exceptions.toString() : exceptions.size())
+				+ " error(s) occurred while execution. Check thrown exception(s).");
 		this.exceptions = exceptions;
 	}
 

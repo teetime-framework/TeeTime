@@ -15,13 +15,13 @@
  */
 package teetime.framework.exceptionHandling;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractExceptionListenerFactory<T extends AbstractExceptionListener> {
 
-	private final Map<Thread, List<Exception>> threadExceptionsMap = new HashMap<Thread, List<Exception>>();
+	private final Map<Thread, List<Exception>> threadExceptionsMap = new ConcurrentHashMap<Thread, List<Exception>>();
 
 	protected abstract T createInstance();
 

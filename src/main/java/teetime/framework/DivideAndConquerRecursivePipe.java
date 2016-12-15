@@ -154,6 +154,9 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 			S secondSolution = solve(dividedProblem.rightProblem); // recursive call
 			solution = firstSolution.combine(secondSolution);
 		}
+
+		// solution = (S) ((QuicksortProblem) problem).solveDirectly();
+
 		return solution;
 	}
 }

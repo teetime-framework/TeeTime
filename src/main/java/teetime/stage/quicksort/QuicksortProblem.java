@@ -113,6 +113,45 @@ public final class QuicksortProblem extends AbstractDivideAndConquerProblem<Quic
 				new QuicksortProblem(this.getID(), lowPointer, high, numbers));
 	}
 
+	public QuicksortSolution solveDirectly() {
+		solveDirectly(numbers, low, high);
+
+		return baseSolve();
+	}
+
+	private void solveDirectly(final int[] numbers, final int low, final int high) {
+		final int middle = low + (high - low) / 2; // pick the pivot
+		final int pivot = numbers[middle];
+
+		// make left < pivot and right > pivot
+		int lowPointer = low;
+		int highPointer = high;
+		while (lowPointer <= highPointer) {
+			while (numbers[lowPointer] < pivot) {
+				lowPointer++;
+			}
+
+			while (numbers[highPointer] > pivot) {
+				highPointer--;
+			}
+
+			if (lowPointer <= highPointer) {
+				int temp = numbers[lowPointer];
+				numbers[lowPointer] = numbers[highPointer];
+				numbers[highPointer] = temp;
+				lowPointer++;
+				highPointer--;
+			}
+		}
+		// recursively sort two sub parts
+		if (low < highPointer) {
+			solveDirectly(numbers, low, highPointer);
+		}
+		if (lowPointer < high) {
+			solveDirectly(numbers, lowPointer, high);
+		}
+	}
+
 	@Override
 	public QuicksortSolution baseSolve() {
 		return new QuicksortSolution(
@@ -120,5 +159,13 @@ public final class QuicksortProblem extends AbstractDivideAndConquerProblem<Quic
 				this.low,
 				this.high,
 				this.numbers);
+	}
+
+	public QuicksortSolution baseSolve(final int low, final int high, final int[] numbers) {
+		return new QuicksortSolution(
+				this.getID(),
+				low,
+				high,
+				numbers);
 	}
 }

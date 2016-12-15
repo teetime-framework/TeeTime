@@ -128,7 +128,9 @@ public final class Execution<T extends Configuration> {
 		}
 	}
 
-	// TODO: implement
+	/**
+	 * Terminates all producer stages, interrupts all threads, and waits for a graceful termination.
+	 */
 	public void abortEventually() {
 		configurationContext.abortConfigurationRun();
 		waitForTermination();

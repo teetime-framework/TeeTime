@@ -29,10 +29,9 @@ public class QuicksortConfiguration extends Configuration {
 	public QuicksortConfiguration(final List<QuicksortProblem> inputs, final List<QuicksortSolution> results) {
 		// set up stages
 		InitialElementProducer<QuicksortProblem> initialElementProducer = new InitialElementProducer<QuicksortProblem>(inputs);
-		DivideAndConquerStage<QuicksortProblem, QuicksortSolution> quicksortStage = new DivideAndConquerStage<QuicksortProblem, QuicksortSolution>();
+		DivideAndConquerStage<QuicksortProblem, QuicksortSolution> quicksortStage = new DivideAndConquerStage<QuicksortProblem, QuicksortSolution>(2);
 		CollectorSink<QuicksortSolution> collectorSink = new CollectorSink<QuicksortSolution>(results);
 		quicksortStage.declareActive();
-		quicksortStage.setThreshold(2); // set parallelism level to 2
 
 		// connect ports
 		connectPorts(initialElementProducer.getOutputPort(), quicksortStage.getInputPort());
