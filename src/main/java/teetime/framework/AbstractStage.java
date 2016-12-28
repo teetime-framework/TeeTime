@@ -554,17 +554,17 @@ public abstract class AbstractStage implements StateLoggable {
 		return states;
 	}
 
-	protected void addState(final ExecutionState stateCode, final long timestamp) {
-		StateChange state = new StateChange(stateCode, timestamp);
-		this.states.add(state);
-		this.lastState = state;
-	}
-
-	protected boolean newStateRequired(final ExecutionState state) {
+	private boolean newStateRequired(final ExecutionState state) {
 		if (!performanceLoggingEnabled) {
 			return false;
 		}
 		return (this.lastState.getExecutionState() != state);
+	}
+
+	private void addState(final ExecutionState stateCode, final long timestamp) {
+		StateChange state = new StateChange(stateCode, timestamp);
+		this.states.add(state);
+		this.lastState = state;
 	}
 
 	@Override
