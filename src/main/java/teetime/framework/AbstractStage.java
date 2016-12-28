@@ -108,12 +108,22 @@ public abstract class AbstractStage implements StateLoggable {
 
 	// used only for performance measuring
 	private long beforeExecuteTime;
+	private long lastTimeAfterExecute;
 
 	protected final void executeStage() {
 		if (performanceLoggingEnabled) {
 			beforeExecuteTime = System.nanoTime();
+			executeWithCatchedExceptions();
+			if (lastState.getExecutionState() == ExecutionState.ACTIVE) {
+				this.addActiveWaitingTime(beforeExecuteTime - lastTimeAfterExecute);
+			}
+			lastTimeAfterExecute = System.nanoTime();
+		} else {
+			executeWithCatchedExceptions();
 		}
+	}
 
+	private void executeWithCatchedExceptions() {
 		try {
 			this.execute();
 		} catch (NotEnoughInputException e) {
@@ -136,8 +146,7 @@ public abstract class AbstractStage implements StateLoggable {
 		// after being active the according time stamp is saved so that one can gather
 		// information about the time the stage was in one state uninterrupted.
 		if (newStateRequired(ExecutionState.BLOCKED)) {
-			StateChange newState = new StateChange(ExecutionState.BLOCKED, beforeExecuteTime, StateChange.PULLING_FAILED);
-			this.addState(newState);
+			this.addState(ExecutionState.BLOCKED, beforeExecuteTime);
 		}
 		throw NOT_ENOUGH_INPUT_EXCEPTION;
 	}
@@ -330,7 +339,9 @@ public abstract class AbstractStage implements StateLoggable {
 
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public void onTerminating() throws Exception {
-		this.addState(ExecutionState.TERMINATED);
+		if (newStateRequired(ExecutionState.TERMINATED)) {
+			this.addState(ExecutionState.TERMINATED, System.nanoTime());
+		}
 		changeState(StageState.TERMINATED);
 		calledOnTerminating = true;
 	}
@@ -530,24 +541,21 @@ public abstract class AbstractStage implements StateLoggable {
 	 */
 	private final List<StateChange> states = new ArrayList<StateChange>();
 
-	private StateChange lastState = new StateChange(ExecutionState.INITIALIZED);
+	private StateChange lastState = new StateChange(ExecutionState.INITIALIZED, System.nanoTime());
 
 	/**
 	 * Deactivated if performance logging does not reduce the performance. must be measured first. (28.10.2016)
 	 */
 	private final boolean performanceLoggingEnabled = false;
+	private long activeWaitingTime;
 
 	@Override
 	public List<StateChange> getStates() {
 		return states;
 	}
 
-	protected void addState(final ExecutionState stateCode) {
-		StateChange state = new StateChange(stateCode);
-		addState(state);
-	}
-
-	protected void addState(final StateChange state) {
+	protected void addState(final ExecutionState stateCode, final long timestamp) {
+		StateChange state = new StateChange(stateCode, timestamp);
 		this.states.add(state);
 		this.lastState = state;
 	}
@@ -562,22 +570,24 @@ public abstract class AbstractStage implements StateLoggable {
 	@Override
 	public void sendingFailed() {
 		if (newStateRequired(ExecutionState.BLOCKED)) {
-			this.addState(new StateChange(ExecutionState.BLOCKED, StateChange.SENDING_FAILED));
+			this.addState(ExecutionState.BLOCKED, System.nanoTime());
 		}
 	}
 
 	@Override
 	public void sendingSucceeded() {
-		if (newStateRequired(ExecutionState.ACTIVE_WAITING)) {
-			this.addState(ExecutionState.ACTIVE_WAITING);
+		if (newStateRequired(ExecutionState.ACTIVE)) {
+			this.addState(ExecutionState.ACTIVE, System.nanoTime());
 		}
 	}
 
 	@Override
-	public void sendingReturned() {
-		if (newStateRequired(ExecutionState.ACTIVE)) {
-			this.addState(ExecutionState.ACTIVE);
-		}
+	public long getActiveWaitingTime() {
+		return this.activeWaitingTime;
+	}
+
+	public void addActiveWaitingTime(final long time) {
+		activeWaitingTime += time;
 	}
 
 }

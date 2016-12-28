@@ -39,6 +39,8 @@ public interface StateLoggable {
 	/**
 	 * This method is called when the Thread returns to a Stage that send an element before.
 	 */
-	public void sendingReturned();
+	// public void sendingReturned();
+
+	public long getActiveWaitingTime();
 
 }

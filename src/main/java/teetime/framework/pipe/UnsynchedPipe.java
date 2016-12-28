@@ -21,6 +21,7 @@ import teetime.framework.OutputPort;
 
 public final class UnsynchedPipe<T> extends AbstractUnsynchedPipe<T> {
 
+	// private final StopWatch stopWatch = new StopWatch();
 	private Object element;
 
 	public UnsynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
@@ -33,7 +34,11 @@ public final class UnsynchedPipe<T> extends AbstractUnsynchedPipe<T> {
 			throw new IllegalArgumentException("Parameter 'element' is null, but must be non-null.");
 		}
 		this.element = element;
+		// the following stopwatch-related lines are commented out since they are computationally too expensive
+		// this.stopWatch.start();
 		this.reportNewElement();
+		// this.stopWatch.end();
+		// this.getSourcePort().getOwningStage().addActiveWaitingTime(this.stopWatch.getDurationInNs());
 		return true;
 	}
 

@@ -22,7 +22,7 @@ import teetime.framework.StageState;
 import teetime.framework.exceptionHandling.TerminateException;
 import teetime.util.framework.concurrent.queue.ObservableSpScArrayQueue;
 
-public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T>implements IMonitorablePipe {
+public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
 
 	// private static final Logger LOGGER = LoggerFactory.getLogger(SpScPipe.class);
 
@@ -43,6 +43,8 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T>implements IMon
 	@Override
 	public boolean add(final Object element) {
 		while (!addNonBlocking(element)) {
+			// the following sending*-related lines are commented out since they are computationally too expensive
+			// this.getSourcePort().getOwningStage().sendingFailed();
 			// Thread.yield();
 			if (this.cachedTargetStage.getCurrentState() == StageState.TERMINATED ||
 					Thread.currentThread().isInterrupted()) {
@@ -55,6 +57,7 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T>implements IMon
 				throw TerminateException.INSTANCE;
 			}
 		}
+		// this.getSourcePort().getOwningStage().sendingSucceeded();
 		// this.reportNewElement();
 		return true;
 	}

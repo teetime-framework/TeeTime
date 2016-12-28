@@ -28,6 +28,8 @@ import java.util.Calendar;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import teetime.framework.performancelogging.formatstrategy.CumulativeActivePassivTime;
+
 /**
  * This class serves as storage for information about active and inactive times of objects.
  *
@@ -49,7 +51,7 @@ public class ActivationStateLogger {
 	 */
 	private int longestName = 0;
 
-	private IFormatingStrategy formatingStrategy = new CumulativeActivePassivTime(this);
+	private IFormatingStrategy formatingStrategy = new CumulativeActivePassivTime(stages);
 
 	private ActivationStateLogger() {
 		// singleton
@@ -68,17 +70,6 @@ public class ActivationStateLogger {
 	public void register(final StateLoggable stage) {
 		this.setLongestName(stage.getClass().getSimpleName().length());
 		stages.add(stage);
-	}
-
-	/**
-	 * Will return the simple name of the given stage and added enough spaces to match the longest name.
-	 *
-	 * @param stage
-	 *            Stage which name should be formated.
-	 * @return Simple name of the given stage plus spaces to match the longest name.
-	 */
-	String formateName(final StateLoggable stage) {
-		return stage.getClass().getSimpleName() + ";";
 	}
 
 	public void logToFile() throws UnsupportedEncodingException, FileNotFoundException {

@@ -44,12 +44,15 @@ public class NonBlockingRoundRobinStrategy implements IDistributorStrategy {
 			outputPort = (OutputPort<T>) getNextPortInRoundRobinOrder(outputPorts);
 			success = outputPort.sendNonBlocking(element);
 			if (0 == numLoops) {
+				outputPort.getOwningStage().sendingFailed();
 				numWaits++;
 				backoff();
 				numLoops = numOutputPorts;
 			}
 			numLoops--;
 		} while (!success);
+
+		outputPort.getOwningStage().sendingSucceeded();
 
 		return true;
 	}
