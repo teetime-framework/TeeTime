@@ -49,16 +49,15 @@ public abstract class AbstractStage implements StateLoggable {
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
 	private static final NotEnoughInputException NOT_ENOUGH_INPUT_EXCEPTION = new NotEnoughInputException();
 
+	/** This stage's unique identifier */
 	private final String id;
-	/**
-	 * A unique logger instance per stage instance
-	 */
+	/** This stage's unique logger */
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
 	private AbstractExceptionListener exceptionListener;
 
-	/** The owning thread of this stage if this stage is directly executed by a {@link AbstractRunnableStage}, <code>null</code> otherwise. */
+	/** The owning thread of this stage if this stage is directly executed by an {@link AbstractRunnableStage}, <code>null</code> otherwise. */
 	private Thread owningThread;
 
 	private boolean isActive;
@@ -107,21 +106,12 @@ public abstract class AbstractStage implements StateLoggable {
 		INSTANCES_COUNTER.clear();
 	}
 
-	// only used by consumer stages
-	protected final void returnNoElement() {
-		// If the stage get null-element it can't be active. If it's the first time
-		// after being active the according time stamp is saved so that one can gather
-		// information about the time the stage was in one state uninterrupted.
-		if (newStateRequired(ExecutionState.BLOCKED)) {
-			StateChange newState = new StateChange(ExecutionState.BLOCKED, this.getActualTimeStamp(), StateChange.PULLING_FAILED);
-			this.addState(newState);
-		}
-		throw NOT_ENOUGH_INPUT_EXCEPTION;
-	}
+	// used only for performance measuring
+	private long beforeExecuteTime;
 
 	protected final void executeStage() {
 		if (performanceLoggingEnabled) {
-			this.setActualTimeStamp(System.nanoTime());
+			beforeExecuteTime = System.nanoTime();
 		}
 
 		try {
@@ -139,6 +129,18 @@ public abstract class AbstractStage implements StateLoggable {
 	}
 
 	protected abstract void execute();
+
+	// only used by consumer stages
+	protected final void returnNoElement() {
+		// If the stage get null-element it can't be active. If it's the first time
+		// after being active the according time stamp is saved so that one can gather
+		// information about the time the stage was in one state uninterrupted.
+		if (newStateRequired(ExecutionState.BLOCKED)) {
+			StateChange newState = new StateChange(ExecutionState.BLOCKED, beforeExecuteTime, StateChange.PULLING_FAILED);
+			this.addState(newState);
+		}
+		throw NOT_ENOUGH_INPUT_EXCEPTION;
+	}
 
 	// package-private would suffice, but protected is necessary for unit tests
 	protected Thread getOwningThread() {
@@ -530,8 +532,6 @@ public abstract class AbstractStage implements StateLoggable {
 
 	private StateChange lastState = new StateChange(ExecutionState.INITIALIZED);
 
-	private long actualTimeStamp;
-
 	/**
 	 * Deactivated if performance logging does not reduce the performance. must be measured first. (28.10.2016)
 	 */
@@ -578,14 +578,6 @@ public abstract class AbstractStage implements StateLoggable {
 		if (newStateRequired(ExecutionState.ACTIVE)) {
 			this.addState(ExecutionState.ACTIVE);
 		}
-	}
-
-	public long getActualTimeStamp() {
-		return actualTimeStamp;
-	}
-
-	public void setActualTimeStamp(final long actualTimeStamp) {
-		this.actualTimeStamp = actualTimeStamp;
 	}
 
 }
