@@ -25,7 +25,7 @@ import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
  * @author Robin Mohr
  *
  */
-public final class QuicksortSolution extends AbstractDivideAndConquerSolution<QuicksortSolution> {
+public class QuicksortSolution extends AbstractDivideAndConquerSolution<QuicksortSolution> {
 
 	private final int low;
 	private final int high;
@@ -41,7 +41,6 @@ public final class QuicksortSolution extends AbstractDivideAndConquerSolution<Qu
 	 * @param numbers
 	 *            Array to be sorted
 	 */
-
 	public QuicksortSolution(final int low, final int high, final int... numbers) {
 		super();
 		this.low = low;

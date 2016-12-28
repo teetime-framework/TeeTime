@@ -26,7 +26,7 @@ import teetime.framework.divideandconquer.DividedDCProblem;
  * @author Robin Mohr
  *
  */
-public final class QuicksortProblem extends AbstractDivideAndConquerProblem<QuicksortProblem, QuicksortSolution> {
+public class QuicksortProblem extends AbstractDivideAndConquerProblem<QuicksortProblem, QuicksortSolution> {
 
 	private final int low;
 	private final int high;

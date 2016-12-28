@@ -43,7 +43,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	private static final int DEFAULT_THRESHOLD = Runtime.getRuntime().availableProcessors();
 
 	private final AtomicInteger numCopiedInstances;
-	private final int threshold;
+	private final int maxCopiedInstances;
 	private boolean firstExecution;
 
 	private final IntObjectMap<S> solutionBuffer = new IntObjectHashMap<S>();
@@ -67,23 +67,22 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	/**
 	 * Creates a new divide and conquer stage and connects the additional in- and output ports with {@link teetime.framework.DivideAndConquerRecursivePipe}.
 	 */
-	public DivideAndConquerStage(final int threshold) {
-		this(new AtomicInteger(-1), threshold);
+	public DivideAndConquerStage(final int maxCopiedInstances) {
+		this(new AtomicInteger(-1), maxCopiedInstances);
 	}
 
 	/**
 	 *
 	 * @param numCopiedInstances
 	 *            shared atomic counter
-	 * @param threshold
+	 * @param maxCopiedInstances
 	 *            positive number indicated the maximal number of threads
 	 */
-	DivideAndConquerStage(final AtomicInteger numCopiedInstances, final int threshold) {
+	DivideAndConquerStage(final AtomicInteger numCopiedInstances, final int maxCopiedInstances) {
 		new DivideAndConquerRecursivePipe<P, S>(this.leftOutputPort, this.leftInputPort);
 		new DivideAndConquerRecursivePipe<P, S>(this.rightOutputPort, this.rightInputPort);
 		this.numCopiedInstances = numCopiedInstances;
-		// threshold should be odd: 1 for the root and each 2 for the divided instances
-		this.threshold = (threshold % 2 != 0) ? threshold : threshold - 1; // NOPMD (reasonable use of the ternary operator)
+		this.maxCopiedInstances = maxCopiedInstances;
 		this.firstExecution = true;
 
 		numCopiedInstances.incrementAndGet();
@@ -241,7 +240,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	}
 
 	private void copy(final OutputPort<P> outputPort, final InputPort<S> inputPort, final DivideAndConquerStage<P, S> callingStage) {
-		DivideAndConquerStage<P, S> newStage = new DivideAndConquerStage<P, S>(numCopiedInstances, threshold);
+		DivideAndConquerStage<P, S> newStage = new DivideAndConquerStage<P, S>(numCopiedInstances, maxCopiedInstances);
 		DynamicConfigurationContext.INSTANCE.connectPorts(outputPort, newStage.getInputPort());
 		DynamicConfigurationContext.INSTANCE.connectPorts(newStage.getOutputPort(), inputPort);
 		outputPort.sendSignal(new StartingSignal());
@@ -249,7 +248,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	}
 
 	private boolean isThresholdReached() {
-		return threshold - numCopiedInstances.get() <= 0;
+		return maxCopiedInstances - numCopiedInstances.get() <= 0;
 	}
 
 }
