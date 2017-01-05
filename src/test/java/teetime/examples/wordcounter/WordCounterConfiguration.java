@@ -103,7 +103,7 @@ public class WordCounterConfiguration extends Configuration {
 		return monitoringThread;
 	}
 
-	// Further methods are allowed. For e.g. it is possible to read data from certain stages.
+	// Further methods are allowed, e.g., to read data from certain stages.
 	public CountingMap<String> getResult() {
 		return result.getResult();
 	}
