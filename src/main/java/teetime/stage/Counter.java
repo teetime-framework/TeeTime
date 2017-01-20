@@ -16,8 +16,9 @@
 package teetime.stage;
 
 import teetime.stage.basic.AbstractFilter;
+import teetime.stage.taskfarm.ITaskFarmDuplicable;
 
-public final class Counter<T> extends AbstractFilter<T> {
+public class Counter<T> extends AbstractFilter<T> implements ITaskFarmDuplicable<T, T> {
 
 	private int numElementsPassed;
 
@@ -30,6 +31,11 @@ public final class Counter<T> extends AbstractFilter<T> {
 
 	public int getNumElementsPassed() {
 		return this.numElementsPassed;
+	}
+
+	@Override
+	public ITaskFarmDuplicable<T, T> duplicate() {
+		return new Counter<T>(); // no state duplication
 	}
 
 }

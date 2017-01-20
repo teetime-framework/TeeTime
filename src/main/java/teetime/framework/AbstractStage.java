@@ -15,12 +15,7 @@
  */
 package teetime.framework;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -33,9 +28,7 @@ import teetime.framework.exceptionHandling.TerminateException;
 import teetime.framework.performancelogging.StateChange;
 import teetime.framework.performancelogging.StateChange.ExecutionState;
 import teetime.framework.performancelogging.StateLoggable;
-import teetime.framework.signal.ISignal;
-import teetime.framework.signal.StartingSignal;
-import teetime.framework.signal.TerminatingSignal;
+import teetime.framework.signal.*;
 import teetime.framework.validation.InvalidPortConnection;
 import teetime.util.framework.port.PortList;
 import teetime.util.framework.port.PortRemovedListener;
@@ -64,13 +57,16 @@ public abstract class AbstractStage implements StateLoggable {
 
 	private ConfigurationContext owningContext;
 
-	ConfigurationContext getOwningContext() {
-		return owningContext;
-	}
+	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
+	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
 
-	void setOwningContext(final ConfigurationContext owningContext) {
-		this.owningContext = owningContext;
-	}
+	private final PortList<InputPort<?>> inputPorts = new PortList<InputPort<?>>();
+	private final PortList<OutputPort<?>> outputPorts = new PortList<OutputPort<?>>();
+
+	private boolean calledOnTerminating = false;
+	private boolean calledOnStarting = false;
+
+	private volatile StageState currentState = StageState.CREATED;
 
 	protected AbstractStage() {
 		this.id = this.createId();
@@ -82,6 +78,14 @@ public abstract class AbstractStage implements StateLoggable {
 	 */
 	public String getId() {
 		return this.id;
+	}
+
+	ConfigurationContext getOwningContext() {
+		return owningContext;
+	}
+
+	void setOwningContext(final ConfigurationContext owningContext) {
+		this.owningContext = owningContext;
 	}
 
 	@Override
@@ -179,7 +183,7 @@ public abstract class AbstractStage implements StateLoggable {
 	}
 
 	/**
-	 * Declares this stage to be executed in an own thread.
+	 * Declares this stage to be executed by an own thread.
 	 */
 	public void declareActive() {
 		this.isActive = true;
@@ -188,17 +192,6 @@ public abstract class AbstractStage implements StateLoggable {
 		// Thread newThread = new TeeTimeThread(runnable, "Thread for " + threadableStage.getId());
 		// threadableStage.setOwningThread(newThread);
 	}
-
-	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
-	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
-
-	private final PortList<InputPort<?>> inputPorts = new PortList<InputPort<?>>();
-	private final PortList<OutputPort<?>> outputPorts = new PortList<OutputPort<?>>();
-
-	private boolean calledOnTerminating = false;
-	private boolean calledOnStarting = false;
-
-	private volatile StageState currentState = StageState.CREATED;
 
 	protected List<InputPort<?>> getInputPorts() {
 		return inputPorts.getOpenedPorts(); // TODO consider to publish a read-only version

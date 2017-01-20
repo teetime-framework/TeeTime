@@ -19,16 +19,15 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
 /**
- * Any {@link teetime.framework.AbstractStage AbstractStage} or {@link teetime.framework.CompositeStage AbstractCompositeStage} implementing this interface
- * can be used by a Task Farm as an enclosed stage. The enclosed
- * stage may not have more than one input or output port each.
+ * Any {@link teetime.framework.AbstractStage AbstractStage} or {@link teetime.framework.CompositeStage CompositeStage} implementing this interface
+ * can be used by a Task Farm as an enclosed stage. The enclosed stage may not have more than one input or output port each.
  *
  * @author Christian Claus Wiechmann
  *
  * @param <I>
- *            Input type of Task Farm
+ *            Input type of the task farm
  * @param <O>
- *            Output Type of Task Farm
+ *            Output Type of the task farm
  */
 public interface ITaskFarmDuplicable<I, O> {
 

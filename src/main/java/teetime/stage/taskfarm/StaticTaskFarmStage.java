@@ -15,9 +15,7 @@
  */
 package teetime.stage.taskfarm;
 
-import teetime.framework.CompositeStage;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.*;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.merger.Merger;
 
@@ -35,41 +33,34 @@ import teetime.stage.basic.merger.Merger;
  */
 public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends CompositeStage {
 
-	private static final int DEFAULT_PIPE_CAPACITY = 100;
+	private static final int MAX_NUMBER_OF_STAGES = Runtime.getRuntime().availableProcessors();
 
 	private final Distributor<I> distributor = new Distributor<I>();
 	private final Merger<O> merger = new Merger<O>();
 
 	/**
-	 * Create a task farm using <code>n</code> worker stages each with a pipe capacity of 100.
-	 * <code>x</code> represents the number of available processors given by
-	 *
-	 * <pre>
-	 * Runtime.getRuntime().availableProcessors()
-	 * </pre>
+	 * Creates a task farm stage with {@value #MAX_NUMBER_OF_STAGES} worker stages and a pipe capacity of {@value #DEFAULT_PIPE_CAPACITY}.
 	 *
 	 * @param workerStage
-	 *            stage to be parallelized by the task farm
 	 */
 	public StaticTaskFarmStage(final T workerStage) {
-		this(workerStage, Runtime.getRuntime().availableProcessors(), DEFAULT_PIPE_CAPACITY);
+		this(workerStage, MAX_NUMBER_OF_STAGES, DEFAULT_PIPE_CAPACITY);
 	}
 
-	/**
-	 * Create a task farm using a worker stage with a given pipe capacity.
-	 *
-	 * @param workerStage
-	 *            stage to be parallelized by the task farm
-	 * @param pipeCapacity
-	 *            pipe capacity to be used
-	 */
+	public StaticTaskFarmStage(final T workerStage, final int numberStages) {
+		this(workerStage, numberStages, DEFAULT_PIPE_CAPACITY);
+	}
+
 	public StaticTaskFarmStage(final T workerStage, final int numberStages, final int pipeCapacity) {
 		super();
 		if (null == workerStage) {
 			throw new IllegalArgumentException("The constructor of a Task Farm may not be called with null as the worker stage.");
 		}
-		if (numberStages < 1) { // NOPMD
+		if (numberStages < 1) {
 			throw new IllegalArgumentException("The number of worker stages must be at least 1.");
+		}
+		if (pipeCapacity < 1) {
+			throw new IllegalArgumentException("The capacity of the pipe(s) must be at least 1.");
 		}
 		this.init(workerStage, numberStages, pipeCapacity);
 	}
@@ -109,5 +100,18 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 	public OutputPort<O> getOutputPort() {
 		return this.merger.getOutputPort();
 	}
+
+	// /**
+	// * Declares the internal distributor to be executed by an own thread.
+	// */
+	// @Override
+	// public void declareActive() {
+	// distributor.declareActive();
+	// }
+	//
+	// @Override
+	// public StageState getCurrentState() {
+	// return distributor.getCurrentState();
+	// }
 
 }

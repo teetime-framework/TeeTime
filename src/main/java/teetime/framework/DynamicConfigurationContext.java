@@ -32,7 +32,7 @@ final class DynamicConfigurationContext {
 	}
 
 	/**
-	 * Connects two ports with a pipe with a default capacity of currently {@value #DEFAULT_CAPACITY}.
+	 * Connects two ports with a pipe with a default capacity of currently {@value #DEFAULT_PIPE_CAPACITY}.
 	 *
 	 * @param sourcePort
 	 *            {@link OutputPort} of the sending stage

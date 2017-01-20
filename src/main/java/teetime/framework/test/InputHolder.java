@@ -36,7 +36,7 @@ public final class InputHolder<I> {
 
 	public StageTester to(final InputPort<? super I> port) { // NOPMD deliberately chosen name
 		if (port.getOwningStage() != stage) {
-			throw new AssertionError();
+			throw new IllegalStateException("The given input port does not belong to the stage which should be tested.");
 		}
 		this.port = port;
 

@@ -32,14 +32,14 @@ public class CompositeStage {
 	/**
 	 * Default capacity for pipes
 	 */
-	private static final int DEFAULT_CAPACITY = 4;
+	protected static final int DEFAULT_PIPE_CAPACITY = 512;
 
 	protected CompositeStage() {
-		// prohibit instantiation of this class
+		// prohibit direct instantiation of this class
 	}
 
 	/**
-	 * Connects two ports with a pipe with a default capacity of currently {@value #DEFAULT_CAPACITY}.
+	 * Connects two ports with a pipe with a default capacity of currently {@value #DEFAULT_PIPE_CAPACITY}.
 	 *
 	 * @param sourcePort
 	 *            {@link OutputPort} of the sending stage
@@ -49,7 +49,7 @@ public class CompositeStage {
 	 *            the type of elements to be sent
 	 */
 	protected final <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		connectPorts(sourcePort, targetPort, DEFAULT_CAPACITY);
+		connectPorts(sourcePort, targetPort, DEFAULT_PIPE_CAPACITY);
 	}
 
 	/**
