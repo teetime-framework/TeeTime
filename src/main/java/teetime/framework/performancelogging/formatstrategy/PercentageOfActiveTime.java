@@ -2,10 +2,11 @@ package teetime.framework.performancelogging.formatstrategy;
 
 import java.util.Collection;
 
+import teetime.framework.AbstractStage;
+import teetime.framework.StateStatistics;
 import teetime.framework.performancelogging.ActivationStateLogger.IFormatingStrategy;
 import teetime.framework.performancelogging.StateChange;
 import teetime.framework.performancelogging.StateChange.ExecutionState;
-import teetime.framework.performancelogging.StateLoggable;
 
 /**
  * Formating strategy to apply for percentage of active time.
@@ -15,9 +16,9 @@ import teetime.framework.performancelogging.StateLoggable;
  */
 public class PercentageOfActiveTime implements IFormatingStrategy {
 
-	private final Collection<StateLoggable> stages;
+	private final Collection<AbstractStage> stages;
 
-	public PercentageOfActiveTime(final Collection<StateLoggable> stages) {
+	public PercentageOfActiveTime(final Collection<AbstractStage> stages) {
 		this.stages = stages;
 	}
 
@@ -28,7 +29,7 @@ public class PercentageOfActiveTime implements IFormatingStrategy {
 	 *            Stage which name should be formated.
 	 * @return Simple name of the given stage plus spaces to match the longest name.
 	 */
-	String formateName(final StateLoggable stage) {
+	String formateName(final AbstractStage stage) {
 		return stage.getClass().getSimpleName() + ";";
 	}
 
@@ -38,7 +39,7 @@ public class PercentageOfActiveTime implements IFormatingStrategy {
 
 		result += "name;% active time\n";
 
-		for (StateLoggable stage : stages) {
+		for (AbstractStage stage : stages) {
 			result += formateName(stage);
 
 			boolean lastActive = false;
@@ -47,7 +48,7 @@ public class PercentageOfActiveTime implements IFormatingStrategy {
 			long firstTimestamp = Long.MAX_VALUE;
 			long lastTimestamp = Long.MIN_VALUE;
 
-			for (StateChange state : stage.getStates()) {
+			for (StateChange state : StateStatistics.getStates(stage)) {
 				if (state.getTimeStamp() < firstTimestamp) {
 					firstTimestamp = state.getTimeStamp();
 				}

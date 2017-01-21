@@ -18,6 +18,7 @@ package teetime.stage.basic.distributor.strategy;
 import java.util.List;
 
 import teetime.framework.OutputPort;
+import teetime.framework.StateStatistics;
 import teetime.stage.basic.distributor.Distributor;
 
 /**
@@ -44,7 +45,7 @@ public class NonBlockingRoundRobinStrategy implements IDistributorStrategy {
 			outputPort = (OutputPort<T>) getNextPortInRoundRobinOrder(outputPorts);
 			success = outputPort.sendNonBlocking(element);
 			if (0 == numLoops) {
-				outputPort.getOwningStage().sendingFailed();
+				StateStatistics.sendingFailed(outputPort.getOwningStage());
 				numWaits++;
 				backoff();
 				numLoops = numOutputPorts;
@@ -52,7 +53,7 @@ public class NonBlockingRoundRobinStrategy implements IDistributorStrategy {
 			numLoops--;
 		} while (!success);
 
-		outputPort.getOwningStage().sendingSucceeded();
+		StateStatistics.sendingSucceeded(outputPort.getOwningStage());
 
 		return true;
 	}

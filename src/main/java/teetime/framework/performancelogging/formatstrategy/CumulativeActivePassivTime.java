@@ -2,16 +2,17 @@ package teetime.framework.performancelogging.formatstrategy;
 
 import java.util.Collection;
 
+import teetime.framework.AbstractStage;
+import teetime.framework.StateStatistics;
 import teetime.framework.performancelogging.ActivationStateLogger.IFormatingStrategy;
 import teetime.framework.performancelogging.StateChange;
 import teetime.framework.performancelogging.StateChange.ExecutionState;
-import teetime.framework.performancelogging.StateLoggable;
 
 public class CumulativeActivePassivTime implements IFormatingStrategy {
 
-	private final Collection<StateLoggable> stages;
+	private final Collection<AbstractStage> stages;
 
-	public CumulativeActivePassivTime(final Collection<StateLoggable> stages) {
+	public CumulativeActivePassivTime(final Collection<AbstractStage> stages) {
 		this.stages = stages;
 	}
 
@@ -22,7 +23,7 @@ public class CumulativeActivePassivTime implements IFormatingStrategy {
 	 *            Stage which name should be formated.
 	 * @return Simple name of the given stage plus spaces to match the longest name.
 	 */
-	String formateName(final StateLoggable stage) {
+	String formateName(final AbstractStage stage) {
 		return stage.getClass().getSimpleName() + ";";
 	}
 
@@ -33,7 +34,7 @@ public class CumulativeActivePassivTime implements IFormatingStrategy {
 		result += "name;total time;cumulative blocked time;cumulative active waiting time time;active time\n";
 
 		// go through all the stages
-		for (StateLoggable stage : stages) {
+		for (AbstractStage stage : stages) {
 			// first add a formated version of their names to the line.
 			result += formateName(stage);
 
@@ -42,11 +43,11 @@ public class CumulativeActivePassivTime implements IFormatingStrategy {
 			long lastTimeStamp = 0;
 			ExecutionState lastState = ExecutionState.INITIALIZED;
 			long cumulativeActiveTime = 0;
-			long cumulativeActiveWaitingTime = stage.getActiveWaitingTime();
+			long cumulativeActiveWaitingTime = StateStatistics.getActiveWaitingTime(stage);
 			long cumulativeBlockedTime = 0;
 
 			// go through all states of this stage and sum up the active times while counting the number of active timestamp
-			for (StateChange state : stage.getStates()) {
+			for (StateChange state : StateStatistics.getStates(stage)) {
 				long actualTimeStamp = state.getTimeStamp();
 
 				// update earliest and latest timeStamp if necessary

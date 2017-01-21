@@ -27,7 +27,6 @@ import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExec
 import teetime.framework.exceptionHandling.TerminateException;
 import teetime.framework.performancelogging.StateChange;
 import teetime.framework.performancelogging.StateChange.ExecutionState;
-import teetime.framework.performancelogging.StateLoggable;
 import teetime.framework.signal.*;
 import teetime.framework.validation.InvalidPortConnection;
 import teetime.util.framework.port.PortList;
@@ -37,7 +36,7 @@ import teetime.util.framework.port.PortRemovedListener;
  * Represents a minimal Stage, with some pre-defined methods.
  * Implemented stages need to adapt all abstract methods with own implementations.
  */
-public abstract class AbstractStage implements StateLoggable {
+public abstract class AbstractStage {
 
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
 	private static final NotEnoughInputException NOT_ENOUGH_INPUT_EXCEPTION = new NotEnoughInputException();
@@ -142,7 +141,8 @@ public abstract class AbstractStage implements StateLoggable {
 		}
 	}
 
-	protected abstract void execute();
+	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
+	protected abstract void execute() throws Exception;
 
 	// only used by consumer stages
 	protected final void returnNoElement() {
@@ -186,11 +186,25 @@ public abstract class AbstractStage implements StateLoggable {
 	 * Declares this stage to be executed by an own thread.
 	 */
 	public void declareActive() {
+		if (getCurrentState() == StageState.STARTED) {
+			// TODO implement so that active/passive can be changed even at runtime
+			// requires: volatile isActive
+			// requires: to declare further stages active (cascading)
+			throw new UnsupportedOperationException("Declaring a stage 'active' at runtime is not yet supported.");
+		}
+
+		// serves as acknowledgement and thus must be set at the end
 		this.isActive = true;
-		// AbstractStage threadableStage = this;
-		// AbstractRunnableStage runnable = AbstractRunnableStage.create(threadableStage);
-		// Thread newThread = new TeeTimeThread(runnable, "Thread for " + threadableStage.getId());
-		// threadableStage.setOwningThread(newThread);
+	}
+
+	/**
+	 * Declares this stage to be executed by the thread of its predecessor stage.
+	 */
+	public void declarePassive() {
+		// TODO implement so that active/passive can be changed even at runtime
+		// requires: to check whether this stage may be declared passive (a merger, e.g., is not allowed to so in most cases)
+		throw new UnsupportedOperationException("Declaring a stage 'passive' at runtime is not yet supported.");
+		// this.isActive = false;
 	}
 
 	protected List<InputPort<?>> getInputPorts() {
@@ -542,8 +556,7 @@ public abstract class AbstractStage implements StateLoggable {
 	private final boolean performanceLoggingEnabled = false;
 	private long activeWaitingTime;
 
-	@Override
-	public List<StateChange> getStates() {
+	List<StateChange> getStates() {
 		return states;
 	}
 
@@ -560,26 +573,23 @@ public abstract class AbstractStage implements StateLoggable {
 		this.lastState = state;
 	}
 
-	@Override
-	public void sendingFailed() {
+	void sendingFailed() {
 		if (newStateRequired(ExecutionState.BLOCKED)) {
 			this.addState(ExecutionState.BLOCKED, System.nanoTime());
 		}
 	}
 
-	@Override
-	public void sendingSucceeded() {
+	void sendingSucceeded() {
 		if (newStateRequired(ExecutionState.ACTIVE)) {
 			this.addState(ExecutionState.ACTIVE, System.nanoTime());
 		}
 	}
 
-	@Override
-	public long getActiveWaitingTime() {
+	long getActiveWaitingTime() {
 		return this.activeWaitingTime;
 	}
 
-	public void addActiveWaitingTime(final long time) {
+	void addActiveWaitingTime(final long time) {
 		activeWaitingTime += time;
 	}
 

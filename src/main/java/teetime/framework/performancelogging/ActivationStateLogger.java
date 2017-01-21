@@ -15,19 +15,12 @@
  */
 package teetime.framework.performancelogging;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
+import teetime.framework.AbstractStage;
 import teetime.framework.performancelogging.formatstrategy.CumulativeActivePassivTime;
 
 /**
@@ -45,9 +38,9 @@ public class ActivationStateLogger {
 	/**
 	 * Set of registered Stages
 	 */
-	private final Set<StateLoggable> stages = new LinkedHashSet<StateLoggable>();
+	private final Set<AbstractStage> stages = new LinkedHashSet<AbstractStage>();
 	/**
-	 * A Integer trhat holds the longest of all registered simple Stage names.
+	 * An Integer that holds the longest of all registered simple Stage names.
 	 */
 	private int longestName = 0;
 
@@ -67,7 +60,7 @@ public class ActivationStateLogger {
 	 * @param stage
 	 *            Stage to be registered.
 	 */
-	public void register(final StateLoggable stage) {
+	public void register(final AbstractStage stage) {
 		this.setLongestName(stage.getClass().getSimpleName().length());
 		stages.add(stage);
 	}
@@ -114,7 +107,7 @@ public class ActivationStateLogger {
 	}
 	// getter and setter:
 
-	public Set<StateLoggable> getStages() {
+	public Set<AbstractStage> getStages() {
 		return stages;
 	}
 

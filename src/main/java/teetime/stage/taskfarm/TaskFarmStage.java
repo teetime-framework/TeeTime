@@ -15,12 +15,10 @@
  */
 package teetime.stage.taskfarm;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.CompositeStage;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.*;
 import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
 import teetime.stage.taskfarm.adaptation.AdaptationThread;
@@ -35,16 +33,16 @@ import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
  * @author Christian Claus Wiechmann
  *
  * @param <I>
- *            Input type of Task Farm
+ *            Input type of task Farm
  * @param <O>
- *            Output type of Task Farm
+ *            Output type of task Farm
  * @param <T>
  *            Type of the parallelized stage
  */
 public final class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends CompositeStage {
 
 	/** currently existing worker stages **/
-	private final List<ITaskFarmDuplicable<I, O>> enclosedStageInstances = new LinkedList<ITaskFarmDuplicable<I, O>>();
+	private final List<ITaskFarmDuplicable<I, O>> enclosedStageInstances = new ArrayList<ITaskFarmDuplicable<I, O>>();
 
 	/** merger instance **/
 	private final DynamicDistributor<I> distributor = new DynamicDistributor<I>();

@@ -72,6 +72,8 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 			connectWorkerStage(workerStage, pipeCapacity);
 			workerStage.getInputPort().getOwningStage().declareActive();
 		}
+
+		// FIXME do not declare the merge active if (numberStages == 1)
 		this.merger.declareActive();
 	}
 

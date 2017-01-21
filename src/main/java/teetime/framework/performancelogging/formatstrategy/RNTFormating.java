@@ -2,10 +2,11 @@ package teetime.framework.performancelogging.formatstrategy;
 
 import java.util.Collection;
 
+import teetime.framework.AbstractStage;
+import teetime.framework.StateStatistics;
 import teetime.framework.performancelogging.ActivationStateLogger.IFormatingStrategy;
 import teetime.framework.performancelogging.StateChange;
 import teetime.framework.performancelogging.StateChange.ExecutionState;
-import teetime.framework.performancelogging.StateLoggable;
 
 /**
  * Formating Strategy to apply the data to the Bottleneck Detection Approach of Roser, Nakano and Tanaka.
@@ -15,9 +16,9 @@ import teetime.framework.performancelogging.StateLoggable;
  */
 public class RNTFormating implements IFormatingStrategy {
 
-	private final Collection<StateLoggable> stages;
+	private final Collection<AbstractStage> stages;
 
-	public RNTFormating(final Collection<StateLoggable> stages) {
+	public RNTFormating(final Collection<AbstractStage> stages) {
 		this.stages = stages;
 	}
 
@@ -28,7 +29,7 @@ public class RNTFormating implements IFormatingStrategy {
 	 *            Stage which name should be formated.
 	 * @return Simple name of the given stage plus spaces to match the longest name.
 	 */
-	String formateName(final StateLoggable stage) {
+	String formateName(final AbstractStage stage) {
 		return stage.getClass().getSimpleName() + ";";
 	}
 
@@ -39,7 +40,7 @@ public class RNTFormating implements IFormatingStrategy {
 		result += "name;Average ActiveTime (ns)\n";
 
 		// go through all the stages
-		for (StateLoggable stage : stages) {
+		for (AbstractStage stage : stages) {
 			// first add a formated version of their names to the line.
 			result += formateName(stage);
 
@@ -53,7 +54,7 @@ public class RNTFormating implements IFormatingStrategy {
 			boolean lastActive = false;
 
 			// go through all states of this stage and sum up the active times while counting the number of active times
-			for (StateChange state : stage.getStates()) {
+			for (StateChange state : StateStatistics.getStates(stage)) {
 				if (state.getExecutionState() == ExecutionState.ACTIVE && !lastActive) {
 					lastActiveTimeStamp = state.getTimeStamp();
 					lastActive = true;

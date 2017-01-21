@@ -66,10 +66,10 @@ public class CompositeStage {
 	 */
 	protected <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		if (sourcePort == null) {
-			throw new IllegalArgumentException("1002 - sourcePort may not be null");
+			throw new IllegalArgumentException("1002 - SourcePort may not be null");
 		}
 		if (targetPort == null) {
-			throw new IllegalArgumentException("1003 - targetPort may not be null");
+			throw new IllegalArgumentException("1003 - TargetPort may not be null");
 		}
 		if (targetPort.getPipe() != null || sourcePort.getPipe() != DummyPipe.INSTANCE) {
 			throw new IllegalStateException("1005 - Ports may not be reconnected");

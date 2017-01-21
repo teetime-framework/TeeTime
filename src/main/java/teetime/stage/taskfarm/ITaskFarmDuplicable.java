@@ -47,4 +47,14 @@ public interface ITaskFarmDuplicable<I, O> {
 	 * @return single output port of the enclosed stage
 	 */
 	public OutputPort<O> getOutputPort();
+
+	/**
+	 * @author Christoph Dornieden
+	 */
+	// <T extends ITaskFarmDuplicable<I, O>> void setTaskFarmStage(DynamicTaskFarmStage<I, O, T> taskFarmStage);
+
+	/**
+	 * @author Christoph Dornieden
+	 */
+	// DynamicTaskFarmStage<I, O, ? extends ITaskFarmDuplicable<I, O>> getTaskFarmStage();
 }

@@ -43,6 +43,18 @@ public class DynamicMerger<T> extends Merger<T> {
 		checkForPendingPortActionRequest();
 	}
 
+	@Override
+	public void onTerminating() throws Exception {
+		// foreach on portActions is not implemented, so we iterate by ourselves
+		PortAction<DynamicMerger<T>> portAction = portActions.poll();
+		while (portAction != null) {
+			portAction.execute(this);
+			portAction = portActions.poll();
+		}
+
+		super.onTerminating();
+	}
+
 	protected void checkForPendingPortActionRequest() {
 		PortActionHelper.checkForPendingPortActionRequest(this, portActions);
 	}
