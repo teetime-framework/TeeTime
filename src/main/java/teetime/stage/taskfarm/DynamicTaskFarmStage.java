@@ -28,7 +28,6 @@ import teetime.stage.basic.distributor.dynamic.*;
 import teetime.stage.basic.merger.dynamic.CreatePortActionMerger;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
 import teetime.stage.basic.merger.strategy.SkippingBusyWaitingRoundRobinStrategy;
-import teetime.stage.taskfarm.exception.TaskFarmControllerException;
 import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
 
 /**
@@ -45,28 +44,23 @@ import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
  * @param <T>
  *            Type of the parallelized stage
  */
-public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends CompositeStage {
+public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends StaticTaskFarmStage<I, O, T> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicTaskFarmStage.class);
 
 	/** currently existing worker stages **/
 	private final List<ITaskFarmDuplicable<I, O>> enclosedStageInstances = new ArrayList<ITaskFarmDuplicable<I, O>>();
 
-	/** distributor instance **/
-	private final DynamicDistributor<I> distributor = new DynamicDistributor<I>();
-	/** merger instance **/
-	private final DynamicMerger<O> merger;
-	/** pipeCapacity **/
-	private final int pipeCapacity;
-
 	/**
 	 * Create a task farm using a worker stage with a pipe capacity of 100.
 	 *
 	 * @param workerStage
 	 *            stage to be parallelized by the task farm
+	 * @param initialNumOfStages
+	 *            the initial number of stages used by the task farm
 	 */
-	public DynamicTaskFarmStage(final T workerStage) {
-		this(workerStage, null, 100);
+	public DynamicTaskFarmStage(final T workerStage, final int initialNumOfStages) {
+		this(workerStage, initialNumOfStages, 100);
 	}
 
 	/**
@@ -76,39 +70,17 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 	 *            stage to be parallelized by the task farm
 	 * @param pipeCapacity
 	 *            pipe capacity to be used
+	 * @param initialNumOfStages
+	 *            the initial number of stages used by the task farm
 	 */
-	public DynamicTaskFarmStage(final T workerStage, final int pipeCapacity) {
-		this(workerStage, null, pipeCapacity);
-	}
+	@SuppressWarnings("unchecked")
+	public DynamicTaskFarmStage(final T workerStage, final int initialNumOfStages, final int pipeCapacity) {
+		super(workerStage, initialNumOfStages, pipeCapacity, new DynamicDistributor<I>(), new DynamicMerger<O>(new SkippingBusyWaitingRoundRobinStrategy()));
 
-	DynamicTaskFarmStage(final T workerStage, final DynamicMerger<O> merger, final int pipeCapacity) {
-		super();
-		this.pipeCapacity = pipeCapacity;
-		if (null == workerStage) {
-			throw new IllegalArgumentException("The constructor of a Task Farm may not be called with null as the worker stage.");
+		for (OutputPort<?> outputPort : getDistributor().getOutputPorts()) {
+			// includedStage.setTaskFarmStage(this);
+			this.enclosedStageInstances.add((ITaskFarmDuplicable<I, O>) outputPort.getOwningStage());
 		}
-		if (merger == null) {
-			this.merger = new DynamicMerger<O>(new SkippingBusyWaitingRoundRobinStrategy());
-		} else {
-			this.merger = merger;
-		}
-		// TODO init with multiple worker stages (perhaps, extend StaticTaskFarmStage)
-		this.init(workerStage);
-	}
-
-	private void init(final T includedStage) {
-		// includedStage.setTaskFarmStage(this);
-
-		final InputPort<I> stageInputPort = includedStage.getInputPort();
-		connectPorts(this.distributor.getNewOutputPort(), stageInputPort, pipeCapacity);
-
-		final OutputPort<O> stageOutputPort = includedStage.getOutputPort();
-		connectPorts(stageOutputPort, this.merger.getNewInputPort(), pipeCapacity);
-
-		// this.merger.declareActive();
-		// includedStage.getInputPort().getOwningStage().declareActive();
-
-		this.enclosedStageInstances.add(includedStage);
 	}
 
 	/**
@@ -121,11 +93,11 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 	 */
 	public ITaskFarmDuplicable<I, O> addStageAtRuntime() throws InterruptedException {
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Add stage (current amount of stages: {})", enclosedStageInstances.size());
+			LOGGER.debug("Adding stage (current amount of stages: {})", enclosedStageInstances.size());
 		}
 
-		if (!merger.isActive()) {
-			merger.declareActive();
+		if (!getMerger().isActive()) {
+			getMerger().declareActive();
 		}
 
 		AbstractStage basicEnclosedStage = getBasicEnclosedStage().getInputPort().getOwningStage();
@@ -137,22 +109,35 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 		// newStage.setTaskFarmStage(this);
 
 		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort(),
-				pipeCapacity);
-		distributor.addPortActionRequest(distributorPortAction);
+				getPipeCapacity());
+		getDistributor().addPortActionRequest(distributorPortAction);
 
 		distributorPortAction.waitForCompletion();
 
 		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort(),
-				pipeCapacity);
-		merger.addPortActionRequest(mergerPortAction);
+				getPipeCapacity());
+		getMerger().addPortActionRequest(mergerPortAction);
 
 		mergerPortAction.waitForCompletion();
 
-		RuntimeServiceFacade.INSTANCE.startWithinNewThread(distributor, newStage.getInputPort().getOwningStage());
+		RuntimeServiceFacade.INSTANCE.startWithinNewThread(getDistributor(), newStage.getInputPort().getOwningStage());
 
 		enclosedStageInstances.add(newStage);
+
+		// TODO add event "new stage added" to enable monitoring of the new pipe (see #addNewPipeToMonitoring)
+
 		return newStage;
 	}
+
+	// private void addNewPipeToMonitoring(final ITaskFarmDuplicable<I, O> newStage) {
+	// if (this.taskFarmStage.getConfiguration().isMonitoringEnabled()) {
+	// try {
+	// this.taskFarmStage.getPipeMonitoringService().addMonitoredItem((IMonitorablePipe) newStage.getInputPort().getPipe());
+	// } catch (ClassCastException e) {
+	// throw new TaskFarmControllerException("A generated pipe is not monitorable.", e);
+	// }
+	// }
+	// }
 
 	/**
 	 * Dynamically removes a stage from the controlled task farm.
@@ -167,29 +152,26 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 		}
 
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Remove stage (current amount of stages: {})", enclosedStageInstances.size());
+			LOGGER.debug("Removing stage (current amount of stages: {})", enclosedStageInstances.size());
 		}
 
 		ITaskFarmDuplicable<I, O> stageToBeRemoved = enclosedStageInstances.get(getStageIndexWithLeastRemainingInput());
-		OutputPort<?> distributorOutputPort = this.getRemoveableDistributorOutputPort(stageToBeRemoved);
+		OutputPort<? extends I> distributorOutputPort = this.getRemoveableDistributorOutputPort(stageToBeRemoved);
 
-		try {
-			@SuppressWarnings("unchecked")
-			final RemovePortActionDistributor<I> distributorPortAction = new RemovePortActionDistributor<I>((OutputPort<I>) distributorOutputPort);
-			distributor.addPortActionRequest(distributorPortAction);
-			enclosedStageInstances.remove(stageToBeRemoved);
+		final RemovePortActionDistributor<I> distributorPortAction = new RemovePortActionDistributor<I>(distributorOutputPort);
+		getDistributor().addPortActionRequest(distributorPortAction);
+		enclosedStageInstances.remove(stageToBeRemoved);
 
-			distributorPortAction.waitForCompletion();
+		distributorPortAction.waitForCompletion();
 
-		} catch (ClassCastException e) {
-			throw new TaskFarmControllerException("Merger and Distributor have a different type than the Task Farm or the Task Farm Controller.", e);
-		}
 		return stageToBeRemoved;
 	}
 
+	// FIXME the task farm itself should not choose which stage to remove.
+	// Instead, a strategy from outside the task farm should determine.
 	private int getStageIndexWithLeastRemainingInput() {
-		int currentMinimum = Integer.MAX_VALUE;
-		int currentMinumumStageIndex = enclosedStageInstances.size() - 1;
+		int currentMinimum = Integer.MAX_VALUE; // NOPMD (DU: caused by loop)
+		int currentMinumumStageIndex = enclosedStageInstances.size() - 1;// NOPMD (DU: caused by loop)
 
 		// do not remove basic stage
 		for (int i = 1; i < enclosedStageInstances.size(); i++) {
@@ -216,29 +198,12 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 		return currentMinumumStageIndex;
 	}
 
-	private OutputPort<?> getRemoveableDistributorOutputPort(final ITaskFarmDuplicable<I, O> stageToBeRemoved) {
-		final InputPort<?> inputPortOfStage = stageToBeRemoved.getInputPort();
+	private OutputPort<I> getRemoveableDistributorOutputPort(final ITaskFarmDuplicable<I, O> stageToBeRemoved) {
+		final InputPort<I> inputPortOfStage = stageToBeRemoved.getInputPort();
 		final IPipe<?> pipeInBetween = inputPortOfStage.getPipe();
-		final OutputPort<?> distributorOutputPort = pipeInBetween.getSourcePort();
-		return distributorOutputPort;
-	}
-
-	/**
-	 * Returns the input port of the task farm/distributor of the task farm.
-	 *
-	 * @return input port of the task farm
-	 */
-	public InputPort<I> getInputPort() {
-		return this.distributor.getInputPort();
-	}
-
-	/**
-	 * Returns the output port of the task farm/merger of the task farm.
-	 *
-	 * @return output port of the task farm
-	 */
-	public OutputPort<O> getOutputPort() {
-		return this.merger.getOutputPort();
+		@SuppressWarnings("unchecked")
+		final OutputPort<I> distributorOutputPort = (OutputPort<I>) pipeInBetween.getSourcePort();
+		return distributorOutputPort; // NOPMD (UnnecessaryLocalBeforeReturn: annotation should be declared at the trigger)
 	}
 
 	/**
@@ -260,21 +225,19 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 	}
 
 	/**
-	 * Returns the distributor instance of this task farm.
-	 *
-	 * @return distributor instance
+	 * @return the distributor instance of this task farm.
 	 */
-	public DynamicDistributor<I> getDistributor() {
-		return this.distributor;
+	@Override
+	/* default */ DynamicDistributor<I> getDistributor() { // (Used in tests only; hence declared package-private)
+		return (DynamicDistributor<I>) super.getDistributor();
 	}
 
 	/**
-	 * Returns the merger instance of this task farm.
-	 *
-	 * @return merger instance
+	 * @return the merger instance of this task farm.
 	 */
-	public DynamicMerger<O> getMerger() {
-		return this.merger;
+	@Override
+	/* default */ DynamicMerger<O> getMerger() { // (Used in tests only; hence declared package-private)
+		return (DynamicMerger<O>) super.getMerger();
 	}
 
 }

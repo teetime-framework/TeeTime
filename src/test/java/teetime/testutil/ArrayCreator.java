@@ -15,7 +15,7 @@
  */
 package teetime.testutil;
 
-import java.util.Random;
+import java.util.*;
 
 /**
  *
@@ -31,10 +31,22 @@ public class ArrayCreator {
 	}
 
 	public int[] createFilledArray(final int numValues) {
+		// ContiguousSet<Integer> inputNumbers = ContiguousSet.create(Range.closedOpen(0, 10), DiscreteDomain.integers());
 		int[] randomValues = new int[numValues];
 
 		for (int i = 0; i < randomValues.length; i++) {
 			randomValues[i] = random.nextInt();
+		}
+
+		return randomValues;
+	}
+
+	public List<Integer> createFilledList(final int numValues) {
+		// ContiguousSet<Integer> inputNumbers = ContiguousSet.create(Range.closedOpen(0, 10), DiscreteDomain.integers());
+		List<Integer> randomValues = new ArrayList<Integer>(numValues);
+
+		for (int i = 0; i < numValues; i++) {
+			randomValues.add(random.nextInt());
 		}
 
 		return randomValues;

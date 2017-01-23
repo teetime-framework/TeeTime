@@ -37,7 +37,7 @@ public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<
 	/** corresponding command service which includes the decision tree **/
 	private final TaskFarmReconfigurationCommandService<I, O, T> reconfigurationCommandService;
 	/** corresponding controller to actually add or remove worker stages of the task farm **/
-	private final TaskFarmController<I, O> controller;
+	// private final TaskFarmController<I, O> controller;
 
 	/**
 	 * Create a task farm reconfiguration service for a specified task farm.
@@ -47,7 +47,7 @@ public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<
 	 */
 	public TaskFarmReconfigurationService(final TaskFarmStage<I, O, T> taskFarmStage) {
 		this.reconfigurationCommandService = new TaskFarmReconfigurationCommandService<I, O, T>(taskFarmStage);
-		this.controller = new TaskFarmController<I, O>(taskFarmStage);
+		// this.controller = new TaskFarmController<I, O>(taskFarmStage);
 	}
 
 	/**
@@ -62,10 +62,10 @@ public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<
 
 		switch (command) {
 		case ADD:
-			this.controller.addStageToTaskFarm();
+			// this.controller.addStageToTaskFarm();
 			break;
 		case REMOVE:
-			this.controller.removeStageFromTaskFarm();
+			// this.controller.removeStageFromTaskFarm();
 			break;
 		case NONE:
 		default:

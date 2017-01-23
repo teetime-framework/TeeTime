@@ -21,11 +21,11 @@ import teetime.util.stage.OneTimeCondition;
 
 public class RemovePortActionDistributor<T> implements PortAction<DynamicDistributor<T>> {
 
-	private final OutputPort<T> outputPort;
+	private final OutputPort<? extends T> outputPort;
 
 	private final OneTimeCondition condition = new OneTimeCondition();
 
-	public RemovePortActionDistributor(final OutputPort<T> outputPort) {
+	public RemovePortActionDistributor(final OutputPort<? extends T> outputPort) {
 		if (null == outputPort) {
 			throw new IllegalArgumentException("outputPort may not be null");
 		}

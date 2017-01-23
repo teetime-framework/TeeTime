@@ -41,4 +41,5 @@ public abstract class AbstractTransformation<I, O> extends AbstractConsumerStage
 	public final OutputPort<O> getOutputPort() {
 		return outputPort;
 	}
+
 }

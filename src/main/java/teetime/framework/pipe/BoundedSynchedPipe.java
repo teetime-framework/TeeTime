@@ -15,10 +15,7 @@
  */
 package teetime.framework.pipe;
 
-import teetime.framework.AbstractSynchedPipe;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
-import teetime.framework.StageState;
+import teetime.framework.*;
 import teetime.framework.exceptionHandling.TerminateException;
 import teetime.util.framework.concurrent.queue.ObservableSpScArrayQueue;
 

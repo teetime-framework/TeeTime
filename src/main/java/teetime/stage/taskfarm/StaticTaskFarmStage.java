@@ -35,8 +35,8 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 
 	private static final int MAX_NUMBER_OF_STAGES = Runtime.getRuntime().availableProcessors();
 
-	private final Distributor<I> distributor = new Distributor<I>();
-	private final Merger<O> merger = new Merger<O>();
+	private final Distributor<I> distributor;
+	private final Merger<O> merger;
 
 	/**
 	 * Creates a task farm stage with {@value #MAX_NUMBER_OF_STAGES} worker stages and a pipe capacity of {@value #DEFAULT_PIPE_CAPACITY}.
@@ -52,6 +52,10 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 	}
 
 	public StaticTaskFarmStage(final T workerStage, final int numberStages, final int pipeCapacity) {
+		this(workerStage, numberStages, pipeCapacity, new Distributor<I>(), new Merger<O>());
+	}
+
+	protected StaticTaskFarmStage(final T workerStage, final int numberStages, final int pipeCapacity, final Distributor<I> distributor, final Merger<O> merger) {
 		super();
 		if (null == workerStage) {
 			throw new IllegalArgumentException("The constructor of a Task Farm may not be called with null as the worker stage.");
@@ -62,6 +66,9 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 		if (pipeCapacity < 1) {
 			throw new IllegalArgumentException("The capacity of the pipe(s) must be at least 1.");
 		}
+		this.distributor = distributor;
+		this.merger = merger;
+
 		this.init(workerStage, numberStages, pipeCapacity);
 	}
 
@@ -73,8 +80,9 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 			workerStage.getInputPort().getOwningStage().declareActive();
 		}
 
-		// FIXME do not declare the merge active if (numberStages == 1)
-		this.merger.declareActive();
+		if (numberStages > 1) {
+			this.merger.declareActive();
+		}
 	}
 
 	private void connectWorkerStage(final ITaskFarmDuplicable<I, O> workerStage, final int pipeCapacity) {
@@ -115,5 +123,17 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 	// public StageState getCurrentState() {
 	// return distributor.getCurrentState();
 	// }
+
+	/* default */ Distributor<I> getDistributor() {
+		return distributor;
+	}
+
+	/* default */ Merger<O> getMerger() {
+		return merger;
+	}
+
+	protected int getPipeCapacity() {
+		return distributor.getOutputPorts().get(0).getPipe().capacity();
+	}
 
 }

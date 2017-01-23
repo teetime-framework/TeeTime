@@ -20,7 +20,7 @@ public class DynamicTaskFarmStageTest {
 
 		final ElementTrigger<Integer> producer = new ElementTrigger<Integer>(elements);
 		final DynamicTaskFarmStage<Integer, Integer, Counter<Integer>> dynamicTaskFarmStage = new DynamicTaskFarmStage<Integer, Integer, Counter<Integer>>(
-				new Counter<Integer>());
+				new Counter<Integer>(), 1);
 		final CollectorSink<Integer> collectorSink = new CollectorSink<Integer>();
 
 		Configuration configuration = new Configuration() {

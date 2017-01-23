@@ -17,9 +17,7 @@ package teetime.stage.basic.merger;
 
 import java.util.List;
 
-import teetime.framework.AbstractStage;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.*;
 import teetime.stage.basic.merger.strategy.IMergerStrategy;
 import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
 
@@ -30,7 +28,7 @@ import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
  *
  * @stage.sketch
  *
- * 				<pre>
+ *               <pre>
  *   +---------------------------+
  *   |                           |
  * +---+                         |
@@ -61,7 +59,7 @@ public class Merger<T> extends AbstractStage {
 
 	private final OutputPort<T> outputPort = this.createOutputPort();
 
-	private final IMergerStrategy strategy;
+	private IMergerStrategy strategy;
 
 	/**
 	 * A merger using the {@link RoundRobinStrategy}}.
@@ -84,7 +82,11 @@ public class Merger<T> extends AbstractStage {
 		outputPort.send(token);
 	}
 
-	public IMergerStrategy getMergerStrategy() {
+	public void setStrategy(final IMergerStrategy strategy) {
+		this.strategy = strategy;
+	}
+
+	public IMergerStrategy getStrategy() {
 		return this.strategy;
 	}
 
