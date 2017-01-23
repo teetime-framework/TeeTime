@@ -18,11 +18,12 @@ package teetime.stage.taskfarm.adaptation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.stage.taskfarm.ITaskFarmDuplicable;
-import teetime.stage.taskfarm.TaskFarmStage;
+import teetime.stage.taskfarm.*;
 import teetime.stage.taskfarm.adaptation.analysis.TaskFarmAnalysisService;
 import teetime.stage.taskfarm.adaptation.history.TaskFarmHistoryService;
 import teetime.stage.taskfarm.adaptation.reconfiguration.TaskFarmReconfigurationService;
+import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
+import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
 /**
  * Represents the adaptation thread used implement the self-adaptive behavior of the task farm.
@@ -36,19 +37,22 @@ import teetime.stage.taskfarm.adaptation.reconfiguration.TaskFarmReconfiguration
  * @param <T>
  *            Type of the parallelized stage
  */
-final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> extends Thread {
+public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> extends Thread {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AdaptationThread.class);
 
 	private volatile boolean shouldTerminate;
 
 	/** task farm of this adaptation thread **/
-	private final TaskFarmStage<I, O, T> taskFarmStage;
+	private final TaskFarmConfiguration<I, O, T> taskFarmStageConfiguration;
 
 	// services of this adaptation thread (history, analysis, reconfiguration)
 	private final TaskFarmHistoryService<I, O, T> historyService;
 	private final TaskFarmAnalysisService<I, O, T> analysisService;
 	private final TaskFarmReconfigurationService<I, O, T> reconfigurationService;
+
+	private final SingleTaskFarmMonitoringService taskFarmMonitoringService;
+	private final PipeMonitoringService pipeMonitoringService;
 
 	/**
 	 * Creates an adaptation thread for the given task farm.
@@ -56,11 +60,14 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 	 * @param taskFarmStage
 	 *            given task farm instance
 	 */
-	public AdaptationThread(final TaskFarmStage<I, O, T> taskFarmStage) {
+	public AdaptationThread(final DynamicTaskFarmStage<I, O, T> taskFarmStage) {
 		this.historyService = new TaskFarmHistoryService<I, O, T>(taskFarmStage);
 		this.analysisService = new TaskFarmAnalysisService<I, O, T>(taskFarmStage.getConfiguration());
 		this.reconfigurationService = new TaskFarmReconfigurationService<I, O, T>(taskFarmStage);
-		this.taskFarmStage = taskFarmStage;
+		this.taskFarmStageConfiguration = taskFarmStage.getConfiguration();
+
+		this.taskFarmMonitoringService = new SingleTaskFarmMonitoringService(taskFarmStage, historyService);
+		this.pipeMonitoringService = new PipeMonitoringService(historyService);
 
 		this.setPriority(MAX_PRIORITY);
 	}
@@ -77,7 +84,7 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 				executeServices();
 				doMonitoring();
 
-				Thread.sleep(taskFarmStage.getConfiguration().getAdaptationWaitingTimeMillis());
+				Thread.sleep(taskFarmStageConfiguration.getAdaptationWaitingTimeMillis());
 			} catch (InterruptedException e) {
 				this.shouldTerminate = true;
 			}
@@ -86,9 +93,9 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 	}
 
 	private void doMonitoring() {
-		if (this.taskFarmStage.getConfiguration().isMonitoringEnabled()) {
-			this.taskFarmStage.getPipeMonitoringService().doMeasurement();
-			this.taskFarmStage.getTaskFarmMonitoringService().doMeasurement();
+		if (this.taskFarmStageConfiguration.isMonitoringEnabled()) {
+			this.pipeMonitoringService.doMeasurement();
+			this.taskFarmMonitoringService.doMeasurement();
 		}
 	}
 
@@ -116,5 +123,13 @@ final public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> e
 	 */
 	public TaskFarmHistoryService<I, O, T> getHistoryService() {
 		return this.historyService;
+	}
+
+	public PipeMonitoringService getPipeMonitoringService() {
+		return pipeMonitoringService;
+	}
+
+	public SingleTaskFarmMonitoringService getTaskFarmMonitoringService() {
+		return taskFarmMonitoringService;
 	}
 }

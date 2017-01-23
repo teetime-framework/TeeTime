@@ -15,9 +15,6 @@
  */
 package teetime.stage.taskfarm;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,11 +45,25 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicTaskFarmStage.class);
 
-	/** currently existing worker stages **/
-	private final List<ITaskFarmDuplicable<I, O>> enclosedStageInstances = new ArrayList<ITaskFarmDuplicable<I, O>>();
+	/** configuration of the task farm **/
+	private final TaskFarmConfiguration<I, O, T> configuration = new TaskFarmConfiguration<I, O, T>();
 
 	/**
-	 * Create a task farm using a worker stage with a pipe capacity of 100.
+	 * Creates a task farm using <i>n</i> worker stages with a pipe capacity of 100, where <i>n</i> is
+	 *
+	 * <pre>
+	 * Runtime.getRuntime().availableProcessors()
+	 * </pre>
+	 *
+	 * @param workerStage
+	 *            stage to be parallelized by the task farm
+	 */
+	// public DynamicTaskFarmStage(final T workerStage) {
+	// this(workerStage, Runtime.getRuntime().availableProcessors(), 100);
+	// }
+
+	/**
+	 * Creates a task farm using a worker stage with a pipe capacity of 100.
 	 *
 	 * @param workerStage
 	 *            stage to be parallelized by the task farm
@@ -64,7 +75,7 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 	}
 
 	/**
-	 * Create a task farm using a worker stage with a given pipe capacity.
+	 * Creates a task farm using a worker stage with a given pipe capacity.
 	 *
 	 * @param workerStage
 	 *            stage to be parallelized by the task farm
@@ -73,14 +84,14 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 	 * @param initialNumOfStages
 	 *            the initial number of stages used by the task farm
 	 */
-	@SuppressWarnings("unchecked")
 	public DynamicTaskFarmStage(final T workerStage, final int initialNumOfStages, final int pipeCapacity) {
 		super(workerStage, initialNumOfStages, pipeCapacity, new DynamicDistributor<I>(), new DynamicMerger<O>(new SkippingBusyWaitingRoundRobinStrategy()));
 
-		for (OutputPort<?> outputPort : getDistributor().getOutputPorts()) {
-			// includedStage.setTaskFarmStage(this);
-			this.enclosedStageInstances.add((ITaskFarmDuplicable<I, O>) outputPort.getOwningStage());
-		}
+		// for (ITaskFarmDuplicable<I, O> workerStage : getWorkerStages()) {
+		// includedStage.setTaskFarmStage(this);
+		// }
+
+		this.configuration.setPipeCapacity(pipeCapacity);
 	}
 
 	/**
@@ -93,7 +104,7 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 	 */
 	public ITaskFarmDuplicable<I, O> addStageAtRuntime() throws InterruptedException {
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Adding stage (current amount of stages: {})", enclosedStageInstances.size());
+			LOGGER.debug("Adding stage (current amount of stages: {})", getWorkerStages().size());
 		}
 
 		if (!getMerger().isActive()) {
@@ -122,7 +133,7 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 
 		RuntimeServiceFacade.INSTANCE.startWithinNewThread(getDistributor(), newStage.getInputPort().getOwningStage());
 
-		enclosedStageInstances.add(newStage);
+		getWorkerStages().add(newStage);
 
 		// TODO add event "new stage added" to enable monitoring of the new pipe (see #addNewPipeToMonitoring)
 
@@ -147,20 +158,20 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 	 * @author Christian Claus Wiechmann, Christoph Dornieden (code moved from TaskFarmController)
 	 */
 	public ITaskFarmDuplicable<I, O> removeStageAtRuntime() throws InterruptedException {
-		if (enclosedStageInstances.size() == 1) {
+		if (getWorkerStages().size() == 1) {
 			return null;
 		}
 
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Removing stage (current amount of stages: {})", enclosedStageInstances.size());
+			LOGGER.debug("Removing stage (current amount of stages: {})", getWorkerStages().size());
 		}
 
-		ITaskFarmDuplicable<I, O> stageToBeRemoved = enclosedStageInstances.get(getStageIndexWithLeastRemainingInput());
+		ITaskFarmDuplicable<I, O> stageToBeRemoved = getWorkerStages().get(getStageIndexWithLeastRemainingInput());
 		OutputPort<? extends I> distributorOutputPort = this.getRemoveableDistributorOutputPort(stageToBeRemoved);
 
 		final RemovePortActionDistributor<I> distributorPortAction = new RemovePortActionDistributor<I>(distributorOutputPort);
 		getDistributor().addPortActionRequest(distributorPortAction);
-		enclosedStageInstances.remove(stageToBeRemoved);
+		getWorkerStages().remove(stageToBeRemoved);
 
 		distributorPortAction.waitForCompletion();
 
@@ -171,11 +182,11 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 	// Instead, a strategy from outside the task farm should determine.
 	private int getStageIndexWithLeastRemainingInput() {
 		int currentMinimum = Integer.MAX_VALUE; // NOPMD (DU: caused by loop)
-		int currentMinumumStageIndex = enclosedStageInstances.size() - 1;// NOPMD (DU: caused by loop)
+		int currentMinumumStageIndex = getWorkerStages().size() - 1;// NOPMD (DU: caused by loop)
 
 		// do not remove basic stage
-		for (int i = 1; i < enclosedStageInstances.size(); i++) {
-			final ITaskFarmDuplicable<I, O> instance = enclosedStageInstances.get(i);
+		for (int i = 1; i < getWorkerStages().size(); i++) {
+			final ITaskFarmDuplicable<I, O> instance = getWorkerStages().get(i);
 			InputPort<I> port = instance.getInputPort();
 			IMonitorablePipe monitorablePipe = null;
 
@@ -212,16 +223,7 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 	 * @return first instance of the worker stages
 	 */
 	public ITaskFarmDuplicable<I, O> getBasicEnclosedStage() {
-		return this.enclosedStageInstances.get(0);
-	}
-
-	/**
-	 * Returns a list of all currently existing worker stages in this task farm.
-	 *
-	 * @return list of all existing worker stages
-	 */
-	public List<ITaskFarmDuplicable<I, O>> getEnclosedStageInstances() {
-		return this.enclosedStageInstances;
+		return this.getWorkerStages().get(0);
 	}
 
 	/**
@@ -238,6 +240,10 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 	@Override
 	/* default */ DynamicMerger<O> getMerger() { // (Used in tests only; hence declared package-private)
 		return (DynamicMerger<O>) super.getMerger();
+	}
+
+	public TaskFarmConfiguration<I, O, T> getConfiguration() {
+		return configuration;
 	}
 
 }

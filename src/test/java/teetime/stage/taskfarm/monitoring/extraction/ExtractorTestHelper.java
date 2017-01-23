@@ -19,8 +19,8 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.pipe.IPipe;
+import teetime.stage.taskfarm.DynamicTaskFarmStage;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
-import teetime.stage.taskfarm.TaskFarmStage;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
@@ -86,7 +86,7 @@ final class ExtractorTestHelper {
 
 	static SingleTaskFarmMonitoringService generateSingleTaskFarmMonitoringServiceWithBehavior() {
 		@SuppressWarnings("unchecked")
-		TaskFarmStage<Integer, Integer, ?> taskFarmStage = (TaskFarmStage<Integer, Integer, ?>) createDummyTaskFarm();
+		DynamicTaskFarmStage<Integer, Integer, ?> taskFarmStage = (DynamicTaskFarmStage<Integer, Integer, ?>) createDummyTaskFarm();
 		SingleTaskFarmMonitoringService service = new SingleTaskFarmMonitoringService(taskFarmStage, null);
 
 		// Plan (boundary=0.4):
@@ -101,7 +101,7 @@ final class ExtractorTestHelper {
 		service.doMeasurement();
 		wait50Millis();
 
-		taskFarmStage.getEnclosedStageInstances().add(createDummyEnclosedStage());
+		taskFarmStage.getWorkerStages().add(createDummyEnclosedStage());
 		service.doMeasurement();
 		wait50Millis();
 		service.doMeasurement();
@@ -109,7 +109,7 @@ final class ExtractorTestHelper {
 		service.doMeasurement();
 		wait50Millis();
 
-		taskFarmStage.getEnclosedStageInstances().add(createDummyEnclosedStage());
+		taskFarmStage.getWorkerStages().add(createDummyEnclosedStage());
 		service.doMeasurement();
 		wait50Millis();
 		service.doMeasurement();
@@ -120,16 +120,15 @@ final class ExtractorTestHelper {
 	}
 
 	static SingleTaskFarmMonitoringService generateEmptySingleTaskFarmMonitoringService() {
-		TaskFarmStage<?, ?, ?> taskFarmStage = createDummyTaskFarm();
+		DynamicTaskFarmStage<?, ?, ?> taskFarmStage = createDummyTaskFarm();
 		SingleTaskFarmMonitoringService service = new SingleTaskFarmMonitoringService(taskFarmStage, null);
 
 		return service;
 	}
 
-	private static TaskFarmStage<?, ?, ?> createDummyTaskFarm() {
-		TaskFarmStage<Integer, Integer, ITaskFarmDuplicable<Integer, Integer>> taskFarmStage = new TaskFarmStage<Integer, Integer, ITaskFarmDuplicable<Integer, Integer>>(
-				createDummyEnclosedStage());
-
+	private static DynamicTaskFarmStage<?, ?, ?> createDummyTaskFarm() {
+		DynamicTaskFarmStage<Integer, Integer, ITaskFarmDuplicable<Integer, Integer>> taskFarmStage;
+		taskFarmStage = new DynamicTaskFarmStage<Integer, Integer, ITaskFarmDuplicable<Integer, Integer>>(createDummyEnclosedStage(), 1);
 		return taskFarmStage;
 	}
 

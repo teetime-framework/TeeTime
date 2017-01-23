@@ -19,8 +19,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import teetime.framework.pipe.IMonitorablePipe;
+import teetime.stage.taskfarm.DynamicTaskFarmStage;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
-import teetime.stage.taskfarm.TaskFarmStage;
 import teetime.stage.taskfarm.adaptation.history.TaskFarmHistoryService;
 import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
 
@@ -29,7 +29,7 @@ import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
  *
  * @author Christian Claus Wiechmann
  */
-public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskFarmStage<?, ?, ?>, TaskFarmMonitoringData> {
+public class SingleTaskFarmMonitoringService implements IMonitoringService<DynamicTaskFarmStage<?, ?, ?>, TaskFarmMonitoringData> {
 
 	private static final long INIT = -1;
 
@@ -39,7 +39,7 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 	/** monitored data **/
 	private final List<TaskFarmMonitoringData> monitoredDatas = new LinkedList<TaskFarmMonitoringData>();
 	/** monitored task farm **/
-	private final TaskFarmStage<?, ?, ?> taskFarmStage;
+	private final DynamicTaskFarmStage<?, ?, ?> taskFarmStage;
 	/** task farm history service to access the latest throughput measurement **/
 	private final TaskFarmHistoryService<?, ?, ?> history;
 
@@ -54,7 +54,7 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 	 * @param history
 	 *            task farm history service to access the latest throughput measurement
 	 */
-	public SingleTaskFarmMonitoringService(final TaskFarmStage<?, ?, ?> taskFarmStage, final TaskFarmHistoryService<?, ?, ?> history) {
+	public SingleTaskFarmMonitoringService(final DynamicTaskFarmStage<?, ?, ?> taskFarmStage, final TaskFarmHistoryService<?, ?, ?> history) {
 		this.taskFarmStage = taskFarmStage;
 		this.history = history;
 	}
@@ -65,7 +65,7 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 	}
 
 	@Override
-	public void addMonitoredItem(final TaskFarmStage<?, ?, ?> taskFarmStage) {
+	public void addMonitoredItem(final DynamicTaskFarmStage<?, ?, ?> taskFarmStage) {
 		throw new IllegalStateException("SingleTaskFarmMonitoringService can only monitor the one Task Farm given to the constructor.");
 	}
 
@@ -77,7 +77,7 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 		}
 
 		TaskFarmMonitoringData monitoringData = new TaskFarmMonitoringData(currentTimestamp - this.startingTimestamp,
-				this.taskFarmStage.getEnclosedStageInstances().size(),
+				this.taskFarmStage.getWorkerStages().size(),
 				getMeanAndSumThroughput(this.taskFarmStage, MeanThroughputType.PULL, true),
 				getMeanAndSumThroughput(this.taskFarmStage, MeanThroughputType.PUSH, true),
 				getMeanAndSumThroughput(this.taskFarmStage, MeanThroughputType.PULL, false),
@@ -86,8 +86,8 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 
 		this.monitoredDatas.add(monitoringData);
 
-		if (this.taskFarmStage.getEnclosedStageInstances().size() > this.maxNumberOfStages) {
-			this.maxNumberOfStages = this.taskFarmStage.getEnclosedStageInstances().size();
+		if (this.taskFarmStage.getWorkerStages().size() > this.maxNumberOfStages) {
+			this.maxNumberOfStages = this.taskFarmStage.getWorkerStages().size();
 		}
 	}
 
@@ -103,12 +103,12 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<TaskF
 	}
 
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-	private double getMeanAndSumThroughput(final TaskFarmStage<?, ?, ?> taskFarmStage, final MeanThroughputType type, final boolean mean) {
+	private double getMeanAndSumThroughput(final DynamicTaskFarmStage<?, ?, ?> taskFarmStage, final MeanThroughputType type, final boolean mean) {
 		double sum = 0;
 		double count = 0;
 
 		try {
-			for (ITaskFarmDuplicable<?, ?> enclosedStage : taskFarmStage.getEnclosedStageInstances()) {
+			for (ITaskFarmDuplicable<?, ?> enclosedStage : taskFarmStage.getWorkerStages()) {
 				IMonitorablePipe inputPipe = (IMonitorablePipe) enclosedStage.getInputPort().getPipe();
 				if (inputPipe != null) {
 					long pullThroughput = 0;

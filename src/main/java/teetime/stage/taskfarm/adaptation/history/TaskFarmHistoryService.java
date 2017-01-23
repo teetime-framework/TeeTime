@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import teetime.framework.pipe.IMonitorablePipe;
+import teetime.stage.taskfarm.DynamicTaskFarmStage;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
-import teetime.stage.taskfarm.TaskFarmStage;
 import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
 
 /**
@@ -39,7 +39,7 @@ import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
 public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/** corresponding task farm **/
-	private final TaskFarmStage<I, O, T> taskFarmStage;
+	private final DynamicTaskFarmStage<I, O, T> taskFarmStage;
 	/** measurement container **/
 	private final ThroughputHistory history;
 
@@ -53,7 +53,7 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	 * @param taskFarmStage
 	 *            specified task farm
 	 */
-	public TaskFarmHistoryService(final TaskFarmStage<I, O, T> taskFarmStage) {
+	public TaskFarmHistoryService(final DynamicTaskFarmStage<I, O, T> taskFarmStage) {
 		this.taskFarmStage = taskFarmStage;
 		this.history = new ThroughputHistory(taskFarmStage.getConfiguration());
 	}
@@ -78,7 +78,7 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 		double sum = 0; // NOPMD
 
 		try {
-			for (ITaskFarmDuplicable<I, O> enclosedStage : this.taskFarmStage.getEnclosedStageInstances()) {
+			for (ITaskFarmDuplicable<I, O> enclosedStage : this.taskFarmStage.getWorkerStages()) {
 				IMonitorablePipe inputPipe = (IMonitorablePipe) enclosedStage.getInputPort().getPipe();
 				if (inputPipe != null) {
 					// we record the throughput measurements as a sum in the history

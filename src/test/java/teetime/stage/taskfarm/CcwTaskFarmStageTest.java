@@ -15,10 +15,8 @@
  */
 package teetime.stage.taskfarm;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,34 +26,27 @@ import org.junit.Test;
 import teetime.framework.Execution;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
-import teetime.stage.taskfarm.monitoring.extraction.AbstractMonitoringDataExporter;
-import teetime.stage.taskfarm.monitoring.extraction.StackedTimePullThroughput2D;
-import teetime.stage.taskfarm.monitoring.extraction.StackedTimePushThroughput2D;
-import teetime.stage.taskfarm.monitoring.extraction.StackedTimeSizeWithCapacity2D;
-import teetime.stage.taskfarm.monitoring.extraction.TimeBoundary2D;
-import teetime.stage.taskfarm.monitoring.extraction.TimeBoundaryMSPullThroughput3D;
-import teetime.stage.taskfarm.monitoring.extraction.TimeBoundaryMSPushThroughput3D;
-import teetime.stage.taskfarm.monitoring.extraction.TimeBoundaryStages3D;
+import teetime.stage.taskfarm.monitoring.extraction.*;
 
-public class TaskFarmStageTest {
+public class CcwTaskFarmStageTest {
 
 	private static final int NUMBER_OF_TEST_ELEMENTS = 50000;
 
 	@Test
 	public void simpleTaskFarmStageTest() throws IOException {
-		final TaskFarmStageTestConfiguration configuration = new TaskFarmStageTestConfiguration(NUMBER_OF_TEST_ELEMENTS);
-		final Execution<TaskFarmStageTestConfiguration> execution = new Execution<TaskFarmStageTestConfiguration>(configuration);
+		final CcwTaskFarmStageTestConfiguration configuration = new CcwTaskFarmStageTestConfiguration(NUMBER_OF_TEST_ELEMENTS);
+		final Execution<CcwTaskFarmStageTestConfiguration> execution = new Execution<CcwTaskFarmStageTestConfiguration>(configuration);
 
 		execution.executeBlocking();
 
-		assertThat(TaskFarmStageTestConfiguration.getNumOfElements(), is(NUMBER_OF_TEST_ELEMENTS));
+		assertThat(CcwTaskFarmStageTestConfiguration.getNumOfElements(), is(NUMBER_OF_TEST_ELEMENTS));
 
 		checkIfLoggingWorks(configuration);
 	}
 
-	private void checkIfLoggingWorks(final TaskFarmStageTestConfiguration configuration) throws IOException {
-		PipeMonitoringService pipeService = configuration.getTaskFarmStage().getPipeMonitoringService();
-		SingleTaskFarmMonitoringService taskFarmService = configuration.getTaskFarmStage().getTaskFarmMonitoringService();
+	private void checkIfLoggingWorks(final CcwTaskFarmStageTestConfiguration configuration) throws IOException {
+		PipeMonitoringService pipeService = configuration.getAdaptationThread().getPipeMonitoringService();
+		SingleTaskFarmMonitoringService taskFarmService = configuration.getAdaptationThread().getTaskFarmMonitoringService();
 		applyExtractors(pipeService, taskFarmService);
 	}
 

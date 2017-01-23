@@ -15,19 +15,14 @@
  */
 package teetime.stage.taskfarm.adaptation.analysis;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import teetime.stage.basic.AbstractFilter;
-import teetime.stage.taskfarm.ITaskFarmDuplicable;
-import teetime.stage.taskfarm.TaskFarmConfiguration;
-import teetime.stage.taskfarm.TaskFarmStage;
-import teetime.stage.taskfarm.adaptation.analysis.algorithm.MeanAlgorithm;
-import teetime.stage.taskfarm.adaptation.analysis.algorithm.RegressionAlgorithm;
-import teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm;
+import teetime.stage.taskfarm.*;
+import teetime.stage.taskfarm.adaptation.analysis.algorithm.*;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 public class TaskFarmAnalysisServiceTest {
@@ -56,7 +51,7 @@ public class TaskFarmAnalysisServiceTest {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private TaskFarmConfiguration createConfiguration() {
-		TaskFarmStage taskFarmStage = new TaskFarmStage(new DummyDuplicableStage());
+		DynamicTaskFarmStage taskFarmStage = new DynamicTaskFarmStage(new DummyDuplicableStage(), 1);
 		TaskFarmConfiguration configuration = taskFarmStage.getConfiguration();
 		return configuration;
 	}

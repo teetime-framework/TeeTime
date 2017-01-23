@@ -15,22 +15,21 @@
  */
 package teetime.stage.taskfarm.adaptation.reconfiguration;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import teetime.stage.basic.AbstractFilter;
+import teetime.stage.taskfarm.DynamicTaskFarmStage;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
-import teetime.stage.taskfarm.TaskFarmStage;
 
 public class TaskFarmReconfigurationCommandServiceTest {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void executionPlanTestA() {
-		TaskFarmStage taskFarmStage = createTaskFarm();
+		DynamicTaskFarmStage taskFarmStage = createTaskFarm();
 		TaskFarmReconfigurationCommandService commandService = new TaskFarmReconfigurationCommandService(taskFarmStage);
 
 		assertThat(commandService.decideExecutionPlan(0.5d), is(equalTo(TaskFarmReconfigurationCommand.ADD)));
@@ -43,7 +42,7 @@ public class TaskFarmReconfigurationCommandServiceTest {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void executionPlanTestB() {
-		TaskFarmStage taskFarmStage = createTaskFarm();
+		DynamicTaskFarmStage taskFarmStage = createTaskFarm();
 		TaskFarmReconfigurationCommandService commandService = new TaskFarmReconfigurationCommandService(taskFarmStage);
 
 		assertThat(commandService.decideExecutionPlan(0.5d), is(equalTo(TaskFarmReconfigurationCommand.ADD)));
@@ -61,8 +60,8 @@ public class TaskFarmReconfigurationCommandServiceTest {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private TaskFarmStage createTaskFarm() {
-		TaskFarmStage taskFarmStage = new TaskFarmStage(new DummyDuplicableStage());
+	private DynamicTaskFarmStage createTaskFarm() {
+		DynamicTaskFarmStage taskFarmStage = new DynamicTaskFarmStage(new DummyDuplicableStage(), 1);
 		return taskFarmStage;
 	}
 

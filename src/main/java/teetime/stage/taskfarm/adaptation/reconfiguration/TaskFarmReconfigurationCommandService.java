@@ -16,9 +16,7 @@
 package teetime.stage.taskfarm.adaptation.reconfiguration;
 
 import teetime.framework.pipe.IMonitorablePipe;
-import teetime.stage.taskfarm.ITaskFarmDuplicable;
-import teetime.stage.taskfarm.TaskFarmConfiguration;
-import teetime.stage.taskfarm.TaskFarmStage;
+import teetime.stage.taskfarm.*;
 import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAlgorithm;
 
 /**
@@ -37,7 +35,7 @@ import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAlgorithm;
 class TaskFarmReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/** corresponding task farm to be reconfigured **/
-	private final TaskFarmStage<I, O, T> taskFarmStage;
+	private final DynamicTaskFarmStage<I, O, T> taskFarmStage;
 	/** remaining time for the performance increase to occur before stage removal **/
 	private int samplesUntilRemove;
 	/** current reconfiguration mode, at the beginning we want to add stages **/
@@ -49,7 +47,7 @@ class TaskFarmReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<
 	 * @param taskFarmStage
 	 *            specified task farm
 	 */
-	TaskFarmReconfigurationCommandService(final TaskFarmStage<I, O, T> taskFarmStage) {
+	TaskFarmReconfigurationCommandService(final DynamicTaskFarmStage<I, O, T> taskFarmStage) {
 		this.taskFarmStage = taskFarmStage;
 		this.samplesUntilRemove = TaskFarmConfiguration.INIT_SAMPLES_UNTIL_REMOVE;
 	}
@@ -76,7 +74,7 @@ class TaskFarmReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<
 	private TaskFarmReconfigurationCommand decideForAddingMode(final double throughputScore) {
 		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE; // NOPMD
 
-		if (this.taskFarmStage.getEnclosedStageInstances().size() >= this.taskFarmStage.getConfiguration().getMaxNumberOfCores()) {
+		if (this.taskFarmStage.getWorkerStages().size() >= this.taskFarmStage.getConfiguration().getMaxNumberOfCores()) {
 			// we do not want to parallelize more than we have (virtual) processors
 			this.currentMode = ReconfigurationMode.REMOVING;
 			command = TaskFarmReconfigurationCommand.NONE;
@@ -115,8 +113,8 @@ class TaskFarmReconfigurationCommandService<I, O, T extends ITaskFarmDuplicable<
 		TaskFarmReconfigurationCommand command = TaskFarmReconfigurationCommand.NONE; // NOPMD
 
 		// we never want to remove the basic stage since it would destroy the pipeline
-		for (int i = 1; i < this.taskFarmStage.getEnclosedStageInstances().size() - 1; i++) {
-			ITaskFarmDuplicable<?, ?> stage = this.taskFarmStage.getEnclosedStageInstances().get(i);
+		for (int i = 1; i < this.taskFarmStage.getWorkerStages().size() - 1; i++) {
+			ITaskFarmDuplicable<?, ?> stage = this.taskFarmStage.getWorkerStages().get(i);
 
 			IMonitorablePipe monitorableInputPipe = (IMonitorablePipe) stage.getInputPort().getPipe();
 			int sizeOfInputQueue = monitorableInputPipe.size();

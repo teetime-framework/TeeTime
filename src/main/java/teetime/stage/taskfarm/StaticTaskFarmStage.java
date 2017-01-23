@@ -15,6 +15,9 @@
  */
 package teetime.stage.taskfarm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import teetime.framework.*;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.merger.Merger;
@@ -37,6 +40,8 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 
 	private final Distributor<I> distributor;
 	private final Merger<O> merger;
+	/** List of all currently existing worker stages */
+	private final List<ITaskFarmDuplicable<I, O>> workerStages;
 
 	/**
 	 * Creates a task farm stage with {@value #MAX_NUMBER_OF_STAGES} worker stages and a pipe capacity of {@value #DEFAULT_PIPE_CAPACITY}.
@@ -68,16 +73,20 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 		}
 		this.distributor = distributor;
 		this.merger = merger;
+		this.workerStages = new ArrayList<ITaskFarmDuplicable<I, O>>();
 
 		this.init(workerStage, numberStages, pipeCapacity);
 	}
 
-	private void init(final T includedStage, final int numberStages, final int pipeCapacity) {
-		for (int i = 0; i < numberStages; i++) {
-			ITaskFarmDuplicable<I, O> workerStage = includedStage.duplicate();
+	private void init(final T workerStage, final int numberStages, final int pipeCapacity) {
+		connectWorkerStage(workerStage, pipeCapacity);
+		workerStage.getInputPort().getOwningStage().declareActive();
 
-			connectWorkerStage(workerStage, pipeCapacity);
-			workerStage.getInputPort().getOwningStage().declareActive();
+		for (int i = 1; i < numberStages; i++) {
+			ITaskFarmDuplicable<I, O> duplicatedWorkerStage = workerStage.duplicate();
+
+			connectWorkerStage(duplicatedWorkerStage, pipeCapacity);
+			duplicatedWorkerStage.getInputPort().getOwningStage().declareActive();
 		}
 
 		if (numberStages > 1) {
@@ -91,6 +100,8 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 
 		final OutputPort<O> stageOutputPort = workerStage.getOutputPort();
 		connectPorts(stageOutputPort, this.merger.getNewInputPort(), pipeCapacity);
+
+		this.workerStages.add(workerStage);
 	}
 
 	/**
@@ -134,6 +145,13 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 
 	protected int getPipeCapacity() {
 		return distributor.getOutputPorts().get(0).getPipe().capacity();
+	}
+
+	/**
+	 * @return a list of all currently existing worker stages
+	 */
+	public List<ITaskFarmDuplicable<I, O>> getWorkerStages() {
+		return workerStages;
 	}
 
 }

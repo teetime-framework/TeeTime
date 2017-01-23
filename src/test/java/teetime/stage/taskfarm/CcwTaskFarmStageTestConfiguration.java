@@ -18,21 +18,18 @@ package teetime.stage.taskfarm;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.framework.CompositeStage;
-import teetime.framework.Configuration;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.*;
 import teetime.stage.InitialElementProducer;
-import teetime.stage.basic.AbstractFilter;
-import teetime.stage.basic.AbstractTransformation;
-import teetime.stage.basic.Sink;
+import teetime.stage.basic.*;
+import teetime.stage.taskfarm.adaptation.AdaptationThread;
 
-public class TaskFarmStageTestConfiguration extends Configuration {
+public class CcwTaskFarmStageTestConfiguration extends Configuration {
 
 	private static volatile int numOfElements = 0;
-	private TaskFarmStage<Long, String, CompositeTestStage> taskFarmStage;
+	private DynamicTaskFarmStage<Long, String, CompositeTestStage> taskFarmStage;
+	private AdaptationThread<Long, String, CompositeTestStage> adaptationThread;
 
-	public TaskFarmStageTestConfiguration(final long numberOfTestElements) {
+	public CcwTaskFarmStageTestConfiguration(final long numberOfTestElements) {
 		this.buildConfiguration(numberOfTestElements);
 	}
 
@@ -43,7 +40,7 @@ public class TaskFarmStageTestConfiguration extends Configuration {
 		}
 		final InitialElementProducer<Long> initialElementProducer = new InitialElementProducer<Long>(values);
 		final CompositeTestStage compositeTestStage = new CompositeTestStage();
-		taskFarmStage = new TaskFarmStage<Long, String, CompositeTestStage>(compositeTestStage, 1000);
+		taskFarmStage = new DynamicTaskFarmStage<Long, String, CompositeTestStage>(compositeTestStage, 1000);
 		taskFarmStage.getConfiguration().setThroughputScoreBoundary(0.2);
 		taskFarmStage.getConfiguration().setThroughputAlgorithm("RegressionAlgorithm");
 		taskFarmStage.getConfiguration().setAdaptationWaitingTimeMillis(50);
@@ -52,6 +49,8 @@ public class TaskFarmStageTestConfiguration extends Configuration {
 
 		connectPorts(initialElementProducer.getOutputPort(), taskFarmStage.getInputPort());
 		connectPorts(taskFarmStage.getOutputPort(), sink.getInputPort());
+
+		adaptationThread = new AdaptationThread<Long, String, CompositeTestStage>(taskFarmStage);
 	}
 
 	private static class CompositeTestStage extends CompositeStage implements ITaskFarmDuplicable<Long, String> {
@@ -83,7 +82,7 @@ public class TaskFarmStageTestConfiguration extends Configuration {
 		@Override
 		protected void execute(final Long element) {
 			final Long x = element + 1;
-			synchronized (TaskFarmStageTestConfiguration.class) {
+			synchronized (CcwTaskFarmStageTestConfiguration.class) {
 				numOfElements++;
 			}
 			this.outputPort.send(x.toString());
@@ -104,12 +103,12 @@ public class TaskFarmStageTestConfiguration extends Configuration {
 	}
 
 	public static int getNumOfElements() {
-		synchronized (TaskFarmStageTestConfiguration.class) {
+		synchronized (CcwTaskFarmStageTestConfiguration.class) {
 			return numOfElements;
 		}
 	}
 
-	public TaskFarmStage<Long, String, CompositeTestStage> getTaskFarmStage() {
-		return taskFarmStage;
+	public AdaptationThread<Long, String, CompositeTestStage> getAdaptationThread() {
+		return adaptationThread;
 	}
 }

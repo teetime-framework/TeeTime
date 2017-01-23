@@ -15,8 +15,8 @@
  */
 package teetime.stage.taskfarm.adaptation.reconfiguration;
 
+import teetime.stage.taskfarm.DynamicTaskFarmStage;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
-import teetime.stage.taskfarm.TaskFarmStage;
 import teetime.stage.taskfarm.adaptation.analysis.TaskFarmAnalysisService;
 
 /**
@@ -34,10 +34,9 @@ import teetime.stage.taskfarm.adaptation.analysis.TaskFarmAnalysisService;
  */
 public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
+	private final DynamicTaskFarmStage<I, O, T> taskFarmStage;
 	/** corresponding command service which includes the decision tree **/
 	private final TaskFarmReconfigurationCommandService<I, O, T> reconfigurationCommandService;
-	/** corresponding controller to actually add or remove worker stages of the task farm **/
-	// private final TaskFarmController<I, O> controller;
 
 	/**
 	 * Create a task farm reconfiguration service for a specified task farm.
@@ -45,9 +44,9 @@ public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<
 	 * @param taskFarmStage
 	 *            specified task farm
 	 */
-	public TaskFarmReconfigurationService(final TaskFarmStage<I, O, T> taskFarmStage) {
+	public TaskFarmReconfigurationService(final DynamicTaskFarmStage<I, O, T> taskFarmStage) {
+		this.taskFarmStage = taskFarmStage;
 		this.reconfigurationCommandService = new TaskFarmReconfigurationCommandService<I, O, T>(taskFarmStage);
-		// this.controller = new TaskFarmController<I, O>(taskFarmStage);
 	}
 
 	/**
@@ -62,10 +61,10 @@ public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<
 
 		switch (command) {
 		case ADD:
-			// this.controller.addStageToTaskFarm();
+			taskFarmStage.addStageAtRuntime();
 			break;
 		case REMOVE:
-			// this.controller.removeStageFromTaskFarm();
+			taskFarmStage.removeStageAtRuntime();
 			break;
 		case NONE:
 		default:
