@@ -75,6 +75,7 @@ public class QuicksortSolution extends AbstractDivideAndConquerSolution<Quicksor
 
 	@Override
 	public QuicksortSolution combine(final QuicksortSolution otherSolution) {
+		// TODO update indices
 		return otherSolution;
 	}
 }
