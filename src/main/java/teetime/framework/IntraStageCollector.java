@@ -29,8 +29,9 @@ public class IntraStageCollector implements ITraverserVisitor {
 
 	@Override
 	public VisitorBehavior visit(final AbstractStage stage) {
-		if (stage.equals(startStage) || stage.getOwningThread() == null /* before execution */
-				|| stage.getOwningThread() == startStage.getOwningThread() /* while execution */) {
+		// if (stage.equals(startStage) || stage.getOwningThread() == null /* before execution */
+		// || stage.getOwningThread() == startStage.getOwningThread() /* while execution */) {
+		if (stage.equals(startStage) || !stage.isActive()) {
 			return VisitorBehavior.CONTINUE; // NOPMD two return stmts make the code clearer to understand
 		}
 		return VisitorBehavior.STOP;

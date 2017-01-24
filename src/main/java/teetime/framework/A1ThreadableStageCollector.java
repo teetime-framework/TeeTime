@@ -38,11 +38,11 @@ class A1ThreadableStageCollector implements ITraverserVisitor {
 			stage.declareActive();
 		}
 
-		if (stage.isActive() && !threadableStages.contains(stage) && stage.getCurrentState() == StageState.CREATED) {
+		if (stage.isActive() && !threadableStages.contains(stage)) {
 			threadableStages.add(stage);
 		}
-		// visitor termination condition: stop if the stage already runs or has been terminated
-		return stage.getCurrentState() == StageState.CREATED ? VisitorBehavior.CONTINUE : VisitorBehavior.STOP;
+
+		return VisitorBehavior.CONTINUE;
 	}
 
 	@Override

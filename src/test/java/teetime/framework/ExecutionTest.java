@@ -15,17 +15,10 @@
  */
 package teetime.framework;
 
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import teetime.stage.InitialElementProducer;
@@ -216,9 +209,18 @@ public class ExecutionTest {
 
 	@Test
 	public void mainMethod() {
-		assertFalse(MainMethodTestConfig.executed);
+		assertThat(MainMethodTestConfig.executed, is(false));
 		Execution.main("teetime.framework.MainMethodTestConfig");
-		assertTrue(MainMethodTestConfig.executed);
+		assertThat(MainMethodTestConfig.executed, is(true));
+	}
+
+	@Test
+	public void testDifferentOwningThreads() {
+		TestConfiguration config = new TestConfiguration();
+		new Execution<TestConfiguration>(config); // sets owning thread for each stage
+
+		Thread wordCounterThread = config.distributor.getOutputPorts().get(0).pipe.getTargetPort().getOwningStage().getOwningThread();
+		assertThat(config.distributor.getOwningThread(), is(not(wordCounterThread)));
 	}
 
 }

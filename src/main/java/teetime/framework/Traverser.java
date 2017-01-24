@@ -62,6 +62,11 @@ public class Traverser {
 	}
 
 	public void traverse(final AbstractStage stage) {
+		// termination condition: stop if the stage already runs or has been terminated
+		if (stage.getCurrentState() != StageState.CREATED) {
+			return; // NOPMD sequential termination conditions are more readable
+		}
+
 		VisitorBehavior behavior = traverserVisitor.visit(stage);
 		if (behavior == VisitorBehavior.STOP || !visitedStages.add(stage)) {
 			return;
@@ -81,11 +86,13 @@ public class Traverser {
 	}
 
 	private void visitAndTraverse(final AbstractPort<?> port, final Direction direction) {
+		if (port.getPipe() == null) {
+			throw new IllegalStateException("2003 - The port " + port + " is not connected with another port.");
+		}
+
 		if (port.getPipe() instanceof DummyPipe) {
 			traverserVisitor.visit((DummyPipe) port.getPipe(), port);
 			return;
-		} else if (port.getPipe() == null) {
-			throw new IllegalStateException("2003 - The port " + port + " is not connected with another port.");
 		}
 
 		VisitorBehavior behavior = traverserVisitor.visit(port);

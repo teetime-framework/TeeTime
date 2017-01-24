@@ -46,7 +46,7 @@ final class DynamicConfigurationContext {
 			LOGGER.warn("Overwriting existing pipe while connecting stages " +
 					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
 		}
-		// TODO: Unsynched?
+		// TODO: unbounded?
 		new UnboundedSynchedPipe<T>(sourcePort, targetPort);
 	}
 

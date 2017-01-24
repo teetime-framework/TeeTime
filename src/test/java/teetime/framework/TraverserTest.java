@@ -15,89 +15,100 @@
  */
 package teetime.framework;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import teetime.framework.Traverser.VisitorBehavior;
+import teetime.framework.pipe.DummyPipe;
 import teetime.stage.Counter;
-import teetime.stage.CountingMapMerger;
-import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.Sink;
-import teetime.stage.basic.distributor.Distributor;
-import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
-import teetime.stage.basic.merger.Merger;
-import teetime.stage.io.File2SeqOfWords;
-import teetime.stage.string.WordCounter;
-import teetime.stage.util.CountingMap;
 
 public class TraverserTest {
 
-	@Test
-	public void traverse() {
-		TestConfiguration tc = new TestConfiguration();
-		new Execution<TestConfiguration>(tc);
+	private static class DoNothingVisitor implements ITraverserVisitor {
 
-		Traverser traversor = new Traverser(new IntraStageCollector(tc.init));
-		traversor.traverse(tc.init);
-
-		Set<AbstractStage> comparingStages = new HashSet<AbstractStage>();
-		comparingStages.add(tc.init);
-		comparingStages.add(tc.f2b);
-		comparingStages.add(tc.distributor);
-
-		OutputPort<?> distributorOutputPort0 = tc.distributor.getOutputPorts().get(0);
-		assertThat(tc.distributor.getOwningThread(), is(not(distributorOutputPort0.pipe.getTargetPort().getOwningStage().getOwningThread())));
-		assertEquals(comparingStages, traversor.getVisitedStages());
-	}
-
-	// WordCounterConfiguration
-	private static class TestConfiguration extends Configuration {
-
-		public final InitialElementProducer<File> init;
-		public final File2SeqOfWords f2b;
-		public Distributor<String> distributor;
-
-		public TestConfiguration() {
-			int threads = 2;
-			init = new InitialElementProducer<File>(new File(""));
-			f2b = new File2SeqOfWords("UTF-8", 512);
-			distributor = new Distributor<String>(new NonBlockingRoundRobinStrategy());
-			CountingMapMerger<String> result = new CountingMapMerger<String>();
-
-			// last part
-			final Merger<CountingMap<String>> merger = new Merger<CountingMap<String>>();
-			// CountingMapMerger (already as field)
-
-			// Connecting the stages of the first part of the config
-			connectPorts(init.getOutputPort(), f2b.getInputPort());
-			connectPorts(f2b.getOutputPort(), distributor.getInputPort());
-
-			// Middle part... multiple instances of WordCounter are created and connected to the merger and distrubuter stages
-			for (int i = 0; i < threads; i++) {
-				// final InputPortSizePrinter<String> inputPortSizePrinter = new InputPortSizePrinter<String>();
-				final WordCounter wc = new WordCounter();
-				// intraFact.create(inputPortSizePrinter.getOutputPort(), wc.getInputPort());
-
-				connectPorts(distributor.getNewOutputPort(), wc.getInputPort());
-				connectPorts(wc.getOutputPort(), merger.getNewInputPort());
-				// Add WordCounter as a threadable stage, so it runs in its own thread
-				wc.getInputPort().getOwningStage().declareActive();
-			}
-
-			// Connect the stages of the last part
-			connectPorts(merger.getOutputPort(), result.getInputPort());
-
-			// Add the first and last part to the threadable stages
-			merger.declareActive();
+		@Override
+		public VisitorBehavior visit(final AbstractStage stage) {
+			return VisitorBehavior.CONTINUE;
 		}
 
+		@Override
+		public VisitorBehavior visit(final AbstractPort<?> port) {
+			return VisitorBehavior.CONTINUE;
+		}
+
+		@Override
+		public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
+			// do nothing
+		}
+
+	}
+
+	@Test
+	public void testCreatedStage() throws Exception {
+		TestConfiguration config = new TestConfiguration();
+		// config.init.onValidating(Collections.<InvalidPortConnection>emptyList());
+		// new Execution<TestConfiguration>(config); // validates
+
+		Traverser traverser = new Traverser(new DoNothingVisitor());
+		traverser.traverse(config.init);
+
+		assertThat(traverser.getVisitedStages().size(), is(3 + 2 * 3 + 2));
+	}
+
+	@Test
+	public void testValidatedStage() throws Exception {
+		TestConfiguration config = new TestConfiguration();
+		// config.init.onValidating(Collections.<InvalidPortConnection>emptyList());
+		new Execution<TestConfiguration>(config); // validates
+
+		Traverser traverser = new Traverser(new DoNothingVisitor());
+		traverser.traverse(config.init);
+
+		assertThat(traverser.getVisitedStages(), is(empty()));
+	}
+
+	@Test
+	public void testStartedStage() throws Exception {
+		TestConfiguration config = new TestConfiguration();
+		// config.init.onValidating(Collections.<InvalidPortConnection>emptyList());
+		new Execution<TestConfiguration>(config); // validates and sets owning thread of each stage
+		config.init.onStarting(); // requires a non-null owning thread
+
+		Traverser traverser = new Traverser(new DoNothingVisitor());
+		traverser.traverse(config.init);
+
+		assertThat(traverser.getVisitedStages(), is(empty()));
+	}
+
+	@Test
+	public void testTerminatingStage() throws Exception {
+		TestConfiguration config = new TestConfiguration();
+		// config.init.onValidating(Collections.<InvalidPortConnection>emptyList());
+		new Execution<TestConfiguration>(config); // validates and sets owning thread of each stage
+		config.init.onStarting(); // requires a non-null owning thread
+		config.init.terminateStage();
+
+		Traverser traverser = new Traverser(new DoNothingVisitor());
+		traverser.traverse(config.init);
+
+		assertThat(traverser.getVisitedStages(), is(empty()));
+	}
+
+	@Test
+	public void testTerminatedStage() throws Exception {
+		TestConfiguration config = new TestConfiguration();
+		// config.init.onValidating(Collections.<InvalidPortConnection>emptyList());
+		new Execution<TestConfiguration>(config); // validates and sets owning thread of each stage
+		config.init.onStarting(); // requires a non-null owning thread
+		config.init.onTerminating();
+
+		Traverser traverser = new Traverser(new DoNothingVisitor());
+		traverser.traverse(config.init);
+
+		assertThat(traverser.getVisitedStages(), is(empty()));
 	}
 
 	@Test(expected = IllegalStateException.class)

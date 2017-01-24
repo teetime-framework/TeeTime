@@ -15,10 +15,6 @@
  */
 package teetime.framework;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,12 +26,11 @@ abstract class AbstractRunnableStage implements Runnable {
 	private static final String TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION = "Terminating thread due to the following exception: ";
 
 	private final StopWatch stopWatch = new StopWatch();
+	private long durationsInNs;
 
 	protected final AbstractStage stage;
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
-
-	public static final Map<AbstractStage, Long> durationsInNs = Collections.synchronizedMap(new LinkedHashMap<AbstractStage, Long>());
 
 	protected AbstractRunnableStage(final AbstractStage stage) {
 		if (stage == null) {
@@ -68,7 +63,7 @@ abstract class AbstractRunnableStage implements Runnable {
 				stage.getOwningContext().abortConfigurationRun();
 			} finally {
 				stopWatch.end();
-				durationsInNs.put(stage, stopWatch.getDurationInNs());
+				durationsInNs = stopWatch.getDurationInNs();
 				afterStageExecution();
 			}
 
@@ -81,6 +76,16 @@ abstract class AbstractRunnableStage implements Runnable {
 		}
 
 		logger.debug("Finished runnable stage. ({})", stage.getId());
+	}
+
+	/**
+	 * Only accessible after thread termination.
+	 *
+	 * @return the thread's execution time in nanoseconds
+	 */
+	// TODO not yet used and accessed reasonable
+	public long getDurationsInNs() {
+		return durationsInNs;
 	}
 
 	protected abstract void beforeStageExecution() throws InterruptedException;

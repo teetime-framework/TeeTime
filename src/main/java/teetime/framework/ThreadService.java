@@ -15,13 +15,7 @@
  */
 package teetime.framework;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,14 +48,14 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 	}
 
 	@Override
-	void onInitialize() {
+	/* default */ void onInitialize() {
 		Collection<AbstractStage> startStages = configuration.getStartStages();
 
 		Set<AbstractStage> newThreadableStages = initialize(startStages);
 		startThreads(newThreadableStages);
 	}
 
-	void startStageAtRuntime(final AbstractStage newStage) {
+	/* default */ void startStageAtRuntime(final AbstractStage newStage) {
 		newStage.declareActive();
 		List<AbstractStage> newStages = Arrays.asList(newStage);
 
@@ -133,7 +127,8 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 	}
 
 	private void sendStartingSignal(final Set<AbstractStage> newThreadableStages) {
-		synchronized (newThreadableStages) {// TODO why synchronized?
+		// TODO why synchronized?
+		synchronized (newThreadableStages) {
 			for (AbstractStage stage : newThreadableStages) {
 				((TeeTimeThread) stage.getOwningThread()).sendStartingSignal();
 			}
@@ -141,12 +136,12 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 	}
 
 	@Override
-	void onExecute() {
+	/* default */ void onExecute() {
 		sendStartingSignal(threadableStages);
 	}
 
 	@Override
-	void onTerminate() {
+	/* default */ void onTerminate() {
 		abortStages(threadableStages);
 	}
 

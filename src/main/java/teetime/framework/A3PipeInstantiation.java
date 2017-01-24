@@ -22,12 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.Traverser.VisitorBehavior;
-import teetime.framework.pipe.BoundedSynchedPipe;
-import teetime.framework.pipe.DummyPipe;
-import teetime.framework.pipe.IPipe;
-import teetime.framework.pipe.InstantiationPipe;
-import teetime.framework.pipe.UnboundedSynchedPipe;
-import teetime.framework.pipe.UnsynchedPipe;
+import teetime.framework.pipe.*;
 
 /**
  * Automatically instantiates the correct pipes
@@ -59,7 +54,7 @@ class A3PipeInstantiation implements ITraverserVisitor {
 	@Override
 	public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
 		if (LOGGER.isInfoEnabled()) {
-			LOGGER.info("Unconnected port " + port + " in stage " + port.getOwningStage().getId());
+			LOGGER.info("Unconnected port {} in stage {}", port, port.getOwningStage().getId());
 		}
 	}
 

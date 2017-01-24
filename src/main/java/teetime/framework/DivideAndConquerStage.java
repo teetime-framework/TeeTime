@@ -20,12 +20,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
 
-import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
-import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
-import teetime.framework.divideandconquer.DividedDCProblem;
-import teetime.framework.signal.ISignal;
-import teetime.framework.signal.StartingSignal;
-import teetime.framework.signal.TerminatingSignal;
+import teetime.framework.divideandconquer.*;
+import teetime.framework.signal.*;
 
 /**
  * A stage to solve divide and conquer problems
@@ -42,6 +38,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 
 	private static final int DEFAULT_THRESHOLD = Runtime.getRuntime().availableProcessors();
 
+	/** shared counter indicating the number of copied instances */
 	private final AtomicInteger numCopiedInstances;
 	private final int maxCopiedInstances;
 	private boolean firstExecution;
@@ -128,38 +125,10 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	}
 
 	/**
-	 * @return <code>InputPort</code>
-	 */
-	public final InputPort<S> getLeftInputPort() {
-		return this.leftInputPort;
-	}
-
-	/**
-	 * @return <code>InputPort</code>
-	 */
-	public final InputPort<S> getRightInputPort() {
-		return this.rightInputPort;
-	}
-
-	/**
 	 * @return <code>OutputPort</code>
 	 */
 	public final OutputPort<S> getOutputPort() {
 		return this.outputPort;
-	}
-
-	/**
-	 * @return <code>OutputPort</code>
-	 */
-	public final OutputPort<P> getleftOutputPort() {
-		return this.leftOutputPort;
-	}
-
-	/**
-	 * @return <code>OutputPort</code>
-	 */
-	public final OutputPort<P> getrightOutputPort() {
-		return this.rightOutputPort;
 	}
 
 	/**
@@ -220,8 +189,8 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 					createCopies();
 				}
 				DividedDCProblem<P> dividedProblem = problem.divide();
-				this.getleftOutputPort().send(dividedProblem.leftProblem); // first recursive call
-				this.getrightOutputPort().send(dividedProblem.rightProblem); // second recursive call
+				this.leftOutputPort.send(dividedProblem.leftProblem); // first recursive call
+				this.rightOutputPort.send(dividedProblem.rightProblem); // second recursive call
 			}
 		}
 		return problem != null;
