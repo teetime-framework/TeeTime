@@ -4,13 +4,7 @@ package teetime.configbuilder;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.AbstractProducerStage;
-import teetime.framework.AbstractStage;
-import teetime.framework.Configuration;
-import teetime.framework.Execution;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.*;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.AbstractTransformation;
 import teetime.stage.basic.ITransformation;
@@ -124,9 +118,19 @@ public class Config<P> {
 
 		final Configuration config = Config.from(new InitialElementProducer<String>(Arrays.asList("uno", "dos", "tres")))
 				.to(new ToUpperCaseStage())
-				.to(TransfomerStage.of(new ToLowerCase(), s -> s.getInputPort(), s -> s.getOutputPort()))
+				.to(TransfomerStage.of(new ToLowerCase(), new Function<ToLowerCase, InputPort<String>>() {
+					@Override
+					public InputPort<String> apply(final ToLowerCase s) {
+						return s.getInputPort();
+					}
+				}, new Function<ToLowerCase, OutputPort<String>>() {
+					@Override
+					public OutputPort<String> apply(final ToLowerCase s) {
+						return s.getOutputPort();
+					}
+				}))
 				.to(new StringLengthStage())
-				.end(new Printer<Object>());
+				.end(new Printer<Integer>());
 
 		final Execution<Configuration> execution = new Execution<Configuration>(config);
 		execution.executeBlocking();
