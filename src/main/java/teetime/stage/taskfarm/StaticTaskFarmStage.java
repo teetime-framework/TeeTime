@@ -44,7 +44,12 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 	private final List<ITaskFarmDuplicable<I, O>> workerStages;
 
 	/**
-	 * Creates a task farm stage with {@value #MAX_NUMBER_OF_STAGES} worker stages and a pipe capacity of {@value #DEFAULT_PIPE_CAPACITY}.
+	 * Creates a task farm stage with <i>n</i> worker stages and a pipe capacity of {@value #DEFAULT_PIPE_CAPACITY}, where <i>n</i>
+	 * is
+	 *
+	 * <pre>
+	 * Runtime.getRuntime().availableProcessors()
+	 * </pre>
 	 *
 	 * @param workerStage
 	 */
