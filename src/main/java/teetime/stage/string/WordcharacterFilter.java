@@ -15,8 +15,7 @@
  */
 package teetime.stage.string;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractFilter;
 
 /**
  * Receives a string and passes it with removed punctuation and similar characters on to the next stage. Only [a-zA-Z ] will be passed on.
@@ -26,18 +25,12 @@ import teetime.framework.OutputPort;
  * @author Nelson Tavares de Sousa
  *
  */
-public final class WordcharacterFilter extends AbstractConsumerStage<String> {
-
-	private final OutputPort<String> outputPort = this.createOutputPort();
+public final class WordcharacterFilter extends AbstractFilter<String> {
 
 	@Override
 	protected void execute(final String element) {
 		this.outputPort.send(element.replaceAll("[^a-zA-Z ]", ""));
 
-	}
-
-	public OutputPort<String> getOutputPort() {
-		return this.outputPort;
 	}
 
 }

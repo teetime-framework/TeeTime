@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import teetime.framework.*;
+import teetime.stage.basic.ITransformation;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.merger.Merger;
 
@@ -34,7 +35,7 @@ import teetime.stage.basic.merger.Merger;
  * @param <T>
  *            Type of the parallelized stage
  */
-public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends CompositeStage {
+public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends CompositeStage implements ITransformation<I, O> {
 
 	private static final int MAX_NUMBER_OF_STAGES = Runtime.getRuntime().availableProcessors();
 
@@ -114,6 +115,7 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 	 *
 	 * @return input port of the task farm
 	 */
+	@Override
 	public InputPort<I> getInputPort() {
 		return this.distributor.getInputPort();
 	}
@@ -123,6 +125,7 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 	 *
 	 * @return output port of the task farm
 	 */
+	@Override
 	public OutputPort<O> getOutputPort() {
 		return this.merger.getOutputPort();
 	}
