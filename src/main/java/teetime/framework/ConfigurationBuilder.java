@@ -123,7 +123,7 @@ public class ConfigurationBuilder {
 
 		final Configuration config = ConfigurationBuilder.from(new InitialElementProducer<String>(Arrays.asList("uno", "dos", "tres")))
 				.to(new ToUpperCaseStage())
-				.to(TransfomerStage.of(new ToLowerCase(), s -> s.getInputPort(), s -> s.getOutputPort()))
+				.to(new ToLowerCase(), s -> s.getInputPort(), s -> s.getOutputPort())
 				.to(new StringLengthStage())
 				.end(new Printer<Integer>());
 
