@@ -15,9 +15,7 @@
  */
 package teetime.util.framework.concurrent.queue;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -39,12 +37,12 @@ public final class PCBlockingQueue<E> implements BlockingQueue<E> {
 
 	@Override
 	public void put(final E e) throws InterruptedException {
-		putStrategy.backoffOffer(q, e); // internally calls "offer(e)"
+		putStrategy.backoffOffer(this, e); // internally calls "offer(e)"
 	}
 
 	@Override
 	public E take() throws InterruptedException {
-		return takeStrategy.waitPoll(q);
+		return takeStrategy.waitPoll(this);
 	}
 
 	@Override
