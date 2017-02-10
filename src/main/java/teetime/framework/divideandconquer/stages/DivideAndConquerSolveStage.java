@@ -15,12 +15,9 @@
  */
 package teetime.framework.divideandconquer.stages;
 
-import teetime.framework.AbstractStage;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
-import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
-import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
-import teetime.framework.divideandconquer.DividedDCProblem;
+import teetime.framework.*;
+import teetime.framework.divideandconquer.*;
+import teetime.stage.basic.ITransformation;
 
 /**
  * A simple stage to solve divide and conquer problems
@@ -33,7 +30,8 @@ import teetime.framework.divideandconquer.DividedDCProblem;
  * @param <S>
  *            type of elements that represent the solution to a problem.
  */
-public class DivideAndConquerSolveStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage {
+public class DivideAndConquerSolveStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage
+		implements ITransformation<P, S> {
 
 	private final InputPort<P> inputPort = this.createInputPort();
 	private final OutputPort<S> outputPort = this.createOutputPort();
@@ -45,6 +43,7 @@ public class DivideAndConquerSolveStage<P extends AbstractDivideAndConquerProble
 	/**
 	 * @return <code>InputPort</code>
 	 */
+	@Override
 	public final InputPort<P> getInputPort() {
 		return this.inputPort;
 	}
@@ -52,6 +51,7 @@ public class DivideAndConquerSolveStage<P extends AbstractDivideAndConquerProble
 	/**
 	 * @return <code>OutputPort</code>
 	 */
+	@Override
 	public final OutputPort<S> getOutputPort() {
 		return this.outputPort;
 	}
