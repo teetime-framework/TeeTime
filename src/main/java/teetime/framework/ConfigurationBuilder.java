@@ -65,7 +65,7 @@ public class ConfigurationBuilder {
 			final InputPort<I> inputPort = stage.getInputPort();
 			final OutputPort<O> outputPort = stage.getOutputPort();
 
-			ConfigurationBuilder.this.configuration.connectPorts(this.lastPort, inputPort, 4); // TODO 4 hard coded
+			ConfigurationBuilder.this.configuration.connectPorts(this.lastPort, inputPort);
 
 			return new Connection<O>(outputPort);
 		}
@@ -78,7 +78,7 @@ public class ConfigurationBuilder {
 
 		public Configuration end(final AbstractConsumerStage<I> stage) {
 			final InputPort<I> inputPort = stage.getInputPort();
-			ConfigurationBuilder.this.configuration.connectPorts(this.lastPort, inputPort, 4); // TODO 4 hard coded
+			ConfigurationBuilder.this.configuration.connectPorts(this.lastPort, inputPort);
 
 			return ConfigurationBuilder.this.configuration;
 		}
