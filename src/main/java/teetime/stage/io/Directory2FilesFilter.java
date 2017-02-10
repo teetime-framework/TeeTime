@@ -20,12 +20,9 @@ import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractFilter;
 
-public final class Directory2FilesFilter extends AbstractConsumerStage<File> {
-
-	private final OutputPort<File> outputPort = this.createOutputPort();
+public final class Directory2FilesFilter extends AbstractFilter<File> {
 
 	private FileFilter filter;
 	private Comparator<File> fileComparator;
@@ -77,7 +74,7 @@ public final class Directory2FilesFilter extends AbstractConsumerStage<File> {
 		}
 
 		for (final File file : inputFiles) {
-			outputPort.send(file);
+			this.outputPort.send(file);
 		}
 	}
 
@@ -95,10 +92,6 @@ public final class Directory2FilesFilter extends AbstractConsumerStage<File> {
 
 	public void setFileComparator(final Comparator<File> fileComparator) {
 		this.fileComparator = fileComparator;
-	}
-
-	public OutputPort<File> getOutputPort() {
-		return outputPort;
 	}
 
 }
