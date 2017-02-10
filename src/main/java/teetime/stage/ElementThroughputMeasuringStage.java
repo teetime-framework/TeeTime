@@ -19,14 +19,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import teetime.framework.AbstractConsumerStage;
 import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractFilter;
 
-public final class ElementThroughputMeasuringStage<T> extends AbstractConsumerStage<T> {
+public final class ElementThroughputMeasuringStage<T> extends AbstractFilter<T> {
 
 	private final InputPort<Long> triggerInputPort = this.createInputPort();
-	private final OutputPort<T> outputPort = this.createOutputPort();
 
 	private long numPassedElements;
 	private long lastTimestampInNs;
@@ -41,7 +39,7 @@ public final class ElementThroughputMeasuringStage<T> extends AbstractConsumerSt
 		}
 		this.numPassedElements++;
 
-		outputPort.send(element);
+		this.outputPort.send(element);
 	}
 
 	@Override
@@ -87,10 +85,6 @@ public final class ElementThroughputMeasuringStage<T> extends AbstractConsumerSt
 
 	public InputPort<Long> getTriggerInputPort() {
 		return this.triggerInputPort;
-	}
-
-	public OutputPort<T> getOutputPort() {
-		return outputPort;
 	}
 
 }

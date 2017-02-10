@@ -20,21 +20,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
+import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractFilter;
 
-public final class CipherStage extends AbstractConsumerStage<byte[]> {
+public final class CipherStage extends AbstractFilter<byte[]> {
 
-	private final OutputPort<byte[]> outputPort = this.createOutputPort();
 	private Cipher cipher;
 
 	public enum CipherMode {
@@ -53,8 +46,7 @@ public final class CipherStage extends AbstractConsumerStage<byte[]> {
 		SecretKey secretKey = null;
 
 		try {
-			secretKey = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").
-					generateSecret(keySpec);
+			secretKey = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").generateSecret(keySpec);
 		} catch (final InvalidKeySpecException e1) {
 			throw new IllegalStateException(e1);
 		} catch (final NoSuchAlgorithmException e1) {
@@ -89,10 +81,6 @@ public final class CipherStage extends AbstractConsumerStage<byte[]> {
 		} catch (BadPaddingException e) {
 			throw new IllegalStateException(e);
 		}
-	}
-
-	public OutputPort<byte[]> getOutputPort() {
-		return this.outputPort;
 	}
 
 }
