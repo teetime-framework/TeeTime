@@ -1,30 +1,56 @@
+/**
+ * Copyright © 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-package teetime.configbuilder;
+package teetime.framework;
 
 import java.util.Arrays;
 import java.util.function.Function;
 
-import teetime.framework.*;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.AbstractTransformation;
 import teetime.stage.basic.ITransformation;
 import teetime.stage.io.Printer;
 import teetime.stage.string.ToLowerCase;
 
+/**
+ * @author Sören Henning
+ *
+ * @since 3.0
+ *
+ */
 public class ConfigurationBuilder {
 
-	private final Configuration configuration = new Configuration();
+	private final Configuration configuration;
 
-	private ConfigurationBuilder() {}
+	private ConfigurationBuilder(final Configuration configuration) {
+		this.configuration = configuration;
+	}
 
 	private <O> ConfigurationBuilder.Connection<O> start(final AbstractProducerStage<O> stage) {
 		final OutputPort<O> outputPort = stage.getOutputPort();
 		return new Connection<O>(outputPort);
 	}
 
-	public static <O> ConfigurationBuilder.Connection<O> from(final AbstractProducerStage<O> stage) {
-		final ConfigurationBuilder config = new ConfigurationBuilder();
+	protected static <O> ConfigurationBuilder.Connection<O> create(final Configuration configuration, final AbstractProducerStage<O> stage) {
+		final ConfigurationBuilder config = new ConfigurationBuilder(configuration);
 		return config.start(stage);
+	}
+
+	public static <O> ConfigurationBuilder.Connection<O> from(final AbstractProducerStage<O> stage) {
+		return create(new Configuration(), stage);
 	}
 
 	public class Connection<I> {
