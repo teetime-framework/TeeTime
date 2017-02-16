@@ -17,13 +17,18 @@ package teetime.examples.quicksort;
 
 import java.util.List;
 
-import teetime.framework.Configuration;
-import teetime.framework.DivideAndConquerStage;
+import teetime.framework.*;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.quicksort.QuicksortProblem;
 import teetime.stage.quicksort.QuicksortSolution;
 
+/**
+ * Same configuration as {@link QuicksortConfiguration} but created with a {@link ConfigurationBuilder}.
+ *
+ * @author Sören Henning
+ *
+ */
 public class QuicksortConfigurationFromBuilder extends Configuration {
 
 	public QuicksortConfigurationFromBuilder(final List<QuicksortProblem> inputs, final List<QuicksortSolution> results) {
