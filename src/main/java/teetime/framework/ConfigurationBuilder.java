@@ -70,7 +70,6 @@ public class ConfigurationBuilder {
 			return new Connection<O>(outputPort);
 		}
 
-		// Not sure if should be part of the builder or should be used by "to(new MyStage(), s -> s.getMyInputPort(), s -> s.getMyOutputPort()"
 		public <S extends AbstractStage, O> Connection<O> to(final S stage, final Function<S, InputPort<I>> inputPort, final Function<S, OutputPort<O>> outputPort) {
 			final ITransformation<I, O> transformerStage = TransfomerStage.of(stage, inputPort, outputPort);
 			return this.to(transformerStage);
@@ -89,8 +88,7 @@ public class ConfigurationBuilder {
 
 	}
 
-	// TODO outsource to own stage
-	public static class TransfomerStage<I, O> implements ITransformation<I, O> {
+	private static class TransfomerStage<I, O> implements ITransformation<I, O> {
 
 		private final InputPort<I> inputPort;
 		private final OutputPort<O> outputPort;
