@@ -22,6 +22,7 @@ import com.carrotsearch.hppc.IntObjectMap;
 
 import teetime.framework.divideandconquer.*;
 import teetime.framework.signal.*;
+import teetime.stage.basic.ITransformation;
 
 /**
  * A stage to solve divide and conquer problems
@@ -34,7 +35,8 @@ import teetime.framework.signal.*;
  * @param <S>
  *            type of elements that represent the solution to a problem.
  */
-public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage {
+public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage
+		implements ITransformation<P, S> {
 
 	private static final int DEFAULT_THRESHOLD = Runtime.getRuntime().availableProcessors();
 
@@ -120,6 +122,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	/**
 	 * @return <code>InputPort</code>
 	 */
+	@Override
 	public final InputPort<P> getInputPort() {
 		return this.inputPort;
 	}
@@ -127,6 +130,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	/**
 	 * @return <code>OutputPort</code>
 	 */
+	@Override
 	public final OutputPort<S> getOutputPort() {
 		return this.outputPort;
 	}
