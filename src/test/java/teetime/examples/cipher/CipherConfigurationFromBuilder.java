@@ -18,12 +18,19 @@ package teetime.examples.cipher;
 import java.io.File;
 
 import teetime.framework.Configuration;
+import teetime.framework.ConfigurationBuilder;
 import teetime.stage.*;
 import teetime.stage.CipherStage.CipherMode;
 import teetime.stage.ZipByteArray.ZipMode;
 import teetime.stage.io.ByteArrayFileWriter;
 import teetime.stage.io.File2ByteArray;
 
+/**
+ * Same configuration as {@link CipherConfiguration} but created with a {@link ConfigurationBuilder}.
+ *
+ * @author Sören Henning
+ *
+ */
 public class CipherConfigurationFromBuilder extends Configuration {
 
 	public CipherConfigurationFromBuilder(final String inputFile, final String outputFile, final String password) {

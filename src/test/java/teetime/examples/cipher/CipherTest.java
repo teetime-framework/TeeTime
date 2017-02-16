@@ -34,7 +34,7 @@ import teetime.stage.io.File2ByteArray;
  * Executes stages which modify the given file and compares the results
  * Procedure: read > compress > encrypt > decrypt > decompress > write
  *
- * @author Nelson Tavares de Sousa
+ * @author Nelson Tavares de Sousa, Sören Henning
  *
  */
 public class CipherTest {
