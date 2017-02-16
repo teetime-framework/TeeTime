@@ -73,4 +73,4 @@ If you did not add the Sonatype snapshot repository yet to your ``pom.xml``, add
 
 #### Binaries and sources
 
-All nightly builds can be found on [Sonatype's repository](https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/teetime/teetime/) or our [CI Server](https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nighly-release/lastSuccessfulBuild/artifact/target/).
+All nightly builds can be found on [Sonatype's repository](https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/teetime/teetime/) or our [CI Server](https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nightly-release/lastSuccessfulBuild/artifact/target/).
