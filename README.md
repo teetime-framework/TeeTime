@@ -10,7 +10,7 @@ Informations on how to use it can be found on http://teetime-framework.github.io
 - [Wiki](https://teetime-framework.github.io/wiki/home.html)
 - [Source Code Examples](https://github.com/teetime-framework/TeeTime/tree/master/src/test/java/teetime/examples)
 
-## How to TeeTime as Dependency to Your Project?
+## How to Add TeeTime as Dependency to Your Project?
 
 In order to work with TeeTime, you simply need to add the framework to your own project.
 
