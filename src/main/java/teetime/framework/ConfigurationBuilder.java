@@ -21,6 +21,8 @@ import java.util.function.Function;
 import teetime.stage.basic.ITransformation;
 
 /**
+ * Builder class for creating configurations. Configurations can be created by calling the {@code from()} method.
+ *
  * @author Sören Henning
  *
  * @since 3.0
