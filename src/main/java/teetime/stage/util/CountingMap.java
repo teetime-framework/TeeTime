@@ -73,4 +73,9 @@ public final class CountingMap<T> {
 		return map.size();
 	}
 
+	@Override
+	public String toString() {
+		return this.map.toString();
+	}
+
 }

@@ -17,12 +17,9 @@ package teetime.stage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
+import java.util.zip.*;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractFilter;
 
 /**
  * A stage to compress and decompress byte arrays
@@ -30,9 +27,8 @@ import teetime.framework.OutputPort;
  * @author Nelson Tavares de Sousa
  *
  */
-public class ZipByteArray extends AbstractConsumerStage<byte[]> {
+public class ZipByteArray extends AbstractFilter<byte[]> {
 
-	private final OutputPort<byte[]> outputPort = this.createOutputPort();
 	private final ZipMode mode;
 
 	public enum ZipMode {
@@ -94,10 +90,6 @@ public class ZipByteArray extends AbstractConsumerStage<byte[]> {
 		inflater.end();
 
 		return outputBytes;
-	}
-
-	public OutputPort<byte[]> getOutputPort() {
-		return this.outputPort;
 	}
 
 }

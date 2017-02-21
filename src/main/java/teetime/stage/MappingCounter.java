@@ -15,8 +15,7 @@
  */
 package teetime.stage;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractTransformation;
 import teetime.stage.util.CountingMap;
 
 /**
@@ -30,10 +29,9 @@ import teetime.stage.util.CountingMap;
  * @param <T>
  *            Type to be count
  */
-public final class MappingCounter<T> extends AbstractConsumerStage<T> {
+public final class MappingCounter<T> extends AbstractTransformation<T, CountingMap<T>> {
 
 	private final CountingMap<T> counter = new CountingMap<T>();
-	private final OutputPort<CountingMap<T>> port = createOutputPort();
 
 	@Override
 	protected void execute(final T element) {
@@ -42,12 +40,8 @@ public final class MappingCounter<T> extends AbstractConsumerStage<T> {
 
 	@Override
 	public void onTerminating() throws Exception { // NOPMD forced by super method
-		port.send(counter);
+		this.outputPort.send(counter);
 		super.onTerminating();
-	}
-
-	public OutputPort<CountingMap<T>> getOutputPort() {
-		return port;
 	}
 
 }

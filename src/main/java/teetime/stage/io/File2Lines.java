@@ -15,15 +15,9 @@
  */
 package teetime.stage.io;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractTransformation;
 
 /**
  * @author Christian Wulf
@@ -31,9 +25,7 @@ import teetime.framework.OutputPort;
  * @since 1.1
  *
  */
-public final class File2Lines extends AbstractConsumerStage<File> {
-
-	private final OutputPort<String> outputPort = this.createOutputPort();
+public final class File2Lines extends AbstractTransformation<File, String> {
 
 	private final String charset;
 
@@ -66,7 +58,7 @@ public final class File2Lines extends AbstractConsumerStage<File> {
 			while ((line = reader.readLine()) != null) { // NOPMD
 				line = line.trim();
 				if (line.length() != 0) {
-					outputPort.send(line);
+					this.outputPort.send(line);
 				} // else: ignore empty line
 			}
 		} catch (final FileNotFoundException e) {
@@ -86,10 +78,6 @@ public final class File2Lines extends AbstractConsumerStage<File> {
 
 	public String getCharset() {
 		return this.charset;
-	}
-
-	public OutputPort<String> getOutputPort() {
-		return outputPort;
 	}
 
 }

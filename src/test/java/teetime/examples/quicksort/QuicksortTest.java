@@ -15,20 +15,22 @@
  */
 package teetime.examples.quicksort;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
 import org.junit.Test;
 
-import teetime.framework.Execution;
+import teetime.framework.*;
+import teetime.stage.CollectorSink;
+import teetime.stage.InitialElementProducer;
 import teetime.stage.quicksort.QuicksortProblem;
 import teetime.stage.quicksort.QuicksortSolution;
 
 public class QuicksortTest {
 
 	@Test
-	public void executeTest() {
+	public void executeTestWithDefaultConfiguration() {
 		int[] numbers = new int[] { 3, 1, 4, 5, 2 };
 		QuicksortProblem problemOne = new QuicksortProblem(0, numbers.length - 1, numbers);
 
@@ -38,7 +40,51 @@ public class QuicksortTest {
 		ArrayList<QuicksortSolution> outputs = new ArrayList<QuicksortSolution>();
 
 		final QuicksortConfiguration configuration = new QuicksortConfiguration(inputs, outputs);
-		final Execution<QuicksortConfiguration> execution = new Execution<QuicksortConfiguration>(configuration);
+		final Execution<QuicksortConfiguration> execution = new Execution<>(configuration);
+		execution.executeBlocking();
+
+		int[] sortedNumbers = new int[] { 1, 2, 3, 4, 5 };
+		assertArrayEquals(outputs.get(0).getNumbers(), sortedNumbers);
+	}
+
+	@Test
+	public void executeTestWithBuilderBasedConfiguration() {
+		int[] numbers = new int[] { 3, 1, 4, 5, 2 };
+		QuicksortProblem problemOne = new QuicksortProblem(0, numbers.length - 1, numbers);
+
+		ArrayList<QuicksortProblem> inputs = new ArrayList<QuicksortProblem>();
+		inputs.add(problemOne);
+
+		ArrayList<QuicksortSolution> outputs = new ArrayList<QuicksortSolution>();
+
+		final QuicksortConfigurationFromBuilder configuration = new QuicksortConfigurationFromBuilder(inputs, outputs);
+		final Execution<QuicksortConfigurationFromBuilder> execution = new Execution<>(configuration);
+		execution.executeBlocking();
+
+		int[] sortedNumbers = new int[] { 1, 2, 3, 4, 5 };
+		assertArrayEquals(outputs.get(0).getNumbers(), sortedNumbers);
+	}
+
+	@Test
+	public void executeTestWithConfigurationCreatedByBuilder() {
+		int[] numbers = new int[] { 3, 1, 4, 5, 2 };
+		QuicksortProblem problemOne = new QuicksortProblem(0, numbers.length - 1, numbers);
+
+		ArrayList<QuicksortProblem> inputs = new ArrayList<QuicksortProblem>();
+		inputs.add(problemOne);
+
+		ArrayList<QuicksortSolution> outputs = new ArrayList<QuicksortSolution>();
+
+		// set up quicksort stage since it should be declared active
+		DivideAndConquerStage<QuicksortProblem, QuicksortSolution> quicksortStage = new DivideAndConquerStage<QuicksortProblem, QuicksortSolution>(2);
+		quicksortStage.declareActive();
+
+		final Configuration configuration = ConfigurationBuilder
+				.from(new InitialElementProducer<QuicksortProblem>(inputs))
+				.to(quicksortStage)
+				.end(new CollectorSink<QuicksortSolution>(outputs));
+
+		final Execution<Configuration> execution = new Execution<>(configuration);
 		execution.executeBlocking();
 
 		int[] sortedNumbers = new int[] { 1, 2, 3, 4, 5 };

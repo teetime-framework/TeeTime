@@ -17,6 +17,7 @@ package teetime.stage.taskfarm;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.stage.basic.ITransformation;
 
 /**
  * Any {@link teetime.framework.AbstractStage AbstractStage} or {@link teetime.framework.CompositeStage CompositeStage} implementing this interface
@@ -29,7 +30,7 @@ import teetime.framework.OutputPort;
  * @param <O>
  *            Output Type of the task farm
  */
-public interface ITaskFarmDuplicable<I, O> {
+public interface ITaskFarmDuplicable<I, O> extends ITransformation<I, O> {
 
 	/**
 	 * Creates a new instance of the enclosed stage.
@@ -41,11 +42,13 @@ public interface ITaskFarmDuplicable<I, O> {
 	/**
 	 * @return single input port of the enclosed stage
 	 */
+	@Override
 	public InputPort<I> getInputPort();
 
 	/**
 	 * @return single output port of the enclosed stage
 	 */
+	@Override
 	public OutputPort<O> getOutputPort();
 
 	/**

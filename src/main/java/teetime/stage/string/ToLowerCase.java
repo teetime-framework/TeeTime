@@ -17,8 +17,7 @@ package teetime.stage.string;
 
 import java.util.Locale;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractFilter;
 
 /**
  * Receives a string and passes it on to the next stage only with lower case letters.
@@ -27,17 +26,11 @@ import teetime.framework.OutputPort;
  *
  * @author Nelson Tavares de Sousa
  */
-public final class ToLowerCase extends AbstractConsumerStage<String> {
-
-	private final OutputPort<String> outputPort = this.createOutputPort();
+public final class ToLowerCase extends AbstractFilter<String> {
 
 	@Override
 	protected void execute(final String element) {
 		this.outputPort.send(element.toLowerCase(Locale.ENGLISH));
-	}
-
-	public OutputPort<String> getOutputPort() {
-		return this.outputPort;
 	}
 
 }

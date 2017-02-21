@@ -19,13 +19,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractFilter;
 import teetime.util.StopWatch;
 
-public final class Cache<T> extends AbstractConsumerStage<T> {
-
-	private final OutputPort<T> outputPort = this.createOutputPort();
+public final class Cache<T> extends AbstractFilter<T> {
 
 	private final List<T> cachedObjects = new LinkedList<T>();
 
@@ -40,15 +37,11 @@ public final class Cache<T> extends AbstractConsumerStage<T> {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		for (T cachedElement : this.cachedObjects) {
-			outputPort.send(cachedElement);
+			this.outputPort.send(cachedElement);
 		}
 		stopWatch.end();
 		this.logger.debug("Emitting took " + TimeUnit.NANOSECONDS.toMillis(stopWatch.getDurationInNs()) + " ms");
 		super.onTerminating();
-	}
-
-	public OutputPort<T> getOutputPort() {
-		return this.outputPort;
 	}
 
 }
