@@ -5,13 +5,12 @@ TeeTime is a Pipe-and-Filter framework for Java.
 
 Informations on how to use it can be found on http://teetime-framework.github.io.
 
-## Build
+## Getting Started
 
-To build TeeTime, you need and existing Maven installation and the JDK1.6.
+- [Wiki](https://teetime-framework.github.io/wiki/home.html)
+- [Source Code Examples](https://github.com/teetime-framework/TeeTime/tree/master/src/test/java/teetime/examples)
 
-Simply execute "mvn install" and you are good to go!
-
-## Install
+## How to Add TeeTime as Dependency to Your Project?
 
 In order to work with TeeTime, you simply need to add the framework to your own project.
 
@@ -74,3 +73,10 @@ If you did not add the Sonatype snapshot repository yet to your ``pom.xml``, add
 #### Binaries and sources
 
 All nightly builds can be found on [Sonatype's repository](https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/teetime/teetime/) or our [CI Server](https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nightly-release/lastSuccessfulBuild/artifact/target/).
+
+
+## Build TeeTime by Yourself
+
+TeeTime requires an existing Maven and JDK installation.
+
+Simply execute "mvn install" and you are good to go!
