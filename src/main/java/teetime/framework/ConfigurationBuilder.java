@@ -16,14 +16,9 @@
 
 package teetime.framework;
 
-import java.util.Arrays;
 import java.util.function.Function;
 
-import teetime.stage.InitialElementProducer;
-import teetime.stage.basic.AbstractTransformation;
 import teetime.stage.basic.ITransformation;
-import teetime.stage.io.Printer;
-import teetime.stage.string.ToLowerCase;
 
 /**
  * @author Sören Henning
@@ -111,41 +106,6 @@ public class ConfigurationBuilder {
 		public static <S extends AbstractStage, I, O> TransfomerStage<I, O> of(final S stage, final Function<S, InputPort<I>> inputPort,
 				final Function<S, OutputPort<O>> outputPort) {
 			return new TransfomerStage<I, O>(inputPort.apply(stage), outputPort.apply(stage));
-		}
-
-	}
-
-	///////// EXAMPLE /////////
-
-	public static void main(final String[] args) {
-
-		final Configuration config = ConfigurationBuilder.from(new InitialElementProducer<String>(Arrays.asList("uno", "dos", "tres")))
-				.to(new ToUpperCaseStage())
-				.to(new ToLowerCase(), s -> s.getInputPort(), s -> s.getOutputPort())
-				.to(new StringLengthStage())
-				.end(new Printer<Integer>());
-
-		final Execution<Configuration> execution = new Execution<Configuration>(config);
-		execution.executeBlocking();
-
-	}
-
-	private static class ToUpperCaseStage extends AbstractTransformation<String, String> {
-
-		@Override
-		protected void execute(final String string) {
-			final String upperCaseString = string.toUpperCase();
-			this.getOutputPort().send(upperCaseString);
-		}
-
-	}
-
-	private static class StringLengthStage extends AbstractTransformation<String, Integer> {
-
-		@Override
-		protected void execute(final String string) {
-			final int length = string.length();
-			this.getOutputPort().send(length);
 		}
 
 	}
