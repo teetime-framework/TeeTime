@@ -41,19 +41,17 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 		// if the producers have closed all input ports before changing the state to STARTED,
 		// they do not set the state to TERMINATING.
 		// Hence, the stage's state needs to be set at this position.
-		if (stage.getNumOpenedInputPorts().get() == 0) {
-			stage.terminateStage();
-		}
+		// if (stage.getNumOpenedInputPorts().get() == 0) {
+		// stage.terminateStage();
+		// }
 	}
 
 	@Override
 	protected void afterStageExecution() {
 		// stage.terminateStage(); // change state to terminating
 
-		int numRemainingElements = computeNumRemainingElements();
-		while (numRemainingElements > 0) {
+		while (hasRemainingElements()) {
 			stage.executeStage();
-			numRemainingElements = computeNumRemainingElements();
 		}
 
 		final ISignal signal = new TerminatingSignal(); // NOPMD DU caused by loop
@@ -62,16 +60,13 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 		}
 	}
 
-	private int computeNumRemainingElements() {
-		int numRemainingElements = 0;
+	private boolean hasRemainingElements() {
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
-			boolean hasMore = inputPort.getPipe().hasMore();
-			if (hasMore) {
-				return 1;
+			if (inputPort.getPipe().hasMore()) {
+				return true;
 			}
-			numRemainingElements += inputPort.getPipe().size();
 		}
-		return numRemainingElements;
+		return false;
 	}
 
 }

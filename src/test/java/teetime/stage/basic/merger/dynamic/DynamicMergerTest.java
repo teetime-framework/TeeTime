@@ -15,18 +15,16 @@
  */
 package teetime.stage.basic.merger.dynamic;
 
-import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-import teetime.framework.Configuration;
-import teetime.framework.Execution;
-import teetime.framework.RuntimeServiceFacade;
+import teetime.framework.*;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.merger.strategy.BusyWaitingRoundRobinStrategy;
@@ -67,15 +65,16 @@ public class DynamicMergerTest {
 	}
 
 	@Test
-	public void shouldWorkWithRemoveActionTriggers() throws Exception {
+	@Ignore // we cannot ensure anymore to consume at least one element before executing a port action
+	public void shouldWorkWithRemoveActionTriggers() {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2);
 
 		DynamicMergerTestConfig config = new DynamicMergerTestConfig(inputNumbers);
-		assertTrue(config.addCreatePortAction(3));
-		assertTrue(config.addRemovePortAction());
-		assertTrue(config.addCreatePortAction(4));
-		assertTrue(config.addCreatePortAction(5));
-		assertTrue(config.addRemovePortAction());
+		assertTrue(config.addCreatePortAction(3)); // processed after reading 0
+		assertTrue(config.addRemovePortAction()); // processed after reading 1
+		assertTrue(config.addCreatePortAction(4)); // processed after reading 2
+		assertTrue(config.addCreatePortAction(5)); // processed after reading 4
+		assertTrue(config.addRemovePortAction()); // processed after reading 5
 		assertTrue(config.addRemovePortAction());
 
 		Execution<DynamicMergerTestConfig> analysis = new Execution<DynamicMergerTestConfig>(config);
@@ -116,8 +115,8 @@ public class DynamicMergerTest {
 
 			PortAction<DynamicMerger<Integer>> portAction = new CreatePortActionMerger<Integer>(initialElementProducer.getOutputPort(), DEFAULT_CAPACITY) {
 				@Override
-				public void execute(final DynamicMerger<Integer> dynamicDistributor) {
-					super.execute(dynamicDistributor);
+				public void execute(final DynamicMerger<Integer> dynamicMerger) {
+					super.execute(dynamicMerger);
 					RuntimeServiceFacade.INSTANCE.startWithinNewThread(merger, initialElementProducer);
 				}
 			};

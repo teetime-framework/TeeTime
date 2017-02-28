@@ -15,9 +15,8 @@
  */
 package teetime.framework;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +51,7 @@ public class TerminationTest {
 		execution.executeNonBlocking();
 		Thread.sleep(100);
 		execution.abortEventually();
-		assertThat(configuration.finalProp.time - 450, is(greaterThan(configuration.firstProp.time)));
+		assertThat(configuration.finalProp.timeInMs - 450, is(greaterThan(configuration.firstProp.timeInMs)));
 	}
 
 	private class TerminationConfig extends Configuration {
@@ -83,16 +82,12 @@ public class TerminationTest {
 		@Override
 		protected void execute(final Integer element) {
 			int i = 0;
-			while (true) {
+			while (i <= 1) {
 				i++;
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					// First sleep will throw this
-				}
-				if (i > 1) {
-					super.terminateStage();
-					break;
 				}
 			}
 
@@ -112,7 +107,7 @@ public class TerminationTest {
 
 	private class Propagator extends AbstractConsumerStage<Integer> {
 
-		public long time;
+		public long timeInMs;
 		private final OutputPort<Integer> output = createOutputPort();
 
 		@Override
@@ -126,7 +121,7 @@ public class TerminationTest {
 
 		@Override
 		public void onTerminating() throws Exception {
-			time = System.currentTimeMillis();
+			timeInMs = System.currentTimeMillis();
 			super.onTerminating();
 		}
 	}

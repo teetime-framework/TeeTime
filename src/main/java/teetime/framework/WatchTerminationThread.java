@@ -15,17 +15,15 @@ class WatchTerminationThread extends Thread {
 
 	@Override
 	public void run() {
-
 		while (!shouldTerminate) {
 			synchronized (consumerStages) {
 				Iterator<AbstractStage> iterator = consumerStages.iterator();
 				while (iterator.hasNext()) {
 					AbstractStage stage = iterator.next();
-					// for (InputPort<?> inputPort : stage.getInputPorts()) {
-					// inputPort.isClosed()
-					// }
+					// FIXME remove <; so far, we use it for d&c
 					if (stage.getNumOpenedInputPorts().get() <= 0 && stage.getCurrentState() == StageState.STARTED) {
 						stage.terminateStage();
+						stage.logger.debug("Terminated stage: " + stage);
 						iterator.remove();
 					}
 				}
