@@ -15,10 +15,9 @@
  */
 package teetime.stage.basic.merger;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertThat;
-import static teetime.framework.test.StageTester.test;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static teetime.framework.test.StageTester.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +32,11 @@ import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
  * @since 1.0
  */
 public class MergerTest {
+
+	// @Before
+	// public void before() {
+	// System.out.println("-------- Starting new test...");
+	// }
 
 	@Test
 	public void roundRobinShouldWork() {

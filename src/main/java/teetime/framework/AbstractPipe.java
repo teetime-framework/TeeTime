@@ -82,4 +82,13 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	public String toString() {
 		return sourcePort.getOwningStage().getId() + " -> " + targetPort.getOwningStage().getId() + " (" + super.toString() + ")";
 	}
+
+	@Override
+	public void close() {
+		int numOpenInputPorts = cachedTargetStage.getNumOpenedInputPorts().decrementAndGet();
+		cachedTargetStage.logger.debug("numOpenedInputPorts (dec): " + numOpenInputPorts);
+		// if (numOpenInputPorts == 0) {
+		// cachedTargetStage.terminateStage();
+		// }
+	}
 }

@@ -18,9 +18,7 @@ package teetime.framework.divideandconquer.stages;
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
 
-import teetime.framework.AbstractStage;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.*;
 import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
 import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
 
@@ -42,10 +40,6 @@ public class DivideAndConquerCombineStage<P extends AbstractDivideAndConquerProb
 	private final InputPort<S> firstInputPort = this.createInputPort();
 	private final InputPort<S> secondInputPort = this.createInputPort();
 	private final OutputPort<S> outputPort = this.createOutputPort();
-
-	public DivideAndConquerCombineStage() {
-		super();
-	}
 
 	/**
 	 * @return <code>InputPort</code>
@@ -70,8 +64,8 @@ public class DivideAndConquerCombineStage<P extends AbstractDivideAndConquerProb
 
 	@Override
 	protected void execute() {
-		if (checkForSolutions(firstInputPort) && checkForSolutions(secondInputPort)) {
-			returnNoElement();
+		if (!checkForSolutions(firstInputPort) && !checkForSolutions(secondInputPort)) {
+			return;
 		}
 	}
 
@@ -82,7 +76,7 @@ public class DivideAndConquerCombineStage<P extends AbstractDivideAndConquerProb
 	 *            The <code>InputPort</code> to receive solutions from.
 	 *
 	 * @return
-	 *         <code>true</code> if there was input to receive, <code>false</code> otherwise
+	 * 		<code>true</code> if there was input to receive, <code>false</code> otherwise
 	 */
 	private boolean checkForSolutions(final InputPort<S> port) {
 		S solution = port.receive();

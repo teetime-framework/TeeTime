@@ -94,7 +94,7 @@ public interface IPipe<T> {
 	 */
 	void reportNewElement();
 
-	boolean isClosed();
+	boolean isClosed(); // FIXME remove dead method?
 
 	boolean hasMore();
 

@@ -29,8 +29,8 @@ public class CreatePortAction<T> implements PortAction<DynamicMerger<T>> {
 	}
 
 	@Override
-	public void execute(final DynamicMerger<T> dynamicDistributor) {
-		InputPort<T> newInputPort = dynamicDistributor.getNewInputPort();
+	public void execute(final DynamicMerger<T> dynamicMerger) {
+		InputPort<T> newInputPort = dynamicMerger.getNewInputPort();
 
 		onInputPortCreated(newInputPort);
 	}

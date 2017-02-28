@@ -35,11 +35,6 @@ public class RunnableProducerStage extends AbstractRunnableStage {
 	}
 
 	@Override
-	protected void executeStage() {
-		this.stage.executeStage();
-	}
-
-	@Override
 	protected void afterStageExecution() {
 		final TerminatingSignal terminatingSignal = new TerminatingSignal();
 		this.stage.onSignal(terminatingSignal, null);

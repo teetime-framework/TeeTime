@@ -43,8 +43,12 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 
 	private final Configuration configuration;
 
+	private final WatchTerminationThread watchTerminationThread;
+
 	public ThreadService(final Configuration configuration) {
 		this.configuration = configuration;
+		watchTerminationThread = new WatchTerminationThread();
+		watchTerminationThread.start();
 	}
 
 	@Override
@@ -98,6 +102,7 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 
 		for (AbstractStage stage : newThreadableStages) {
 			categorizeThreadableStage(stage);
+			watchTerminationThread.addConsumerStage(stage);
 		}
 
 		return newThreadableStages;

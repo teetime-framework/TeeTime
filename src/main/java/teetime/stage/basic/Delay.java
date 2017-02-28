@@ -18,9 +18,7 @@ package teetime.stage.basic;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.AbstractStage;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.*;
 
 public class Delay<T> extends AbstractStage {
 
@@ -39,7 +37,7 @@ public class Delay<T> extends AbstractStage {
 
 		Long timestampTrigger = this.timestampTriggerInputPort.receive();
 		if (null == timestampTrigger) {
-			returnNoElement();
+			return;
 		}
 
 		sendAllBufferedEllements();

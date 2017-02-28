@@ -15,12 +15,8 @@
  */
 package teetime.framework.divideandconquer.stages;
 
-import teetime.framework.AbstractStage;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
-import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
-import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
-import teetime.framework.divideandconquer.DividedDCProblem;
+import teetime.framework.*;
+import teetime.framework.divideandconquer.*;
 
 /**
  * A simple stage to solve divide and conquer problems
@@ -37,10 +33,6 @@ public class DivideAndConquerSolveStage<P extends AbstractDivideAndConquerProble
 
 	private final InputPort<P> inputPort = this.createInputPort();
 	private final OutputPort<S> outputPort = this.createOutputPort();
-
-	public DivideAndConquerSolveStage() {
-		super();
-	}
 
 	/**
 	 * @return <code>InputPort</code>
@@ -61,8 +53,6 @@ public class DivideAndConquerSolveStage<P extends AbstractDivideAndConquerProble
 		P inputProblem = this.getInputPort().receive();
 		if (inputProblem != null) {
 			this.getOutputPort().send(this.solve(inputProblem));
-		} else {
-			returnNoElement();
 		}
 	}
 

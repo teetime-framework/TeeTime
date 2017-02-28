@@ -17,6 +17,13 @@ package teetime.framework;
 
 import teetime.framework.pipe.IPipe;
 
+/**
+ *
+ * @author Christian Wulf (chw)
+ *
+ * @param <T>
+ *            the type of the elements which this port accepts
+ */
 public class AbstractPort<T> {
 
 	protected IPipe<?> pipe;

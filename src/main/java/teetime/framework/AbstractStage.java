@@ -18,6 +18,7 @@ package teetime.framework;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,6 @@ import teetime.util.framework.port.PortRemovedListener;
 public abstract class AbstractStage {
 
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
-	private static final NotEnoughInputException NOT_ENOUGH_INPUT_EXCEPTION = new NotEnoughInputException();
 
 	/** This stage's unique identifier */
 	private final String id;
@@ -66,6 +66,8 @@ public abstract class AbstractStage {
 	private boolean calledOnStarting = false;
 
 	private volatile StageState currentState = StageState.CREATED;
+	/** used to detect termination */
+	private final AtomicInteger numOpenedInputPorts = new AtomicInteger();
 
 	protected AbstractStage() {
 		this.id = this.createId();
@@ -129,8 +131,6 @@ public abstract class AbstractStage {
 	private void executeWithCatchedExceptions() {
 		try {
 			this.execute();
-		} catch (NotEnoughInputException e) {
-			throw e;
 		} catch (TerminateException e) {
 			throw e;
 		} catch (Exception e) {
@@ -144,16 +144,19 @@ public abstract class AbstractStage {
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	protected abstract void execute() throws Exception;
 
+	// left commented out because:
+	// without returnNoElement, it is now unknown when a consumer stage is busy-waiting.
+	// We need a way to detect such a blocking behavior anyway.
 	// only used by consumer stages
-	protected final void returnNoElement() {
-		// If the stage get null-element it can't be active. If it's the first time
-		// after being active the according time stamp is saved so that one can gather
-		// information about the time the stage was in one state uninterrupted.
-		if (newStateRequired(ExecutionState.BLOCKED)) {
-			this.addState(ExecutionState.BLOCKED, beforeExecuteTime);
-		}
-		throw NOT_ENOUGH_INPUT_EXCEPTION;
-	}
+	// protected final void returnNoElement() {
+	// // If the stage get null-element it can't be active. If it's the first time
+	// // after being active the according time stamp is saved so that one can gather
+	// // information about the time the stage was in one state uninterrupted.
+	// if (newStateRequired(ExecutionState.BLOCKED)) {
+	// this.addState(ExecutionState.BLOCKED, beforeExecuteTime);
+	// }
+	// throw NOT_ENOUGH_INPUT_EXCEPTION;
+	// }
 
 	// package-private would suffice, but protected is necessary for unit tests
 	protected Thread getOwningThread() {
@@ -298,10 +301,10 @@ public abstract class AbstractStage {
 	}
 
 	private void changeState(final StageState newState) {
-		currentState = newState;
 		if (logger.isTraceEnabled()) {
-			logger.trace(newState.toString());
+			logger.trace("Changing state from " + currentState + " to " + newState);
 		}
+		currentState = newState;
 	}
 
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
@@ -411,7 +414,13 @@ public abstract class AbstractStage {
 	protected <T> InputPort<T> createInputPort(final Class<T> type, final String name) {
 		final InputPort<T> inputPort = new InputPort<T>(type, this, name);
 		inputPorts.add(inputPort);
+		numOpenedInputPorts.incrementAndGet();
+		logger.debug("numOpenedInputPorts (inc): " + numOpenedInputPorts.get());
 		return inputPort;
+	}
+
+	public AtomicInteger getNumOpenedInputPorts() {
+		return numOpenedInputPorts;
 	}
 
 	/**
@@ -489,6 +498,11 @@ public abstract class AbstractStage {
 	 * Terminates the execution of the stage. After terminating, this stage sends a signal to all its direct and indirect successor stages to terminate.
 	 */
 	protected void terminateStage() {
+		// if (getInputPorts().size() == 0) { // always for producer
+		// changeState(StageState.TERMINATING);
+		// } else if (getCurrentState() == StageState.STARTED) { // consumer FIXME remove this hack
+		// changeState(StageState.TERMINATING);
+		// }
 		changeState(StageState.TERMINATING);
 	}
 

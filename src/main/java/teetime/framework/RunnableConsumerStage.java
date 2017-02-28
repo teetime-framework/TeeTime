@@ -33,40 +33,45 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	@Override
 	protected void beforeStageExecution() throws InterruptedException {
 		logger.trace("waitForStartingSignal");
+		// FIXME should getInputPorts() really be defined in Stage?
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			inputPort.waitForStartSignal();
 		}
-	}
 
-	@Override
-	protected void executeStage() {
-		try {
-			stage.executeStage();
-		} catch (NotEnoughInputException e) {
-			checkForTerminationSignal(stage);
+		// if the producers have closed all input ports before changing the state to STARTED,
+		// they do not set the state to TERMINATING.
+		// Hence, the stage's state needs to be set at this position.
+		if (stage.getNumOpenedInputPorts().get() == 0) {
+			stage.terminateStage();
 		}
-	}
-
-	private void checkForTerminationSignal(final AbstractStage stage) {
-		// FIXME should getInputPorts() really be defined in Stage?
-		for (InputPort<?> inputPort : stage.getInputPorts()) {
-			if (inputPort.isClosed()) {
-				// stage.removeDynamicPort(inputPort);
-				continue;
-			} else {
-				return;
-			}
-		}
-
-		stage.terminateStage();
 	}
 
 	@Override
 	protected void afterStageExecution() {
+		// stage.terminateStage(); // change state to terminating
+
+		int numRemainingElements = computeNumRemainingElements();
+		while (numRemainingElements > 0) {
+			stage.executeStage();
+			numRemainingElements = computeNumRemainingElements();
+		}
+
 		final ISignal signal = new TerminatingSignal(); // NOPMD DU caused by loop
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			stage.onSignal(signal, inputPort);
 		}
+	}
+
+	private int computeNumRemainingElements() {
+		int numRemainingElements = 0;
+		for (InputPort<?> inputPort : stage.getInputPorts()) {
+			boolean hasMore = inputPort.getPipe().hasMore();
+			if (hasMore) {
+				return 1;
+			}
+			numRemainingElements += inputPort.getPipe().size();
+		}
+		return numRemainingElements;
 	}
 
 }

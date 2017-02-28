@@ -46,7 +46,7 @@ public class InputPort<T> extends AbstractPort<T> {
 		return (T) this.pipe.removeLast();
 	}
 
-	public boolean isClosed() {
+	public boolean isClosed() { // FIXME remove: only used by divide and conquer
 		return pipe.isClosed() && !pipe.hasMore();
 	}
 

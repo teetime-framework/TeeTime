@@ -56,7 +56,7 @@ abstract class AbstractRunnableStage implements Runnable {
 			stopWatch.start();
 			try {
 				while (!stage.shouldBeTerminated()) {
-					executeStage();
+					stage.executeStage();
 				}
 			} catch (TerminateException e) {
 				stage.abort();
@@ -89,8 +89,6 @@ abstract class AbstractRunnableStage implements Runnable {
 	}
 
 	protected abstract void beforeStageExecution() throws InterruptedException;
-
-	protected abstract void executeStage();
 
 	protected abstract void afterStageExecution();
 

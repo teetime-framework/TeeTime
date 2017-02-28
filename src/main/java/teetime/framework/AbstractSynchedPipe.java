@@ -65,7 +65,7 @@ public abstract class AbstractSynchedPipe<T> extends AbstractPipe<T> {
 	public final void waitForStartSignal() throws InterruptedException {
 		final ISignal signal = signalQueue.take();
 		if (signal instanceof ValidatingSignal) {
-			this.waitForStartSignal();
+			this.waitForStartSignal(); // recursive call
 			return;
 		}
 		if (!(signal instanceof StartingSignal)) {
@@ -82,6 +82,7 @@ public abstract class AbstractSynchedPipe<T> extends AbstractPipe<T> {
 
 	@Override
 	public final void close() {
+		super.close();
 		closed = true;
 	}
 }

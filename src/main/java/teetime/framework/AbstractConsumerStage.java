@@ -27,7 +27,7 @@ public abstract class AbstractConsumerStage<I> extends AbstractStage {
 	protected final void execute() {
 		final I element = this.getInputPort().receive();
 		if (null == element) {
-			returnNoElement();
+			return;
 		}
 
 		this.execute(element);

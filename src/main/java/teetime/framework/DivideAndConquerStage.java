@@ -101,8 +101,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 				// leftOutputPort.sendSignal(new TerminatingSignal());
 				// rightOutputPort.sendSignal(new TerminatingSignal());
 			}
-
-			returnNoElement();
 		}
 	}
 
