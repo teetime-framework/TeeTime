@@ -6,7 +6,7 @@ class WatchTerminationThread extends Thread {
 
 	private final List<AbstractStage> consumerStages;
 
-	private boolean shouldTerminate;
+	private volatile boolean shouldTerminate;
 
 	public WatchTerminationThread() {
 		consumerStages = Collections.synchronizedList(new ArrayList<>());
@@ -24,17 +24,17 @@ class WatchTerminationThread extends Thread {
 					// for (InputPort<?> inputPort : stage.getInputPorts()) {
 					// inputPort.isClosed()
 					// }
-					if (stage.getNumOpenedInputPorts().get() == 0 && stage.getCurrentState() == StageState.STARTED) {
+					if (stage.getNumOpenedInputPorts().get() <= 0 && stage.getCurrentState() == StageState.STARTED) {
 						stage.terminateStage();
 						iterator.remove();
 					}
 				}
 			}
 
-			if (consumerStages.isEmpty()) {
-				shouldTerminate = true;
-				break;
-			}
+			// if (consumerStages.isEmpty()) {
+			// shouldTerminate = true;
+			// break;
+			// }
 
 			try {
 				Thread.sleep(50);
@@ -51,4 +51,8 @@ class WatchTerminationThread extends Thread {
 			consumerStages.add(stage);
 		}
 	}
+
+	// public void isShouldTerminate() {
+	// shouldTerminate = true;
+	// }
 }

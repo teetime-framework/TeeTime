@@ -15,9 +15,7 @@
  */
 package teetime.framework;
 
-import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
-import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
-import teetime.framework.divideandconquer.DividedDCProblem;
+import teetime.framework.divideandconquer.*;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.signal.ISignal;
 
@@ -108,6 +106,7 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 
 	@Override
 	public void close() {
+		cachedTargetStage.getNumOpenedInputPorts().decrementAndGet();
 		closed = true;
 	}
 
