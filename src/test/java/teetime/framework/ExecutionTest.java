@@ -29,7 +29,7 @@ import teetime.util.StopWatch;
 public class ExecutionTest {
 
 	private static final long DELAY_IN_MS = 500;
-	private static final long ABSOLUTE_MAX_ERROR_IN_MS = 6;
+	private static final long ABSOLUTE_MAX_ERROR_IN_MS = 8; // handle timer granularity
 
 	private Execution<TestConfig> execution;
 
@@ -85,11 +85,8 @@ public class ExecutionTest {
 		}
 
 		@Override
-		protected void execute(final String element) {
-			try {
-				Thread.sleep(delayInMs);
-			} catch (InterruptedException e) {
-			}
+		protected void execute(final String element) throws InterruptedException {
+			Thread.sleep(delayInMs);
 			finished = true;
 		}
 

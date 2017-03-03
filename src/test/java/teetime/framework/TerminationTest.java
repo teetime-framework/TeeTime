@@ -57,15 +57,15 @@ public class TerminationTest {
 	private class TerminationConfig extends Configuration {
 		InitialElementProducer<Integer> init = new InitialElementProducer<Integer>(1, 2, 3, 4, 5, 6);
 		Propagator firstProp = new Propagator();
-		DoesNotRetrieveElements sinkStage = new DoesNotRetrieveElements();
+		DoesNotRetrieveElements absorbStage = new DoesNotRetrieveElements();
 		Propagator finalProp = new Propagator();
 
 		public TerminationConfig(final int capacity) {
 			if (capacity == 1) {
 				connectPorts(init.getOutputPort(), firstProp.getInputPort());
-				connectPorts(firstProp.getOutputPort(), sinkStage.getInputPort(), capacity);
-				connectPorts(sinkStage.getOutputPort(), finalProp.getInputPort());
-				sinkStage.declareActive();
+				connectPorts(firstProp.getOutputPort(), absorbStage.getInputPort(), capacity);
+				connectPorts(absorbStage.getOutputPort(), finalProp.getInputPort());
+				absorbStage.declareActive();
 			} else {
 				Sink<Integer> sink = new Sink<Integer>();
 				connectPorts(init.getOutputPort(), sink.getInputPort(), capacity);
@@ -82,7 +82,7 @@ public class TerminationTest {
 		@Override
 		protected void execute(final Integer element) {
 			int i = 0;
-			while (i <= 1) {
+			while (i <= 1) { // waits 2x500ms per element consumption
 				i++;
 				try {
 					Thread.sleep(500);

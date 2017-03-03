@@ -36,6 +36,7 @@ import teetime.framework.signal.*;
  */
 public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage {
 
+	/** number of available processors (including hyper-threading) */
 	private static final int DEFAULT_THRESHOLD = Runtime.getRuntime().availableProcessors();
 
 	/** shared counter indicating the number of copied instances */
@@ -95,11 +96,12 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		// logger.trace("Closed input ports: {} {} {}", leftInputPort.isClosed(), rightInputPort.isClosed(), inputPort.isClosed());
 		if (!(receivedLeftSolution || receivedRightSolution || receivedNewProblem)) {
 			if (inputPort.isClosed()) { // check explicitly when this stage is active
-				// logger.debug("left: {}, right: {}", leftInputPort.isClosed(), rightInputPort.isClosed());
-				leftOutputPort.getPipe().close();
-				rightOutputPort.getPipe().close();
-				// leftOutputPort.sendSignal(new TerminatingSignal());
-				// rightOutputPort.sendSignal(new TerminatingSignal());
+				if (!leftOutputPort.getPipe().isClosed()) {
+					leftOutputPort.sendSignal(new TerminatingSignal());
+				}
+				if (!rightOutputPort.getPipe().isClosed()) {
+					rightOutputPort.sendSignal(new TerminatingSignal());
+				}
 			}
 		}
 	}
@@ -107,10 +109,10 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	@Override
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
 		if (signal instanceof TerminatingSignal && inputPort == this.inputPort) {
-			leftOutputPort.getPipe().close();
-			rightOutputPort.getPipe().close();
-			// leftOutputPort.sendSignal(signal);
-			// rightOutputPort.sendSignal(signal);
+			// leftOutputPort.getPipe().close();
+			// rightOutputPort.getPipe().close();
+			leftOutputPort.sendSignal(signal);
+			rightOutputPort.sendSignal(signal);
 		}
 		super.onSignal(signal, inputPort);
 	}
