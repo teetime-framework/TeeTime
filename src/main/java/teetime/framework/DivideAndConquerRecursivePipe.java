@@ -40,8 +40,6 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 
 	private final OutputPort<P> sourcePort;
 	private final InputPort<S> targetPort;
-	@SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
-	private final int capacity;
 
 	private boolean closed;
 
@@ -53,7 +51,6 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 		targetPort.setPipe(this);
 		this.sourcePort = sourcePort;
 		this.targetPort = targetPort;
-		this.capacity = 1;
 		this.cachedTargetStage = (DivideAndConquerStage<P, S>) targetPort.getOwningStage();
 	}
 
@@ -75,7 +72,7 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 
 	@Override
 	public final int capacity() {
-		return capacity;
+		return 1;
 	}
 
 	@Override
@@ -106,7 +103,7 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 
 	@Override
 	public void close() {
-		cachedTargetStage.getNumOpenedInputPorts().decrementAndGet();
+		AbstractPipe.close(cachedTargetStage);
 		closed = true;
 	}
 

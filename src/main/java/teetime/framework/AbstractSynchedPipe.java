@@ -34,8 +34,8 @@ public abstract class AbstractSynchedPipe<T> extends AbstractPipe<T> {
 
 	private volatile boolean closed;
 
-	protected AbstractSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		super(sourcePort, targetPort, capacity);
+	protected AbstractSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		super(sourcePort, targetPort);
 		final Queue<ISignal> localSignalQueue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT));
 		final PutStrategy<ISignal> putStrategy = new YieldPutStrategy<ISignal>();
 		final TakeStrategy<ISignal> takeStrategy = new SCParkTakeStrategy<ISignal>();

@@ -15,7 +15,6 @@
  */
 package teetime.framework;
 
-import teetime.framework.exceptionHandling.TerminateException;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
@@ -38,42 +37,14 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			inputPort.waitForStartSignal();
 		}
-
-		// if the producers have closed all input ports before changing the state to STARTED,
-		// they do not set the state to TERMINATING.
-		// Hence, the stage's state needs to be set at this position.
-		// if (stage.getNumOpenedInputPorts().get() == 0) {
-		// stage.terminateStage();
-		// }
 	}
 
 	@Override
 	protected void afterStageExecution() {
-		// stage.terminateStage(); // change state to terminating
-
-		logger.debug("Removing remaining elements...");
-		try {
-			while (hasRemainingElements()) {
-				stage.executeStage();
-			}
-		} catch (TerminateException ignore) {// NOPMD
-			// ignore exception since we cannot do anything here.
-			// However, we must pass the termination signal
-		}
-
 		final ISignal signal = new TerminatingSignal(); // NOPMD DU caused by loop
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			stage.onSignal(signal, inputPort);
 		}
-	}
-
-	private boolean hasRemainingElements() {
-		for (InputPort<?> inputPort : stage.getInputPorts()) {
-			if (inputPort.getPipe().hasMore()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 }
