@@ -15,25 +15,12 @@
  */
 package teetime.framework;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.Sink;
 
 public class TerminationTest {
-
-	@Ignore
-	@Test(timeout = 5000)
-	public void terminatesMultiInputPort() {
-		new Execution<Configuration>(new MultiInputConfig()).executeBlocking();
-	}
 
 	@Test(timeout = 1000)
 	public void correctAbort() throws InterruptedException {
@@ -44,21 +31,18 @@ public class TerminationTest {
 		execution.abortEventually();
 	}
 
-	@Test(timeout = 3000)
+	@Test(timeout = 1000, expected = ExecutionException.class)
 	public void doesNotGetStuckInAdd() throws InterruptedException {
 		TerminationConfig configuration = new TerminationConfig(1);
 		Execution<TerminationConfig> execution = new Execution<TerminationConfig>(configuration);
-		execution.executeNonBlocking();
-		Thread.sleep(100);
-		execution.abortEventually();
-		assertThat(configuration.finalProp.timeInMs - 450, is(greaterThan(configuration.firstProp.timeInMs)));
+		execution.executeBlocking();
 	}
 
 	private class TerminationConfig extends Configuration {
-		InitialElementProducer<Integer> init = new InitialElementProducer<Integer>(1, 2, 3, 4, 5, 6);
-		Propagator firstProp = new Propagator();
-		DoesNotRetrieveElements absorbStage = new DoesNotRetrieveElements();
-		Propagator finalProp = new Propagator();
+		final InitialElementProducer<Integer> init = new InitialElementProducer<Integer>(1, 2, 3, 4, 5);
+		final Propagator firstProp = new Propagator();
+		final DoesNotRetrieveElements absorbStage = new DoesNotRetrieveElements();
+		final Propagator finalProp = new Propagator();
 
 		public TerminationConfig(final int capacity) {
 			if (capacity == 1) {
@@ -75,39 +59,27 @@ public class TerminationTest {
 
 	}
 
-	private class DoesNotRetrieveElements extends AbstractConsumerStage<Integer> {
+	private class DoesNotRetrieveElements extends AbstractStage {
 
-		private final OutputPort<Integer> output = createOutputPort();
+		private final InputPort<Integer> inputPort = createInputPort();
+		private final OutputPort<Integer> outputPort = createOutputPort();
 
 		@Override
-		protected void execute(final Integer element) {
-			int i = 0;
-			while (i <= 1) { // waits 2x500ms per element consumption
-				i++;
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					// First sleep will throw this
-				}
-			}
+		protected void execute() throws InterruptedException {
+			throw new IllegalStateException();
+		}
 
+		public InputPort<Integer> getInputPort() {
+			return inputPort;
 		}
 
 		public OutputPort<? extends Integer> getOutputPort() {
-			return output;
+			return outputPort;
 		}
-
-		@Override
-		protected void terminateStage() {}
-
-		@Override
-		protected void abort() {}
-
 	}
 
 	private class Propagator extends AbstractConsumerStage<Integer> {
 
-		public long timeInMs;
 		private final OutputPort<Integer> output = createOutputPort();
 
 		@Override
@@ -118,52 +90,6 @@ public class TerminationTest {
 		public OutputPort<? extends Integer> getOutputPort() {
 			return output;
 		}
-
-		@Override
-		public void onTerminating() throws Exception {
-			timeInMs = System.currentTimeMillis();
-			super.onTerminating();
-		}
-	}
-
-	private class MultiInputConsumer extends AbstractConsumerStage<Object> {
-
-		public final InputPort<Object> secondInputPort = createInputPort(Object.class);
-
-		private int count = 0;
-
-		@Override
-		protected void execute(final Object element) {
-			Object received = secondInputPort.receive();
-			if (received != null) {
-				count++;
-			}
-			if (count > 3) {
-				this.terminateStage();
-			}
-		}
-
-	}
-
-	private class MultiInputConfig extends Configuration {
-
-		public MultiInputConfig() {
-			List<Integer> array = new ArrayList<Integer>();
-			for (int i = 0; i < 10000; i++) {
-				array.add(new Integer(0));
-			}
-			InitialElementProducer<Object> firstInit = new InitialElementProducer<Object>(new Object());
-			InitialElementProducer<Integer> secondInit = new InitialElementProducer<Integer>(array);
-			MultiInputConsumer miConsumer = new MultiInputConsumer();
-
-			connectPorts(firstInit.getOutputPort(), miConsumer.getInputPort());
-			connectPorts(secondInit.getOutputPort(), miConsumer.secondInputPort);
-
-			firstInit.declareActive();
-			secondInit.declareActive();
-			miConsumer.declareActive();
-		}
-
 	}
 
 }

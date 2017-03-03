@@ -29,7 +29,7 @@ import teetime.util.StopWatch;
 public class ExecutionTest {
 
 	private static final long DELAY_IN_MS = 500;
-	private static final long ABSOLUTE_MAX_ERROR_IN_MS = 8; // handle timer granularity
+	private static final long ABSOLUTE_MAX_ERROR_IN_MS = 15; // handle timer granularity
 
 	private Execution<TestConfig> execution;
 

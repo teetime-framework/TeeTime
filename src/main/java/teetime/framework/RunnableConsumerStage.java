@@ -15,6 +15,7 @@
  */
 package teetime.framework;
 
+import teetime.framework.exceptionHandling.TerminateException;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
@@ -50,8 +51,14 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	protected void afterStageExecution() {
 		// stage.terminateStage(); // change state to terminating
 
-		while (hasRemainingElements()) {
-			stage.executeStage();
+		logger.debug("Removing remaining elements...");
+		try {
+			while (hasRemainingElements()) {
+				stage.executeStage();
+			}
+		} catch (TerminateException ignore) {// NOPMD
+			// ignore exception since we cannot do anything here.
+			// However, we must pass the termination signal
 		}
 
 		final ISignal signal = new TerminatingSignal(); // NOPMD DU caused by loop

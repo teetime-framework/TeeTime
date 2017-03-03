@@ -115,7 +115,7 @@ public abstract class AbstractStage {
 	private long beforeExecuteTime;
 	private long lastTimeAfterExecute;
 
-	protected final void executeStage() {
+	protected final void executeStage() throws TerminateException {
 		if (performanceLoggingEnabled) {
 			beforeExecuteTime = System.nanoTime();
 			executeWithCatchedExceptions();
@@ -128,7 +128,7 @@ public abstract class AbstractStage {
 		}
 	}
 
-	private void executeWithCatchedExceptions() {
+	private void executeWithCatchedExceptions() throws TerminateException {
 		try {
 			this.execute();
 		} catch (TerminateException e) {
@@ -503,11 +503,18 @@ public abstract class AbstractStage {
 		// } else if (getCurrentState() == StageState.STARTED) { // consumer FIXME remove this hack
 		// changeState(StageState.TERMINATING);
 		// }
+		if (getInputPorts().size() != 0) {
+			throw new UnsupportedOperationException("Consumer stages may not invoke this method.");
+		}
+		terminateStageByFramework();
+	}
+
+	/* default */ void terminateStageByFramework() {
 		changeState(StageState.TERMINATING);
 	}
 
 	protected void abort() {
-		this.terminateStage();
+		this.terminateStageByFramework();
 		this.getOwningThread().interrupt();
 	}
 

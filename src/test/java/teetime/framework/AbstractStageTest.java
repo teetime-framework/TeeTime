@@ -15,24 +15,14 @@
  */
 package teetime.framework;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
-import teetime.stage.Cache;
-import teetime.stage.Counter;
-import teetime.stage.InitialElementProducer;
+import teetime.stage.*;
 import teetime.stage.basic.Sink;
 import teetime.stage.basic.merger.Merger;
 
@@ -254,5 +244,15 @@ public class AbstractStageTest {
 	// ((AbstractStage) arbitraryStage).onSignal(new StartingSignal(), secondPort);
 	// assertFalse(mergerOutputPipe.startSent());
 	// }
+
+	@Test
+	public void terminateProducerStage() throws Exception {
+		new InitialElementProducer<>().terminateStage();
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void terminateConsumerStage() throws Exception {
+		new Counter<>().terminateStage();
+	}
 
 }

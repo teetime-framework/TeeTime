@@ -49,8 +49,8 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMo
 			}
 			this.numWaits++;
 			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
+				Thread.sleep(10);
+			} catch (InterruptedException ignore) { // NOPMD can be interrupted w/o any reason
 				throw TerminateException.INSTANCE;
 			}
 		}

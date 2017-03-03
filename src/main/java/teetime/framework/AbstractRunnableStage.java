@@ -64,6 +64,7 @@ abstract class AbstractRunnableStage implements Runnable {
 			} finally {
 				stopWatch.end();
 				durationsInNs = stopWatch.getDurationInNs();
+				// create and pass TERM to all input ports (for both producer and consumer)
 				afterStageExecution();
 			}
 
