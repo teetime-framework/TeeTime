@@ -23,16 +23,14 @@ import teetime.stage.basic.Sink;
 public class TerminationTest {
 
 	@Test(timeout = 1000)
-	public void correctAbort() throws InterruptedException {
+	public void correctAbort() {
 		TerminationConfig configuration = new TerminationConfig(10);
 		Execution<TerminationConfig> execution = new Execution<TerminationConfig>(configuration);
-		execution.executeNonBlocking();
-		Thread.sleep(100);
-		execution.abortEventually();
+		execution.executeBlocking();
 	}
 
 	@Test(timeout = 1000, expected = ExecutionException.class)
-	public void doesNotGetStuckInAdd() throws InterruptedException {
+	public void doesNotGetStuckInAdd() {
 		TerminationConfig configuration = new TerminationConfig(1);
 		Execution<TerminationConfig> execution = new Execution<TerminationConfig>(configuration);
 		execution.executeBlocking();
