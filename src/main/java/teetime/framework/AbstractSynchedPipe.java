@@ -82,7 +82,6 @@ public abstract class AbstractSynchedPipe<T> extends AbstractPipe<T> {
 
 	@Override
 	public final void close() {
-		super.close();
 		closed = true;
 	}
 }

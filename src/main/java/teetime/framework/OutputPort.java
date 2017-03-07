@@ -75,7 +75,7 @@ public class OutputPort<T> extends AbstractPort<T> {
 	 */
 	public void sendSignal(final ISignal signal) {
 		if (signal instanceof TerminatingSignal) {
-			pipe.close();
+			pipe.add(TERMINATE_ELEMENT);
 		}
 
 		pipe.sendSignal(signal);

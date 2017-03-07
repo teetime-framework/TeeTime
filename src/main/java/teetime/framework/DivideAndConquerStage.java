@@ -21,7 +21,9 @@ import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
 
 import teetime.framework.divideandconquer.*;
-import teetime.framework.signal.*;
+import teetime.framework.pipe.DummyPipe;
+import teetime.framework.signal.StartingSignal;
+import teetime.framework.signal.TerminatingSignal;
 
 /**
  * A stage to solve divide and conquer problems
@@ -54,6 +56,10 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	private final OutputPort<P> leftOutputPort = this.createOutputPort();
 	private final OutputPort<P> rightOutputPort = this.createOutputPort();
 
+	private boolean closingLeftOutputPort;
+
+	private boolean closingRightOutputPort;
+
 	/**
 	 * Creates a new divide and conquer stage and connects the additional in- and output ports with {@link teetime.framework.DivideAndConquerRecursivePipe} with a
 	 * default threshold of {@code Runtime.getRuntime().availableProcessors()}.
@@ -66,7 +72,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	 * Creates a new divide and conquer stage and connects the additional in- and output ports with {@link teetime.framework.DivideAndConquerRecursivePipe}.
 	 */
 	public DivideAndConquerStage(final int maxCopiedInstances) {
-		this(new AtomicInteger(-1), maxCopiedInstances);
+		this(new AtomicInteger(0), maxCopiedInstances);
 	}
 
 	/**
@@ -82,9 +88,6 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		this.numCopiedInstances = numCopiedInstances;
 		this.maxCopiedInstances = maxCopiedInstances;
 		this.firstExecution = true;
-
-		numCopiedInstances.incrementAndGet();
-		logger.debug("New number of instances: {}", numCopiedInstances.get());
 	}
 
 	@Override
@@ -96,25 +99,18 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		// logger.trace("Closed input ports: {} {} {}", leftInputPort.isClosed(), rightInputPort.isClosed(), inputPort.isClosed());
 		if (!(receivedLeftSolution || receivedRightSolution || receivedNewProblem)) {
 			if (inputPort.isClosed()) { // check explicitly when this stage is active
-				if (!leftOutputPort.getPipe().isClosed()) {
+				if (!closingLeftOutputPort) {
+					closingLeftOutputPort = true;
+					// logger.trace("Sending TERM to left");
 					leftOutputPort.sendSignal(new TerminatingSignal());
 				}
-				if (!rightOutputPort.getPipe().isClosed()) {
+				if (!closingRightOutputPort) {
+					closingRightOutputPort = true;
+					// logger.trace("Sending TERM to right");
 					rightOutputPort.sendSignal(new TerminatingSignal());
 				}
 			}
 		}
-	}
-
-	@Override
-	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
-		if (signal instanceof TerminatingSignal && inputPort == this.inputPort) {
-			// leftOutputPort.getPipe().close();
-			// rightOutputPort.getPipe().close();
-			leftOutputPort.sendSignal(signal);
-			rightOutputPort.sendSignal(signal);
-		}
-		super.onSignal(signal, inputPort);
 	}
 
 	/**
@@ -143,10 +139,12 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	private boolean checkForSolutions(final InputPort<S> port) {
 		final S solution = port.receive();
 		if (solution != null) {
+			// logger.trace("Received solution: " + solution + " from port " + port);
 			int solutionID = solution.getID();
 			if (isInBuffer(solutionID)) {
-				S bufferedSolution = getSolutionFromBuffer(solutionID);
+				S bufferedSolution = removeSolutionFromBuffer(solutionID);
 				S combinedSolution = solution.combine(bufferedSolution);
+				// logger.trace("Sending solution: " + combinedSolution);
 				outputPort.send(combinedSolution);
 			} else {
 				addToBuffer(solutionID, solution);
@@ -155,7 +153,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		return solution != null;
 	}
 
-	private S getSolutionFromBuffer(final int solutionID) {
+	private S removeSolutionFromBuffer(final int solutionID) {
 		S tempSolution = this.solutionBuffer.get(solutionID);
 		this.solutionBuffer.remove(solutionID);
 		return tempSolution;
@@ -183,14 +181,15 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 		if (problem != null) {
 			if (problem.isBaseCase()) {
 				S solution = problem.baseSolve();
-				this.getOutputPort().send(solution);
+				outputPort.send(solution);
 			} else {
 				if (firstExecution) {
 					createCopies();
+					firstExecution = false;
 				}
 				DividedDCProblem<P> dividedProblem = problem.divide();
-				this.leftOutputPort.send(dividedProblem.leftProblem); // first recursive call
-				this.rightOutputPort.send(dividedProblem.rightProblem); // second recursive call
+				leftOutputPort.send(dividedProblem.leftProblem); // first recursive call
+				rightOutputPort.send(dividedProblem.rightProblem); // second recursive call
 			}
 		}
 		return problem != null;
@@ -198,14 +197,17 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 
 	private void createCopies() {
 		if (isThresholdReached()) {
-			new DivideAndConquerRecursivePipe<P, S>(leftOutputPort, leftInputPort);
-			new DivideAndConquerRecursivePipe<P, S>(rightOutputPort, rightInputPort);
+			// new DivideAndConquerRecursivePipe<P, S>(leftOutputPort, leftInputPort);
+			// new DivideAndConquerRecursivePipe<P, S>(rightOutputPort, rightInputPort);
+			if (leftOutputPort.pipe == DummyPipe.INSTANCE) {
+				throw new IllegalStateException();
+			}
 		} else {
+			numCopiedInstances.getAndAdd(2);
+			logger.debug("New number of instances: {}", numCopiedInstances.get());
 			copy(leftOutputPort, leftInputPort, this);
 			copy(rightOutputPort, rightInputPort, this);
 		}
-
-		this.firstExecution = false;
 	}
 
 	private void copy(final OutputPort<P> outputPort, final InputPort<S> inputPort, final DivideAndConquerStage<P, S> callingStage) {

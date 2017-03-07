@@ -75,16 +75,4 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 		return sourcePort.getOwningStage().getId() + " -> " + targetPort.getOwningStage().getId() + " (" + super.toString() + ")";
 	}
 
-	@Override
-	public void close() {
-		close(cachedTargetStage);
-	}
-
-	/* default */ static void close(final AbstractStage stage) {
-		int numOpenInputPorts = stage.getNumOpenedInputPorts().decrementAndGet();
-		stage.logger.debug("numOpenedInputPorts (dec): {}", numOpenInputPorts);
-		if (numOpenInputPorts <= 0) {
-			stage.terminateStageByFramework();
-		}
-	}
 }

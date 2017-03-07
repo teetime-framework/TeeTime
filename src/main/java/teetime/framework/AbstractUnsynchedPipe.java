@@ -56,7 +56,6 @@ public abstract class AbstractUnsynchedPipe<T> extends AbstractPipe<T> {
 
 	@Override
 	public void close() {
-		super.close();
 		closed = true;
 	}
 

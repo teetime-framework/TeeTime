@@ -26,6 +26,8 @@ import teetime.framework.pipe.IPipe;
  */
 public class AbstractPort<T> {
 
+	protected static final Object TERMINATE_ELEMENT = new Object();
+
 	protected IPipe<?> pipe;
 	/**
 	 * The type of this port.
@@ -65,4 +67,5 @@ public class AbstractPort<T> {
 	public String toString() {
 		return (name != null) ? name : super.toString();
 	}
+
 }

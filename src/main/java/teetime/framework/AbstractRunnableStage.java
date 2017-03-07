@@ -58,17 +58,6 @@ abstract class AbstractRunnableStage implements Runnable {
 				while (!stage.shouldBeTerminated()) {
 					stage.executeStage();
 				}
-
-				logger.debug("Removing remaining elements...");
-				try {
-					while (hasRemainingElements()) {
-						stage.executeStage();
-					}
-				} catch (TerminateException ignore) {// NOPMD
-					// ignore exception since we cannot do anything here.
-					// However, we must pass the termination signal
-				}
-
 			} catch (TerminateException e) {
 				stage.abort();
 				stage.getOwningContext().abortConfigurationRun();
@@ -88,15 +77,6 @@ abstract class AbstractRunnableStage implements Runnable {
 		}
 
 		logger.debug("Finished runnable stage. ({})", stage.getId());
-	}
-
-	private boolean hasRemainingElements() {
-		for (InputPort<?> inputPort : stage.getInputPorts()) {
-			if (inputPort.getPipe().hasMore()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**

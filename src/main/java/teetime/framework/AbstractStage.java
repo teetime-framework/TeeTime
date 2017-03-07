@@ -18,7 +18,6 @@ package teetime.framework;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,9 +64,10 @@ public abstract class AbstractStage {
 	private boolean calledOnTerminating = false;
 	private boolean calledOnStarting = false;
 
-	private volatile StageState currentState = StageState.CREATED;
+	private volatile StageState currentState = StageState.CREATED; // TODO remove volatile since the state is never set by another thread anymore
 	/** used to detect termination */
-	private final AtomicInteger numOpenedInputPorts = new AtomicInteger();
+	// private final AtomicInteger numOpenedInputPorts = new AtomicInteger();
+	private int numOpenedInputPorts;
 
 	protected AbstractStage() {
 		this.id = this.createId();
@@ -414,13 +414,15 @@ public abstract class AbstractStage {
 	protected <T> InputPort<T> createInputPort(final Class<T> type, final String name) {
 		final InputPort<T> inputPort = new InputPort<T>(type, this, name);
 		inputPorts.add(inputPort);
-		numOpenedInputPorts.incrementAndGet();
-		logger.debug("numOpenedInputPorts (inc): " + numOpenedInputPorts.get());
+		// numOpenedInputPorts.incrementAndGet();
+		numOpenedInputPorts++;
+		logger.debug("numOpenedInputPorts (inc): " + numOpenedInputPorts);
 		return inputPort;
 	}
 
-	public AtomicInteger getNumOpenedInputPorts() {
-		return numOpenedInputPorts;
+	public int decNumOpenedInputPorts() {
+		// return numOpenedInputPorts.decrementAndGet();
+		return --numOpenedInputPorts;
 	}
 
 	/**
