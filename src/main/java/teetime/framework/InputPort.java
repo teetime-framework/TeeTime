@@ -45,12 +45,9 @@ public class InputPort<T> extends AbstractPort<T> {
 	public T receive() {
 		Object element = this.pipe.removeLast();
 		if (TERMINATE_ELEMENT == element) {
-			if (pipe.isClosed()) {
-				throw new IllegalStateException();
-			}
 			pipe.close();// TODO remove volatile from isClosed
 			int numOpenedInputPorts = getOwningStage().decNumOpenedInputPorts();
-			getOwningStage().logger.trace("numOpenedInputPorts (dec): " + numOpenedInputPorts);
+			getOwningStage().logger.trace("numOpenedInputPorts (dec): {}", numOpenedInputPorts);
 			if (numOpenedInputPorts == 0) {
 				getOwningStage().terminateStageByFramework();
 			}

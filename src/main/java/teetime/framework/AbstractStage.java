@@ -515,7 +515,7 @@ public abstract class AbstractStage {
 		changeState(StageState.TERMINATING);
 	}
 
-	protected void abort() {
+	protected void abort() { // invoked by ThreadService for all threadable stages
 		this.terminateStageByFramework();
 		this.getOwningThread().interrupt();
 	}
