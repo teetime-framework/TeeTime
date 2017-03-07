@@ -94,14 +94,14 @@ public interface IPipe<T> {
 	 */
 	void reportNewElement();
 
-	boolean isClosed();
+	boolean isClosed(); // FIXME remove dead method?
+
+	void close();// FIXME remove if migration to TERM element has finished
 
 	boolean hasMore();
 
 	// "signal" handling
 
 	void waitForStartSignal() throws InterruptedException;
-
-	void close();
 
 }

@@ -15,9 +15,7 @@
  */
 package teetime.framework.pipe;
 
-import teetime.framework.AbstractUnsynchedPipe;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.*;
 
 public final class UnsynchedPipe<T> extends AbstractUnsynchedPipe<T> {
 
@@ -25,7 +23,7 @@ public final class UnsynchedPipe<T> extends AbstractUnsynchedPipe<T> {
 	private Object element;
 
 	public UnsynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		super(sourcePort, targetPort, 1);
+		super(sourcePort, targetPort);
 	}
 
 	@Override
@@ -57,6 +55,11 @@ public final class UnsynchedPipe<T> extends AbstractUnsynchedPipe<T> {
 	@Override
 	public int size() {
 		return (this.element == null) ? 0 : 1;
+	}
+
+	@Override
+	public int capacity() {
+		return 1;
 	}
 
 }

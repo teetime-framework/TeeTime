@@ -40,7 +40,7 @@ public class CcwTaskFarmStageTestConfiguration extends Configuration {
 		}
 		final InitialElementProducer<Long> initialElementProducer = new InitialElementProducer<Long>(values);
 		final CompositeTestStage compositeTestStage = new CompositeTestStage();
-		taskFarmStage = new DynamicTaskFarmStage<Long, String, CompositeTestStage>(compositeTestStage, 1000);
+		taskFarmStage = new DynamicTaskFarmStage<Long, String, CompositeTestStage>(compositeTestStage, 1, 1000);
 		taskFarmStage.getConfiguration().setThroughputScoreBoundary(0.2);
 		taskFarmStage.getConfiguration().setThroughputAlgorithm("RegressionAlgorithm");
 		taskFarmStage.getConfiguration().setAdaptationWaitingTimeMillis(50);

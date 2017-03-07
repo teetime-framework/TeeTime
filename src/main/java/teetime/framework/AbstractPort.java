@@ -17,7 +17,16 @@ package teetime.framework;
 
 import teetime.framework.pipe.IPipe;
 
+/**
+ *
+ * @author Christian Wulf (chw)
+ *
+ * @param <T>
+ *            the type of the elements which this port accepts
+ */
 public class AbstractPort<T> {
+
+	protected static final Object TERMINATE_ELEMENT = new Object();
 
 	protected IPipe<?> pipe;
 	/**
@@ -58,4 +67,5 @@ public class AbstractPort<T> {
 	public String toString() {
 		return (name != null) ? name : super.toString();
 	}
+
 }

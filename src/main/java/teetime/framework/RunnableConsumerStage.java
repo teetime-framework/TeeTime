@@ -33,32 +33,10 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	@Override
 	protected void beforeStageExecution() throws InterruptedException {
 		logger.trace("waitForStartingSignal");
+		// FIXME should getInputPorts() really be defined in Stage?
 		for (InputPort<?> inputPort : stage.getInputPorts()) {
 			inputPort.waitForStartSignal();
 		}
-	}
-
-	@Override
-	protected void executeStage() {
-		try {
-			stage.executeStage();
-		} catch (NotEnoughInputException e) {
-			checkForTerminationSignal(stage);
-		}
-	}
-
-	private void checkForTerminationSignal(final AbstractStage stage) {
-		// FIXME should getInputPorts() really be defined in Stage?
-		for (InputPort<?> inputPort : stage.getInputPorts()) {
-			if (inputPort.isClosed()) {
-				// stage.removeDynamicPort(inputPort);
-				continue;
-			} else {
-				return;
-			}
-		}
-
-		stage.terminateStage();
 	}
 
 	@Override

@@ -39,7 +39,6 @@ import teetime.util.framework.port.PortRemovedListener;
 public abstract class AbstractStage {
 
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
-	private static final NotEnoughInputException NOT_ENOUGH_INPUT_EXCEPTION = new NotEnoughInputException();
 
 	/** This stage's unique identifier */
 	private final String id;
@@ -65,7 +64,10 @@ public abstract class AbstractStage {
 	private boolean calledOnTerminating = false;
 	private boolean calledOnStarting = false;
 
-	private volatile StageState currentState = StageState.CREATED;
+	private volatile StageState currentState = StageState.CREATED; // TODO remove volatile since the state is never set by another thread anymore
+	/** used to detect termination */
+	// private final AtomicInteger numOpenedInputPorts = new AtomicInteger();
+	private int numOpenedInputPorts;
 
 	protected AbstractStage() {
 		this.id = this.createId();
@@ -113,7 +115,7 @@ public abstract class AbstractStage {
 	private long beforeExecuteTime;
 	private long lastTimeAfterExecute;
 
-	protected final void executeStage() {
+	protected final void executeStage() throws TerminateException {
 		if (performanceLoggingEnabled) {
 			beforeExecuteTime = System.nanoTime();
 			executeWithCatchedExceptions();
@@ -126,11 +128,9 @@ public abstract class AbstractStage {
 		}
 	}
 
-	private void executeWithCatchedExceptions() {
+	private void executeWithCatchedExceptions() throws TerminateException {
 		try {
 			this.execute();
-		} catch (NotEnoughInputException e) {
-			throw e;
 		} catch (TerminateException e) {
 			throw e;
 		} catch (Exception e) {
@@ -144,16 +144,19 @@ public abstract class AbstractStage {
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	protected abstract void execute() throws Exception;
 
+	// left commented out because:
+	// without returnNoElement, it is now unknown when a consumer stage is busy-waiting.
+	// We need a way to detect such a blocking behavior anyway.
 	// only used by consumer stages
-	protected final void returnNoElement() {
-		// If the stage get null-element it can't be active. If it's the first time
-		// after being active the according time stamp is saved so that one can gather
-		// information about the time the stage was in one state uninterrupted.
-		if (newStateRequired(ExecutionState.BLOCKED)) {
-			this.addState(ExecutionState.BLOCKED, beforeExecuteTime);
-		}
-		throw NOT_ENOUGH_INPUT_EXCEPTION;
-	}
+	// protected final void returnNoElement() {
+	// // If the stage get null-element it can't be active. If it's the first time
+	// // after being active the according time stamp is saved so that one can gather
+	// // information about the time the stage was in one state uninterrupted.
+	// if (newStateRequired(ExecutionState.BLOCKED)) {
+	// this.addState(ExecutionState.BLOCKED, beforeExecuteTime);
+	// }
+	// throw NOT_ENOUGH_INPUT_EXCEPTION;
+	// }
 
 	// package-private would suffice, but protected is necessary for unit tests
 	protected Thread getOwningThread() {
@@ -298,10 +301,10 @@ public abstract class AbstractStage {
 	}
 
 	private void changeState(final StageState newState) {
-		currentState = newState;
 		if (logger.isTraceEnabled()) {
-			logger.trace(newState.toString());
+			logger.trace("Changing state from " + currentState + " to " + newState);
 		}
+		currentState = newState;
 	}
 
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
@@ -411,7 +414,15 @@ public abstract class AbstractStage {
 	protected <T> InputPort<T> createInputPort(final Class<T> type, final String name) {
 		final InputPort<T> inputPort = new InputPort<T>(type, this, name);
 		inputPorts.add(inputPort);
+		// numOpenedInputPorts.incrementAndGet();
+		numOpenedInputPorts++;
+		logger.debug("numOpenedInputPorts (inc): " + numOpenedInputPorts);
 		return inputPort;
+	}
+
+	public int decNumOpenedInputPorts() {
+		// return numOpenedInputPorts.decrementAndGet();
+		return --numOpenedInputPorts;
 	}
 
 	/**
@@ -489,11 +500,23 @@ public abstract class AbstractStage {
 	 * Terminates the execution of the stage. After terminating, this stage sends a signal to all its direct and indirect successor stages to terminate.
 	 */
 	protected void terminateStage() {
+		// if (getInputPorts().size() == 0) { // always for producer
+		// changeState(StageState.TERMINATING);
+		// } else if (getCurrentState() == StageState.STARTED) { // consumer FIXME remove this hack
+		// changeState(StageState.TERMINATING);
+		// }
+		if (getInputPorts().size() != 0) {
+			throw new UnsupportedOperationException("Consumer stages may not invoke this method.");
+		}
+		terminateStageByFramework();
+	}
+
+	/* default */ void terminateStageByFramework() {
 		changeState(StageState.TERMINATING);
 	}
 
-	protected void abort() {
-		this.terminateStage();
+	protected void abort() { // invoked by ThreadService for all threadable stages
+		this.terminateStageByFramework();
 		this.getOwningThread().interrupt();
 	}
 

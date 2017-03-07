@@ -15,9 +15,10 @@
  */
 package teetime.examples.quicksort;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -32,10 +33,10 @@ public class QuicksortTest {
 		int[] numbers = new int[] { 3, 1, 4, 5, 2 };
 		QuicksortProblem problemOne = new QuicksortProblem(0, numbers.length - 1, numbers);
 
-		ArrayList<QuicksortProblem> inputs = new ArrayList<QuicksortProblem>();
+		List<QuicksortProblem> inputs = new ArrayList<QuicksortProblem>();
 		inputs.add(problemOne);
 
-		ArrayList<QuicksortSolution> outputs = new ArrayList<QuicksortSolution>();
+		List<QuicksortSolution> outputs = new ArrayList<QuicksortSolution>();
 
 		final QuicksortConfiguration configuration = new QuicksortConfiguration(inputs, outputs);
 		final Execution<QuicksortConfiguration> execution = new Execution<QuicksortConfiguration>(configuration);

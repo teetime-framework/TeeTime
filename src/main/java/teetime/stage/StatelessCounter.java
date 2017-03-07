@@ -15,9 +15,7 @@
  */
 package teetime.stage;
 
-import teetime.framework.AbstractStage;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.*;
 import teetime.framework.pipe.ReflexivePipe;
 
 public class StatelessCounter<T> extends AbstractStage {
@@ -37,7 +35,7 @@ public class StatelessCounter<T> extends AbstractStage {
 	protected void execute() {
 		T element = inputPort.receive();
 		if (element == null) {
-			returnNoElement();
+			return;
 		}
 
 		outputPort.send(element);

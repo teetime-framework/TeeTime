@@ -29,8 +29,8 @@ public abstract class AbstractUnsynchedPipe<T> extends AbstractPipe<T> {
 
 	private boolean closed;
 
-	protected AbstractUnsynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		super(sourcePort, targetPort, capacity);
+	protected AbstractUnsynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+		super(sourcePort, targetPort);
 	}
 
 	@Override

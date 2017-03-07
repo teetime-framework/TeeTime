@@ -16,9 +16,9 @@
 package teetime.stage;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertArrayEquals;
-import static teetime.framework.test.StageTester.test;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static teetime.framework.test.StageTester.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -43,10 +43,20 @@ public class InputPort<T> extends AbstractPort<T> {
 	 */
 	@SuppressWarnings("unchecked")
 	public T receive() {
-		return (T) this.pipe.removeLast();
+		Object element = this.pipe.removeLast();
+		if (TERMINATE_ELEMENT == element) {
+			pipe.close();// TODO remove volatile from isClosed
+			int numOpenedInputPorts = getOwningStage().decNumOpenedInputPorts();
+			getOwningStage().logger.trace("numOpenedInputPorts (dec): {}", numOpenedInputPorts);
+			if (numOpenedInputPorts == 0) {
+				getOwningStage().terminateStageByFramework();
+			}
+			element = null;
+		}
+		return (T) element;
 	}
 
-	public boolean isClosed() {
+	public boolean isClosed() { // FIXME remove: only used by divide and conquer
 		return pipe.isClosed() && !pipe.hasMore();
 	}
 

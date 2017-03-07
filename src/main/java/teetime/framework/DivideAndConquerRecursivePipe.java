@@ -15,10 +15,9 @@
  */
 package teetime.framework;
 
-import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
-import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
-import teetime.framework.divideandconquer.DividedDCProblem;
+import teetime.framework.divideandconquer.*;
 import teetime.framework.pipe.IPipe;
+import teetime.framework.pipe.UnsynchedPipe;
 import teetime.framework.signal.ISignal;
 
 /**
@@ -38,25 +37,59 @@ import teetime.framework.signal.ISignal;
 class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> implements
 		IPipe<P> {
 
-	protected final DivideAndConquerStage<P, S> cachedTargetStage;
+	private static class DivideAndConquerIntermediateStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>>
+			extends AbstractStage {
+		private final InputPort<P> inputPort = createInputPort();
+		private final OutputPort<S> outputPort = createOutputPort();
+
+		@Override
+		protected void execute() {
+			P problem = inputPort.receive();
+			if (null == problem) {
+				return; // returns null even if the stage is passive (due to AbstractPort.TerminateElement)
+			}
+			S solution = solve(problem);
+			// logger.trace("Sending (reflexive) solution: " + solution + " > " + outputPort.pipe.getTargetPort().getOwningStage());
+			outputPort.send(solution);
+		}
+
+		private S solve(final P problem) {
+			S solution;
+			if (problem.isBaseCase()) {
+				solution = problem.baseSolve();
+			} else {
+				DividedDCProblem<P> dividedProblem = problem.divide();
+				S firstSolution = solve(dividedProblem.leftProblem); // recursive call
+				S secondSolution = solve(dividedProblem.rightProblem); // recursive call
+				solution = firstSolution.combine(secondSolution);
+			}
+
+			// solution = (S) ((QuicksortProblem) problem).solveDirectly();
+			return solution;
+		}
+
+		public InputPort<P> getInputPort() {
+			return inputPort;
+		}
+
+		public OutputPort<S> getOutputPort() {
+			return outputPort;
+		}
+	}
 
 	private final OutputPort<P> sourcePort;
 	private final InputPort<S> targetPort;
-	@SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
-	private final int capacity;
+	private final UnsynchedPipe<P> outputPipe;
 
-	private boolean closed;
-
-	private S element;
-
-	@SuppressWarnings("unchecked")
 	protected DivideAndConquerRecursivePipe(final OutputPort<P> sourcePort, final InputPort<S> targetPort) {
-		sourcePort.setPipe(this);
-		targetPort.setPipe(this);
 		this.sourcePort = sourcePort;
 		this.targetPort = targetPort;
-		this.capacity = 1;
-		this.cachedTargetStage = (DivideAndConquerStage<P, S>) targetPort.getOwningStage();
+
+		DivideAndConquerIntermediateStage<P, S> divideAndConquerIntermediateStage = new DivideAndConquerIntermediateStage<P, S>();
+		outputPipe = new UnsynchedPipe<P>(sourcePort, divideAndConquerIntermediateStage.getInputPort());
+		new UnsynchedPipe<S>(divideAndConquerIntermediateStage.getOutputPort(), targetPort);
+
+		sourcePort.setPipe(this);
 	}
 
 	@Override
@@ -67,17 +100,17 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public final InputPort getTargetPort() {
-		return targetPort;
+		return outputPipe.getTargetPort();
 	}
 
 	@Override
 	public final boolean hasMore() {
-		return !isEmpty();
+		return outputPipe.hasMore();
 	}
 
 	@Override
 	public final int capacity() {
-		return capacity;
+		return outputPipe.capacity();
 	}
 
 	@Override
@@ -87,10 +120,9 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 
 	@Override
 	public final void sendSignal(final ISignal signal) {
-		this.cachedTargetStage.onSignal(signal, this.targetPort);
+		outputPipe.sendSignal(signal);
 	}
 
-	// @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
 	@Override
 	public void waitForStartSignal() throws InterruptedException {
 		// do nothing
@@ -103,12 +135,12 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 
 	@Override
 	public boolean isClosed() {
-		return closed;
+		return outputPipe.isClosed();
 	}
 
 	@Override
 	public void close() {
-		closed = true;
+		outputPipe.close();
 	}
 
 	@Override
@@ -117,46 +149,26 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 	}
 
 	@Override
-	public Object removeLast() {
-		final Object temp = this.element;
-		this.element = null; // NOPMD (indicates an empty pipe)
-		return temp;
-	}
-
-	@Override
 	public boolean isEmpty() {
-		return this.element == null;
+		return outputPipe.isEmpty();
 	}
 
 	@Override
 	public int size() {
-		return (this.element == null) ? 0 : 1;
+		return outputPipe.size();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean add(final Object element) {
-		if (null == element) {
-			throw new IllegalArgumentException("Parameter 'element' is null, but must be non-null.");
+		if (!isClosed()) {
+			return outputPipe.add(element);
 		}
-		this.element = solve((P) element);
-		// this.reportNewElement();
 		return true;
 	}
 
-	private S solve(final P problem) {
-		S solution;
-		if (problem.isBaseCase()) {
-			solution = problem.baseSolve();
-		} else {
-			DividedDCProblem<P> dividedProblem = problem.divide();
-			S firstSolution = solve(dividedProblem.leftProblem); // recursive call
-			S secondSolution = solve(dividedProblem.rightProblem); // recursive call
-			solution = firstSolution.combine(secondSolution);
-		}
-
-		// solution = (S) ((QuicksortProblem) problem).solveDirectly();
-
-		return solution;
+	@Override
+	public Object removeLast() {
+		return outputPipe.removeLast();
 	}
+
 }

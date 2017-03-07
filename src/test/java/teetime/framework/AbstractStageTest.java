@@ -15,24 +15,14 @@
  */
 package teetime.framework;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
-import teetime.stage.Cache;
-import teetime.stage.Counter;
-import teetime.stage.InitialElementProducer;
+import teetime.stage.*;
 import teetime.stage.basic.Sink;
 import teetime.stage.basic.merger.Merger;
 
@@ -104,46 +94,42 @@ public class AbstractStageTest {
 
 	}
 
+	@Test
+	public void validTypeCompliance() {
+		new Execution<Configuration>(new TestConnectionsConfig(false), true).executeBlocking();
+	}
+
 	@Test(expected = AnalysisNotValidException.class)
-	public void testCheckTypeCompliance() throws Exception {
-		try {
-			// Correct connection
-			new Execution<Configuration>(new TestConnectionsConfig(false), true).executeBlocking();
-		} catch (AnalysisNotValidException e) {
-			fail();
-		}
-		// Incorrect connection should fail!
+	public void invalidTypeCompliance() {
 		new Execution<Configuration>(new TestConnectionsConfig(true), true).executeBlocking();
 	}
 
-	private class TestConnectionsConfig extends Configuration {
-
+	private static class TestConnectionsConfig extends Configuration {
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		TestConnectionsConfig(final boolean fails) {
-			EmptyStage stage = new EmptyStage();
+			TerminatingProducerStage stage = new TerminatingProducerStage();
 			if (fails) {
-				connectPorts((OutputPort) new EmptyStage().createOutputPort(Object.class), new EmptyStage().createInputPort(Integer.class));
+				connectPorts((OutputPort) new TerminatingProducerStage().createOutputPort(Object.class), new Merger().createInputPort(Integer.class));
 			} else {
-				connectPorts(stage.createOutputPort(Integer.class), new EmptyStage().createInputPort(Object.class));
+				connectPorts(stage.createOutputPort(Integer.class), new Merger().createInputPort(Object.class));
 			}
 			stage.declareActive();
 		}
 
 	}
 
-	private class EmptyStage extends AbstractStage {
-
+	private static class TerminatingProducerStage extends AbstractStage {
 		@Override
 		protected void execute() {
 			terminateStage();
 		}
 	}
+
 	//
 	//
 	// Moved from MergerSignalTest
 	//
 	//
-
 	private Merger<Integer> arbitraryStage;
 	private InputPort<Integer> firstPort;
 	private InputPort<Integer> secondPort;
@@ -254,5 +240,15 @@ public class AbstractStageTest {
 	// ((AbstractStage) arbitraryStage).onSignal(new StartingSignal(), secondPort);
 	// assertFalse(mergerOutputPipe.startSent());
 	// }
+
+	@Test
+	public void terminateProducerStage() throws Exception {
+		new InitialElementProducer<>().terminateStage();
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void terminateConsumerStage() throws Exception {
+		new Counter<>().terminateStage();
+	}
 
 }

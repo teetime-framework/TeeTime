@@ -24,15 +24,15 @@ public abstract class AbstractConsumerStage<I> extends AbstractStage {
 	}
 
 	@Override
-	protected final void execute() {
+	protected final void execute() throws Exception {
 		final I element = this.getInputPort().receive();
 		if (null == element) {
-			returnNoElement();
+			return;
 		}
 
 		this.execute(element);
 	}
 
-	protected abstract void execute(I element);
+	protected abstract void execute(I element) throws Exception;
 
 }

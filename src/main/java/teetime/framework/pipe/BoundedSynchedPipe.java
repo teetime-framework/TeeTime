@@ -28,7 +28,7 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMo
 	private int numWaits;
 
 	public BoundedSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
-		super(sourcePort, targetPort, capacity);
+		super(sourcePort, targetPort);
 		this.queue = new ObservableSpScArrayQueue<Object>(capacity);
 	}
 
@@ -49,19 +49,14 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMo
 			}
 			this.numWaits++;
 			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
+				Thread.sleep(10);
+			} catch (InterruptedException ignore) { // NOPMD can be interrupted w/o any reason
 				throw TerminateException.INSTANCE;
 			}
 		}
 		// this.getSourcePort().getOwningStage().sendingSucceeded();
 		// this.reportNewElement();
 		return true;
-	}
-
-	@Override
-	public int capacity() {
-		return this.queue.capacity();
 	}
 
 	@Override
@@ -107,6 +102,11 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMo
 	@Override
 	public long getNumPulls() {
 		return queue.getNumPullsSinceAppStart();
+	}
+
+	@Override
+	public int capacity() {
+		return this.queue.capacity();
 	}
 
 }
