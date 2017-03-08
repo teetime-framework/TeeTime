@@ -27,7 +27,7 @@ import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
  *
  * @stage.sketch
  *
- * 				<pre>
+ *               <pre>
  *     +----------------------------+
  *     |                            |
  *     |                          +---+

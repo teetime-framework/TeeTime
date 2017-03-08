@@ -27,6 +27,6 @@ import teetime.util.framework.port.PortRemovedListener;
  */
 public interface IDistributorStrategy extends PortRemovedListener<OutputPort<?>> {
 
-	public <T> boolean distribute(final List<OutputPort<?>> outputPorts, final T element);
+	public <T> OutputPort<?> distribute(final List<OutputPort<?>> outputPorts, final T element);
 
 }

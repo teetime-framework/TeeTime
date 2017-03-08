@@ -19,9 +19,7 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 
 import org.jctools.queues.QueueFactory;
-import org.jctools.queues.spec.ConcurrentQueueSpec;
-import org.jctools.queues.spec.Ordering;
-import org.jctools.queues.spec.Preference;
+import org.jctools.queues.spec.*;
 
 import teetime.framework.AbstractStage;
 import teetime.util.framework.concurrent.queue.PCBlockingQueue;
@@ -44,11 +42,12 @@ public final class PortActionHelper {
 		return portActions;
 	}
 
-	public static <T extends AbstractStage> void checkForPendingPortActionRequest(final T stage, final BlockingQueue<PortAction<T>> portActions) {
+	public static <T extends AbstractStage> PortAction<T> checkForPendingPortActionRequest(final T stage, final BlockingQueue<PortAction<T>> portActions) {
 		PortAction<T> dynamicPortAction = portActions.poll();
 		if (null != dynamicPortAction) {
 			dynamicPortAction.execute(stage);
 		}
+		return dynamicPortAction;
 	}
 
 	public static <T extends AbstractStage> void checkBlockingForPendingPortActionRequest(final T stage, final BlockingQueue<PortAction<T>> portActions)

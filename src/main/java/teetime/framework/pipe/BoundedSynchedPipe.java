@@ -21,8 +21,6 @@ import teetime.util.framework.concurrent.queue.ObservableSpScArrayQueue;
 
 public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
 
-	// private static final Logger LOGGER = LoggerFactory.getLogger(SpScPipe.class);
-
 	private final ObservableSpScArrayQueue<Object> queue;
 	// statistics
 	private int numWaits;
@@ -30,10 +28,6 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMo
 	public BoundedSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		super(sourcePort, targetPort);
 		this.queue = new ObservableSpScArrayQueue<Object>(capacity);
-	}
-
-	public BoundedSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
-		this(sourcePort, targetPort, 4);
 	}
 
 	// BETTER introduce a QueueIsFullStrategy

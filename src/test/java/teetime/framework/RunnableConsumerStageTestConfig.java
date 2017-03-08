@@ -31,7 +31,7 @@ class RunnableConsumerStageTestConfig extends Configuration {
 		CollectorSink<Integer> collectorSink = new CollectorSink<Integer>();
 		collectorSink.declareActive();
 
-		AbstractPipe<Integer> pipe = new BoundedSynchedPipe<Integer>(producer.getOutputPort(), collectorSink.getInputPort());
+		AbstractPipe<Integer> pipe = new BoundedSynchedPipe<Integer>(producer.getOutputPort(), collectorSink.getInputPort(), 512);
 		registerCustomPipe(pipe);
 
 		this.collectorSink = collectorSink;

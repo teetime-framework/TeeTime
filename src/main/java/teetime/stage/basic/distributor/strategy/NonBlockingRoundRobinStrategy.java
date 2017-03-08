@@ -35,7 +35,7 @@ public class NonBlockingRoundRobinStrategy implements IDistributorStrategy {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> boolean distribute(final List<OutputPort<?>> outputPorts, final T element) {
+	public <T> OutputPort<T> distribute(final List<OutputPort<?>> outputPorts, final T element) {
 		final int numOutputPorts = outputPorts.size();
 		int numLoops = numOutputPorts;
 
@@ -55,15 +55,14 @@ public class NonBlockingRoundRobinStrategy implements IDistributorStrategy {
 
 		StateStatistics.sendingSucceeded(outputPort.getOwningStage());
 
-		return true;
+		return outputPort;
 	}
 
 	private void backoff() {
 		try {
 			Thread.sleep(1);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new IllegalStateException(e);
 		}
 		// Thread.yield();
 	}

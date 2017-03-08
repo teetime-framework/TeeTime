@@ -31,12 +31,12 @@ public class BlockingBusyWaitingRoundRobinStrategy implements IDistributorStrate
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> boolean distribute(final List<OutputPort<?>> outputPorts, final T element) {
+	public <T> OutputPort<?> distribute(final List<OutputPort<?>> outputPorts, final T element) {
 		final OutputPort<T> outputPort = (OutputPort<T>) this.getNextPortInRoundRobinOrder(outputPorts);
 
 		outputPort.send(element);
 
-		return true;
+		return outputPort;
 	}
 
 	private OutputPort<?> getNextPortInRoundRobinOrder(final List<OutputPort<?>> outputPorts) {

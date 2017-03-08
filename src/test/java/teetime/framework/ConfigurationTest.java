@@ -15,8 +15,8 @@
  */
 package teetime.framework;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +45,7 @@ public class ConfigurationTest {
 			if (withProvidedPipe) {
 				connectPorts(producer.getOutputPort(), collectorSink.getInputPort());
 			} else {
-				AbstractPipe<Integer> pipe = new BoundedSynchedPipe<Integer>(producer.getOutputPort(), collectorSink.getInputPort());
+				AbstractPipe<Integer> pipe = new BoundedSynchedPipe<Integer>(producer.getOutputPort(), collectorSink.getInputPort(), 512);
 				registerCustomPipe(pipe);
 			}
 

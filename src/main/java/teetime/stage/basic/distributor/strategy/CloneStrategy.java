@@ -17,9 +17,7 @@ package teetime.stage.basic.distributor.strategy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import teetime.framework.OutputPort;
 
@@ -32,13 +30,13 @@ public final class CloneStrategy implements IDistributorStrategy {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> boolean distribute(final List<OutputPort<?>> outputPorts, final T element) {
+	public <T> OutputPort<?> distribute(final List<OutputPort<?>> outputPorts, final T element) {
 		for (final OutputPort<?> outputPort : outputPorts) {
 			T clonedElement = clone(element);
 			((OutputPort<T>) outputPort).send(clonedElement);
 		}
 
-		return true;
+		return outputPorts.get(0);
 	}
 
 	@SuppressWarnings("unchecked")

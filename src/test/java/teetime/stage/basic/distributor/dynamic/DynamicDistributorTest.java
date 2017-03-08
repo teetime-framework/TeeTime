@@ -15,20 +15,14 @@
  */
 package teetime.stage.basic.distributor.dynamic;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import org.junit.Test;
 
-import teetime.framework.Configuration;
-import teetime.framework.Execution;
-import teetime.framework.OutputPort;
-import teetime.framework.AbstractStage;
+import teetime.framework.*;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.util.framework.port.PortAction;
@@ -36,11 +30,10 @@ import teetime.util.framework.port.PortAction;
 public class DynamicDistributorTest {
 
 	@Test
-	public void shouldWorkWithoutActionTriggers() throws Exception {
+	public void shouldWorkWithoutActionTriggers() {
 		PortAction<DynamicDistributor<Integer>> createAction = new DoNothingPortAction<Integer>();
 
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4);
-		@SuppressWarnings("unchecked")
 		List<PortAction<DynamicDistributor<Integer>>> inputActions = Arrays.asList(createAction, createAction, createAction, createAction, createAction);
 
 		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, inputActions);
@@ -52,11 +45,11 @@ public class DynamicDistributorTest {
 	}
 
 	@Test
-	public void shouldWorkWithCreateActionTriggers() throws Exception {
+	public void shouldWorkWithCreateActionTriggers() {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4);
 
 		@SuppressWarnings("unchecked")
-		PortAction<DynamicDistributor<Integer>>[] inputActions = new PortAction[5];
+		PortAction<DynamicDistributor<Integer>>[] inputActions = new PortAction[inputNumbers.size()];
 		for (int i = 0; i < inputActions.length; i++) {
 			PortAction<DynamicDistributor<Integer>> createAction = createPortCreateAction(new PortContainer<Integer>());
 			inputActions[i] = createAction;
@@ -75,7 +68,8 @@ public class DynamicDistributorTest {
 		assertValuesForIndex(inputActions[4], Collections.<Integer> emptyList());
 	}
 
-	public void shouldWorkWithRemoveActionTriggers() throws Exception {
+	@Test
+	public void shouldWorkWithRemoveActionTriggers() {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4, 5);
 
 		@SuppressWarnings("unchecked")
@@ -103,20 +97,21 @@ public class DynamicDistributorTest {
 		assertValuesForIndex(inputActions[3], Collections.<Integer> emptyList());
 	}
 
-	private CreatePortAction<Integer> createPortCreateAction(final PortContainer<Integer> portContainer) {
+	private CreatePortActionDistributor<Integer> createPortCreateAction(final PortContainer<Integer> portContainer) {
 		CollectorSink<Integer> newStage = new CollectorSink<Integer>();
-		CreatePortAction<Integer> portAction = new CreatePortAction<Integer>(newStage.getInputPort());
+		CreatePortActionDistributor<Integer> portAction = new CreatePortActionDistributor<Integer>(newStage.getInputPort(), 512);
 		portAction.addPortActionListener(new PortActionListener<Integer>() {
 			@Override
 			public void onOutputPortCreated(final DynamicDistributor<Integer> distributor, final OutputPort<Integer> port) {
 				portContainer.setPort(port);
+				RuntimeServiceFacade.INSTANCE.startWithinNewThread(distributor, newStage);
 			}
 		});
 		return portAction;
 	}
 
 	private void assertValuesForIndex(final PortAction<DynamicDistributor<Integer>> ia, final List<Integer> values) {
-		AbstractStage stage = ((CreatePortAction<Integer>) ia).getInputPort().getOwningStage();
+		AbstractStage stage = ((CreatePortActionDistributor<Integer>) ia).getInputPort().getOwningStage();
 
 		@SuppressWarnings("unchecked")
 		CollectorSink<Integer> collectorSink = (CollectorSink<Integer>) stage;

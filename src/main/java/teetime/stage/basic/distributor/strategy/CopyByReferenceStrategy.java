@@ -28,12 +28,12 @@ public final class CopyByReferenceStrategy implements IDistributorStrategy {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> boolean distribute(final List<OutputPort<?>> outputPorts, final T element) {
+	public <T> OutputPort<?> distribute(final List<OutputPort<?>> outputPorts, final T element) {
 		for (final OutputPort<?> outputPort : outputPorts) {
 			((OutputPort<T>) outputPort).send(element);
 		}
 
-		return true;
+		return outputPorts.get(0);
 	}
 
 	@Override

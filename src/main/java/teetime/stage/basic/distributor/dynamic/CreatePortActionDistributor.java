@@ -45,7 +45,6 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 
 		new BoundedSynchedPipe<T>(newOutputPort, inputPort, capacity);
 
-		// newOutputPort.sendSignal(new InitializingSignal());
 		newOutputPort.sendSignal(new StartingSignal());
 
 		onOutputPortCreated(dynamicDistributor, newOutputPort);
@@ -58,7 +57,7 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 		}
 	}
 
-	InputPort<T> getInputPort() { // for testing purposes only
+	/* default */ InputPort<T> getInputPort() { // for testing purposes only
 		return inputPort;
 	}
 
