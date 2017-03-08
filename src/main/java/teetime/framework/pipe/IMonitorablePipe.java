@@ -21,12 +21,24 @@ public interface IMonitorablePipe {
 
 	int capacity();
 
-	long getNumPushes();
+	/**
+	 * @return the number of pushes to this queue since application start
+	 */
+	long getNumPushesSinceAppStart();
 
-	long getNumPulls();
+	/**
+	 * @return the number of pulls from this queue since application start
+	 */
+	long getNumPullsSinceAppStart();
 
+	/**
+	 * @return the number of pushes to this queue since last method call
+	 */
 	long getPushThroughput();
 
+	/**
+	 * @return the number of pulls to this queue since last method call
+	 */
 	long getPullThroughput();
 
 	/**

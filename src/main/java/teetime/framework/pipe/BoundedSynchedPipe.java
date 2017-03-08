@@ -15,19 +15,22 @@
  */
 package teetime.framework.pipe;
 
+import org.jctools.queues.SpscArrayQueue;
+
 import teetime.framework.*;
 import teetime.framework.pipe.strategy.SleepIfFullStrategy;
-import teetime.util.framework.concurrent.queue.ObservableSpScArrayQueue;
 
 public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
 
-	private final ObservableSpScArrayQueue<Object> queue;
+	private final SpscArrayQueue<Object> queue;
 	private final SleepIfFullStrategy strategy;
+
+	private transient long lastProducerIndex, lastConsumerIndex;
 
 	public BoundedSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		super(sourcePort, targetPort);
-		queue = new ObservableSpScArrayQueue<Object>(capacity);
-		strategy = new SleepIfFullStrategy();
+		this.queue = new SpscArrayQueue<>(capacity);
+		this.strategy = new SleepIfFullStrategy();
 	}
 
 	@Override
@@ -62,22 +65,28 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMo
 
 	@Override
 	public long getPushThroughput() {
-		return queue.getNumPushes();
+		final long currentProducerIndex = getNumPushesSinceAppStart();
+		long diff = currentProducerIndex - lastProducerIndex;
+		lastProducerIndex = currentProducerIndex;
+		return diff;
 	}
 
 	@Override
 	public long getPullThroughput() {
-		return queue.getNumPulls();
+		final long currentConsumerIndex = getNumPullsSinceAppStart();
+		long diff = currentConsumerIndex - lastConsumerIndex;
+		lastConsumerIndex = currentConsumerIndex;
+		return diff;
 	}
 
 	@Override
-	public long getNumPushes() {
-		return queue.getNumPushesSinceAppStart();
+	public long getNumPushesSinceAppStart() {
+		return queue.currentProducerIndex();
 	}
 
 	@Override
-	public long getNumPulls() {
-		return queue.getNumPullsSinceAppStart();
+	public long getNumPullsSinceAppStart() {
+		return queue.currentConsumerIndex();
 	}
 
 	@Override

@@ -93,8 +93,8 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 					pushThroughput = this.history.getLastPushThroughputOfPipe(pipe);
 				}
 
-				PipeMonitoringData monitoringData = new PipeMonitoringData(pipe.getNumPushes(),
-						pipe.getNumPulls(),
+				PipeMonitoringData monitoringData = new PipeMonitoringData(pipe.getNumPushesSinceAppStart(),
+						pipe.getNumPullsSinceAppStart(),
 						pipe.size(),
 						pipe.capacity(),
 						pushThroughput,

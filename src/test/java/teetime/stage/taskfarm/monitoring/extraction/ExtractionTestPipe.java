@@ -33,7 +33,7 @@ class ExtractionTestPipe<T> implements IMonitorablePipe, IPipe<T> {
 	private boolean active = true;
 
 	@Override
-	public long getNumPushes() {
+	public long getNumPushesSinceAppStart() {
 		if (active) {
 			this.numPushes++;
 		} else {
@@ -43,7 +43,7 @@ class ExtractionTestPipe<T> implements IMonitorablePipe, IPipe<T> {
 	}
 
 	@Override
-	public long getNumPulls() {
+	public long getNumPullsSinceAppStart() {
 		if (active) {
 			this.numPulls += 2;
 		} else {
