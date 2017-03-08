@@ -16,41 +16,23 @@
 package teetime.framework.pipe;
 
 import teetime.framework.*;
-import teetime.framework.exceptionHandling.TerminateException;
+import teetime.framework.pipe.strategy.SleepIfFullStrategy;
 import teetime.util.framework.concurrent.queue.ObservableSpScArrayQueue;
 
 public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
 
 	private final ObservableSpScArrayQueue<Object> queue;
-	// statistics
-	private int numWaits;
+	private final SleepIfFullStrategy strategy;
 
 	public BoundedSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
 		super(sourcePort, targetPort);
-		this.queue = new ObservableSpScArrayQueue<Object>(capacity);
+		queue = new ObservableSpScArrayQueue<Object>(capacity);
+		strategy = new SleepIfFullStrategy();
 	}
 
-	// BETTER introduce a QueueIsFullStrategy
 	@Override
 	public boolean add(final Object element) {
-		while (!addNonBlocking(element)) {
-			// the following sending*-related lines are commented out since they are computationally too expensive
-			// this.getSourcePort().getOwningStage().sendingFailed();
-			// Thread.yield();
-			if (this.cachedTargetStage.getCurrentState() == StageState.TERMINATED ||
-					Thread.currentThread().isInterrupted()) {
-				throw TerminateException.INSTANCE;
-			}
-			this.numWaits++;
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException ignore) { // NOPMD can be interrupted w/o any reason
-				throw TerminateException.INSTANCE;
-			}
-		}
-		// this.getSourcePort().getOwningStage().sendingSucceeded();
-		// this.reportNewElement();
-		return true;
+		return strategy.add(this, element);
 	}
 
 	@Override
@@ -75,7 +57,7 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMo
 
 	@Override
 	public int getNumWaits() {
-		return this.numWaits;
+		return strategy.getNumWaits();
 	}
 
 	@Override
