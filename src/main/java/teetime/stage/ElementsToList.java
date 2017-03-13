@@ -18,14 +18,11 @@ package teetime.stage;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractTransformation;
 
-public final class ElementsToList<I> extends AbstractConsumerStage<I> {
+public final class ElementsToList<I> extends AbstractTransformation<I, List<I>> {
 
 	private final int size;
-
-	private final OutputPort<List<I>> outputPort = this.createOutputPort();
 
 	private final List<I> cachedObjects = new LinkedList<I>();
 
@@ -44,7 +41,4 @@ public final class ElementsToList<I> extends AbstractConsumerStage<I> {
 		}
 	}
 
-	public OutputPort<List<I>> getOutputPort() {
-		return this.outputPort;
-	}
 }

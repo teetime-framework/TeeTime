@@ -24,6 +24,7 @@ import teetime.framework.divideandconquer.*;
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
+import teetime.stage.basic.ITransformation;
 
 /**
  * A stage to solve divide and conquer problems
@@ -36,7 +37,8 @@ import teetime.framework.signal.TerminatingSignal;
  * @param <S>
  *            type of elements that represent the solution to a problem.
  */
-public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage {
+public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> extends AbstractStage
+		implements ITransformation<P, S> {
 
 	/** number of available processors (including hyper-threading) */
 	private static final int DEFAULT_THRESHOLD = Runtime.getRuntime().availableProcessors();
@@ -116,6 +118,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	/**
 	 * @return <code>InputPort</code>
 	 */
+	@Override
 	public final InputPort<P> getInputPort() {
 		return this.inputPort;
 	}
@@ -123,6 +126,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	/**
 	 * @return <code>OutputPort</code>
 	 */
+	@Override
 	public final OutputPort<S> getOutputPort() {
 		return this.outputPort;
 	}

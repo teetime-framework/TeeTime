@@ -15,12 +15,9 @@
  */
 package teetime.stage;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractFilter;
 
-public final class InstanceCounter<T, C extends T> extends AbstractConsumerStage<T> {
-
-	private final OutputPort<T> outputPort = this.createOutputPort();
+public final class InstanceCounter<T, C extends T> extends AbstractFilter<T> {
 
 	private final Class<C> type;
 	private int counter;
@@ -35,15 +32,11 @@ public final class InstanceCounter<T, C extends T> extends AbstractConsumerStage
 			this.counter++;
 		}
 
-		outputPort.send(element);
+		this.outputPort.send(element);
 	}
 
 	public int getCounter() {
 		return this.counter;
-	}
-
-	public OutputPort<T> getOutputPort() {
-		return outputPort;
 	}
 
 }
