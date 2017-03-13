@@ -15,12 +15,9 @@
  */
 package teetime.stage;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractTransformation;
 
-public final class EveryXthStage<T> extends AbstractConsumerStage<T> {
-
-	private final OutputPort<Integer> outputPort = createOutputPort();
+public final class EveryXthStage<T> extends AbstractTransformation<T, Integer> {
 
 	private final int threshold;
 
@@ -34,12 +31,8 @@ public final class EveryXthStage<T> extends AbstractConsumerStage<T> {
 	protected void execute(final T element) {
 		counter++;
 		if (counter % threshold == 0) {
-			outputPort.send(Integer.valueOf(counter));
+			this.outputPort.send(Integer.valueOf(counter));
 		}
-	}
-
-	public OutputPort<Integer> getOutputPort() {
-		return outputPort;
 	}
 
 }

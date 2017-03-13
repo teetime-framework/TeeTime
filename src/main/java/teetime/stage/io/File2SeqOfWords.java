@@ -15,24 +15,16 @@
  */
 package teetime.stage.io;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.CharBuffer;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractTransformation;
 
 /**
  * @author Christian Wulf
  *
  */
-public final class File2SeqOfWords extends AbstractConsumerStage<File> {
-
-	private final OutputPort<String> outputPort = this.createOutputPort();
+public final class File2SeqOfWords extends AbstractTransformation<File, String> {
 
 	private final String charset;
 	private final int bufferCapacity;
@@ -73,7 +65,7 @@ public final class File2SeqOfWords extends AbstractConsumerStage<File> {
 
 				charBuffer.limit(position);
 				charBuffer.rewind();
-				outputPort.send(charBuffer.toString()); // from position to limit-1
+				this.outputPort.send(charBuffer.toString()); // from position to limit-1
 
 				charBuffer.limit(limit);
 				charBuffer.position(position);
@@ -118,10 +110,6 @@ public final class File2SeqOfWords extends AbstractConsumerStage<File> {
 
 	public int getBufferCapacity() {
 		return bufferCapacity;
-	}
-
-	public OutputPort<String> getOutputPort() {
-		return outputPort;
 	}
 
 }

@@ -15,12 +15,10 @@
  */
 package teetime.stage.string;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractFilter;
 
-public final class Tokenizer extends AbstractConsumerStage<String> {
+public final class Tokenizer extends AbstractFilter<String> {
 
-	private final OutputPort<String> outputPort = this.createOutputPort();
 	private final String regex;
 	// private final Pattern pattern;
 
@@ -34,18 +32,14 @@ public final class Tokenizer extends AbstractConsumerStage<String> {
 		// Matcher matcher = pattern.matcher(element);
 		// while (matcher.find()) {
 		// String token = element.substring(matcher.start(), matcher.end());
-		// outputPort.send(token);
+		// this.outputPort.send(token);
 		// }
 		String[] tokens = element.split(regex);
 		for (String token : tokens) {
-			outputPort.send(token);
+			this.outputPort.send(token);
 		}
 		// Scanner is much slower
 		// Pattern is equally fast
-	}
-
-	public OutputPort<String> getOutputPort() {
-		return this.outputPort;
 	}
 
 }

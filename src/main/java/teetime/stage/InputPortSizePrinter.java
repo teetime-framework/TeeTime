@@ -17,14 +17,12 @@ package teetime.stage;
 
 import java.util.concurrent.TimeUnit;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
 import teetime.framework.pipe.IPipe;
+import teetime.stage.basic.AbstractFilter;
 import teetime.util.StopWatch;
 
-public class InputPortSizePrinter<T> extends AbstractConsumerStage<T> {
+public class InputPortSizePrinter<T> extends AbstractFilter<T> {
 
-	private final OutputPort<T> outputPort = createOutputPort();
 	private final StopWatch stopWatch;
 
 	private final long thresholdInNs = TimeUnit.SECONDS.toNanos(1);
@@ -45,11 +43,7 @@ public class InputPortSizePrinter<T> extends AbstractConsumerStage<T> {
 			stopWatch.start();
 		}
 
-		outputPort.send(element);
-	}
-
-	public OutputPort<T> getOutputPort() {
-		return outputPort;
+		this.outputPort.send(element);
 	}
 
 }

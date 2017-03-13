@@ -15,25 +15,18 @@
  */
 package teetime.stage;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
+import teetime.stage.basic.AbstractFilter;
 
 /**
  * @author Christian Wulf
  *
  * @since 1.0
  */
-public final class NoopFilter<T> extends AbstractConsumerStage<T> {
-
-	private final OutputPort<T> outputPort = this.createOutputPort();
+public final class NoopFilter<T> extends AbstractFilter<T> {
 
 	@Override
 	protected void execute(final T element) {
-		outputPort.send(element);
-	}
-
-	public OutputPort<T> getOutputPort() {
-		return this.outputPort;
+		this.outputPort.send(element);
 	}
 
 }

@@ -18,27 +18,20 @@ package teetime.stage.io;
 import java.io.File;
 import java.io.IOException;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
-
 import com.google.common.io.Files;
 
-public final class File2ByteArray extends AbstractConsumerStage<File> {
+import teetime.stage.basic.AbstractTransformation;
 
-	private final OutputPort<byte[]> outputPort = this.createOutputPort();
+public final class File2ByteArray extends AbstractTransformation<File, byte[]> {
 
 	@Override
 	protected void execute(final File element) {
 		try {
 			byte[] fileBytes = Files.toByteArray(element);
-			outputPort.send(fileBytes);
+			this.outputPort.send(fileBytes);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
-	}
-
-	public OutputPort<? extends byte[]> getOutputPort() {
-		return this.outputPort;
 	}
 
 }

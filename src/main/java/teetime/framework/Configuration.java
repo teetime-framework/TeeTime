@@ -15,9 +15,7 @@
  */
 package teetime.framework;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import teetime.framework.exceptionHandling.AbstractExceptionListenerFactory;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
@@ -91,6 +89,10 @@ public class Configuration extends CompositeStage {
 
 	public Collection<AbstractStage> getStartStages() {
 		return startStages;
+	}
+
+	public <O> ConfigurationBuilder.Connection<O> from(final AbstractProducerStage<O> stage) {
+		return ConfigurationBuilder.create(this, stage);
 	}
 
 }
