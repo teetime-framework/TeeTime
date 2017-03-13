@@ -47,7 +47,6 @@ public class TokenizerTest {
 
 	@Test
 	public void executeTestWithDefaultConfiguration() throws IOException {
-
 		final TokenizerConfiguration configuration = new TokenizerConfiguration(INPUT_FILE, PASSWORD);
 		final Execution<TokenizerConfiguration> execution = new Execution<>(configuration);
 		execution.executeBlocking();
@@ -58,7 +57,6 @@ public class TokenizerTest {
 
 	@Test
 	public void executeTestWithBuilderBasedConfiguration() throws IOException {
-
 		final TokenizerConfigurationFromBuilder configuration = new TokenizerConfigurationFromBuilder(INPUT_FILE, PASSWORD);
 		final Execution<TokenizerConfigurationFromBuilder> execution = new Execution<>(configuration);
 		execution.executeBlocking();
@@ -69,7 +67,6 @@ public class TokenizerTest {
 
 	@Test
 	public void executeTestWithConfigurationCreatedByBuilder() throws IOException {
-
 		final Counter<String> counterStage = new Counter<String>();
 
 		final Configuration configuration = ConfigurationBuilder
