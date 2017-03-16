@@ -30,6 +30,7 @@ import teetime.stage.InitialElementProducer;
 
 public class ConfigurationTest {
 
+	public static final int CUSTOM_PIPE_CAPACITY = 1024;
 	public static final Integer[] INPUT_ELEMENTS = { 1, 2, 3 }; // NOPMD
 	public static final List<Integer> EXPECTED_OUTPUT_ELEMENTS = Arrays.asList(INPUT_ELEMENTS); // NOPMD
 
@@ -48,7 +49,7 @@ public class ConfigurationTest {
 			} else {
 				// AbstractPipe<Integer> pipe = new BoundedSynchedPipe<Integer>(producer.getOutputPort(), collectorSink.getInputPort(), 512);
 				// registerCustomPipe(pipe);
-				connectPorts(producer.getOutputPort(), collectorSink.getInputPort(), 1024, BoundedSynchedPipeFactory.INSTANCE);
+				connectPorts(producer.getOutputPort(), collectorSink.getInputPort(), CUSTOM_PIPE_CAPACITY, BoundedSynchedPipeFactory.INSTANCE);
 			}
 
 			this.collectorSink = collectorSink;
@@ -76,6 +77,6 @@ public class ConfigurationTest {
 		execution.executeBlocking();
 		assertThat(configuration.getOutputElements(), is(EXPECTED_OUTPUT_ELEMENTS));
 		assertThat(configuration.collectorSink.inputPort.pipe, is(instanceOf(BoundedSynchedPipe.class)));
-		assertThat(configuration.collectorSink.inputPort.pipe.capacity(), is(1024));
+		assertThat(configuration.collectorSink.inputPort.pipe.capacity(), is(CUSTOM_PIPE_CAPACITY));
 	}
 }
