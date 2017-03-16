@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import teetime.framework.pipe.BoundedSynchedPipe;
 import teetime.framework.pipe.BoundedSynchedPipeFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
@@ -47,7 +48,7 @@ public class ConfigurationTest {
 			} else {
 				// AbstractPipe<Integer> pipe = new BoundedSynchedPipe<Integer>(producer.getOutputPort(), collectorSink.getInputPort(), 512);
 				// registerCustomPipe(pipe);
-				connectPorts(producer.getOutputPort(), collectorSink.getInputPort(), 512, BoundedSynchedPipeFactory.INSTANCE);
+				connectPorts(producer.getOutputPort(), collectorSink.getInputPort(), 1024, BoundedSynchedPipeFactory.INSTANCE);
 			}
 
 			this.collectorSink = collectorSink;
@@ -64,6 +65,8 @@ public class ConfigurationTest {
 		Execution<Configuration> execution = new Execution<Configuration>(configuration);
 		execution.executeBlocking();
 		assertThat(configuration.getOutputElements(), is(EXPECTED_OUTPUT_ELEMENTS));
+		assertThat(configuration.collectorSink.inputPort.pipe, is(instanceOf(BoundedSynchedPipe.class)));
+		assertThat(configuration.collectorSink.inputPort.pipe.capacity(), is(CompositeStage.DEFAULT_PIPE_CAPACITY));
 	}
 
 	@Test
@@ -72,5 +75,7 @@ public class ConfigurationTest {
 		Execution<Configuration> execution = new Execution<Configuration>(configuration);
 		execution.executeBlocking();
 		assertThat(configuration.getOutputElements(), is(EXPECTED_OUTPUT_ELEMENTS));
+		assertThat(configuration.collectorSink.inputPort.pipe, is(instanceOf(BoundedSynchedPipe.class)));
+		assertThat(configuration.collectorSink.inputPort.pipe.capacity(), is(1024));
 	}
 }
