@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import teetime.framework.pipe.BoundedSynchedPipe;
+import teetime.framework.pipe.BoundedSynchedPipeFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 
@@ -45,8 +45,9 @@ public class ConfigurationTest {
 			if (withProvidedPipe) {
 				connectPorts(producer.getOutputPort(), collectorSink.getInputPort());
 			} else {
-				AbstractPipe<Integer> pipe = new BoundedSynchedPipe<Integer>(producer.getOutputPort(), collectorSink.getInputPort(), 512);
-				registerCustomPipe(pipe);
+				// AbstractPipe<Integer> pipe = new BoundedSynchedPipe<Integer>(producer.getOutputPort(), collectorSink.getInputPort(), 512);
+				// registerCustomPipe(pipe);
+				connectPorts(producer.getOutputPort(), collectorSink.getInputPort(), 512, BoundedSynchedPipeFactory.INSTANCE);
 			}
 
 			this.collectorSink = collectorSink;

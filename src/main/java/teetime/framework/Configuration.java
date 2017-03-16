@@ -19,6 +19,8 @@ import java.util.*;
 
 import teetime.framework.exceptionHandling.AbstractExceptionListenerFactory;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
+import teetime.framework.pipe.IPipe;
+import teetime.framework.pipe.IPipeFactory;
 
 /**
  * Represents a configuration of connected stages. Available to be extended.
@@ -72,7 +74,10 @@ public class Configuration extends CompositeStage {
 	 *
 	 * @param pipe
 	 *            A custom pipe instance
+	 * 
+	 * @deprecated since 3.0. Use {@link #connectPorts(OutputPort, InputPort, IPipeFactory)} instead.
 	 */
+	@Deprecated
 	public void registerCustomPipe(final AbstractPipe<?> pipe) {
 		startStages.add(pipe.getSourcePort().getOwningStage()); // memorize all source stages as starting point for traversing
 	}
@@ -83,7 +88,17 @@ public class Configuration extends CompositeStage {
 		super.connectPorts(sourcePort, targetPort, capacity);
 	}
 
-	ConfigurationContext getContext() {
+	public <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final IPipeFactory pipeFactory) {
+		IPipe<T> pipe = pipeFactory.newPipe(sourcePort, targetPort);
+		startStages.add(pipe.getSourcePort().getOwningStage()); // memorize all source stages as starting point for traversing
+	}
+
+	public <T> void connectPorts(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity, final IPipeFactory pipeFactory) {
+		IPipe<T> pipe = pipeFactory.newPipe(sourcePort, targetPort, capacity);
+		startStages.add(pipe.getSourcePort().getOwningStage()); // memorize all source stages as starting point for traversing
+	}
+
+	/* default */ConfigurationContext getContext() {
 		return context;
 	}
 
