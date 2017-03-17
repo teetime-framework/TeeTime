@@ -616,4 +616,8 @@ public abstract class AbstractStage {
 		activeWaitingTime += time;
 	}
 
+	public boolean isProducer() {
+		return inputPorts.size() == 0;
+	}
+
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -22,6 +22,8 @@ import static org.hamcrest.Matchers.nullValue;
 import java.lang.Thread.State;
 
 import org.junit.Test;
+
+import teetime.framework.*;
 
 public class RunnableConsumerStageTest {
 

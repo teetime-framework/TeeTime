@@ -15,7 +15,8 @@
  */
 package teetime.framework;
 
-import java.util.Set;
+import teetime.framework.scheduling.pushpullmodel.PushPullScheduling;
+import teetime.util.framework.concurrent.SignalingCounter;
 
 /**
  * Represents a context that is used by a configuration and composite stages to connect ports,for example.
@@ -23,40 +24,40 @@ import java.util.Set;
  *
  * @since 2.0
  */
-final class ConfigurationContext {
+public final class ConfigurationContext {
 
-	private ThreadService threadService;
+	private final PushPullScheduling teeTimeService;
 
-	ConfigurationContext(final Configuration configuration) {
-		this.threadService = new ThreadService(configuration);
+	public ConfigurationContext(final Configuration configuration) {
+		this.teeTimeService = new PushPullScheduling(configuration);
 	}
 
-	Set<AbstractStage> getThreadableStages() {
-		return threadService.getThreadableStages();
+	void validateServices() {
+		teeTimeService.onValidate();
 	}
 
 	void initializeServices() {
-		threadService.onInitialize();
+		teeTimeService.onInitialize();
 	}
 
 	void executeConfiguration() {
-		this.threadService.onExecute();
+		teeTimeService.onExecute();
 	}
 
 	void abortConfigurationRun() {
-		this.threadService.onTerminate();
+		teeTimeService.onTerminate();
 	}
 
 	void waitForConfigurationToTerminate() {
-		this.threadService.onFinish();
+		teeTimeService.onFinish();
 	}
 
-	ThreadService getThreadService() {
-		return threadService;
+	void startStageAtRuntime(final AbstractStage stage) {
+		teeTimeService.startStageAtRuntime(stage);
 	}
 
-	void setThreadService(final ThreadService threadService) {
-		this.threadService = threadService;
+	public SignalingCounter getRunnableCounter() {
+		return teeTimeService.getRunnableCounter();
 	}
 
 }

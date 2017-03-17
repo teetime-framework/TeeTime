@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import teetime.framework.AbstractStage;
 import teetime.framework.exceptionHandling.TerminateException;
 import teetime.util.StopWatch;
 
@@ -50,7 +51,7 @@ abstract class AbstractRunnableStage implements Runnable {
 
 		try {
 			beforeStageExecution();
-			if (stage.getOwningContext() == null) {
+			if (stage.getOwningContext() == null) { // FIXME move to validation phase
 				throw new IllegalArgumentException("Argument stage may not have a nullable owning context");
 			}
 			stopWatch.start();

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
@@ -22,7 +22,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import teetime.framework.*;
 import teetime.framework.pipe.DummyPipe;
+import teetime.framework.scheduling.pushpullmodel.RunnableProducerStage;
 
 public class RunnableProducerStageTest {
 

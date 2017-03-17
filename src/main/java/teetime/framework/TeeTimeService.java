@@ -16,18 +16,15 @@
 package teetime.framework;
 
 /**
- * All context services must inherit from this abstract class.
- *
  * @author Nelson Tavares de Sousa
- *
- * @param <T>
- *            service type
  *
  * @since 2.0
  */
-abstract class AbstractService<T> {
+public interface TeeTimeService {
 
 	abstract void onInitialize();
+
+	abstract void onValidate();
 
 	abstract void onExecute();
 

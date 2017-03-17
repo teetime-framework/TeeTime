@@ -1,38 +1,21 @@
-/**
- * Copyright © 2015 Christian Wulf, Nelson Tavares de Sousa (http://teetime-framework.github.io)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
 import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import teetime.framework.*;
 import teetime.framework.Traverser.Direction;
+import teetime.framework.signal.ValidatingSignal;
+import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.framework.concurrent.SignalingCounter;
 
-/**
- * A Service which manages thread creation and running.
- *
- * @author Nelson Tavares de Sousa
- *
- * @since 2.0
- */
-class ThreadService extends AbstractService<ThreadService> { // NOPMD
+public class PushPullScheduling implements TeeTimeService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ThreadService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PushPullScheduling.class);
+
+	private static final StageFacade SCHEDULING_FACADE = StageFacade.INSTANCE;
 
 	private final List<Thread> consumerThreads = Collections.synchronizedList(new LinkedList<Thread>());
 	private final List<Thread> finiteProducerThreads = Collections.synchronizedList(new LinkedList<Thread>());
@@ -43,23 +26,19 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 
 	private final Configuration configuration;
 
-	// private final WatchTerminationThread watchTerminationThread;
-
-	public ThreadService(final Configuration configuration) {
+	public PushPullScheduling(final Configuration configuration) {
 		this.configuration = configuration;
-		// watchTerminationThread = new WatchTerminationThread();
-		// watchTerminationThread.start();
 	}
 
 	@Override
-	/* default */ void onInitialize() {
+	public void onInitialize() {
 		Collection<AbstractStage> startStages = configuration.getStartStages();
 
 		Set<AbstractStage> newThreadableStages = initialize(startStages);
 		startThreads(newThreadableStages);
 	}
 
-	/* default */ void startStageAtRuntime(final AbstractStage newStage) {
+	public void startStageAtRuntime(final AbstractStage newStage) {
 		newStage.declareActive();
 		List<AbstractStage> newStages = Arrays.asList(newStage);
 
@@ -109,25 +88,33 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 	}
 
 	private void categorizeThreadableStage(final AbstractStage stage) {
-		switch (stage.getTerminationStrategy()) {
-		case BY_INTERRUPT:
-			infiniteProducerThreads.add(stage.getOwningThread());
+		TerminationStrategy terminationStrategy = SCHEDULING_FACADE.getTerminationStrategy(stage);
+
+		switch (terminationStrategy) {
+		case BY_INTERRUPT: {
+			Thread thread = SCHEDULING_FACADE.getOwningThread(stage);
+			infiniteProducerThreads.add(thread);
 			break;
-		case BY_SELF_DECISION:
-			finiteProducerThreads.add(stage.getOwningThread());
+		}
+		case BY_SELF_DECISION: {
+			Thread thread = SCHEDULING_FACADE.getOwningThread(stage);
+			finiteProducerThreads.add(thread);
 			break;
-		case BY_SIGNAL:
-			consumerThreads.add(stage.getOwningThread());
+		}
+		case BY_SIGNAL: {
+			Thread thread = SCHEDULING_FACADE.getOwningThread(stage);
+			consumerThreads.add(thread);
 			break;
+		}
 		default:
-			LOGGER.warn("Unknown termination strategy '{}' in stage {}", stage.getTerminationStrategy(), stage);
+			LOGGER.warn("Unknown termination strategy '{}' in stage {}", terminationStrategy, stage);
 			break;
 		}
 	}
 
 	private void startThreads(final Set<AbstractStage> threadableStages) {
 		for (AbstractStage stage : threadableStages) {
-			stage.getOwningThread().start();
+			SCHEDULING_FACADE.getOwningThread(stage).start();
 		}
 	}
 
@@ -135,31 +122,43 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 		// TODO why synchronized?
 		synchronized (newThreadableStages) {
 			for (AbstractStage stage : newThreadableStages) {
-				((TeeTimeThread) stage.getOwningThread()).sendStartingSignal();
+				((TeeTimeThread) SCHEDULING_FACADE.getOwningThread(stage)).sendStartingSignal();
 			}
 		}
 	}
 
 	@Override
-	/* default */ void onExecute() {
+	public void onValidate() {
+		// BETTER validate concurrently
+		for (AbstractStage stage : threadableStages) {
+			final ValidatingSignal validatingSignal = new ValidatingSignal(); // NOPMD we need a new instance every iteration
+			stage.onSignal(validatingSignal, null);
+			if (validatingSignal.getInvalidPortConnections().size() > 0) {
+				throw new AnalysisNotValidException(validatingSignal.getInvalidPortConnections());
+			}
+		}
+	}
+
+	@Override
+	public void onExecute() {
 		sendStartingSignal(threadableStages);
 	}
 
 	@Override
-	/* default */ void onTerminate() {
+	public void onTerminate() {
 		abortStages(threadableStages);
 	}
 
 	private void abortStages(final Set<AbstractStage> currentTreadableStages) {
 		synchronized (currentTreadableStages) {
 			for (AbstractStage stage : currentTreadableStages) {
-				stage.abort();
+				SCHEDULING_FACADE.abort(stage);
 			}
 		}
 	}
 
 	@Override
-	void onFinish() {
+	public void onFinish() {
 		try {
 			runnableCounter.waitFor(0);
 		} catch (InterruptedException e) {
@@ -200,17 +199,13 @@ class ThreadService extends AbstractService<ThreadService> { // NOPMD
 	// return exceptions;
 	// }
 
-	Set<AbstractStage> getThreadableStages() {
-		return threadableStages;
-	}
-
 	// @Override
 	// void merge(final ThreadService source) {
 	// threadableStages.putAll(source.getThreadableStages());
 	// // runnableCounter.inc(source.runnableCounter);
 	// }
 
-	SignalingCounter getRunnableCounter() {
+	public SignalingCounter getRunnableCounter() {
 		return runnableCounter;
 	}
 

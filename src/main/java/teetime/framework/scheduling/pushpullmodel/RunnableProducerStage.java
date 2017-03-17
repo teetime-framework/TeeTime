@@ -13,38 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
-import teetime.framework.signal.ISignal;
+import java.util.concurrent.Semaphore;
+
+import teetime.framework.AbstractStage;
+import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
-final class RunnableConsumerStage extends AbstractRunnableStage {
+class RunnableProducerStage extends AbstractRunnableStage {
 
-	/**
-	 * Creates a new instance.
-	 *
-	 * @param stage
-	 *            to execute within an own thread
-	 */
-	public RunnableConsumerStage(final AbstractStage stage) {
+	private final Semaphore startSemaphore = new Semaphore(0);
+
+	public RunnableProducerStage(final AbstractStage stage) {
 		super(stage);
 	}
 
 	@Override
 	protected void beforeStageExecution() throws InterruptedException {
-		logger.trace("waitForStartingSignal");
-		// FIXME should getInputPorts() really be defined in Stage?
-		for (InputPort<?> inputPort : stage.getInputPorts()) {
-			inputPort.waitForStartSignal();
-		}
+		waitForStartingSignal();
+		this.stage.onSignal(new StartingSignal(), null);
 	}
 
 	@Override
 	protected void afterStageExecution() {
-		final ISignal signal = new TerminatingSignal(); // NOPMD DU caused by loop
-		for (InputPort<?> inputPort : stage.getInputPorts()) {
-			stage.onSignal(signal, inputPort);
-		}
+		final TerminatingSignal terminatingSignal = new TerminatingSignal();
+		this.stage.onSignal(terminatingSignal, null);
 	}
 
+	void triggerStartingSignal() {
+		startSemaphore.release();
+	}
+
+	private void waitForStartingSignal() throws InterruptedException {
+		logger.trace("waitForStartingSignal");
+		startSemaphore.acquire();
+	}
+
+	void runNow() {
+		triggerStartingSignal();
+		super.run();
+	}
 }

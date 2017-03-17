@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
 import java.util.Set;
+
+import teetime.framework.*;
 
 /**
  * Sets the attributes of all stages within the same thread
  */
 class A4StageAttributeSetter {
+
+	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 
 	private final Configuration configuration;
 	private final Set<AbstractStage> threadableStages;
@@ -47,16 +51,19 @@ class A4StageAttributeSetter {
 
 	private void setAttributes(final AbstractStage threadableStage, final Set<AbstractStage> intraStages) {
 		AbstractRunnableStage runnable;
-		if (threadableStage.getInputPorts().size() > 0) {
-			runnable = new RunnableConsumerStage(threadableStage);
-		} else {
+		if (threadableStage.isProducer()) {
 			runnable = new RunnableProducerStage(threadableStage);
+		} else {
+			runnable = new RunnableConsumerStage(threadableStage);
 		}
 		Thread newThread = new TeeTimeThread(runnable, "Thread for " + threadableStage.getId());
 
-		threadableStage.setOwningThread(newThread);
-		threadableStage.setExceptionHandler(configuration.getFactory().createInstance(threadableStage.getOwningThread()));
-		threadableStage.setOwningContext(configuration.getContext());
+		exceptionhandler = configuration.getFactory().createInstance(newThread);
+		context = configuration.getContext();
+
+		STAGE_FACADE.setExceptionHandler(threadableStage, exceptionhandler);
+		STAGE_FACADE.setOwningThread(threadableStage, newThread);
+		STAGE_FACADE.setOwningContext(threadableStage, context);
 
 		for (AbstractStage stage : intraStages) {
 			stage.setExceptionHandler(threadableStage.getExceptionListener());
