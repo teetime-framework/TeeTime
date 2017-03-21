@@ -309,6 +309,9 @@ public abstract class AbstractStage {
 
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
 		this.checkTypeCompliance(invalidPortConnections);
+		if (owningContext == null) {
+			throw new NullPointerException("A stage may not have a nullable owning context.");
+		}
 		changeState(StageState.VALIDATED);
 	}
 
@@ -420,7 +423,7 @@ public abstract class AbstractStage {
 		return inputPort;
 	}
 
-	public int decNumOpenedInputPorts() {
+	int decNumOpenedInputPorts() {
 		// return numOpenedInputPorts.decrementAndGet();
 		return --numOpenedInputPorts;
 	}

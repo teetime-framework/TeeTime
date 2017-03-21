@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import teetime.framework.*;
+
+import teetime.framework.scheduling.pushpullmodel.IntraStageCollector;
 
 public class IntraStageCollectorTest {
 

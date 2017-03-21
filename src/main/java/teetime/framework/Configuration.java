@@ -74,7 +74,7 @@ public class Configuration extends CompositeStage {
 	 *
 	 * @param pipe
 	 *            A custom pipe instance
-	 * 
+	 *
 	 * @deprecated since 3.0. Use {@link #connectPorts(OutputPort, InputPort, IPipeFactory)} instead.
 	 */
 	@Deprecated
@@ -102,7 +102,7 @@ public class Configuration extends CompositeStage {
 		return context;
 	}
 
-	public Collection<AbstractStage> getStartStages() {
+	Collection<AbstractStage> getStartStages() {
 		return startStages;
 	}
 

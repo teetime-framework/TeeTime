@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.AbstractStage;
-import teetime.framework.exceptionHandling.TerminateException;
+import teetime.framework.StageFacade;
 import teetime.util.StopWatch;
 
 abstract class AbstractRunnableStage implements Runnable {
@@ -51,17 +51,9 @@ abstract class AbstractRunnableStage implements Runnable {
 
 		try {
 			beforeStageExecution();
-			if (stage.getOwningContext() == null) { // FIXME move to validation phase
-				throw new IllegalArgumentException("Argument stage may not have a nullable owning context");
-			}
 			stopWatch.start();
 			try {
-				while (!stage.shouldBeTerminated()) {
-					stage.executeStage();
-				}
-			} catch (TerminateException e) {
-				stage.abort();
-				stage.getOwningContext().abortConfigurationRun();
+				StageFacade.INSTANCE.runStage(stage);
 			} finally {
 				stopWatch.end();
 				durationsInNs = stopWatch.getDurationInNs();
@@ -74,7 +66,7 @@ abstract class AbstractRunnableStage implements Runnable {
 			throw e;
 		} catch (InterruptedException e) {
 			// logger.error(TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION, e);
-			stage.getExceptionListener().reportException(e, stage);
+			StageFacade.INSTANCE.getExceptionListener(stage).reportException(e, stage);
 		}
 
 		logger.debug("Finished runnable stage. ({})", stage.getId());

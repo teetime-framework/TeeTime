@@ -8,12 +8,15 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.*;
 import teetime.framework.Traverser.Direction;
+import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.signal.StartingSignal;
 import teetime.util.framework.concurrent.SignalingCounter;
 
 public class GlobalTaskQueueScheduling implements TeeTimeService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalTaskQueueScheduling.class);
+	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
+	private static final ConfigurationFacade CONFIG_FACADE = ConfigurationFacade.INSTANCE;
 
 	private static final SignalingCounter runnableCounter = new SignalingCounter();
 
@@ -38,7 +41,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 
 	@Override
 	public void onInitialize() {
-		Collection<AbstractStage> startStages = configuration.getStartStages();
+		Collection<AbstractStage> startStages = CONFIG_FACADE.getStartStages(configuration);
 		initialize(startStages);
 
 		// TODO: Extract number of threads to configuration
@@ -82,7 +85,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	}
 
 	private void categorizeStage(final AbstractStage stage) {
-		switch (stage.getTerminationStrategy()) {
+		switch (STAGE_FACADE.getTerminationStrategy(stage)) {
 		case BY_INTERRUPT:
 			infiniteProducerStages.add(stage);
 			break;
@@ -92,7 +95,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		case BY_SIGNAL:
 			break;
 		default:
-			LOGGER.warn("Unknown termination strategy '{}' in stage {}", stage.getTerminationStrategy(), stage);
+			LOGGER.warn("Unknown termination strategy '{}' in stage {}", STAGE_FACADE.getTerminationStrategy(stage), stage);
 			break;
 		}
 	}
@@ -136,10 +139,10 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		synchronized (finiteProducerStages) {
 			synchronized (infiniteProducerStages) {
 				for (AbstractStage finiteProducerStage : finiteProducerStages) {
-					finiteProducerStage.abort();
+					STAGE_FACADE.abort(finiteProducerStage);
 				}
 				for (AbstractStage infiniteProducerStage : infiniteProducerStages) {
-					infiniteProducerStage.abort();
+					STAGE_FACADE.abort(infiniteProducerStage);
 				}
 			}
 		}
@@ -213,11 +216,12 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	}
 
 	public static void setOwningThread(final AbstractStage stage) {
-		stage.setOwningThread(Thread.currentThread());
+		STAGE_FACADE.setOwningThread(stage, Thread.currentThread());
 	}
 
 	private void setExceptionListener(final AbstractStage stage) {
-		stage.setExceptionHandler(configuration.getFactory().createInstance(Thread.currentThread()));
+		AbstractExceptionListener handler = CONFIG_FACADE.getFactory(configuration).createInstance(Thread.currentThread());
+		STAGE_FACADE.setExceptionHandler(stage, handler);
 	}
 
 	public static Map<AbstractStage, List<StageBuffer>> getStageList() {

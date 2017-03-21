@@ -15,16 +15,13 @@
  */
 package teetime.framework.scheduling.pushpullmodel;
 
-import teetime.framework.AbstractStage;
-import teetime.framework.InputPort;
+import teetime.framework.*;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
 final class RunnableConsumerStage extends AbstractRunnableStage {
 
 	/**
-	 * Creates a new instance.
-	 *
 	 * @param stage
 	 *            to execute within an own thread
 	 */
@@ -36,7 +33,8 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	protected void beforeStageExecution() throws InterruptedException {
 		logger.trace("waitForStartingSignal");
 		// FIXME should getInputPorts() really be defined in Stage?
-		for (InputPort<?> inputPort : stage.getInputPorts()) {
+		// Instead, consider to provide a method "AbstractStage.waitForStartSignal"
+		for (InputPort<?> inputPort : StageFacade.INSTANCE.getInputPorts(stage)) {
 			inputPort.waitForStartSignal();
 		}
 	}
@@ -44,7 +42,7 @@ final class RunnableConsumerStage extends AbstractRunnableStage {
 	@Override
 	protected void afterStageExecution() {
 		final ISignal signal = new TerminatingSignal(); // NOPMD DU caused by loop
-		for (InputPort<?> inputPort : stage.getInputPorts()) {
+		for (InputPort<?> inputPort : StageFacade.INSTANCE.getInputPorts(stage)) {
 			stage.onSignal(signal, inputPort);
 		}
 	}

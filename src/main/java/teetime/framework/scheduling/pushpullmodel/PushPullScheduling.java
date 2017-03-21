@@ -15,7 +15,8 @@ public class PushPullScheduling implements TeeTimeService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PushPullScheduling.class);
 
-	private static final StageFacade SCHEDULING_FACADE = StageFacade.INSTANCE;
+	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
+	private static final ConfigurationFacade CONFIG_FACADE = ConfigurationFacade.INSTANCE;
 
 	private final List<Thread> consumerThreads = Collections.synchronizedList(new LinkedList<Thread>());
 	private final List<Thread> finiteProducerThreads = Collections.synchronizedList(new LinkedList<Thread>());
@@ -32,7 +33,7 @@ public class PushPullScheduling implements TeeTimeService {
 
 	@Override
 	public void onInitialize() {
-		Collection<AbstractStage> startStages = configuration.getStartStages();
+		Collection<AbstractStage> startStages = CONFIG_FACADE.getStartStages(configuration);
 
 		Set<AbstractStage> newThreadableStages = initialize(startStages);
 		startThreads(newThreadableStages);
@@ -88,21 +89,21 @@ public class PushPullScheduling implements TeeTimeService {
 	}
 
 	private void categorizeThreadableStage(final AbstractStage stage) {
-		TerminationStrategy terminationStrategy = SCHEDULING_FACADE.getTerminationStrategy(stage);
+		TerminationStrategy terminationStrategy = STAGE_FACADE.getTerminationStrategy(stage);
 
 		switch (terminationStrategy) {
 		case BY_INTERRUPT: {
-			Thread thread = SCHEDULING_FACADE.getOwningThread(stage);
+			Thread thread = STAGE_FACADE.getOwningThread(stage);
 			infiniteProducerThreads.add(thread);
 			break;
 		}
 		case BY_SELF_DECISION: {
-			Thread thread = SCHEDULING_FACADE.getOwningThread(stage);
+			Thread thread = STAGE_FACADE.getOwningThread(stage);
 			finiteProducerThreads.add(thread);
 			break;
 		}
 		case BY_SIGNAL: {
-			Thread thread = SCHEDULING_FACADE.getOwningThread(stage);
+			Thread thread = STAGE_FACADE.getOwningThread(stage);
 			consumerThreads.add(thread);
 			break;
 		}
@@ -114,7 +115,7 @@ public class PushPullScheduling implements TeeTimeService {
 
 	private void startThreads(final Set<AbstractStage> threadableStages) {
 		for (AbstractStage stage : threadableStages) {
-			SCHEDULING_FACADE.getOwningThread(stage).start();
+			STAGE_FACADE.getOwningThread(stage).start();
 		}
 	}
 
@@ -122,7 +123,7 @@ public class PushPullScheduling implements TeeTimeService {
 		// TODO why synchronized?
 		synchronized (newThreadableStages) {
 			for (AbstractStage stage : newThreadableStages) {
-				((TeeTimeThread) SCHEDULING_FACADE.getOwningThread(stage)).sendStartingSignal();
+				((TeeTimeThread) STAGE_FACADE.getOwningThread(stage)).sendStartingSignal();
 			}
 		}
 	}
@@ -152,7 +153,7 @@ public class PushPullScheduling implements TeeTimeService {
 	private void abortStages(final Set<AbstractStage> currentTreadableStages) {
 		synchronized (currentTreadableStages) {
 			for (AbstractStage stage : currentTreadableStages) {
-				SCHEDULING_FACADE.abort(stage);
+				STAGE_FACADE.abort(stage);
 			}
 		}
 	}
