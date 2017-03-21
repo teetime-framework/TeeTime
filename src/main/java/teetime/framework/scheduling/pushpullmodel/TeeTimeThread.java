@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
-public class TeeTimeThread extends Thread {
+import teetime.framework.StageFacade;
+import teetime.framework.TerminationStrategy;
+
+class TeeTimeThread extends Thread {
+
+	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 
 	private final AbstractRunnableStage runnable;
 
@@ -33,8 +38,8 @@ public class TeeTimeThread extends Thread {
 	@Override
 	public void start() {
 		synchronized (this) {
-			if (runnable.stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
-				runnable.stage.getOwningContext().getThreadService().getRunnableCounter().inc();
+			if (STAGE_FACADE.getTerminationStrategy(runnable.stage) != TerminationStrategy.BY_INTERRUPT) {
+				STAGE_FACADE.getOwningContext(runnable.stage).getRunnableCounter().inc();
 			}
 			super.start();
 		}
@@ -45,8 +50,8 @@ public class TeeTimeThread extends Thread {
 		try {
 			super.run();
 		} finally {
-			if (runnable.stage.getTerminationStrategy() != TerminationStrategy.BY_INTERRUPT) {
-				runnable.stage.getOwningContext().getThreadService().getRunnableCounter().dec();
+			if (STAGE_FACADE.getTerminationStrategy(runnable.stage) != TerminationStrategy.BY_INTERRUPT) {
+				STAGE_FACADE.getOwningContext(runnable.stage).getRunnableCounter().dec();
 			}
 		}
 	}

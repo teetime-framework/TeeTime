@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
-/**
- * All context services must inherit from this abstract class.
- *
- * @author Nelson Tavares de Sousa
- *
- * @param <T>
- *            service type
- *
- * @since 2.0
- */
-abstract class AbstractService<T> {
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
-	abstract void onInitialize();
+import org.junit.Test;
 
-	abstract void onExecute();
+import teetime.framework.*;
 
-	abstract void onTerminate();
+import teetime.framework.scheduling.pushpullmodel.IntraStageCollector;
 
-	abstract void onFinish();
+public class IntraStageCollectorTest {
 
+	@Test
+	public void testVisitedStages() {
+		TestConfiguration config = new TestConfiguration();
+
+		Traverser traversor = new Traverser(new IntraStageCollector(config.init));
+		traversor.traverse(config.init);
+
+		assertThat(traversor.getVisitedStages(), containsInAnyOrder(config.init, config.f2b, config.distributor));
+	}
 }

@@ -15,20 +15,21 @@
  */
 package teetime.framework;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+/**
+ * @author Nelson Tavares de Sousa
+ *
+ * @since 2.0
+ */
+public interface TeeTimeService {
 
-import org.junit.Test;
+	abstract void onInitialize();
 
-public class IntraStageCollectorTest {
+	abstract void onValidate();
 
-	@Test
-	public void testVisitedStages() {
-		TestConfiguration config = new TestConfiguration();
+	abstract void onExecute();
 
-		Traverser traversor = new Traverser(new IntraStageCollector(config.init));
-		traversor.traverse(config.init);
+	abstract void onTerminate();
 
-		assertThat(traversor.getVisitedStages(), containsInAnyOrder(config.init, config.f2b, config.distributor));
-	}
+	abstract void onFinish();
+
 }

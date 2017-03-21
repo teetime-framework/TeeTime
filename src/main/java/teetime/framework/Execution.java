@@ -15,18 +15,11 @@
  */
 package teetime.framework;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import teetime.framework.signal.ValidatingSignal;
-import teetime.framework.validation.AnalysisNotValidException;
 
 /**
  * Represents an Execution to which stages can be added and executed later.
@@ -74,33 +67,12 @@ public final class Execution<T extends Configuration> {
 			throw new IllegalStateException("3001 - Configuration has already been used.");
 		}
 		configuration.setInitialized(true);
-		init();
-		if (validationEnabled) {
-			validateStages();
-		}
-	}
 
-	// BETTER validate concurrently
-	private void validateStages() {
-		final Set<AbstractStage> threadableStages = configurationContext.getThreadableStages();
-		for (AbstractStage stage : threadableStages) {
-			// // portConnectionValidator.validate(stage);
-			// }
-
-			final ValidatingSignal validatingSignal = new ValidatingSignal(); // NOPMD we need a new instance every iteration
-			stage.onSignal(validatingSignal, null);
-			if (validatingSignal.getInvalidPortConnections().size() > 0) {
-				throw new AnalysisNotValidException(validatingSignal.getInvalidPortConnections());
-			}
-		}
-	}
-
-	/**
-	 * This initializes the analysis and needs to be run right before starting it.
-	 *
-	 */
-	private void init() {
 		configurationContext.initializeServices();
+
+		if (validationEnabled) {
+			configurationContext.validateServices();
+		}
 	}
 
 	/**

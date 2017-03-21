@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
 import java.util.List;
 
+import teetime.framework.Configuration;
+import teetime.framework.StageFacade;
 import teetime.framework.pipe.BoundedSynchedPipeFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
@@ -47,6 +49,6 @@ class RunnableConsumerStageTestConfig extends Configuration {
 	}
 
 	public Thread getConsumerThread() {
-		return collectorSink.getOwningThread();
+		return StageFacade.INSTANCE.getOwningThread(collectorSink);
 	}
 }

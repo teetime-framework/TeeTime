@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
 import java.util.Set;
+
+import teetime.framework.*;
+import teetime.framework.exceptionHandling.AbstractExceptionListener;
 
 /**
  * Sets the attributes of all stages within the same thread
  */
 class A4StageAttributeSetter {
+
+	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
+	private static final ConfigurationFacade CONFIG_FACADE = ConfigurationFacade.INSTANCE;
 
 	private final Configuration configuration;
 	private final Set<AbstractStage> threadableStages;
@@ -47,21 +53,21 @@ class A4StageAttributeSetter {
 
 	private void setAttributes(final AbstractStage threadableStage, final Set<AbstractStage> intraStages) {
 		AbstractRunnableStage runnable;
-		if (threadableStage.getInputPorts().size() > 0) {
-			runnable = new RunnableConsumerStage(threadableStage);
-		} else {
+		if (threadableStage.isProducer()) {
 			runnable = new RunnableProducerStage(threadableStage);
+		} else {
+			runnable = new RunnableConsumerStage(threadableStage);
 		}
+
 		Thread newThread = new TeeTimeThread(runnable, "Thread for " + threadableStage.getId());
+		AbstractExceptionListener exceptionhandler = CONFIG_FACADE.getFactory(configuration).createInstance(newThread);
+		ConfigurationContext context = CONFIG_FACADE.getContext(configuration);
 
-		threadableStage.setOwningThread(newThread);
-		threadableStage.setExceptionHandler(configuration.getFactory().createInstance(threadableStage.getOwningThread()));
-		threadableStage.setOwningContext(configuration.getContext());
-
+		intraStages.add(threadableStage);
 		for (AbstractStage stage : intraStages) {
-			stage.setExceptionHandler(threadableStage.getExceptionListener());
-			stage.setOwningThread(threadableStage.getOwningThread());
-			stage.setOwningContext(threadableStage.getOwningContext());
+			STAGE_FACADE.setOwningThread(stage, newThread);
+			STAGE_FACADE.setExceptionHandler(stage, exceptionhandler);
+			STAGE_FACADE.setOwningContext(stage, context);
 		}
 	}
 }

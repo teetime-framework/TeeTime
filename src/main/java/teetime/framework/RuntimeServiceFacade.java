@@ -24,7 +24,7 @@ public final class RuntimeServiceFacade {
 	}
 
 	public void startWithinNewThread(final AbstractStage previousStage, final AbstractStage stage) {
-		previousStage.getOwningContext().getThreadService().startStageAtRuntime(stage);
+		previousStage.getOwningContext().startStageAtRuntime(stage);
 	}
 
 }

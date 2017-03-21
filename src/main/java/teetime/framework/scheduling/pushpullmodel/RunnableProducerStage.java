@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
 import java.util.concurrent.Semaphore;
 
+import teetime.framework.AbstractStage;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
 
-public class RunnableProducerStage extends AbstractRunnableStage {
+class RunnableProducerStage extends AbstractRunnableStage {
 
 	private final Semaphore startSemaphore = new Semaphore(0);
 

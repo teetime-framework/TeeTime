@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
+import teetime.framework.*;
 import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.DummyPipe;
 
-public class IntraStageCollector implements ITraverserVisitor {
+class IntraStageCollector implements ITraverserVisitor {
 
 	private final AbstractStage startStage;
 

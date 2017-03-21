@@ -32,7 +32,7 @@ import teetime.stage.util.CountingMap;
  * @author Christian Wulf
  */
 // WordCounterConfiguration
-class TestConfiguration extends Configuration {
+public class TestConfiguration extends Configuration {
 
 	public final InitialElementProducer<File> init;
 	public final File2SeqOfWords f2b;

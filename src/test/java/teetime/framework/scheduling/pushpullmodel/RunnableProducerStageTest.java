@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import teetime.framework.*;
 import teetime.framework.pipe.DummyPipe;
 
 public class RunnableProducerStageTest {
@@ -35,8 +34,8 @@ public class RunnableProducerStageTest {
 		RunnableProducerStage runnable = new RunnableProducerStage(testStage);
 		Thread thread = new Thread(runnable);
 
-		testStage.setOwningThread(thread);
-		testStage.setOwningContext(new ConfigurationContext(null));
+		StageFacade.INSTANCE.setOwningThread(testStage, thread);
+		StageFacade.INSTANCE.setOwningContext(testStage, new ConfigurationContext(null));
 
 		thread.start();
 

@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.scheduling.pushpullmodel;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import teetime.framework.*;
 import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.DummyPipe;
 
@@ -34,7 +35,7 @@ class A1ThreadableStageCollector implements ITraverserVisitor {
 
 	@Override
 	public VisitorBehavior visit(final AbstractStage stage) {
-		if (stage.getInputPorts().size() == 0) { // activate producers automatically
+		if (stage.isProducer()) {
 			stage.declareActive();
 		}
 
