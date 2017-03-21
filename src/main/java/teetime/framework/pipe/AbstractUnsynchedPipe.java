@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.pipe;
 
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;
 
 /**
@@ -46,7 +48,7 @@ public abstract class AbstractUnsynchedPipe<T> extends AbstractPipe<T> {
 
 	@Override
 	public final void reportNewElement() {
-		this.cachedTargetStage.executeStage();
+		this.cachedTargetStage.executeByFramework();
 	}
 
 	@Override
@@ -62,7 +64,7 @@ public abstract class AbstractUnsynchedPipe<T> extends AbstractPipe<T> {
 	@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
 	@Override
 	public void waitForStartSignal() throws InterruptedException {
-		// do nothing
+		// default implementation
 	}
 
 }

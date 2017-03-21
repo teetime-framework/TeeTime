@@ -17,6 +17,7 @@ package teetime.framework.pipe;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.scheduling.PipeScheduler;
 import teetime.framework.signal.ISignal;
 
 /**
@@ -91,7 +92,10 @@ public interface IPipe<T> {
 
 	/**
 	 * Stages report new elements with this method.
+	 *
+	 * @deprecated since 3.0. Is removed without replacement.
 	 */
+	@Deprecated
 	void reportNewElement();
 
 	boolean isClosed(); // FIXME remove dead method?
@@ -103,5 +107,7 @@ public interface IPipe<T> {
 	// "signal" handling
 
 	void waitForStartSignal() throws InterruptedException;
+
+	void setScheduler(final PipeScheduler scheduler);
 
 }

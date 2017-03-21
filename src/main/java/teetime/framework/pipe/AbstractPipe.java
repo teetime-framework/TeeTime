@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.pipe;
 
-import teetime.framework.pipe.IPipe;
+import teetime.framework.*;
+import teetime.framework.scheduling.PipeScheduler;
 
 /**
  * Represents an abstract implementation of a {@link IPipe}.
@@ -27,17 +28,12 @@ import teetime.framework.pipe.IPipe;
  */
 public abstract class AbstractPipe<T> implements IPipe<T> {
 
-	/**
-	 * Performance cache: Avoids the following method chain
-	 *
-	 * <pre>
-	 * this.getPipe().getTargetPort().getOwningStage()
-	 * </pre>
-	 */
 	protected final AbstractStage cachedTargetStage;
 
 	private final OutputPort<? extends T> sourcePort;
 	private final InputPort<T> targetPort;
+
+	private PipeScheduler scheduler;
 
 	protected AbstractPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		if (sourcePort == null) {
@@ -68,6 +64,28 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	@Override
 	public final boolean hasMore() {
 		return !isEmpty();
+	}
+
+	/**
+	 * Performance cache: Avoids the following method chain
+	 *
+	 * <pre>
+	 * this.getTargetPort().getOwningStage()
+	 * </pre>
+	 */
+	public AbstractStage getCachedTargetStage() {
+		return cachedTargetStage;
+	}
+
+	protected PipeScheduler getScheduler() {
+		return scheduler;
+	}
+
+	public void setScheduler(final PipeScheduler scheduler) {
+		if (scheduler == null) {
+			throw new IllegalArgumentException("Argument 'scheduler' may not be null");
+		}
+		this.scheduler = scheduler;
 	}
 
 	@Override

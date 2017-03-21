@@ -18,9 +18,8 @@ package teetime.stage.basic.merger;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.IPipe;
-import teetime.framework.signal.ISignal;
-import teetime.framework.signal.StartingSignal;
-import teetime.framework.signal.TerminatingSignal;
+import teetime.framework.scheduling.PipeScheduler;
+import teetime.framework.signal.*;
 
 public class MergerTestingPipe implements IPipe<Object> {
 
@@ -51,12 +50,14 @@ public class MergerTestingPipe implements IPipe<Object> {
 
 	@Override
 	public boolean add(final Object element) {
-		return false;
+		// return false;
+		throw new IllegalStateException();
 	}
 
 	@Override
 	public boolean addNonBlocking(final Object element) {
-		return add(element);
+		// return add(element);
+		throw new IllegalStateException();
 	}
 
 	@Override
@@ -105,9 +106,18 @@ public class MergerTestingPipe implements IPipe<Object> {
 	}
 
 	@Override
-	public void waitForStartSignal() throws InterruptedException {}
+	public void waitForStartSignal() throws InterruptedException {
+		throw new IllegalStateException();
+	}
 
 	@Override
-	public void close() {}
+	public void close() {
+		throw new IllegalStateException();
+	}
+
+	@Override
+	public void setScheduler(final PipeScheduler scheduler) {
+		throw new IllegalStateException();
+	}
 
 }

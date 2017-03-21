@@ -19,8 +19,7 @@ import java.util.*;
 
 import teetime.framework.exceptionHandling.AbstractExceptionListenerFactory;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
-import teetime.framework.pipe.IPipe;
-import teetime.framework.pipe.IPipeFactory;
+import teetime.framework.pipe.*;
 
 /**
  * Represents a configuration of connected stages. Available to be extended.

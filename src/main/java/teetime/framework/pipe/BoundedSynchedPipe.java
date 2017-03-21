@@ -17,7 +17,8 @@ package teetime.framework.pipe;
 
 import org.jctools.queues.SpscArrayQueue;
 
-import teetime.framework.*;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.pipe.strategy.SleepIfFullStrategy;
 
 public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
@@ -35,12 +36,16 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMo
 
 	@Override
 	public boolean add(final Object element) {
-		return strategy.add(this, element);
+		boolean added = strategy.add(this, element);
+		getScheduler().onElementAdded(this);
+		return added;
 	}
 
 	@Override
 	public boolean addNonBlocking(final Object element) {
-		return this.queue.offer(element);
+		boolean offered = this.queue.offer(element);
+		getScheduler().onElementAdded(this);
+		return offered;
 	}
 
 	@Override

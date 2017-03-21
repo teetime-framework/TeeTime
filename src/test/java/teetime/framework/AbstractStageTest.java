@@ -47,9 +47,11 @@ public class AbstractStageTest {
 	public void testSetOwningThread() throws Exception {
 		TestConfig tc = new TestConfig();
 		new Execution<TestConfig>(tc);
-		assertEquals(tc.init.getOwningThread(), tc.delay.getOwningThread());
+		assertThat(tc.delay.getOwningThread(), is(tc.init.getOwningThread()));
 		assertThat(tc.delay.getExceptionListener(), is(notNullValue()));
-		assertEquals(tc.init.getExceptionListener(), tc.delay.getExceptionListener());
+		AbstractStage delayStage = tc.delay;
+		AbstractStage initStage = tc.init;
+		assertThat(delayStage.getExceptionListener(), is(initStage.getExceptionListener()));
 	}
 
 	@Test
@@ -65,7 +67,7 @@ public class AbstractStageTest {
 
 	private static class TestConfig extends Configuration {
 		public final DelayAndTerminate delay;
-		public InitialElementProducer<String> init;
+		public final InitialElementProducer<String> init;
 
 		public TestConfig() {
 			init = new InitialElementProducer<String>("Hello");
@@ -84,12 +86,8 @@ public class AbstractStageTest {
 		}
 
 		@Override
-		protected void execute(final String element) {
-			try {
-				Thread.sleep(delayInMs);
-			} catch (InterruptedException e) {
-				throw new IllegalStateException(e);
-			}
+		protected void execute(final String element) throws InterruptedException {
+			Thread.sleep(delayInMs);
 		}
 
 	}

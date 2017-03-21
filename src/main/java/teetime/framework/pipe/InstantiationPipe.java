@@ -17,6 +17,7 @@ package teetime.framework.pipe;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.scheduling.PipeScheduler;
 import teetime.framework.signal.ISignal;
 
 public class InstantiationPipe<T> implements IPipe<T> {
@@ -104,6 +105,11 @@ public class InstantiationPipe<T> implements IPipe<T> {
 
 	@Override
 	public void close() {
+		throw new IllegalStateException(ERROR_MESSAGE);
+	}
+
+	@Override
+	public void setScheduler(final PipeScheduler scheduler) {
 		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 

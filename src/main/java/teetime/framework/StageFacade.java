@@ -58,7 +58,7 @@ public final class StageFacade {
 	public void runStage(final AbstractStage stage) {
 		try {
 			while (!stage.shouldBeTerminated()) {
-				stage.executeStage();
+				stage.executeByFramework();
 			}
 		} catch (TerminateException e) {
 			stage.abort();
@@ -68,7 +68,7 @@ public final class StageFacade {
 
 	public void runStage(final AbstractStage stage, final int numOfExecutions) {
 		for (int i = 0; i < numOfExecutions; i++) {
-			stage.executeStage();
+			stage.executeByFramework();
 		}
 	}
 

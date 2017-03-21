@@ -22,8 +22,7 @@ import com.carrotsearch.hppc.IntObjectMap;
 
 import teetime.framework.divideandconquer.*;
 import teetime.framework.pipe.DummyPipe;
-import teetime.framework.signal.StartingSignal;
-import teetime.framework.signal.TerminatingSignal;
+import teetime.framework.signal.*;
 import teetime.stage.basic.ITransformation;
 
 /**
@@ -216,8 +215,9 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 
 	private void copy(final OutputPort<P> outputPort, final InputPort<S> inputPort, final DivideAndConquerStage<P, S> callingStage) {
 		DivideAndConquerStage<P, S> newStage = new DivideAndConquerStage<P, S>(numCopiedInstances, maxCopiedInstances);
-		DynamicConfigurationContext.INSTANCE.connectPorts(outputPort, newStage.getInputPort());
-		DynamicConfigurationContext.INSTANCE.connectPorts(newStage.getOutputPort(), inputPort);
+		RuntimeServiceFacade.INSTANCE.connectPorts(outputPort, newStage.getInputPort());
+		RuntimeServiceFacade.INSTANCE.connectPorts(newStage.getOutputPort(), inputPort);
+		outputPort.sendSignal(new ValidatingSignal());
 		outputPort.sendSignal(new StartingSignal());
 		RuntimeServiceFacade.INSTANCE.startWithinNewThread(callingStage, newStage);
 	}

@@ -115,7 +115,7 @@ public abstract class AbstractStage {
 	private long beforeExecuteTime;
 	private long lastTimeAfterExecute;
 
-	protected final void executeStage() throws TerminateException {
+	public final void executeByFramework() throws TerminateException {
 		if (performanceLoggingEnabled) {
 			beforeExecuteTime = System.nanoTime();
 			executeWithCatchedExceptions();
@@ -141,6 +141,12 @@ public abstract class AbstractStage {
 		}
 	}
 
+	/**
+	 * Contains the logic of this stage and is invoked (possibly multiple times) by the framework.
+	 *
+	 * @throws Exception
+	 *             arbitrary exception triggered by the logic of this stage
+	 */
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	protected abstract void execute() throws Exception;
 
@@ -171,13 +177,11 @@ public abstract class AbstractStage {
 		this.owningThread = owningThread;
 	}
 
-	// events
-
-	protected final void setExceptionHandler(final AbstractExceptionListener exceptionHandler) {
+	void setExceptionHandler(final AbstractExceptionListener exceptionHandler) {
 		this.exceptionListener = exceptionHandler;
 	}
 
-	protected AbstractExceptionListener getExceptionListener() {
+	AbstractExceptionListener getExceptionListener() {
 		return exceptionListener;
 	}
 

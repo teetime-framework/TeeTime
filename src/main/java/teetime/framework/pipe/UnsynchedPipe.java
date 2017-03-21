@@ -15,7 +15,8 @@
  */
 package teetime.framework.pipe;
 
-import teetime.framework.*;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 
 public final class UnsynchedPipe<T> extends AbstractUnsynchedPipe<T> {
 
@@ -34,7 +35,7 @@ public final class UnsynchedPipe<T> extends AbstractUnsynchedPipe<T> {
 		this.element = element;
 		// the following stopwatch-related lines are commented out since they are computationally too expensive
 		// this.stopWatch.start();
-		this.reportNewElement();
+		getScheduler().onElementAdded(this);
 		// this.stopWatch.end();
 		// this.getSourcePort().getOwningStage().addActiveWaitingTime(this.stopWatch.getDurationInNs());
 		return true;

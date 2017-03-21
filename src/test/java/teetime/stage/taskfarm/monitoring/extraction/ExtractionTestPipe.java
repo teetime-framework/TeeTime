@@ -19,6 +19,7 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.pipe.IPipe;
+import teetime.framework.scheduling.PipeScheduler;
 import teetime.framework.signal.ISignal;
 
 class ExtractionTestPipe<T> implements IMonitorablePipe, IPipe<T> {
@@ -127,12 +128,12 @@ class ExtractionTestPipe<T> implements IMonitorablePipe, IPipe<T> {
 
 	@Override
 	public boolean add(final Object element) {
-		return false;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean addNonBlocking(final Object element) {
-		return false;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -182,6 +183,11 @@ class ExtractionTestPipe<T> implements IMonitorablePipe, IPipe<T> {
 
 	@Override
 	public void close() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setScheduler(final PipeScheduler scheduler) {
 		throw new UnsupportedOperationException();
 	}
 }

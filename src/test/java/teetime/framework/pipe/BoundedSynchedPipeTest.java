@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import teetime.framework.AbstractSynchedPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;

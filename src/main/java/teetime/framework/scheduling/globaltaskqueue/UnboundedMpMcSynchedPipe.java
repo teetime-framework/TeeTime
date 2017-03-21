@@ -18,6 +18,7 @@ package teetime.framework.scheduling.globaltaskqueue;
 import org.jctools.queues.MpmcArrayQueue;
 
 import teetime.framework.*;
+import teetime.framework.pipe.AbstractSynchedPipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 

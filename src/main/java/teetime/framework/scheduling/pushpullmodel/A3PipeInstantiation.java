@@ -24,11 +24,12 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.*;
 import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.*;
+import teetime.framework.scheduling.PipeScheduler;
 
 /**
  * Automatically instantiates the correct pipes
  */
-class A3PipeInstantiation implements ITraverserVisitor {
+class A3PipeInstantiation implements ITraverserVisitor, PipeScheduler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(A3PipeInstantiation.class);
 
@@ -60,27 +61,38 @@ class A3PipeInstantiation implements ITraverserVisitor {
 	}
 
 	private <T> void instantiatePipe(final IPipe<T> pipe) {
-		if (!(pipe instanceof InstantiationPipe)) { // if manually connected
-			return;
-		}
+		IPipe<T> instantiatedPipe;
 
 		AbstractStage sourceStage = pipe.getSourcePort().getOwningStage();
 		AbstractStage targetStage = pipe.getTargetPort().getOwningStage();
 
-		if (!targetStage.isActive() || sourceStage == targetStage) { // NOPMD .equals() can't be used here
+		if (!(pipe instanceof InstantiationPipe)) { // if manually connected
+			instantiatedPipe = pipe;
+		} else if (!targetStage.isActive() || sourceStage == targetStage) { // NOPMD .equals() can't be used here
 			// normal or reflexive pipe => intra
-			new UnsynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
+			instantiatedPipe = new UnsynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
 			LOGGER.debug("Connected (unsynch) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
+		} else if (pipe.capacity() == 0) {
+			// synchronized, unlimited capacity
+			instantiatedPipe = new UnboundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
+			LOGGER.debug("Connected (unbounded) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
 		} else {
-			// inter
-			if (pipe.capacity() == 0) {
-				new UnboundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
-				LOGGER.debug("Connected (unbounded) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
-			} else {
-				new BoundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort(), pipe.capacity());
-				LOGGER.debug("Connected (bounded) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
-			}
+			// synchronized, limited capacity
+			instantiatedPipe = new BoundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort(), pipe.capacity());
+			LOGGER.debug("Connected (bounded) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
 		}
+
+		instantiatedPipe.setScheduler(this);
+	}
+
+	@Override
+	public void onElementAdded(final AbstractUnsynchedPipe<?> pipe) {
+		pipe.getCachedTargetStage().executeByFramework();
+	}
+
+	@Override
+	public void onElementAdded(final AbstractSynchedPipe<?> pipe) {
+		// do nothing
 	}
 
 }

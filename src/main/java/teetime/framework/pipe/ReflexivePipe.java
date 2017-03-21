@@ -15,7 +15,8 @@
  */
 package teetime.framework.pipe;
 
-import teetime.framework.*;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 
 /**
  * Represents an unsynchronized pipe with a capacity of 1. In contrast to the {@link UnsynchedPipe}, this pipe does not execute its successor stage if an element has
@@ -37,7 +38,7 @@ public class ReflexivePipe<T> extends AbstractUnsynchedPipe<T> {
 	@Override
 	public boolean add(final Object element) {
 		this.element = element;
-		// do not report new element
+		getScheduler().onElementAdded(this);
 		return true;
 	}
 

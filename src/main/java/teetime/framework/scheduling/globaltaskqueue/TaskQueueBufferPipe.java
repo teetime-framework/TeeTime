@@ -8,6 +8,7 @@ import org.jctools.queues.spec.*;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.IPipe;
+import teetime.framework.scheduling.PipeScheduler;
 import teetime.framework.signal.ISignal;
 
 /**
@@ -20,6 +21,8 @@ class TaskQueueBufferPipe<T> implements IPipe<T> {
 	private final InputPort<T> targetPort;
 	private final OutputPort<? extends T> sourcePort;
 	private final IPipe<? extends T> replacedPipe;
+
+	private PipeScheduler scheduler;
 
 	public TaskQueueBufferPipe(final InputPort<T> targetPort, final OutputPort<? extends T> sourcePort, final IPipe<? extends T> replacedPipe) {
 		this.targetPort = targetPort;
@@ -40,7 +43,9 @@ class TaskQueueBufferPipe<T> implements IPipe<T> {
 
 	@Override
 	public boolean add(final Object element) {
-		return queue.offer(element);
+		boolean added = queue.offer(element);
+		// scheduler.onElementAdded(this);
+		return added;
 	}
 
 	@Override
@@ -110,5 +115,10 @@ class TaskQueueBufferPipe<T> implements IPipe<T> {
 
 	public IPipe<? extends T> getReplacedPipe() {
 		return replacedPipe;
+	}
+
+	@Override
+	public void setScheduler(final PipeScheduler scheduler) {
+		this.scheduler = scheduler;
 	}
 }

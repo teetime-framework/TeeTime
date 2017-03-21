@@ -17,6 +17,7 @@ package teetime.framework.pipe;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
+import teetime.framework.scheduling.PipeScheduler;
 import teetime.framework.signal.ISignal;
 
 /**
@@ -100,6 +101,11 @@ public final class DummyPipe implements IPipe<Object> {
 	@Override
 	public int capacity() {
 		return 0;
+	}
+
+	@Override
+	public void setScheduler(final PipeScheduler scheduler) {
+		throw new IllegalStateException("This method must not be called.");
 	}
 
 }

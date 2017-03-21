@@ -20,7 +20,8 @@ import java.util.Queue;
 import org.jctools.queues.QueueFactory;
 import org.jctools.queues.spec.*;
 
-import teetime.framework.*;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 
 public final class UnboundedSynchedPipe<T> extends AbstractSynchedPipe<T> {
 
@@ -34,7 +35,9 @@ public final class UnboundedSynchedPipe<T> extends AbstractSynchedPipe<T> {
 
 	@Override
 	public boolean add(final Object element) {
-		return this.queue.offer(element);
+		boolean offered = this.queue.offer(element);
+		getScheduler().onElementAdded(this);
+		return offered;
 	}
 
 	@Override

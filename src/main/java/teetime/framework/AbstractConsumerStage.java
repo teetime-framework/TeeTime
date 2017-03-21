@@ -33,6 +33,15 @@ public abstract class AbstractConsumerStage<I> extends AbstractStage {
 		this.execute(element);
 	}
 
+	/**
+	 * Contains the logic of this stage and is invoked (possibly multiple times) by the framework.
+	 *
+	 * @param element
+	 *            the next non-null element from the (only) input port of this stage
+	 *
+	 * @throws Exception
+	 *             arbitrary exception triggered by the logic of this stage
+	 */
 	protected abstract void execute(I element) throws Exception;
 
 }

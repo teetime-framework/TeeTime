@@ -18,6 +18,7 @@ package teetime.framework;
 import teetime.framework.divideandconquer.*;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.UnsynchedPipe;
+import teetime.framework.scheduling.PipeScheduler;
 import teetime.framework.signal.ISignal;
 
 /**
@@ -149,6 +150,14 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 	}
 
 	@Override
+	public boolean add(final Object element) {
+		if (!isClosed()) {
+			return outputPipe.add(element);
+		}
+		return true;
+	}
+
+	@Override
 	public boolean isEmpty() {
 		return outputPipe.isEmpty();
 	}
@@ -159,16 +168,13 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 	}
 
 	@Override
-	public boolean add(final Object element) {
-		if (!isClosed()) {
-			return outputPipe.add(element);
-		}
-		return true;
+	public Object removeLast() {
+		return outputPipe.removeLast();
 	}
 
 	@Override
-	public Object removeLast() {
-		return outputPipe.removeLast();
+	public void setScheduler(final PipeScheduler scheduler) {
+		// is not used since it delegates to another pipe
 	}
 
 }

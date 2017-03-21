@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework;
+package teetime.framework.pipe;
 
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
@@ -21,6 +21,8 @@ import java.util.concurrent.BlockingQueue;
 import org.jctools.queues.QueueFactory;
 import org.jctools.queues.spec.*;
 
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.signal.*;
 import teetime.util.framework.concurrent.queue.PCBlockingQueue;
 import teetime.util.framework.concurrent.queue.putstrategy.PutStrategy;
@@ -58,7 +60,7 @@ public abstract class AbstractSynchedPipe<T> extends AbstractPipe<T> {
 
 	@Override
 	public void reportNewElement() { // NOPMD
-		// do nothing
+		// default implementation
 	}
 
 	@Override
