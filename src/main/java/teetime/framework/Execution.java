@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Represents an Execution to which stages can be added and executed later.
- * This needs a {@link Configuration},
+ * This class requires a {@link Configuration},
  * in which the adding and configuring of stages takes place.
  * To start the analysis {@link #executeBlocking()} needs to be executed.
  * This class will automatically create threads and join them without any further commitment.
@@ -43,22 +43,20 @@ public final class Execution<T extends Configuration> {
 	private final ConfigurationContext configurationContext;
 
 	/**
-	 * Creates a new {@link Execution} that skips validating the port connections and uses the default listener.
+	 * Creates a new {@link Execution} and validates the given configuration.
 	 *
 	 * @param configuration
-	 *            to be used for the analysis
+	 *            to be executed
 	 */
 	public Execution(final T configuration) {
 		this(configuration, true);
 	}
 
 	/**
-	 * Creates a new {@link Execution} that uses a specific listener.
-	 *
 	 * @param configuration
-	 *            to be used for the analysis
+	 *            to be executed
 	 * @param validationEnabled
-	 *            whether or not the validation should be executed
+	 *            <code>true</code> if validation should be performed after initialization; <code>false</code> otherwise.
 	 */
 	public Execution(final T configuration, final boolean validationEnabled) {
 		this.configuration = configuration;
