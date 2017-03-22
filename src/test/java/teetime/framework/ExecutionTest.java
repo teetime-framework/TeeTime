@@ -24,6 +24,7 @@ import org.junit.rules.ExpectedException;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.InstanceOfFilter;
 import teetime.stage.basic.Sink;
+import teetime.stage.basic.merger.Merger;
 import teetime.util.StopWatch;
 
 public class ExecutionTest {
@@ -124,15 +125,15 @@ public class ExecutionTest {
 		new Execution<InvalidTestConfig>(configuration);
 	}
 
-	private class InvalidTestConfig extends Configuration {
-		public InitialElementProducer<Object> init = new InitialElementProducer<Object>();
-		public InstanceOfFilter<Object, Object> iof = new InstanceOfFilter<Object, Object>(Object.class);
-		public Sink<Object> sink = new Sink<Object>();
+	private static class InvalidTestConfig extends Configuration {
+		private final InitialElementProducer<Object> init = new InitialElementProducer<Object>();
+		private final InstanceOfFilter<Object, Object> iof = new InstanceOfFilter<Object, Object>(Object.class);
+		private final Merger<Object> merger = new Merger<Object>();
 
 		public InvalidTestConfig() {
 			connectPorts(init.getOutputPort(), iof.getInputPort());
-			connectPorts(iof.getMatchedOutputPort(), sink.getInputPort());
-			connectPorts(init.createOutputPort(), sink.createInputPort());
+			connectPorts(iof.getMatchedOutputPort(), merger.createInputPort());
+			connectPorts(init.createOutputPort(), merger.createInputPort());
 			iof.declareActive();
 		}
 	}

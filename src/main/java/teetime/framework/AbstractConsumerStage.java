@@ -17,7 +17,10 @@ package teetime.framework;
 
 public abstract class AbstractConsumerStage<I> extends AbstractStage {
 
-	protected final InputPort<I> inputPort = this.createInputPort();
+	// Creation of this input port requires to use super and null for both parameters
+	// in order to invoke the original AbstractStage.createInputPort() instead of
+	// the one overridden in this stage.
+	protected final InputPort<I> inputPort = super.createInputPort(null, null);
 
 	public final InputPort<I> getInputPort() {
 		return this.inputPort;
@@ -43,5 +46,13 @@ public abstract class AbstractConsumerStage<I> extends AbstractStage {
 	 *             arbitrary exception triggered by the logic of this stage
 	 */
 	protected abstract void execute(I element) throws Exception;
+
+	@Override
+	protected <T> InputPort<T> createInputPort(final Class<T> type, final String name) {
+		String message = String.format("A subtype of %s cannot have more than one input port. Extend %s instead.",
+				AbstractConsumerStage.class.getName(),
+				AbstractStage.class.getName());
+		throw new IllegalStateException(message);
+	}
 
 }
