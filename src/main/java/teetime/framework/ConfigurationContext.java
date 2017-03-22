@@ -18,8 +18,7 @@ package teetime.framework;
 import teetime.framework.scheduling.pushpullmodel.PushPullScheduling;
 
 /**
- * Represents a context that is used by a configuration and composite stages to connect ports,for example.
- * Stages can be added by executing {@link #declareActive(AbstractStage)}.
+ * Represents the (runtime) context of the given configuration.
  *
  * @since 2.0
  */
