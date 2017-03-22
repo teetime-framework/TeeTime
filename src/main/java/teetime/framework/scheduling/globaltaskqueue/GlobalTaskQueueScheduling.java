@@ -10,15 +10,12 @@ import teetime.framework.*;
 import teetime.framework.Traverser.Direction;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.signal.StartingSignal;
-import teetime.util.framework.concurrent.SignalingCounter;
 
 public class GlobalTaskQueueScheduling implements TeeTimeService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalTaskQueueScheduling.class);
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 	private static final ConfigurationFacade CONFIG_FACADE = ConfigurationFacade.INSTANCE;
-
-	private static final SignalingCounter runnableCounter = new SignalingCounter();
 
 	private final Configuration configuration;
 
@@ -108,7 +105,6 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 			infiniteProducerStage.onSignal(new StartingSignal(), null);
 		}
 		for (Thread thread : threadPool) {
-			runnableCounter.inc();
 			thread.start();
 		}
 	}
@@ -151,7 +147,9 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	@Override
 	public void onFinish() {
 		try {
-			runnableCounter.waitFor(0);
+			for (Thread thread : threadPool) {
+				thread.join();
+			}
 		} catch (InterruptedException e) {
 			LOGGER.error("Execution has stopped unexpectedly", e);
 			LOGGER.debug("Interrupting infiniteProducerThreads...");
@@ -189,10 +187,6 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	// threadableStages.putAll(source.getThreadableStages());
 	// runnableCounter.inc(source.runnableCounter);
 	// }
-
-	public static SignalingCounter getRunnableCounter() {
-		return runnableCounter;
-	}
 
 	// Nothing has to be done here
 	void startStageAtRuntime(final AbstractStage stage) {

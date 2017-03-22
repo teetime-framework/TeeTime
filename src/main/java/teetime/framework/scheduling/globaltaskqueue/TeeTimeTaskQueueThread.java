@@ -37,7 +37,6 @@ public class TeeTimeTaskQueueThread extends Thread {
 				}
 			}
 		}
-		GlobalTaskQueueScheduling.getRunnableCounter().dec();
 	}
 
 	private void executeStage(AbstractStage stage, final AbstractStage baseStage) {

@@ -16,7 +16,6 @@
 package teetime.framework;
 
 import teetime.framework.scheduling.pushpullmodel.PushPullScheduling;
-import teetime.util.framework.concurrent.SignalingCounter;
 
 /**
  * Represents a context that is used by a configuration and composite stages to connect ports,for example.
@@ -54,10 +53,6 @@ public final class ConfigurationContext {
 
 	void startStageAtRuntime(final AbstractStage stage) {
 		teeTimeService.startStageAtRuntime(stage);
-	}
-
-	public SignalingCounter getRunnableCounter() {
-		return teeTimeService.getRunnableCounter();
 	}
 
 }

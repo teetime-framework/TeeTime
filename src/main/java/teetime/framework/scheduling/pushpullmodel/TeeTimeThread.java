@@ -15,18 +15,17 @@
  */
 package teetime.framework.scheduling.pushpullmodel;
 
-import teetime.framework.StageFacade;
-import teetime.framework.TerminationStrategy;
-
 class TeeTimeThread extends Thread {
 
-	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
+	// private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 
 	private final AbstractRunnableStage runnable;
+	private ThreadListener listener;
 
 	public TeeTimeThread(final AbstractRunnableStage runnable, final String name) {
 		super(runnable, name);
 		this.runnable = runnable;
+		setListener(new DefaultThreadListener());
 	}
 
 	public void sendStartingSignal() {
@@ -37,12 +36,8 @@ class TeeTimeThread extends Thread {
 
 	@Override
 	public void start() {
-		synchronized (this) {
-			if (STAGE_FACADE.getTerminationStrategy(runnable.stage) != TerminationStrategy.BY_INTERRUPT) {
-				STAGE_FACADE.getOwningContext(runnable.stage).getRunnableCounter().inc();
-			}
-			super.start();
-		}
+		getListener().onBeforeStart(runnable.stage);
+		super.start();
 	}
 
 	@Override
@@ -50,9 +45,16 @@ class TeeTimeThread extends Thread {
 		try {
 			super.run();
 		} finally {
-			if (STAGE_FACADE.getTerminationStrategy(runnable.stage) != TerminationStrategy.BY_INTERRUPT) {
-				STAGE_FACADE.getOwningContext(runnable.stage).getRunnableCounter().dec();
-			}
+			getListener().onAfterTermination(runnable.stage);
 		}
 	}
+
+	public ThreadListener getListener() {
+		return listener;
+	}
+
+	public void setListener(final ThreadListener listener) {
+		this.listener = listener;
+	}
+
 }

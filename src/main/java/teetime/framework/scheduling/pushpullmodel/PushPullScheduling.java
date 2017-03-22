@@ -11,7 +11,7 @@ import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.framework.concurrent.SignalingCounter;
 
-public class PushPullScheduling implements TeeTimeService {
+public class PushPullScheduling implements TeeTimeService, ThreadListener {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PushPullScheduling.class);
 
@@ -22,10 +22,12 @@ public class PushPullScheduling implements TeeTimeService {
 	private final List<Thread> finiteProducerThreads = Collections.synchronizedList(new LinkedList<Thread>());
 	private final List<Thread> infiniteProducerThreads = Collections.synchronizedList(new LinkedList<Thread>());
 
-	private final SignalingCounter runnableCounter = new SignalingCounter();
 	private final Set<AbstractStage> threadableStages = Collections.synchronizedSet(new HashSet<AbstractStage>());
 
 	private final Configuration configuration;
+
+	private final SignalingCounter numRunningFiniteProducers = new SignalingCounter();
+	private final SignalingCounter numRunningConsumers = new SignalingCounter();
 
 	public PushPullScheduling(final Configuration configuration) {
 		this.configuration = configuration;
@@ -115,7 +117,9 @@ public class PushPullScheduling implements TeeTimeService {
 
 	private void startThreads(final Set<AbstractStage> threadableStages) {
 		for (AbstractStage stage : threadableStages) {
-			STAGE_FACADE.getOwningThread(stage).start();
+			TeeTimeThread thread = (TeeTimeThread) STAGE_FACADE.getOwningThread(stage);
+			thread.setListener(this);
+			thread.start();
 		}
 	}
 
@@ -161,14 +165,10 @@ public class PushPullScheduling implements TeeTimeService {
 	@Override
 	public void onFinish() {
 		try {
-			runnableCounter.waitFor(0);
+			numRunningFiniteProducers.waitFor(0);
 		} catch (InterruptedException e) {
 			LOGGER.error("Execution has stopped unexpectedly", e);
 			for (Thread thread : this.finiteProducerThreads) {
-				thread.interrupt();
-			}
-
-			for (Thread thread : this.consumerThreads) {
 				thread.interrupt();
 			}
 		}
@@ -181,10 +181,49 @@ public class PushPullScheduling implements TeeTimeService {
 			LOGGER.debug("infiniteProducerThreads have been terminated");
 		}
 
+		try {
+			numRunningConsumers.waitFor(0);
+		} catch (InterruptedException e) {
+			LOGGER.error("Execution has stopped unexpectedly", e);
+			synchronized (consumerThreads) {
+				for (Thread thread : this.consumerThreads) {
+					thread.interrupt();
+				}
+			}
+		}
+
 		// List<Exception> exceptions = collectExceptions();
 		// if (!exceptions.isEmpty()) {
 		// throw new ExecutionException(exceptions);
 		// }
+	}
+
+	@Override
+	public void onBeforeStart(final AbstractStage stage) {
+		switch (STAGE_FACADE.getTerminationStrategy(stage)) {
+		case BY_SELF_DECISION:
+			numRunningFiniteProducers.inc();
+			break;
+		case BY_SIGNAL:
+			numRunningConsumers.inc();
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void onAfterTermination(final AbstractStage stage) {
+		switch (STAGE_FACADE.getTerminationStrategy(stage)) {
+		case BY_SELF_DECISION:
+			numRunningFiniteProducers.dec();
+			break;
+		case BY_SIGNAL:
+			numRunningConsumers.dec();
+			break;
+		default:
+			break;
+		}
 	}
 
 	// TODO impl throw exception... see line 175
@@ -205,9 +244,5 @@ public class PushPullScheduling implements TeeTimeService {
 	// threadableStages.putAll(source.getThreadableStages());
 	// // runnableCounter.inc(source.runnableCounter);
 	// }
-
-	public SignalingCounter getRunnableCounter() {
-		return runnableCounter;
-	}
 
 }
