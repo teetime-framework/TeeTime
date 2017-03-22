@@ -36,7 +36,7 @@ public final class RuntimeServiceFacade {
 	}
 
 	/**
-	 * Connects two ports with a pipe with a default capacity of currently {@value #DEFAULT_PIPE_CAPACITY}.
+	 * Connects two ports with a pipe with an unlimited capacity.
 	 *
 	 * @param sourcePort
 	 *            {@link OutputPort} of the sending stage
