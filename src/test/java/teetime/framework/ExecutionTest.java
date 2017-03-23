@@ -32,6 +32,9 @@ public class ExecutionTest {
 	private static final long DELAY_IN_MS = 500;
 	private static final long ABSOLUTE_MAX_ERROR_IN_MS = 15; // handle timer granularity
 
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+
 	private Execution<TestConfig> execution;
 
 	@Before
@@ -76,9 +79,9 @@ public class ExecutionTest {
 
 	private static class DelayAndTerminate extends AbstractConsumerStage<String> {
 
-		private final long delayInMs;
-
 		public boolean finished;
+
+		private final long delayInMs;
 
 		public DelayAndTerminate(final long delayInMs) {
 			super();
@@ -113,9 +116,6 @@ public class ExecutionTest {
 			}
 		}
 	}
-
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
 	public void testInstantiatePipesIncorrectConfiguration() {

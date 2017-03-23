@@ -34,7 +34,7 @@ public class ActivationStateLogger {
 	/**
 	 * Singleton Instance Holder
 	 */
-	private final static ActivationStateLogger INSTANCE = new ActivationStateLogger();
+	private static final ActivationStateLogger INSTANCE = new ActivationStateLogger();
 	/**
 	 * Set of registered Stages
 	 */

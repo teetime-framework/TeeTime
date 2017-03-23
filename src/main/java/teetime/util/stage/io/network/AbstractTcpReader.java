@@ -26,10 +26,11 @@ import org.slf4j.Logger;
 
 public abstract class AbstractTcpReader implements Runnable {
 
-	private final int port;
-	private final int bufferCapacity;
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
+
+	private final int port;
+	private final int bufferCapacity;
 
 	private volatile boolean terminated;
 
@@ -95,7 +96,8 @@ public abstract class AbstractTcpReader implements Runnable {
 	/**
 	 * @param buffer
 	 *            to be read from
-	 * @return <ul>
+	 * @return
+	 *         <ul>
 	 *         <li><code>true</code> when there were enough bytes to perform the read operation
 	 *         <li><code>false</code> otherwise. In this case, the buffer is reset, compacted, and filled with new content.
 	 *         </ul>

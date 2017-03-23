@@ -28,13 +28,11 @@ import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
  */
 public abstract class AbstractThroughputAlgorithm {
 
-	/**
-	 * Number of recently measured throughput values that we will analyze.
-	 */
-	protected final int window;
-
-	/** represents an invalid throughput score **/
+	/** represents an invalid throughput score */
 	public static final int INVALID_SCORE = -2;
+
+	/** Number of recently measured throughput values that we will analyze. */
+	protected final int window;
 
 	/**
 	 * Constructor.

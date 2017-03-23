@@ -15,11 +15,7 @@
  */
 package teetime.stage.taskfarm.monitoring.extraction;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
@@ -32,7 +28,7 @@ import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
  */
 public abstract class AbstractMonitoringDataExporter {
 
-	private final static String NEWLINE = System.getProperty("line.separator");
+	private static final String NEWLINE = System.getProperty("line.separator");
 	/** monitoring service concerning pipes **/
 	private final PipeMonitoringService pipeMonitoringService;
 	/** monitoring service concerning a task farm **/

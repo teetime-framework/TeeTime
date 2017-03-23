@@ -40,19 +40,16 @@ public abstract class AbstractStage {
 
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
 
-	/** This stage's unique identifier */
-	private final String id;
 	/** This stage's unique logger */
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
 
+	/** This stage's unique identifier */
+	private final String id;
 	private AbstractExceptionListener exceptionListener;
-
 	/** The owning thread of this stage if this stage is directly executed by an {@link AbstractRunnableStage}, <code>null</code> otherwise. */
 	private Thread owningThread;
-
 	private boolean isActive;
-
 	private ConfigurationContext owningContext;
 
 	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
@@ -68,6 +65,24 @@ public abstract class AbstractStage {
 	/** used to detect termination */
 	// private final AtomicInteger numOpenedInputPorts = new AtomicInteger();
 	private int numOpenedInputPorts;
+
+	// used only for performance measuring
+	private long beforeExecuteTime;
+	private long lastTimeAfterExecute;
+
+	/**
+	 * A list which save a timestamp and an associated state (active or inactive).
+	 * This Information can be used for Bottleneck analysis.
+	 */
+	private final List<StateChange> states = new ArrayList<StateChange>();
+
+	private StateChange lastState = new StateChange(ExecutionState.INITIALIZED, System.nanoTime());
+
+	/**
+	 * Deactivated if performance logging does not reduce the performance. must be measured first. (28.10.2016)
+	 */
+	private final boolean performanceLoggingEnabled = false;
+	private long activeWaitingTime;
 
 	protected AbstractStage() {
 		this.id = this.createId();
@@ -110,10 +125,6 @@ public abstract class AbstractStage {
 	static void clearInstanceCounters() {
 		INSTANCES_COUNTER.clear();
 	}
-
-	// used only for performance measuring
-	private long beforeExecuteTime;
-	private long lastTimeAfterExecute;
 
 	public final void executeByFramework() throws TerminateException {
 		if (performanceLoggingEnabled) {
@@ -571,20 +582,6 @@ public abstract class AbstractStage {
 	// * <i>(Passed as parameter for performance reasons)</i>
 	// */
 	// public abstract void validateOutputPorts(List<InvalidPortConnection> invalidPortConnections);
-
-	/**
-	 * A list which save a timestamp and an associated state (active or inactive). This Information can be used for Bottleneck analysis.
-	 *
-	 */
-	private final List<StateChange> states = new ArrayList<StateChange>();
-
-	private StateChange lastState = new StateChange(ExecutionState.INITIALIZED, System.nanoTime());
-
-	/**
-	 * Deactivated if performance logging does not reduce the performance. must be measured first. (28.10.2016)
-	 */
-	private final boolean performanceLoggingEnabled = false;
-	private long activeWaitingTime;
 
 	List<StateChange> getStates() {
 		return states;

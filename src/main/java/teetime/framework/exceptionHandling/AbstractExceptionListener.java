@@ -31,17 +31,15 @@ import teetime.framework.AbstractStage;
  */
 public abstract class AbstractExceptionListener {
 
-	private final List<Exception> exceptionsList = new ArrayList<Exception>();
-	private final boolean logExceptions;
-
 	public enum FurtherExecution {
 		CONTINUE, TERMINATE
 	}
 
-	/**
-	 * The default logger, which can be used by all subclasses
-	 */
+	/** The default logger, which can be used by all subclasses */
 	protected final Logger logger; // NOPMD can't be static as it needs to be initialized in cstr
+
+	private final List<Exception> exceptionsList = new ArrayList<Exception>();
+	private final boolean logExceptions;
 
 	protected AbstractExceptionListener(final boolean shouldLogExceptions) {
 		this.logger = LoggerFactory.getLogger(this.getClass().getCanonicalName());

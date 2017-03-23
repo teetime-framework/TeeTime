@@ -15,20 +15,17 @@
  */
 package teetime.stage.taskfarm.monitoring.extraction;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.Scanner;
 
 import org.junit.Test;
 
 public class AbstractMonitoringDataExporterTest {
 
-	private final static String NEWLINE = System.getProperty("line.separator");
+	private static final String NEWLINE = System.getProperty("line.separator");
 
 	@Test
 	public void toStringTest() {

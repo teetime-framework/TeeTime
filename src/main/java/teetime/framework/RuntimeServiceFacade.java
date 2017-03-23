@@ -23,9 +23,9 @@ import teetime.framework.pipe.UnboundedSynchedPipe;
 
 public final class RuntimeServiceFacade {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeServiceFacade.class);
-
 	public static final RuntimeServiceFacade INSTANCE = new RuntimeServiceFacade();
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeServiceFacade.class);
 
 	private RuntimeServiceFacade() {
 		// singleton

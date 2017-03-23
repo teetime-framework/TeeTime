@@ -18,9 +18,7 @@ package teetime.stage.taskfarm.monitoring.extraction;
 import java.io.Writer;
 import java.util.List;
 
-import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
-import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
-import teetime.stage.taskfarm.monitoring.TaskFarmMonitoringData;
+import teetime.stage.taskfarm.monitoring.*;
 
 /**
  * Represents a data exporter for general task farm measurements.
@@ -43,7 +41,7 @@ public abstract class AbstractGeneralCSVExporter extends AbstractMonitoringDataE
 	}
 
 	@Override
-	final protected void extractToWriter(final Writer writer) {
+	protected final void extractToWriter(final Writer writer) {
 		List<TaskFarmMonitoringData> monitoredDataValues = this.getTaskFarmMonitoringService().getData();
 
 		writeCSVData(writer, monitoredDataValues);
@@ -51,7 +49,7 @@ public abstract class AbstractGeneralCSVExporter extends AbstractMonitoringDataE
 
 	/**
 	 * Write and format CSV data to the specified {@link Writer} using the monitoring measurements.
-	 * 
+	 *
 	 * @param writer
 	 *            writer to be written to
 	 * @param monitoredDataValues

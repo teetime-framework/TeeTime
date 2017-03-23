@@ -28,6 +28,17 @@ import teetime.stage.basic.merger.Merger;
 
 public class AbstractStageTest {
 
+	private Merger<Integer> arbitraryStage;
+	private InputPort<Integer> firstPort;
+	private InputPort<Integer> secondPort;
+
+	@Before
+	public void beforeSignalTesting() {
+		arbitraryStage = new Merger<Integer>();
+		firstPort = arbitraryStage.getNewInputPort();
+		secondPort = arbitraryStage.getNewInputPort();
+	}
+
 	@Test
 	public void testId() {
 		AbstractStage.clearInstanceCounters();
@@ -123,15 +134,6 @@ public class AbstractStageTest {
 		}
 	}
 
-	//
-	//
-	// Moved from MergerSignalTest
-	//
-	//
-	private Merger<Integer> arbitraryStage;
-	private InputPort<Integer> firstPort;
-	private InputPort<Integer> secondPort;
-
 	private static class ConfigToTestSignalHandling extends Configuration {
 
 		private final Sink<Integer> sink;
@@ -151,13 +153,6 @@ public class AbstractStageTest {
 		public Sink<Integer> getSink() {
 			return sink;
 		}
-	}
-
-	@Before
-	public void beforeSignalTesting() {
-		arbitraryStage = new Merger<Integer>();
-		firstPort = arbitraryStage.getNewInputPort();
-		secondPort = arbitraryStage.getNewInputPort();
 	}
 
 	private Sink<Integer> resetSinkStatus() {

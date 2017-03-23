@@ -204,9 +204,11 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
 				<configuration>
-					<showDeprecation>true</showDeprecation>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+					<showDeprecation>true</showDeprecation>
+					<showWarnings>true</showWarnings>
+					<compilerArgument>-Xlint</compilerArgument>
 				</configuration>
 			</plugin>
 
@@ -222,13 +224,13 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.0.2</version>
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<goals> -->
-<!-- 							<goal>test-jar</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
+				<!-- <executions> -->
+				<!-- <execution> -->
+				<!-- <goals> -->
+				<!-- <goal>test-jar</goal> -->
+				<!-- </goals> -->
+				<!-- </execution> -->
+				<!-- </executions> -->
 			</plugin>
 
 			<plugin>
@@ -295,23 +297,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>${checkstyle.version}</version>
-				<!-- <executions> -->
-				<!-- <execution> -->
-				<!-- <phase>test</phase> -->
-				<!-- <goals> -->
-				<!-- <goal>check</goal> -->
-				<!-- </goals> -->
-				<!-- <configuration> -->
-				<!-- <configLocation>${project.basedir}/conf/quality-config/cs-conf.xml</configLocation> -->
-				<!-- <includeTestSourceDirectory>true</includeTestSourceDirectory> -->
-				<!-- <encoding>UTF-8</encoding> -->
-				<!-- <consoleOutput>true</consoleOutput> -->
-				<!-- <failsOnError>false</failsOnError> -->
-				<!-- <failOnViolation>false</failOnViolation> -->
-				<!-- <linkXRef>false</linkXRef> -->
-				<!-- </configuration> -->
-				<!-- </execution> -->
-				<!-- </executions> -->
 				<executions>
 					<execution>
 						<id>validate</id>
@@ -321,7 +306,7 @@
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
 							<encoding>UTF-8</encoding>
 							<consoleOutput>true</consoleOutput>
-							<failsOnError>false</failsOnError>
+							<failsOnError>true</failsOnError>
 							<failOnViolation>false</failOnViolation>
 							<linkXRef>false</linkXRef>
 						</configuration>

@@ -22,7 +22,6 @@ import com.google.common.base.Throwables;
 
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.taskfarm.TaskFarmConfiguration;
-import teetime.stage.taskfarm.adaptation.history.TaskFarmHistoryService;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 import teetime.stage.taskfarm.exception.TaskFarmAnalysisException;
 
@@ -30,7 +29,7 @@ import teetime.stage.taskfarm.exception.TaskFarmAnalysisException;
  * Represents an interface to call a throughput algorithm
  * by using the throughput algorithm class name. Also provides
  * access to calculated throughput scores. Should be called
- * after a {@link TaskFarmHistoryService}
+ * after a {@link teetime.stage.taskfarm.adaptation.history.TaskFarmHistoryService}
  *
  * @author Christian Claus Wiechmann
  *
@@ -44,7 +43,7 @@ import teetime.stage.taskfarm.exception.TaskFarmAnalysisException;
 public class TaskFarmAnalysisService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/** path to the concrete throughput algorithms **/
-	private final static String THROUGHPUT_ALGORITHM_PATH = "teetime.stage.taskfarm.adaptation.analysis.algorithm";
+	private static final String THROUGHPUT_ALGORITHM_PATH = "teetime.stage.taskfarm.adaptation.analysis.algorithm";
 
 	/** configuration of the corresponding task farm **/
 	private final TaskFarmConfiguration<I, O, T> configuration;

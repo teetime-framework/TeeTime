@@ -15,8 +15,8 @@
  */
 package teetime.framework;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -30,12 +30,11 @@ public class AbstractPortTest {
 
 	private class NameingTestStage extends AbstractConsumerStage<Object> {
 
-		public OutputPort<Object> namedPort = createOutputPort("Testname");
+		public final OutputPort<Object> namedPort = createOutputPort("Testname");
 
 		@Override
 		protected void execute(final Object element) {
-			// TODO Auto-generated method stub
-
+			// do nothing
 		}
 
 	}

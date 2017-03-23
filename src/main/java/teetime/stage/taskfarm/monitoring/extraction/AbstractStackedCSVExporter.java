@@ -28,7 +28,7 @@ import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
  *
  * @author Christian Claus Wiechmann
  */
-abstract public class AbstractStackedCSVExporter extends AbstractMonitoringDataExporter {
+public abstract class AbstractStackedCSVExporter extends AbstractMonitoringDataExporter {
 
 	/**
 	 * Constructor.
@@ -43,7 +43,7 @@ abstract public class AbstractStackedCSVExporter extends AbstractMonitoringDataE
 	}
 
 	@Override
-	final protected void extractToWriter(final Writer writer) {
+	protected final void extractToWriter(final Writer writer) {
 		List<PipeMonitoringDataContainer> containers = getPipeMonitoringService().getData();
 		int maxNumberOfPipes = this.getPipeMonitoringService().getPipes().size();
 

@@ -26,12 +26,12 @@ abstract class AbstractRunnableStage implements Runnable {
 
 	private static final String TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION = "Terminating thread due to the following exception: ";
 
-	private final StopWatch stopWatch = new StopWatch();
-	private long durationsInNs;
-
 	protected final AbstractStage stage;
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
+
+	private final StopWatch stopWatch = new StopWatch();
+	private long durationsInNs;
 
 	protected AbstractRunnableStage(final AbstractStage stage) {
 		if (stage == null) {

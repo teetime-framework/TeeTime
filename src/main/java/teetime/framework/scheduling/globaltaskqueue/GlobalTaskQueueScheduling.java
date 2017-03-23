@@ -17,10 +17,6 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 	private static final ConfigurationFacade CONFIG_FACADE = ConfigurationFacade.INSTANCE;
 
-	private final Configuration configuration;
-
-	private final List<TeeTimeTaskQueueThread> threadPool = Collections.synchronizedList(new LinkedList<TeeTimeTaskQueueThread>());
-
 	private static final List<AbstractStage> infiniteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
 	private static final List<AbstractStage> finiteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
 
@@ -31,6 +27,9 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	private static final List<AbstractStage> stages = Collections.synchronizedList(new LinkedList<AbstractStage>());
 
 	private static final Map<AbstractStage, List<StageBuffer>> stageList = Collections.synchronizedMap(new HashMap<AbstractStage, List<StageBuffer>>());
+
+	private final Configuration configuration;
+	private final List<TeeTimeTaskQueueThread> threadPool = Collections.synchronizedList(new LinkedList<TeeTimeTaskQueueThread>());
 
 	GlobalTaskQueueScheduling(final Configuration configuration) {
 		this.configuration = configuration;

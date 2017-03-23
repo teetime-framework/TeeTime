@@ -5,9 +5,9 @@ import teetime.framework.OutputPort;
 
 public final class BoundedSynchedPipeFactory implements IPipeFactory {
 
-	private static final int DEFAULT_CAPACITY = 1024;
-
 	public static final BoundedSynchedPipeFactory INSTANCE = new BoundedSynchedPipeFactory();
+
+	private static final int DEFAULT_CAPACITY = 1024;
 
 	private BoundedSynchedPipeFactory() {}
 
