@@ -220,7 +220,7 @@ public abstract class AbstractStage {
 	 */
 	public void declarePassive() {
 		// TODO implement so that active/passive can be changed even at runtime
-		// requires: to check whether this stage may be declared passive (a merger, e.g., is not allowed to so in most cases)
+		// requires: to check whether this stage may be declared passive (a merger, e.g., is not allowed to do so in most cases)
 		throw new UnsupportedOperationException("Declaring a stage 'passive' at runtime is not yet supported.");
 		// this.isActive = false;
 	}

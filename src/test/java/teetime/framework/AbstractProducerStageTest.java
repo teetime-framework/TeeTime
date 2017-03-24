@@ -61,7 +61,7 @@ public class AbstractProducerStageTest {
 	 * Use a t/o since the execution may not block infinitely;
 	 * expected execution time is 500 ms, so the t/o should be sufficiently high
 	 */
-	@Test(timeout = 1000)
+	@Test(timeout = 2000)
 	public void shouldTerminateFiniteAndInfiniteProducer() {
 		MixedProducerConfig config = new MixedProducerConfig();
 		new Execution<>(config).executeBlocking();
@@ -71,7 +71,7 @@ public class AbstractProducerStageTest {
 	 * Use a t/o since the execution may not block infinitely;
 	 * expected execution time is 500 ms, so the t/o should be sufficiently high
 	 */
-	@Test(timeout = 1000)
+	@Test(timeout = 2000)
 	public void shouldTerminateTwoIndependentPipelines() {
 		TwoIndependentPipelinesConfig config = new TwoIndependentPipelinesConfig();
 		new Execution<>(config).executeBlocking();
