@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.pipe;
+package teetime.framework;
 
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
@@ -21,8 +21,6 @@ import java.util.concurrent.BlockingQueue;
 import org.jctools.queues.QueueFactory;
 import org.jctools.queues.spec.*;
 
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
 import teetime.framework.signal.*;
 import teetime.util.framework.concurrent.queue.PCBlockingQueue;
 import teetime.util.framework.concurrent.queue.putstrategy.PutStrategy;
@@ -36,7 +34,10 @@ import teetime.util.framework.concurrent.queue.takestrategy.TakeStrategy;
  *
  * @param <T>
  *            the type of the elements which this pipe should transfer.
+ *
+ * @deprecated since 3.0. Use {@link teetime.framework.pipe.AbstractSynchedPipe} instead.
  */
+@Deprecated
 public abstract class AbstractSynchedPipe<T> extends AbstractPipe<T> {
 
 	private final BlockingQueue<ISignal> signalQueue;

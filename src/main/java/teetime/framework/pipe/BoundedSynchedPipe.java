@@ -21,6 +21,13 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.strategy.SleepIfFullStrategy;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ * @param <T>
+ *            the type of the elements which this pipe should transfer.
+ */
 public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
 
 	private final SpscArrayQueue<Object> queue;
