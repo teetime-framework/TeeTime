@@ -16,7 +16,6 @@ src/main/resources/hugetext.txt
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
