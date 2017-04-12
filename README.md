@@ -1,7 +1,6 @@
 # TeeTime
 
-
-TeeTime is a Pipe-and-Filter framework for Java.
+This project contains the Java reference implementation of the Pipe-and-Filter framework TeeTime.
 
 Informations on how to use it can be found on http://teetime-framework.github.io.
 
