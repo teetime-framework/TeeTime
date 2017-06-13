@@ -20,7 +20,10 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import teetime.framework.*;
+import teetime.framework.Configuration;
+import teetime.framework.ConfigurationContext;
+import teetime.framework.StageFacade;
+import teetime.framework.StageState;
 import teetime.framework.pipe.DummyPipe;
 
 public class RunnableProducerStageTest {
@@ -35,7 +38,7 @@ public class RunnableProducerStageTest {
 		Thread thread = new Thread(runnable);
 
 		StageFacade.INSTANCE.setOwningThread(testStage, thread);
-		StageFacade.INSTANCE.setOwningContext(testStage, new ConfigurationContext(null));
+		StageFacade.INSTANCE.setOwningContext(testStage, new ConfigurationContext(new Configuration()));
 
 		thread.start();
 

@@ -15,11 +15,14 @@
  */
 package teetime.framework;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import teetime.framework.exceptionHandling.AbstractExceptionListenerFactory;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
-import teetime.framework.pipe.*;
+import teetime.framework.pipe.IPipe;
+import teetime.framework.pipe.IPipeFactory;
 
 /**
  * Represents a configuration of connected stages. Available to be extended.
@@ -42,9 +45,16 @@ public class Configuration extends CompositeStage {
 		this(new TerminatingExceptionListenerFactory());
 	}
 
+	// TODO use ctor with 2 arguments (problem: ConfigContext uses this)
 	public Configuration(final AbstractExceptionListenerFactory<?> factory) {
 		this.factory = factory;
 		this.context = new ConfigurationContext(this);
+		this.startStages = new HashSet<AbstractStage>();
+	}
+
+	public Configuration(final AbstractExceptionListenerFactory<?> factory, final ConfigurationContext context) {
+		this.factory = factory;
+		this.context = context;
 		this.startStages = new HashSet<AbstractStage>();
 	}
 

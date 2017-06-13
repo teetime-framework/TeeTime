@@ -28,6 +28,7 @@ class A4StageAttributeSetter {
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 	private static final ConfigurationFacade CONFIG_FACADE = ConfigurationFacade.INSTANCE;
 
+	// requires: factory and context
 	private final Configuration configuration;
 	private final Set<AbstractStage> threadableStages;
 

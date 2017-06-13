@@ -24,10 +24,14 @@ import teetime.framework.scheduling.pushpullmodel.PushPullScheduling;
  */
 public final class ConfigurationContext {
 
-	private final PushPullScheduling teeTimeService;
+	private final TeeTimeService teeTimeService;
 
 	public ConfigurationContext(final Configuration configuration) {
 		this.teeTimeService = new PushPullScheduling(configuration);
+	}
+
+	public ConfigurationContext(final TeeTimeService teeTimeService) {
+		this.teeTimeService = teeTimeService;
 	}
 
 	void validateServices() {
@@ -51,7 +55,8 @@ public final class ConfigurationContext {
 	}
 
 	void startStageAtRuntime(final AbstractStage stage) {
-		teeTimeService.startStageAtRuntime(stage);
+		// FIXME move method to TeeTimeService or reconsider Config and ConfigContext
+		((PushPullScheduling) teeTimeService).startStageAtRuntime(stage);
 	}
 
 }

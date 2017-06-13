@@ -44,6 +44,7 @@ public class PushPullScheduling implements TeeTimeService, ThreadListener {
 	private final SignalingCounter numRunningFiniteProducers = new SignalingCounter();
 	private final SignalingCounter numRunningConsumers = new SignalingCounter();
 
+	// requires: startstages, factory and context
 	public PushPullScheduling(final Configuration configuration) {
 		this.configuration = configuration;
 	}

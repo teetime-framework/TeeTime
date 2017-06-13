@@ -43,10 +43,18 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 
 	private static final Map<AbstractStage, List<StageBuffer>> stageList = Collections.synchronizedMap(new HashMap<AbstractStage, List<StageBuffer>>());
 
-	private final Configuration configuration;
+	private Configuration configuration;
 	private final List<TeeTimeTaskQueueThread> threadPool = Collections.synchronizedList(new LinkedList<TeeTimeTaskQueueThread>());
 
+	GlobalTaskQueueScheduling() {
+		// delay initialization of this.configuration
+	}
+
 	GlobalTaskQueueScheduling(final Configuration configuration) {
+		this.configuration = configuration;
+	}
+
+	public void setConfiguration(final Configuration configuration) {
 		this.configuration = configuration;
 	}
 
