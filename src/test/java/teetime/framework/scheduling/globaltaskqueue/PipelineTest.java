@@ -17,7 +17,8 @@ public class PipelineTest {
 
 	private static class GlobalTaskQueueConfig<T> extends Configuration {
 
-		private static final GlobalTaskQueueScheduling SCHEDULER = new GlobalTaskQueueScheduling();
+		private static final int NUM_THREADS = 4;
+		private static final GlobalTaskQueueScheduling SCHEDULER = new GlobalTaskQueueScheduling(NUM_THREADS);
 
 		public GlobalTaskQueueConfig(final T... elements) {
 			super(new TerminatingExceptionListenerFactory(), new ConfigurationContext(SCHEDULER));

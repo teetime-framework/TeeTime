@@ -17,17 +17,16 @@ package teetime.framework.scheduling.globaltaskqueue;
 
 import org.jctools.queues.MpmcArrayQueue;
 
-import teetime.framework.*;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.pipe.AbstractSynchedPipe;
-import teetime.framework.signal.ISignal;
-import teetime.framework.signal.TerminatingSignal;
 
 class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> {
 
 	private final MpmcArrayQueue<Object> queue;
 
-	private volatile int numElements = 0;
-	private volatile int tasksCreated = 0;
+	// private volatile int numElements = 0;
+	// private volatile int tasksCreated = 0;
 
 	public UnboundedMpMcSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
@@ -50,10 +49,10 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> {
 	@Override
 	public void reportNewElement() {
 		// Create task for new element
-		numElements++;
-		for (; numElements >= 1000; numElements -= 1000) {
-			createTask();
-		}
+		// numElements++;
+		// for (; numElements >= 1000; numElements -= 1000) {
+		// createTask();
+		// }
 	}
 
 	@Override
@@ -71,23 +70,12 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> {
 		return this.queue.poll();
 	}
 
-	@Override
-	public void sendSignal(final ISignal signal) {
-		if (signal instanceof TerminatingSignal) {
-			for (; numElements > 0; numElements -= 1000) {
-				createTask();
-			}
-		}
-
-		super.sendSignal(signal);
-	}
-
 	// TODO: Add interface for this to allow different pipes
-	private void createTask() {
-		tasksCreated++;
-		// TODO: Extract add to task queue in function. Remove also.
-		GlobalTaskQueueScheduling.getTaskQueue().add(cachedTargetStage); // FIXME use a listener; do not depend on a specific scheduling algo!
-	}
+	// private void createTask() {
+	// tasksCreated++;
+	// // TODO: Extract add to task queue in function. Remove also.
+	// GlobalTaskQueueScheduling.getTaskQueue().add(cachedTargetStage); // FIXME use a listener; do not depend on a specific scheduling algo!
+	// }
 
 	@Override
 	public int capacity() {

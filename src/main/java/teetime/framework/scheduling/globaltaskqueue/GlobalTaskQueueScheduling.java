@@ -32,25 +32,25 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 	private static final ConfigurationFacade CONFIG_FACADE = ConfigurationFacade.INSTANCE;
 
-	private static final List<AbstractStage> infiniteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
-	private static final List<AbstractStage> finiteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
+	private final List<AbstractStage> infiniteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
+	private final List<AbstractStage> finiteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
 
 	// TODO: Make unbounded or implement blocking for task creation
-	private static final MpmcArrayQueue<AbstractStage> taskQueue = new MpmcArrayQueue<AbstractStage>(100000);
-	private static final Map<AbstractStage, Boolean> runningStatefulStages = new HashMap<AbstractStage, Boolean>();
+	private final MpmcArrayQueue<AbstractStage> taskQueue = new MpmcArrayQueue<AbstractStage>(100000);
+	private final Map<AbstractStage, Boolean> runningStatefulStages = new HashMap<AbstractStage, Boolean>();
+	private final Map<AbstractStage, List<StageBuffer>> stageList = Collections.synchronizedMap(new HashMap<AbstractStage, List<StageBuffer>>());
 
-	private static final List<AbstractStage> stages = Collections.synchronizedList(new LinkedList<AbstractStage>());
-
-	private static final Map<AbstractStage, List<StageBuffer>> stageList = Collections.synchronizedMap(new HashMap<AbstractStage, List<StageBuffer>>());
-
+	private final int numThreads;
 	private Configuration configuration;
-	private final List<TeeTimeTaskQueueThread> threadPool = Collections.synchronizedList(new LinkedList<TeeTimeTaskQueueThread>());
+	private final List<TeeTimeTaskQueueThreadChw> threadPool = new ArrayList<>();
 
-	GlobalTaskQueueScheduling() {
+	GlobalTaskQueueScheduling(final int numThreads) {
+		this.numThreads = numThreads;
 		// delay initialization of this.configuration
 	}
 
-	GlobalTaskQueueScheduling(final Configuration configuration) {
+	GlobalTaskQueueScheduling(final int numThreads, final Configuration configuration) {
+		this.numThreads = numThreads;
 		this.configuration = configuration;
 	}
 
@@ -58,15 +58,20 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		this.configuration = configuration;
 	}
 
+	// 1. initializeServices
+	// 2. validateServices
+	// 3. executeConfiguration
+	// (4. abortConfigurationRun)
+	// 5. waitForConfigurationToTerminate
+
 	@Override
 	public void onInitialize() {
 		Collection<AbstractStage> startStages = CONFIG_FACADE.getStartStages(configuration);
 		initialize(startStages);
 
-		// TODO: Extract number of threads to configuration
 		// Add threads to thread pool and start
-		for (int i = 0; i < 3; i++) {
-			TeeTimeTaskQueueThread thread = new TeeTimeTaskQueueThread();
+		for (int i = 0; i < numThreads; i++) {
+			TeeTimeTaskQueueThreadChw thread = new TeeTimeTaskQueueThreadChw(this);
 			threadPool.add(thread);
 		}
 	}
@@ -119,18 +124,6 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		}
 	}
 
-	private void startThreads() {
-		for (AbstractStage finiteProducerStage : finiteProducerStages) {
-			finiteProducerStage.onSignal(new StartingSignal(), null);
-		}
-		for (AbstractStage infiniteProducerStage : infiniteProducerStages) {
-			infiniteProducerStage.onSignal(new StartingSignal(), null);
-		}
-		for (Thread thread : threadPool) {
-			thread.start();
-		}
-	}
-
 	@Override
 	public void onValidate() {
 		// // BETTER validate concurrently
@@ -145,23 +138,31 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 
 	@Override
 	public void onExecute() {
-		startThreads();
+		synchronized (finiteProducerStages) {
+			for (AbstractStage finiteProducerStage : finiteProducerStages) {
+				finiteProducerStage.onSignal(new StartingSignal(), null);
+			}
+		}
+		synchronized (infiniteProducerStages) {
+			for (AbstractStage infiniteProducerStage : infiniteProducerStages) {
+				infiniteProducerStage.onSignal(new StartingSignal(), null);
+			}
+		}
+		for (Thread thread : threadPool) {
+			thread.start();
+		}
 	}
 
 	@Override
 	public void onTerminate() {
-		abortThreads();
-	}
-
-	private void abortThreads() {
 		synchronized (finiteProducerStages) {
-			synchronized (infiniteProducerStages) {
-				for (AbstractStage finiteProducerStage : finiteProducerStages) {
-					STAGE_FACADE.abort(finiteProducerStage);
-				}
-				for (AbstractStage infiniteProducerStage : infiniteProducerStages) {
-					STAGE_FACADE.abort(infiniteProducerStage);
-				}
+			for (AbstractStage finiteProducerStage : finiteProducerStages) {
+				STAGE_FACADE.abort(finiteProducerStage);
+			}
+		}
+		synchronized (infiniteProducerStages) {
+			for (AbstractStage infiniteProducerStage : infiniteProducerStages) {
+				STAGE_FACADE.abort(infiniteProducerStage);
 			}
 		}
 	}
@@ -200,10 +201,6 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	// return exceptions;
 	// }
 
-	Set<AbstractStage> getThreadableStages() {
-		return new HashSet<AbstractStage>();
-	}
-
 	// @Override
 	// void merge(final ThreadService source) {
 	// threadableStages.putAll(source.getThreadableStages());
@@ -215,23 +212,23 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 
 	}
 
-	public static List<AbstractStage> getInfiniteProducerStages() {
+	public List<AbstractStage> getInfiniteProducerStages() {
 		return infiniteProducerStages;
 	}
 
-	public static List<AbstractStage> getFiniteProducerStages() {
+	public List<AbstractStage> getFiniteProducerStages() {
 		return finiteProducerStages;
 	}
 
-	public static MpmcArrayQueue<AbstractStage> getTaskQueue() {
+	public MpmcArrayQueue<AbstractStage> getTaskQueue() {
 		return taskQueue;
 	}
 
-	public static Map<AbstractStage, Boolean> getRunningStatefulStages() {
+	public Map<AbstractStage, Boolean> getRunningStatefulStages() {
 		return runningStatefulStages;
 	}
 
-	public static void setOwningThread(final AbstractStage stage) {
+	public void setOwningThread(final AbstractStage stage) {
 		STAGE_FACADE.setOwningThread(stage, Thread.currentThread());
 	}
 
@@ -240,7 +237,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		STAGE_FACADE.setExceptionHandler(stage, handler);
 	}
 
-	public static Map<AbstractStage, List<StageBuffer>> getStageList() {
+	public Map<AbstractStage, List<StageBuffer>> getStageList() {
 		return stageList;
 	}
 }

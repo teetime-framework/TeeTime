@@ -82,8 +82,13 @@ public final class StageFacade {
 	}
 
 	public void runStage(final AbstractStage stage, final int numOfExecutions) {
-		for (int i = 0; i < numOfExecutions; i++) {
-			stage.executeByFramework();
+		try {
+			for (int i = 0; i < numOfExecutions; i++) {
+				stage.executeByFramework();
+			}
+		} catch (TerminateException e) {
+			stage.abort();
+			stage.getOwningContext().abortConfigurationRun();
 		}
 	}
 

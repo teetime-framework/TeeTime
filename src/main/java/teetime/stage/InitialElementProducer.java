@@ -17,6 +17,7 @@ package teetime.stage;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
 import teetime.framework.AbstractProducerStage;
 
@@ -24,6 +25,7 @@ public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 
 	// #281: not Iterable<T> since it would forbid to pass java.nio.Path as single object
 	private final Collection<T> elements;
+	private final Iterator<T> iterator;
 
 	public InitialElementProducer(final T... elements) {
 		this(Arrays.asList(elements));
@@ -37,6 +39,7 @@ public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 			logger.warn("The given collection is empty! This stage will not output anything.");
 		}
 		this.elements = elements;
+		this.iterator = elements.iterator();
 	}
 
 	@Override
@@ -45,6 +48,15 @@ public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 			this.outputPort.send(element);
 		}
 		this.terminateStage();
+
+		// T element = iterator.next();
+		// this.outputPort.send(element);
 	}
+
+	// TODO uncomment for arbitrary scheduling approaches
+	// @Override
+	// protected boolean shouldTerminate() {
+	// return !iterator.hasNext();
+	// }
 
 }

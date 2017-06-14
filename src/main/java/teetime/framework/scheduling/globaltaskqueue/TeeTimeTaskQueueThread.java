@@ -30,23 +30,25 @@ public class TeeTimeTaskQueueThread extends Thread {
 
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 
+	private final GlobalTaskQueueScheduling scheduling;
+
+	public TeeTimeTaskQueueThread(final GlobalTaskQueueScheduling scheduling) {
+		this.scheduling = scheduling;
+	}
+
 	@Override
 	public void run() {
-		AbstractStage stage;
-		MpmcArrayQueue<AbstractStage> taskQueue = GlobalTaskQueueScheduling.getTaskQueue();
+		final MpmcArrayQueue<AbstractStage> taskQueue = scheduling.getTaskQueue();
+
 		while (true) {
-			stage = taskQueue.poll();
-			AbstractStage baseStage = stage;
+			AbstractStage stage = taskQueue.poll();
 			if (stage != null) {
-				executeStage(stage, baseStage);
+				executeStage(stage);
 			} else {
-				boolean finiteProducerStagesRunning = false;
-				for (AbstractStage finiteProducerStage : GlobalTaskQueueScheduling.getFiniteProducerStages()) {
-					GlobalTaskQueueScheduling.getTaskQueue().add(finiteProducerStage);
-					finiteProducerStagesRunning = true;
-				}
+				boolean finiteProducerStagesRunning = taskQueue.addAll(scheduling.getFiniteProducerStages());
+
 				if (finiteProducerStagesRunning) {
-					GlobalTaskQueueScheduling.getTaskQueue().addAll(GlobalTaskQueueScheduling.getInfiniteProducerStages());
+					taskQueue.addAll(scheduling.getInfiniteProducerStages());
 				} else {
 					break;
 				}
@@ -54,7 +56,9 @@ public class TeeTimeTaskQueueThread extends Thread {
 		}
 	}
 
-	private void executeStage(AbstractStage stage, final AbstractStage baseStage) {
+	private void executeStage(AbstractStage stage) {
+		final AbstractStage baseStage = stage;
+
 		if (stage instanceof ITaskQueueDuplicable) {
 			// TODO: Implement object pool for this.
 			stage = ((ITaskQueueDuplicable) stage).duplicate();
@@ -62,7 +66,7 @@ public class TeeTimeTaskQueueThread extends Thread {
 		// TODO: Handle TerminateException, NotEnoughInputException
 		synchronized (stage) {
 			if (isRunningStatefulStage(stage, baseStage)) {
-				GlobalTaskQueueScheduling.getTaskQueue().add(stage);
+				scheduling.getTaskQueue().add(stage);
 			} else if (baseStage.getCurrentState() != StageState.TERMINATED && !STAGE_FACADE.shouldBeTerminated(baseStage)) {
 				int numOfExecutions = 1;
 				StageBuffer stageBuffer = new StageBuffer(stage, false);
@@ -72,22 +76,23 @@ public class TeeTimeTaskQueueThread extends Thread {
 					numOfExecutions = getMaxNumberOfExecutions(baseStage);
 				} else {
 					// TODO: Move to function
-					GlobalTaskQueueScheduling.getRunningStatefulStages().put(stage, true);
+					scheduling.getRunningStatefulStages().put(stage, true);
 				}
-				try {
-					STAGE_FACADE.runStage(baseStage, numOfExecutions);
-				} catch (RuntimeException e) {
-					System.out.println("Stage with class: " + stage.getClass());
-					throw e;
-				}
+				// try {
+				STAGE_FACADE.runStage(baseStage, numOfExecutions);
+				// } catch (RuntimeException e) {
+				// System.out.println("Stage with class: " + stage.getClass());
+				// throw e;
+				// }
 				if (stage instanceof ITaskQueueDuplicable) {
 					putInCorrectPipes(baseStage, stageBuffer);
 				} else {
 					// TODO: Move to function
-					GlobalTaskQueueScheduling.getRunningStatefulStages().put(stage, false);
+					scheduling.getRunningStatefulStages().put(stage, false);
 				}
 			}
 		}
+
 		synchronized (baseStage) {
 			// if (baseStage.getCurrentState() != StageState.TERMINATED) {
 			// if (baseStage instanceof AbstractConsumerStage && baseStage.getCurrentState() != StageState.TERMINATING) {
@@ -102,8 +107,8 @@ public class TeeTimeTaskQueueThread extends Thread {
 
 	private boolean isRunningStatefulStage(final AbstractStage stage, final AbstractStage baseStage) {
 		return !(baseStage instanceof ITaskQueueDuplicable)
-				&& GlobalTaskQueueScheduling.getRunningStatefulStages().containsKey(stage)
-				&& GlobalTaskQueueScheduling.getRunningStatefulStages().get(stage);
+				&& scheduling.getRunningStatefulStages().containsKey(stage)
+				&& scheduling.getRunningStatefulStages().get(stage);
 	}
 
 	// TODO: Move to stages?
@@ -111,7 +116,7 @@ public class TeeTimeTaskQueueThread extends Thread {
 		synchronized (baseStage) {
 			int numberOfExecutions = getMaxNumberOfExecutions(baseStage);
 			replaceAndDrainToPipes(baseStage, stageBuffer, numberOfExecutions);
-			GlobalTaskQueueScheduling.getStageList().get(baseStage).add(stageBuffer);
+			scheduling.getStageList().get(baseStage).add(stageBuffer);
 			return numberOfExecutions;
 		}
 	}
@@ -134,7 +139,7 @@ public class TeeTimeTaskQueueThread extends Thread {
 			IPipe<?> oldPipe = outputPort.getPipe();
 			IPipe<?> newPipe = new TaskQueueBufferPipe(null, outputPort, oldPipe);
 		}
-		GlobalTaskQueueScheduling.getStageList().get(baseStage).add(stageBuffer);
+		scheduling.getStageList().get(baseStage).add(stageBuffer);
 	}
 
 	// TODO: Move to stages?
@@ -144,7 +149,7 @@ public class TeeTimeTaskQueueThread extends Thread {
 			int maxNumExecutions = 1000;
 			for (InputPort<?> inputPort : STAGE_FACADE.getInputPorts(stage)) {
 				int numExecutionsPort = inputPort.getPipe().size() / ((ITaskQueueInformation) stage).numElementsToDrainPerExecute(inputPort);
-				maxNumExecutions = numExecutionsPort < maxNumExecutions ? numExecutionsPort : maxNumExecutions;
+				maxNumExecutions = Math.min(numExecutionsPort, maxNumExecutions);
 			}
 
 			return maxNumExecutions;
@@ -156,8 +161,8 @@ public class TeeTimeTaskQueueThread extends Thread {
 		synchronized (baseStage) {
 			// Mark element as done so it can be added to the list later
 			stageBuffer.setDone(true);
-			while (!GlobalTaskQueueScheduling.getStageList().get(baseStage).isEmpty() && GlobalTaskQueueScheduling.getStageList().get(baseStage).get(0).isDone()) {
-				AbstractStage stage = GlobalTaskQueueScheduling.getStageList().get(baseStage).remove(0).getStage();
+			while (!scheduling.getStageList().get(baseStage).isEmpty() && scheduling.getStageList().get(baseStage).get(0).isDone()) {
+				AbstractStage stage = scheduling.getStageList().get(baseStage).remove(0).getStage();
 				for (OutputPort<?> outputPort : STAGE_FACADE.getOutputPorts(stage)) {
 					IPipe<?> pipe = outputPort.getPipe();
 					IPipe<?> replacedPipe = ((TaskQueueBufferPipe<?>) outputPort.getPipe()).getReplacedPipe();
@@ -174,7 +179,7 @@ public class TeeTimeTaskQueueThread extends Thread {
 
 	// private void checkForTerminationSignal(final AbstractConsumerStage baseStage) {
 	// synchronized (baseStage) {
-	// if (GlobalTaskQueueScheduling.getStageList().get(baseStage).size() != 0) {
+	// if (scheduling.getStageList().get(baseStage).size() != 0) {
 	// return;
 	// }
 	// for (InputPort<?> inputPort : STAGE_FACADE.getInputPorts(baseStage)) {
@@ -192,7 +197,7 @@ public class TeeTimeTaskQueueThread extends Thread {
 		synchronized (baseStage) {
 			if (baseStage instanceof AbstractProducerStage) {
 				baseStage.onSignal(new TerminatingSignal(), null);
-				GlobalTaskQueueScheduling.getFiniteProducerStages().remove(baseStage);
+				scheduling.getFiniteProducerStages().remove(baseStage);
 			} else if (baseStage instanceof AbstractConsumerStage) {
 				final ISignal signal = new TerminatingSignal(); // NOPMD DU caused by loop
 				for (InputPort<?> inputPort : STAGE_FACADE.getInputPorts(baseStage)) {

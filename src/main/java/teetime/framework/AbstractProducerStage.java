@@ -37,4 +37,14 @@ public abstract class AbstractProducerStage<O> extends AbstractStage {
 		return TerminationStrategy.BY_SELF_DECISION;
 	}
 
+	// TODO uncomment for arbitrary scheduling approaches
+	// @Override
+	// protected void execute() throws Exception {
+	// if (shouldTerminate()) {
+	// terminateStage();
+	// }
+	// }
+	//
+	// protected abstract boolean shouldTerminate();
+
 }
