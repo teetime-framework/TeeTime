@@ -3,6 +3,7 @@ package teetime.framework.scheduling.globaltaskqueue;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.framework.Configuration;
@@ -36,6 +37,7 @@ public class PipelineTest {
 	}
 
 	@Test
+	@Ignore
 	public void shouldExecutePipelineCorrectly() throws Exception {
 		String[] inputElements = { "a", "b", "c" };
 		GlobalTaskQueueConfig<String> config = new GlobalTaskQueueConfig<>(inputElements);
