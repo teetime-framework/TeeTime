@@ -116,11 +116,13 @@
 		<!--
 			Definition of additional targeted aspects (example for a single additional getter). 
 			Use these directives to create additional aspects without the need to actually implement them. -->
-		<concrete-aspect name="kieker.monitoring.probe.aspectj.flow.operationExecution.TargetedAspect" extends="kieker.monitoring.probe.aspectj.flow.operationExecution.AbstractAspect">
+		<!--<concrete-aspect name="kieker.monitoring.probe.aspectj.flow.operationExecution.TargetedAspect" extends="kieker.monitoring.probe.aspectj.flow.operationExecution.AbstractAspect">-->
+		<concrete-aspect name="MyTargetedAspect" extends="kieker.monitoring.probe.aspectj.beforeafter.onlycallee.AbstractAspect">
 <!-- 			<pointcut name="monitoredOperation" expression="execution(* teetime.framework.Stage+.execute())" /> -->
 <!-- 			<pointcut name="monitoredOperation" expression="call(* teetime.framework.OutputPort.send(..))" /> -->
-			<pointcut name="a" expression="execution(* teetime.stage.string.Tokenizer.execute(..))" />
-			<pointcut name="b" expression="execution(* teetime.stage.string.ToLowerCase.execute(..))" />
+			<!--<pointcut name="a" expression="execution(* teetime.stage.string.Tokenizer.execute(..))" />-->
+			<pointcut name="a" expression="execution(* teetime.stage.io.ByteArrayFileWriter.execute(..))" />
+			<pointcut name="b" expression="execution(* teetime.stage.ZipByteArray.execute(..))" />
 			<pointcut name="c" expression="execution(* teetime.stage.MappingCounter.execute(..))" />
 			<pointcut name="monitoredOperation" expression="a() || b() || c()" />
 		</concrete-aspect>

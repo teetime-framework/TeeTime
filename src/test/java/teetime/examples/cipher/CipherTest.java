@@ -23,9 +23,13 @@ import org.junit.Test;
 
 import com.google.common.io.Files;
 
-import teetime.framework.*;
-import teetime.stage.*;
+import teetime.framework.Configuration;
+import teetime.framework.ConfigurationBuilder;
+import teetime.framework.Execution;
+import teetime.stage.CipherStage;
 import teetime.stage.CipherStage.CipherMode;
+import teetime.stage.InitialElementProducer;
+import teetime.stage.ZipByteArray;
 import teetime.stage.ZipByteArray.ZipMode;
 import teetime.stage.io.ByteArrayFileWriter;
 import teetime.stage.io.File2ByteArray;
@@ -77,6 +81,12 @@ public class CipherTest {
 		execution.executeBlocking();
 
 		Assert.assertTrue(Files.equal(new File(INPUT_FILE), new File(OUTPUT_FILE)));
+	}
+
+	public static void main(final String[] args) {
+		final CipherConfiguration configuration = new CipherConfiguration(INPUT_FILE, OUTPUT_FILE, PASSWORD);
+		final Execution<CipherConfiguration> execution = new Execution<CipherConfiguration>(configuration);
+		execution.executeBlocking();
 	}
 
 }
