@@ -16,6 +16,7 @@
 package teetime.framework.scheduling.globaltaskqueue;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jctools.queues.MpmcArrayQueue;
 import org.slf4j.Logger;
@@ -26,14 +27,29 @@ import teetime.framework.Traverser.Direction;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.signal.StartingSignal;
 
+/**
+ * This scheduling approach maintains a global, synchronized task queue whose tasks are stages.
+ * Multiple threads access the task queue concurrently.
+ * A thread either removes the head stage of the queue or, if the queue is empty at that moment, performs busy waiting until a non-null head stage is available.
+ * At each moment in time, a particular stage is executed only by at most one thread.
+ * Thus, a stage in combination with the task queue acts as a lock for executing that stage.
+ *
+ * @author Christian Wulf (chw)
+ *
+ * @since 3.0
+ *
+ */
 public class GlobalTaskQueueScheduling implements TeeTimeService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalTaskQueueScheduling.class);
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 	private static final ConfigurationFacade CONFIG_FACADE = ConfigurationFacade.INSTANCE;
+	private static final int DEFAULT_NUM_OF_EXECUTIONS = 1;
 
 	private final List<AbstractStage> infiniteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
 	private final List<AbstractStage> finiteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
+	/** Contains all stages which have no predecessors or only terminated predecessors */
+	private final List<AbstractStage> frontStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
 
 	// TODO: Make unbounded or implement blocking for task creation
 	private final MpmcArrayQueue<AbstractStage> taskQueue = new MpmcArrayQueue<AbstractStage>(100000);
@@ -41,17 +57,20 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	private final Map<AbstractStage, List<StageBuffer>> stageList = Collections.synchronizedMap(new HashMap<AbstractStage, List<StageBuffer>>());
 
 	private final int numThreads;
+	private final int numOfExecutions;
 	private Configuration configuration;
 	private final List<TeeTimeTaskQueueThreadChw> threadPool = new ArrayList<>();
+	private final AtomicInteger numNonTerminatedFiniteStages = new AtomicInteger();
 
 	GlobalTaskQueueScheduling(final int numThreads) {
-		this.numThreads = numThreads;
+		this(numThreads, null, DEFAULT_NUM_OF_EXECUTIONS);
 		// delay initialization of this.configuration
 	}
 
-	GlobalTaskQueueScheduling(final int numThreads, final Configuration configuration) {
+	GlobalTaskQueueScheduling(final int numThreads, final Configuration configuration, final int numOfExecutions) {
 		this.numThreads = numThreads;
 		this.configuration = configuration;
+		this.numOfExecutions = numOfExecutions;
 	}
 
 	public void setConfiguration(final Configuration configuration) {
@@ -71,7 +90,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 
 		// Add threads to thread pool and start
 		for (int i = 0; i < numThreads; i++) {
-			TeeTimeTaskQueueThreadChw thread = new TeeTimeTaskQueueThreadChw(this);
+			TeeTimeTaskQueueThreadChw thread = new TeeTimeTaskQueueThreadChw(this, numOfExecutions);
 			threadPool.add(thread);
 		}
 	}
@@ -101,6 +120,9 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 			throw new IllegalStateException("1004 - No producer stages in this configuration.");
 		}
 
+		taskQueue.addAll(frontStages);
+		taskQueue.addAll(infiniteProducerStages);
+
 		TaskQueueA2PipeInstantiation pipeVisitor = new TaskQueueA2PipeInstantiation();
 		traversor = new Traverser(pipeVisitor, Direction.BOTH);
 		for (AbstractStage startStage : startStages) {
@@ -115,8 +137,11 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 			break;
 		case BY_SELF_DECISION:
 			finiteProducerStages.add(stage);
+			frontStages.add(stage);
+			numNonTerminatedFiniteStages.incrementAndGet();
 			break;
 		case BY_SIGNAL:
+			numNonTerminatedFiniteStages.incrementAndGet();
 			break;
 		default:
 			LOGGER.warn("Unknown termination strategy '{}' in stage {}", STAGE_FACADE.getTerminationStrategy(stage), stage);
@@ -170,7 +195,8 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	@Override
 	public void onFinish() {
 		try {
-			for (Thread thread : threadPool) {
+			for (TeeTimeTaskQueueThreadChw thread : threadPool) {
+				// thread.requestTermination();
 				thread.join();
 			}
 		} catch (InterruptedException e) {
@@ -220,6 +246,10 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		return finiteProducerStages;
 	}
 
+	public List<AbstractStage> getFrontStages() {
+		return frontStages;
+	}
+
 	public MpmcArrayQueue<AbstractStage> getTaskQueue() {
 		return taskQueue;
 	}
@@ -239,5 +269,9 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 
 	public Map<AbstractStage, List<StageBuffer>> getStageList() {
 		return stageList;
+	}
+
+	public AtomicInteger getNumNonTerminatedFiniteStages() {
+		return numNonTerminatedFiniteStages;
 	}
 }

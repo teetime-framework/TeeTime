@@ -84,6 +84,10 @@ public final class StageFacade {
 	public void runStage(final AbstractStage stage, final int numOfExecutions) {
 		try {
 			for (int i = 0; i < numOfExecutions; i++) {
+				// break if stage terminates before completing the amount of iterations indicated by numOfExecutions
+				if (stage.shouldBeTerminated()) {
+					break;
+				}
 				stage.executeByFramework();
 			}
 		} catch (TerminateException e) {

@@ -27,7 +27,9 @@ import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExec
 import teetime.framework.exceptionHandling.TerminateException;
 import teetime.framework.performancelogging.StateChange;
 import teetime.framework.performancelogging.StateChange.ExecutionState;
-import teetime.framework.signal.*;
+import teetime.framework.signal.ISignal;
+import teetime.framework.signal.StartingSignal;
+import teetime.framework.signal.TerminatingSignal;
 import teetime.framework.validation.InvalidPortConnection;
 import teetime.util.framework.port.PortList;
 import teetime.util.framework.port.PortRemovedListener;
@@ -316,8 +318,9 @@ public abstract class AbstractStage {
 	}
 
 	private void changeState(final StageState newState) {
+		final StageState oldState = currentState;
 		if (logger.isTraceEnabled()) {
-			logger.trace("Changing state from " + currentState + " to " + newState);
+			logger.trace("Changing state from " + oldState + " to " + newState);
 		}
 		currentState = newState;
 	}
