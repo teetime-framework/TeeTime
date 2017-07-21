@@ -92,6 +92,15 @@ public abstract class AbstractStage {
 	}
 
 	/**
+	 * @param logger
+	 *            a custom logger (potentially shared by multiple stage instances)
+	 */
+	protected AbstractStage(final Logger logger) {
+		this.id = this.createId();
+		this.logger = logger;
+	}
+
+	/**
 	 * @return an identifier that is unique among all stage instances. It is especially unique among all instances of the same stage type.
 	 */
 	public String getId() {
