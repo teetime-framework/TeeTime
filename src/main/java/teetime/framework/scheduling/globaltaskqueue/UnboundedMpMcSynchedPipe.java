@@ -15,6 +15,8 @@
  */
 package teetime.framework.scheduling.globaltaskqueue;
 
+import java.util.Queue;
+
 import org.jctools.queues.MpmcArrayQueue;
 
 import teetime.framework.InputPort;
@@ -23,7 +25,7 @@ import teetime.framework.pipe.AbstractSynchedPipe;
 
 class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> {
 
-	private final MpmcArrayQueue<Object> queue;
+	private final Queue<Object> queue;
 
 	// private volatile int numElements = 0;
 	// private volatile int tasksCreated = 0;
@@ -32,6 +34,7 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> {
 		super(sourcePort, targetPort);
 		// TODO: Make this really unbounded or implement capacity check earlier.
 		this.queue = new MpmcArrayQueue<Object>(100000);
+		// this.queue = new ConcurrentLinkedQueue<>();
 	}
 
 	@Override
@@ -79,7 +82,7 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> {
 
 	@Override
 	public int capacity() {
-		return queue.capacity();
+		return Integer.MAX_VALUE; // unbounded
 	}
 
 }

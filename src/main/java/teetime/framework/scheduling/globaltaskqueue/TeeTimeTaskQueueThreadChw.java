@@ -16,6 +16,7 @@
 package teetime.framework.scheduling.globaltaskqueue;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 import org.jctools.queues.MpmcArrayQueue;
 
@@ -29,37 +30,37 @@ public class TeeTimeTaskQueueThreadChw extends Thread {
 
 	private final GlobalTaskQueueScheduling scheduling;
 	private final int numOfExecutions;
-	private final MpmcArrayQueue<AbstractStage> taskQueue;
 
 	public TeeTimeTaskQueueThreadChw(final GlobalTaskQueueScheduling scheduling, final int numOfExecutions) {
 		super();
 		this.scheduling = scheduling;
 		this.numOfExecutions = numOfExecutions;
-		this.taskQueue = scheduling.getTaskQueue();
 	}
 
 	@Override
 	public void run() {
+		final MpmcArrayQueue<AbstractStage> taskQueue = scheduling.getTaskQueue();
+		final ConcurrentMap<AbstractStage, Thread> executingStages = scheduling.getExecutingStages();
+
 		// TODO implement: run as long as there is at least one stage which has not been terminated yet
 		while (scheduling.getNumNonTerminatedFiniteStages().get() > 0) {
-			AbstractStage stage = taskQueue.poll();
+			AbstractStage stage = taskQueue.peek();
+			// (only) read next stage with work
+			if (null != stage) {
+				// TODO possible alternative implementation: AbstractStage.getExecutingThread().compareAndSet()
+				Thread executingThread = executingStages.putIfAbsent(stage, this);
+				// ensure no other thread is executing the stage at this moment (this is our lock condition)
+				if (executingThread == this) {
+					try {
+						// fetch next stage with work
+						stage = taskQueue.poll();
 
-			if (stage != null) {
-				executeStage(stage);
-			} else {
-				// for (AbstractStage frontStage : scheduling.getFrontStages()) {
-				// if (!STAGE_FACADE.shouldBeTerminated(frontStage) && frontStage.getCurrentState() != StageState.TERMINATED) {
-				// taskQueue.add(frontStage);
-				// }
-				// }
-
-				// boolean finiteProducerStagesRunning = taskQueue.addAll(scheduling.getFrontStages());
-				//
-				// if (finiteProducerStagesRunning) {
-				// taskQueue.addAll(scheduling.getInfiniteProducerStages());
-				// } else {
-				// // break;
-				// }
+						executeStage(stage);
+						refillTaskQueue(stage, taskQueue);
+					} finally {
+						executingStages.remove(stage); // release lock
+					}
+				}
 			}
 		}
 	}
@@ -79,20 +80,16 @@ public class TeeTimeTaskQueueThreadChw extends Thread {
 
 			passFrontStatusToSuccessorStages(stage);
 		}
+	}
 
-		// Add all successor stages so that they will be executed afterwards.
-		// TODO evaluate whether adding workless stages is faster than adding stages within pipes.
-		List<OutputPort<?>> outputPorts = STAGE_FACADE.getOutputPorts(stage);
-		for (OutputPort<?> outputPort : outputPorts) {
-			AbstractStage targetStage = outputPort.getPipe().getTargetPort().getOwningStage();
-			if (!STAGE_FACADE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
-				taskQueue.add(targetStage);
+	private void afterStageExecution(final AbstractStage stage) {
+		if (stage instanceof AbstractProducerStage) {
+			stage.onSignal(new TerminatingSignal(), null);
+		} else if (stage instanceof AbstractConsumerStage) {
+			final ISignal signal = new TerminatingSignal(); // NOPMD DU caused by loop
+			for (InputPort<?> inputPort : STAGE_FACADE.getInputPorts(stage)) {
+				stage.onSignal(signal, inputPort);
 			}
-		}
-
-		// re-add stage to task queue if it is a front stage (a terminated front stage would have been already removed at this point)
-		if (scheduling.getFrontStages().contains(stage)) {
-			taskQueue.add(stage);
 		}
 	}
 
@@ -111,14 +108,20 @@ public class TeeTimeTaskQueueThreadChw extends Thread {
 		}
 	}
 
-	private void afterStageExecution(final AbstractStage stage) {
-		if (stage instanceof AbstractProducerStage) {
-			stage.onSignal(new TerminatingSignal(), null);
-		} else if (stage instanceof AbstractConsumerStage) {
-			final ISignal signal = new TerminatingSignal(); // NOPMD DU caused by loop
-			for (InputPort<?> inputPort : STAGE_FACADE.getInputPorts(stage)) {
-				stage.onSignal(signal, inputPort);
+	private void refillTaskQueue(final AbstractStage stage, final MpmcArrayQueue<AbstractStage> taskQueue) {
+		// Add all successor stages so that they will be executed afterwards.
+		// TODO evaluate whether adding workless stages is faster than adding stages within pipes.
+		List<OutputPort<?>> outputPorts = STAGE_FACADE.getOutputPorts(stage);
+		for (OutputPort<?> outputPort : outputPorts) {
+			AbstractStage targetStage = outputPort.getPipe().getTargetPort().getOwningStage();
+			if (!STAGE_FACADE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
+				taskQueue.add(targetStage);
 			}
+		}
+
+		// re-add stage to task queue if it is a front stage (a terminated front stage would have been already removed at this point)
+		if (scheduling.getFrontStages().contains(stage)) {
+			taskQueue.add(stage);
 		}
 	}
 }

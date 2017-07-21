@@ -16,6 +16,8 @@
 package teetime.framework.scheduling.globaltaskqueue;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jctools.queues.MpmcArrayQueue;
@@ -46,21 +48,37 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	private static final ConfigurationFacade CONFIG_FACADE = ConfigurationFacade.INSTANCE;
 	private static final int DEFAULT_NUM_OF_EXECUTIONS = 1;
 
+	/** (synchronized) */
 	private final List<AbstractStage> infiniteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
+	/** (synchronized) */
 	private final List<AbstractStage> finiteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
-	/** Contains all stages which have no predecessors or only terminated predecessors */
+	/** Contains all stages which have no predecessors or only terminated predecessors (synchronized) */
 	private final List<AbstractStage> frontStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
 
 	// TODO: Make unbounded or implement blocking for task creation
+	/**
+	 * Holds all stages which should be executed next. A stage instance can occur more than once in this queue.
+	 * <br>
+	 * <i>(synchronized queue)</i>
+	 */
 	private final MpmcArrayQueue<AbstractStage> taskQueue = new MpmcArrayQueue<AbstractStage>(100000);
+	/** (not synchronized) */
 	private final Map<AbstractStage, Boolean> runningStatefulStages = new HashMap<AbstractStage, Boolean>();
+	/** (synchronized) */
 	private final Map<AbstractStage, List<StageBuffer>> stageList = Collections.synchronizedMap(new HashMap<AbstractStage, List<StageBuffer>>());
 
 	private final int numThreads;
 	private final int numOfExecutions;
 	private Configuration configuration;
+	/** Holds all threads which are used to execute the stages */
 	private final List<TeeTimeTaskQueueThreadChw> threadPool = new ArrayList<>();
 	private final AtomicInteger numNonTerminatedFiniteStages = new AtomicInteger();
+	/**
+	 * Holds all stages that are currently executed by a thread.
+	 * <br>
+	 * <i>(synchronized map)</i>
+	 */
+	private final ConcurrentMap<AbstractStage, Thread> executingStages = new ConcurrentHashMap<>();
 
 	GlobalTaskQueueScheduling(final int numThreads) {
 		this(numThreads, null, DEFAULT_NUM_OF_EXECUTIONS);
@@ -113,6 +131,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 			categorizeStage(stage);
 			setOwningThread(stage);
 			setExceptionListener(stage);
+			setConfigurationContext(stage);
 			stageList.put(stage, new LinkedList<StageBuffer>());
 		}
 
@@ -205,6 +224,14 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 			for (Thread thread : threadPool) {
 				thread.interrupt();
 			}
+
+			for (TeeTimeTaskQueueThreadChw thread : threadPool) {
+				try {
+					thread.join();
+				} catch (InterruptedException e1) {
+					// ignore
+				}
+			}
 			LOGGER.debug("infiniteProducerThreads have been terminated");
 		}
 
@@ -233,9 +260,8 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	// runnableCounter.inc(source.runnableCounter);
 	// }
 
-	// Nothing has to be done here
-	void startStageAtRuntime(final AbstractStage stage) {
-
+	/* default */void startStageAtRuntime(final AbstractStage stage) {
+		// Nothing has to be done here
 	}
 
 	public List<AbstractStage> getInfiniteProducerStages() {
@@ -267,11 +293,20 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		STAGE_FACADE.setExceptionHandler(stage, handler);
 	}
 
+	private void setConfigurationContext(final AbstractStage stage) {
+		ConfigurationContext context = CONFIG_FACADE.getContext(configuration);
+		STAGE_FACADE.setOwningContext(stage, context);
+	}
+
 	public Map<AbstractStage, List<StageBuffer>> getStageList() {
 		return stageList;
 	}
 
-	public AtomicInteger getNumNonTerminatedFiniteStages() {
+	AtomicInteger getNumNonTerminatedFiniteStages() {
 		return numNonTerminatedFiniteStages;
+	}
+
+	ConcurrentMap<AbstractStage, Thread> getExecutingStages() {
+		return executingStages;
 	}
 }

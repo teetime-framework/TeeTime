@@ -67,6 +67,15 @@ public class PipelineTest {
 
 		List<String> processedElements = config.getSink().getElements();
 		List<String> expectedElements = Arrays.asList("a", "b", "c");
+		// assertThat(processedElements.get(0), is(nullValue()));
+		// assertThat(processedElements.get(0), is("null"));
+		// assertThat(processedElements.get(0), is(equalTo("a")));
 		assertThat(processedElements, is(equalTo(expectedElements)));
+
+		// FIXME processedElements can still return [null (not "null"), a, c] or [b, c, a] in:
+		// commit dc4b2180d809e9ee48b50dfa5e6e013d2ef88bb9
+		// Committer: Christian Wulf <chw@informatik.uni-kiel.de> 2017-07-17 10:56:21
+		// => problem found so far: CollectorSink is executed by more than one thread simultaneously
+		// hypothesis: stage is added to the task queue multiple times
 	}
 }
