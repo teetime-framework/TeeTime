@@ -15,6 +15,8 @@
  */
 package teetime.framework;
 
+import org.slf4j.Logger;
+
 /**
  * The <code>ProducerStage</code> produces at least one element at each execution.<br>
  *
@@ -27,6 +29,18 @@ package teetime.framework;
 public abstract class AbstractProducerStage<O> extends AbstractStage {
 
 	protected final OutputPort<O> outputPort = this.createOutputPort();
+
+	public AbstractProducerStage() {
+		super();
+	}
+
+	/**
+	 * @param logger
+	 *            a custom logger (potentially shared by multiple stage instances)
+	 */
+	public AbstractProducerStage(final Logger logger) {
+		super(logger);
+	}
 
 	public final OutputPort<O> getOutputPort() {
 		return this.outputPort;

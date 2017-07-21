@@ -15,12 +15,26 @@
  */
 package teetime.framework;
 
+import org.slf4j.Logger;
+
 public abstract class AbstractConsumerStage<I> extends AbstractStage {
 
 	// Creation of this input port requires to use super and null for both parameters
 	// in order to invoke the original AbstractStage.createInputPort() instead of
 	// the one overridden in this stage.
 	protected final InputPort<I> inputPort = super.createInputPort(null, null);
+
+	public AbstractConsumerStage() {
+		super();
+	}
+
+	/**
+	 * @param logger
+	 *            a custom logger (potentially shared by multiple stage instances)
+	 */
+	public AbstractConsumerStage(final Logger logger) {
+		super(logger);
+	}
 
 	public final InputPort<I> getInputPort() {
 		return this.inputPort;
