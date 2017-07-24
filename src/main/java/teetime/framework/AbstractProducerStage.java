@@ -46,6 +46,12 @@ public abstract class AbstractProducerStage<O> extends AbstractStage {
 		return this.outputPort;
 	}
 
+	/**
+	 * @deprecated since 3.0.
+	 *             We will completely remove framework-backed support for infinite producers since it has never worked correctly in all (corner) cases.
+	 *             Instead, please use finite producers and implement an appropriate termination condition by your own.
+	 */
+	@Deprecated
 	@Override
 	public TerminationStrategy getTerminationStrategy() {
 		return TerminationStrategy.BY_SELF_DECISION;

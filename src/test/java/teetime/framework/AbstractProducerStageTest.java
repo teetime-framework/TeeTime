@@ -15,6 +15,7 @@
  */
 package teetime.framework;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.stage.basic.Sink;
@@ -77,6 +78,7 @@ public class AbstractProducerStageTest {
 	 * expected execution time is 500 ms, so the t/o should be sufficiently high
 	 */
 	@Test(timeout = 5000)
+	@Ignore("Infinite producer cannot be handled by the framework correctly in all (corner) cases.")
 	public void shouldTerminateFiniteAndInfiniteProducer() {
 		MixedProducerConfig config = new MixedProducerConfig();
 		new Execution<>(config).executeBlocking();
@@ -87,6 +89,7 @@ public class AbstractProducerStageTest {
 	 * expected execution time is 500 ms, so the t/o should be sufficiently high
 	 */
 	@Test(timeout = 5000)
+	@Ignore("Infinite producer cannot be handled by the framework correctly in all (corner) cases.")
 	public void shouldTerminateTwoIndependentPipelines() {
 		TwoIndependentPipelinesConfig config = new TwoIndependentPipelinesConfig();
 		new Execution<>(config).executeBlocking();

@@ -554,6 +554,14 @@ public abstract class AbstractStage {
 		return (getCurrentState() == StageState.TERMINATING);
 	}
 
+	/**
+	 * @deprecated since 3.0.
+	 *             We will completely remove framework-backed support for infinite producers since it has never worked correctly in all (corner) cases.
+	 *             Instead, please use finite producers and implement an appropriate termination condition by your own.
+	 *
+	 * @return the termination strategy of this stage
+	 */
+	@Deprecated
 	protected TerminationStrategy getTerminationStrategy() {
 		return TerminationStrategy.BY_SIGNAL;
 	}
