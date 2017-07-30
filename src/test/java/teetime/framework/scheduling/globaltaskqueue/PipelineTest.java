@@ -27,10 +27,8 @@ import teetime.framework.Configuration;
 import teetime.framework.ConfigurationContext;
 import teetime.framework.Execution;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
-import teetime.stage.CollectorSink;
-import teetime.stage.Counter;
-import teetime.stage.InitialElementProducer;
-import teetime.stage.NoopFilter;
+import teetime.stage.*;
+import teetime.util.ConstructorClosure;
 
 public class PipelineTest {
 
@@ -60,8 +58,42 @@ public class PipelineTest {
 		}
 	}
 
+	private static class ManyElementsGlobalTaskQueueConfig extends Configuration {
+
+		private static final int NUM_THREADS = 4;
+		private static final GlobalTaskQueueScheduling SCHEDULER = new GlobalTaskQueueScheduling(NUM_THREADS);
+		private CollectorSink<Integer> sink;
+
+		public ManyElementsGlobalTaskQueueConfig(final int numInputObjects) {
+			super(new TerminatingExceptionListenerFactory(), new ConfigurationContext(SCHEDULER));
+			SCHEDULER.setConfiguration(this);
+			build(numInputObjects);
+		}
+
+		private void build(final int numInputObjects) {
+			ObjectProducer<Integer> producer = new ObjectProducer<>(numInputObjects, new ConstructorClosure<Integer>() {
+				private int counter;
+
+				@Override
+				public Integer create() {
+					return counter++;
+				}
+			});
+			Counter<Integer> counter = new Counter<>();
+			// StatelessCounter<T> counter = new StatelessCounter<>();
+			// NoopFilter<Integer> noopFilter = new NoopFilter<>();
+			sink = new CollectorSink<>();
+			from(producer).to(counter).end(sink);
+			// from(producer).to(counter).to(noopFilter).end(sink);
+		}
+
+		public CollectorSink<Integer> getSink() {
+			return sink;
+		}
+	}
+
 	@Test
-	public void shouldExecutePipelineCorrectly() throws Exception {
+	public void shouldExecutePipelineCorrectlyFewElements() throws Exception {
 		String[] inputElements = { "a", "b", "c" };
 		GlobalTaskQueueConfig<String> config = new GlobalTaskQueueConfig<>(inputElements);
 		Execution<GlobalTaskQueueConfig<String>> execution = new Execution<>(config);
@@ -73,5 +105,19 @@ public class PipelineTest {
 		// assertThat(processedElements.get(0), is("null"));
 		// assertThat(processedElements.get(0), is(equalTo("a")));
 		assertThat(processedElements, is(equalTo(expectedElements)));
+	}
+
+	@Test
+	public void shouldExecutePipelineCorrectlyManyElements() throws Exception {
+		int numElements = 1_000;
+		ManyElementsGlobalTaskQueueConfig config = new ManyElementsGlobalTaskQueueConfig(numElements);
+		Execution<ManyElementsGlobalTaskQueueConfig> execution = new Execution<>(config);
+		execution.executeBlocking();
+
+		List<Integer> processedElements = config.getSink().getElements();
+		// for (int i = 0; i < numElements; i++) {
+		// assertThat(processedElements.get(i), is(i));
+		// }
+		assertThat(processedElements, hasSize(numElements));
 	}
 }
