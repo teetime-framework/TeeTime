@@ -16,11 +16,8 @@
 package teetime.framework.scheduling.globaltaskqueue;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.jctools.queues.MpmcArrayQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +58,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	 * <br>
 	 * <i>(synchronized queue)</i>
 	 */
-	private final MpmcArrayQueue<AbstractStage> taskQueue = new MpmcArrayQueue<AbstractStage>(100000);
+	private TaskQueue taskQueue;
 	/** (not synchronized) */
 	private final Map<AbstractStage, Boolean> runningStatefulStages = new HashMap<AbstractStage, Boolean>();
 	/** (synchronized) */
@@ -73,12 +70,6 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	/** Holds all threads which are used to execute the stages */
 	private final List<TeeTimeTaskQueueThreadChw> threadPool = new ArrayList<>();
 	private final AtomicInteger numNonTerminatedFiniteStages = new AtomicInteger();
-	/**
-	 * Holds all stages that are currently executed by a thread.
-	 * <br>
-	 * <i>(synchronized map)</i>
-	 */
-	private final ConcurrentMap<AbstractStage, Thread> executingStages = new ConcurrentHashMap<>();
 
 	GlobalTaskQueueScheduling(final int numThreads) {
 		this(numThreads, null, DEFAULT_NUM_OF_EXECUTIONS);
@@ -139,9 +130,26 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 			throw new IllegalStateException("1004 - No producer stages in this configuration.");
 		}
 
-		taskQueue.addAll(frontStages);
-		taskQueue.addAll(infiniteProducerStages);
+		// compute level index for each stage
+		LevelIndexVisitor levelIndexVisitor = new LevelIndexVisitor();
+		traversor = new Traverser(levelIndexVisitor, Direction.FORWARD);
+		for (AbstractStage startStage : finiteProducerStages) {
+			traversor.traverse(startStage);
+		}
+		for (AbstractStage startStage : infiniteProducerStages) {
+			traversor.traverse(startStage);
+		}
 
+		taskQueue = new TaskQueue(levelIndexVisitor.getMaxLevelIndex() + 1);
+		for (AbstractStage stage : allStages) {
+			taskQueue.scheduleStage(stage);
+		}
+
+		// define front stages
+		taskQueue.scheduleStages(frontStages);
+		taskQueue.scheduleStages(infiniteProducerStages);
+
+		// instantiate pipes
 		TaskQueueA2PipeInstantiation pipeVisitor = new TaskQueueA2PipeInstantiation();
 		traversor = new Traverser(pipeVisitor, Direction.BOTH);
 		for (AbstractStage startStage : startStages) {
@@ -276,7 +284,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		return frontStages;
 	}
 
-	public MpmcArrayQueue<AbstractStage> getTaskQueue() {
+	public TaskQueue getTaskQueue() {
 		return taskQueue;
 	}
 
@@ -302,11 +310,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		return stageList;
 	}
 
-	AtomicInteger getNumNonTerminatedFiniteStages() {
+	/* default */ AtomicInteger getNumNonTerminatedFiniteStages() {
 		return numNonTerminatedFiniteStages;
-	}
-
-	ConcurrentMap<AbstractStage, Thread> getExecutingStages() {
-		return executingStages;
 	}
 }

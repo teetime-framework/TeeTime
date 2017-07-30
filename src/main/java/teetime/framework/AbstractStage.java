@@ -63,6 +63,12 @@ public abstract class AbstractStage {
 	private boolean calledOnTerminating = false;
 	private boolean calledOnStarting = false;
 
+	// for GlobalTaskQueueScheduling only
+	/** producers start with a level index of 0. All other stages have an index > 0. */
+	private int levelIndex = 0;
+	// for GlobalTaskQueueScheduling only
+	private boolean beingExecuted;
+
 	private volatile StageState currentState = StageState.CREATED; // TODO remove volatile since the state is never set by another thread anymore
 	/** used to detect termination */
 	// private final AtomicInteger numOpenedInputPorts = new AtomicInteger();
@@ -209,6 +215,22 @@ public abstract class AbstractStage {
 
 	public boolean isActive() {
 		return isActive;
+	}
+
+	public void setLevelIndex(final int levelIndex) {
+		this.levelIndex = levelIndex;
+	}
+
+	public int getLevelIndex() {
+		return levelIndex;
+	}
+
+	public boolean isBeingExecuted() {
+		return beingExecuted;
+	}
+
+	public void setBeingExecuted(final boolean beingExecuted) {
+		this.beingExecuted = beingExecuted;
 	}
 
 	/**

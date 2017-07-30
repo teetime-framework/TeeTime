@@ -16,9 +16,6 @@
 package teetime.framework.scheduling.globaltaskqueue;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentMap;
-
-import org.jctools.queues.MpmcArrayQueue;
 
 import teetime.framework.*;
 import teetime.framework.signal.ISignal;
@@ -39,27 +36,17 @@ public class TeeTimeTaskQueueThreadChw extends Thread {
 
 	@Override
 	public void run() {
-		final MpmcArrayQueue<AbstractStage> taskQueue = scheduling.getTaskQueue();
-		final ConcurrentMap<AbstractStage, Thread> executingStages = scheduling.getExecutingStages();
+		final TaskQueue taskQueue = scheduling.getTaskQueue(); // NOPMD (DU anomaly)
 
 		// TODO implement: run as long as there is at least one stage which has not been terminated yet
 		while (scheduling.getNumNonTerminatedFiniteStages().get() > 0) {
-			AbstractStage stage = taskQueue.peek();
-			// (only) read next stage with work
-			if (null != stage) {
-				// TODO possible alternative implementation: AbstractStage.getExecutingThread().compareAndSet()
-				Thread executingThread = executingStages.putIfAbsent(stage, this);
-				// ensure no other thread is executing the stage at this moment (this is our lock condition)
-				if (executingThread == this) {
-					try {
-						// fetch next stage with work
-						stage = taskQueue.poll();
-
-						executeStage(stage);
-						refillTaskQueue(stage, taskQueue);
-					} finally {
-						executingStages.remove(stage); // release lock
-					}
+			AbstractStage stage = taskQueue.removeNextStage();
+			if (stage != null) {
+				try {
+					executeStage(stage);
+					refillTaskQueue(stage, taskQueue);
+				} finally {
+					taskQueue.releaseStage(stage); // release lock (FIXME bad API)
 				}
 			}
 		}
@@ -77,6 +64,7 @@ public class TeeTimeTaskQueueThreadChw extends Thread {
 			scheduling.getNumNonTerminatedFiniteStages().decrementAndGet();
 
 			// FIXME so far, it is unclear to me when to re-add infinite producers
+			// => solution: remove the concept of infinite producers
 
 			passFrontStatusToSuccessorStages(stage);
 		}
@@ -108,20 +96,20 @@ public class TeeTimeTaskQueueThreadChw extends Thread {
 		}
 	}
 
-	private void refillTaskQueue(final AbstractStage stage, final MpmcArrayQueue<AbstractStage> taskQueue) {
+	private void refillTaskQueue(final AbstractStage stage, final TaskQueue taskQueue) {
 		// Add all successor stages so that they will be executed afterwards.
 		// TODO evaluate whether adding workless stages is faster than adding stages within pipes.
 		List<OutputPort<?>> outputPorts = STAGE_FACADE.getOutputPorts(stage);
 		for (OutputPort<?> outputPort : outputPorts) {
 			AbstractStage targetStage = outputPort.getPipe().getTargetPort().getOwningStage();
 			if (!STAGE_FACADE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
-				taskQueue.add(targetStage);
+				taskQueue.scheduleStage(targetStage);
 			}
 		}
 
 		// re-add stage to task queue if it is a front stage (a terminated front stage would have been already removed at this point)
 		if (scheduling.getFrontStages().contains(stage)) {
-			taskQueue.add(stage);
+			taskQueue.scheduleStage(stage);
 		}
 	}
 }

@@ -99,6 +99,7 @@ public class Traverser {
 
 		if (behavior == VisitorBehavior.CONTINUE) {
 			AbstractPort<?> nextPort = (direction == Direction.FORWARD) ? port.getPipe().getTargetPort() : port.getPipe().getSourcePort();
+
 			traverse(nextPort.getOwningStage()); // recursive call
 		}
 	}
