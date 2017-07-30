@@ -62,7 +62,7 @@ class TaskQueue {
 				// TODO possible alternative implementation: AbstractStage.getExecutingThread().compareAndSet()
 				Thread executingThread = executingStages.putIfAbsent(stage, thisThread);
 				// ensure no other thread is executing the stage at this moment (this is our lock condition)
-				if (executingThread == thisThread) { // NOPMD (== is correct)
+				if (stage.isStateless() || executingThread == thisThread) { // NOPMD (== is correct)
 					return stages.poll(); // NOPMD (two returns in method)
 				}
 			}

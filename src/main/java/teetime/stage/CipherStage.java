@@ -28,7 +28,7 @@ import teetime.stage.basic.AbstractFilter;
 
 public final class CipherStage extends AbstractFilter<byte[]> {
 
-	private Cipher cipher;
+	private final Cipher cipher;
 
 	public enum CipherMode {
 		ENCRYPT, DECRYPT

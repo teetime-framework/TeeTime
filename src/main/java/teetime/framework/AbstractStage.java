@@ -91,6 +91,8 @@ public abstract class AbstractStage {
 	 */
 	private final boolean performanceLoggingEnabled = false;
 	private long activeWaitingTime;
+	/** indicates that this stage has no state and can thus be easily executed in parallel */
+	private boolean stateless;
 
 	protected AbstractStage() {
 		this.id = this.createId();
@@ -664,6 +666,14 @@ public abstract class AbstractStage {
 
 	public boolean isProducer() {
 		return inputPorts.size() == 0;
+	}
+
+	public boolean isStateless() {
+		return stateless;
+	}
+
+	protected void setStateless(final boolean stateless) {
+		this.stateless = stateless;
 	}
 
 }

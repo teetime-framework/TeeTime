@@ -15,10 +15,13 @@
  */
 package teetime.stage;
 
-import teetime.framework.*;
+import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.pipe.ReflexivePipe;
+import teetime.stage.basic.ITransformation;
 
-public class StatelessCounter<T> extends AbstractStage {
+public class StatelessCounter<T> extends AbstractStage implements ITransformation<T, T> {
 
 	private final InputPort<T> inputPort = this.createInputPort();
 	private final InputPort<CounterContainer> counterInputPort = this.createInputPort();
@@ -29,6 +32,7 @@ public class StatelessCounter<T> extends AbstractStage {
 	public StatelessCounter() {
 		new ReflexivePipe<CounterContainer>(counterOutputPort, counterInputPort);
 		counterOutputPort.send(new CounterContainer());
+		setStateless(true);
 	}
 
 	@Override
@@ -46,10 +50,12 @@ public class StatelessCounter<T> extends AbstractStage {
 		counterOutputPort.send(counterContainer);
 	}
 
+	@Override
 	public InputPort<T> getInputPort() {
 		return inputPort;
 	}
 
+	@Override
 	public OutputPort<T> getOutputPort() {
 		return outputPort;
 	}

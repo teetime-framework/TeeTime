@@ -22,7 +22,11 @@ import teetime.stage.basic.AbstractFilter;
  *
  * @since 1.0
  */
-public final class NoopFilter<T> extends AbstractFilter<T> {
+public class NoopFilter<T> extends AbstractFilter<T> {
+
+	public NoopFilter() {
+		setStateless(true);
+	}
 
 	@Override
 	protected void execute(final T element) {

@@ -15,7 +15,9 @@
  */
 package teetime.framework.pipe;
 
-import teetime.framework.*;
+import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.scheduling.PipeScheduler;
 
 /**
@@ -81,6 +83,7 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 		return scheduler;
 	}
 
+	@Override
 	public void setScheduler(final PipeScheduler scheduler) {
 		if (scheduler == null) {
 			throw new IllegalArgumentException("Argument 'scheduler' may not be null");

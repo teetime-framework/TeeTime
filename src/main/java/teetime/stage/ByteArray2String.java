@@ -16,14 +16,30 @@
 package teetime.stage;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import teetime.stage.basic.AbstractTransformation;
 
-public final class ByteArray2String extends AbstractTransformation<byte[], String> {
+public class ByteArray2String extends AbstractTransformation<byte[], String> {
+
+	private final Charset charset;
+
+	/**
+	 * Creates a new instance with the UTF-8 charset.
+	 */
+	public ByteArray2String() {
+		this(StandardCharsets.UTF_8);
+	}
+
+	public ByteArray2String(final Charset charset) {
+		super();
+		this.charset = charset;
+		setStateless(true);
+	}
 
 	@Override
 	protected void execute(final byte[] element) {
-		this.outputPort.send(new String(element, Charset.forName("UTF-8")));
+		this.outputPort.send(new String(element, charset));
 	}
 
 }

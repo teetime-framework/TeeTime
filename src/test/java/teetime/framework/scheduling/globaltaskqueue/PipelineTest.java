@@ -30,6 +30,7 @@ import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.stage.CollectorSink;
 import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
+import teetime.stage.NoopFilter;
 
 public class PipelineTest {
 
@@ -48,9 +49,10 @@ public class PipelineTest {
 		private void build(final T... elements) {
 			InitialElementProducer<T> producer = new InitialElementProducer<>(elements);
 			Counter<T> counter = new Counter<>();
+			// StatelessCounter<T> counter = new StatelessCounter<>();
+			NoopFilter<T> noopFilter = new NoopFilter<>();
 			sink = new CollectorSink<>();
-
-			from(producer).to(counter).end(sink);
+			from(producer).to(counter).to(noopFilter).end(sink);
 		}
 
 		public CollectorSink<T> getSink() {
