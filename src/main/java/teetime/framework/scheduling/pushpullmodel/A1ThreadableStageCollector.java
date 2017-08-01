@@ -18,7 +18,9 @@ package teetime.framework.scheduling.pushpullmodel;
 import java.util.HashSet;
 import java.util.Set;
 
-import teetime.framework.*;
+import teetime.framework.AbstractPort;
+import teetime.framework.AbstractStage;
+import teetime.framework.ITraverserVisitor;
 import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.DummyPipe;
 
@@ -43,12 +45,12 @@ class A1ThreadableStageCollector implements ITraverserVisitor {
 			threadableStages.add(stage);
 		}
 
-		return VisitorBehavior.CONTINUE;
+		return VisitorBehavior.CONTINUE_BACK_AND_FORTH;
 	}
 
 	@Override
 	public VisitorBehavior visit(final AbstractPort<?> port) {
-		return VisitorBehavior.CONTINUE;
+		return VisitorBehavior.CONTINUE_BACK_AND_FORTH;
 	}
 
 	@Override

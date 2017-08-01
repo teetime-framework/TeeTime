@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.*;
-import teetime.framework.Traverser.Direction;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.signal.StartingSignal;
 
@@ -111,7 +110,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		}
 
 		TaskQueueA1StageCollector stageCollector = new TaskQueueA1StageCollector();
-		Traverser traversor = new Traverser(stageCollector, Direction.BOTH);
+		Traverser traversor = new Traverser(stageCollector);
 		for (AbstractStage startStage : startStages) {
 			traversor.traverse(startStage);
 		}
@@ -132,7 +131,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 
 		// compute level index for each stage
 		LevelIndexVisitor levelIndexVisitor = new LevelIndexVisitor();
-		traversor = new Traverser(levelIndexVisitor, Direction.FORWARD);
+		traversor = new Traverser(levelIndexVisitor);
 		for (AbstractStage startStage : finiteProducerStages) {
 			traversor.traverse(startStage);
 		}
@@ -151,7 +150,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 
 		// instantiate pipes
 		TaskQueueA2PipeInstantiation pipeVisitor = new TaskQueueA2PipeInstantiation();
-		traversor = new Traverser(pipeVisitor, Direction.BOTH);
+		traversor = new Traverser(pipeVisitor);
 		for (AbstractStage startStage : startStages) {
 			traversor.traverse(startStage);
 		}

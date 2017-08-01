@@ -38,12 +38,12 @@ class TaskQueueA1StageCollector implements ITraverserVisitor {
 			stages.add(stage);
 		}
 		// visitor termination condition: stop if the stage already runs or has been terminated
-		return stage.getCurrentState() == StageState.CREATED ? Traverser.VisitorBehavior.CONTINUE : Traverser.VisitorBehavior.STOP;
+		return stage.getCurrentState() == StageState.CREATED ? Traverser.VisitorBehavior.CONTINUE_BACK_AND_FORTH : Traverser.VisitorBehavior.STOP;
 	}
 
 	@Override
 	public Traverser.VisitorBehavior visit(final AbstractPort<?> port) {
-		return Traverser.VisitorBehavior.CONTINUE;
+		return Traverser.VisitorBehavior.CONTINUE_BACK_AND_FORTH;
 	}
 
 	@Override

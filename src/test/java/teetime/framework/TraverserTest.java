@@ -31,12 +31,12 @@ public class TraverserTest {
 
 		@Override
 		public VisitorBehavior visit(final AbstractStage stage) {
-			return VisitorBehavior.CONTINUE;
+			return VisitorBehavior.CONTINUE_FORWARD;
 		}
 
 		@Override
 		public VisitorBehavior visit(final AbstractPort<?> port) {
-			return VisitorBehavior.CONTINUE;
+			return VisitorBehavior.CONTINUE_FORWARD;
 		}
 
 		@Override

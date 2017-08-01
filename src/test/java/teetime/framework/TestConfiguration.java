@@ -39,7 +39,7 @@ public class TestConfiguration extends Configuration {
 	public final Distributor<String> distributor;
 
 	public TestConfiguration() {
-		int threads = 2;
+		int numThreads = 2;
 		init = new InitialElementProducer<File>(new File(""));
 		f2b = new File2SeqOfWords("UTF-8", 512);
 		distributor = new Distributor<String>(new NonBlockingRoundRobinStrategy());
@@ -51,7 +51,7 @@ public class TestConfiguration extends Configuration {
 		connectPorts(f2b.getOutputPort(), distributor.getInputPort());
 
 		// Middle part... multiple instances of WordCounter are created and connected to the merger and distrubuter stages
-		for (int i = 0; i < threads; i++) {
+		for (int i = 0; i < numThreads; i++) {
 			// final InputPortSizePrinter<String> inputPortSizePrinter = new InputPortSizePrinter<String>();
 			final WordCounter wc = new WordCounter();
 			// intraFact.create(inputPortSizePrinter.getOutputPort(), wc.getInputPort());

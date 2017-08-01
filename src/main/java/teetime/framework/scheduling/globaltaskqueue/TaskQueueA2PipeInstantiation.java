@@ -21,8 +21,13 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.*;
-import teetime.framework.pipe.*;
+import teetime.framework.AbstractPort;
+import teetime.framework.AbstractStage;
+import teetime.framework.ITraverserVisitor;
+import teetime.framework.Traverser;
+import teetime.framework.pipe.DummyPipe;
+import teetime.framework.pipe.IPipe;
+import teetime.framework.pipe.InstantiationPipe;
 
 /**
  * Created by nilsziermann on 30.12.16.
@@ -35,7 +40,7 @@ class TaskQueueA2PipeInstantiation implements ITraverserVisitor {
 
 	@Override
 	public Traverser.VisitorBehavior visit(final AbstractStage stage) {
-		return Traverser.VisitorBehavior.CONTINUE;
+		return Traverser.VisitorBehavior.CONTINUE_BACK_AND_FORTH;
 	}
 
 	@Override
@@ -48,7 +53,7 @@ class TaskQueueA2PipeInstantiation implements ITraverserVisitor {
 
 		instantiatePipe(pipe);
 
-		return Traverser.VisitorBehavior.CONTINUE;
+		return Traverser.VisitorBehavior.CONTINUE_BACK_AND_FORTH;
 	}
 
 	@Override

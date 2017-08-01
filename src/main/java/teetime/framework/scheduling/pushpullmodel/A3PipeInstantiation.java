@@ -39,7 +39,7 @@ class A3PipeInstantiation implements ITraverserVisitor, PipeScheduler {
 
 	@Override
 	public VisitorBehavior visit(final AbstractStage stage) {
-		return VisitorBehavior.CONTINUE;
+		return VisitorBehavior.CONTINUE_BACK_AND_FORTH;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ class A3PipeInstantiation implements ITraverserVisitor, PipeScheduler {
 
 		instantiatePipe(pipe);
 
-		return VisitorBehavior.CONTINUE;
+		return VisitorBehavior.CONTINUE_BACK_AND_FORTH;
 	}
 
 	@Override

@@ -70,13 +70,12 @@ public class A2InvalidThreadAssignmentCheck {
 
 		@Override
 		public VisitorBehavior visit(final AbstractStage stage) {
-			return VisitorBehavior.CONTINUE;
+			return VisitorBehavior.CONTINUE_FORWARD;
 		}
 
 		@Override
 		public VisitorBehavior visit(final AbstractPort<?> port) {
 			IPipe<?> pipe = port.getPipe();
-			// FIXME line below requires FORWARD. should be independent of the used direction
 			AbstractStage targetStage = pipe.getTargetPort().getOwningStage();
 
 			int targetColor = colors.containsKey(targetStage) ? colors.get(targetStage) : DEFAULT_COLOR;
@@ -87,7 +86,7 @@ public class A2InvalidThreadAssignmentCheck {
 																											// (but not its "headstage")
 				}
 				colors.put(targetStage, color);
-				return VisitorBehavior.CONTINUE; // NOPMD makes it clearer
+				return VisitorBehavior.CONTINUE_FORWARD; // NOPMD makes it clearer
 			}
 			return VisitorBehavior.STOP;
 		}
