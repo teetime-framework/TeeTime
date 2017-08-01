@@ -12,7 +12,7 @@ class LevelIndexVisitor implements ITraverserVisitor {
 
 	@Override
 	public VisitorBehavior visit(final AbstractStage stage) {
-		return VisitorBehavior.CONTINUE;
+		return VisitorBehavior.CONTINUE_FORWARD;
 	}
 
 	@Override
@@ -25,7 +25,7 @@ class LevelIndexVisitor implements ITraverserVisitor {
 
 		maxLevelIndex = Math.max(maxLevelIndex, levelIndex);
 
-		return VisitorBehavior.CONTINUE;
+		return VisitorBehavior.CONTINUE_FORWARD;
 	}
 
 	@Override

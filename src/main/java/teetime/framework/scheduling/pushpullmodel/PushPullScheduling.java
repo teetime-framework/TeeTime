@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.*;
-import teetime.framework.Traverser.Direction;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 import teetime.util.framework.concurrent.SignalingCounter;
@@ -74,7 +73,7 @@ public class PushPullScheduling implements TeeTimeService, ThreadListener {
 		}
 
 		A1ThreadableStageCollector stageCollector = new A1ThreadableStageCollector();
-		Traverser traversor = new Traverser(stageCollector, Direction.BOTH);
+		Traverser traversor = new Traverser(stageCollector);
 		for (AbstractStage startStage : startStages) {
 			traversor.traverse(startStage);
 		}
@@ -90,7 +89,7 @@ public class PushPullScheduling implements TeeTimeService, ThreadListener {
 		checker.check();
 
 		A3PipeInstantiation pipeVisitor = new A3PipeInstantiation();
-		traversor = new Traverser(pipeVisitor, Direction.BOTH);
+		traversor = new Traverser(pipeVisitor);
 		for (AbstractStage startStage : startStages) {
 			traversor.traverse(startStage);
 		}

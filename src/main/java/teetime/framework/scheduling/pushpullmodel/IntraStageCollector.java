@@ -15,12 +15,18 @@
  */
 package teetime.framework.scheduling.pushpullmodel;
 
-import teetime.framework.*;
+import java.util.HashSet;
+import java.util.Set;
+
+import teetime.framework.AbstractPort;
+import teetime.framework.AbstractStage;
+import teetime.framework.ITraverserVisitor;
 import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.DummyPipe;
 
 class IntraStageCollector implements ITraverserVisitor {
 
+	private final Set<AbstractStage> intraStages = new HashSet<AbstractStage>();
 	private final AbstractStage startStage;
 
 	public IntraStageCollector(final AbstractStage startStage) {
@@ -33,19 +39,24 @@ class IntraStageCollector implements ITraverserVisitor {
 		// if (stage.equals(startStage) || stage.getOwningThread() == null /* before execution */
 		// || stage.getOwningThread() == startStage.getOwningThread() /* while execution */) {
 		if (stage.equals(startStage) || !stage.isActive()) {
-			return VisitorBehavior.CONTINUE; // NOPMD two return stmts make the code clearer to understand
+			intraStages.add(stage);
+			return VisitorBehavior.CONTINUE_FORWARD; // NOPMD two return stmts make the code clearer to understand
 		}
 		return VisitorBehavior.STOP;
 	}
 
 	@Override
 	public VisitorBehavior visit(final AbstractPort<?> port) {
-		return VisitorBehavior.CONTINUE;
+		return VisitorBehavior.CONTINUE_FORWARD;
 	}
 
 	@Override
 	public void visit(final DummyPipe pipe, final AbstractPort<?> port) {
 		// do nothing
+	}
+
+	public Set<AbstractStage> getIntraStages() {
+		return intraStages;
 	}
 
 }

@@ -20,9 +20,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import teetime.framework.*;
-
-import teetime.framework.scheduling.pushpullmodel.IntraStageCollector;
+import teetime.framework.TestConfiguration;
+import teetime.framework.Traverser;
 
 public class IntraStageCollectorTest {
 
@@ -30,9 +29,10 @@ public class IntraStageCollectorTest {
 	public void testVisitedStages() {
 		TestConfiguration config = new TestConfiguration();
 
-		Traverser traversor = new Traverser(new IntraStageCollector(config.init));
+		IntraStageCollector collector = new IntraStageCollector(config.init);
+		Traverser traversor = new Traverser(collector);
 		traversor.traverse(config.init);
 
-		assertThat(traversor.getVisitedStages(), containsInAnyOrder(config.init, config.f2b, config.distributor));
+		assertThat(collector.getIntraStages(), containsInAnyOrder(config.init, config.f2b, config.distributor));
 	}
 }

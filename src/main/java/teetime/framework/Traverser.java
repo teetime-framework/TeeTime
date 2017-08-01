@@ -29,36 +29,16 @@ import teetime.framework.pipe.DummyPipe;
  */
 public class Traverser {
 
-	public static enum Direction {
-		BACKWARD(1), FORWARD(2), BOTH(BACKWARD.value | FORWARD.value);
-
-		private final int value;
-
-		private Direction(final int value) {
-			this.value = value;
-		}
-
-		public boolean represents(final Direction direction) {
-			return (value & direction.value) == direction.value;
-		}
-	}
-
 	public static enum VisitorBehavior {
-		CONTINUE, STOP;
+		CONTINUE_FORWARD, CONTINUE_BACKWARD, CONTINUE_BACK_AND_FORTH, STOP
 	}
 
 	private final Set<AbstractStage> visitedStages = new HashSet<AbstractStage>();
 
 	private final ITraverserVisitor traverserVisitor;
-	private final Direction direction;
 
 	public Traverser(final ITraverserVisitor traverserVisitor) {
-		this(traverserVisitor, Direction.FORWARD);
-	}
-
-	public Traverser(final ITraverserVisitor traverserVisitor, final Direction direction) {
 		this.traverserVisitor = traverserVisitor;
-		this.direction = direction;
 	}
 
 	public void traverse(final AbstractStage stage) {
@@ -67,25 +47,29 @@ public class Traverser {
 			return; // NOPMD sequential termination conditions are more readable
 		}
 
-		VisitorBehavior behavior = traverserVisitor.visit(stage);
-		if (behavior == VisitorBehavior.STOP || !visitedStages.add(stage)) {
+		if (!visitedStages.add(stage)) {
 			return;
 		}
 
-		if (direction.represents(Direction.FORWARD)) {
+		VisitorBehavior behavior = traverserVisitor.visit(stage);
+		if (behavior == VisitorBehavior.STOP) {
+			return;
+		}
+
+		if (behavior == VisitorBehavior.CONTINUE_FORWARD || behavior == VisitorBehavior.CONTINUE_BACK_AND_FORTH) {
 			for (OutputPort<?> outputPort : stage.getOutputPorts()) {
-				visitAndTraverse(outputPort, Direction.FORWARD);
+				visitAndTraverse(outputPort, VisitorBehavior.CONTINUE_FORWARD);
 			}
 		}
 
-		if (direction.represents(Direction.BACKWARD)) {
+		if (behavior == VisitorBehavior.CONTINUE_BACKWARD || behavior == VisitorBehavior.CONTINUE_BACK_AND_FORTH) {
 			for (InputPort<?> inputPort : stage.getInputPorts()) {
-				visitAndTraverse(inputPort, Direction.BACKWARD);
+				visitAndTraverse(inputPort, VisitorBehavior.CONTINUE_BACKWARD);
 			}
 		}
 	}
 
-	private void visitAndTraverse(final AbstractPort<?> port, final Direction direction) {
+	private void visitAndTraverse(final AbstractPort<?> port, final VisitorBehavior direction) {
 		if (port.getPipe() == null) {
 			throw new IllegalStateException("2003 - The port " + port + " is not connected with another port.");
 		}
@@ -97,14 +81,20 @@ public class Traverser {
 
 		VisitorBehavior behavior = traverserVisitor.visit(port);
 
-		if (behavior == VisitorBehavior.CONTINUE) {
-			AbstractPort<?> nextPort = (direction == Direction.FORWARD) ? port.getPipe().getTargetPort() : port.getPipe().getSourcePort();
+		if (behavior != VisitorBehavior.STOP) {
+			AbstractPort<?> nextPort = (direction == VisitorBehavior.CONTINUE_FORWARD) ? port.getPipe().getTargetPort() : port.getPipe().getSourcePort();
 
 			traverse(nextPort.getOwningStage()); // recursive call
 		}
 	}
 
-	public Set<AbstractStage> getVisitedStages() {
+	/**
+	 * For testing purposes only.
+	 *
+	 * @return the visited stages
+	 */
+	/* default */ Set<AbstractStage> getVisitedStages() {
 		return visitedStages;
 	}
+
 }
