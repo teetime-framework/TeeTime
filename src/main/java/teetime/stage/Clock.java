@@ -17,13 +17,15 @@ package teetime.stage;
 
 import teetime.framework.AbstractProducerStage;
 import teetime.framework.TerminationStrategy;
+import teetime.framework.termination.NextActiveStageShouldTerminate;
+import teetime.framework.termination.TerminationCondition;
 
 /**
  * This stage sends the current timestamp repeatedly with a given interval delay of {@link #intervalDelayInMs}.
  *
  * @stage.sketch
  *
- * 				<pre>
+ *               <pre>
  * +------------------------+
  * |                        |
  * |                      +---+
@@ -38,7 +40,7 @@ import teetime.framework.TerminationStrategy;
  * @stage.output Current timestamp as long.
  *
  */
-public final class Clock extends AbstractProducerStage<Long> {
+public class Clock extends AbstractProducerStage<Long> {
 
 	private boolean initialDelayExceeded;// = false;
 
@@ -50,10 +52,29 @@ public final class Clock extends AbstractProducerStage<Long> {
 	 * Interval between two sent elements in ms.
 	 */
 	private long intervalDelayInMs;
+	/**
+	 * Termination condition passed from outside
+	 *
+	 * @since 3.0 since infinite producers are not supported anymore.
+	 */
+	private final TerminationCondition terminationCondition;
+
+	/**
+	 * @deprecated since 3.0. Use {@link #Clock(TerminationCondition)} instead.
+	 */
+	@Deprecated
+	public Clock() {
+		this.terminationCondition = new NextActiveStageShouldTerminate(this);
+	}
+
+	public Clock(final TerminationCondition terminationCondition) {
+		this.terminationCondition = terminationCondition;
+	}
 
 	@Override
 	public TerminationStrategy getTerminationStrategy() {
-		return TerminationStrategy.BY_INTERRUPT;
+		// return TerminationStrategy.BY_INTERRUPT;
+		return TerminationStrategy.BY_SELF_DECISION;
 	}
 
 	@Override
@@ -67,6 +88,10 @@ public final class Clock extends AbstractProducerStage<Long> {
 
 		// this.logger.debug("Emitting timestamp");
 		outputPort.send(this.getCurrentTimeInNs());
+
+		if (terminationCondition.isMet()) {
+			terminateStage();
+		}
 	}
 
 	private void sleep(final long delayInMs) {

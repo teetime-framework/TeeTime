@@ -16,6 +16,7 @@
 package teetime.examples.clocktermination;
 
 import teetime.framework.Configuration;
+import teetime.framework.termination.StageHasTerminated;
 import teetime.stage.Clock;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.Sink;
@@ -34,9 +35,9 @@ public class ClockTerminationConfig extends Configuration {
 
 	public ClockTerminationConfig() {
 		InitialElementProducer<Integer> firstProducer = new InitialElementProducer<Integer>(0, 1);
-		Clock clock = new Clock();
-
 		Sink<Integer> firstSink = new Sink<Integer>();
+
+		Clock clock = new Clock(new StageHasTerminated(firstSink));
 		Sink<Long> secondSink = new Sink<Long>();
 
 		connectPorts(firstProducer.getOutputPort(), firstSink.getInputPort());
