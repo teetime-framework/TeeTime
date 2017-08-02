@@ -33,17 +33,40 @@ public class Traverser {
 		CONTINUE_FORWARD, CONTINUE_BACKWARD, CONTINUE_BACK_AND_FORTH, STOP
 	}
 
+	public static interface EndOfTraverse {
+		public abstract boolean isMet(AbstractStage stage);
+	}
+
+	/**
+	 * Represents the following termination condition: stop if the stage already runs or has been terminated
+	 *
+	 * @author Christian Wulf
+	 *
+	 */
+	public static class AlreadyRunsEndOfTraverse implements EndOfTraverse {
+		@Override
+		public boolean isMet(final AbstractStage stage) {
+			return stage.getCurrentState() != StageState.CREATED;
+		}
+	}
+
 	private final Set<AbstractStage> visitedStages = new HashSet<AbstractStage>();
 
 	private final ITraverserVisitor traverserVisitor;
 
+	private final EndOfTraverse endOfTraverse;
+
 	public Traverser(final ITraverserVisitor traverserVisitor) {
+		this(traverserVisitor, new AlreadyRunsEndOfTraverse());
+	}
+
+	public Traverser(final ITraverserVisitor traverserVisitor, final EndOfTraverse endOfTraverse) {
 		this.traverserVisitor = traverserVisitor;
+		this.endOfTraverse = endOfTraverse;
 	}
 
 	public void traverse(final AbstractStage stage) {
-		// termination condition: stop if the stage already runs or has been terminated
-		if (stage.getCurrentState() != StageState.CREATED) {
+		if (endOfTraverse.isMet(stage)) {
 			return; // NOPMD sequential termination conditions are more readable
 		}
 

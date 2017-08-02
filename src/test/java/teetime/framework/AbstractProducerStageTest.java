@@ -15,9 +15,11 @@
  */
 package teetime.framework;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
+import teetime.framework.termination.NextActiveStageShouldTerminate;
+import teetime.framework.termination.StageHasTerminated;
+import teetime.framework.termination.TerminationCondition;
 import teetime.stage.basic.Sink;
 import teetime.stage.basic.merger.Merger;
 
@@ -37,14 +39,34 @@ public class AbstractProducerStageTest {
 	}
 
 	private static class InfiniteProducer extends AbstractProducerStage<Object> {
+
+		private TerminationCondition terminationCondition;
+
+		@Override
+		public void onStarting() throws Exception {
+			if (null == terminationCondition) {
+				throw new IllegalStateException("terminationCondition is null");
+			}
+			super.onStarting();
+		}
+
 		@Override
 		protected void execute() {
 			outputPort.send(Boolean.FALSE);
+
+			if (terminationCondition.isMet()) {
+				terminateStage();
+			}
 		}
 
 		@Override
 		public TerminationStrategy getTerminationStrategy() {
-			return TerminationStrategy.BY_INTERRUPT;
+			// return TerminationStrategy.BY_INTERRUPT;
+			return TerminationStrategy.BY_SELF_DECISION;
+		}
+
+		public void setTerminationCondition(final TerminationCondition terminationCondition) {
+			this.terminationCondition = terminationCondition;
 		}
 	}
 
@@ -52,6 +74,7 @@ public class AbstractProducerStageTest {
 		public MixedProducerConfig() {
 			FiniteProducer finiteProducer = new FiniteProducer();
 			InfiniteProducer infiniteProducer = new InfiniteProducer();
+			infiniteProducer.setTerminationCondition(new NextActiveStageShouldTerminate(infiniteProducer));
 			Merger<Object> merger = new Merger<>();
 
 			connectPorts(finiteProducer.getOutputPort(), merger.createInputPort());
@@ -61,11 +84,23 @@ public class AbstractProducerStageTest {
 		}
 	}
 
+	/**
+	 * This configuration is special because it did not terminate in previous versions of teetime.
+	 * In these versions, all stages were collected which were reachable from the stage which was connected first by <code>connectPorts()</code>.
+	 * Since the <code>infiniteProducer</code> cannot be reached by the <code>finiteProducer</code>,
+	 * the <code>infiniteProducer</code> is not recognized as a stage and especially not as a producer stage.
+	 * Since the <code>infiniteProducer</code> does not terminate itself, the execution waits for its termination an infinite amount of time.
+	 *
+	 * @author Christian Wulf
+	 *
+	 */
 	private static class TwoIndependentPipelinesConfig extends Configuration {
 		public TwoIndependentPipelinesConfig() {
 			FiniteProducer finiteProducer = new FiniteProducer();
-			InfiniteProducer infiniteProducer = new InfiniteProducer();
 			Sink<Object> sink0 = new Sink<>();
+
+			InfiniteProducer infiniteProducer = new InfiniteProducer();
+			infiniteProducer.setTerminationCondition(new StageHasTerminated(sink0));
 			Sink<Object> sink1 = new Sink<>();
 
 			connectPorts(finiteProducer.getOutputPort(), sink0.getInputPort());
@@ -77,8 +112,8 @@ public class AbstractProducerStageTest {
 	 * Use a t/o since the execution may not block infinitely;
 	 * expected execution time is 500 ms, so the t/o should be sufficiently high
 	 */
-	@Test(timeout = 5000)
-	@Ignore("Infinite producer cannot be handled by the framework correctly in all (corner) cases.")
+	@Test // (timeout = 5000)
+	// @Ignore("Infinite producer cannot be handled by the framework correctly in all (corner) cases.")
 	public void shouldTerminateFiniteAndInfiniteProducer() {
 		MixedProducerConfig config = new MixedProducerConfig();
 		new Execution<>(config).executeBlocking();
@@ -89,7 +124,7 @@ public class AbstractProducerStageTest {
 	 * expected execution time is 500 ms, so the t/o should be sufficiently high
 	 */
 	@Test(timeout = 5000)
-	@Ignore("Infinite producer cannot be handled by the framework correctly in all (corner) cases.")
+	// @Ignore("Infinite producer cannot be handled by the framework correctly in all (corner) cases.")
 	public void shouldTerminateTwoIndependentPipelines() {
 		TwoIndependentPipelinesConfig config = new TwoIndependentPipelinesConfig();
 		new Execution<>(config).executeBlocking();
