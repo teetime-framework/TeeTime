@@ -84,6 +84,16 @@ public class AbstractProducerStageTest {
 		}
 	}
 
+	/**
+	 * This configuration is special because it did not terminate in previous versions of teetime.
+	 * In these versions, all stages were collected which were reachable from the stage which was connected first by <code>connectPorts()</code>.
+	 * Since the <code>infiniteProducer</code> cannot be reached by the <code>finiteProducer</code>,
+	 * the <code>infiniteProducer</code> is not recognized as a stage and especially not as a producer stage.
+	 * Since the <code>infiniteProducer</code> does not terminate itself, the execution waits for its termination an infinite amount of time.
+	 *
+	 * @author Christian Wulf
+	 *
+	 */
 	private static class TwoIndependentPipelinesConfig extends Configuration {
 		public TwoIndependentPipelinesConfig() {
 			FiniteProducer finiteProducer = new FiniteProducer();

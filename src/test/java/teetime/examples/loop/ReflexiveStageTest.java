@@ -15,9 +15,9 @@
  */
 package teetime.examples.loop;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static teetime.framework.test.StageTester.test;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static teetime.framework.test.StageTester.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +39,7 @@ public class ReflexiveStageTest {
 	}
 
 	@Test(timeout = 200)
-	@Ignore // remove ignore if loop detection is merged into this master branch
+	@Ignore("requires loop detection")
 	public void reflexiveStageShouldExecute() throws Exception {
 		final List<Integer> INPUT_ELEMENTS = Arrays.asList(1, 2, 3, 4, 5);
 		final List<Integer> EXPECTED_OUTPUT_ELEMENTS = new ArrayList<Integer>(INPUT_ELEMENTS);
