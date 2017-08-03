@@ -15,8 +15,14 @@
  */
 package teetime.framework;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +41,7 @@ import org.slf4j.LoggerFactory;
  *
  * @since 2.0
  */
-public final class Execution<T extends Configuration> {
+public final class Execution<T extends Configuration> implements Future<Void> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
 
@@ -102,8 +108,24 @@ public final class Execution<T extends Configuration> {
 	 * Terminates all producer stages, interrupts all threads, and waits for a graceful termination.
 	 */
 	public void abortEventually() {
+		// state = ExecutionState.CANCELING;
 		configurationContext.abortConfigurationRun();
 		waitForTermination();
+	}
+
+	/**
+	 * This method starts this execution without waiting for its termination. The method {@link #waitForTermination()} must be called to unsure a correct termination
+	 * of the execution.
+	 *
+	 * @since 2.0
+	 */
+	public void executeNonBlocking() {
+		// state = ExecutionState.EXECUTING;
+		if (configuration.isExecuted()) {
+			throw new IllegalStateException("3002 - Any configuration instance may only be executed once.");
+		}
+		configuration.setExecuted(true);
+		configurationContext.executeConfiguration();
 	}
 
 	/**
@@ -117,20 +139,6 @@ public final class Execution<T extends Configuration> {
 	public void executeBlocking() {
 		executeNonBlocking();
 		waitForTermination();
-	}
-
-	/**
-	 * This method starts this execution without waiting for its termination. The method {@link #waitForTermination()} must be called to unsure a correct termination
-	 * of the execution.
-	 *
-	 * @since 2.0
-	 */
-	public void executeNonBlocking() {
-		if (configuration.isExecuted()) {
-			throw new IllegalStateException("3002 - Any configuration instance may only be executed once.");
-		}
-		configuration.setExecuted(true);
-		configurationContext.executeConfiguration();
 	}
 
 	/**
@@ -173,5 +181,39 @@ public final class Execution<T extends Configuration> {
 		for (Configuration configuration : instances) {
 			new Execution<Configuration>(configuration).executeBlocking(); // NOPMD
 		}
+	}
+
+	@Override
+	public boolean cancel(final boolean mayInterruptIfRunning) {
+		// if (state == ExecutionState.COMPLETED) return false;
+		// if (state == ExecutionState.CANCELING) return false;
+		// if (state == ExecutionState.CANCELED) return false;
+		// if (state == ExecutionState.INITIALIZED) return true;
+		abortEventually();
+		// state == ExecutionState.CANCELED;
+		return true;
+	}
+
+	@Override
+	public boolean isCancelled() {
+		// return state == ExecutionState.CANCELED;
+		return false;
+	}
+
+	@Override
+	public boolean isDone() {
+		// state == ExecutionState.COMPLETED
+		return false;
+	}
+
+	@Override
+	public Void get() throws InterruptedException, java.util.concurrent.ExecutionException {
+		waitForTermination();
+		return null;
+	}
+
+	@Override
+	public Void get(final long timeout, final TimeUnit unit) throws InterruptedException, java.util.concurrent.ExecutionException, TimeoutException {
+		throw new UnsupportedOperationException();
 	}
 }
