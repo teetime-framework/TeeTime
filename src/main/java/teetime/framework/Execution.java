@@ -117,15 +117,18 @@ public final class Execution<T extends Configuration> implements Future<Void> {
 	 * This method starts this execution without waiting for its termination. The method {@link #waitForTermination()} must be called to unsure a correct termination
 	 * of the execution.
 	 *
+	 * @return a future object to cancel the execution or to wait for the execution to finish.
+	 *
 	 * @since 2.0
 	 */
-	public void executeNonBlocking() {
+	public Future<Void> executeNonBlocking() {
 		// state = ExecutionState.EXECUTING;
 		if (configuration.isExecuted()) {
 			throw new IllegalStateException("3002 - Any configuration instance may only be executed once.");
 		}
 		configuration.setExecuted(true);
 		configurationContext.executeConfiguration();
+		return this;
 	}
 
 	/**
