@@ -29,7 +29,7 @@ import teetime.stage.Counter;
 public class DynamicTaskFarmStageTest {
 
 	@Test
-	@Ignore // ignore since class under test is not yet implemented
+	@Ignore("declareActive at runtime is required, but not yet implemented/merged")
 	public void testDynamicTaskFarmStage() throws Exception {
 		final Integer[] elements = { 1, 2, 3 };
 

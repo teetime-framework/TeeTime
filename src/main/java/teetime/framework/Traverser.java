@@ -94,7 +94,7 @@ public class Traverser {
 
 	private void visitAndTraverse(final AbstractPort<?> port, final VisitorBehavior direction) {
 		if (port.getPipe() == null) {
-			throw new IllegalStateException("2003 - The port " + port + " is not connected with another port.");
+			throw new IllegalStateException("2003 - The port " + port + " of the stage " + port.getOwningStage() + " is not connected with another port.");
 		}
 
 		if (port.getPipe() instanceof DummyPipe) {
