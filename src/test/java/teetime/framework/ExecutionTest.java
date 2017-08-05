@@ -18,7 +18,11 @@ package teetime.framework;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import org.junit.*;
+import java.util.concurrent.Future;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import teetime.stage.InitialElementProducer;
@@ -55,6 +59,24 @@ public class ExecutionTest {
 
 		execution.waitForTermination();
 		assertTrue(execution.getConfiguration().delay.finished);
+	}
+
+	@Test
+	public void testExecuteNonBlockingWithFuture() throws Exception {
+		StopWatch watch = new StopWatch();
+		watch.start();
+		Future<Void> future = execution.executeNonBlocking();
+		watch.end();
+
+		assertThat(watch.getDurationInMs(), is(lessThan(DELAY_IN_MS)));
+		assertFalse(execution.getConfiguration().delay.finished);
+
+		future.get();
+		assertThat(future.isDone(), is(true));
+		assertThat(future.isCancelled(), is(false));
+		assertTrue(execution.getConfiguration().delay.finished);
+
+		assertThat(future.cancel(true), is(false));
 	}
 
 	@Test

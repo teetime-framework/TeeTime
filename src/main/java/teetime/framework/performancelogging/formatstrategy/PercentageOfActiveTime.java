@@ -21,7 +21,7 @@ import teetime.framework.AbstractStage;
 import teetime.framework.StateStatistics;
 import teetime.framework.performancelogging.ActivationStateLogger.IFormatingStrategy;
 import teetime.framework.performancelogging.StateChange;
-import teetime.framework.performancelogging.StateChange.ExecutionState;
+import teetime.framework.performancelogging.StateChange.StageActivationState;
 
 /**
  * Formating strategy to apply for percentage of active time.
@@ -70,11 +70,11 @@ public class PercentageOfActiveTime implements IFormatingStrategy {
 				if (state.getTimeStamp() > lastTimestamp) {
 					lastTimestamp = state.getTimeStamp();
 				}
-				if (!lastActive && state.getExecutionState() == ExecutionState.ACTIVE) {
+				if (!lastActive && state.getStageActivationState() == StageActivationState.ACTIVE) {
 					lastActive = true;
 					lastActiveTimestamp = state.getTimeStamp();
 				}
-				if (lastActive && state.getExecutionState() != ExecutionState.ACTIVE && lastActiveTimestamp != Long.MAX_VALUE) {
+				if (lastActive && state.getStageActivationState() != StageActivationState.ACTIVE && lastActiveTimestamp != Long.MAX_VALUE) {
 					lastActive = false;
 					cumulativeActiveTime += (state.getTimeStamp() - lastActiveTimestamp);
 				}

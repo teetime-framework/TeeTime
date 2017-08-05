@@ -21,7 +21,7 @@ import teetime.framework.AbstractStage;
 import teetime.framework.StateStatistics;
 import teetime.framework.performancelogging.ActivationStateLogger.IFormatingStrategy;
 import teetime.framework.performancelogging.StateChange;
-import teetime.framework.performancelogging.StateChange.ExecutionState;
+import teetime.framework.performancelogging.StateChange.StageActivationState;
 
 /**
  * Formating Strategy to apply the data to the Bottleneck Detection Approach of Roser, Nakano and Tanaka.
@@ -70,7 +70,7 @@ public class RNTFormating implements IFormatingStrategy {
 
 			// go through all states of this stage and sum up the active times while counting the number of active times
 			for (StateChange state : StateStatistics.getStates(stage)) {
-				if (state.getExecutionState() == ExecutionState.ACTIVE && !lastActive) {
+				if (state.getStageActivationState() == StageActivationState.ACTIVE && !lastActive) {
 					lastActiveTimeStamp = state.getTimeStamp();
 					lastActive = true;
 				} else {
