@@ -41,10 +41,59 @@ import org.slf4j.LoggerFactory;
  *
  * @since 2.0
  */
-public final class Execution<T extends Configuration> implements Future<Void> {
+public final class Execution<T extends Configuration> {
 
 	private static enum ExecutionState {
 		INITIALIZED, CANCELING, CANCELED, EXECUTING, COMPLETED,
+	}
+
+	private static class ExecutionFuture implements Future<Void> {
+
+		private final Execution<?> execution;
+
+		public ExecutionFuture(final Execution<?> execution) {
+			this.execution = execution;
+		}
+
+		@Override
+		public boolean cancel(final boolean mayInterruptIfRunning) {
+			if (execution.getState() == ExecutionState.COMPLETED) {
+				return false;
+			}
+			if (execution.getState() == ExecutionState.CANCELING) {
+				return false;
+			}
+			if (execution.getState() == ExecutionState.CANCELED) {
+				return false;
+			}
+			if (execution.getState() == ExecutionState.INITIALIZED) {
+				return true;
+			}
+			execution.abortEventually();
+			return true;
+		}
+
+		@Override
+		public boolean isCancelled() {
+			return execution.getState() == ExecutionState.CANCELED;
+		}
+
+		@Override
+		public boolean isDone() {
+			return execution.getState() == ExecutionState.COMPLETED;
+		}
+
+		@Override
+		public Void get() throws InterruptedException, java.util.concurrent.ExecutionException {
+			execution.waitForTermination();
+			return null;
+		}
+
+		@Override
+		public Void get(final long timeout, final TimeUnit unit) throws InterruptedException, java.util.concurrent.ExecutionException, TimeoutException {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
@@ -96,7 +145,11 @@ public final class Execution<T extends Configuration> implements Future<Void> {
 	 */
 	public void waitForTermination() {
 		configurationContext.waitForConfigurationToTerminate();
-		state = ExecutionState.COMPLETED;
+		if (state == ExecutionState.CANCELING) {
+			state = ExecutionState.CANCELED;
+		} else {
+			state = ExecutionState.COMPLETED;
+		}
 
 		Map<Thread, List<Exception>> threadExceptionsMap = configuration.getFactory().getThreadExceptionsMap();
 		Iterator<Entry<Thread, List<Exception>>> iterator = threadExceptionsMap.entrySet().iterator();
@@ -136,7 +189,7 @@ public final class Execution<T extends Configuration> implements Future<Void> {
 		configuration.setExecuted(true);
 		state = ExecutionState.EXECUTING;
 		configurationContext.executeConfiguration();
-		return this;
+		return new ExecutionFuture(this);
 	}
 
 	/**
@@ -194,43 +247,8 @@ public final class Execution<T extends Configuration> implements Future<Void> {
 		}
 	}
 
-	@Override
-	public boolean cancel(final boolean mayInterruptIfRunning) {
-		if (state == ExecutionState.COMPLETED) {
-			return false;
-		}
-		if (state == ExecutionState.CANCELING) {
-			return false;
-		}
-		if (state == ExecutionState.CANCELED) {
-			return false;
-		}
-		if (state == ExecutionState.INITIALIZED) {
-			return true;
-		}
-		abortEventually();
-		state = ExecutionState.CANCELED;
-		return true;
+	/* default */ ExecutionState getState() {
+		return state;
 	}
 
-	@Override
-	public boolean isCancelled() {
-		return state == ExecutionState.CANCELED;
-	}
-
-	@Override
-	public boolean isDone() {
-		return state == ExecutionState.COMPLETED;
-	}
-
-	@Override
-	public Void get() throws InterruptedException, java.util.concurrent.ExecutionException {
-		waitForTermination();
-		return null;
-	}
-
-	@Override
-	public Void get(final long timeout, final TimeUnit unit) throws InterruptedException, java.util.concurrent.ExecutionException, TimeoutException {
-		throw new UnsupportedOperationException();
-	}
 }
