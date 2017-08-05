@@ -23,7 +23,7 @@ package teetime.framework.performancelogging;
  */
 public class StateChange {
 
-	public enum ExecutionState {
+	public enum StageActivationState {
 		/**
 		 * Represents the state where the stage has been initialized, but not yet been executed.
 		 * This state is used to implement the null object pattern.
@@ -40,16 +40,16 @@ public class StateChange {
 		TERMINATED,
 	}
 
-	private final ExecutionState executionState;
+	private final StageActivationState stageActivationState;
 	private final long timeStamp;
 
-	public StateChange(final ExecutionState state, final long timeStamp) {
-		this.executionState = state;
+	public StateChange(final StageActivationState state, final long timeStamp) {
+		this.stageActivationState = state;
 		this.timeStamp = timeStamp;
 	}
 
-	public ExecutionState getExecutionState() {
-		return executionState;
+	public StageActivationState getStageActivationState() {
+		return stageActivationState;
 	}
 
 	public long getTimeStamp() {

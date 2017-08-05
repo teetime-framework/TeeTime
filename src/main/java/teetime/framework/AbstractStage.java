@@ -26,7 +26,7 @@ import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExecution;
 import teetime.framework.exceptionHandling.TerminateException;
 import teetime.framework.performancelogging.StateChange;
-import teetime.framework.performancelogging.StateChange.ExecutionState;
+import teetime.framework.performancelogging.StateChange.StageActivationState;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.TerminatingSignal;
@@ -84,7 +84,7 @@ public abstract class AbstractStage {
 	 */
 	private final List<StateChange> states = new ArrayList<StateChange>();
 
-	private StateChange lastState = new StateChange(ExecutionState.INITIALIZED, System.nanoTime());
+	private StateChange lastState = new StateChange(StageActivationState.INITIALIZED, System.nanoTime());
 
 	/**
 	 * Deactivated if performance logging does not reduce the performance. must be measured first. (28.10.2016)
@@ -149,7 +149,7 @@ public abstract class AbstractStage {
 		if (performanceLoggingEnabled) {
 			beforeExecuteTime = System.nanoTime();
 			executeWithCatchedExceptions();
-			if (lastState.getExecutionState() == ExecutionState.ACTIVE) {
+			if (lastState.getStageActivationState() == StageActivationState.ACTIVE) {
 				this.addActiveWaitingTime(beforeExecuteTime - lastTimeAfterExecute);
 			}
 			lastTimeAfterExecute = System.nanoTime();
@@ -403,8 +403,8 @@ public abstract class AbstractStage {
 
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public void onTerminating() throws Exception {
-		if (newStateRequired(ExecutionState.TERMINATED)) {
-			this.addState(ExecutionState.TERMINATED, System.nanoTime());
+		if (newStateRequired(StageActivationState.TERMINATED)) {
+			this.addState(StageActivationState.TERMINATED, System.nanoTime());
 		}
 		changeState(StageState.TERMINATED);
 		calledOnTerminating = true;
@@ -631,28 +631,28 @@ public abstract class AbstractStage {
 		return states;
 	}
 
-	private boolean newStateRequired(final ExecutionState state) {
+	private boolean newStateRequired(final StageActivationState state) {
 		if (!performanceLoggingEnabled) {
 			return false;
 		}
-		return (this.lastState.getExecutionState() != state);
+		return (this.lastState.getStageActivationState() != state);
 	}
 
-	private void addState(final ExecutionState stateCode, final long timestamp) {
+	private void addState(final StageActivationState stateCode, final long timestamp) {
 		StateChange state = new StateChange(stateCode, timestamp);
 		this.states.add(state);
 		this.lastState = state;
 	}
 
 	void sendingFailed() {
-		if (newStateRequired(ExecutionState.BLOCKED)) {
-			this.addState(ExecutionState.BLOCKED, System.nanoTime());
+		if (newStateRequired(StageActivationState.BLOCKED)) {
+			this.addState(StageActivationState.BLOCKED, System.nanoTime());
 		}
 	}
 
 	void sendingSucceeded() {
-		if (newStateRequired(ExecutionState.ACTIVE)) {
-			this.addState(ExecutionState.ACTIVE, System.nanoTime());
+		if (newStateRequired(StageActivationState.ACTIVE)) {
+			this.addState(StageActivationState.ACTIVE, System.nanoTime());
 		}
 	}
 

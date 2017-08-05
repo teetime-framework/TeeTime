@@ -21,7 +21,7 @@ import teetime.framework.AbstractStage;
 import teetime.framework.StateStatistics;
 import teetime.framework.performancelogging.ActivationStateLogger.IFormatingStrategy;
 import teetime.framework.performancelogging.StateChange;
-import teetime.framework.performancelogging.StateChange.ExecutionState;
+import teetime.framework.performancelogging.StateChange.StageActivationState;
 
 public class CumulativeActivePassivTime implements IFormatingStrategy {
 
@@ -56,7 +56,7 @@ public class CumulativeActivePassivTime implements IFormatingStrategy {
 			long earliestTimeStamp = Long.MAX_VALUE;
 			long latestTimeStamp = Long.MIN_VALUE;
 			long lastTimeStamp = 0;
-			ExecutionState lastState = ExecutionState.INITIALIZED;
+			StageActivationState lastState = StageActivationState.INITIALIZED;
 			long cumulativeActiveTime = 0;
 			long cumulativeActiveWaitingTime = StateStatistics.getActiveWaitingTime(stage);
 			long cumulativeBlockedTime = 0;
@@ -73,7 +73,7 @@ public class CumulativeActivePassivTime implements IFormatingStrategy {
 				}
 
 				// In the first loop neither lastTimeStamp nor lastState are set. So the next part wouldn't calculate correct.
-				if (lastState != ExecutionState.INITIALIZED) {
+				if (lastState != StageActivationState.INITIALIZED) {
 					long elapsedTime = actualTimeStamp - lastTimeStamp;
 
 					switch (lastState) {
@@ -91,7 +91,7 @@ public class CumulativeActivePassivTime implements IFormatingStrategy {
 				}
 
 				lastTimeStamp = actualTimeStamp;
-				lastState = state.getExecutionState();
+				lastState = state.getStageActivationState();
 			}
 
 			// The ActiveWaiting time was counted into active time till now. So it it subtracted now.

@@ -43,10 +43,16 @@ import org.slf4j.LoggerFactory;
  */
 public final class Execution<T extends Configuration> implements Future<Void> {
 
+	private static enum ExecutionState {
+		INITIALIZED, CANCELING, CANCELED, EXECUTING, COMPLETED,
+	}
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
 
 	private final T configuration;
 	private final ConfigurationContext configurationContext;
+
+	private ExecutionState state;
 
 	/**
 	 * Creates a new {@link Execution} and validates the given configuration.
@@ -73,6 +79,7 @@ public final class Execution<T extends Configuration> implements Future<Void> {
 		configuration.setInitialized(true);
 
 		configurationContext.initializeServices();
+		state = ExecutionState.INITIALIZED;
 
 		if (validationEnabled) {
 			configurationContext.validateServices();
@@ -89,6 +96,7 @@ public final class Execution<T extends Configuration> implements Future<Void> {
 	 */
 	public void waitForTermination() {
 		configurationContext.waitForConfigurationToTerminate();
+		state = ExecutionState.COMPLETED;
 
 		Map<Thread, List<Exception>> threadExceptionsMap = configuration.getFactory().getThreadExceptionsMap();
 		Iterator<Entry<Thread, List<Exception>>> iterator = threadExceptionsMap.entrySet().iterator();
@@ -108,7 +116,7 @@ public final class Execution<T extends Configuration> implements Future<Void> {
 	 * Terminates all producer stages, interrupts all threads, and waits for a graceful termination.
 	 */
 	public void abortEventually() {
-		// state = ExecutionState.CANCELING;
+		state = ExecutionState.CANCELING;
 		configurationContext.abortConfigurationRun();
 		waitForTermination();
 	}
@@ -122,11 +130,11 @@ public final class Execution<T extends Configuration> implements Future<Void> {
 	 * @since 2.0
 	 */
 	public Future<Void> executeNonBlocking() {
-		// state = ExecutionState.EXECUTING;
 		if (configuration.isExecuted()) {
 			throw new IllegalStateException("3002 - Any configuration instance may only be executed once.");
 		}
 		configuration.setExecuted(true);
+		state = ExecutionState.EXECUTING;
 		configurationContext.executeConfiguration();
 		return this;
 	}
@@ -188,25 +196,31 @@ public final class Execution<T extends Configuration> implements Future<Void> {
 
 	@Override
 	public boolean cancel(final boolean mayInterruptIfRunning) {
-		// if (state == ExecutionState.COMPLETED) return false;
-		// if (state == ExecutionState.CANCELING) return false;
-		// if (state == ExecutionState.CANCELED) return false;
-		// if (state == ExecutionState.INITIALIZED) return true;
+		if (state == ExecutionState.COMPLETED) {
+			return false;
+		}
+		if (state == ExecutionState.CANCELING) {
+			return false;
+		}
+		if (state == ExecutionState.CANCELED) {
+			return false;
+		}
+		if (state == ExecutionState.INITIALIZED) {
+			return true;
+		}
 		abortEventually();
-		// state == ExecutionState.CANCELED;
+		state = ExecutionState.CANCELED;
 		return true;
 	}
 
 	@Override
 	public boolean isCancelled() {
-		// return state == ExecutionState.CANCELED;
-		return false;
+		return state == ExecutionState.CANCELED;
 	}
 
 	@Override
 	public boolean isDone() {
-		// state == ExecutionState.COMPLETED
-		return false;
+		return state == ExecutionState.COMPLETED;
 	}
 
 	@Override
