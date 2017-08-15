@@ -23,6 +23,10 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.*;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
+import teetime.framework.pipe.AbstractSynchedPipe;
+import teetime.framework.pipe.AbstractUnsynchedPipe;
+import teetime.framework.pipe.IMonitorablePipe;
+import teetime.framework.scheduling.PipeScheduler;
 import teetime.framework.signal.StartingSignal;
 
 /**
@@ -36,7 +40,7 @@ import teetime.framework.signal.StartingSignal;
  * @since 3.0
  *
  */
-public class GlobalTaskPoolScheduling implements TeeTimeService {
+public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalTaskPoolScheduling.class);
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
@@ -143,7 +147,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService {
 		taskPool.scheduleStages(frontStages);
 
 		// instantiate pipes
-		TaskQueueA2PipeInstantiation pipeVisitor = new TaskQueueA2PipeInstantiation();
+		TaskQueueA2PipeInstantiation pipeVisitor = new TaskQueueA2PipeInstantiation(this);
 		traversor = new Traverser(pipeVisitor);
 		for (AbstractStage startStage : startStages) {
 			traversor.traverse(startStage);
@@ -291,5 +295,26 @@ public class GlobalTaskPoolScheduling implements TeeTimeService {
 
 	/* default */ AtomicInteger getNumNonTerminatedFiniteStages() {
 		return numNonTerminatedFiniteStages;
+	}
+
+	@Override
+	public void onElementAdded(final AbstractUnsynchedPipe<?> pipe) {
+		String message = String.format("This scheduler does not allow unsynched pipes: %s", pipe);
+		throw new IllegalStateException(message);
+	}
+
+	@Override
+	public void onElementAdded(final AbstractSynchedPipe<?> pipe) {
+		IMonitorablePipe monitorablePipe = (IMonitorablePipe) pipe;
+		long numPushes = monitorablePipe.getNumPushesSinceAppStart();
+		if (numPushes % numOfExecutions != 0) {
+			return;
+		}
+		AbstractStage targetStage = pipe.getCachedTargetStage();
+		// System.out.println("Scheduling stage" + targetStage + ": " + numPushes);
+		if (!STAGE_FACADE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
+			taskPool.scheduleStage(targetStage);
+			// System.out.println("Scheduled stage" + targetStage);
+		}
 	}
 }

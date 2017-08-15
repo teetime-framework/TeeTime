@@ -46,6 +46,7 @@ class PrioritizedTaskPool {
 		MpmcArrayQueue<AbstractStage> stages = levels.get(stage.getLevelIndex());
 		while (!stages.offer(stage)) {
 			// wait for the queue to become non-full
+			// System.out.println("Going to sleep: " + Thread.currentThread());
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {

@@ -15,17 +15,16 @@
  */
 package teetime.framework.scheduling.globaltaskpool;
 
-import java.util.Queue;
-
 import org.jctools.queues.MpmcArrayQueue;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.AbstractSynchedPipe;
+import teetime.framework.pipe.IMonitorablePipe;
 
-class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> {
+class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
 
-	private final Queue<Object> queue;
+	private final MpmcArrayQueue<Object> queue;
 
 	// private volatile int numElements = 0;
 	// private volatile int tasksCreated = 0;
@@ -45,6 +44,7 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> {
 			String message = String.format("in pipe %s --> %s", getSourcePort().getOwningStage().getId(), getTargetPort().getOwningStage().getId());
 			throw new IllegalStateException(message, e);
 		}
+		getScheduler().onElementAdded(this);
 		reportNewElement();
 		return true;
 	}
@@ -88,6 +88,31 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> {
 	@Override
 	public int capacity() {
 		return Integer.MAX_VALUE; // unbounded
+	}
+
+	@Override
+	public long getNumPushesSinceAppStart() {
+		return queue.currentProducerIndex();
+	}
+
+	@Override
+	public long getNumPullsSinceAppStart() {
+		return queue.currentConsumerIndex();
+	}
+
+	@Override
+	public long getPushThroughput() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public long getPullThroughput() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int getNumWaits() {
+		throw new UnsupportedOperationException();
 	}
 
 }
