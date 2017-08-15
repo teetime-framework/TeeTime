@@ -60,7 +60,7 @@ class PrioritizedTaskPool {
 	public AbstractStage removeNextStage() {
 		// TODO requires O(n) so far. Try to improve.
 		// => find non-empty lowest level in O(1)
-		// corresponding ticket: https://build.se.informatik.uni-kiel.de/teetime/teetime/issues/336
+		// corresponding ticket: https://build.se.informatik.uni-kiel.de/teetime/teetime/issues/343
 		for (int i = levels.size() - 1; i >= 0; i--) {
 			MpmcArrayQueue<AbstractStage> stages = levels.get(i);
 

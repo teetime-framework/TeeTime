@@ -21,7 +21,10 @@ import teetime.framework.scheduling.pushpullmodel.PushPullScheduling;
  * Represents the (runtime) context of the given configuration.
  *
  * @since 2.0
+ *
+ * @deprecated since 3.0.
  */
+@Deprecated
 public final class ConfigurationContext {
 
 	private final TeeTimeService teeTimeService;
@@ -55,8 +58,7 @@ public final class ConfigurationContext {
 	}
 
 	void startStageAtRuntime(final AbstractStage stage) {
-		// FIXME move method to TeeTimeService or reconsider Config and ConfigContext
-		((PushPullScheduling) teeTimeService).startStageAtRuntime(stage);
+		teeTimeService.startStageAtRuntime(stage);
 	}
 
 }

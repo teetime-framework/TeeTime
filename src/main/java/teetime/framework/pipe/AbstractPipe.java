@@ -35,7 +35,19 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	private final OutputPort<? extends T> sourcePort;
 	private final InputPort<T> targetPort;
 
-	private PipeScheduler scheduler;
+	// FIXME each scheduler should set a default pipe scheduler by its own
+	private PipeScheduler scheduler = new PipeScheduler() {
+
+		@Override
+		public void onElementAdded(final AbstractSynchedPipe<?> pipe) {
+			// do nothing
+		}
+
+		@Override
+		public void onElementAdded(final AbstractUnsynchedPipe<?> pipe) {
+			// do nothing
+		}
+	};
 
 	protected AbstractPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		if (sourcePort == null) {

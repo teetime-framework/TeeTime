@@ -18,10 +18,15 @@ package teetime.stage.taskfarm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.*;
+import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
+import teetime.framework.RuntimeServiceFacade;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.pipe.IPipe;
-import teetime.stage.basic.distributor.dynamic.*;
+import teetime.stage.basic.distributor.dynamic.CreatePortActionDistributor;
+import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
+import teetime.stage.basic.distributor.dynamic.RemovePortActionDistributor;
 import teetime.stage.basic.merger.dynamic.CreatePortActionMerger;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
 import teetime.stage.basic.merger.strategy.SkippingBusyWaitingRoundRobinStrategy;
@@ -131,6 +136,7 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 
 		mergerPortAction.waitForCompletion();
 
+		// the validating and the starting signal is sent by the create action
 		RuntimeServiceFacade.INSTANCE.startWithinNewThread(getDistributor(), newStage.getInputPort().getOwningStage());
 
 		getWorkerStages().add(newStage);

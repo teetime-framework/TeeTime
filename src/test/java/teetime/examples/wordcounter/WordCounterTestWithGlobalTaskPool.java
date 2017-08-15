@@ -26,16 +26,14 @@ import com.google.common.primitives.Longs;
 
 import teetime.framework.AbstractPort;
 import teetime.framework.Execution;
-import teetime.framework.TeeTimeService;
 import teetime.framework.pipe.IMonitorablePipe;
-import teetime.framework.scheduling.globaltaskqueue.GlobalTaskQueueScheduling;
 import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
 import teetime.stage.util.CountingMap;
 import teetime.util.StopWatch;
 
-public class WordCounterTest {
+public class WordCounterTestWithGlobalTaskPool {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(WordCounterTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WordCounterTestWithGlobalTaskPool.class);
 
 	public static void writeTimingsToFile(final File outputFile, final long[] timings) throws UnsupportedEncodingException, FileNotFoundException {
 		final PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(outputFile, true), 8192 * 8), false, "UTF-8");
@@ -71,8 +69,7 @@ public class WordCounterTest {
 		for (int i = 0; i < numWarmUps; i++) {
 			LOGGER.info("Warm up #" + i);
 			final WordCounterConfiguration wcc = new WordCounterConfiguration(numWorkerThreads, testFile);
-			final TeeTimeService scheduling = new GlobalTaskQueueScheduling(numWorkerThreads, wcc);
-			final Execution<?> analysis = new Execution<WordCounterConfiguration>(wcc, true, scheduling);
+			final Execution<?> analysis = new Execution<WordCounterConfiguration>(wcc);
 
 			stopWatch.start();
 			analysis.executeBlocking();

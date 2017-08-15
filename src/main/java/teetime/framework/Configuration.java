@@ -107,6 +107,10 @@ public class Configuration extends CompositeStage {
 		startStages.add(pipe.getSourcePort().getOwningStage()); // memorize all source stages as starting point for traversing
 	}
 
+	/**
+	 * @deprecated since 3.0.
+	 */
+	@Deprecated
 	/* default */ConfigurationContext getContext() {
 		return context;
 	}

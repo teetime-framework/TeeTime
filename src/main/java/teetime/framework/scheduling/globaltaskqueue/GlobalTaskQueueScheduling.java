@@ -62,24 +62,27 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 
 	private final int numThreads;
 	private final int numOfExecutions;
-	private Configuration configuration;
+	private final Configuration configuration;
 	/** Holds all threads which are used to execute the stages */
 	private final List<TeeTimeTaskQueueThreadChw> threadPool = new ArrayList<>();
 	private final AtomicInteger numNonTerminatedFiniteStages = new AtomicInteger();
 
-	GlobalTaskQueueScheduling(final int numThreads) {
-		this(numThreads, null, DEFAULT_NUM_OF_EXECUTIONS);
-		// delay initialization of this.configuration
+	/**
+	 * A thread executes a stage {@value #DEFAULT_NUM_OF_EXECUTIONS}x per job.
+	 *
+	 * @param numThreads
+	 * @param configuration
+	 */
+	public GlobalTaskQueueScheduling(final int numThreads, final Configuration configuration) {
+		this.numThreads = numThreads;
+		this.configuration = configuration;
+		this.numOfExecutions = DEFAULT_NUM_OF_EXECUTIONS;
 	}
 
-	GlobalTaskQueueScheduling(final int numThreads, final Configuration configuration, final int numOfExecutions) {
+	public GlobalTaskQueueScheduling(final int numThreads, final Configuration configuration, final int numOfExecutions) {
 		this.numThreads = numThreads;
 		this.configuration = configuration;
 		this.numOfExecutions = numOfExecutions;
-	}
-
-	public void setConfiguration(final Configuration configuration) {
-		this.configuration = configuration;
 	}
 
 	// 1. initializeServices
@@ -247,7 +250,8 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	// runnableCounter.inc(source.runnableCounter);
 	// }
 
-	/* default */void startStageAtRuntime(final AbstractStage stage) {
+	@Override
+	public void startStageAtRuntime(final AbstractStage stage) {
 		// Nothing has to be done here
 	}
 

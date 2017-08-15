@@ -24,7 +24,9 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import teetime.framework.*;
+import teetime.framework.Configuration;
+import teetime.framework.Execution;
+import teetime.framework.RuntimeServiceFacade;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.merger.strategy.BusyWaitingRoundRobinStrategy;

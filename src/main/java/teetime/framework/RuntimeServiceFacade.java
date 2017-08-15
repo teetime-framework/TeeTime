@@ -31,6 +31,12 @@ public final class RuntimeServiceFacade {
 		// singleton
 	}
 
+	/**
+	 * Does not send signals.
+	 *
+	 * @param previousStage
+	 * @param stage
+	 */
 	public void startWithinNewThread(final AbstractStage previousStage, final AbstractStage stage) {
 		previousStage.getOwningContext().startStageAtRuntime(stage);
 	}
