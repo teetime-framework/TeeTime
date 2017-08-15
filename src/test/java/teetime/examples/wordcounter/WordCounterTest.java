@@ -47,6 +47,7 @@ public class WordCounterTest {
 	}
 
 	public static void main(final String[] args) throws UnsupportedEncodingException, FileNotFoundException {
+		// http://www.loremipsum.de/downloads/original.txt
 		String numWorkerThreadsParam = (args.length > 0) ? args[0] : "3";
 		String numWarmUpsParam = (args.length > 1) ? args[1] : "1";
 		String fileNameParam = (args.length > 2) ? args[2] : "no default file name";
@@ -60,6 +61,8 @@ public class WordCounterTest {
 
 		final String fileName = fileNameParam;
 		final File testFile = new File(fileName);
+
+		LOGGER.info("Reading {}", testFile.getAbsolutePath());
 
 		boolean monitoringEnabled = Boolean.valueOf(monitoringEnabledParam);
 

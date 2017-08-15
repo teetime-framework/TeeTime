@@ -63,6 +63,8 @@ public class WordCounterTestWithGlobalTaskPool {
 		final String fileName = fileNameParam;
 		final File testFile = new File(fileName);
 
+		LOGGER.info("Reading {}", testFile.getAbsolutePath());
+
 		boolean monitoringEnabled = Boolean.valueOf(monitoringEnabledParam);
 
 		final long[] timings = new long[1];
@@ -83,7 +85,8 @@ public class WordCounterTestWithGlobalTaskPool {
 
 		LOGGER.info("Starting analysis...");
 		final WordCounterConfiguration wcc = new WordCounterConfiguration(numWorkerThreads, testFile);
-		final Execution<?> analysis = new Execution<WordCounterConfiguration>(wcc);
+		final TeeTimeService scheduling = new GlobalTaskQueueScheduling(numWorkerThreads, wcc, 100);
+		final Execution<?> analysis = new Execution<WordCounterConfiguration>(wcc, true, scheduling);
 
 		if (monitoringEnabled) {
 			wcc.getMonitoringThread().start();
