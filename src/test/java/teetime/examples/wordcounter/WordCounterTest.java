@@ -26,9 +26,7 @@ import com.google.common.primitives.Longs;
 
 import teetime.framework.AbstractPort;
 import teetime.framework.Execution;
-import teetime.framework.TeeTimeService;
 import teetime.framework.pipe.IMonitorablePipe;
-import teetime.framework.scheduling.globaltaskqueue.GlobalTaskQueueScheduling;
 import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
 import teetime.stage.util.CountingMap;
 import teetime.util.StopWatch;
@@ -71,8 +69,7 @@ public class WordCounterTest {
 		for (int i = 0; i < numWarmUps; i++) {
 			LOGGER.info("Warm up #" + i);
 			final WordCounterConfiguration wcc = new WordCounterConfiguration(numWorkerThreads, testFile);
-			final TeeTimeService scheduling = new GlobalTaskQueueScheduling(numWorkerThreads, wcc);
-			final Execution<?> analysis = new Execution<WordCounterConfiguration>(wcc, true, scheduling);
+			final Execution<?> analysis = new Execution<WordCounterConfiguration>(wcc);
 
 			stopWatch.start();
 			analysis.executeBlocking();
