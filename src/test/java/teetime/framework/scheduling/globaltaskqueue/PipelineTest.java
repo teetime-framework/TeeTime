@@ -28,10 +28,7 @@ import teetime.framework.Configuration;
 import teetime.framework.ConfigurationContext;
 import teetime.framework.Execution;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
-import teetime.stage.CollectorSink;
-import teetime.stage.Counter;
-import teetime.stage.InitialElementProducer;
-import teetime.stage.ObjectProducer;
+import teetime.stage.*;
 import teetime.util.ConstructorClosure;
 
 public class PipelineTest {
@@ -85,7 +82,39 @@ public class PipelineTest {
 				}
 			});
 			Counter<Integer> counter = new Counter<>();
-			// StatelessCounter<T> counter = new StatelessCounter<>();
+			// NoopFilter<Integer> noopFilter = new NoopFilter<>();
+			sink = new CollectorSink<>();
+			from(producer).to(counter).end(sink);
+			// from(producer).to(counter).to(noopFilter).end(sink);
+		}
+
+		public CollectorSink<Integer> getSink() {
+			return sink;
+		}
+	}
+
+	private static class ManyElementsWithStatelessStageGlobalTaskPoolConfig extends Configuration {
+
+		private static final int NUM_THREADS = 4;
+		private static final GlobalTaskQueueScheduling SCHEDULER = new GlobalTaskQueueScheduling(NUM_THREADS);
+		private CollectorSink<Integer> sink;
+
+		public ManyElementsWithStatelessStageGlobalTaskPoolConfig(final int numInputObjects) {
+			super(new TerminatingExceptionListenerFactory(), new ConfigurationContext(SCHEDULER));
+			SCHEDULER.setConfiguration(this);
+			build(numInputObjects);
+		}
+
+		private void build(final int numInputObjects) {
+			ObjectProducer<Integer> producer = new ObjectProducer<>(numInputObjects, new ConstructorClosure<Integer>() {
+				private int counter;
+
+				@Override
+				public Integer create() {
+					return counter++;
+				}
+			});
+			StatelessCounter<Integer> counter = new StatelessCounter<>();
 			// NoopFilter<Integer> noopFilter = new NoopFilter<>();
 			sink = new CollectorSink<>();
 			from(producer).to(counter).end(sink);
@@ -98,8 +127,7 @@ public class PipelineTest {
 	}
 
 	@Test
-	@Ignore("still errorneous scheduling: size varies, e.g., returns only [a]")
-	public void shouldExecutePipelineCorrectlyFewElements() throws Exception {
+	public void shouldExecutePipelineCorrectlyFewElements() {
 		String[] inputElements = { "a", "b", "c" };
 		GlobalTaskPoolConfig<String> config = new GlobalTaskPoolConfig<>(inputElements);
 		Execution<GlobalTaskPoolConfig<String>> execution = new Execution<>(config);
@@ -114,11 +142,25 @@ public class PipelineTest {
 	}
 
 	@Test
-	// @Ignore("still errorneous scheduling: size varies")
-	public void shouldExecutePipelineCorrectlyManyElements() throws Exception {
+	public void shouldExecutePipelineCorrectlyManyElements() {
 		int numElements = 1_000;
 		ManyElementsGlobalTaskPoolConfig config = new ManyElementsGlobalTaskPoolConfig(numElements);
 		Execution<ManyElementsGlobalTaskPoolConfig> execution = new Execution<>(config);
+		execution.executeBlocking();
+
+		List<Integer> processedElements = config.getSink().getElements();
+		// for (int i = 0; i < numElements; i++) {
+		// assertThat(processedElements.get(i), is(i));
+		// }
+		assertThat(processedElements, hasSize(numElements));
+	}
+
+	@Test
+	@Ignore("The reflexive pipe in the counter is not handled correctly by the scheduling strategy so far")
+	public void shouldExecuteReflexivePipeCorrectlyManyElements() {
+		int numElements = 1_000;
+		ManyElementsWithStatelessStageGlobalTaskPoolConfig config = new ManyElementsWithStatelessStageGlobalTaskPoolConfig(numElements);
+		Execution<ManyElementsWithStatelessStageGlobalTaskPoolConfig> execution = new Execution<>(config);
 		execution.executeBlocking();
 
 		List<Integer> processedElements = config.getSink().getElements();
