@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.scheduling.globaltaskqueue;
+package teetime.framework.scheduling.globaltaskpool;
 
 import teetime.framework.InputPort;
 

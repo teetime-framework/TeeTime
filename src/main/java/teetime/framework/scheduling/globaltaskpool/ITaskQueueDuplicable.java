@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.scheduling.globaltaskqueue;
+package teetime.framework.scheduling.globaltaskpool;
+
+import teetime.framework.AbstractStage;
 
 /**
  * Created by nilsziermann on 29.12.16.
  */
-public interface ITaskQueueStage {
-	public boolean isRunning();
+public interface ITaskQueueDuplicable extends ITaskQueueInformation {
+	public AbstractStage duplicate();
 }

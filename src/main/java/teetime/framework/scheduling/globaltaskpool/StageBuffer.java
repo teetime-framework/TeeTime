@@ -13,13 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.scheduling.globaltaskqueue;
+package teetime.framework.scheduling.globaltaskpool;
 
 import teetime.framework.AbstractStage;
 
 /**
- * Created by nilsziermann on 29.12.16.
+ * Created by nilsziermann on 05.01.17.
  */
-public interface ITaskQueueDuplicable extends ITaskQueueInformation {
-	public AbstractStage duplicate();
+public class StageBuffer {
+	private final AbstractStage stage;
+	private boolean done;
+
+	public StageBuffer(final AbstractStage stage, final boolean done) {
+		this.stage = stage;
+		this.done = done;
+	}
+
+	public AbstractStage getStage() {
+		return stage;
+	}
+
+	public boolean isDone() {
+		return done;
+	}
+
+	public void setDone(final boolean done) {
+		this.done = done;
+	}
 }

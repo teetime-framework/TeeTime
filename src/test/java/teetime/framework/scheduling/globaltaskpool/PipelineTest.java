@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.scheduling.globaltaskqueue;
+package teetime.framework.scheduling.globaltaskpool;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -27,6 +27,7 @@ import org.junit.Test;
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
 import teetime.framework.TeeTimeService;
+import teetime.framework.scheduling.globaltaskpool.GlobalTaskPoolScheduling;
 import teetime.stage.*;
 import teetime.util.ConstructorClosure;
 
@@ -118,7 +119,7 @@ public class PipelineTest {
 	public void shouldExecutePipelineCorrectlyFewElements() {
 		String[] inputElements = { "a", "b", "c" };
 		GlobalTaskPoolConfig<String> config = new GlobalTaskPoolConfig<>(inputElements);
-		TeeTimeService scheduling = new GlobalTaskQueueScheduling(NUM_THREADS, config, 1);
+		TeeTimeService scheduling = new GlobalTaskPoolScheduling(NUM_THREADS, config, 1);
 		Execution<GlobalTaskPoolConfig<String>> execution = new Execution<>(config, true, scheduling);
 		execution.executeBlocking();
 
@@ -134,7 +135,7 @@ public class PipelineTest {
 	public void shouldExecutePipelineCorrectlyManyElements() {
 		int numElements = 1_000;
 		ManyElementsGlobalTaskPoolConfig config = new ManyElementsGlobalTaskPoolConfig(numElements);
-		TeeTimeService scheduling = new GlobalTaskQueueScheduling(NUM_THREADS, config, 1);
+		TeeTimeService scheduling = new GlobalTaskPoolScheduling(NUM_THREADS, config, 1);
 		Execution<ManyElementsGlobalTaskPoolConfig> execution = new Execution<>(config, true, scheduling);
 		execution.executeBlocking();
 
@@ -150,7 +151,7 @@ public class PipelineTest {
 	public void shouldExecuteReflexivePipeCorrectlyManyElements() {
 		int numElements = 1_000;
 		ManyElementsWithStatelessStageGlobalTaskPoolConfig config = new ManyElementsWithStatelessStageGlobalTaskPoolConfig(numElements);
-		TeeTimeService scheduling = new GlobalTaskQueueScheduling(NUM_THREADS, config, 1);
+		TeeTimeService scheduling = new GlobalTaskPoolScheduling(NUM_THREADS, config, 1);
 		Execution<ManyElementsWithStatelessStageGlobalTaskPoolConfig> execution = new Execution<>(config, true, scheduling);
 		execution.executeBlocking();
 

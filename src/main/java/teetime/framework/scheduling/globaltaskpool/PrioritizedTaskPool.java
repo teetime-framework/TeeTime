@@ -1,4 +1,4 @@
-package teetime.framework.scheduling.globaltaskqueue;
+package teetime.framework.scheduling.globaltaskpool;
 
 import java.util.ArrayList;
 import java.util.List;

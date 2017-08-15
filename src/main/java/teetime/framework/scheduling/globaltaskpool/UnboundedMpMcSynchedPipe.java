@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.scheduling.globaltaskqueue;
+package teetime.framework.scheduling.globaltaskpool;
 
 import java.util.Queue;
 
@@ -39,7 +39,12 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> {
 
 	@Override
 	public boolean add(final Object element) {
-		this.queue.add(element);
+		try {
+			this.queue.add(element);
+		} catch (IllegalStateException e) {
+			String message = String.format("in pipe %s --> %s", getSourcePort().getOwningStage().getId(), getTargetPort().getOwningStage().getId());
+			throw new IllegalStateException(message, e);
+		}
 		reportNewElement();
 		return true;
 	}

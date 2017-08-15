@@ -1,4 +1,4 @@
-package teetime.framework.scheduling.globaltaskqueue;
+package teetime.framework.scheduling.globaltaskpool;
 
 import teetime.framework.AbstractPort;
 import teetime.framework.AbstractStage;

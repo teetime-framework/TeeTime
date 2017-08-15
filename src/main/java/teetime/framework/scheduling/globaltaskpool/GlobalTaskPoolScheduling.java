@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.scheduling.globaltaskqueue;
+package teetime.framework.scheduling.globaltaskpool;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,9 +36,9 @@ import teetime.framework.signal.StartingSignal;
  * @since 3.0
  *
  */
-public class GlobalTaskQueueScheduling implements TeeTimeService {
+public class GlobalTaskPoolScheduling implements TeeTimeService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalTaskQueueScheduling.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalTaskPoolScheduling.class);
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 	private static final ConfigurationFacade CONFIG_FACADE = ConfigurationFacade.INSTANCE;
 	private static final int DEFAULT_NUM_OF_EXECUTIONS = 1;
@@ -73,13 +73,13 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	 * @param numThreads
 	 * @param configuration
 	 */
-	public GlobalTaskQueueScheduling(final int numThreads, final Configuration configuration) {
+	public GlobalTaskPoolScheduling(final int numThreads, final Configuration configuration) {
 		this.numThreads = numThreads;
 		this.configuration = configuration;
 		this.numOfExecutions = DEFAULT_NUM_OF_EXECUTIONS;
 	}
 
-	public GlobalTaskQueueScheduling(final int numThreads, final Configuration configuration, final int numOfExecutions) {
+	public GlobalTaskPoolScheduling(final int numThreads, final Configuration configuration, final int numOfExecutions) {
 		this.numThreads = numThreads;
 		this.configuration = configuration;
 		this.numOfExecutions = numOfExecutions;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.scheduling.globaltaskqueue;
+package teetime.framework.scheduling.globaltaskpool;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,10 +26,10 @@ public class TeeTimeTaskQueueThreadChw extends Thread {
 
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 
-	private final GlobalTaskQueueScheduling scheduling;
+	private final GlobalTaskPoolScheduling scheduling;
 	private final int numOfExecutions;
 
-	public TeeTimeTaskQueueThreadChw(final GlobalTaskQueueScheduling scheduling, final int numOfExecutions) {
+	public TeeTimeTaskQueueThreadChw(final GlobalTaskPoolScheduling scheduling, final int numOfExecutions) {
 		super();
 		this.scheduling = scheduling;
 		this.numOfExecutions = numOfExecutions;
