@@ -25,11 +25,11 @@ public final class ArrayPool<T> {
 
 	@SuppressWarnings("unchecked")
 	public T[] acquire(final int capacity) {
-		T[] array = this.cache.get(capacity);
-		if (array == null) {
-			array = (T[]) new Object[capacity];
+		T[] storedElements = this.cache.get(capacity);
+		if (storedElements == null) {
+			storedElements = (T[]) new Object[capacity];
 		}
-		return array;
+		return storedElements;
 	}
 
 	public void release(final T[] array) {
