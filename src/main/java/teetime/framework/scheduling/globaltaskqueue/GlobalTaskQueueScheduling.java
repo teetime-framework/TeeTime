@@ -26,11 +26,10 @@ import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.signal.StartingSignal;
 
 /**
- * This scheduling approach maintains a global, synchronized task queue whose tasks are stages.
- * Multiple threads access the task queue concurrently.
- * A thread either removes the head stage of the queue or, if the queue is empty at that moment, performs busy waiting until a non-null head stage is available.
+ * This scheduling approach maintains a global, synchronized, prioritized task pool whose tasks are stages.
+ * Multiple threads access this task pool concurrently.
  * At each moment in time, a particular stage is executed only by at most one thread.
- * Thus, a stage in combination with the task queue acts as a lock for executing that stage.
+ * Thus, a stage in combination with the task data structure acts as a lock for executing that stage.
  *
  * @author Christian Wulf (chw)
  *
@@ -45,19 +44,17 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	private static final int DEFAULT_NUM_OF_EXECUTIONS = 1;
 
 	/** (synchronized) */
-	private final List<AbstractStage> infiniteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
-	/** (synchronized) */
 	private final List<AbstractStage> finiteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
 	/** Contains all stages which have no predecessors or only terminated predecessors (synchronized) */
 	private final List<AbstractStage> frontStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
 
 	// TODO: Make unbounded or implement blocking for task creation
 	/**
-	 * Holds all stages which should be executed next. A stage instance can occur more than once in this queue.
+	 * Holds all stages which should be executed next. A stage instance can occur more than once in this pool.
 	 * <br>
-	 * <i>(synchronized queue)</i>
+	 * <i>(synchronized pool)</i>
 	 */
-	private TaskQueue taskQueue;
+	private PrioritizedTaskPool taskPool;
 	/** (not synchronized) */
 	private final Map<AbstractStage, Boolean> runningStatefulStages = new HashMap<AbstractStage, Boolean>();
 	/** (synchronized) */
@@ -125,7 +122,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 			stageList.put(stage, new LinkedList<StageBuffer>());
 		}
 
-		if (finiteProducerStages.isEmpty() && infiniteProducerStages.isEmpty()) {
+		if (finiteProducerStages.isEmpty()) {
 			throw new IllegalStateException("1004 - No producer stages in this configuration.");
 		}
 
@@ -135,18 +132,12 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		for (AbstractStage startStage : finiteProducerStages) {
 			traversor.traverse(startStage);
 		}
-		for (AbstractStage startStage : infiniteProducerStages) {
-			traversor.traverse(startStage);
-		}
 
-		taskQueue = new TaskQueue(levelIndexVisitor.getMaxLevelIndex() + 1);
-		for (AbstractStage stage : allStages) {
-			taskQueue.scheduleStage(stage);
-		}
-
-		// define front stages
-		taskQueue.scheduleStages(frontStages);
-		taskQueue.scheduleStages(infiniteProducerStages);
+		taskPool = new PrioritizedTaskPool(levelIndexVisitor.getMaxLevelIndex() + 1);
+		// for (AbstractStage stage : allStages) {
+		// taskPool.scheduleStage(stage);
+		// }
+		taskPool.scheduleStages(frontStages);
 
 		// instantiate pipes
 		TaskQueueA2PipeInstantiation pipeVisitor = new TaskQueueA2PipeInstantiation();
@@ -159,8 +150,7 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 	private void categorizeStage(final AbstractStage stage) {
 		switch (STAGE_FACADE.getTerminationStrategy(stage)) {
 		case BY_INTERRUPT:
-			infiniteProducerStages.add(stage);
-			break;
+			throw new IllegalStateException("Infinite producers are not supported by this scheduling strategy.");
 		case BY_SELF_DECISION:
 			finiteProducerStages.add(stage);
 			frontStages.add(stage);
@@ -194,11 +184,6 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 				finiteProducerStage.onSignal(new StartingSignal(), null);
 			}
 		}
-		synchronized (infiniteProducerStages) {
-			for (AbstractStage infiniteProducerStage : infiniteProducerStages) {
-				infiniteProducerStage.onSignal(new StartingSignal(), null);
-			}
-		}
 		for (Thread thread : threadPool) {
 			thread.start();
 		}
@@ -209,11 +194,6 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		synchronized (finiteProducerStages) {
 			for (AbstractStage finiteProducerStage : finiteProducerStages) {
 				STAGE_FACADE.abort(finiteProducerStage);
-			}
-		}
-		synchronized (infiniteProducerStages) {
-			for (AbstractStage infiniteProducerStage : infiniteProducerStages) {
-				STAGE_FACADE.abort(infiniteProducerStage);
 			}
 		}
 	}
@@ -271,10 +251,6 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		// Nothing has to be done here
 	}
 
-	public List<AbstractStage> getInfiniteProducerStages() {
-		return infiniteProducerStages;
-	}
-
 	public List<AbstractStage> getFiniteProducerStages() {
 		return finiteProducerStages;
 	}
@@ -283,8 +259,8 @@ public class GlobalTaskQueueScheduling implements TeeTimeService {
 		return frontStages;
 	}
 
-	public TaskQueue getTaskQueue() {
-		return taskQueue;
+	public PrioritizedTaskPool getPrioritizedTaskPool() {
+		return taskPool;
 	}
 
 	public Map<AbstractStage, Boolean> getRunningStatefulStages() {

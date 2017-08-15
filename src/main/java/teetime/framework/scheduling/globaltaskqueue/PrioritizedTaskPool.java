@@ -10,9 +10,11 @@ import org.jctools.queues.MpmcArrayQueue;
 import teetime.framework.AbstractStage;
 
 /**
- * Represents a queue whose tasks are categorized into levels.
+ * Represents a task pool whose tasks are stages and categorized into levels.
+ * A thread searches for the next task in the task pool starting at the deepest level and traversing up to the highest level, i.e., the root.
+ * A stage at the deepest level has no output ports.
  */
-class TaskQueue {
+class PrioritizedTaskPool {
 
 	private static final int CAPACITY = 128;
 
@@ -27,7 +29,7 @@ class TaskQueue {
 
 	// private final AtomicInteger lowestLevelPointer = new AtomicInteger(0);
 
-	public TaskQueue(final int numLevels) {
+	public PrioritizedTaskPool(final int numLevels) {
 		levels = new ArrayList<>(numLevels);
 		for (int i = 0; i < numLevels; i++) {
 			levels.add(new MpmcArrayQueue<>(CAPACITY)); // NOPMD (initialization)
@@ -42,7 +44,14 @@ class TaskQueue {
 
 	public void scheduleStage(final AbstractStage stage) {
 		MpmcArrayQueue<AbstractStage> stages = levels.get(stage.getLevelIndex());
-		stages.add(stage);
+		while (!stages.offer(stage)) {
+			// wait for the queue to become non-full
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				throw new IllegalStateException(e);
+			}
+		}
 	}
 
 	/**
@@ -51,6 +60,7 @@ class TaskQueue {
 	public AbstractStage removeNextStage() {
 		// TODO requires O(n) so far. Try to improve.
 		// => find non-empty lowest level in O(1)
+		// corresponding ticket: https://build.se.informatik.uni-kiel.de/teetime/teetime/issues/336
 		for (int i = levels.size() - 1; i >= 0; i--) {
 			MpmcArrayQueue<AbstractStage> stages = levels.get(i);
 

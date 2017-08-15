@@ -36,13 +36,13 @@ import teetime.util.ConstructorClosure;
 
 public class PipelineTest {
 
-	private static class GlobalTaskQueueConfig<T> extends Configuration {
+	private static class GlobalTaskPoolConfig<T> extends Configuration {
 
 		private static final int NUM_THREADS = 4;
 		private static final GlobalTaskQueueScheduling SCHEDULER = new GlobalTaskQueueScheduling(NUM_THREADS);
 		private CollectorSink<T> sink;
 
-		public GlobalTaskQueueConfig(final T... elements) {
+		public GlobalTaskPoolConfig(final T... elements) {
 			super(new TerminatingExceptionListenerFactory(), new ConfigurationContext(SCHEDULER));
 			SCHEDULER.setConfiguration(this);
 			build(elements);
@@ -63,13 +63,13 @@ public class PipelineTest {
 		}
 	}
 
-	private static class ManyElementsGlobalTaskQueueConfig extends Configuration {
+	private static class ManyElementsGlobalTaskPoolConfig extends Configuration {
 
 		private static final int NUM_THREADS = 4;
 		private static final GlobalTaskQueueScheduling SCHEDULER = new GlobalTaskQueueScheduling(NUM_THREADS);
 		private CollectorSink<Integer> sink;
 
-		public ManyElementsGlobalTaskQueueConfig(final int numInputObjects) {
+		public ManyElementsGlobalTaskPoolConfig(final int numInputObjects) {
 			super(new TerminatingExceptionListenerFactory(), new ConfigurationContext(SCHEDULER));
 			SCHEDULER.setConfiguration(this);
 			build(numInputObjects);
@@ -101,8 +101,8 @@ public class PipelineTest {
 	@Ignore("still errorneous scheduling: size varies, e.g., returns only [a]")
 	public void shouldExecutePipelineCorrectlyFewElements() throws Exception {
 		String[] inputElements = { "a", "b", "c" };
-		GlobalTaskQueueConfig<String> config = new GlobalTaskQueueConfig<>(inputElements);
-		Execution<GlobalTaskQueueConfig<String>> execution = new Execution<>(config);
+		GlobalTaskPoolConfig<String> config = new GlobalTaskPoolConfig<>(inputElements);
+		Execution<GlobalTaskPoolConfig<String>> execution = new Execution<>(config);
 		execution.executeBlocking();
 
 		List<String> processedElements = config.getSink().getElements();
@@ -114,11 +114,11 @@ public class PipelineTest {
 	}
 
 	@Test
-	@Ignore("still errorneous scheduling: size varies")
+	// @Ignore("still errorneous scheduling: size varies")
 	public void shouldExecutePipelineCorrectlyManyElements() throws Exception {
 		int numElements = 1_000;
-		ManyElementsGlobalTaskQueueConfig config = new ManyElementsGlobalTaskQueueConfig(numElements);
-		Execution<ManyElementsGlobalTaskQueueConfig> execution = new Execution<>(config);
+		ManyElementsGlobalTaskPoolConfig config = new ManyElementsGlobalTaskPoolConfig(numElements);
+		Execution<ManyElementsGlobalTaskPoolConfig> execution = new Execution<>(config);
 		execution.executeBlocking();
 
 		List<Integer> processedElements = config.getSink().getElements();

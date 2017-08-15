@@ -16,6 +16,7 @@
 package teetime.framework.scheduling.globaltaskqueue;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import teetime.framework.*;
 import teetime.framework.signal.ISignal;
@@ -36,17 +37,17 @@ public class TeeTimeTaskQueueThreadChw extends Thread {
 
 	@Override
 	public void run() {
-		final TaskQueue taskQueue = scheduling.getTaskQueue(); // NOPMD (DU anomaly)
+		final AtomicInteger numNonTerminatedFiniteStages = scheduling.getNumNonTerminatedFiniteStages();
+		final PrioritizedTaskPool taskPool = scheduling.getPrioritizedTaskPool(); // NOPMD (DU anomaly)
 
-		// TODO implement: run as long as there is at least one stage which has not been terminated yet
-		while (scheduling.getNumNonTerminatedFiniteStages().get() > 0) {
-			AbstractStage stage = taskQueue.removeNextStage();
+		while (numNonTerminatedFiniteStages.get() > 0) {
+			AbstractStage stage = taskPool.removeNextStage();
 			if (stage != null) {
 				try {
 					executeStage(stage);
-					refillTaskQueue(stage, taskQueue);
+					refillTaskPool(stage, taskPool);
 				} finally {
-					taskQueue.releaseStage(stage); // release lock (FIXME bad API)
+					taskPool.releaseStage(stage); // release lock (FIXME bad API)
 				}
 			}
 		}
@@ -62,10 +63,6 @@ public class TeeTimeTaskQueueThreadChw extends Thread {
 		if (stage.getCurrentState() == StageState.TERMINATED) {
 			// int newValue =
 			scheduling.getNumNonTerminatedFiniteStages().decrementAndGet();
-
-			// FIXME so far, it is unclear to me when to re-add infinite producers
-			// => solution: remove the concept of infinite producers
-
 			passFrontStatusToSuccessorStages(stage);
 		}
 	}
@@ -96,20 +93,20 @@ public class TeeTimeTaskQueueThreadChw extends Thread {
 		}
 	}
 
-	private void refillTaskQueue(final AbstractStage stage, final TaskQueue taskQueue) {
+	private void refillTaskPool(final AbstractStage stage, final PrioritizedTaskPool taskPool) {
 		// Add all successor stages so that they will be executed afterwards.
 		// TODO evaluate whether adding workless stages is faster than adding stages within pipes.
 		List<OutputPort<?>> outputPorts = STAGE_FACADE.getOutputPorts(stage);
 		for (OutputPort<?> outputPort : outputPorts) {
 			AbstractStage targetStage = outputPort.getPipe().getTargetPort().getOwningStage();
 			if (!STAGE_FACADE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
-				taskQueue.scheduleStage(targetStage);
+				taskPool.scheduleStage(targetStage);
 			}
 		}
 
 		// re-add stage to task queue if it is a front stage (a terminated front stage would have been already removed at this point)
 		if (scheduling.getFrontStages().contains(stage)) {
-			taskQueue.scheduleStage(stage);
+			taskPool.scheduleStage(stage);
 		}
 	}
 }
