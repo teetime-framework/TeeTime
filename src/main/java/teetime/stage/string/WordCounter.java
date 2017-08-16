@@ -18,8 +18,8 @@ package teetime.stage.string;
 import teetime.framework.CompositeStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.performancelogging.CompositeStateLoggable;
 import teetime.framework.performancelogging.ActivationStateLogger;
+import teetime.framework.performancelogging.CompositeStateLoggable;
 import teetime.stage.MappingCounter;
 import teetime.stage.taskfarm.ITaskFarmDuplicable;
 import teetime.stage.util.CountingMap;
@@ -39,7 +39,7 @@ public class WordCounter extends CompositeStage implements ITaskFarmDuplicable<S
 	private final MappingCounter<String> mapCounter;
 
 	public WordCounter() {
-		this.tokenizer = new Tokenizer(" ");
+		this.tokenizer = new Tokenizer("\\s");
 		final ToLowerCase toLowerCase = new ToLowerCase();
 		this.mapCounter = new MappingCounter<String>();
 

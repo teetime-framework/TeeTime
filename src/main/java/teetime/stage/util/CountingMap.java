@@ -31,7 +31,14 @@ import com.carrotsearch.hppc.procedures.ObjectIntProcedure;
  */
 public final class CountingMap<T> {
 
-	private final ObjectIntMap<T> map = new ObjectIntHashMap<T>();
+	/* default */final ObjectIntMap<T> map = new ObjectIntHashMap<T>();
+
+	private final ObjectIntProcedure<? super T> procedure = new ObjectIntProcedure<T>() {
+		@Override
+		public void apply(final T key, final int value) {
+			map.addTo(key, value);
+		}
+	};
 
 	/**
 	 * Increments the value of key by one.
@@ -56,12 +63,6 @@ public final class CountingMap<T> {
 	}
 
 	public void add(final CountingMap<T> otherMap) {
-		final ObjectIntProcedure<? super T> procedure = new ObjectIntProcedure<T>() {
-			@Override
-			public void apply(final T key, final int value) {
-				map.addTo(key, value);
-			}
-		};
 		otherMap.map.forEach(procedure);
 	}
 

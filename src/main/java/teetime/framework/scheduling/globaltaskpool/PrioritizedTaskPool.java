@@ -1,9 +1,6 @@
 package teetime.framework.scheduling.globaltaskpool;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.*;
 
 import org.jctools.queues.MpmcArrayQueue;
 
@@ -23,9 +20,9 @@ class PrioritizedTaskPool {
 	/**
 	 * Holds all stages that are currently executed by a thread.
 	 * <br>
-	 * <i>(synchronized map)</i>
+	 * <i>(synchronized set)</i>
 	 */
-	private final ConcurrentMap<AbstractStage, Thread> executingStages = new ConcurrentHashMap<>();
+	private final Set<AbstractStage> executingStages = Collections.synchronizedSet(new HashSet<>());
 
 	// private final AtomicInteger lowestLevelPointer = new AtomicInteger(0);
 
@@ -68,11 +65,10 @@ class PrioritizedTaskPool {
 
 			// (only) read next stage with work
 			if (null != stage) {
-				Thread thisThread = Thread.currentThread();
 				// TODO possible alternative implementation: AbstractStage.getExecutingThread().compareAndSet()
-				Thread executingThread = executingStages.putIfAbsent(stage, thisThread);
 				// ensure no other thread is executing the stage at this moment (this is our lock condition)
-				if (/* stage.isStateless() || */ executingThread == thisThread) { // NOPMD (== is correct)
+				boolean notAlreadyContained = executingStages.add(stage);
+				if (/* stage.isStateless() || */ notAlreadyContained) {
 					return stages.poll(); // NOPMD (two returns in method)
 				}
 			}

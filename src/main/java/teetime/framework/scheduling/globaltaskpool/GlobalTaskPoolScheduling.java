@@ -143,9 +143,6 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		}
 
 		taskPool = new PrioritizedTaskPool(levelIndexVisitor.getMaxLevelIndex() + 1);
-		// for (AbstractStage stage : allStages) {
-		// taskPool.scheduleStage(stage);
-		// }
 		taskPool.scheduleStages(frontStages);
 
 		// instantiate pipes
@@ -194,11 +191,6 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 
 	@Override
 	public void onExecute() {
-		// synchronized (frontStages) {
-		// for (AbstractStage finiteProducerStage : frontStages) {
-		// finiteProducerStage.onSignal(new StartingSignal(), null);
-		// }
-		// }
 		final StartingSignal signal = new StartingSignal();
 		SignalVisitor signalVisitor = new SignalVisitor(signal);
 		BreadthFirstTraverser traversor = new BreadthFirstTraverser();
@@ -333,12 +325,13 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		// System.out.println("Scheduling stage" + targetStage + ": " + numPushes);
 		if (!STAGE_FACADE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
 			TeeTimeTaskQueueThreadChw currentThread = (TeeTimeTaskQueueThreadChw) Thread.currentThread();
-			// while (!taskPool.scheduleStage(targetStage)) {
-			// currentThread.processNextStage(taskPool);
-			// }
-			if (!taskPool.scheduleStage(targetStage)) {
-				throw new IllegalStateException("Could not schedule " + targetStage);
+
+			while (!taskPool.scheduleStage(targetStage)) {
+				currentThread.processNextStage(taskPool);
 			}
+			// if (!taskPool.scheduleStage(targetStage)) {
+			// throw new IllegalStateException("Could not schedule " + targetStage);
+			// }
 			// System.out.println("Scheduled stage" + targetStage);
 			currentThread.processNextStage(taskPool);
 		}

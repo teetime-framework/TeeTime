@@ -55,6 +55,7 @@ public final class File2SeqOfWords extends AbstractTransformation<File, String> 
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(textFile), this.charset));
 			CharBuffer charBuffer = CharBuffer.allocate(bufferCapacity);
+			int iterations = 0;
 			while (reader.read(charBuffer) != -1) {
 				final int position = getPreviousWhitespacePosition(charBuffer);
 				if (-1 == position && logger.isErrorEnabled()) {
@@ -66,6 +67,10 @@ public final class File2SeqOfWords extends AbstractTransformation<File, String> 
 				charBuffer.limit(position);
 				charBuffer.rewind();
 				this.outputPort.send(charBuffer.toString()); // from position to limit-1
+
+				if (logger.isDebugEnabled()) {
+					logger.debug("Sent {} bytes", bufferCapacity * iterations++);
+				}
 
 				charBuffer.limit(limit);
 				charBuffer.position(position);

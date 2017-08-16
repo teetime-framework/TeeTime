@@ -32,6 +32,9 @@ public class SignalVisitor implements ITraverserVisitor {
 		// drain signal from internal signal queue
 		AbstractSynchedPipe<?> synchedPipe = (AbstractSynchedPipe<?>) port.getPipe();
 		ISignal receivedSignal = synchedPipe.getSignal();
+		if (null == receivedSignal) {
+			return VisitorBehavior.CONTINUE_FORWARD;
+		}
 		if (receivedSignal != signal) {
 			throw new IllegalStateException("Unexpected signal: " + receivedSignal);
 		}

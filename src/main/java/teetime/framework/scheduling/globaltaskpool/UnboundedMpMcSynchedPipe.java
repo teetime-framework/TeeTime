@@ -17,8 +17,7 @@ package teetime.framework.scheduling.globaltaskpool;
 
 import org.jctools.queues.MpmcArrayQueue;
 
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.*;
 import teetime.framework.pipe.AbstractSynchedPipe;
 import teetime.framework.pipe.IMonitorablePipe;
 
@@ -26,8 +25,7 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMon
 
 	private final MpmcArrayQueue<Object> queue;
 
-	// private volatile int numElements = 0;
-	// private volatile int tasksCreated = 0;
+	private transient long lastProducerIndex, lastConsumerIndex;
 
 	public UnboundedMpMcSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
@@ -38,12 +36,25 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMon
 
 	@Override
 	public boolean add(final Object element) {
-		try {
-			this.queue.add(element);
-		} catch (IllegalStateException e) {
-			String message = String.format("in pipe %s --> %s", getSourcePort().getOwningStage().getId(), getTargetPort().getOwningStage().getId());
-			throw new IllegalStateException(message, e);
+		// try {
+		// this.queue.add(element);
+		// } catch (IllegalStateException e) {
+		// String message = String.format("in pipe %s --> %s", getSourcePort().getOwningStage().getId(), getTargetPort().getOwningStage().getId());
+		// throw new IllegalStateException(message, e);
+		// }
+
+		while (!this.queue.offer(element)) {
+			GlobalTaskPoolScheduling globalTaskPoolScheduling = (GlobalTaskPoolScheduling) getScheduler();
+			PrioritizedTaskPool taskPool = globalTaskPoolScheduling.getPrioritizedTaskPool();
+			AbstractStage targetStage = getCachedTargetStage();
+			if (!StageFacade.INSTANCE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
+				TeeTimeTaskQueueThreadChw currentThread = (TeeTimeTaskQueueThreadChw) Thread.currentThread();
+				// while (!taskPool.scheduleStage(targetStage)) {
+				currentThread.processNextStage(taskPool);
+				// }
+			}
 		}
+
 		getScheduler().onElementAdded(this);
 		reportNewElement();
 		return true;
@@ -102,17 +113,23 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMon
 
 	@Override
 	public long getPushThroughput() {
-		throw new UnsupportedOperationException();
+		final long currentProducerIndex = getNumPushesSinceAppStart();
+		long diff = currentProducerIndex - lastProducerIndex;
+		lastProducerIndex = currentProducerIndex;
+		return diff;
 	}
 
 	@Override
 	public long getPullThroughput() {
-		throw new UnsupportedOperationException();
+		final long currentConsumerIndex = getNumPullsSinceAppStart();
+		long diff = currentConsumerIndex - lastConsumerIndex;
+		lastConsumerIndex = currentConsumerIndex;
+		return diff;
 	}
 
 	@Override
 	public int getNumWaits() {
-		throw new UnsupportedOperationException();
+		return 0;
 	}
 
 }

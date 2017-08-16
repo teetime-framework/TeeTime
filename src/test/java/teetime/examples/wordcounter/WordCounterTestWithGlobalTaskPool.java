@@ -69,11 +69,13 @@ public class WordCounterTestWithGlobalTaskPool {
 
 		final long[] timings = new long[1];
 		final StopWatch stopWatch = new StopWatch();
+		/** maximal number of executions for a scheduled stage per thread */
+		final int numOfExecutions = 1024;
 
 		for (int i = 0; i < numWarmUps; i++) {
 			LOGGER.info("Warm up #" + i);
 			final WordCounterConfiguration wcc = new WordCounterConfiguration(numWorkerThreads, testFile);
-			final TeeTimeService scheduling = new GlobalTaskPoolScheduling(numWorkerThreads, wcc);
+			final TeeTimeService scheduling = new GlobalTaskPoolScheduling(numWorkerThreads, wcc, numOfExecutions);
 			final Execution<?> analysis = new Execution<WordCounterConfiguration>(wcc, true, scheduling);
 
 			stopWatch.start();
@@ -85,7 +87,7 @@ public class WordCounterTestWithGlobalTaskPool {
 
 		LOGGER.info("Starting analysis...");
 		final WordCounterConfiguration wcc = new WordCounterConfiguration(numWorkerThreads, testFile);
-		final TeeTimeService scheduling = new GlobalTaskPoolScheduling(numWorkerThreads, wcc, 100);
+		final TeeTimeService scheduling = new GlobalTaskPoolScheduling(numWorkerThreads, wcc, numOfExecutions);
 		final Execution<?> analysis = new Execution<WordCounterConfiguration>(wcc, true, scheduling);
 
 		if (monitoringEnabled) {

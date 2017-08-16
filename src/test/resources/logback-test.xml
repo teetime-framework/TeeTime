@@ -36,7 +36,7 @@
 	<logger name="teetime.util.framework.concurrent" level="TRACE" />
 <!-- 	<logger name="teetime.stage" level="TRACE" /> -->
 <!-- 	<logger name="teetime.framework.signal" level="TRACE" /> -->
-<!-- 	<logger name="teetime.stage" level="TRACE" /> -->
+	<logger name="teetime.stage" level="TRACE" />
 	<logger name="util" level="INFO" />
 	
 	<logger name="kieker" level="ERROR" />
