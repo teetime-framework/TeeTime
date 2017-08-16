@@ -42,17 +42,16 @@ class PrioritizedTaskPool {
 		}
 	}
 
-	public void scheduleStage(final AbstractStage stage) {
+	public boolean scheduleStage(final AbstractStage stage) {
 		MpmcArrayQueue<AbstractStage> stages = levels.get(stage.getLevelIndex());
-		while (!stages.offer(stage)) {
-			// wait for the queue to become non-full
-			// System.out.println("Going to sleep: " + Thread.currentThread());
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				throw new IllegalStateException(e);
-			}
-		}
+		return stages.offer(stage);
+		// wait for the queue to become non-full
+		// System.out.println(String.format("Going to sleep: %s, index: %s, peek: %s, %s", stage, stage.getLevelIndex(), stages.peek(), Thread.currentThread()));
+		// try {
+		// Thread.sleep(1);
+		// } catch (InterruptedException e) {
+		// throw new IllegalStateException(e);
+		// }
 	}
 
 	/**

@@ -28,6 +28,8 @@ import teetime.framework.pipe.AbstractUnsynchedPipe;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.scheduling.PipeScheduler;
 import teetime.framework.signal.StartingSignal;
+import teetime.framework.signal.ValidatingSignal;
+import teetime.framework.validation.AnalysisNotValidException;
 
 /**
  * This scheduling approach maintains a global, synchronized, prioritized task pool whose tasks are stages.
@@ -175,22 +177,39 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 	@Override
 	public void onValidate() {
 		// // BETTER validate concurrently
-		// for (AbstractStage stage : threadableStages) {
-		// final ValidatingSignal validatingSignal = new ValidatingSignal(); // NOPMD we need a new instance every iteration
-		// stage.onSignal(validatingSignal, null);
-		// if (validatingSignal.getInvalidPortConnections().size() > 0) {
-		// throw new AnalysisNotValidException(validatingSignal.getInvalidPortConnections());
-		// }
-		// }
+		final ValidatingSignal signal = new ValidatingSignal();
+		SignalVisitor signalVisitor = new SignalVisitor(signal);
+		BreadthFirstTraverser traversor = new BreadthFirstTraverser();
+
+		synchronized (frontStages) {
+			for (AbstractStage stage : frontStages) {
+				traversor.traverse(stage, signalVisitor);
+
+				if (signal.getInvalidPortConnections().size() > 0) {
+					throw new AnalysisNotValidException(signal.getInvalidPortConnections());
+				}
+			}
+		}
 	}
 
 	@Override
 	public void onExecute() {
-		synchronized (finiteProducerStages) {
-			for (AbstractStage finiteProducerStage : finiteProducerStages) {
-				finiteProducerStage.onSignal(new StartingSignal(), null);
+		// synchronized (frontStages) {
+		// for (AbstractStage finiteProducerStage : frontStages) {
+		// finiteProducerStage.onSignal(new StartingSignal(), null);
+		// }
+		// }
+		final StartingSignal signal = new StartingSignal();
+		SignalVisitor signalVisitor = new SignalVisitor(signal);
+		BreadthFirstTraverser traversor = new BreadthFirstTraverser();
+
+		synchronized (frontStages) {
+			for (AbstractStage stage : frontStages) {
+				traversor.traverse(stage, signalVisitor);
 			}
 		}
+
+		// TODO move before onExecute so that starting the threads does not count to the execution time #350
 		for (Thread thread : threadPool) {
 			thread.start();
 		}
@@ -198,8 +217,8 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 
 	@Override
 	public void onTerminate() {
-		synchronized (finiteProducerStages) {
-			for (AbstractStage finiteProducerStage : finiteProducerStages) {
+		synchronized (frontStages) {
+			for (AbstractStage finiteProducerStage : frontStages) {
 				STAGE_FACADE.abort(finiteProducerStage);
 			}
 		}
@@ -313,8 +332,15 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		AbstractStage targetStage = pipe.getCachedTargetStage();
 		// System.out.println("Scheduling stage" + targetStage + ": " + numPushes);
 		if (!STAGE_FACADE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
-			taskPool.scheduleStage(targetStage);
+			TeeTimeTaskQueueThreadChw currentThread = (TeeTimeTaskQueueThreadChw) Thread.currentThread();
+			// while (!taskPool.scheduleStage(targetStage)) {
+			// currentThread.processNextStage(taskPool);
+			// }
+			if (!taskPool.scheduleStage(targetStage)) {
+				throw new IllegalStateException("Could not schedule " + targetStage);
+			}
 			// System.out.println("Scheduled stage" + targetStage);
+			currentThread.processNextStage(taskPool);
 		}
 	}
 }
