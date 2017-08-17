@@ -16,7 +16,8 @@
 package teetime.framework.scheduling.globaltaskpool;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,8 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 
 	private final GlobalTaskPoolScheduling scheduling;
 	private final int numOfExecutions;
+	private final CountDownLatch startPermission = new CountDownLatch(1);
+	private final Semaphore runtimePermission = new Semaphore(0);
 
 	public TeeTimeTaskQueueThreadChw(final GlobalTaskPoolScheduling scheduling, final int numOfExecutions) {
 		super();
@@ -41,41 +44,86 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 
 	@Override
 	public void run() {
-		final AtomicInteger numNonTerminatedFiniteStages = scheduling.getNumNonTerminatedFiniteStages();
+		final CountDownAndUpLatch numNonTerminatedFiniteStages = scheduling.getNumRunningStages();
 		final PrioritizedTaskPool taskPool = scheduling.getPrioritizedTaskPool(); // NOPMD (DU anomaly)
+		final AbstractStage dummyStage = new AbstractStage() {
+			@Override
+			protected void execute() throws Exception {
+				throw new UnsupportedOperationException("This stage implements the null object pattern");
+			}
+		};
+
+		await();
 
 		// TODO start processing not until receiving a sign by the scheduler #350
 
-		LOGGER.debug("Started processing: {}", numNonTerminatedFiniteStages.get());
+		LOGGER.debug("Started processing: {}", numNonTerminatedFiniteStages.getCurrentCount());
 
-		while (numNonTerminatedFiniteStages.get() > 0) {
-			processNextStage(taskPool);
+		while (numNonTerminatedFiniteStages.getCurrentCount() > 0) {
+			processNextStage(taskPool, dummyStage);
 		}
 
-		LOGGER.debug("Terminated thread: {}, {}", this, numNonTerminatedFiniteStages.get());
+		LOGGER.debug("Terminated thread: {}, running stages: {}", this, numNonTerminatedFiniteStages.getCurrentCount());
 	}
 
-	public void processNextStage(final PrioritizedTaskPool taskPool) {
+	private void await() {
+		try {
+			runtimePermission.acquire();
+		} catch (InterruptedException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public void processNextStage(final PrioritizedTaskPool taskPool, final AbstractStage currentStage) {
+		// taskPool.releaseStage(currentStage);
+
 		AbstractStage stage = taskPool.removeNextStage();
 		if (stage != null) {
 			try {
-				executeStage(stage);
-				refillTaskPool(stage, taskPool);
+				if (scheduling.isPausedStage(stage)) {
+					if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
+						taskPool.scheduleStage(stage); // re-add stage
+					} else {
+						stage.setPaused(false);
+						scheduling.continueStage(stage);
+					}
+				} else if (scheduling.isBeingExecuted(stage)) {
+					taskPool.scheduleStage(stage); // re-add stage
+				} else {
+					if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
+						taskPool.scheduleStage(stage); // re-add stage
+					} else {
+						// try {
+						executeStage(stage);
+						refillTaskPool(stage, taskPool);
+						// } finally {
+						// taskPool.releaseStage(stage); // release lock (FIXME bad API)
+						// }
+					}
+				}
 			} finally {
-				taskPool.releaseStage(stage); // release lock (FIXME bad API)
+				scheduling.setIsBeingExecuted(stage, false);
 			}
 		}
 	}
 
 	private void executeStage(final AbstractStage stage) {
+		STAGE_FACADE.setOwningThread(stage, this);
+
+		LOGGER.debug("Executing {}", stage);
 		STAGE_FACADE.runStage(stage, numOfExecutions);
 
+		// FIXME is executed several times whenever <unknown so far>
 		if (STAGE_FACADE.shouldBeTerminated(stage)) {
+			// if (stages.containsKey(stage)) {
+			// throw new IllegalStateException(String.format("Already terminating %s", stage));
+			// }
+			// stages.put(stage, Boolean.TRUE);
 			afterStageExecution(stage);
-		}
-
-		if (stage.getCurrentState() == StageState.TERMINATED) {
-			scheduling.getNumNonTerminatedFiniteStages().decrementAndGet();
+			if (stage.getCurrentState() != StageState.TERMINATED) {
+				throw new IllegalStateException(String.format("%s: Expected state TERMINATED, but was %s", stage, stage.getCurrentState()));
+			}
+			scheduling.getNumRunningStages().countDown();
 			passFrontStatusToSuccessorStages(stage);
 		}
 	}
@@ -113,5 +161,22 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		if (scheduling.getFrontStages().contains(stage)) {
 			taskPool.scheduleStage(stage);
 		}
+	}
+
+	/**
+	 * Should be executed by a different thread.
+	 */
+	public void awake() {
+		runtimePermission.release();
+	}
+
+	/**
+	 * Must be executed by the current thread.
+	 */
+	public void pause() {
+		if (Thread.currentThread() != this) {
+			throw new IllegalStateException(String.format("Expected this thread, but was %s", Thread.currentThread()));
+		}
+		await();
 	}
 }

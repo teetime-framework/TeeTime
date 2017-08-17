@@ -16,8 +16,10 @@
 package teetime.framework.scheduling.globaltaskpool;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 
+import org.jctools.util.Pow2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +56,6 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 	/** Contains all stages which have no predecessors or only terminated predecessors (synchronized) */
 	private final List<AbstractStage> frontStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
 
-	// TODO: Make unbounded or implement blocking for task creation
 	/**
 	 * Holds all stages which should be executed next. A stage instance can occur more than once in this pool.
 	 * <br>
@@ -67,11 +68,18 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 	private final Map<AbstractStage, List<StageBuffer>> stageList = Collections.synchronizedMap(new HashMap<AbstractStage, List<StageBuffer>>());
 
 	private final int numThreads;
-	private final int numOfExecutions;
+	/** the number of execution per scheduled stage (always a power of two) */
+	private final int actualNumOfExecutions;
+	private final int numOfExecutionsMask;
+	/** the configuration to execute/schedule */
 	private final Configuration configuration;
 	/** Holds all threads which are used to execute the stages */
 	private final List<TeeTimeTaskQueueThreadChw> threadPool = new ArrayList<>();
-	private final AtomicInteger numNonTerminatedFiniteStages = new AtomicInteger();
+	private final CountDownAndUpLatch numRunningStages = new CountDownAndUpLatch();
+	private final List<TeeTimeTaskQueueThreadChw> backupThreads = Collections.synchronizedList(new ArrayList<>());
+	/** synchronized */
+	private final Set<AbstractStage> pausedStages = ConcurrentHashMap.newKeySet();
+	private final Map<AbstractStage, Semaphore> stagePermissions = new ConcurrentHashMap<>();
 
 	/**
 	 * A thread executes a stage {@value #DEFAULT_NUM_OF_EXECUTIONS}x per job.
@@ -80,15 +88,23 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 	 * @param configuration
 	 */
 	public GlobalTaskPoolScheduling(final int numThreads, final Configuration configuration) {
-		this.numThreads = numThreads;
-		this.configuration = configuration;
-		this.numOfExecutions = DEFAULT_NUM_OF_EXECUTIONS;
+		this(numThreads, configuration, DEFAULT_NUM_OF_EXECUTIONS);
 	}
 
+	/**
+	 * @param numThreads
+	 *            the number of threads to use for executing the given P&F configuration
+	 * @param configuration
+	 *            the configuration to execute/schedule
+	 * @param numOfExecutions
+	 *            the number of execution per scheduled stage (task) for a thread. Is rounded up to the next power of 2, i.e., <code>1,2,4,16,...</code>
+	 */
 	public GlobalTaskPoolScheduling(final int numThreads, final Configuration configuration, final int numOfExecutions) {
 		this.numThreads = numThreads;
 		this.configuration = configuration;
-		this.numOfExecutions = numOfExecutions;
+		int actualNumOfExecutions = Pow2.roundToPowerOfTwo(numOfExecutions);
+		this.actualNumOfExecutions = actualNumOfExecutions;
+		this.numOfExecutionsMask = actualNumOfExecutions - 1;
 	}
 
 	// 1. initializeServices
@@ -104,7 +120,8 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 
 		// Add threads to thread pool and start
 		for (int i = 0; i < numThreads; i++) {
-			TeeTimeTaskQueueThreadChw thread = new TeeTimeTaskQueueThreadChw(this, numOfExecutions);
+			TeeTimeTaskQueueThreadChw thread = new TeeTimeTaskQueueThreadChw(this, actualNumOfExecutions);
+			thread.start();
 			threadPool.add(thread);
 		}
 	}
@@ -145,11 +162,21 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		taskPool = new PrioritizedTaskPool(levelIndexVisitor.getMaxLevelIndex() + 1);
 		taskPool.scheduleStages(frontStages);
 
+		initializeBackupThreads(allStages.size());
+
 		// instantiate pipes
 		TaskQueueA2PipeInstantiation pipeVisitor = new TaskQueueA2PipeInstantiation(this);
 		traversor = new Traverser(pipeVisitor);
 		for (AbstractStage startStage : startStages) {
 			traversor.traverse(startStage);
+		}
+	}
+
+	private void initializeBackupThreads(final int size) {
+		for (int i = 0; i < size; i++) {
+			TeeTimeTaskQueueThreadChw backupThread = new TeeTimeTaskQueueThreadChw(this, actualNumOfExecutions);
+			backupThread.start();
+			backupThreads.add(backupThread);
 		}
 	}
 
@@ -160,10 +187,10 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		case BY_SELF_DECISION:
 			finiteProducerStages.add(stage);
 			frontStages.add(stage);
-			numNonTerminatedFiniteStages.incrementAndGet();
+			numRunningStages.countUp();
 			break;
 		case BY_SIGNAL:
-			numNonTerminatedFiniteStages.incrementAndGet();
+			numRunningStages.countUp();
 			break;
 		default:
 			LOGGER.warn("Unknown termination strategy '{}' in stage {}", STAGE_FACADE.getTerminationStrategy(stage), stage);
@@ -202,8 +229,8 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		}
 
 		// TODO move before onExecute so that starting the threads does not count to the execution time #350
-		for (Thread thread : threadPool) {
-			thread.start();
+		for (TeeTimeTaskQueueThreadChw thread : threadPool) {
+			thread.awake();
 		}
 	}
 
@@ -218,26 +245,21 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 
 	@Override
 	public void onFinish() {
+		numRunningStages.await();
+
+		LOGGER.debug("Finished execution.");
+
 		try {
 			for (TeeTimeTaskQueueThreadChw thread : threadPool) {
-				// thread.requestTermination();
+				thread.awake();
+				thread.join();
+			}
+			for (TeeTimeTaskQueueThreadChw thread : backupThreads) {
+				thread.awake();
 				thread.join();
 			}
 		} catch (InterruptedException e) {
-			LOGGER.error("Execution has stopped unexpectedly", e);
-			LOGGER.debug("Interrupting infiniteProducerThreads...");
-			for (Thread thread : threadPool) {
-				thread.interrupt();
-			}
-
-			for (TeeTimeTaskQueueThreadChw thread : threadPool) {
-				try {
-					thread.join();
-				} catch (InterruptedException e1) {
-					// ignore
-				}
-			}
-			LOGGER.debug("infiniteProducerThreads have been terminated");
+			throw new IllegalStateException(e);
 		}
 
 		// List<Exception> exceptions = collectExceptions();
@@ -304,8 +326,8 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		return stageList;
 	}
 
-	/* default */ AtomicInteger getNumNonTerminatedFiniteStages() {
-		return numNonTerminatedFiniteStages;
+	/* default */ CountDownAndUpLatch getNumRunningStages() {
+		return numRunningStages;
 	}
 
 	@Override
@@ -318,22 +340,82 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 	public void onElementAdded(final AbstractSynchedPipe<?> pipe) {
 		IMonitorablePipe monitorablePipe = (IMonitorablePipe) pipe;
 		long numPushes = monitorablePipe.getNumPushesSinceAppStart();
-		if (numPushes % numOfExecutions != 0) {
-			return;
+		// performance optimization: & represents % (modulo)
+		if ((numPushes & numOfExecutionsMask) != 0) {
+			throw new IllegalStateException("numPushes: " + numPushes); // for debugging purposes with numOfExecutionsMask==1 FIXME remove
+			// return;
 		}
 		AbstractStage targetStage = pipe.getCachedTargetStage();
-		// System.out.println("Scheduling stage" + targetStage + ": " + numPushes);
+		// LOGGER.debug("Scheduling stage {}: {}", targetStage, numPushes);
 		if (!STAGE_FACADE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
-			TeeTimeTaskQueueThreadChw currentThread = (TeeTimeTaskQueueThreadChw) Thread.currentThread();
+			// TeeTimeTaskQueueThreadChw currentThread = (TeeTimeTaskQueueThreadChw) Thread.currentThread();
 
+			AbstractStage sourceStage = pipe.getSourcePort().getOwningStage();
 			while (!taskPool.scheduleStage(targetStage)) {
-				currentThread.processNextStage(taskPool);
+				this.yieldStage(sourceStage);
 			}
 			// if (!taskPool.scheduleStage(targetStage)) {
-			// throw new IllegalStateException("Could not schedule " + targetStage);
+			// throw new IllegalStateException("Could not schedule " + targetStage + "\n" + taskPool);
 			// }
-			// System.out.println("Scheduled stage" + targetStage);
-			currentThread.processNextStage(taskPool);
+			LOGGER.debug("Scheduled stage {}, level: {}", targetStage, targetStage.getLevelIndex());
+
+			// AbstractStage runningStage = pipe.getSourcePort().getOwningStage();
+			// must release the lock at this point (handled by processNextStage)
+			// currentThread.processNextStage(taskPool, runningStage);
+			// if the pool returns null, the current stage continues with adding and thus overflows the pipe
+			// must regain the lock at this point (handled by processNextStage)
 		}
+	}
+
+	/**
+	 * Among others, pauses the executing thread.
+	 *
+	 * @param stage
+	 */
+	public void yieldStage(final AbstractStage stage) {
+		awakeBackupThread();
+
+		taskPool.scheduleStage(stage);
+
+		stage.setPaused(true);
+
+		getCurrentThread().pause();
+	}
+
+	private void awakeBackupThread() {
+		// synchronized (backupThreads) {
+		TeeTimeTaskQueueThreadChw backupThread = backupThreads.remove(0);
+		backupThread.awake();
+		// }
+	}
+
+	private TeeTimeTaskQueueThreadChw getCurrentThread() {
+		return (TeeTimeTaskQueueThreadChw) Thread.currentThread();
+	}
+
+	public void continueStage(final AbstractStage stage) {
+		TeeTimeTaskQueueThreadChw owningThread = (TeeTimeTaskQueueThreadChw) STAGE_FACADE.getOwningThread(stage);
+		owningThread.awake();
+
+		// synchronized (backupThreads) {
+		TeeTimeTaskQueueThreadChw thisThread = getCurrentThread();
+		backupThreads.add(thisThread);
+		thisThread.pause();
+		// }
+	}
+
+	public boolean isPausedStage(final AbstractStage stage) {
+		// Semaphore permission = stagePermissions.get(stage);
+		// return permission.availablePermits() <= 0;
+		// // return pausedStages.contains(stage);
+		return stage.isPaused();
+	}
+
+	public boolean isBeingExecuted(final AbstractStage stage) {
+		return stage.isBeingExecuted();
+	}
+
+	public boolean setIsBeingExecuted(final AbstractStage stage, final boolean newValue) {
+		return stage.compareAndSetBeingExecuted(newValue);
 	}
 }

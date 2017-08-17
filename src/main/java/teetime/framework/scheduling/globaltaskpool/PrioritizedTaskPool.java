@@ -61,22 +61,43 @@ class PrioritizedTaskPool {
 		for (int i = levels.size() - 1; i >= 0; i--) {
 			MpmcArrayQueue<AbstractStage> stages = levels.get(i);
 
-			AbstractStage stage = stages.peek();
+			// AbstractStage stage = stages.peek();
+			AbstractStage stage = stages.poll();
 
 			// (only) read next stage with work
 			if (null != stage) {
 				// TODO possible alternative implementation: AbstractStage.getExecutingThread().compareAndSet()
 				// ensure no other thread is executing the stage at this moment (this is our lock condition)
-				boolean notAlreadyContained = executingStages.add(stage);
-				if (/* stage.isStateless() || */ notAlreadyContained) {
-					return stages.poll(); // NOPMD (two returns in method)
-				}
+				// boolean notAlreadyContained = executingStages.add(stage);
+				// if (/* stage.isStateless() || */ notAlreadyContained) {
+				// return stages.poll(); // NOPMD (two returns in method)
+				// }
+				return stage;
 			}
 		}
 		return null;
 	}
 
-	public void releaseStage(final AbstractStage stage) {
-		executingStages.remove(stage);
+	// public void releaseStage(final AbstractStage stage) {
+	// executingStages.remove(stage);
+	// }
+
+	// public boolean acquireStage(final AbstractStage stage) {
+	// return executingStages.add(stage);
+	// }
+
+	@Override
+	public String toString() {
+		for (int i = levels.size() - 1; i >= 0; i--) {
+			MpmcArrayQueue<AbstractStage> stages = levels.get(i);
+
+			AbstractStage stage = stages.poll();
+			while (stage != null) {
+				System.out.println(String.format("%s: %s, level: %s", this.getClass(), stage, stage.getLevelIndex()));
+				stage = stages.poll();
+			}
+
+		}
+		return "";
 	}
 }

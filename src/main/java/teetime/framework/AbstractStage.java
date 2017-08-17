@@ -18,6 +18,7 @@ package teetime.framework;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,12 +64,6 @@ public abstract class AbstractStage {
 	private boolean calledOnTerminating = false;
 	private boolean calledOnStarting = false;
 
-	// for GlobalTaskQueueScheduling only
-	/** producers start with a level index of 0. All other stages have an index > 0. */
-	private int levelIndex = 0;
-	// for GlobalTaskQueueScheduling only
-	private boolean beingExecuted;
-
 	private volatile StageState currentState = StageState.CREATED; // TODO remove volatile since the state is never set by another thread anymore
 	/** used to detect termination */
 	// private final AtomicInteger numOpenedInputPorts = new AtomicInteger();
@@ -77,6 +72,13 @@ public abstract class AbstractStage {
 	// used only for performance measuring
 	private long beforeExecuteTime;
 	private long lastTimeAfterExecute;
+
+	// for GlobalTaskQueueScheduling only
+	/** producers start with a level index of 0. All other stages have an index > 0. */
+	private int levelIndex = 0;
+	// TODO used only by global task pool scheduling so far
+	private final AtomicBoolean atomicBeingExecuted = new AtomicBoolean(false);
+	private final AtomicBoolean atomicPaused = new AtomicBoolean(false);
 
 	/**
 	 * A list which save a timestamp and an associated state (active or inactive).
@@ -106,6 +108,30 @@ public abstract class AbstractStage {
 	protected AbstractStage(final Logger logger) {
 		this.id = this.createId();
 		this.logger = logger;
+	}
+
+	public void setLevelIndex(final int levelIndex) {
+		this.levelIndex = levelIndex;
+	}
+
+	public int getLevelIndex() {
+		return levelIndex;
+	}
+
+	public boolean isBeingExecuted() {
+		return atomicBeingExecuted.get();
+	}
+
+	public boolean compareAndSetBeingExecuted(final boolean newValue) {
+		return atomicBeingExecuted.compareAndSet(!newValue, newValue);
+	}
+
+	public void setPaused(final boolean newValue) {
+		atomicPaused.set(newValue);
+	}
+
+	public boolean isPaused() {
+		return atomicPaused.get();
 	}
 
 	/**
@@ -217,22 +243,6 @@ public abstract class AbstractStage {
 
 	public boolean isActive() {
 		return isActive;
-	}
-
-	public void setLevelIndex(final int levelIndex) {
-		this.levelIndex = levelIndex;
-	}
-
-	public int getLevelIndex() {
-		return levelIndex;
-	}
-
-	public boolean isBeingExecuted() {
-		return beingExecuted;
-	}
-
-	public void setBeingExecuted(final boolean beingExecuted) {
-		this.beingExecuted = beingExecuted;
 	}
 
 	/**
@@ -554,17 +564,15 @@ public abstract class AbstractStage {
 	 * Terminates the execution of the stage. After terminating, this stage sends a signal to all its direct and indirect successor stages to terminate.
 	 */
 	protected void terminateStage() {
-		// if (getInputPorts().size() == 0) { // always for producer
-		// changeState(StageState.TERMINATING);
-		// } else if (getCurrentState() == StageState.STARTED) { // consumer FIXME remove this hack
-		// changeState(StageState.TERMINATING);
-		// }
 		if (getInputPorts().size() != 0) {
 			throw new UnsupportedOperationException("Consumer stages may not invoke this method.");
 		}
 		terminateStageByFramework();
 	}
 
+	/**
+	 * Sets the current state of this stage to {@link StageState#TERMINATING}
+	 */
 	/* default */ void terminateStageByFramework() {
 		changeState(StageState.TERMINATING);
 	}

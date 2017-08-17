@@ -70,7 +70,7 @@ public class WordCounterTestWithGlobalTaskPool {
 		final long[] timings = new long[1];
 		final StopWatch stopWatch = new StopWatch();
 		/** maximal number of executions for a scheduled stage per thread */
-		final int numOfExecutions = 1024;
+		final int numOfExecutions = 1;
 
 		for (int i = 0; i < numWarmUps; i++) {
 			LOGGER.info("Warm up #" + i);

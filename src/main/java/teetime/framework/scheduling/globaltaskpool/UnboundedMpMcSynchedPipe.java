@@ -17,7 +17,9 @@ package teetime.framework.scheduling.globaltaskpool;
 
 import org.jctools.queues.MpmcArrayQueue;
 
-import teetime.framework.*;
+import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.pipe.AbstractSynchedPipe;
 import teetime.framework.pipe.IMonitorablePipe;
 
@@ -44,15 +46,19 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMon
 		// }
 
 		while (!this.queue.offer(element)) {
+			// GlobalTaskPoolScheduling globalTaskPoolScheduling = (GlobalTaskPoolScheduling) getScheduler();
+			// PrioritizedTaskPool taskPool = globalTaskPoolScheduling.getPrioritizedTaskPool();
+			// AbstractStage targetStage = getCachedTargetStage();
+			// if (!StageFacade.INSTANCE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
+			// TeeTimeTaskQueueThreadChw currentThread = (TeeTimeTaskQueueThreadChw) Thread.currentThread();
+			// // while (!taskPool.scheduleStage(targetStage)) {
+			//// currentThread.processNextStage(taskPool);
+			// // }
+			// }
+
 			GlobalTaskPoolScheduling globalTaskPoolScheduling = (GlobalTaskPoolScheduling) getScheduler();
-			PrioritizedTaskPool taskPool = globalTaskPoolScheduling.getPrioritizedTaskPool();
-			AbstractStage targetStage = getCachedTargetStage();
-			if (!StageFacade.INSTANCE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
-				TeeTimeTaskQueueThreadChw currentThread = (TeeTimeTaskQueueThreadChw) Thread.currentThread();
-				// while (!taskPool.scheduleStage(targetStage)) {
-				currentThread.processNextStage(taskPool);
-				// }
-			}
+			AbstractStage owningStage = getSourcePort().getOwningStage();
+			globalTaskPoolScheduling.yieldStage(owningStage);
 		}
 
 		getScheduler().onElementAdded(this);

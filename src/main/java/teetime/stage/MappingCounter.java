@@ -39,7 +39,7 @@ public final class MappingCounter<T> extends AbstractTransformation<T, CountingM
 	}
 
 	@Override
-	public void onTerminating() throws Exception { // NOPMD forced by super method
+	public void onTerminating() throws Exception { // NOPMD throws is forced by super method
 		this.outputPort.send(counter);
 		super.onTerminating();
 	}
