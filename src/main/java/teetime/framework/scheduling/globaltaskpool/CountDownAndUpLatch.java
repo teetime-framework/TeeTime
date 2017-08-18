@@ -25,6 +25,7 @@ public class CountDownAndUpLatch {
 				lock.notifyAll();
 			}
 		}
+		System.out.println(String.format("(CountDownAndUpLatch) %s countDown: %s", Thread.currentThread(), counter));
 	}
 
 	public void await() {

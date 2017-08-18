@@ -386,8 +386,12 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		taskPool.scheduleStage(stage);
 
 		stage.setPaused(true);
+		// allow other to execute the stage (only) in order to awake the current thread again
+		setIsBeingExecuted(stage, false);
 
 		getCurrentThread().pause();
+
+		stage.setPaused(false);
 		LOGGER.debug("Continue with {}", stage);
 	}
 
@@ -395,7 +399,14 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		return (TeeTimeTaskQueueThreadChw) Thread.currentThread();
 	}
 
-	public void continueStage(final AbstractStage stage) {
+	/**
+	 * Revokes the stage's pause and pauses the current thread afterwards.
+	 *
+	 * @param stage
+	 */
+	void continueStage(final AbstractStage stage) {
+		// stage.setPaused(false);
+
 		// synchronized (backupThreads) {
 		TeeTimeTaskQueueThreadChw thisThread = getCurrentThread();
 		backupThreads.add(thisThread);

@@ -81,31 +81,38 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 
 		AbstractStage stage = taskPool.removeNextStage();
 		if (stage != null) {
+			if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
+				taskPool.scheduleStage(stage); // re-add stage
+				return;
+			}
+
 			if (lastStage != stage) {
 				LOGGER.debug("Changed execution from {} to {}", lastStage, stage);
 				lastStage = stage;
 			}
+
 			try {
 				if (scheduling.isPausedStage(stage)) {
-					if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
-						taskPool.scheduleStage(stage); // re-add stage
-					} else {
-						stage.setPaused(false);
-						scheduling.continueStage(stage);
-					}
-				} else if (scheduling.isBeingExecuted(stage)) {
-					taskPool.scheduleStage(stage); // re-add stage
-				} else {
-					if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
-						taskPool.scheduleStage(stage); // re-add stage
-					} else {
-						// try {
-						executeStage(stage);
-						refillTaskPool(stage, taskPool);
-						// } finally {
-						// taskPool.releaseStage(stage); // release lock (FIXME bad API)
-						// }
-					}
+					// if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
+					// taskPool.scheduleStage(stage); // re-add stage
+					// } else {
+					scheduling.continueStage(stage);
+					// }
+				} /*
+					 * else if (scheduling.isBeingExecuted(stage)) {
+					 * taskPool.scheduleStage(stage); // re-add stage
+					 * }
+					 */else {
+					// if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
+					// taskPool.scheduleStage(stage); // re-add stage
+					// } else {
+					// try {
+					executeStage(stage);
+					refillTaskPool(stage, taskPool);
+					// } finally {
+					// taskPool.releaseStage(stage); // release lock (FIXME bad API)
+					// }
+					// }
 				}
 			} finally {
 				scheduling.setIsBeingExecuted(stage, false);
@@ -165,8 +172,9 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	}
 
 	private void refillTaskPool(final AbstractStage stage, final PrioritizedTaskPool taskPool) {
+		Set<AbstractStage> frontStages = scheduling.getFrontStages();
 		// re-add stage to task queue if it is a front stage (a terminated front stage would have been already removed at this point)
-		if (scheduling.getFrontStages().contains(stage)) {
+		if (frontStages.contains(stage)) {
 			taskPool.scheduleStage(stage);
 		}
 	}
