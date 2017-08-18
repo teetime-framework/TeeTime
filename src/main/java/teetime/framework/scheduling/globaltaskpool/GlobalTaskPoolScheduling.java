@@ -162,7 +162,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		taskPool = new PrioritizedTaskPool(levelIndexVisitor.getMaxLevelIndex() + 1);
 		taskPool.scheduleStages(frontStages);
 
-		initializeBackupThreads(allStages.size());
+		initializeBackupThreads(allStages.size() /*- numThreads*/);
 
 		// instantiate pipes
 		TaskQueueA2PipeInstantiation pipeVisitor = new TaskQueueA2PipeInstantiation(this);
@@ -175,6 +175,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 	private void initializeBackupThreads(final int size) {
 		for (int i = 0; i < size; i++) {
 			TeeTimeTaskQueueThreadChw backupThread = new TeeTimeTaskQueueThreadChw(this, actualNumOfExecutions);
+			backupThread.setName(backupThread.getName() + "-backup");
 			backupThread.start();
 			backupThreads.add(backupThread);
 		}
@@ -342,22 +343,28 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		long numPushes = monitorablePipe.getNumPushesSinceAppStart();
 		// performance optimization: & represents % (modulo)
 		if ((numPushes & numOfExecutionsMask) != 0) {
-			throw new IllegalStateException("numPushes: " + numPushes); // for debugging purposes with numOfExecutionsMask==1 FIXME remove
-			// return;
+			// throw new IllegalStateException("numPushes: " + numPushes); // for debugging purposes with numOfExecutionsMask==1 FIXME remove
+			return;
 		}
 		AbstractStage targetStage = pipe.getCachedTargetStage();
 		// LOGGER.debug("Scheduling stage {}: {}", targetStage, numPushes);
-		if (!STAGE_FACADE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
+		if (targetStage.getCurrentState().compareTo(StageState.TERMINATING) < 0) {
 			// TeeTimeTaskQueueThreadChw currentThread = (TeeTimeTaskQueueThreadChw) Thread.currentThread();
 
 			AbstractStage sourceStage = pipe.getSourcePort().getOwningStage();
+			boolean yield = false;
 			while (!taskPool.scheduleStage(targetStage)) {
+				LOGGER.debug("Yielding {} cause of full pool level {} triggered in {}", sourceStage, targetStage.getLevelIndex(),
+						monitorablePipe.getNumPushesSinceAppStart());
+				yield = true;
 				this.yieldStage(sourceStage);
 			}
 			// if (!taskPool.scheduleStage(targetStage)) {
 			// throw new IllegalStateException("Could not schedule " + targetStage + "\n" + taskPool);
 			// }
-			LOGGER.debug("Scheduled stage {}, level: {}", targetStage, targetStage.getLevelIndex());
+			if (yield) {
+				// LOGGER.debug("Continue {}", sourceStage);
+			}
 
 			// AbstractStage runningStage = pipe.getSourcePort().getOwningStage();
 			// must release the lock at this point (handled by processNextStage)
@@ -372,21 +379,16 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 	 *
 	 * @param stage
 	 */
-	public void yieldStage(final AbstractStage stage) {
-		awakeBackupThread();
+	void yieldStage(final AbstractStage stage) {
+		// awake any backup thread
+		backupThreads.remove(0).awake();
 
 		taskPool.scheduleStage(stage);
 
 		stage.setPaused(true);
 
 		getCurrentThread().pause();
-	}
-
-	private void awakeBackupThread() {
-		// synchronized (backupThreads) {
-		TeeTimeTaskQueueThreadChw backupThread = backupThreads.remove(0);
-		backupThread.awake();
-		// }
+		LOGGER.debug("Continue with {}", stage);
 	}
 
 	private TeeTimeTaskQueueThreadChw getCurrentThread() {
@@ -394,13 +396,16 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 	}
 
 	public void continueStage(final AbstractStage stage) {
-		TeeTimeTaskQueueThreadChw owningThread = (TeeTimeTaskQueueThreadChw) STAGE_FACADE.getOwningThread(stage);
-		owningThread.awake();
-
 		// synchronized (backupThreads) {
 		TeeTimeTaskQueueThreadChw thisThread = getCurrentThread();
 		backupThreads.add(thisThread);
+
+		/* must follow "backupThreads.add" so that the awakened thread can invoke "backupThreads.remove(0)" without causing an IndexOutOfBoundsException */
+		TeeTimeTaskQueueThreadChw owningThread = (TeeTimeTaskQueueThreadChw) STAGE_FACADE.getOwningThread(stage);
+		owningThread.awake();
+
 		thisThread.pause();
+		LOGGER.debug("Continue (backup) with {}", getCurrentThread(), stage);
 		// }
 	}
 

@@ -25,7 +25,7 @@ public enum StageState {
 	VALIDATED,
 	/** Fourth state of a stage */
 	STARTED,
-	/** Fifth state of a stage */
+	/** Fifth state of a stage. Usually set in {@link InputPort#receive()} or by {@link AbstractStage#terminateStage()}. */
 	TERMINATING,
 	/** Sixth state of a stage. Usually set in {@link teetime.framework.AbstractStage#onTerminating()}. */
 	TERMINATED

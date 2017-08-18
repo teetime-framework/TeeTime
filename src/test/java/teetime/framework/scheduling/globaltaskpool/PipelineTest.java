@@ -56,35 +56,6 @@ public class PipelineTest {
 		}
 	}
 
-	private static class ManyElementsGlobalTaskPoolConfig extends Configuration {
-
-		private CollectorSink<Integer> sink;
-
-		public ManyElementsGlobalTaskPoolConfig(final int numInputObjects) {
-			build(numInputObjects);
-		}
-
-		private void build(final int numInputObjects) {
-			ObjectProducer<Integer> producer = new ObjectProducer<>(numInputObjects, new ConstructorClosure<Integer>() {
-				private int counter;
-
-				@Override
-				public Integer create() {
-					return counter++;
-				}
-			});
-			Counter<Integer> counter = new Counter<>();
-			// NoopFilter<Integer> noopFilter = new NoopFilter<>();
-			sink = new CollectorSink<>();
-			from(producer).to(counter).end(sink);
-			// from(producer).to(counter).to(noopFilter).end(sink);
-		}
-
-		public CollectorSink<Integer> getSink() {
-			return sink;
-		}
-	}
-
 	private static class ManyElementsWithStatelessStageGlobalTaskPoolConfig extends Configuration {
 
 		private CollectorSink<Integer> sink;
@@ -115,8 +86,8 @@ public class PipelineTest {
 	}
 
 	@Test
-	@Ignore("not handled correctly by the scheduling strategy so far")
-	public void shouldExecutePipelineCorrectlyFewElements() {
+	// @Ignore("not handled correctly by the scheduling strategy so far") // failed 18.08.17
+	public void shouldExecutePipelineCorrectlyThreeElements() {
 		String[] inputElements = { "a", "b", "c" };
 		GlobalTaskPoolConfig<String> config = new GlobalTaskPoolConfig<>(inputElements);
 		TeeTimeService scheduling = new GlobalTaskPoolScheduling(NUM_THREADS, config, 1);
@@ -132,22 +103,6 @@ public class PipelineTest {
 	}
 
 	@Test
-	@Ignore("not handled correctly by the scheduling strategy so far")
-	public void shouldExecutePipelineCorrectlyManyElements() {
-		int numElements = 1_000;
-		ManyElementsGlobalTaskPoolConfig config = new ManyElementsGlobalTaskPoolConfig(numElements);
-		TeeTimeService scheduling = new GlobalTaskPoolScheduling(NUM_THREADS, config, 1);
-		Execution<ManyElementsGlobalTaskPoolConfig> execution = new Execution<>(config, true, scheduling);
-		execution.executeBlocking();
-
-		List<Integer> processedElements = config.getSink().getElements();
-		// for (int i = 0; i < numElements; i++) {
-		// assertThat(processedElements.get(i), is(i));
-		// }
-		assertThat(processedElements, hasSize(numElements));
-	}
-
-	@Test
 	@Ignore("The reflexive pipe in the counter is not handled correctly by the scheduling strategy so far")
 	public void shouldExecuteReflexivePipeCorrectlyManyElements() {
 		int numElements = 1_000;
@@ -157,9 +112,9 @@ public class PipelineTest {
 		execution.executeBlocking();
 
 		List<Integer> processedElements = config.getSink().getElements();
-		// for (int i = 0; i < numElements; i++) {
-		// assertThat(processedElements.get(i), is(i));
-		// }
+		for (int i = 0; i < numElements; i++) {
+			assertThat(processedElements.get(i), is(i));
+		}
 		assertThat(processedElements, hasSize(numElements));
 	}
 }

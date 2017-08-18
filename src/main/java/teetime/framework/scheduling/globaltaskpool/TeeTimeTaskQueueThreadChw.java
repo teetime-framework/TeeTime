@@ -36,6 +36,8 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	private final CountDownLatch startPermission = new CountDownLatch(1);
 	private final Semaphore runtimePermission = new Semaphore(0);
 
+	private AbstractStage lastStage;
+
 	public TeeTimeTaskQueueThreadChw(final GlobalTaskPoolScheduling scheduling, final int numOfExecutions) {
 		super();
 		this.scheduling = scheduling;
@@ -57,13 +59,13 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 
 		// TODO start processing not until receiving a sign by the scheduler #350
 
-		LOGGER.debug("Started processing: {}", numNonTerminatedFiniteStages.getCurrentCount());
+		LOGGER.debug("Started thread, running stages: {}", numNonTerminatedFiniteStages.getCurrentCount());
 
 		while (numNonTerminatedFiniteStages.getCurrentCount() > 0) {
 			processNextStage(taskPool, dummyStage);
 		}
 
-		LOGGER.debug("Terminated thread: {}, running stages: {}", this, numNonTerminatedFiniteStages.getCurrentCount());
+		LOGGER.debug("Terminated thread, running stages: {}", numNonTerminatedFiniteStages.getCurrentCount());
 	}
 
 	private void await() {
@@ -79,6 +81,10 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 
 		AbstractStage stage = taskPool.removeNextStage();
 		if (stage != null) {
+			if (lastStage != stage) {
+				LOGGER.debug("Changed execution from {} to {}", lastStage, stage);
+				lastStage = stage;
+			}
 			try {
 				if (scheduling.isPausedStage(stage)) {
 					if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
@@ -110,7 +116,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	private void executeStage(final AbstractStage stage) {
 		STAGE_FACADE.setOwningThread(stage, this);
 
-		// LOGGER.debug("Executing {}", stage);
+		LOGGER.debug("Executing {}", stage);
 		STAGE_FACADE.runStage(stage, numOfExecutions);
 
 		// FIXME is executed several times whenever <unknown so far>
@@ -121,7 +127,8 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 			// stages.put(stage, Boolean.TRUE);
 			afterStageExecution(stage);
 			if (stage.getCurrentState() != StageState.TERMINATED) {
-				throw new IllegalStateException(String.format("%s: Expected state TERMINATED, but was %s", stage, stage.getCurrentState()));
+				throw new IllegalStateException(
+						String.format("(TeeTimeTaskQueueThreadChw) %s: Expected state TERMINATED, but was %s", stage, stage.getCurrentState()));
 			}
 			scheduling.getNumRunningStages().countDown();
 			passFrontStatusToSuccessorStages(stage);
@@ -168,6 +175,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	 * Should be executed by a different thread.
 	 */
 	public void awake() {
+		LOGGER.debug("Awaking {}", this);
 		runtimePermission.release();
 	}
 
