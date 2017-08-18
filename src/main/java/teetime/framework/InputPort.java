@@ -46,8 +46,9 @@ public class InputPort<T> extends AbstractPort<T> {
 		Object element = this.pipe.removeLast();
 		if (TERMINATE_ELEMENT == element) {
 			pipe.close();// TODO remove volatile from isClosed
-			if (!pipe.isEmpty()) {
-				throw new IllegalStateException("Pipe " + pipe + " should be empty, but has a size of " + pipe.size());
+			int size = pipe.size();
+			if (size > 0) {
+				throw new IllegalStateException("Pipe " + pipe + " should be empty, but has a size of " + size);
 			}
 			AbstractStage owningStage = getOwningStage();
 			int numOpenedInputPorts = owningStage.decNumOpenedInputPorts();

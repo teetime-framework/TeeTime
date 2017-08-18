@@ -15,7 +15,7 @@
  */
 package teetime.framework.scheduling.globaltaskpool;
 
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 
@@ -110,7 +110,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	private void executeStage(final AbstractStage stage) {
 		STAGE_FACADE.setOwningThread(stage, this);
 
-		LOGGER.debug("Executing {}", stage);
+		// LOGGER.debug("Executing {}", stage);
 		STAGE_FACADE.runStage(stage, numOfExecutions);
 
 		// FIXME is executed several times whenever <unknown so far>
@@ -140,13 +140,14 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	}
 
 	private void passFrontStatusToSuccessorStages(final AbstractStage stage) {
-		List<AbstractStage> frontStages = scheduling.getFrontStages();
+		// a set, not a list since multiple predecessors of a merger would add the merger multiple times
+		Set<AbstractStage> frontStages = scheduling.getFrontStages();
 		synchronized (frontStages) {
 			if (frontStages.contains(stage)) {
 				frontStages.remove(stage);
 				for (OutputPort<?> outputPort : STAGE_FACADE.getOutputPorts(stage)) {
 					AbstractStage targetStage = outputPort.getPipe().getTargetPort().getOwningStage();
-					if (!STAGE_FACADE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
+					if (targetStage.getCurrentState().compareTo(StageState.TERMINATING) < 0) {
 						frontStages.add(targetStage);
 						scheduling.getPrioritizedTaskPool().scheduleStage(targetStage);
 					}

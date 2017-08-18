@@ -33,7 +33,7 @@ class PrioritizedTaskPool {
 		}
 	}
 
-	public void scheduleStages(final List<AbstractStage> stages) {
+	public void scheduleStages(final Collection<AbstractStage> stages) {
 		for (AbstractStage stage : stages) {
 			scheduleStage(stage);
 		}

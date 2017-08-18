@@ -30,6 +30,8 @@ import teetime.framework.signal.TerminatingSignal;
  */
 public class OutputPort<T> extends AbstractPort<T> {
 
+	private Object last;
+
 	OutputPort(final Class<T> type, final AbstractStage owningStage, final String portName) {
 		super(type, owningStage, portName);
 		setPipe(DummyPipe.INSTANCE);
@@ -51,7 +53,11 @@ public class OutputPort<T> extends AbstractPort<T> {
 	 *
 	 */
 	public void send(final T element) {
+		if (last == TERMINATE_ELEMENT) {
+			System.out.println("element: " + element);
+		}
 		this.pipe.add(element);
+		last = element;
 	}
 
 	/**

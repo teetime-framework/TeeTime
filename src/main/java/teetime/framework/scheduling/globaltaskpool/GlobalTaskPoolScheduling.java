@@ -54,7 +54,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 	/** (synchronized) */
 	private final List<AbstractStage> finiteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
 	/** Contains all stages which have no predecessors or only terminated predecessors (synchronized) */
-	private final List<AbstractStage> frontStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
+	private final Set<AbstractStage> frontStages = ConcurrentHashMap.newKeySet();
 
 	/**
 	 * Holds all stages which should be executed next. A stage instance can occur more than once in this pool.
@@ -296,7 +296,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		return finiteProducerStages;
 	}
 
-	public List<AbstractStage> getFrontStages() {
+	public Set<AbstractStage> getFrontStages() {
 		return frontStages;
 	}
 

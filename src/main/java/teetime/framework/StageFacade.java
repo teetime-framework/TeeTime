@@ -92,7 +92,7 @@ public final class StageFacade {
 			}
 		} catch (TerminateException e) {
 			stage.abort();
-			stage.getOwningContext().abortConfigurationRun();
+			// stage.getOwningContext().abortConfigurationRun();
 		}
 	}
 
