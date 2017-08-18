@@ -27,7 +27,7 @@ import teetime.stage.string.WordCounter;
 import teetime.stage.util.CountingMap;
 
 /**
- * This configuration is used by several tests.
+ * This configuration is used by several tests and implements counting of words with non-existed input file(s).
  *
  * @author Christian Wulf
  */

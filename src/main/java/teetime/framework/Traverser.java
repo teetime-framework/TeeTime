@@ -46,9 +46,7 @@ public class Traverser {
 	public static class AlreadyRunsEndOfTraverse implements EndOfTraverse {
 		@Override
 		public boolean isMet(final AbstractStage stage) {
-			return stage.getCurrentState() == StageState.STARTED
-					|| stage.getCurrentState() == StageState.TERMINATING
-					|| stage.getCurrentState() == StageState.TERMINATED;
+			return stage.getCurrentState().compareTo(StageState.STARTED) >= 0;
 		}
 	}
 
