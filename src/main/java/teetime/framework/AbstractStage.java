@@ -365,6 +365,9 @@ public abstract class AbstractStage {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Changing state from " + oldState + " to " + newState);
 		}
+		if (newState.compareTo(oldState) < 0) {
+			throw new IllegalStateException(String.format("Illegal state change from %s to %s", oldState, newState));
+		}
 		currentState = newState;
 	}
 
