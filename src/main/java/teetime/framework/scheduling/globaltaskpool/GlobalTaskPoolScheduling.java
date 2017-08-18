@@ -354,7 +354,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 			AbstractStage sourceStage = pipe.getSourcePort().getOwningStage();
 			boolean yield = false;
 			while (!taskPool.scheduleStage(targetStage)) {
-				LOGGER.debug("Yielding {} cause of full pool level {} triggered in {}", sourceStage, targetStage.getLevelIndex(),
+				LOGGER.debug("Yielding {} cause of full pool level {} triggered after {} pushes", sourceStage, targetStage.getLevelIndex(),
 						monitorablePipe.getNumPushesSinceAppStart());
 				yield = true;
 				this.yieldStage(sourceStage);
@@ -383,7 +383,9 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		// awake any backup thread
 		backupThreads.remove(0).awake();
 
-		taskPool.scheduleStage(stage);
+		while (!taskPool.scheduleStage(stage)) {
+			throw new IllegalStateException(String.format("(yieldStage) Self-scheduling failed for %s", stage));
+		}
 
 		stage.setPaused(true);
 		// allow other to execute the stage (only) in order to awake the current thread again
@@ -405,25 +407,18 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 	 * @param stage
 	 */
 	void continueStage(final AbstractStage stage) {
-		// stage.setPaused(false);
-
-		// synchronized (backupThreads) {
 		TeeTimeTaskQueueThreadChw thisThread = getCurrentThread();
 		backupThreads.add(thisThread);
 
 		/* must follow "backupThreads.add" so that the awakened thread can invoke "backupThreads.remove(0)" without causing an IndexOutOfBoundsException */
-		TeeTimeTaskQueueThreadChw owningThread = (TeeTimeTaskQueueThreadChw) STAGE_FACADE.getOwningThread(stage);
+		TeeTimeTaskQueueThreadChw owningThread = this.getOwningThreadSynched(stage);
 		owningThread.awake();
 
 		thisThread.pause();
-		LOGGER.debug("Continue (backup) with {}", getCurrentThread(), stage);
-		// }
+		LOGGER.debug("Continue (backup) with {}", stage);
 	}
 
 	public boolean isPausedStage(final AbstractStage stage) {
-		// Semaphore permission = stagePermissions.get(stage);
-		// return permission.availablePermits() <= 0;
-		// // return pausedStages.contains(stage);
 		return stage.isPaused();
 	}
 
@@ -434,4 +429,17 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 	public boolean setIsBeingExecuted(final AbstractStage stage, final boolean newValue) {
 		return stage.compareAndSetBeingExecuted(newValue);
 	}
+
+	public void setOwningThreadSynced(final AbstractStage stage, final TeeTimeTaskQueueThreadChw newThread) {
+		synchronized (stage) {
+			STAGE_FACADE.setOwningThread(stage, newThread);
+		}
+	}
+
+	private TeeTimeTaskQueueThreadChw getOwningThreadSynched(final AbstractStage stage) {
+		synchronized (stage) {
+			return (TeeTimeTaskQueueThreadChw) STAGE_FACADE.getOwningThread(stage);
+		}
+	}
+
 }

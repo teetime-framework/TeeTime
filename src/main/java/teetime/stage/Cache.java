@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import teetime.stage.basic.AbstractFilter;
 import teetime.util.StopWatch;
 
-public final class Cache<T> extends AbstractFilter<T> {
+public class Cache<T> extends AbstractFilter<T> {
 
 	private final List<T> cachedObjects = new LinkedList<T>();
 
@@ -33,14 +33,14 @@ public final class Cache<T> extends AbstractFilter<T> {
 
 	@Override
 	public void onTerminating() throws Exception { // NOPMD
-		this.logger.debug("Emitting " + this.cachedObjects.size() + " cached elements...");
+		this.logger.debug("Emitting {} cached elements...", this.cachedObjects.size());
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		for (T cachedElement : this.cachedObjects) {
 			this.outputPort.send(cachedElement);
 		}
 		stopWatch.end();
-		this.logger.debug("Emitting took " + TimeUnit.NANOSECONDS.toMillis(stopWatch.getDurationInNs()) + " ms");
+		this.logger.debug("Emitting took {} ms", TimeUnit.NANOSECONDS.toMillis(stopWatch.getDurationInNs()));
 		super.onTerminating();
 	}
 

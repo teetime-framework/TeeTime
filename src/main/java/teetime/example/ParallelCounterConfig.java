@@ -3,10 +3,7 @@ package teetime.example;
 import java.util.List;
 
 import teetime.framework.Configuration;
-import teetime.stage.CollectorSink;
-import teetime.stage.Counter;
-import teetime.stage.InitialElementProducer;
-import teetime.stage.Ramp;
+import teetime.stage.*;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.distributor.strategy.BlockingBusyWaitingRoundRobinStrategy;
 import teetime.stage.basic.merger.Merger;
@@ -27,12 +24,12 @@ public class ParallelCounterConfig extends Configuration {
 		for (int i = 0; i < numParallelPipelines; i++) {
 			Counter<Integer> firstCounter = new Counter<>();
 			Counter<Integer> secondCounter = new Counter<>();
-			Counter<Integer> thirdCounter = new Counter<>();
+			Cache<Integer> cache = new Cache<>();
 
 			connectPorts(distributor.getNewOutputPort(), firstCounter.getInputPort());
 			connectPorts(firstCounter.getOutputPort(), secondCounter.getInputPort());
-			connectPorts(secondCounter.getOutputPort(), thirdCounter.getInputPort());
-			connectPorts(thirdCounter.getOutputPort(), merger.getNewInputPort());
+			connectPorts(secondCounter.getOutputPort(), cache.getInputPort());
+			connectPorts(cache.getOutputPort(), merger.getNewInputPort());
 		}
 
 		connectPorts(merger.getOutputPort(), sink.getInputPort());

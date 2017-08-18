@@ -82,7 +82,10 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		AbstractStage stage = taskPool.removeNextStage();
 		if (stage != null) {
 			if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
-				taskPool.scheduleStage(stage); // re-add stage
+				// re-add stage
+				while (!taskPool.scheduleStage(stage)) {
+					throw new IllegalStateException(String.format("(processNextStage) Re-scheduling failed for paused stage %s", stage));
+				}
 				return;
 			}
 
@@ -121,7 +124,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	}
 
 	private void executeStage(final AbstractStage stage) {
-		STAGE_FACADE.setOwningThread(stage, this);
+		scheduling.setOwningThreadSynced(stage, this);
 
 		LOGGER.debug("Executing {}", stage);
 		STAGE_FACADE.runStage(stage, numOfExecutions);
@@ -132,13 +135,15 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 			// throw new IllegalStateException(String.format("Already terminating %s", stage));
 			// }
 			// stages.put(stage, Boolean.TRUE);
+
+			passFrontStatusToSuccessorStages(stage);
+
 			afterStageExecution(stage);
 			if (stage.getCurrentState() != StageState.TERMINATED) {
 				throw new IllegalStateException(
 						String.format("(TeeTimeTaskQueueThreadChw) %s: Expected state TERMINATED, but was %s", stage, stage.getCurrentState()));
 			}
 			scheduling.getNumRunningStages().countDown();
-			passFrontStatusToSuccessorStages(stage);
 		}
 	}
 
@@ -159,14 +164,17 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		synchronized (frontStages) {
 			if (frontStages.contains(stage)) {
 				frontStages.remove(stage);
+				PrioritizedTaskPool taskPool = scheduling.getPrioritizedTaskPool();
 				for (OutputPort<?> outputPort : STAGE_FACADE.getOutputPorts(stage)) {
 					AbstractStage targetStage = outputPort.getPipe().getTargetPort().getOwningStage();
 					if (targetStage.getCurrentState().compareTo(StageState.TERMINATING) < 0) {
 						frontStages.add(targetStage);
-						scheduling.getPrioritizedTaskPool().scheduleStage(targetStage);
+						while (!taskPool.scheduleStage(targetStage)) {
+							throw new IllegalStateException(String.format("(passFrontStatusToSuccessorStages) Scheduling successor failed for %s", targetStage));
+						}
 					}
 				}
-				LOGGER.debug("New front stages {}", frontStages);
+				LOGGER.debug("New front stages {}\n{}", frontStages, taskPool);
 			}
 		}
 	}
@@ -175,7 +183,9 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		Set<AbstractStage> frontStages = scheduling.getFrontStages();
 		// re-add stage to task queue if it is a front stage (a terminated front stage would have been already removed at this point)
 		if (frontStages.contains(stage)) {
-			taskPool.scheduleStage(stage);
+			while (!taskPool.scheduleStage(stage)) {
+				throw new IllegalStateException(String.format("(refillTaskPool) Self-scheduling failed for front stage %s", stage));
+			}
 		}
 	}
 

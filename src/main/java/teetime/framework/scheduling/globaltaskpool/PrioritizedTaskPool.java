@@ -1,6 +1,8 @@
 package teetime.framework.scheduling.globaltaskpool;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.jctools.queues.MpmcArrayQueue;
 
@@ -17,14 +19,6 @@ class PrioritizedTaskPool {
 
 	/** contains the stages categorized by their levels */
 	private final List<MpmcArrayQueue<AbstractStage>> levels;
-	/**
-	 * Holds all stages that are currently executed by a thread.
-	 * <br>
-	 * <i>(synchronized set)</i>
-	 */
-	private final Set<AbstractStage> executingStages = Collections.synchronizedSet(new HashSet<>());
-
-	// private final AtomicInteger lowestLevelPointer = new AtomicInteger(0);
 
 	public PrioritizedTaskPool(final int numLevels) {
 		levels = new ArrayList<>(numLevels);
@@ -33,22 +27,18 @@ class PrioritizedTaskPool {
 		}
 	}
 
-	public void scheduleStages(final Collection<AbstractStage> stages) {
+	public boolean scheduleStages(final Collection<AbstractStage> stages) {
+		boolean allScheduled = false;
 		for (AbstractStage stage : stages) {
-			scheduleStage(stage);
+			boolean scheduled = scheduleStage(stage);
+			allScheduled = allScheduled && scheduled;
 		}
+		return allScheduled;
 	}
 
 	public boolean scheduleStage(final AbstractStage stage) {
 		MpmcArrayQueue<AbstractStage> stages = levels.get(stage.getLevelIndex());
 		return stages.offer(stage);
-		// wait for the queue to become non-full
-		// System.out.println(String.format("Going to sleep: %s, index: %s, peek: %s, %s", stage, stage.getLevelIndex(), stages.peek(), Thread.currentThread()));
-		// try {
-		// Thread.sleep(1);
-		// } catch (InterruptedException e) {
-		// throw new IllegalStateException(e);
-		// }
 	}
 
 	/**
@@ -78,26 +68,13 @@ class PrioritizedTaskPool {
 		return null;
 	}
 
-	// public void releaseStage(final AbstractStage stage) {
-	// executingStages.remove(stage);
-	// }
-
-	// public boolean acquireStage(final AbstractStage stage) {
-	// return executingStages.add(stage);
-	// }
-
 	@Override
 	public String toString() {
+		int sumSizes = 0;
 		for (int i = levels.size() - 1; i >= 0; i--) {
 			MpmcArrayQueue<AbstractStage> stages = levels.get(i);
-
-			AbstractStage stage = stages.poll();
-			while (stage != null) {
-				System.out.println(String.format("%s: %s, level: %s", this.getClass(), stage, stage.getLevelIndex()));
-				stage = stages.poll();
-			}
-
+			sumSizes += stages.size();
 		}
-		return "";
+		return super.toString() + "[" + "size=" + sumSizes + "]";
 	}
 }

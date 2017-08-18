@@ -17,7 +17,9 @@ package teetime.stage.basic.merger;
 
 import java.util.List;
 
-import teetime.framework.*;
+import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.stage.basic.merger.strategy.IMergerStrategy;
 import teetime.stage.basic.merger.strategy.RoundRobinStrategy;
 
@@ -79,6 +81,7 @@ public class Merger<T> extends AbstractStage {
 		if (token == null) {
 			return;
 		}
+		logger.debug("Sending token {}", token);
 		outputPort.send(token);
 	}
 

@@ -29,6 +29,12 @@ public class Counter<T> extends AbstractFilter<T> implements ITaskFarmDuplicable
 		outputPort.send(element);
 	}
 
+	@Override
+	public void onTerminating() throws Exception {
+		logger.debug("count on termination: {}", numElementsPassed);
+		super.onTerminating();
+	}
+
 	public int getNumElementsPassed() {
 		return this.numElementsPassed;
 	}
