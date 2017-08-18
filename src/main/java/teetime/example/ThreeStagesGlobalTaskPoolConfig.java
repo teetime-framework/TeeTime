@@ -8,9 +8,9 @@ import teetime.stage.Counter;
 import teetime.stage.ObjectProducer;
 import teetime.util.ConstructorClosure;
 
-public class ManyElementsGlobalTaskPoolConfig extends Configuration {
+public class ThreeStagesGlobalTaskPoolConfig extends Configuration {
 
-	public ManyElementsGlobalTaskPoolConfig(final int numInputObjects, final List<Integer> outputElements) {
+	public ThreeStagesGlobalTaskPoolConfig(final int numInputObjects, final List<Integer> outputElements) {
 		ObjectProducer<Integer> producer = new ObjectProducer<>(numInputObjects, new ConstructorClosure<Integer>() {
 			private int counter;
 
