@@ -8,12 +8,12 @@ import teetime.stage.basic.AbstractFilter;
  * @author Christian Wulf (chw)
  *
  */
-public class Ramp extends AbstractFilter<Long> {
+public class Ramp extends AbstractFilter<Integer> {
 
 	@Override
-	protected void execute(final Long element) throws Exception {
-		long count = element;
-		for (long value = 0; value < count; value++) {
+	protected void execute(final Integer element) throws Exception {
+		int count = element;
+		for (int value = 0; value < count; value++) {
 			outputPort.send(value);
 		}
 	}
