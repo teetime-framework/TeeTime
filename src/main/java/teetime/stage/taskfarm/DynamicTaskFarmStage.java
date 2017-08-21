@@ -18,13 +18,18 @@ package teetime.stage.taskfarm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.*;
+import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
+import teetime.framework.RuntimeServiceFacade;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.pipe.IPipe;
-import teetime.stage.basic.distributor.dynamic.*;
+import teetime.stage.basic.distributor.dynamic.CreatePortActionDistributor;
+import teetime.stage.basic.distributor.dynamic.DynamicDistributor;
+import teetime.stage.basic.distributor.dynamic.RemovePortActionDistributor;
 import teetime.stage.basic.merger.dynamic.CreatePortActionMerger;
 import teetime.stage.basic.merger.dynamic.DynamicMerger;
-import teetime.stage.basic.merger.strategy.SkippingBusyWaitingRoundRobinStrategy;
+import teetime.stage.basic.merger.strategy.NonBlockingFiniteRoundRobinStrategy;
 import teetime.stage.taskfarm.exception.TaskFarmInvalidPipeException;
 
 /**
@@ -85,7 +90,7 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 	 *            the initial number of stages used by the task farm
 	 */
 	public DynamicTaskFarmStage(final T workerStage, final int initialNumOfStages, final int pipeCapacity) {
-		super(workerStage, initialNumOfStages, pipeCapacity, new DynamicDistributor<I>(), new DynamicMerger<O>(new SkippingBusyWaitingRoundRobinStrategy()));
+		super(workerStage, initialNumOfStages, pipeCapacity, new DynamicDistributor<I>(), new DynamicMerger<O>(new NonBlockingFiniteRoundRobinStrategy()));
 
 		// for (ITaskFarmDuplicable<I, O> workerStage : getWorkerStages()) {
 		// includedStage.setTaskFarmStage(this);

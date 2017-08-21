@@ -21,31 +21,37 @@ import teetime.framework.InputPort;
 import teetime.stage.basic.merger.Merger;
 
 /**
- * @author Christian Wulf
+ * Represents a strategy for the {@link teetime.stage.basic.merger.Merger Merger} stage.
+ * This strategy returns a non-null element from the next non-empty input port.
+ * If an input port is empty, its successor input port is checked.
+ * If the successor input port is also empty, the successor's successor input port is checked and so on.
+ * Hereby, each input port is checked at most once.
+ * This strategy continues with the successor of the input port used in the previous run.
+ *
+ * @author Nils Christian Ehmke, Christian Wulf
  *
  * @since 3.0
  */
-public final class SkippingBusyWaitingRoundRobinStrategy implements IMergerStrategy {
+public class NonBlockingFiniteRoundRobinStrategy implements IMergerStrategy {
 
 	private int index = 0;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getNextInput(final Merger<T> merger) {
 		final List<InputPort<?>> inputPorts = merger.getInputPorts();
-		final int startedIndex = index;
-
-		// handles pipe.isClosed() and pipe.isEmpty()
-		T token = (T) inputPorts.get(index).receive();
-		while (token == null) {
-			this.index = (this.index + 1) % inputPorts.size();
-			if (index == startedIndex) {
-				return null;
+		int size = inputPorts.size();
+		// check each port at most once to avoid a potentially infinite loop
+		while (size > 0) {
+			InputPort<?> inputPort = inputPorts.get(this.index);
+			@SuppressWarnings("unchecked")
+			final T token = (T) inputPort.receive();
+			if (token != null) {
+				return token;
 			}
-			token = (T) inputPorts.get(index).receive();
+			this.index = (this.index + 1) % inputPorts.size();
+			size--;
 		}
-
-		return token;
+		return null;
 	}
 
 	@Override

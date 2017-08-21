@@ -24,8 +24,11 @@ import teetime.stage.basic.merger.Merger;
  * @author Nils Christian Ehmke
  *
  * @since 1.0
+ *
+ * @deprecated since 3.0. Use {@link NonBlockingFiniteRoundRobinStrategy} instead.
  */
-public final class RoundRobinStrategy implements IMergerStrategy {
+@Deprecated
+public class RoundRobinStrategy implements IMergerStrategy {
 
 	private int index = 0;
 
@@ -34,23 +37,17 @@ public final class RoundRobinStrategy implements IMergerStrategy {
 		final List<InputPort<?>> inputPorts = merger.getInputPorts();
 		int size = inputPorts.size();
 		// check each port at most once to avoid a potentially infinite loop
-		while (size-- > 0) {
-			InputPort<?> inputPort = this.getNextPortInRoundRobinOrder(inputPorts);
+		while (size > 0) {
+			InputPort<?> inputPort = inputPorts.get(this.index);
 			@SuppressWarnings("unchecked")
 			final T token = (T) inputPort.receive();
 			if (token != null) {
 				return token;
 			}
+			this.index = (this.index + 1) % inputPorts.size();
+			size--;
 		}
 		return null;
-	}
-
-	private InputPort<?> getNextPortInRoundRobinOrder(final List<InputPort<?>> inputPorts) {
-		InputPort<?> inputPort = inputPorts.get(this.index);
-
-		this.index = (this.index + 1) % inputPorts.size();
-
-		return inputPort;
 	}
 
 	@Override
