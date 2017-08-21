@@ -32,9 +32,10 @@ public class ThreeStagesGlobalTaskPoolConfigTest {
 
 	private void shouldExecutePipelineCorrectlyManyElements(final int numElements, final int numThreads) {
 		List<Integer> processedElements = new ArrayList<>();
+		int numExecutions = 1;
 
 		ThreeStagesGlobalTaskPoolConfig config = new ThreeStagesGlobalTaskPoolConfig(numElements, processedElements);
-		TeeTimeService scheduling = new GlobalTaskPoolScheduling(numThreads, config, 1);
+		TeeTimeService scheduling = new GlobalTaskPoolScheduling(numThreads, config, numExecutions);
 		Execution<ThreeStagesGlobalTaskPoolConfig> execution = new Execution<>(config, true, scheduling);
 		execution.executeBlocking();
 

@@ -45,10 +45,14 @@ class PrioritizedTaskPool {
 	 * @return and removes the next stage from this queue, or <code>null</code> otherwise.
 	 */
 	public AbstractStage removeNextStage() {
+		return removeNextStage(levels.size() - 1);
+	}
+
+	public AbstractStage removeNextStage(final int deepestStartLevel) {
 		// TODO requires O(n) so far. Try to improve.
 		// => find non-empty lowest level in O(1)
 		// corresponding ticket: https://build.se.informatik.uni-kiel.de/teetime/teetime/issues/343
-		for (int i = levels.size() - 1; i >= 0; i--) {
+		for (int i = deepestStartLevel; i >= 0; i--) {
 			MpmcArrayQueue<AbstractStage> stages = levels.get(i);
 
 			// AbstractStage stage = stages.peek();
@@ -68,8 +72,12 @@ class PrioritizedTaskPool {
 		return null;
 	}
 
+	public int getNumLevels() {
+		return levels.size();
+	}
+
 	@Override
-	public String toString() {
+	public String toString() { // IMPORTANT: do not manipulate the level queues in this method
 		int sumSizes = 0;
 		for (int i = levels.size() - 1; i >= 0; i--) {
 			MpmcArrayQueue<AbstractStage> stages = levels.get(i);

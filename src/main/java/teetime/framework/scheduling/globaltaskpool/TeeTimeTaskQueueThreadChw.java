@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.*;
+import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
@@ -48,12 +49,13 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	public void run() {
 		final CountDownAndUpLatch numNonTerminatedFiniteStages = scheduling.getNumRunningStages();
 		final PrioritizedTaskPool taskPool = scheduling.getPrioritizedTaskPool(); // NOPMD (DU anomaly)
-		final AbstractStage dummyStage = new AbstractStage() {
-			@Override
-			protected void execute() throws Exception {
-				throw new UnsupportedOperationException("This stage implements the null object pattern");
-			}
-		};
+		// final AbstractStage dummyStage = new AbstractStage() {
+		// @Override
+		// protected void execute() throws Exception {
+		// throw new UnsupportedOperationException("This stage implements the null object pattern");
+		// }
+		// };
+		final int deepestLevel = taskPool.getNumLevels() - 1;
 
 		await();
 
@@ -62,7 +64,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		LOGGER.debug("Started thread, running stages: {}", numNonTerminatedFiniteStages.getCurrentCount());
 
 		while (numNonTerminatedFiniteStages.getCurrentCount() > 0) {
-			processNextStage(taskPool, dummyStage);
+			processNextStage(taskPool, deepestLevel);
 		}
 
 		LOGGER.debug("Terminated thread, running stages: {}", numNonTerminatedFiniteStages.getCurrentCount());
@@ -76,10 +78,10 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		}
 	}
 
-	public void processNextStage(final PrioritizedTaskPool taskPool, final AbstractStage currentStage) {
+	public void processNextStage(final PrioritizedTaskPool taskPool, final int levelIndex) {
 		// taskPool.releaseStage(currentStage);
 
-		AbstractStage stage = taskPool.removeNextStage();
+		AbstractStage stage = taskPool.removeNextStage(levelIndex);
 		if (stage != null) {
 			if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
 				// re-add stage
@@ -110,7 +112,19 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 					// taskPool.scheduleStage(stage); // re-add stage
 					// } else {
 					// try {
+					long currentPulls = countNonNullPulls(stage);
+
 					executeStage(stage);
+
+					long afterPulls = countNonNullPulls(stage);
+					if (afterPulls - currentPulls == 0) {
+						// execute stage with a shallower level
+						processNextStage(taskPool, levelIndex - 1);
+						// re-schedule stage
+						while (!taskPool.scheduleStage(stage)) {
+							throw new IllegalStateException(String.format("(passFrontStatusToSuccessorStages) Scheduling successor failed for %s", stage));
+						}
+					}
 					refillTaskPool(stage, taskPool);
 					// } finally {
 					// taskPool.releaseStage(stage); // release lock (FIXME bad API)
@@ -121,6 +135,15 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 				scheduling.setIsBeingExecuted(stage, false);
 			}
 		}
+	}
+
+	private long countNonNullPulls(final AbstractStage stage) {
+		long pulls = 0;
+		for (InputPort<?> inputPort : STAGE_FACADE.getInputPorts(stage)) {
+			IMonitorablePipe pipe = (IMonitorablePipe) inputPort.getPipe();
+			pulls += pipe.getNumPullsSinceAppStart();
+		}
+		return pulls;
 	}
 
 	private void executeStage(final AbstractStage stage) {
