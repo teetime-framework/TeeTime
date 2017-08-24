@@ -16,14 +16,12 @@
 package teetime.framework.scheduling.globaltaskpool;
 
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.*;
-import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
@@ -34,7 +32,6 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 
 	private final GlobalTaskPoolScheduling scheduling;
 	private final int numOfExecutions;
-	private final CountDownLatch startPermission = new CountDownLatch(1);
 	private final Semaphore runtimePermission = new Semaphore(0);
 
 	private AbstractStage lastStage;
@@ -96,54 +93,54 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 				lastStage = stage;
 			}
 
-			try {
-				if (scheduling.isPausedStage(stage)) {
-					// if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
-					// taskPool.scheduleStage(stage); // re-add stage
-					// } else {
-					scheduling.continueStage(stage);
-					// }
-				} /*
-					 * else if (scheduling.isBeingExecuted(stage)) {
-					 * taskPool.scheduleStage(stage); // re-add stage
-					 * }
-					 */else {
+			if (scheduling.isPausedStage(stage)) {
+				// if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
+				// taskPool.scheduleStage(stage); // re-add stage
+				// } else {
+				scheduling.continueStage(stage);
+				// }
+			} /*
+				 * else if (scheduling.isBeingExecuted(stage)) {
+				 * taskPool.scheduleStage(stage); // re-add stage
+				 * }
+				 */else {
+				try {
 					// if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
 					// taskPool.scheduleStage(stage); // re-add stage
 					// } else {
 					// try {
-					long currentPulls = countNonNullPulls(stage);
+					// long currentPulls = countNonNullPulls(stage);
+
+					if (stage.getCurrentState().compareTo(StageState.TERMINATING) >= 0) {
+						// throw new IllegalStateException();
+						return;
+					}
 
 					executeStage(stage);
 
-					long afterPulls = countNonNullPulls(stage);
-					if (afterPulls - currentPulls == 0) {
-						// execute stage with a shallower level
-						processNextStage(taskPool, levelIndex - 1);
-						// re-schedule stage
-						while (!taskPool.scheduleStage(stage)) {
-							throw new IllegalStateException(String.format("(processNextStage) Self-scheduling failed for blocked %s", stage));
-						}
-					}
-					refillTaskPool(stage, taskPool);
+					// long afterPulls = countNonNullPulls(stage);
+					// if (afterPulls - currentPulls == 0) {
+					// // execute stage with a shallower level
+					// processNextStage(taskPool, levelIndex - 1);
+					// // re-schedule stage
+					// while (!taskPool.scheduleStage(stage)) {
+					// throw new IllegalStateException(String.format("(processNextStage) Self-scheduling failed for blocked %s", stage));
+					// }
+					// }
+					// refillTaskPool(stage, taskPool);
 					// } finally {
 					// taskPool.releaseStage(stage); // release lock (FIXME bad API)
 					// }
 					// }
+				} finally {
+					scheduling.setIsBeingExecuted(stage, false);
 				}
-			} finally {
-				scheduling.setIsBeingExecuted(stage, false);
 			}
-		}
-	}
 
-	private long countNonNullPulls(final AbstractStage stage) {
-		long pulls = 0;
-		for (InputPort<?> inputPort : STAGE_FACADE.getInputPorts(stage)) {
-			IMonitorablePipe pipe = (IMonitorablePipe) inputPort.getPipe();
-			pulls += pipe.getNumPullsSinceAppStart();
+		} else { // no stage available in the pool
+			Set<AbstractStage> frontStages = scheduling.getFrontStages();
+			taskPool.scheduleStages(frontStages);
 		}
-		return pulls;
 	}
 
 	private void executeStage(final AbstractStage stage) {
@@ -168,6 +165,8 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 			}
 			scheduling.getNumRunningStages().countDown();
 		}
+
+		LOGGER.debug("Executed {}", stage);
 	}
 
 	private void afterStageExecution(final AbstractStage stage) {
@@ -198,16 +197,6 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 					}
 				}
 				LOGGER.debug("New front stages {}\n{}", frontStages, taskPool);
-			}
-		}
-	}
-
-	private void refillTaskPool(final AbstractStage stage, final PrioritizedTaskPool taskPool) {
-		Set<AbstractStage> frontStages = scheduling.getFrontStages();
-		// re-add stage to task queue if it is a front stage (a terminated front stage would have been already removed at this point)
-		if (frontStages.contains(stage)) {
-			while (!taskPool.scheduleStage(stage)) {
-				throw new IllegalStateException(String.format("(refillTaskPool) Self-scheduling failed for front stage %s", stage));
 			}
 		}
 	}

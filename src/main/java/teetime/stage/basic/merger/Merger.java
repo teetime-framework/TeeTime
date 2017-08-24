@@ -81,7 +81,6 @@ public class Merger<T> extends AbstractStage {
 		if (token == null) {
 			return;
 		}
-		logger.debug("Sending token {}", token);
 		outputPort.send(token);
 	}
 

@@ -20,10 +20,27 @@ class PrioritizedTaskPool {
 	/** contains the stages categorized by their levels */
 	private final List<MpmcArrayQueue<AbstractStage>> levels;
 
+	/**
+	 * Creates a task pool with a default capacity of {@value #CAPACITY} for each level.
+	 *
+	 * @param numLevels
+	 *            number of levels
+	 */
 	public PrioritizedTaskPool(final int numLevels) {
+		this(numLevels, CAPACITY);
+	}
+
+	/**
+	 *
+	 * @param numLevels
+	 *            number of levels
+	 * @param capacity
+	 *            of each level
+	 */
+	public PrioritizedTaskPool(final int numLevels, final int capacity) {
 		levels = new ArrayList<>(numLevels);
 		for (int i = 0; i < numLevels; i++) {
-			levels.add(new MpmcArrayQueue<>(CAPACITY)); // NOPMD (initialization)
+			levels.add(new MpmcArrayQueue<>(capacity)); // NOPMD (initialization)
 		}
 	}
 
@@ -38,7 +55,12 @@ class PrioritizedTaskPool {
 
 	public boolean scheduleStage(final AbstractStage stage) {
 		MpmcArrayQueue<AbstractStage> stages = levels.get(stage.getLevelIndex());
-		return stages.offer(stage);
+		boolean offered = stages.offer(stage);
+		if (!offered) {
+			Object peekElement = stages.peek();
+			System.out.println(String.format("(scheduleStage) Full level %s with first element %s", stage.getLevelIndex(), peekElement));
+		}
+		return offered;
 	}
 
 	/**

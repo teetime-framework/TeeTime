@@ -121,6 +121,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		// Add threads to thread pool and start
 		for (int i = 0; i < numThreads; i++) {
 			TeeTimeTaskQueueThreadChw thread = new TeeTimeTaskQueueThreadChw(this, actualNumOfExecutions);
+			LOGGER.debug("Starting {}", thread.getName());
 			thread.start();
 			threadPool.add(thread);
 		}
@@ -354,19 +355,24 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 			// TeeTimeTaskQueueThreadChw currentThread = (TeeTimeTaskQueueThreadChw) Thread.currentThread();
 
 			AbstractStage sourceStage = pipe.getSourcePort().getOwningStage();
-			boolean yield = false;
+			// boolean yield = false;
 			while (!taskPool.scheduleStage(targetStage)) {
-				LOGGER.debug("Yielding {} cause of full pool level {} triggered after {} pushes", sourceStage, targetStage.getLevelIndex(),
-						monitorablePipe.getNumPushesSinceAppStart());
-				yield = true;
-				this.yieldStage(sourceStage);
+				// LOGGER.debug("Yielding {} cause of full pool level {} triggered after {} pushes", sourceStage, targetStage.getLevelIndex(),
+				// monitorablePipe.getNumPushesSinceAppStart());
+				// yield = true;
+				// this.yieldStage(sourceStage);
+				throw new IllegalStateException("Could not schedule " + targetStage + "\n" + taskPool);
 			}
+
+			// always yield stage
+			this.yieldStage(sourceStage);
+
 			// if (!taskPool.scheduleStage(targetStage)) {
 			// throw new IllegalStateException("Could not schedule " + targetStage + "\n" + taskPool);
 			// }
-			if (yield) {
-				// LOGGER.debug("Continue {}", sourceStage);
-			}
+			// if (yield) {
+			// LOGGER.debug("Continue {}", sourceStage);
+			// }
 
 			// AbstractStage runningStage = pipe.getSourcePort().getOwningStage();
 			// must release the lock at this point (handled by processNextStage)
@@ -395,6 +401,10 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 
 		getCurrentThread().pause();
 
+		if (!stage.isBeingExecuted()) {
+			throw new IllegalStateException("Stage must be in state 'is being executed'");
+		}
+
 		stage.setPaused(false);
 		LOGGER.debug("Continue with {}", stage);
 	}
@@ -411,6 +421,10 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 	void continueStage(final AbstractStage stage) {
 		TeeTimeTaskQueueThreadChw thisThread = getCurrentThread();
 		backupThreads.add(thisThread);
+
+		if (!stage.isBeingExecuted()) {
+			throw new IllegalStateException("Stage must be in state 'is being executed'");
+		}
 
 		/* must follow "backupThreads.add" so that the awakened thread can invoke "backupThreads.remove(0)" without causing an IndexOutOfBoundsException */
 		TeeTimeTaskQueueThreadChw owningThread = this.getOwningThreadSynched(stage);

@@ -24,6 +24,7 @@
 	<logger name="teetime" level="INFO" />
 	<logger name="teetime.framework" level="TRACE" />
 	<logger name="teetime.framework.pipe" level="WARN" />
+	<logger name="teetime.framework.scheduling" level="INFO" />
 	<logger name="teetime.framework.signal" level="TRACE" />
 	
 	<logger name="teetime.stage.basic.distributor" level="TRACE" />
@@ -38,6 +39,7 @@
 <!-- 	<logger name="teetime.stage" level="TRACE" /> -->
 <!-- 	<logger name="teetime.framework.signal" level="TRACE" /> -->
 	<logger name="teetime.stage" level="TRACE" />
+	
 	<logger name="util" level="INFO" />
 	
 	<logger name="kieker" level="ERROR" />

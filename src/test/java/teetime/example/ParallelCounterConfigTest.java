@@ -15,6 +15,11 @@ import teetime.framework.scheduling.globaltaskpool.GlobalTaskPoolScheduling;
 public class ParallelCounterConfigTest {
 
 	@Test
+	public void testExecutionWithOneThread() {
+		testParallelExecution(10_000, 1, 1);
+	}
+
+	@Test
 	public void testExecutionWithTwoThreads() {
 		testParallelExecution(10_000, 2, 1);
 	}
@@ -22,6 +27,21 @@ public class ParallelCounterConfigTest {
 	@Test
 	public void testExecutionWithFourThreads() {
 		testParallelExecution(10_000, 4, 1);
+	}
+
+	@Test
+	public void testExecutionWithOneThreadWithManyExecutions() {
+		testParallelExecution(10_000, 1, 256);
+	}
+
+	@Test
+	public void testExecutionWithTwoThreadsWithManyExecutions() {
+		testParallelExecution(10_000, 2, 256);
+	}
+
+	@Test
+	public void testExecutionWithFourThreadsWithManyExecutions() {
+		testParallelExecution(10_000, 4, 256);
 	}
 
 	private void testParallelExecution(final int numElements, final int numThreads, final int numExecutions) {
