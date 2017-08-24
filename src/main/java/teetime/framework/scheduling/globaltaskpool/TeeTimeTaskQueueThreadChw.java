@@ -86,7 +86,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 			if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
 				// re-add stage
 				while (!taskPool.scheduleStage(stage)) {
-					throw new IllegalStateException(String.format("(processNextStage) Re-scheduling failed for paused stage %s", stage));
+					throw new IllegalStateException(String.format("(processNextStage) Re-scheduling failed for paused %s", stage));
 				}
 				return;
 			}
@@ -122,7 +122,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 						processNextStage(taskPool, levelIndex - 1);
 						// re-schedule stage
 						while (!taskPool.scheduleStage(stage)) {
-							throw new IllegalStateException(String.format("(passFrontStatusToSuccessorStages) Scheduling successor failed for %s", stage));
+							throw new IllegalStateException(String.format("(processNextStage) Self-scheduling failed for blocked %s", stage));
 						}
 					}
 					refillTaskPool(stage, taskPool);

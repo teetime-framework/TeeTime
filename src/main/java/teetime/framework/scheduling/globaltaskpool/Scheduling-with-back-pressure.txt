@@ -1,0 +1,45 @@
+[Example configuration]
+
+	  ->C->D-
+A->B-|		 |->G->H
+	  ->E->F-
+
+[Priorities (low=small number, high=large number) for back-pressure]
+A:0
+B:1
+C:2
+D:3
+E:2
+F:3
+G:4
+H:5
+
+[Approach with a single thread]
+#executions: 2
+
+new front stages: 
+new (thread 0) queue: A
+----------------------------------- start
+thread 0: execute A
+thread 0: add successor B
+new (thread 0) queue: B
+thread 0: execute B (round-robin)
+thread 0: add successor C
+thread 0: add successor E
+new (thread 0) queue: C,E
+thread 0: execute C
+----------------------------------- with back-pressure
+thread 0: add successor D to front
+new (thread 0) queue: D,E
+thread 0: execute D
+thread 0: add successor G to front
+new (thread 0) queue: G,E
+thread 0: execute G (round-robin)
+thread 0: waits for the second input port (either via blocking or busy-waiting)
+
+thread 0: add successor H to front
+new (thread 0) queue: H,E
+
+=> TODO
+
+[Approach with multiple threads]
