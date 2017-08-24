@@ -339,10 +339,12 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 
 	@Override
 	public void onElementAdded(final AbstractSynchedPipe<?> pipe) {
+		// TODO consider to pass IMonitorablePipe as parameter type
 		IMonitorablePipe monitorablePipe = (IMonitorablePipe) pipe;
 		long numPushes = monitorablePipe.getNumPushesSinceAppStart();
 		// performance optimization: & represents % (modulo)
 		if ((numPushes & numOfExecutionsMask) != 0) {
+			// TODO numPushes is wrong. It must be diff=(numPushes-numPushesAtBeginExecution).
 			// throw new IllegalStateException("numPushes: " + numPushes); // for debugging purposes with numOfExecutionsMask==1 FIXME remove
 			return;
 		}
