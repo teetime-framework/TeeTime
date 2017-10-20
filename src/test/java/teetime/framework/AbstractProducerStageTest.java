@@ -43,7 +43,7 @@ public class AbstractProducerStageTest {
 		private TerminationCondition terminationCondition;
 
 		@Override
-		public void onStarting() throws Exception {
+		public void onStarting() {
 			if (null == terminationCondition) {
 				throw new IllegalStateException("terminationCondition is null");
 			}

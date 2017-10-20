@@ -18,7 +18,9 @@ package teetime.stage.basic;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.*;
+import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 
 public class Delay<T> extends AbstractStage {
 
@@ -51,7 +53,7 @@ public class Delay<T> extends AbstractStage {
 	}
 
 	@Override
-	public void onTerminating() throws Exception { // NOPMD
+	public void onTerminating() {
 		while (null == timestampTriggerInputPort.receive()) { // NOPMD flushes input
 			// wait for the next trigger
 		}

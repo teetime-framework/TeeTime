@@ -145,7 +145,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 			categorizeStage(stage);
 			setOwningThread(stage);
 			setExceptionListener(stage);
-			setConfigurationContext(stage);
+			setScheduler(stage);
 			stageList.put(stage, new LinkedList<StageBuffer>());
 		}
 
@@ -319,9 +319,8 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		STAGE_FACADE.setExceptionHandler(stage, handler);
 	}
 
-	private void setConfigurationContext(final AbstractStage stage) {
-		ConfigurationContext context = CONFIG_FACADE.getContext(configuration);
-		STAGE_FACADE.setOwningContext(stage, context);
+	private void setScheduler(final AbstractStage stage) {
+		STAGE_FACADE.setScheduler(stage, this);
 	}
 
 	public Map<AbstractStage, List<StageBuffer>> getStageList() {

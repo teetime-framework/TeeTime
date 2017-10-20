@@ -53,7 +53,8 @@ public abstract class AbstractStage {
 	/** The owning thread of this stage if this stage is directly executed by an {@link AbstractRunnableStage}, <code>null</code> otherwise. */
 	private Thread owningThread;
 	private boolean isActive;
-	private ConfigurationContext owningContext;
+	/** the scheduler used for this stage and all of the other stages */
+	private TeeTimeService scheduler;
 
 	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
 	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
@@ -141,12 +142,15 @@ public abstract class AbstractStage {
 		return this.id;
 	}
 
-	ConfigurationContext getOwningContext() {
-		return owningContext;
+	/**
+	 * Required by {@link RuntimeServiceFacade#startWithinNewThread(AbstractStage, AbstractStage)}
+	 */
+	TeeTimeService getScheduler() {
+		return scheduler;
 	}
 
-	void setOwningContext(final ConfigurationContext owningContext) {
-		this.owningContext = owningContext;
+	void setScheduler(final TeeTimeService scheduler) {
+		this.scheduler = scheduler;
 	}
 
 	@Override
@@ -312,20 +316,15 @@ public abstract class AbstractStage {
 		}
 
 		if (signal.mayBeTriggered(signalReceivedInputPorts, getInputPorts())) {
-			try {
-				signal.trigger(this);
-				checkSuperCalls(signal);
-			} catch (Exception e) {
-				this.logger.error("Could not trigger signal.", e);
-				this.getOwningContext().abortConfigurationRun();
-			}
+			signal.trigger(this);
+			checkSuperCalls(signal);
 			for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
 				outputPort.sendSignal(signal);
 			}
 		}
 	}
 
-	private void checkSuperCalls(final ISignal signal) {
+	private void checkSuperCalls(final ISignal signal) throws SuperNotCalledException {
 		if (signal instanceof StartingSignal) {
 			if (!calledOnStarting) {
 				throw new SuperNotCalledException("The super method onStarting was not called in " + this.getId());
@@ -373,8 +372,8 @@ public abstract class AbstractStage {
 
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
 		this.checkTypeCompliance(invalidPortConnections);
-		if (owningContext == null) {
-			throw new NullPointerException("A stage may not have a nullable owning context.");
+		if (getScheduler() == null) {
+			throw new NullPointerException("A stage may not have a nullable scheduler.");
 		}
 		changeState(StageState.VALIDATED);
 	}
@@ -382,12 +381,11 @@ public abstract class AbstractStage {
 	/**
 	 * Event that is triggered within the initialization phase of the analysis.
 	 * It does not count to the execution time.
-	 *
-	 * @throws Exception
-	 *             an arbitrary exception if an error occurs during the initialization
+	 * <p>
+	 * To throw a checked exception, wrap it to an unchecked exception, e.g. to an {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
+	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
 	 */
-	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
-	public void onStarting() throws Exception {
+	public void onStarting() {
 		logger.debug("Stage {} within thread {}", getId(), getOwningThread().getId());
 		changeState(StageState.STARTED);
 		calledOnStarting = true;
@@ -414,8 +412,11 @@ public abstract class AbstractStage {
 		}
 	}
 
-	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
-	public void onTerminating() throws Exception {
+	/**
+	 * To throw a checked exception, wrap it to an unchecked exception, e.g. to an {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
+	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
+	 */
+	public void onTerminating() {
 		if (newStateRequired(StageActivationState.TERMINATED)) {
 			this.addState(StageActivationState.TERMINATED, System.nanoTime());
 		}

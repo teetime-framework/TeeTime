@@ -31,11 +31,13 @@ class A4StageAttributeSetter {
 	// requires: factory and context
 	private final Configuration configuration;
 	private final Set<AbstractStage> threadableStages;
+	private final TeeTimeService scheduler;
 
-	public A4StageAttributeSetter(final Configuration configuration, final Set<AbstractStage> threadableStages) {
+	public A4StageAttributeSetter(final Configuration configuration, final Set<AbstractStage> threadableStages, final TeeTimeService scheduler) {
 		super();
 		this.configuration = configuration;
 		this.threadableStages = threadableStages;
+		this.scheduler = scheduler;
 	}
 
 	public void setAttributes() {
@@ -58,13 +60,12 @@ class A4StageAttributeSetter {
 
 		Thread newThread = new TeeTimeThread(runnable, "Thread for " + threadableStage.getId());
 		AbstractExceptionListener exceptionhandler = CONFIG_FACADE.getFactory(configuration).createInstance(newThread);
-		ConfigurationContext context = CONFIG_FACADE.getContext(configuration);
 
 		intraStages.add(threadableStage);
 		for (AbstractStage stage : intraStages) {
 			STAGE_FACADE.setOwningThread(stage, newThread);
 			STAGE_FACADE.setExceptionHandler(stage, exceptionhandler);
-			STAGE_FACADE.setOwningContext(stage, context);
+			STAGE_FACADE.setScheduler(stage, scheduler);
 		}
 	}
 }

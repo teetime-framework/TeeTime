@@ -38,7 +38,7 @@ public final class RuntimeServiceFacade {
 	 * @param stage
 	 */
 	public void startWithinNewThread(final AbstractStage previousStage, final AbstractStage stage) {
-		previousStage.getOwningContext().startStageAtRuntime(stage);
+		previousStage.getScheduler().startStageAtRuntime(stage);
 	}
 
 	/**

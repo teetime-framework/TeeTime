@@ -103,7 +103,7 @@ public class PushPullScheduling implements TeeTimeService, ThreadListener {
 			traversor.traverse(startStage);
 		}
 
-		A4StageAttributeSetter attributeSetter = new A4StageAttributeSetter(configuration, newThreadableStages);
+		A4StageAttributeSetter attributeSetter = new A4StageAttributeSetter(configuration, newThreadableStages, this);
 		attributeSetter.setAttributes();
 
 		for (AbstractStage stage : newThreadableStages) {

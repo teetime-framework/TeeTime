@@ -43,7 +43,7 @@ public final class ElementThroughputMeasuringStage<T> extends AbstractFilter<T> 
 	}
 
 	@Override
-	public void onStarting() throws Exception { // NOPMD
+	public void onStarting() {
 		super.onStarting();
 		this.resetTimestamp(System.nanoTime());
 	}

@@ -40,7 +40,7 @@ public final class MultipleInstanceOfFilter<I> extends AbstractConsumerStage<I> 
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void onStarting() throws Exception { // NOPMD exception forced by super method
+	public void onStarting() {
 		super.onStarting();
 		// We cache the map to avoid the creating of iterators during runtime
 		cachedOutputPortsMaps = (Entry<Class<? extends I>, OutputPort<? super I>>[]) outputPortsMap.entrySet().toArray(new Entry<?, ?>[outputPortsMap.size()]);

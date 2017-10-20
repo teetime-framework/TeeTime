@@ -22,7 +22,7 @@ import teetime.framework.scheduling.pushpullmodel.PushPullScheduling;
  *
  * @since 2.0
  *
- * @deprecated since 3.0.
+ * @deprecated since 3.0. Scheduled to be remove in 3.1 or above without replacement.
  */
 @Deprecated
 public final class ConfigurationContext {

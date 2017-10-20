@@ -30,7 +30,7 @@ public class Counter<T> extends AbstractFilter<T> implements ITaskFarmDuplicable
 	}
 
 	@Override
-	public void onTerminating() throws Exception {
+	public void onTerminating() {
 		logger.debug("count on termination: {}", numElementsPassed);
 		super.onTerminating();
 	}
