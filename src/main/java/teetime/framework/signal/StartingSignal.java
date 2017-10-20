@@ -24,7 +24,7 @@ import teetime.framework.InputPort;
 public final class StartingSignal implements ISignal {
 
 	@Override
-	public void trigger(final AbstractStage stage) throws Exception { // NOPMD a stage may throw any arbitrary exception
+	public void trigger(final AbstractStage stage) {
 		stage.onStarting();
 	}
 

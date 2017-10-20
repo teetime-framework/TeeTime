@@ -22,6 +22,7 @@ import java.util.List;
 import teetime.framework.AbstractPort;
 import teetime.framework.Configuration;
 import teetime.framework.MonitoringThread;
+import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
 import teetime.stage.CountingMapMerger;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.distributor.Distributor;
@@ -57,6 +58,7 @@ public class WordCounterConfiguration extends Configuration {
 	private final Distributor<String> distributor;
 
 	public WordCounterConfiguration(final int threads, final File... input) {
+		super(new TerminatingExceptionListenerFactory());
 		// First part of the config
 		final InitialElementProducer<File> init = new InitialElementProducer<File>(input);
 		// final File2Lines f2b = new File2Lines();

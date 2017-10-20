@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.scheduling.globaltaskqueue;
+package teetime.framework.scheduling.globaltaskpool;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +28,7 @@ import teetime.framework.Traverser;
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.InstantiationPipe;
+import teetime.framework.scheduling.PipeScheduler;
 
 /**
  * Created by nilsziermann on 30.12.16.
@@ -37,6 +38,12 @@ class TaskQueueA2PipeInstantiation implements ITraverserVisitor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueueA2PipeInstantiation.class);
 
 	private final Set<IPipe<?>> visitedPipes = new HashSet<IPipe<?>>();
+
+	private final PipeScheduler scheduler;
+
+	public TaskQueueA2PipeInstantiation(final PipeScheduler scheduler) {
+		this.scheduler = scheduler;
+	}
 
 	@Override
 	public Traverser.VisitorBehavior visit(final AbstractStage stage) {
@@ -68,7 +75,8 @@ class TaskQueueA2PipeInstantiation implements ITraverserVisitor {
 			return;
 		}
 
-		new UnboundedMpMcSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
+		UnboundedMpMcSynchedPipe<T> synchedPipe = new UnboundedMpMcSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
+		synchedPipe.setScheduler(scheduler);
 		LOGGER.debug("Connected (unbounded MpMc) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
 	}
 }

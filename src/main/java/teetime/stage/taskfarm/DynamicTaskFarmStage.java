@@ -136,6 +136,7 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 
 		mergerPortAction.waitForCompletion();
 
+		// the validating and the starting signal is sent by the create action
 		RuntimeServiceFacade.INSTANCE.startWithinNewThread(getDistributor(), newStage.getInputPort().getOwningStage());
 
 		getWorkerStages().add(newStage);

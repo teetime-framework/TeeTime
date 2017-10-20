@@ -44,7 +44,7 @@ public class DynamicMerger<T> extends Merger<T> {
 	}
 
 	@Override
-	public void onTerminating() throws Exception {
+	public void onTerminating() {
 		// foreach on portActions is not implemented, so we iterate by ourselves
 		PortAction<DynamicMerger<T>> portAction = portActions.poll();
 		while (portAction != null) {

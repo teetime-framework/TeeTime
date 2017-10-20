@@ -52,6 +52,14 @@ public class Configuration extends CompositeStage {
 		this.startStages = new HashSet<AbstractStage>();
 	}
 
+	/**
+	 *
+	 * @param factory
+	 * @param context
+	 *
+	 * @deprecated since 3.0. Scheduled to be removed in 3.1 or above. Use {@link #Configuration(AbstractExceptionListenerFactory)} instead.
+	 */
+	@Deprecated
 	public Configuration(final AbstractExceptionListenerFactory<?> factory, final ConfigurationContext context) {
 		this.factory = factory;
 		this.context = context;
@@ -107,6 +115,10 @@ public class Configuration extends CompositeStage {
 		startStages.add(pipe.getSourcePort().getOwningStage()); // memorize all source stages as starting point for traversing
 	}
 
+	/**
+	 * @deprecated since 3.0.
+	 */
+	@Deprecated
 	/* default */ConfigurationContext getContext() {
 		return context;
 	}

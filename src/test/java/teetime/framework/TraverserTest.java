@@ -67,7 +67,7 @@ public class TraverserTest {
 		Traverser traverser = new Traverser(new DoNothingVisitor());
 		traverser.traverse(config.init);
 
-		assertThat(traverser.getVisitedStages(), is(empty()));
+		assertThat(traverser.getVisitedStages().size(), is(3 + 2 * 3 + 2));
 	}
 
 	@Test

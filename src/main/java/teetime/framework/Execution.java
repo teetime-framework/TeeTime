@@ -27,6 +27,8 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import teetime.framework.scheduling.pushpullmodel.PushPullScheduling;
+
 /**
  * Represents an Execution to which stages can be added and executed later.
  * This class requires a {@link Configuration},
@@ -99,12 +101,13 @@ public final class Execution<T extends Configuration> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Execution.class);
 
 	private final T configuration;
-	private final ConfigurationContext configurationContext;
 
 	private ExecutionState state;
 
+	private TeeTimeService scheduler;
+
 	/**
-	 * Creates a new {@link Execution} and validates the given configuration.
+	 * Creates a new {@link Execution}. It validates the given configuration and uses the {@link PushPullScheduling} as default scheduler.
 	 *
 	 * @param configuration
 	 *            to be executed
@@ -114,24 +117,40 @@ public final class Execution<T extends Configuration> {
 	}
 
 	/**
+	 * Uses {@link PushPullScheduling} as default scheduler.
+	 *
 	 * @param configuration
-	 *            to be executed
+	 *            to be executed.
 	 * @param validationEnabled
 	 *            <code>true</code> if validation should be performed after initialization; <code>false</code> otherwise.
 	 */
 	public Execution(final T configuration, final boolean validationEnabled) {
+		this(configuration, validationEnabled, new PushPullScheduling(configuration));
+	}
+
+	/**
+	 * @param configuration
+	 *            to be executed.
+	 * @param validationEnabled
+	 *            <code>true</code> if validation should be performed after initialization; <code>false</code> otherwise.
+	 * @param scheduler
+	 *            to be used for the given configuration.
+	 */
+	public Execution(final T configuration, final boolean validationEnabled, final TeeTimeService scheduler) {
+		this.scheduler = scheduler;
 		this.configuration = configuration;
-		this.configurationContext = configuration.getContext();
 		if (configuration.isInitialized()) {
 			throw new IllegalStateException("3001 - Configuration has already been used.");
 		}
 		configuration.setInitialized(true);
 
-		configurationContext.initializeServices();
+		scheduler.onInitialize();
 		state = ExecutionState.INITIALIZED;
 
+		LOGGER.info("Using scheduler: {}", scheduler);
+
 		if (validationEnabled) {
-			configurationContext.validateServices();
+			scheduler.onValidate();
 		}
 	}
 
@@ -144,7 +163,7 @@ public final class Execution<T extends Configuration> {
 	 * @since 2.0
 	 */
 	public void waitForTermination() {
-		configurationContext.waitForConfigurationToTerminate();
+		scheduler.onFinish();
 		if (state == ExecutionState.CANCELING) {
 			state = ExecutionState.CANCELED;
 		} else {
@@ -170,7 +189,7 @@ public final class Execution<T extends Configuration> {
 	 */
 	public void abortEventually() {
 		state = ExecutionState.CANCELING;
-		configurationContext.abortConfigurationRun();
+		scheduler.onTerminate();
 		waitForTermination();
 	}
 
@@ -188,7 +207,7 @@ public final class Execution<T extends Configuration> {
 		}
 		configuration.setExecuted(true);
 		state = ExecutionState.EXECUTING;
-		configurationContext.executeConfiguration();
+		scheduler.onExecute();
 		return new ExecutionFuture(this);
 	}
 

@@ -46,12 +46,17 @@ public class InputPort<T> extends AbstractPort<T> {
 		Object element = this.pipe.removeLast();
 		if (TERMINATE_ELEMENT == element) {
 			pipe.close();// TODO remove volatile from isClosed
-			int numOpenedInputPorts = getOwningStage().decNumOpenedInputPorts();
-			getOwningStage().logger.trace("numOpenedInputPorts (dec): {}", numOpenedInputPorts);
-			if (numOpenedInputPorts == 0) {
-				getOwningStage().terminateStageByFramework();
+			int size = pipe.size();
+			if (size > 0) {
+				throw new IllegalStateException("Pipe " + pipe + " should be empty, but has a size of " + size);
 			}
-			element = null;
+			AbstractStage owningStage = getOwningStage();
+			int numOpenedInputPorts = owningStage.decNumOpenedInputPorts();
+			owningStage.logger.trace("numOpenedInputPorts (dec): {}", numOpenedInputPorts);
+			if (numOpenedInputPorts == 0) {
+				owningStage.terminateStageByFramework();
+			}
+			return null; // NOPMD (two returns)
 		}
 		return (T) element;
 	}

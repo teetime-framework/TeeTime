@@ -20,9 +20,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
 
-import teetime.framework.divideandconquer.*;
+import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
+import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
+import teetime.framework.divideandconquer.DividedDCProblem;
 import teetime.framework.pipe.DummyPipe;
-import teetime.framework.signal.*;
+import teetime.framework.signal.StartingSignal;
+import teetime.framework.signal.TerminatingSignal;
+import teetime.framework.signal.ValidatingSignal;
 import teetime.stage.basic.ITransformation;
 
 /**

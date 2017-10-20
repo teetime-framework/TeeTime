@@ -86,13 +86,13 @@ public final class Printer<T> extends AbstractConsumerStage<T> {
 	}
 
 	@Override
-	public void onStarting() throws Exception {
+	public void onStarting() {
 		super.onStarting();
 		this.initializeStream();
 	}
 
 	@Override
-	public void onTerminating() throws Exception {
+	public void onTerminating() {
 		this.closeStream();
 		super.onTerminating();
 	}
@@ -116,10 +116,10 @@ public final class Printer<T> extends AbstractConsumerStage<T> {
 				this.active = true;
 			} catch (final FileNotFoundException ex) {
 				this.active = false;
-				super.logger.warn("Stream could not be created", ex);
+				throw new IllegalStateException("Stream could not be created", ex);
 			} catch (final UnsupportedEncodingException ex) {
 				this.active = false;
-				super.logger.warn("Encoding not supported", ex);
+				throw new IllegalStateException("Encoding not supported", ex);
 			}
 		}
 	}

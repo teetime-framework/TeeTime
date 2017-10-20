@@ -46,10 +46,6 @@ public final class StageFacade {
 		return stage.getOwningThread();
 	}
 
-	public ConfigurationContext getOwningContext(final AbstractStage stage) {
-		return stage.getOwningContext();
-	}
-
 	public void setOwningThread(final AbstractStage stage, final Thread newThread) {
 		stage.setOwningThread(newThread);
 	}
@@ -58,8 +54,8 @@ public final class StageFacade {
 		stage.setExceptionHandler(exceptionHandler);
 	}
 
-	public void setOwningContext(final AbstractStage stage, final ConfigurationContext context) {
-		stage.setOwningContext(context);
+	public void setScheduler(final AbstractStage stage, final TeeTimeService scheduler) {
+		stage.setScheduler(scheduler);
 	}
 
 	public AbstractExceptionListener getExceptionListener(final AbstractStage stage) {
@@ -77,7 +73,7 @@ public final class StageFacade {
 			}
 		} catch (TerminateException e) {
 			stage.abort();
-			stage.getOwningContext().abortConfigurationRun();
+			stage.getScheduler().onTerminate();
 		}
 	}
 
@@ -92,7 +88,7 @@ public final class StageFacade {
 			}
 		} catch (TerminateException e) {
 			stage.abort();
-			stage.getOwningContext().abortConfigurationRun();
+			stage.getScheduler().onTerminate();
 		}
 	}
 

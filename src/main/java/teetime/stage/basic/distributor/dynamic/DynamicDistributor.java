@@ -22,7 +22,9 @@ import teetime.framework.signal.TerminatingSignal;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.distributor.strategy.IDistributorStrategy;
 import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
-import teetime.util.framework.port.*;
+import teetime.util.framework.port.PortAction;
+import teetime.util.framework.port.PortActionHelper;
+import teetime.util.framework.port.PortRemovedListener;
 
 public class DynamicDistributor<T> extends Distributor<T> implements PortRemovedListener<OutputPort<?>> {
 
@@ -53,7 +55,7 @@ public class DynamicDistributor<T> extends Distributor<T> implements PortRemoved
 	}
 
 	@Override
-	public void onTerminating() throws Exception {
+	public void onTerminating() {
 		// foreach on portActions is not implemented, so we iterate by ourselves
 		PortAction<DynamicDistributor<T>> portAction = portActions.poll();
 		while (portAction != null) {

@@ -38,7 +38,7 @@ class FileCounter extends AbstractConsumerStage<File> {
 	}
 
 	@Override
-	public void onTerminating() throws Exception {
+	public void onTerminating() {
 		outputPort.send(counter);
 		super.onTerminating();
 	}

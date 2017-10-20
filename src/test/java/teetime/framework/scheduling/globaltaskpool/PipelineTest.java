@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package teetime.framework.scheduling.globaltaskqueue;
+package teetime.framework.scheduling.globaltaskpool;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -25,23 +25,19 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.framework.Configuration;
-import teetime.framework.ConfigurationContext;
 import teetime.framework.Execution;
-import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
+import teetime.framework.TeeTimeService;
 import teetime.stage.*;
 import teetime.util.ConstructorClosure;
 
 public class PipelineTest {
 
-	private static class GlobalTaskPoolConfig<T> extends Configuration {
+	private static final int NUM_THREADS = 4;
 
-		private static final int NUM_THREADS = 4;
-		private static final GlobalTaskQueueScheduling SCHEDULER = new GlobalTaskQueueScheduling(NUM_THREADS);
+	private static class GlobalTaskPoolConfig<T> extends Configuration {
 		private CollectorSink<T> sink;
 
 		public GlobalTaskPoolConfig(final T... elements) {
-			super(new TerminatingExceptionListenerFactory(), new ConfigurationContext(SCHEDULER));
-			SCHEDULER.setConfiguration(this);
 			build(elements);
 		}
 
@@ -60,48 +56,11 @@ public class PipelineTest {
 		}
 	}
 
-	private static class ManyElementsGlobalTaskPoolConfig extends Configuration {
-
-		private static final int NUM_THREADS = 4;
-		private static final GlobalTaskQueueScheduling SCHEDULER = new GlobalTaskQueueScheduling(NUM_THREADS);
-		private CollectorSink<Integer> sink;
-
-		public ManyElementsGlobalTaskPoolConfig(final int numInputObjects) {
-			super(new TerminatingExceptionListenerFactory(), new ConfigurationContext(SCHEDULER));
-			SCHEDULER.setConfiguration(this);
-			build(numInputObjects);
-		}
-
-		private void build(final int numInputObjects) {
-			ObjectProducer<Integer> producer = new ObjectProducer<>(numInputObjects, new ConstructorClosure<Integer>() {
-				private int counter;
-
-				@Override
-				public Integer create() {
-					return counter++;
-				}
-			});
-			Counter<Integer> counter = new Counter<>();
-			// NoopFilter<Integer> noopFilter = new NoopFilter<>();
-			sink = new CollectorSink<>();
-			from(producer).to(counter).end(sink);
-			// from(producer).to(counter).to(noopFilter).end(sink);
-		}
-
-		public CollectorSink<Integer> getSink() {
-			return sink;
-		}
-	}
-
 	private static class ManyElementsWithStatelessStageGlobalTaskPoolConfig extends Configuration {
 
-		private static final int NUM_THREADS = 4;
-		private static final GlobalTaskQueueScheduling SCHEDULER = new GlobalTaskQueueScheduling(NUM_THREADS);
 		private CollectorSink<Integer> sink;
 
 		public ManyElementsWithStatelessStageGlobalTaskPoolConfig(final int numInputObjects) {
-			super(new TerminatingExceptionListenerFactory(), new ConfigurationContext(SCHEDULER));
-			SCHEDULER.setConfiguration(this);
 			build(numInputObjects);
 		}
 
@@ -127,10 +86,12 @@ public class PipelineTest {
 	}
 
 	@Test
-	public void shouldExecutePipelineCorrectlyFewElements() {
+	// @Ignore("not handled correctly by the scheduling strategy so far") // failed 18.08.17
+	public void shouldExecutePipelineCorrectlyThreeElements() {
 		String[] inputElements = { "a", "b", "c" };
 		GlobalTaskPoolConfig<String> config = new GlobalTaskPoolConfig<>(inputElements);
-		Execution<GlobalTaskPoolConfig<String>> execution = new Execution<>(config);
+		TeeTimeService scheduling = new GlobalTaskPoolScheduling(NUM_THREADS, config, 1);
+		Execution<GlobalTaskPoolConfig<String>> execution = new Execution<>(config, true, scheduling);
 		execution.executeBlocking();
 
 		List<String> processedElements = config.getSink().getElements();
@@ -142,31 +103,18 @@ public class PipelineTest {
 	}
 
 	@Test
-	public void shouldExecutePipelineCorrectlyManyElements() {
-		int numElements = 1_000;
-		ManyElementsGlobalTaskPoolConfig config = new ManyElementsGlobalTaskPoolConfig(numElements);
-		Execution<ManyElementsGlobalTaskPoolConfig> execution = new Execution<>(config);
-		execution.executeBlocking();
-
-		List<Integer> processedElements = config.getSink().getElements();
-		// for (int i = 0; i < numElements; i++) {
-		// assertThat(processedElements.get(i), is(i));
-		// }
-		assertThat(processedElements, hasSize(numElements));
-	}
-
-	@Test
 	@Ignore("The reflexive pipe in the counter is not handled correctly by the scheduling strategy so far")
 	public void shouldExecuteReflexivePipeCorrectlyManyElements() {
 		int numElements = 1_000;
 		ManyElementsWithStatelessStageGlobalTaskPoolConfig config = new ManyElementsWithStatelessStageGlobalTaskPoolConfig(numElements);
-		Execution<ManyElementsWithStatelessStageGlobalTaskPoolConfig> execution = new Execution<>(config);
+		TeeTimeService scheduling = new GlobalTaskPoolScheduling(NUM_THREADS, config, 1);
+		Execution<ManyElementsWithStatelessStageGlobalTaskPoolConfig> execution = new Execution<>(config, true, scheduling);
 		execution.executeBlocking();
 
 		List<Integer> processedElements = config.getSink().getElements();
-		// for (int i = 0; i < numElements; i++) {
-		// assertThat(processedElements.get(i), is(i));
-		// }
+		for (int i = 0; i < numElements; i++) {
+			assertThat(processedElements.get(i), is(i));
+		}
 		assertThat(processedElements, hasSize(numElements));
 	}
 }

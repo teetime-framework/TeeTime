@@ -18,6 +18,7 @@ package teetime.framework;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,8 @@ public abstract class AbstractStage {
 	/** The owning thread of this stage if this stage is directly executed by an {@link AbstractRunnableStage}, <code>null</code> otherwise. */
 	private Thread owningThread;
 	private boolean isActive;
-	private ConfigurationContext owningContext;
+	/** the scheduler used for this stage and all of the other stages */
+	private TeeTimeService scheduler;
 
 	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
 	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
@@ -63,12 +65,6 @@ public abstract class AbstractStage {
 	private boolean calledOnTerminating = false;
 	private boolean calledOnStarting = false;
 
-	// for GlobalTaskQueueScheduling only
-	/** producers start with a level index of 0. All other stages have an index > 0. */
-	private int levelIndex = 0;
-	// for GlobalTaskQueueScheduling only
-	private boolean beingExecuted;
-
 	private volatile StageState currentState = StageState.CREATED; // TODO remove volatile since the state is never set by another thread anymore
 	/** used to detect termination */
 	// private final AtomicInteger numOpenedInputPorts = new AtomicInteger();
@@ -77,6 +73,13 @@ public abstract class AbstractStage {
 	// used only for performance measuring
 	private long beforeExecuteTime;
 	private long lastTimeAfterExecute;
+
+	// for GlobalTaskQueueScheduling only
+	/** producers start with a level index of 0. All other stages have an index > 0. */
+	private int levelIndex = 0;
+	// TODO used only by global task pool scheduling so far
+	private final AtomicBoolean atomicBeingExecuted = new AtomicBoolean(false);
+	private final AtomicBoolean atomicPaused = new AtomicBoolean(false);
 
 	/**
 	 * A list which save a timestamp and an associated state (active or inactive).
@@ -108,6 +111,30 @@ public abstract class AbstractStage {
 		this.logger = logger;
 	}
 
+	public void setLevelIndex(final int levelIndex) {
+		this.levelIndex = levelIndex;
+	}
+
+	public int getLevelIndex() {
+		return levelIndex;
+	}
+
+	public boolean isBeingExecuted() {
+		return atomicBeingExecuted.get();
+	}
+
+	public boolean compareAndSetBeingExecuted(final boolean newValue) {
+		return atomicBeingExecuted.compareAndSet(!newValue, newValue);
+	}
+
+	public void setPaused(final boolean newValue) {
+		atomicPaused.set(newValue);
+	}
+
+	public boolean isPaused() {
+		return atomicPaused.get();
+	}
+
 	/**
 	 * @return an identifier that is unique among all stage instances. It is especially unique among all instances of the same stage type.
 	 */
@@ -115,12 +142,15 @@ public abstract class AbstractStage {
 		return this.id;
 	}
 
-	ConfigurationContext getOwningContext() {
-		return owningContext;
+	/**
+	 * Required by {@link RuntimeServiceFacade#startWithinNewThread(AbstractStage, AbstractStage)}
+	 */
+	TeeTimeService getScheduler() {
+		return scheduler;
 	}
 
-	void setOwningContext(final ConfigurationContext owningContext) {
-		this.owningContext = owningContext;
+	void setScheduler(final TeeTimeService scheduler) {
+		this.scheduler = scheduler;
 	}
 
 	@Override
@@ -219,22 +249,6 @@ public abstract class AbstractStage {
 		return isActive;
 	}
 
-	public void setLevelIndex(final int levelIndex) {
-		this.levelIndex = levelIndex;
-	}
-
-	public int getLevelIndex() {
-		return levelIndex;
-	}
-
-	public boolean isBeingExecuted() {
-		return beingExecuted;
-	}
-
-	public void setBeingExecuted(final boolean beingExecuted) {
-		this.beingExecuted = beingExecuted;
-	}
-
 	/**
 	 * Declares this stage to be executed by an own thread.
 	 */
@@ -302,20 +316,15 @@ public abstract class AbstractStage {
 		}
 
 		if (signal.mayBeTriggered(signalReceivedInputPorts, getInputPorts())) {
-			try {
-				signal.trigger(this);
-				checkSuperCalls(signal);
-			} catch (Exception e) {
-				this.logger.error("Could not trigger signal.", e);
-				this.getOwningContext().abortConfigurationRun();
-			}
+			signal.trigger(this);
+			checkSuperCalls(signal);
 			for (OutputPort<?> outputPort : outputPorts.getOpenedPorts()) {
 				outputPort.sendSignal(signal);
 			}
 		}
 	}
 
-	private void checkSuperCalls(final ISignal signal) {
+	private void checkSuperCalls(final ISignal signal) throws SuperNotCalledException {
 		if (signal instanceof StartingSignal) {
 			if (!calledOnStarting) {
 				throw new SuperNotCalledException("The super method onStarting was not called in " + this.getId());
@@ -355,13 +364,16 @@ public abstract class AbstractStage {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Changing state from " + oldState + " to " + newState);
 		}
+		if (newState.compareTo(oldState) < 0) {
+			throw new IllegalStateException(String.format("Illegal state change from %s to %s", oldState, newState));
+		}
 		currentState = newState;
 	}
 
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
 		this.checkTypeCompliance(invalidPortConnections);
-		if (owningContext == null) {
-			throw new NullPointerException("A stage may not have a nullable owning context.");
+		if (getScheduler() == null) {
+			throw new NullPointerException("A stage may not have a nullable scheduler.");
 		}
 		changeState(StageState.VALIDATED);
 	}
@@ -369,12 +381,11 @@ public abstract class AbstractStage {
 	/**
 	 * Event that is triggered within the initialization phase of the analysis.
 	 * It does not count to the execution time.
-	 *
-	 * @throws Exception
-	 *             an arbitrary exception if an error occurs during the initialization
+	 * <p>
+	 * To throw a checked exception, wrap it to an unchecked exception, e.g. to an {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
+	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
 	 */
-	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
-	public void onStarting() throws Exception {
+	public void onStarting() {
 		logger.debug("Stage {} within thread {}", getId(), getOwningThread().getId());
 		changeState(StageState.STARTED);
 		calledOnStarting = true;
@@ -401,8 +412,11 @@ public abstract class AbstractStage {
 		}
 	}
 
-	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
-	public void onTerminating() throws Exception {
+	/**
+	 * To throw a checked exception, wrap it to an unchecked exception, e.g. to an {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
+	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
+	 */
+	public void onTerminating() {
 		if (newStateRequired(StageActivationState.TERMINATED)) {
 			this.addState(StageActivationState.TERMINATED, System.nanoTime());
 		}
@@ -554,17 +568,15 @@ public abstract class AbstractStage {
 	 * Terminates the execution of the stage. After terminating, this stage sends a signal to all its direct and indirect successor stages to terminate.
 	 */
 	protected void terminateStage() {
-		// if (getInputPorts().size() == 0) { // always for producer
-		// changeState(StageState.TERMINATING);
-		// } else if (getCurrentState() == StageState.STARTED) { // consumer FIXME remove this hack
-		// changeState(StageState.TERMINATING);
-		// }
 		if (getInputPorts().size() != 0) {
 			throw new UnsupportedOperationException("Consumer stages may not invoke this method.");
 		}
 		terminateStageByFramework();
 	}
 
+	/**
+	 * Sets the current state of this stage to {@link StageState#TERMINATING}
+	 */
 	/* default */ void terminateStageByFramework() {
 		changeState(StageState.TERMINATING);
 	}

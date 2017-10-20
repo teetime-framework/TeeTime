@@ -56,6 +56,7 @@ public class PushPullScheduling implements TeeTimeService, ThreadListener {
 		startThreads(newThreadableStages);
 	}
 
+	@Override
 	public void startStageAtRuntime(final AbstractStage newStage) {
 		newStage.declareActive();
 		List<AbstractStage> newStages = Arrays.asList(newStage);
@@ -63,7 +64,15 @@ public class PushPullScheduling implements TeeTimeService, ThreadListener {
 		Set<AbstractStage> newThreadableStages = initialize(newStages);
 		startThreads(newThreadableStages);
 
-		sendStartingSignal(newThreadableStages);
+		// FIXME remove this hack and find a consistent solution
+		if (newStage.isProducer()) {
+			ValidatingSignal validatingSignal = new ValidatingSignal();
+			newStage.onSignal(validatingSignal, null);
+			if (validatingSignal.getInvalidPortConnections().size() > 0) {
+				throw new AnalysisNotValidException(validatingSignal.getInvalidPortConnections());
+			}
+			sendStartingSignal(newThreadableStages);
+		}
 	}
 
 	// extracted for runtime use
@@ -94,7 +103,7 @@ public class PushPullScheduling implements TeeTimeService, ThreadListener {
 			traversor.traverse(startStage);
 		}
 
-		A4StageAttributeSetter attributeSetter = new A4StageAttributeSetter(configuration, newThreadableStages);
+		A4StageAttributeSetter attributeSetter = new A4StageAttributeSetter(configuration, newThreadableStages, this);
 		attributeSetter.setAttributes();
 
 		for (AbstractStage stage : newThreadableStages) {

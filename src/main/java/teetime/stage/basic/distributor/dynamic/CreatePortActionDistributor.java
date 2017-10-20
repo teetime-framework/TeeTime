@@ -22,6 +22,7 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.BoundedSynchedPipe;
 import teetime.framework.signal.StartingSignal;
+import teetime.framework.signal.ValidatingSignal;
 import teetime.util.framework.port.PortAction;
 import teetime.util.stage.OneTimeCondition;
 
@@ -45,6 +46,7 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 
 		new BoundedSynchedPipe<T>(newOutputPort, inputPort, capacity);
 
+		newOutputPort.sendSignal(new ValidatingSignal());
 		newOutputPort.sendSignal(new StartingSignal());
 
 		onOutputPortCreated(dynamicDistributor, newOutputPort);

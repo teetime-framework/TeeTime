@@ -16,6 +16,8 @@
 package teetime.framework;
 
 /**
+ * Represents a scheduling strategy for TeeTime-based configurations.
+ *
  * @author Nelson Tavares de Sousa
  *
  * @since 2.0
@@ -26,10 +28,23 @@ public interface TeeTimeService {
 
 	abstract void onValidate();
 
+	/**
+	 * Executes the execution.
+	 */
 	abstract void onExecute();
 
+	/**
+	 * Aborts the execution.
+	 */
 	abstract void onTerminate();
 
+	/**
+	 * Waits for the execution to finished.
+	 */
 	abstract void onFinish();
 
+	/**
+	 * @since 3.0
+	 */
+	abstract void startStageAtRuntime(final AbstractStage stage);
 }

@@ -18,10 +18,16 @@ package teetime.framework;
 public enum StageState {
 
 	/** First state of a stage */
-	CREATED, /** Second state of a stage */
-	INITIALIZED, /** Third state of a stage */
-	VALIDATED, /** Fourth state of a stage */
-	STARTED, /** Fifth state of a stage */
-	TERMINATING, /** Sixth state of a stage */
-	TERMINATED,
+	CREATED,
+	/** Second state of a stage */
+	INITIALIZED,
+	/** Third state of a stage */
+	VALIDATED,
+	/** Fourth state of a stage */
+	STARTED,
+	/** Fifth state of a stage. Usually set in {@link InputPort#receive()} or by {@link AbstractStage#terminateStage()}. */
+	TERMINATING,
+	/** Sixth state of a stage. Usually set in {@link teetime.framework.AbstractStage#onTerminating()}. */
+	TERMINATED
+
 }
