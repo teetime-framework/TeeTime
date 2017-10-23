@@ -269,6 +269,7 @@
 							<head>Stage sketch:</head>
 						</tag>
 					</tags>
+					<failOnError>false</failOnError>
 				</configuration>
 				<executions>
 					<execution>
