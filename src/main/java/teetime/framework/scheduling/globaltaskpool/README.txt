@@ -29,4 +29,15 @@ A: Yes. If there are two front stages E and F with priorities of 4 and 5, respec
 - front stages: variable set o stages which is added if the stage pool is empty
 - paused stage:
 	- if pipe is full
+	=> By pausing the thread, we memorize the current instruction pointer.
 	- if element was added to a pipe
+	=> don't know why anymore
+- schedule stage:
+	- if element was added to a pipe
+	=> to notify idle threads and to prioritize the target stage
+	- if stage is being yielded
+	=> to ensure awakening it eventually
+- executing stage:
+	- in thread.run
+	=> to ensure critical section for this stage instance
+	
