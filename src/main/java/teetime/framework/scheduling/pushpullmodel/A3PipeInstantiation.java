@@ -97,4 +97,9 @@ class A3PipeInstantiation implements ITraverserVisitor, PipeScheduler {
 		// do nothing
 	}
 
+	@Override
+	public void onElementNotAdded(final AbstractSynchedPipe<?> pipe) {
+		// do nothing
+	}
+
 }

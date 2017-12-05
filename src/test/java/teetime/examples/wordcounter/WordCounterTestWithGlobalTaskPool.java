@@ -73,7 +73,7 @@ public class WordCounterTestWithGlobalTaskPool {
 		final int numOfExecutions = 1;
 
 		for (int i = 0; i < numWarmUps; i++) {
-			LOGGER.info("Warm up #" + i);
+			LOGGER.info("Warm up #{}", i);
 			final WordCounterConfiguration wcc = new WordCounterConfiguration(numWorkerThreads, testFile);
 			final TeeTimeService scheduling = new GlobalTaskPoolScheduling(numWorkerThreads, wcc, numOfExecutions);
 			final Execution<?> analysis = new Execution<WordCounterConfiguration>(wcc, true, scheduling);
@@ -82,7 +82,7 @@ public class WordCounterTestWithGlobalTaskPool {
 			analysis.executeBlocking();
 			stopWatch.end();
 
-			LOGGER.info("duration: " + TimeUnit.NANOSECONDS.toSeconds(stopWatch.getDurationInNs()) + " secs");
+			LOGGER.info("duration: {} secs", TimeUnit.NANOSECONDS.toSeconds(stopWatch.getDurationInNs()));
 		}
 
 		LOGGER.info("Starting analysis...");

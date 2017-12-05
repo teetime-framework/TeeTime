@@ -15,6 +15,7 @@
  */
 package teetime.framework.scheduling.globaltaskpool;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
@@ -44,7 +45,7 @@ import teetime.framework.validation.AnalysisNotValidException;
  * @since 3.0
  *
  */
-public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
+public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, UncaughtExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalTaskPoolScheduling.class);
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
@@ -123,6 +124,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 			TeeTimeTaskQueueThreadChw thread = new TeeTimeTaskQueueThreadChw(this, actualNumOfExecutions);
 			LOGGER.debug("Starting {}", thread.getName());
 			thread.start();
+			thread.setUncaughtExceptionHandler(this);
 			threadPool.add(thread);
 		}
 	}
@@ -178,6 +180,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 			TeeTimeTaskQueueThreadChw backupThread = new TeeTimeTaskQueueThreadChw(this, actualNumOfExecutions);
 			backupThread.setName(backupThread.getName() + "-backup");
 			backupThread.start();
+			backupThread.setUncaughtExceptionHandler(this);
 			backupThreads.add(backupThread);
 		}
 	}
@@ -381,6 +384,13 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		}
 	}
 
+	@Override
+	public void onElementNotAdded(final AbstractSynchedPipe<?> pipe) {
+		AbstractStage owningStage = pipe.getSourcePort().getOwningStage();
+		LoggerFactory.getLogger(owningStage.getClass()).debug("Yielding {} cause of the full pipe {}", owningStage, this);
+		this.yieldStage(owningStage);
+	}
+
 	/**
 	 * Among others, pauses the executing thread.
 	 *
@@ -455,6 +465,19 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler {
 		synchronized (stage) {
 			return (TeeTimeTaskQueueThreadChw) STAGE_FACADE.getOwningThread(stage);
 		}
+	}
+
+	@Override
+	public void uncaughtException(final Thread thread, final Throwable throwable) {
+		LOGGER.error("Terminating execution due to exception in thread {}: {}", thread, throwable);
+		// terminate the whole execution if a thread has been terminated by an exception
+		// for (TeeTimeTaskQueueThreadChw usualThread : threadPool) {
+		// usualThread.interrupt();
+		// }
+		// for (TeeTimeTaskQueueThreadChw backupThread : backupThreads) {
+		// backupThread.interrupt();
+		// }
+		onTerminate();
 	}
 
 }

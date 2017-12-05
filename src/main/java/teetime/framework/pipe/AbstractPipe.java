@@ -47,6 +47,11 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 		public void onElementAdded(final AbstractUnsynchedPipe<?> pipe) {
 			// do nothing
 		}
+
+		@Override
+		public void onElementNotAdded(final AbstractSynchedPipe<?> pipe) {
+			// do nothing
+		}
 	};
 
 	protected AbstractPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {

@@ -34,4 +34,11 @@ public interface PipeScheduler {
 	 */
 	void onElementAdded(AbstractSynchedPipe<?> pipe);
 
+	/**
+	 * This event is invoked by the given <b>synchronized</b> pipe whenever a new element could not be added to it.
+	 *
+	 * @param pipe
+	 */
+	void onElementNotAdded(AbstractSynchedPipe<?> pipe);
+
 }

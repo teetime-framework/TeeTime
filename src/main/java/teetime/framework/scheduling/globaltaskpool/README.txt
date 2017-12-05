@@ -25,3 +25,8 @@ A: No. If a stage requires a non-null element from one of multiple input ports, 
 Q: Should front stages always be added to the back of the queue?
 A: Yes. If there are two front stages E and F with priorities of 4 and 5, respectively, then E gets a chance to be executed.
 
+[Concepts]
+- front stages: variable set o stages which is added if the stage pool is empty
+- paused stage:
+	- if pipe is full
+	- if element was added to a pipe

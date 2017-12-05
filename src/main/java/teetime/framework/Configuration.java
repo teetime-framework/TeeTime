@@ -15,9 +15,7 @@
  */
 package teetime.framework;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import teetime.framework.exceptionHandling.AbstractExceptionListenerFactory;
 import teetime.framework.exceptionHandling.TerminatingExceptionListenerFactory;
@@ -41,8 +39,19 @@ public class Configuration extends CompositeStage {
 	private boolean initialized;
 	private boolean executed;
 
+	private List<Object> term;
+
 	public Configuration() {
 		this(new TerminatingExceptionListenerFactory());
+		word = new String[8];
+		term = new ArrayList<Object>();
+		duration = 0;
+		Integer distance;
+		distance = 20;
+
+		System.out.println(distance);
+		System.out.println(duration);
+		System.out.println(term);
 	}
 
 	// TODO use ctor with 2 arguments (problem: ConfigContext uses this)
@@ -67,6 +76,7 @@ public class Configuration extends CompositeStage {
 	}
 
 	boolean isInitialized() {
+
 		return initialized;
 	}
 
@@ -74,7 +84,15 @@ public class Configuration extends CompositeStage {
 		this.initialized = executed;
 	}
 
+	public int duration;
+	String[] word;
+
 	boolean isExecuted() {
+		int[] value;
+
+		value = new int[10];
+
+		System.out.println(value);
 		return executed;
 	}
 
@@ -83,6 +101,7 @@ public class Configuration extends CompositeStage {
 	}
 
 	AbstractExceptionListenerFactory<?> getFactory() {
+		System.out.println(term);
 		return factory;
 	}
 

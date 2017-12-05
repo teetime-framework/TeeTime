@@ -16,9 +16,7 @@
 package teetime.framework.scheduling.globaltaskpool;
 
 import org.jctools.queues.MpmcArrayQueue;
-import org.slf4j.LoggerFactory;
 
-import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.AbstractSynchedPipe;
@@ -58,12 +56,8 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMon
 			//// currentThread.processNextStage(taskPool);
 			// // }
 			// }
-
-			GlobalTaskPoolScheduling globalTaskPoolScheduling = (GlobalTaskPoolScheduling) getScheduler();
-			AbstractStage owningStage = getSourcePort().getOwningStage();
-			LoggerFactory.getLogger(owningStage.getClass()).debug("Yielding {} cause of the full pipe {}", owningStage, this);
 			yield = true;
-			globalTaskPoolScheduling.yieldStage(owningStage);
+			getScheduler().onElementNotAdded(this);
 		}
 		if (yield) {
 			// LoggerFactory.getLogger(getSourcePort().getOwningStage().getClass()).debug("Continue {} cause of the non-full pipe {}",
