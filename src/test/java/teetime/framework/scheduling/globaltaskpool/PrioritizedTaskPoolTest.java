@@ -14,11 +14,11 @@ import teetime.stage.InitialElementProducer;
 public class PrioritizedTaskPoolTest {
 
 	private PrioritizedTaskPool threadPool;
-	private InitialElementProducer producer;
-	private Counter counter1;
-	private Counter counter2;
-	private Counter counter3;
-	private Counter counter4;
+	private InitialElementProducer<Object> producer;
+	private Counter<Object> counter1;
+	private Counter<Object> counter2;
+	private Counter<Object> counter3;
+	private Counter<Object> counter4;
 
 	@Before
 	public void setUp() throws Exception {
@@ -73,6 +73,60 @@ public class PrioritizedTaskPoolTest {
 		threadPool.scheduleStage(counter4);
 
 		AbstractStage nextStage = threadPool.removeNextStage(3);
+		assertThat(nextStage, is(producer));
+	}
+
+	@Test
+	public void removeInCorrectOrder() throws Exception {
+		// add to pool in an arbitrary order
+		threadPool.scheduleStage(counter3);
+		threadPool.scheduleStage(producer);
+		threadPool.scheduleStage(counter2);
+		threadPool.scheduleStage(counter4);
+		threadPool.scheduleStage(counter1);
+
+		// remove from the pool in a sorted order
+		AbstractStage nextStage = threadPool.removeNextStage();
+		assertThat(nextStage, is(counter4));
+		nextStage = threadPool.removeNextStage();
+		assertThat(nextStage, is(counter3));
+		nextStage = threadPool.removeNextStage();
+		assertThat(nextStage, is(counter2));
+		nextStage = threadPool.removeNextStage();
+		assertThat(nextStage, is(counter1));
+		nextStage = threadPool.removeNextStage();
+		assertThat(nextStage, is(producer));
+	}
+
+	@Test
+	public void removeInCorrectOrderWhileAddingInBetween() throws Exception {
+		// add to pool in an arbitrary order
+		threadPool.scheduleStage(counter3);
+		threadPool.scheduleStage(producer);
+		threadPool.scheduleStage(counter2);
+		threadPool.scheduleStage(counter4);
+		threadPool.scheduleStage(counter1);
+
+		// remove from the pool in a sorted order
+		AbstractStage nextStage = threadPool.removeNextStage();
+		assertThat(nextStage, is(counter4));
+		nextStage = threadPool.removeNextStage();
+		assertThat(nextStage, is(counter3));
+		nextStage = threadPool.removeNextStage();
+		assertThat(nextStage, is(counter2));
+
+		threadPool.scheduleStage(counter4);
+
+		nextStage = threadPool.removeNextStage();
+		assertThat(nextStage, is(counter4));
+		nextStage = threadPool.removeNextStage();
+		assertThat(nextStage, is(counter1));
+
+		threadPool.scheduleStage(counter3);
+		nextStage = threadPool.removeNextStage();
+		assertThat(nextStage, is(counter3));
+
+		nextStage = threadPool.removeNextStage();
 		assertThat(nextStage, is(producer));
 	}
 
