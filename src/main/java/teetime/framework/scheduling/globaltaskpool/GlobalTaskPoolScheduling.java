@@ -396,7 +396,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 	 *
 	 * @param stage
 	 */
-	void yieldStage(final AbstractStage stage) {
+	private void yieldStage(final AbstractStage stage) {
 		// awake any backup thread
 		backupThreads.remove(0).awake();
 
