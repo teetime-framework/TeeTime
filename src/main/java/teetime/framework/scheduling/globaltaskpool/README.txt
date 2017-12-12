@@ -25,18 +25,38 @@ A: No. If a stage requires a non-null element from one of multiple input ports, 
 Q: Should front stages immediately be added to the queue, or should they be added not until the pool is empty?
 A: TODO
 
+Q: When to self-schedule?
+A: 
+	- if the stage is a front stage
+	- if the input ports of the stage still contain elements
+
 Q: Should front stages always be added to the back of the queue?
 A: Yes. If there are two front stages E and F with priorities of 4 and 5, respectively, then E gets a chance to be executed.
 
 Q: How often should the successors of a stage be added to the pool?
 P: 
-	- once after multiple stage executions
-	- once after single stage execution
+	- once after multiple stage executions (how to measure?: exploit push index of each output port)
+	- once after single stage execution (how to measure?: exploit push index of each output port)
 	- once after sending to output port
-	
-	- to all successors
-	- to the associated successor
+
+	- to all successors without measurement
+	- to the associated successor (how to measure?: exploit push index of each output port)
 A: TODO
+
+Q: What if a producer (or a front stage in general?) produces multiple elements in one execution?
+P: 
+	- pause thread after producing x elements
+		=> avoids blocking on full pipe
+		=> reduces number of idle threads
+	- on full pipe, schedule the target stage in parallel
+		=> deadlock if only one thread is used
+	- after each execution, let the thread decide on when to pull a new stage from the queue (e.g., if one execution produces at least x elements)
+A: TODO
+
+Q: What is the optimal size of the pipe?
+A:	Minimum: number of executions per task so that the thread does not block due size limitation
+	=> problem: one execution can always produce more than one element.
+	Maximum: TODO (unclear)
 
 [Concepts]
 - front stages: variable set o stages which is added if the stage pool is empty
