@@ -370,6 +370,11 @@ public abstract class AbstractStage {
 		currentState = newState;
 	}
 
+	/**
+	 * Event that is triggered after constructing this stage, but before starting the analysis.
+	 *
+	 * @param invalidPortConnections
+	 */
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
 		this.checkTypeCompliance(invalidPortConnections);
 		if (getScheduler() == null) {
@@ -379,10 +384,25 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * Event that is triggered within the initialization phase of the analysis.
-	 * It does not count to the execution time.
+	 * Event that is triggered
+	 * <ul>
+	 * <li>after passing the validation phase and
+	 * <li>after the threads are ready-to-run and
+	 * <li>just before the threads execute any stage.
+	 * </ul>
 	 * <p>
-	 * To throw a checked exception, wrap it to an unchecked exception, e.g. to an {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
+	 * If stage developers want to override this method, they must always call the super implementation first:
+	 *
+	 * <pre>
+	 * &#64;Override
+	 * public void onStarting() {
+	 * 	super.onStarting();
+	 * 	// insert your code here
+	 * }
+	 * </pre>
+	 * <p>
+	 * To throw a checked exception, wrap it to an unchecked exception, e.g. to an
+	 * {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
 	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
 	 */
 	public void onStarting() {
@@ -413,6 +433,22 @@ public abstract class AbstractStage {
 	}
 
 	/**
+	 * Event that is triggered
+	 * <ul>
+	 * <li>while executing the P&F configuration and
+	 * <li>after receiving the termination signal.
+	 * </ul>
+	 * <p>
+	 * If stage developers want to override this method, they must always call the super implementation last:
+	 *
+	 * <pre>
+	 * &#64;Override
+	 * public void onTerminating() {
+	 * 	// insert your code here
+	 * 	super.onTerminating();
+	 * }
+	 * </pre>
+	 * <p>
 	 * To throw a checked exception, wrap it to an unchecked exception, e.g. to an {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
 	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
 	 */
