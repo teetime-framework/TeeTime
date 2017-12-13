@@ -32,6 +32,7 @@ import teetime.util.ConstructorClosure;
 
 public class PipelineTest {
 
+	private static final String WRONG_PIPELINE_EXECUTION = "Wrong pipeline execution";
 	private static final int NUM_THREADS = 4;
 
 	private static class GlobalTaskPoolConfig<T> extends Configuration {
@@ -86,7 +87,6 @@ public class PipelineTest {
 	}
 
 	@Test
-	// @Ignore("not handled correctly by the scheduling strategy so far") // failed 18.08.17
 	public void shouldExecutePipelineCorrectlyThreeElements() {
 		String[] inputElements = { "a", "b", "c" };
 		GlobalTaskPoolConfig<String> config = new GlobalTaskPoolConfig<>(inputElements);
@@ -96,10 +96,46 @@ public class PipelineTest {
 
 		List<String> processedElements = config.getSink().getElements();
 		List<String> expectedElements = Arrays.asList("a", "b", "c");
-		// assertThat(processedElements.get(0), is(nullValue()));
-		// assertThat(processedElements.get(0), is("null"));
-		// assertThat(processedElements.get(0), is(equalTo("a")));
-		assertThat(processedElements, is(equalTo(expectedElements)));
+		assertThat(WRONG_PIPELINE_EXECUTION, processedElements, is(equalTo(expectedElements)));
+	}
+
+	@Test
+	public void shouldExecutePipelineCorrectlyThreeElementsWithOneSingleThread() {
+		String[] inputElements = { "a", "b", "c" };
+		GlobalTaskPoolConfig<String> config = new GlobalTaskPoolConfig<>(inputElements);
+		TeeTimeService scheduling = new GlobalTaskPoolScheduling(1, config, 1);
+		Execution<GlobalTaskPoolConfig<String>> execution = new Execution<>(config, true, scheduling);
+		execution.executeBlocking();
+
+		List<String> processedElements = config.getSink().getElements();
+		List<String> expectedElements = Arrays.asList("a", "b", "c");
+		assertThat(WRONG_PIPELINE_EXECUTION, processedElements, is(equalTo(expectedElements)));
+	}
+
+	@Test
+	public void shouldExecutePipelineCorrectlyThreeElementsWith2ExecutionsPerTask() {
+		String[] inputElements = { "a", "b", "c" };
+		GlobalTaskPoolConfig<String> config = new GlobalTaskPoolConfig<>(inputElements);
+		TeeTimeService scheduling = new GlobalTaskPoolScheduling(NUM_THREADS, config, 2);
+		Execution<GlobalTaskPoolConfig<String>> execution = new Execution<>(config, true, scheduling);
+		execution.executeBlocking();
+
+		List<String> processedElements = config.getSink().getElements();
+		List<String> expectedElements = Arrays.asList("a", "b", "c");
+		assertThat(WRONG_PIPELINE_EXECUTION, processedElements, is(equalTo(expectedElements)));
+	}
+
+	@Test
+	public void shouldExecutePipelineCorrectlyThreeElementsWith3ExecutionsPerTask() {
+		String[] inputElements = { "a", "b", "c" };
+		GlobalTaskPoolConfig<String> config = new GlobalTaskPoolConfig<>(inputElements);
+		TeeTimeService scheduling = new GlobalTaskPoolScheduling(NUM_THREADS, config, 3);
+		Execution<GlobalTaskPoolConfig<String>> execution = new Execution<>(config, true, scheduling);
+		execution.executeBlocking();
+
+		List<String> processedElements = config.getSink().getElements();
+		List<String> expectedElements = Arrays.asList("a", "b", "c");
+		assertThat(WRONG_PIPELINE_EXECUTION, processedElements, is(equalTo(expectedElements)));
 	}
 
 	@Test

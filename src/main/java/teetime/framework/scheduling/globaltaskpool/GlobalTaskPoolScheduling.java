@@ -345,47 +345,57 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		// TODO consider to pass IMonitorablePipe as parameter type
 		IMonitorablePipe monitorablePipe = (IMonitorablePipe) pipe;
 		long numPushes = monitorablePipe.getNumPushesSinceAppStart();
+		UnboundedMpMcSynchedPipe<?> castedPipe = (UnboundedMpMcSynchedPipe<?>) monitorablePipe;
+		long lastNumPushes = castedPipe.getLastProducerIndex();
 		// performance optimization: & represents % (modulo)
-		if ((numPushes & numOfExecutionsMask) != 0) {
-			// TODO numPushes is wrong. It must be diff=(numPushes-numPushesAtBeginExecution).
+		// if ((numPushes & numOfExecutionsMask) != 0) {
+		if (numPushes - lastNumPushes >= actualNumOfExecutions) {
+			castedPipe.setLastProducerIndex(numPushes);
+			while (!taskPool.scheduleStage(pipe.getCachedTargetStage())) {
+				throw new IllegalStateException("Could not schedule " + pipe.getCachedTargetStage() + "\n" + taskPool);
+			}
 			// throw new IllegalStateException("numPushes: " + numPushes); // for debugging purposes with numOfExecutionsMask==1 FIXME remove
 			return;
 		}
-		AbstractStage targetStage = pipe.getCachedTargetStage();
-		// LOGGER.debug("Scheduling stage {}: {}", targetStage, numPushes);
-		if (targetStage.getCurrentState().compareTo(StageState.TERMINATING) < 0) {
-			// TeeTimeTaskQueueThreadChw currentThread = (TeeTimeTaskQueueThreadChw) Thread.currentThread();
-
-			AbstractStage sourceStage = pipe.getSourcePort().getOwningStage();
-			// boolean yield = false;
-			while (!taskPool.scheduleStage(targetStage)) {
-				// LOGGER.debug("Yielding {} cause of full pool level {} triggered after {} pushes", sourceStage, targetStage.getLevelIndex(),
-				// monitorablePipe.getNumPushesSinceAppStart());
-				// yield = true;
-				// this.yieldStage(sourceStage);
-				throw new IllegalStateException("Could not schedule " + targetStage + "\n" + taskPool);
-			}
-
-			// always yield stage
-			this.yieldStage(sourceStage);
-
-			// if (!taskPool.scheduleStage(targetStage)) {
-			// throw new IllegalStateException("Could not schedule " + targetStage + "\n" + taskPool);
-			// }
-			// if (yield) {
-			// LOGGER.debug("Continue {}", sourceStage);
-			// }
-
-			// AbstractStage runningStage = pipe.getSourcePort().getOwningStage();
-			// must release the lock at this point (handled by processNextStage)
-			// currentThread.processNextStage(taskPool, runningStage);
-			// if the pool returns null, the current stage continues with adding and thus overflows the pipe
-			// must regain the lock at this point (handled by processNextStage)
-		}
+		// AbstractStage targetStage = pipe.getCachedTargetStage();
+		// // LOGGER.debug("Scheduling stage {}: {}", targetStage, numPushes);
+		// if (targetStage.getCurrentState().compareTo(StageState.TERMINATING) < 0) {
+		// // TeeTimeTaskQueueThreadChw currentThread = (TeeTimeTaskQueueThreadChw) Thread.currentThread();
+		//
+		// AbstractStage sourceStage = pipe.getSourcePort().getOwningStage();
+		// // boolean yield = false;
+		// while (!taskPool.scheduleStage(targetStage)) {
+		// // LOGGER.debug("Yielding {} cause of full pool level {} triggered after {} pushes", sourceStage, targetStage.getLevelIndex(),
+		// // monitorablePipe.getNumPushesSinceAppStart());
+		// // yield = true;
+		// // this.yieldStage(sourceStage);
+		// throw new IllegalStateException("Could not schedule " + targetStage + "\n" + taskPool);
+		// }
+		//
+		// // always yield stage
+		// this.yieldStage(sourceStage);
+		//
+		// // if (!taskPool.scheduleStage(targetStage)) {
+		// // throw new IllegalStateException("Could not schedule " + targetStage + "\n" + taskPool);
+		// // }
+		// // if (yield) {
+		// // LOGGER.debug("Continue {}", sourceStage);
+		// // }
+		//
+		// // AbstractStage runningStage = pipe.getSourcePort().getOwningStage();
+		// // must release the lock at this point (handled by processNextStage)
+		// // currentThread.processNextStage(taskPool, runningStage);
+		// // if the pool returns null, the current stage continues with adding and thus overflows the pipe
+		// // must regain the lock at this point (handled by processNextStage)
+		// }
 	}
 
 	@Override
 	public void onElementNotAdded(final AbstractSynchedPipe<?> pipe) {
+		while (!taskPool.scheduleStage(pipe.getCachedTargetStage())) {
+			throw new IllegalStateException(String.format("onElementNotAdded: scheduling target stage failed for %s", pipe.getCachedTargetStage()));
+		}
+
 		AbstractStage owningStage = pipe.getSourcePort().getOwningStage();
 		LoggerFactory.getLogger(owningStage.getClass()).debug("Yielding {} cause of the full pipe {}", owningStage, this);
 		this.yieldStage(owningStage);
@@ -397,16 +407,17 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 	 * @param stage
 	 */
 	private void yieldStage(final AbstractStage stage) {
-		// awake any backup thread
-		backupThreads.remove(0).awake();
+		// 1. update state attributes before scheduling the stage again
+		stage.setPaused(true);
+		// allow other to execute the stage (only) in order to awake the current thread again
+		setIsBeingExecuted(stage, false);
 
 		while (!taskPool.scheduleStage(stage)) {
 			throw new IllegalStateException(String.format("(yieldStage) Self-scheduling failed for %s", stage));
 		}
 
-		stage.setPaused(true);
-		// allow other to execute the stage (only) in order to awake the current thread again
-		setIsBeingExecuted(stage, false);
+		// 2. awake any backup thread after scheduling the stage
+		backupThreads.remove(0).awake();
 
 		getCurrentThread().pause();
 

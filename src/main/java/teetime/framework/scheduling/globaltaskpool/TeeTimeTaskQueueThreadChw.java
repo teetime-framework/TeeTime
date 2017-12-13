@@ -80,18 +80,19 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 
 		AbstractStage stage = taskPool.removeNextStage(levelIndex);
 		if (stage == null) { // no stage available in the pool
-			Set<AbstractStage> frontStages = scheduling.getFrontStages();
-			taskPool.scheduleStages(frontStages);
+			// Set<AbstractStage> frontStages = scheduling.getFrontStages();
+			// taskPool.scheduleStages(frontStages);
 			return;
 		}
 
-		if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
-			// re-add stage
-			while (!taskPool.scheduleStage(stage)) {
-				throw new IllegalStateException(String.format("(processNextStage) Re-scheduling failed for paused %s", stage));
-			}
-			return;
-		}
+		// TODO what's the purpose of this flag?
+		// if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
+		// // re-add stage
+		// while (!taskPool.scheduleStage(stage)) {
+		// throw new IllegalStateException(String.format("(processNextStage) Re-scheduling failed for paused %s", stage));
+		// }
+		// return;
+		// }
 
 		if (lastStage != stage) {
 			LOGGER.debug("Changed execution from {} to {}", lastStage, stage);

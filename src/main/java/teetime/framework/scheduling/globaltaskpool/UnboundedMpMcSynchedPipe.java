@@ -123,10 +123,7 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMon
 
 	@Override
 	public long getPushThroughput() {
-		final long currentProducerIndex = getNumPushesSinceAppStart();
-		long diff = currentProducerIndex - lastProducerIndex;
-		lastProducerIndex = currentProducerIndex;
-		return diff;
+		throw new UnsupportedOperationException("we use get/setLastProducerIndex instead");
 	}
 
 	@Override
@@ -135,6 +132,16 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMon
 		long diff = currentConsumerIndex - lastConsumerIndex;
 		lastConsumerIndex = currentConsumerIndex;
 		return diff;
+	}
+
+	// FIXME only for testing purposes until global task pool scheduling works
+	public long getLastProducerIndex() {
+		return lastProducerIndex;
+	}
+
+	// FIXME only for testing purposes until global task pool scheduling works
+	public void setLastProducerIndex(final long lastProducerIndex) {
+		this.lastProducerIndex = lastProducerIndex;
 	}
 
 	@Override
