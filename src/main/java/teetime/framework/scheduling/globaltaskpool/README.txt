@@ -27,8 +27,9 @@ A: TODO
 
 Q: When to self-schedule?
 A: 
-	- if the stage is a front stage
-	- if the input ports of the stage still contain elements
+	- if the stage is a producer and not yet terminated (with no input ports)
+	- if the input ports of the stage still contain elements and not yet terminated 
+	[- if the stage is a front stage and not yet terminated (with at least one non-empty input port)]
 
 Q: Should front stages always be added to the back of the queue?
 A: Yes. If there are two front stages E and F with priorities of 4 and 5, respectively, then E gets a chance to be executed.
@@ -41,6 +42,9 @@ P:
 
 	- to all successors without measurement
 	- to the associated successor (how to measure?: exploit push index of each output port)
+	
+	- always schedule
+	- schedule if not already in task pool
 A: TODO
 
 Q: What if a producer (or a front stage in general?) produces multiple elements in one execution?

@@ -378,7 +378,7 @@ public abstract class AbstractStage {
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
 		this.checkTypeCompliance(invalidPortConnections);
 		if (getScheduler() == null) {
-			throw new NullPointerException("A stage may not have a nullable scheduler.");
+			throw new IllegalStateException("A stage may not have a nullable scheduler.");
 		}
 		changeState(StageState.VALIDATED);
 	}

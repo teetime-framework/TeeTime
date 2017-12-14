@@ -38,7 +38,7 @@ public abstract class AbstractExceptionListener {
 	/** The default logger, which can be used by all subclasses */
 	protected final Logger logger; // NOPMD can't be static as it needs to be initialized in cstr
 
-	private final List<Exception> exceptionsList = new ArrayList<Exception>();
+	private final List<Exception> loggedExceptions = new ArrayList<Exception>();
 	private final boolean logExceptions;
 
 	protected AbstractExceptionListener(final boolean shouldLogExceptions) {
@@ -59,12 +59,12 @@ public abstract class AbstractExceptionListener {
 	public abstract FurtherExecution onStageException(Exception exception, AbstractStage throwingStage);
 
 	public List<Exception> getLoggedExceptions() {
-		return exceptionsList;
+		return loggedExceptions;
 	}
 
 	public FurtherExecution reportException(final Exception e, final AbstractStage stage) {
 		if (logExceptions) {
-			exceptionsList.add(e);
+			loggedExceptions.add(e);
 		}
 		return onStageException(e, stage);
 	}

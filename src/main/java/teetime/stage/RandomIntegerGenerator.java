@@ -19,18 +19,17 @@ import java.util.Random;
 
 import teetime.framework.AbstractProducerStage;
 
-public final class RandomIntegerGenerator extends AbstractProducerStage<Integer> {
+public class RandomIntegerGenerator extends AbstractProducerStage<Integer> {
 
-	private final int i;
+	private final int upperBound;
 	private final Random random = new Random();
 
-	public RandomIntegerGenerator(final int n) {
-		i = n;
+	public RandomIntegerGenerator(final int upperBound) {
+		this.upperBound = upperBound;
 	}
 
 	@Override
 	protected void execute() {
-		this.getOutputPort().send(random.nextInt(i));
-
+		this.getOutputPort().send(random.nextInt(upperBound));
 	}
 }

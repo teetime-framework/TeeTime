@@ -24,14 +24,14 @@ public final class InputHolder<I> {
 
 	private final StageTester stageTester;
 	private final AbstractStage stage;
-	private final Collection<I> input;
+	private final Collection<I> inputElements;
 
 	private InputPort<? super I> port;
 
-	InputHolder(final StageTester stageTester, final AbstractStage stage, final Collection<I> input) {
+	InputHolder(final StageTester stageTester, final AbstractStage stage, final Collection<I> inputElements) {
 		this.stageTester = stageTester;
 		this.stage = stage;
-		this.input = input;
+		this.inputElements = inputElements;
 	}
 
 	public StageTester to(final InputPort<? super I> port) { // NOPMD deliberately chosen name
@@ -43,8 +43,8 @@ public final class InputHolder<I> {
 		return stageTester;
 	}
 
-	public Collection<I> getInput() {
-		return input;
+	public Collection<I> getInputElements() {
+		return inputElements;
 	}
 
 	public InputPort<? super I> getPort() {

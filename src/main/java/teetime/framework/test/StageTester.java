@@ -15,7 +15,10 @@
  */
 package teetime.framework.test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import teetime.framework.*;
 import teetime.stage.CollectorSink;
@@ -102,7 +105,7 @@ public final class StageTester {
 		@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 		public TestConfiguration(final List<InputHolder<I>> inputHolders, final AbstractStage stage, final List<OutputHolder<?>> outputHolders) {
 			for (InputHolder<I> inputHolder : inputHolders) {
-				final InitialElementProducer<I> producer = new InitialElementProducer<I>(inputHolder.getInput());
+				final InitialElementProducer<I> producer = new InitialElementProducer<I>(inputHolder.getInputElements());
 				connectPorts(producer.getOutputPort(), inputHolder.getPort());
 			}
 

@@ -1,4 +1,4 @@
-package teetime.example;
+package teetime.framework.scheduling.globaltaskpool.experimental;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;

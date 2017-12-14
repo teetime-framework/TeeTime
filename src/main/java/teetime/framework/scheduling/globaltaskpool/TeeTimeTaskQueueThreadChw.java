@@ -125,6 +125,8 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 
 				executeStage(stage);
 
+				reschedule(stage);
+
 				// long afterPulls = countNonNullPulls(stage);
 				// if (afterPulls - currentPulls == 0) {
 				// // execute stage with a shallower level
@@ -201,6 +203,25 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 					}
 				}
 				LOGGER.debug("New front stages {}\n{}", frontStages, taskPool);
+			}
+		}
+	}
+
+	private void reschedule(final AbstractStage stage) {
+		if (!STAGE_FACADE.shouldBeTerminated(stage)) {
+			boolean reschedule = stage.isProducer();
+
+			for (InputPort<?> inputPort : STAGE_FACADE.getInputPorts(stage)) {
+				if (inputPort.getPipe().hasMore()) {
+					reschedule = true;
+					break;
+				}
+			}
+
+			PrioritizedTaskPool taskPool = scheduling.getPrioritizedTaskPool();
+			if (reschedule && !taskPool.scheduleStage(stage)) {
+				String message = String.format("(reschedule) Scheduling stage again failed for %s", stage);
+				throw new IllegalStateException(message);
 			}
 		}
 	}
