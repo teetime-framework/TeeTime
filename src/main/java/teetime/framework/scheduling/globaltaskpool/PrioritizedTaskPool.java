@@ -3,6 +3,10 @@ package teetime.framework.scheduling.globaltaskpool;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jctools.queues.MpmcArrayQueue;
 
@@ -19,6 +23,9 @@ class PrioritizedTaskPool {
 
 	/** contains the stages categorized by their levels */
 	private final List<MpmcArrayQueue<AbstractStage>> levels;
+
+	private final ConcurrentMap<AbstractStage, AtomicInteger> numSchedulesByStage = new ConcurrentHashMap<>();
+	private final Set<AbstractStage> addedStages = ConcurrentHashMap.newKeySet();
 
 	/**
 	 * Creates a task pool with a default capacity of {@value #CAPACITY} for each level.
@@ -53,15 +60,34 @@ class PrioritizedTaskPool {
 		return allScheduled;
 	}
 
-	public boolean scheduleStage(final AbstractStage stage) {
+	public synchronized boolean scheduleStage(final AbstractStage stage) {
+		if (addedStages.contains(stage)) {
+			return true;
+		}
+
 		MpmcArrayQueue<AbstractStage> stages = levels.get(stage.getLevelIndex());
+
+		// if (!numSchedulesByStage.containsKey(stage)) {
+		// numSchedulesByStage.put(stage, new AtomicInteger(0));
+		// }
+		// AtomicInteger numSchedules = numSchedulesByStage.get(stage);
+		// numSchedules.incrementAndGet();
+
 		boolean offered = stages.offer(stage);
 		if (!offered) {
 			Object peekElement = stages.peek();
 			System.out.println(String.format("(scheduleStage) Full level %s with first element %s", stage.getLevelIndex(), peekElement));
 		}
+
+		addedStages.add(stage);
+
 		return offered;
 	}
+
+	// public boolean containsStage(final AbstractStage stage) {
+	// AtomicInteger numSchedules = numSchedulesByStage.getOrDefault(stage, new AtomicInteger(0));
+	// return numSchedules.get() > 0;
+	// }
 
 	/**
 	 * @return and removes the next stage from this queue, or <code>null</code> otherwise.
@@ -70,7 +96,7 @@ class PrioritizedTaskPool {
 		return removeNextStage(levels.size() - 1);
 	}
 
-	public AbstractStage removeNextStage(final int deepestStartLevel) {
+	public synchronized AbstractStage removeNextStage(final int deepestStartLevel) {
 		// TODO requires O(n) so far. Try to improve.
 		// => find non-empty lowest level in O(1)
 		// corresponding ticket: https://build.se.informatik.uni-kiel.de/teetime/teetime/issues/343
@@ -88,6 +114,12 @@ class PrioritizedTaskPool {
 				// if (/* stage.isStateless() || */ notAlreadyContained) {
 				// return stages.poll(); // NOPMD (two returns in method)
 				// }
+
+				// AtomicInteger numSchedules = numSchedulesByStage.get(stage);
+				// numSchedules.decrementAndGet();
+
+				addedStages.remove(stage);
+
 				return stage;
 			}
 		}

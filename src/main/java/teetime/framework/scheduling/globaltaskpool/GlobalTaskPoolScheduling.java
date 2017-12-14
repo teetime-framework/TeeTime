@@ -354,8 +354,9 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		// if ((numPushes & numOfExecutionsMask) != 0) {
 		if (numPushes - lastNumPushes >= actualNumOfExecutions) {
 			castedPipe.setLastProducerIndex(numPushes);
-			while (!taskPool.scheduleStage(pipe.getCachedTargetStage())) {
-				throw new IllegalStateException("Could not schedule " + pipe.getCachedTargetStage() + "\n" + taskPool);
+			AbstractStage targetStage = pipe.getCachedTargetStage();
+			while (!taskPool.scheduleStage(targetStage)) {
+				throw new IllegalStateException("Could not schedule " + targetStage + "\n" + taskPool);
 			}
 			// throw new IllegalStateException("numPushes: " + numPushes); // for debugging purposes with numOfExecutionsMask==1 FIXME remove
 			return;

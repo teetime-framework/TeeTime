@@ -19,8 +19,9 @@ public class ThreeStagesGlobalTaskPoolConfig extends Configuration {
 				return counter++;
 			}
 		});
+		AssertFilter assertFilter = new AssertFilter();
 		Counter<Integer> counter = new Counter<>();
 		CollectorSink<Integer> sink = new CollectorSink<>(outputElements);
-		from(producer).to(counter).end(sink);
+		from(producer).to(assertFilter).to(counter).end(sink);
 	}
 }
