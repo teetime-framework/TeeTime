@@ -196,7 +196,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 					if (targetStage.getCurrentState().compareTo(StageState.TERMINATING) < 0) {
 						frontStages.add(targetStage);
 
-						while (!taskPool.scheduleStage(targetStage)) {
+						if (!taskPool.scheduleStage(targetStage)) {
 							String message = String.format("(passFrontStatusToSuccessorStages) Scheduling successor failed for %s", targetStage);
 							throw new IllegalStateException(message);
 						}

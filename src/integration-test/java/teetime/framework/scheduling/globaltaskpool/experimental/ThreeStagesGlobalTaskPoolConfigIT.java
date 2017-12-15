@@ -12,7 +12,6 @@ import teetime.framework.Execution;
 import teetime.framework.TeeTimeService;
 import teetime.framework.scheduling.globaltaskpool.GlobalTaskPoolScheduling;
 
-//@Ignore("test failed due to java.lang.IllegalStateException: (yieldStage) Self-scheduling failed on 20.10.17")
 public class ThreeStagesGlobalTaskPoolConfigIT {
 
 	@Test
@@ -21,6 +20,7 @@ public class ThreeStagesGlobalTaskPoolConfigIT {
 	}
 
 	@Test
+	// @Ignore("test failed due to wrong element order 15.12.17")
 	public void shouldExecuteWithTwoThreads() {
 		shouldExecutePipelineCorrectlyManyElements(10_000, 2);
 	}

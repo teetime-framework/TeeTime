@@ -61,7 +61,7 @@ class PrioritizedTaskPool {
 	}
 
 	public synchronized boolean scheduleStage(final AbstractStage stage) {
-		if (addedStages.contains(stage)) {
+		if (!addedStages.add(stage)) {
 			return true;
 		}
 
@@ -78,8 +78,6 @@ class PrioritizedTaskPool {
 			Object peekElement = stages.peek();
 			System.out.println(String.format("(scheduleStage) Full level %s with first element %s", stage.getLevelIndex(), peekElement));
 		}
-
-		addedStages.add(stage);
 
 		return offered;
 	}

@@ -355,7 +355,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		if (numPushes - lastNumPushes >= actualNumOfExecutions) {
 			castedPipe.setLastProducerIndex(numPushes);
 			AbstractStage targetStage = pipe.getCachedTargetStage();
-			while (!taskPool.scheduleStage(targetStage)) {
+			if (!taskPool.scheduleStage(targetStage)) {
 				throw new IllegalStateException("Could not schedule " + targetStage + "\n" + taskPool);
 			}
 			// throw new IllegalStateException("numPushes: " + numPushes); // for debugging purposes with numOfExecutionsMask==1 FIXME remove
@@ -365,7 +365,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 
 	@Override
 	public void onElementNotAdded(final AbstractSynchedPipe<?> pipe) {
-		while (!taskPool.scheduleStage(pipe.getCachedTargetStage())) {
+		if (!taskPool.scheduleStage(pipe.getCachedTargetStage())) {
 			throw new IllegalStateException(String.format("onElementNotAdded: scheduling target stage failed for %s", pipe.getCachedTargetStage()));
 		}
 
@@ -385,7 +385,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		// allow other to execute the stage (only) in order to awake the current thread again
 		setIsBeingExecuted(stage, false);
 
-		while (!taskPool.scheduleStage(stage)) {
+		if (!taskPool.scheduleStage(stage)) {
 			throw new IllegalStateException(String.format("(yieldStage) Self-scheduling failed for %s", stage));
 		}
 

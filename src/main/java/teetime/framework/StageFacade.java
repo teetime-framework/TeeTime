@@ -87,7 +87,9 @@ public final class StageFacade {
 				stage.executeByFramework();
 			}
 		} catch (TerminateException e) {
-			stage.abort();
+			// "abort" triggers a terminated and onTerminate() triggers a terminating leading to an invalid state change.
+			// so, we uncomment abort here
+			// stage.abort();
 			stage.getScheduler().onTerminate();
 		}
 	}
