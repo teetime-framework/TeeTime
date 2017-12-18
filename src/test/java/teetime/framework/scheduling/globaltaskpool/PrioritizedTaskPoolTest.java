@@ -140,7 +140,8 @@ public class PrioritizedTaskPoolTest {
 		AbstractStage nextStage = threadPool.removeNextStage();
 		assertThat(nextStage, is(producer));
 		nextStage = threadPool.removeNextStage();
-		assertThat(nextStage, is(producer));
+		// assertThat(nextStage, is(producer));
+		assertThat(nextStage, is(nullValue()));
 	}
 
 	@Test

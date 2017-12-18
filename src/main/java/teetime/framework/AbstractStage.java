@@ -22,6 +22,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.AbstractExceptionListener.FurtherExecution;
@@ -42,6 +44,8 @@ import teetime.util.framework.port.PortRemovedListener;
 public abstract class AbstractStage {
 
 	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
+
+	private static final Marker ON_STATE_CHANGE_MARKER = MarkerFactory.getMarker("ON_STATE_CHANGE_MARKER");
 
 	/** This stage's unique logger */
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
@@ -311,7 +315,7 @@ public abstract class AbstractStage {
 		}
 
 		if (!signalReceivedInputPorts.add(inputPort)) {
-			this.logger.warn("Received more than one signal - " + signal + " - from input port: " + inputPort);
+			this.logger.warn("Received more than one signal - {} - from input port: {}", signal, inputPort);
 			return;
 		}
 
@@ -362,7 +366,7 @@ public abstract class AbstractStage {
 	private void changeState(final StageState newState) {
 		final StageState oldState = currentState;
 		if (logger.isTraceEnabled()) {
-			logger.trace("Changing state from " + oldState + " to " + newState);
+			logger.trace(ON_STATE_CHANGE_MARKER, "Changing state from {} to {}", oldState, newState);
 		}
 		if (newState.compareTo(oldState) < 0) {
 			throw new IllegalStateException(String.format("Illegal state change from %s to %s", oldState, newState));
@@ -376,6 +380,7 @@ public abstract class AbstractStage {
 	 * @param invalidPortConnections
 	 */
 	public void onValidating(final List<InvalidPortConnection> invalidPortConnections) {
+		logger.trace(ON_STATE_CHANGE_MARKER, "Validating {}", this);
 		this.checkTypeCompliance(invalidPortConnections);
 		if (getScheduler() == null) {
 			throw new IllegalStateException("A stage may not have a nullable scheduler.");
@@ -406,30 +411,9 @@ public abstract class AbstractStage {
 	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
 	 */
 	public void onStarting() {
-		logger.debug("Stage {} within thread {}", getId(), getOwningThread().getId());
+		logger.trace(ON_STATE_CHANGE_MARKER, "Starting {}", this);
 		changeState(StageState.STARTED);
 		calledOnStarting = true;
-	}
-
-	/**
-	 * Checks if connections to this pipe are correct in regards to type compliance.
-	 * Incoming elements must be instanceof input port type.
-	 *
-	 * @param invalidPortConnections
-	 *            List of invalid connections. Adding invalid connections to this list is a performance advantage in comparison to returning a list by each stage.
-	 */
-	private void checkTypeCompliance(final List<InvalidPortConnection> invalidPortConnections) {
-		for (InputPort<?> port : getInputPorts()) {
-			Class<?> targetType = port.getType();
-			Class<?> sourceType = port.pipe.getSourcePort().getType();
-			if (targetType != null && sourceType != null) {
-				if (!targetType.isAssignableFrom(sourceType)) { // if targetType is not superclass of sourceType
-					invalidPortConnections.add(new InvalidPortConnection(port.pipe.getSourcePort(), port));
-					// throw new IllegalStateException("2002 - Invalid pipe at " + port.toString() + ": " + targetType + " is not a superclass/type of " +
-					// sourceType);
-				}
-			}
-		}
 	}
 
 	/**
@@ -453,11 +437,33 @@ public abstract class AbstractStage {
 	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
 	 */
 	public void onTerminating() {
+		logger.trace(ON_STATE_CHANGE_MARKER, "Terminating {}", this);
 		if (newStateRequired(StageActivationState.TERMINATED)) {
 			this.addState(StageActivationState.TERMINATED, System.nanoTime());
 		}
 		changeState(StageState.TERMINATED);
 		calledOnTerminating = true;
+	}
+
+	/**
+	 * Checks if connections to this pipe are correct in regards to type compliance.
+	 * Incoming elements must be instanceof input port type.
+	 *
+	 * @param invalidPortConnections
+	 *            List of invalid connections. Adding invalid connections to this list is a performance advantage in comparison to returning a list by each stage.
+	 */
+	private void checkTypeCompliance(final List<InvalidPortConnection> invalidPortConnections) {
+		for (InputPort<?> port : getInputPorts()) {
+			Class<?> targetType = port.getType();
+			Class<?> sourceType = port.pipe.getSourcePort().getType();
+			if (targetType != null && sourceType != null) {
+				if (!targetType.isAssignableFrom(sourceType)) { // if targetType is not superclass of sourceType
+					invalidPortConnections.add(new InvalidPortConnection(port.pipe.getSourcePort(), port));
+					// throw new IllegalStateException("2002 - Invalid pipe at " + port.toString() + ": " + targetType + " is not a superclass/type of " +
+					// sourceType);
+				}
+			}
+		}
 	}
 
 	/**

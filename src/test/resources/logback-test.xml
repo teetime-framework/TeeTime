@@ -16,32 +16,43 @@
 
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-<!-- 			<pattern>%d{HH:mm:ss.SSS} %level %logger - %msg%n</pattern> -->
-			<pattern>%d{HH:mm:ss.SSS} %level %thread %logger{0}.%M %L - %msg%n</pattern>
+			<!-- <pattern>%d{HH:mm:ss.SSS} %level %logger - %msg%n</pattern> -->
+			<pattern>%d{HH:mm:ss.SSS} %level %thread %logger{0}.%M %L - %msg%n
+			</pattern>
 		</encoder>
+		<evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+			<marker>ON_STATE_CHANGE_MARKER</marker>
+		</evaluator>
 	</appender>
-	
+
+	<!-- <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter"> -->
+	<!-- <Name>ON_STATE_CHANGE_MARKER_FILTER</Name> -->
+	<!-- <Marker>ON_STATE_CHANGE_MARKER</Marker> -->
+	<!-- <OnMatch>DENY</OnMatch> -->
+	<!-- </turboFilter> -->
+
 	<logger name="teetime" level="INFO" />
 	<logger name="teetime.framework" level="TRACE" />
 	<logger name="teetime.framework.pipe" level="WARN" />
 	<logger name="teetime.framework.scheduling" level="INFO" />
 	<logger name="teetime.framework.signal" level="TRACE" />
-	
+
 	<logger name="teetime.stage.basic.distributor" level="TRACE" />
 	<logger name="teetime.stage.basic.merger" level="TRACE" />
-	
+
 	<logger name="teetime.stage.InitialElementProducer" level="TRACE" />
 	<logger name="teetime.stage.CollectorSink" level="TRACE" />
 	<logger name="teetime.stage.taskfarm" level="TRACE" />
-	<logger name="teetime.stage.taskfarm.TaskFarmStageTestConfiguration" level="TRACE" />
+	<logger name="teetime.stage.taskfarm.TaskFarmStageTestConfiguration"
+		level="TRACE" />
 	<logger name="teetime.stage.taskfarm.adaptation" level="TRACE" />
 	<logger name="teetime.util.framework.concurrent" level="TRACE" />
-<!-- 	<logger name="teetime.stage" level="TRACE" /> -->
-<!-- 	<logger name="teetime.framework.signal" level="TRACE" /> -->
+	<!-- <logger name="teetime.stage" level="TRACE" /> -->
+	<!-- <logger name="teetime.framework.signal" level="TRACE" /> -->
 	<logger name="teetime.stage" level="TRACE" />
-	
+
 	<logger name="util" level="INFO" />
-	
+
 	<logger name="kieker" level="ERROR" />
 
 	<root level="WARN">

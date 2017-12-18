@@ -45,6 +45,9 @@ public final class CollectorSink<T> extends AbstractConsumerStage<T> {
 
 	@Override
 	protected void execute(final T element) {
+		if (null == element) {
+			throw new IllegalStateException();
+		}
 		this.elements.add(element);
 	}
 

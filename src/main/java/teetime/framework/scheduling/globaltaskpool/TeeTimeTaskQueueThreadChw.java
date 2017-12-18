@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.*;
+import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
@@ -35,6 +36,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	private final Semaphore runtimePermission = new Semaphore(0);
 
 	private AbstractStage lastStage;
+	private AbstractExceptionListener listener;
 
 	public TeeTimeTaskQueueThreadChw(final GlobalTaskPoolScheduling scheduling, final int numOfExecutions) {
 		super();
@@ -85,61 +87,76 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 			return;
 		}
 
-		// TODO what's the purpose of this flag?
-		// if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
-		// // re-add stage
-		// while (!taskPool.scheduleStage(stage)) {
-		// throw new IllegalStateException(String.format("(processNextStage) Re-scheduling failed for paused %s", stage));
-		// }
-		// return;
-		// }
+		// what's the purpose of this flag?:
+		// ensures that only one thread executes the stage instance at once
+		if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
+			// // re-add stage
+			if (!taskPool.scheduleStage(stage)) {
+				throw new IllegalStateException(String.format("(processNextStage) Re-scheduling failed for paused %s", stage));
+			}
+			return;
+		}
 
 		if (lastStage != stage) {
-			LOGGER.debug("Changed execution from {} to {}", lastStage, stage);
+			LOGGER.trace("Changed execution from {} to {}", lastStage, stage);
 			lastStage = stage;
 		}
 
 		if (scheduling.isPausedStage(stage)) {
+			if (LOGGER.isTraceEnabled()) {
+				LOGGER.trace("Stage is paused: {}", stage);
+			}
 			// if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
 			// taskPool.scheduleStage(stage); // re-add stage
 			// } else {
 			scheduling.continueStage(stage);
 			// }
 		} else {
+			// if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
+			// taskPool.scheduleStage(stage); // re-add stage
+			// } else {
+			// try {
+			// long currentPulls = countNonNullPulls(stage);
+			// if (scheduling.setIsBeingExecuted(stage, true)) {
+			// return;
+			// }
 			try {
-				// if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
-				// taskPool.scheduleStage(stage); // re-add stage
-				// } else {
-				// try {
-				// long currentPulls = countNonNullPulls(stage);
-				// if (scheduling.setIsBeingExecuted(stage, true)) {
-				// return;
-				// }
-
 				// do nothing if the stage is about to terminate or has already been terminated
 				if (stage.getCurrentState().isAfter(StageState.STARTED)) {
+					LOGGER.trace("Skipped execution since the stage is terminating: {}", stage);
 					// throw new IllegalStateException();
 					return;
 				}
 
-				executeStage(stage);
+				Thread owningThread = scheduling.getOwningThreadSynched(stage);
+				if (null != owningThread) {
+					String message = String.format("%s vs. %s", owningThread, Thread.currentThread());
+					throw new IllegalStateException(message);
+				}
+				scheduling.setOwningThreadSynced(stage, this);
 
-				reschedule(stage);
+				try {
+					executeStage(stage);
 
-				// long afterPulls = countNonNullPulls(stage);
-				// if (afterPulls - currentPulls == 0) {
-				// // execute stage with a shallower level
-				// processNextStage(taskPool, levelIndex - 1);
-				// // re-schedule stage
-				// while (!taskPool.scheduleStage(stage)) {
-				// throw new IllegalStateException(String.format("(processNextStage) Self-scheduling failed for blocked %s", stage));
-				// }
-				// }
-				// refillTaskPool(stage, taskPool);
-				// } finally {
-				// taskPool.releaseStage(stage); // release lock (FIXME bad API)
-				// }
-				// }
+					reschedule(stage);
+
+					// long afterPulls = countNonNullPulls(stage);
+					// if (afterPulls - currentPulls == 0) {
+					// // execute stage with a shallower level
+					// processNextStage(taskPool, levelIndex - 1);
+					// // re-schedule stage
+					// while (!taskPool.scheduleStage(stage)) {
+					// throw new IllegalStateException(String.format("(processNextStage) Self-scheduling failed for blocked %s", stage));
+					// }
+					// }
+					// refillTaskPool(stage, taskPool);
+					// } finally {
+					// taskPool.releaseStage(stage); // release lock (FIXME bad API)
+					// }
+					// }
+				} finally {
+					scheduling.setOwningThreadSynced(stage, null);
+				}
 			} finally {
 				scheduling.setIsBeingExecuted(stage, false);
 			}
@@ -148,9 +165,9 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	}
 
 	private void executeStage(final AbstractStage stage) {
-		scheduling.setOwningThreadSynced(stage, this);
-
 		LOGGER.debug("Executing {}", stage);
+
+		STAGE_FACADE.setExceptionHandler(stage, listener);
 		STAGE_FACADE.runStage(stage, numOfExecutions);
 
 		// FIXME is executed several times whenever <unknown so far>
@@ -202,7 +219,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 						}
 					}
 				}
-				LOGGER.debug("New front stages {}\n{}", frontStages, taskPool);
+				LOGGER.debug("New front stages {}", frontStages);
 			}
 		}
 	}
@@ -243,5 +260,9 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 			throw new IllegalStateException(message);
 		}
 		await();
+	}
+
+	public void setExceptionListener(final AbstractExceptionListener listener) {
+		this.listener = listener;
 	}
 }

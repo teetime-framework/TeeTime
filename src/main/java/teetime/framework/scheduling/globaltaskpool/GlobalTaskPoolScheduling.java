@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.*;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
+import teetime.framework.exceptionHandling.AbstractExceptionListenerFactory;
 import teetime.framework.pipe.AbstractSynchedPipe;
 import teetime.framework.pipe.AbstractUnsynchedPipe;
 import teetime.framework.pipe.IMonitorablePipe;
@@ -122,9 +123,13 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		Collection<AbstractStage> startStages = CONFIG_FACADE.getStartStages(configuration);
 		initialize(startStages);
 
+		final AbstractExceptionListenerFactory<?> factory = ConfigurationFacade.INSTANCE.getFactory(configuration);
+
 		// Add threads to thread pool and start
 		for (int i = 0; i < numThreads; i++) {
 			TeeTimeTaskQueueThreadChw thread = new TeeTimeTaskQueueThreadChw(this, actualNumOfExecutions);
+			AbstractExceptionListener listener = factory.createInstance(thread);
+			thread.setExceptionListener(listener);
 			LOGGER.debug("Starting {}", thread.getName());
 			thread.start();
 			thread.setUncaughtExceptionHandler(this);
@@ -148,8 +153,6 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 
 		for (AbstractStage stage : allStages) {
 			categorizeStage(stage);
-			setOwningThread(stage);
-			setExceptionListener(stage);
 			setScheduler(stage);
 			stageList.put(stage, new LinkedList<StageBuffer>());
 		}
@@ -179,9 +182,13 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 	}
 
 	private void initializeBackupThreads(final int size) {
+		final AbstractExceptionListenerFactory<?> factory = ConfigurationFacade.INSTANCE.getFactory(configuration);
+
 		for (int i = 0; i < size; i++) {
 			TeeTimeTaskQueueThreadChw backupThread = new TeeTimeTaskQueueThreadChw(this, actualNumOfExecutions);
 			backupThread.setName(backupThread.getName() + "-backup");
+			AbstractExceptionListener listener = factory.createInstance(backupThread);
+			backupThread.setExceptionListener(listener);
 			backupThread.start();
 			backupThread.setUncaughtExceptionHandler(this);
 			backupThreads.add(backupThread);
@@ -316,15 +323,6 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		return runningStatefulStages;
 	}
 
-	public void setOwningThread(final AbstractStage stage) {
-		STAGE_FACADE.setOwningThread(stage, Thread.currentThread());
-	}
-
-	private void setExceptionListener(final AbstractStage stage) {
-		AbstractExceptionListener handler = CONFIG_FACADE.getFactory(configuration).createInstance(Thread.currentThread());
-		STAGE_FACADE.setExceptionHandler(stage, handler);
-	}
-
 	private void setScheduler(final AbstractStage stage) {
 		STAGE_FACADE.setScheduler(stage, this);
 	}
@@ -445,7 +443,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		}
 	}
 
-	private TeeTimeTaskQueueThreadChw getOwningThreadSynched(final AbstractStage stage) {
+	public TeeTimeTaskQueueThreadChw getOwningThreadSynched(final AbstractStage stage) {
 		synchronized (stage) {
 			return (TeeTimeTaskQueueThreadChw) STAGE_FACADE.getOwningThread(stage);
 		}

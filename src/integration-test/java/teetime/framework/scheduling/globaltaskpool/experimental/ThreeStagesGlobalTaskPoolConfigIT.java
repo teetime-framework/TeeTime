@@ -6,13 +6,22 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import teetime.framework.Execution;
 import teetime.framework.TeeTimeService;
 import teetime.framework.scheduling.globaltaskpool.GlobalTaskPoolScheduling;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ThreeStagesGlobalTaskPoolConfigIT {
+
+	@Test
+	// @Ignore("assertion failed with 9999/10000 elements") // 18.08.17
+	public void aaa() {
+		shouldExecutePipelineCorrectlyManyElements(10_000, 4);
+	}
 
 	@Test
 	public void shouldExecuteWithOneThread() {
@@ -41,7 +50,8 @@ public class ThreeStagesGlobalTaskPoolConfigIT {
 		execution.executeBlocking();
 
 		for (int i = 0; i < numElements; i++) {
-			assertThat(processedElements.get(i), is(i));
+			Integer actualElement = processedElements.get(i);
+			assertThat(actualElement, is(i));
 		}
 		assertThat(processedElements, hasSize(numElements));
 	}

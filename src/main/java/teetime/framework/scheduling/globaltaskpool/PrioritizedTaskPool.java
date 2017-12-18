@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jctools.queues.MpmcArrayQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import teetime.framework.AbstractStage;
 
@@ -20,6 +22,7 @@ import teetime.framework.AbstractStage;
 class PrioritizedTaskPool {
 
 	private static final int CAPACITY = 128;
+	private static final Logger LOGGER = LoggerFactory.getLogger(PrioritizedTaskPool.class);
 
 	/** contains the stages categorized by their levels */
 	private final List<MpmcArrayQueue<AbstractStage>> levels;
@@ -64,6 +67,7 @@ class PrioritizedTaskPool {
 		if (!addedStages.add(stage)) {
 			return true;
 		}
+		LOGGER.trace("Added {} to task pool", stage);
 
 		MpmcArrayQueue<AbstractStage> stages = levels.get(stage.getLevelIndex());
 
@@ -76,7 +80,9 @@ class PrioritizedTaskPool {
 		boolean offered = stages.offer(stage);
 		if (!offered) {
 			Object peekElement = stages.peek();
-			System.out.println(String.format("(scheduleStage) Full level %s with first element %s", stage.getLevelIndex(), peekElement));
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("(scheduleStage) Full level {} with first element {}", stage.getLevelIndex(), peekElement);
+			}
 		}
 
 		return offered;
@@ -117,6 +123,7 @@ class PrioritizedTaskPool {
 				// numSchedules.decrementAndGet();
 
 				addedStages.remove(stage);
+				LOGGER.trace("Removed {} from task pool", stage);
 
 				return stage;
 			}
