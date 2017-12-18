@@ -117,7 +117,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 				// }
 
 				// do nothing if the stage is about to terminate or has already been terminated
-				if (stage.getCurrentState().compareTo(StageState.TERMINATING) >= 0) {
+				if (stage.getCurrentState().isAfter(StageState.STARTED)) {
 					// throw new IllegalStateException();
 					return;
 				}
