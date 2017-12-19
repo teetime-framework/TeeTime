@@ -19,7 +19,7 @@ import teetime.stage.Counter;
 import teetime.stage.StreamProducer;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ThreeStagesGlobalTaskPoolConfigIT {
+public class ThreeStagesGlobalTaskPoolIT {
 
 	private static final int NUM_ELEMENTS = 1_000_000;
 
