@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -13,11 +14,9 @@ import org.junit.runners.MethodSorters;
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
 import teetime.framework.TeeTimeService;
-import teetime.framework.scheduling.globaltaskpool.experimental.AssertFilter;
 import teetime.stage.CollectorSink;
 import teetime.stage.Counter;
-import teetime.stage.ObjectProducer;
-import teetime.util.ConstructorClosure;
+import teetime.stage.StreamProducer;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ThreeStagesGlobalTaskPoolConfigIT {
@@ -122,17 +121,9 @@ public class ThreeStagesGlobalTaskPoolConfigIT {
 	private void shouldExecutePipelineCorrectlyManyElements(final int numElements, final int numThreads, final int numExecutions) {
 		List<Integer> processedElements = new ArrayList<>();
 
-		ConstructorClosure<Integer> factory = new ConstructorClosure<Integer>() {
-			private int counter;
-
-			@Override
-			public Integer create() {
-				return counter++;
-			}
-		};
+		IntStream inputElements = IntStream.iterate(0, i -> i + 1).limit(numElements);
 		Configuration config = new Configuration()
-				.from(new ObjectProducer<>(numElements, factory))
-				.to(new AssertFilter())
+				.from(new StreamProducer<>(inputElements))
 				.to(new Counter<>())
 				.end(new CollectorSink<>(processedElements));
 

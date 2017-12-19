@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import teetime.framework.AbstractStage;
 import teetime.stage.Counter;
-import teetime.stage.basic.distributor.strategy.BlockingBusyWaitingRoundRobinStrategy;
+import teetime.stage.basic.distributor.strategy.BlockingBusyWaitingRoundRobinDistributorStrategy;
 import teetime.stage.basic.merger.strategy.BusyWaitingRoundRobinStrategy;
 import teetime.testutil.ArrayCreator;
 
@@ -125,7 +125,7 @@ public class StaticTaskFarmStageTest {
 		for (TestTuple testTuple : testInputTuples) {
 			StaticTaskFarmStage<Integer, Integer, Counter<Integer>> taskFarmStage = createTaskFarm(testTuple.numWorkerStages);
 			// ordered element passing
-			taskFarmStage.getDistributor().setStrategy(new BlockingBusyWaitingRoundRobinStrategy());
+			taskFarmStage.getDistributor().setStrategy(new BlockingBusyWaitingRoundRobinDistributorStrategy());
 			taskFarmStage.getMerger().setStrategy(new BusyWaitingRoundRobinStrategy());
 
 			List<Integer> outputElements = new ArrayList<Integer>();

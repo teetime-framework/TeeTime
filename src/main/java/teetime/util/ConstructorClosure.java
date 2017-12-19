@@ -15,9 +15,14 @@
  */
 package teetime.util;
 
+/**
+ * Used by {@link teetime.stage.ObjectProducer}
+ *
+ * @author Christian Wulf
+ *
+ * @param <O>
+ */
 public interface ConstructorClosure<O> {
-
-	// O create();
 
 	O create();
 }

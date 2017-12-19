@@ -25,8 +25,8 @@ import teetime.stage.basic.merger.Merger;
  *
  * @since 3.0
  */
-public class BlockingBusyWaitingRoundRobinStrategy implements IMergerStrategy {
-
+public class BlockingBusyWaitingRoundRobinMergerStrategy implements IMergerStrategy {
+	
 	private int index = 0;
 
 	@Override

@@ -25,7 +25,7 @@ import teetime.stage.basic.distributor.Distributor;
  *
  * @since 1.0
  */
-public class BlockingBusyWaitingRoundRobinStrategy implements IDistributorStrategy {
+public class BlockingBusyWaitingRoundRobinDistributorStrategy implements IDistributorStrategy {
 
 	private int index;
 

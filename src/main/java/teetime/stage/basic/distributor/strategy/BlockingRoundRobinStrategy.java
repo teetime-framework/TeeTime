@@ -25,7 +25,7 @@ import teetime.stage.basic.distributor.Distributor;
  *
  * @since 1.0
  *
- * @deprecated since 3.0. Use {@link BlockingBusyWaitingRoundRobinStrategy} instead.
+ * @deprecated since 3.0. Use {@link BlockingBusyWaitingRoundRobinDistributorStrategy} instead.
  */
 @Deprecated
 public class BlockingRoundRobinStrategy implements IDistributorStrategy {

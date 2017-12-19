@@ -1,22 +1,22 @@
-package teetime.framework.scheduling.globaltaskpool.experimental;
+package teetime.framework.scheduling.globaltaskpool;
 
 import java.util.List;
 
 import teetime.framework.Configuration;
 import teetime.stage.*;
 import teetime.stage.basic.distributor.Distributor;
-import teetime.stage.basic.distributor.strategy.BlockingBusyWaitingRoundRobinStrategy;
+import teetime.stage.basic.distributor.strategy.BlockingBusyWaitingRoundRobinDistributorStrategy;
 import teetime.stage.basic.merger.Merger;
-import teetime.stage.basic.merger.strategy.BusyWaitingRoundRobinStrategy;
+import teetime.stage.basic.merger.strategy.BlockingBusyWaitingRoundRobinMergerStrategy;
 
-public class ParallelCounterConfig extends Configuration {
+class ParallelCounterConfig extends Configuration {
 
 	public ParallelCounterConfig(final int numElements, final int numParallelPipelines, final List<Integer> outputElements) {
 		InitialElementProducer<Integer> init = new InitialElementProducer<>(numElements);
 		Ramp ramp = new Ramp();
-		Distributor<Integer> distributor = new Distributor<>(new BlockingBusyWaitingRoundRobinStrategy());
+		Distributor<Integer> distributor = new Distributor<>(new BlockingBusyWaitingRoundRobinDistributorStrategy());
 		// pipelines in between
-		Merger<Integer> merger = new Merger<>(new BusyWaitingRoundRobinStrategy());
+		Merger<Integer> merger = new Merger<>(new BlockingBusyWaitingRoundRobinMergerStrategy());
 		CollectorSink<Integer> sink = new CollectorSink<>(outputElements);
 
 		from(init).to(ramp).end(distributor);

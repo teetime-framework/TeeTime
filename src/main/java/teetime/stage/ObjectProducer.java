@@ -22,8 +22,11 @@ import teetime.util.ConstructorClosure;
  * @author Christian Wulf
  *
  * @since 1.0
+ *
+ * @deprecated since 3.0. Use {@link teetime.stage.StreamProducer} instead.
  */
-public final class ObjectProducer<T> extends AbstractProducerStage<T> {
+@Deprecated
+public class ObjectProducer<T> extends AbstractProducerStage<T> {
 
 	private long numInputObjects;
 	private ConstructorClosure<T> inputObjectCreator;

@@ -25,7 +25,7 @@ import teetime.stage.basic.merger.Merger;
  *
  * @since 2.0
  *
- * @deprecated since 3.0. Use {@link BlockingBusyWaitingRoundRobinStrategy} instead.
+ * @deprecated since 3.0. Use {@link BlockingBusyWaitingRoundRobinMergerStrategy} instead.
  */
 @Deprecated
 public final class BusyWaitingRoundRobinStrategy implements IMergerStrategy {

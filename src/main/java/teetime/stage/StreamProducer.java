@@ -19,13 +19,14 @@ import java.util.Iterator;
 import java.util.stream.BaseStream;
 
 import teetime.framework.AbstractProducerStage;
+import teetime.framework.OutputPort;
 
 /**
  * @author Christian Wulf
  *
  * @since 3.0
  */
-public class IteratorProducer<T> extends AbstractProducerStage<T> {
+public class StreamProducer<T> extends AbstractProducerStage<T> {
 
 	private final BaseStream<T, ?> stream;
 
@@ -33,7 +34,7 @@ public class IteratorProducer<T> extends AbstractProducerStage<T> {
 	 * @param stream
 	 *            a stream which creates new instances of type <code>T</code>.
 	 */
-	public IteratorProducer(final BaseStream<T, ?> stream) {
+	public StreamProducer(final BaseStream<T, ?> stream) {
 		if (stream == null) {
 			throw new IllegalArgumentException("stream may not be null");
 		}
@@ -42,10 +43,12 @@ public class IteratorProducer<T> extends AbstractProducerStage<T> {
 
 	@Override
 	protected void execute() {
-		Iterator<T> iterator = stream.iterator();
+		final Iterator<T> iterator = stream.iterator();
+		final OutputPort<T> localOutputPort = outputPort; // NOPMD
+
 		while (iterator.hasNext()) {
 			T newObject = iterator.next();
-			outputPort.send(newObject);
+			localOutputPort.send(newObject);
 		}
 		this.terminateStage();
 	}

@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -28,7 +29,6 @@ import teetime.framework.Configuration;
 import teetime.framework.Execution;
 import teetime.framework.TeeTimeService;
 import teetime.stage.*;
-import teetime.util.ConstructorClosure;
 
 public class PipelineTest {
 
@@ -36,13 +36,10 @@ public class PipelineTest {
 	private static final int NUM_THREADS = 4;
 
 	private static class GlobalTaskPoolConfig<T> extends Configuration {
-		private CollectorSink<T> sink;
+		private final CollectorSink<T> sink;
 
+		@SafeVarargs
 		public GlobalTaskPoolConfig(final T... elements) {
-			build(elements);
-		}
-
-		private void build(final T... elements) {
 			InitialElementProducer<T> producer = new InitialElementProducer<>(elements);
 			Counter<T> counter = new Counter<>();
 			// StatelessCounter<T> counter = new StatelessCounter<>();
@@ -59,26 +56,15 @@ public class PipelineTest {
 
 	private static class ManyElementsWithStatelessStageGlobalTaskPoolConfig extends Configuration {
 
-		private CollectorSink<Integer> sink;
+		private final CollectorSink<Integer> sink;
 
 		public ManyElementsWithStatelessStageGlobalTaskPoolConfig(final int numInputObjects) {
-			build(numInputObjects);
-		}
-
-		private void build(final int numInputObjects) {
-			ObjectProducer<Integer> producer = new ObjectProducer<>(numInputObjects, new ConstructorClosure<Integer>() {
-				private int counter;
-
-				@Override
-				public Integer create() {
-					return counter++;
-				}
-			});
-			StatelessCounter<Integer> counter = new StatelessCounter<>();
-			// NoopFilter<Integer> noopFilter = new NoopFilter<>();
+			IntStream inputElements = IntStream.iterate(0, i -> i + 1).limit(numInputObjects);
 			sink = new CollectorSink<>();
-			from(producer).to(counter).end(sink);
-			// from(producer).to(counter).to(noopFilter).end(sink);
+			from(new StreamProducer<>(inputElements))
+					.to(new StatelessCounter<>())
+					.to(new NoopFilter<>())
+					.end(sink);
 		}
 
 		public CollectorSink<Integer> getSink() {
