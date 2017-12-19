@@ -311,6 +311,9 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		return finiteProducerStages;
 	}
 
+	/**
+	 * @return a thread-safe set
+	 */
 	public Set<AbstractStage> getFrontStages() {
 		return frontStages;
 	}

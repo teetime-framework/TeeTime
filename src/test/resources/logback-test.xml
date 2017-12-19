@@ -32,11 +32,12 @@
 	<!-- </turboFilter> -->
 
 	<logger name="teetime" level="INFO" />
-	<logger name="teetime.framework" level="TRACE" />
+	<logger name="teetime.framework" level="INFO" />
 	<logger name="teetime.framework.pipe" level="WARN" />
 	<logger name="teetime.framework.scheduling" level="INFO" />
 	<logger name="teetime.framework.signal" level="TRACE" />
 
+	<logger name="teetime.stage" level="INFO" />
 	<logger name="teetime.stage.basic.distributor" level="TRACE" />
 	<logger name="teetime.stage.basic.merger" level="TRACE" />
 
@@ -49,7 +50,6 @@
 	<logger name="teetime.util.framework.concurrent" level="TRACE" />
 	<!-- <logger name="teetime.stage" level="TRACE" /> -->
 	<!-- <logger name="teetime.framework.signal" level="TRACE" /> -->
-	<logger name="teetime.stage" level="TRACE" />
 
 	<logger name="util" level="INFO" />
 

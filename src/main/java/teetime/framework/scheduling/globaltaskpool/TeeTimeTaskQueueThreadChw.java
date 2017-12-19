@@ -167,17 +167,14 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	private void executeStage(final AbstractStage stage) {
 		LOGGER.debug("Executing {}", stage);
 
-		STAGE_FACADE.setExceptionHandler(stage, listener);
+		STAGE_FACADE.setExceptionHandler(stage, listener); // FIXME do not set it on each execution
 		STAGE_FACADE.runStage(stage, numOfExecutions);
 
-		// FIXME is executed several times whenever <unknown so far>
 		if (STAGE_FACADE.shouldBeTerminated(stage)) {
 			// if (stages.containsKey(stage)) {
 			// throw new IllegalStateException(String.format("Already terminating %s", stage));
 			// }
 			// stages.put(stage, Boolean.TRUE);
-
-			passFrontStatusToSuccessorStages(stage);
 
 			afterStageExecution(stage);
 			if (stage.getCurrentState() != StageState.TERMINATED) {
@@ -185,6 +182,10 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 				throw new IllegalStateException(message);
 			}
 			scheduling.getNumRunningStages().countDown();
+
+			// since afterStageExecution() can still send elements,
+			// passFrontStatusToSuccessorStages(stage) must be behind
+			passFrontStatusToSuccessorStages(stage);
 		}
 
 		LOGGER.debug("Executed {}", stage);
@@ -205,12 +206,11 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		// a set, not a list since multiple predecessors of a merger would add the merger multiple times
 		Set<AbstractStage> frontStages = scheduling.getFrontStages();
 		synchronized (frontStages) {
-			if (frontStages.contains(stage)) {
-				frontStages.remove(stage);
+			if (frontStages.remove(stage)) {
 				PrioritizedTaskPool taskPool = scheduling.getPrioritizedTaskPool();
 				for (OutputPort<?> outputPort : STAGE_FACADE.getOutputPorts(stage)) {
 					AbstractStage targetStage = outputPort.getPipe().getTargetPort().getOwningStage();
-					if (targetStage.getCurrentState().compareTo(StageState.TERMINATING) < 0) {
+					if (targetStage.getCurrentState().isBefore(StageState.TERMINATING)) {
 						frontStages.add(targetStage);
 
 						if (!taskPool.scheduleStage(targetStage)) {
