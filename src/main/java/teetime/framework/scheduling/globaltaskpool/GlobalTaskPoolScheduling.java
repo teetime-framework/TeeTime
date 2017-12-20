@@ -189,8 +189,8 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 			backupThread.setName(backupThread.getName() + "-backup");
 			AbstractExceptionListener listener = factory.createInstance(backupThread);
 			backupThread.setExceptionListener(listener);
-			backupThread.start();
 			backupThread.setUncaughtExceptionHandler(this);
+			backupThread.start();
 			backupThreads.add(backupThread);
 		}
 	}
