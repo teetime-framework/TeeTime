@@ -124,6 +124,16 @@ public class ThreeStagesGlobalTaskPoolIT {
 	}
 
 	@Test
+	public void shouldExecuteWith04Thread064Executions() {
+		shouldExecutePipelineCorrectlyManyElements(NUM_ELEMENTS, 4, 64);
+	}
+
+	@Test
+	public void shouldExecuteWith04Thread0128Executions() {
+		shouldExecutePipelineCorrectlyManyElements(NUM_ELEMENTS, 4, 128);
+	}
+
+	@Test
 	public void shouldExecuteWith04Thread0256Executions() {
 		shouldExecutePipelineCorrectlyManyElements(NUM_ELEMENTS, 4, 256);
 	}

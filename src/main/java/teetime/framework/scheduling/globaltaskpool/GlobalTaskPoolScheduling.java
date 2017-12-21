@@ -28,7 +28,6 @@ import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.AbstractExceptionListenerFactory;
 import teetime.framework.pipe.AbstractSynchedPipe;
 import teetime.framework.pipe.AbstractUnsynchedPipe;
-import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.scheduling.PipeScheduler;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.ValidatingSignal;
@@ -63,9 +62,6 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 	 * <i>(synchronized pool)</i>
 	 */
 	private PrioritizedTaskPool taskPool;
-	/** (synchronized) */
-	private final Map<AbstractStage, List<StageBuffer>> stageList = Collections.synchronizedMap(new HashMap<AbstractStage, List<StageBuffer>>());
-
 	private final int numThreads;
 	/** the number of execution per scheduled stage (always a power of two) */
 	private final int actualNumOfExecutions;
@@ -76,6 +72,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 	private final List<TeeTimeTaskQueueThreadChw> threadPool = new ArrayList<>(); // NOPMD (MissingPluralVariableName)
 	private final CountDownAndUpLatch numRunningStages = new CountDownAndUpLatch();
 	private final List<TeeTimeTaskQueueThreadChw> backupThreads = Collections.synchronizedList(new ArrayList<>());
+	private Set<AbstractStage> allStages;
 
 	/**
 	 * A thread executes a stage {@value #DEFAULT_NUM_OF_EXECUTIONS}x per job.
@@ -143,12 +140,11 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 			traversor.traverse(startStage);
 		}
 
-		Set<AbstractStage> allStages = stageCollector.getStages();
+		allStages = stageCollector.getStages();
 
 		for (AbstractStage stage : allStages) {
 			categorizeStage(stage);
 			setScheduler(stage);
-			stageList.put(stage, new LinkedList<StageBuffer>());
 		}
 
 		if (finiteProducerStages.isEmpty()) {
@@ -321,10 +317,6 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		STAGE_FACADE.setScheduler(stage, this);
 	}
 
-	public Map<AbstractStage, List<StageBuffer>> getStageList() {
-		return stageList;
-	}
-
 	/* default */ CountDownAndUpLatch getNumRunningStages() {
 		return numRunningStages;
 	}
@@ -337,21 +329,20 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 
 	@Override
 	public void onElementAdded(final AbstractSynchedPipe<?> pipe) {
-		// TODO consider to pass IMonitorablePipe as parameter type
-		IMonitorablePipe monitorablePipe = (IMonitorablePipe) pipe;
-		long numPushes = monitorablePipe.getNumPushesSinceAppStart();
-		UnboundedMpMcSynchedPipe<?> castedPipe = (UnboundedMpMcSynchedPipe<?>) monitorablePipe;
+		UnboundedMpMcSynchedPipe<?> castedPipe = (UnboundedMpMcSynchedPipe<?>) pipe;
+		long numPushes = castedPipe.getNumPushesSinceAppStart();
 		long lastNumPushes = castedPipe.getLastProducerIndex();
 		// performance optimization: & represents % (modulo)
 		// if ((numPushes & numOfExecutionsMask) != 0) {
 		if (numPushes - lastNumPushes >= actualNumOfExecutions) {
 			castedPipe.setLastProducerIndex(numPushes);
 			AbstractStage targetStage = pipe.getCachedTargetStage();
+			// We do not schedule the target stage on each incoming element.
+			// Instead, we schedule it after adding 'actualNumOfExecutions' elements.
 			if (!taskPool.scheduleStage(targetStage)) {
 				String message = String.format("Could not schedule %s; pool=%s", targetStage, taskPool);
 				throw new IllegalStateException(message);
 			}
-			return;
 		}
 	}
 
@@ -454,6 +445,11 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		// backupThread.interrupt();
 		// }
 		onTerminate();
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + ": " + allStages;
 	}
 
 }

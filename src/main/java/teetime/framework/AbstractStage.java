@@ -159,7 +159,7 @@ public abstract class AbstractStage {
 
 	@Override
 	public String toString() {
-		return this.getClass().getName() + ": " + this.getId();
+		return this.getClass().getName() + ": " + this.getId() + " [" + currentState + "]";
 	}
 
 	private String createId() {

@@ -48,13 +48,6 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	public void run() {
 		final CountDownAndUpLatch numNonTerminatedFiniteStages = scheduling.getNumRunningStages();
 		final PrioritizedTaskPool taskPool = scheduling.getPrioritizedTaskPool(); // NOPMD (DU anomaly)
-		// final AbstractStage dummyStage = new AbstractStage() {
-		// @Override
-		// protected void execute() throws Exception {
-		// throw new UnsupportedOperationException("This stage implements the null object pattern");
-		// }
-		// };
-		final int deepestLevel = taskPool.getNumLevels() - 1;
 
 		await();
 
@@ -63,7 +56,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		LOGGER.debug("Started thread, running stages: {}", numNonTerminatedFiniteStages.getCurrentCount());
 
 		while (numNonTerminatedFiniteStages.getCurrentCount() > 0) {
-			processNextStage(taskPool, deepestLevel);
+			processNextStage(taskPool);
 		}
 
 		LOGGER.debug("Terminated thread, running stages: {}", numNonTerminatedFiniteStages.getCurrentCount());
@@ -77,8 +70,8 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		}
 	}
 
-	public void processNextStage(final PrioritizedTaskPool taskPool, final int levelIndex) {
-		AbstractStage stage = taskPool.removeNextStage(levelIndex);
+	public void processNextStage(final PrioritizedTaskPool taskPool) {
+		AbstractStage stage = taskPool.removeNextStage();
 		if (stage == null) { // no stage available in the pool
 			return;
 		}
@@ -93,7 +86,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 
 			// process next stage (potentially across the current level index)
 			// without re-adding the current stage in order to prevent re-executing this stage again
-			processNextStage(taskPool, levelIndex); // recursive call
+			processNextStage(taskPool); // recursive call
 
 			// re-add stage
 			if (!taskPool.scheduleStage(stage)) {
@@ -166,21 +159,24 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		STAGE_FACADE.runStage(stage, numOfExecutions);
 
 		if (STAGE_FACADE.shouldBeTerminated(stage)) {
-			// if (stages.containsKey(stage)) {
-			// throw new IllegalStateException(String.format("Already terminating %s", stage));
-			// }
-			// stages.put(stage, Boolean.TRUE);
 
 			afterStageExecution(stage);
+
 			if (stage.getCurrentState() != StageState.TERMINATED) {
 				String message = String.format("(TeeTimeTaskQueueThreadChw) %s: Expected state TERMINATED, but was %s", stage, stage.getCurrentState());
 				throw new IllegalStateException(message);
 			}
-			scheduling.getNumRunningStages().countDown();
 
 			// since afterStageExecution() can still send elements,
 			// passFrontStatusToSuccessorStages(stage) must be behind
 			passFrontStatusToSuccessorStages(stage);
+
+			scheduling.getNumRunningStages().countDown();
+			LOGGER.info("FINISHED: Count down {}; stages={}", stage, scheduling);
+			// 17:58:09.597 INFO Thread-254 TeeTimeTaskQueueThreadChw.executeStage 178 - FINISHED: Count down teetime.stage.StreamProducer: StreamProducer-26
+			// [TERMINATED];
+			// stages=teetime.framework.scheduling.globaltaskpool.GlobalTaskPoolScheduling@703580bf: [teetime.stage.Counter: Counter-54 [TERMINATED],
+			// teetime.stage.CollectorSink: CollectorSink-44 [STARTED], teetime.stage.StreamProducer: StreamProducer-26 [TERMINATED]]
 		}
 
 		if (LOGGER.isTraceEnabled()) {

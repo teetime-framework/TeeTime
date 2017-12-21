@@ -2,9 +2,10 @@ package teetime.framework.scheduling.globaltaskpool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
+import org.jctools.maps.NonBlockingHashSet;
 import org.jctools.queues.MpmcArrayQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +23,10 @@ class PrioritizedTaskPool implements ScheduleQueue {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PrioritizedTaskPool.class);
 
 	/** contains the stages categorized by their levels */
-	private final List<MpmcArrayQueue<AbstractStage>> levels;
+	private final List<Queue<AbstractStage>> levels;
 	/** ensures that each stage is not added more than once */
-	private final Set<AbstractStage> addedStages = ConcurrentHashMap.newKeySet();
+	// private final Set<AbstractStage> addedStages = ConcurrentHashMap.newKeySet();
+	private final Set<AbstractStage> addedStages = new NonBlockingHashSet<>();
 
 	/**
 	 * Creates a task pool with a default capacity of {@value #CAPACITY} for each level.
@@ -56,14 +58,19 @@ class PrioritizedTaskPool implements ScheduleQueue {
 			return true;
 		}
 
-		MpmcArrayQueue<AbstractStage> stages = levels.get(stage.getLevelIndex());
+		Queue<AbstractStage> stages = levels.get(stage.getLevelIndex());
 
 		boolean offered = stages.offer(stage);
 		if (!offered) {
+			addedStages.remove(stage);
+
 			Object peekElement = stages.peek();
+			String message = String.format("(scheduleStage) Full level %s (size=%s/%s) with first element %s", stage.getLevelIndex(), stages.size(),
+					peekElement);
 			if (LOGGER.isWarnEnabled()) {
-				LOGGER.warn("(scheduleStage) Full level {} (size={}) with first element {}", stage.getLevelIndex(), stages.size(), peekElement);
+				LOGGER.warn(message);
 			}
+			throw new IllegalStateException(message);
 		}
 
 		return offered;
@@ -79,7 +86,7 @@ class PrioritizedTaskPool implements ScheduleQueue {
 		// => find non-empty lowest level in O(1)
 		// corresponding ticket: https://build.se.informatik.uni-kiel.de/teetime/teetime/issues/343
 		for (int i = deepestStartLevel; i >= 0; i--) {
-			MpmcArrayQueue<AbstractStage> stages = levels.get(i);
+			Queue<AbstractStage> stages = levels.get(i);
 			AbstractStage stage = stages.poll();
 			// (only) read next stage with work
 			if (null != stage) {
@@ -102,15 +109,11 @@ class PrioritizedTaskPool implements ScheduleQueue {
 		return null;
 	}
 
-	public int getNumLevels() {
-		return levels.size();
-	}
-
 	@Override
 	public String toString() { // IMPORTANT: do not manipulate the level queues in this method
 		int sumSizes = 0;
 		for (int i = levels.size() - 1; i >= 0; i--) {
-			MpmcArrayQueue<AbstractStage> stages = levels.get(i);
+			Queue<AbstractStage> stages = levels.get(i);
 			sumSizes += stages.size();
 		}
 		return super.toString() + "[" + "size=" + sumSizes + "]";
