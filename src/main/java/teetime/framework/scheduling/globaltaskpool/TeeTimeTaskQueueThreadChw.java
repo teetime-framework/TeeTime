@@ -159,8 +159,9 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		STAGE_FACADE.runStage(stage, numOfExecutions);
 
 		if (STAGE_FACADE.shouldBeTerminated(stage)) {
+			// LOGGER.info("TERMINATING {}", stage);
 
-			afterStageExecution(stage);
+			sendTerminationSignal(stage);
 
 			if (stage.getCurrentState() != StageState.TERMINATED) {
 				String message = String.format("(TeeTimeTaskQueueThreadChw) %s: Expected state TERMINATED, but was %s", stage, stage.getCurrentState());
@@ -171,12 +172,18 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 			// passFrontStatusToSuccessorStages(stage) must be behind
 			passFrontStatusToSuccessorStages(stage);
 
+			scheduleSuccessorStages(stage);
+
 			scheduling.getNumRunningStages().countDown();
-			LOGGER.info("FINISHED: Count down {}; stages={}", stage, scheduling);
-			// 17:58:09.597 INFO Thread-254 TeeTimeTaskQueueThreadChw.executeStage 178 - FINISHED: Count down teetime.stage.StreamProducer: StreamProducer-26
-			// [TERMINATED];
-			// stages=teetime.framework.scheduling.globaltaskpool.GlobalTaskPoolScheduling@703580bf: [teetime.stage.Counter: Counter-54 [TERMINATED],
-			// teetime.stage.CollectorSink: CollectorSink-44 [STARTED], teetime.stage.StreamProducer: StreamProducer-26 [TERMINATED]]
+			// LOGGER.info("FINISHED: Count down {}; stages={}", stage, scheduling);
+			// 18:10:07.626 INFO Thread-228 TeeTimeTaskQueueThreadChw.executeStage 162 - TERMINATING teetime.stage.StreamProducer: StreamProducer-22 [TERMINATING]
+			// 18:10:07.626 INFO Thread-222-backup TeeTimeTaskQueueThreadChw.executeStage 162 - TERMINATING teetime.stage.Counter: Counter-50 [TERMINATING]
+			// 18:10:07.626 INFO Thread-228 TeeTimeTaskQueueThreadChw.executeStage 176 - FINISHED: Count down teetime.stage.StreamProducer: StreamProducer-22
+			// [TERMINATED]; stages=teetime.framework.scheduling.globaltaskpool.GlobalTaskPoolScheduling@5ccddd20: [teetime.stage.CollectorSink: CollectorSink-40
+			// [STARTED], teetime.stage.StreamProducer: StreamProducer-22 [TERMINATED], teetime.stage.Counter: Counter-50 [TERMINATING]]
+			// 18:10:07.626 INFO Thread-222-backup TeeTimeTaskQueueThreadChw.executeStage 176 - FINISHED: Count down teetime.stage.Counter: Counter-50 [TERMINATED];
+			// stages=teetime.framework.scheduling.globaltaskpool.GlobalTaskPoolScheduling@5ccddd20: [teetime.stage.CollectorSink: CollectorSink-40 [STARTED],
+			// teetime.stage.StreamProducer: StreamProducer-22 [TERMINATED], teetime.stage.Counter: Counter-50 [TERMINATED]]
 		}
 
 		if (LOGGER.isTraceEnabled()) {
@@ -184,7 +191,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		}
 	}
 
-	private void afterStageExecution(final AbstractStage stage) {
+	private void sendTerminationSignal(final AbstractStage stage) {
 		if (stage.isProducer()) {
 			stage.onSignal(new TerminatingSignal(), null);
 		} else { // is consumer
@@ -199,20 +206,28 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		// a set, not a list since multiple predecessors of a merger would add the merger multiple times
 		Set<AbstractStage> frontStages = scheduling.getFrontStages();
 		synchronized (frontStages) {
-			if (frontStages.remove(stage)) {
-				ScheduleQueue taskPool = scheduling.getPrioritizedTaskPool();
-				for (OutputPort<?> outputPort : STAGE_FACADE.getOutputPorts(stage)) {
-					AbstractStage targetStage = outputPort.getPipe().getTargetPort().getOwningStage();
-					if (targetStage.getCurrentState().isBefore(StageState.TERMINATING)) {
-						frontStages.add(targetStage);
+			frontStages.remove(stage);
 
-						if (!taskPool.scheduleStage(targetStage)) {
-							String message = String.format("(passFrontStatusToSuccessorStages) Scheduling successor failed for %s", targetStage);
-							throw new IllegalStateException(message);
-						}
-					}
+			for (OutputPort<?> outputPort : STAGE_FACADE.getOutputPorts(stage)) {
+				AbstractStage targetStage = outputPort.getPipe().getTargetPort().getOwningStage();
+				if (targetStage.getCurrentState().isBefore(StageState.TERMINATING)) {
+					frontStages.add(targetStage);
 				}
-				LOGGER.debug("New front stages {}", frontStages);
+			}
+			LOGGER.info("New front stages {}", frontStages);
+		}
+	}
+
+	private void scheduleSuccessorStages(final AbstractStage stage) {
+		ScheduleQueue taskPool = scheduling.getPrioritizedTaskPool();
+		for (OutputPort<?> outputPort : STAGE_FACADE.getOutputPorts(stage)) {
+			AbstractStage targetStage = outputPort.getPipe().getTargetPort().getOwningStage();
+			if (targetStage.getCurrentState().isBefore(StageState.TERMINATING)) {
+
+				if (!taskPool.scheduleStage(targetStage)) {
+					String message = String.format("(passFrontStatusToSuccessorStages) Scheduling successor failed for %s", targetStage);
+					throw new IllegalStateException(message);
+				}
 			}
 		}
 	}
