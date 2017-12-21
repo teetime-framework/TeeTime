@@ -54,6 +54,11 @@ public class ThreeStagesGlobalTaskPoolIT {
 	}
 
 	@Test
+	public void shouldExecuteWith01Thread0256Executions() {
+		shouldExecutePipelineCorrectlyManyElements(NUM_ELEMENTS, 1, 256);
+	}
+
+	@Test
 	public void shouldExecuteWith01Thread0128Executions() {
 		shouldExecutePipelineCorrectlyManyElements(NUM_ELEMENTS, 1, 128);
 	}
@@ -84,6 +89,11 @@ public class ThreeStagesGlobalTaskPoolIT {
 	}
 
 	@Test
+	public void shouldExecuteWith02Thread0256Executions() {
+		shouldExecutePipelineCorrectlyManyElements(NUM_ELEMENTS, 2, 256);
+	}
+
+	@Test
 	public void shouldExecuteWith02Thread1024Executions() {
 		shouldExecutePipelineCorrectlyManyElements(NUM_ELEMENTS, 2, 1024);
 	}
@@ -111,6 +121,11 @@ public class ThreeStagesGlobalTaskPoolIT {
 	@Test
 	public void shouldExecuteWith04Thread0031Executions() {
 		shouldExecutePipelineCorrectlyManyElements(NUM_ELEMENTS, 4, 31);
+	}
+
+	@Test
+	public void shouldExecuteWith04Thread0256Executions() {
+		shouldExecutePipelineCorrectlyManyElements(NUM_ELEMENTS, 4, 256);
 	}
 
 	@Test

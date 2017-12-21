@@ -18,7 +18,6 @@ package teetime.framework.scheduling.globaltaskpool;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Semaphore;
 
 import org.jctools.util.Pow2;
 import org.slf4j.Logger;
@@ -64,8 +63,6 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 	 * <i>(synchronized pool)</i>
 	 */
 	private PrioritizedTaskPool taskPool;
-	/** (not synchronized) */
-	private final Map<AbstractStage, Boolean> runningStatefulStages = new HashMap<AbstractStage, Boolean>();
 	/** (synchronized) */
 	private final Map<AbstractStage, List<StageBuffer>> stageList = Collections.synchronizedMap(new HashMap<AbstractStage, List<StageBuffer>>());
 
@@ -79,9 +76,6 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 	private final List<TeeTimeTaskQueueThreadChw> threadPool = new ArrayList<>(); // NOPMD (MissingPluralVariableName)
 	private final CountDownAndUpLatch numRunningStages = new CountDownAndUpLatch();
 	private final List<TeeTimeTaskQueueThreadChw> backupThreads = Collections.synchronizedList(new ArrayList<>());
-	/** synchronized */
-	private final Set<AbstractStage> pausedStages = ConcurrentHashMap.newKeySet();
-	private final Map<AbstractStage, Semaphore> stagePermissions = new ConcurrentHashMap<>();
 
 	/**
 	 * A thread executes a stage {@value #DEFAULT_NUM_OF_EXECUTIONS}x per job.
@@ -140,10 +134,10 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 	private void initialize(final Collection<AbstractStage> startStages) {
 		// TODO: Add port type validation again.
 		if (startStages.isEmpty()) {
-			throw new IllegalStateException("The start stage may not be null.");
+			throw new IllegalStateException("No start stages passed. You need to pass at least one start stage.");
 		}
 
-		TaskQueueA1StageCollector stageCollector = new TaskQueueA1StageCollector();
+		TaskQueueA1CreatedStageCollector stageCollector = new TaskQueueA1CreatedStageCollector();
 		Traverser traversor = new Traverser(stageCollector);
 		for (AbstractStage startStage : startStages) {
 			traversor.traverse(startStage);
@@ -161,14 +155,15 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 			throw new IllegalStateException("1004 - No producer stages in this configuration.");
 		}
 
-		// compute level index for each stage
+		// (re-)compute level index for each stage
 		LevelIndexVisitor levelIndexVisitor = new LevelIndexVisitor();
 		traversor = new Traverser(levelIndexVisitor);
 		for (AbstractStage startStage : finiteProducerStages) {
 			traversor.traverse(startStage);
 		}
 
-		taskPool = new PrioritizedTaskPool(levelIndexVisitor.getMaxLevelIndex() + 1);
+		final int capacity = numRunningStages.getCurrentCount();
+		taskPool = new PrioritizedTaskPool(levelIndexVisitor.getMaxLevelIndex() + 1, capacity);
 		taskPool.scheduleStages(frontStages);
 
 		initializeBackupThreads(allStages.size() /*- numThreads*/);
@@ -322,10 +317,6 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		return taskPool;
 	}
 
-	public Map<AbstractStage, Boolean> getRunningStatefulStages() {
-		return runningStatefulStages;
-	}
-
 	private void setScheduler(final AbstractStage stage) {
 		STAGE_FACADE.setScheduler(stage, this);
 	}
@@ -357,9 +348,9 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 			castedPipe.setLastProducerIndex(numPushes);
 			AbstractStage targetStage = pipe.getCachedTargetStage();
 			if (!taskPool.scheduleStage(targetStage)) {
-				throw new IllegalStateException("Could not schedule " + targetStage + "\n" + taskPool);
+				String message = String.format("Could not schedule %s; pool=%s", targetStage, taskPool);
+				throw new IllegalStateException(message);
 			}
-			// throw new IllegalStateException("numPushes: " + numPushes); // for debugging purposes with numOfExecutionsMask==1 FIXME remove
 			return;
 		}
 	}

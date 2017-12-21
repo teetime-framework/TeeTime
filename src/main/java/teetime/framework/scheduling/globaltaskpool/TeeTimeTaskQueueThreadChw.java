@@ -78,48 +78,41 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	}
 
 	public void processNextStage(final PrioritizedTaskPool taskPool, final int levelIndex) {
-		// taskPool.releaseStage(currentStage);
-
 		AbstractStage stage = taskPool.removeNextStage(levelIndex);
 		if (stage == null) { // no stage available in the pool
-			// Set<AbstractStage> frontStages = scheduling.getFrontStages();
-			// taskPool.scheduleStages(frontStages);
 			return;
 		}
 
 		// what's the purpose of this flag?:
 		// ensures that only one thread executes the stage instance at once
-		if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
-			// // re-add stage
+		// TODO perhaps realize with the owningThread variable and remove the additional beingExecuted variable
+		if (!scheduling.setIsBeingExecuted(stage, true)) {
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("{} is being executed. Trying another stage...", stage);
+			}
+
+			// process next stage (potentially across the current level index)
+			// without re-adding the current stage in order to prevent re-executing this stage again
+			processNextStage(taskPool, levelIndex); // recursive call
+
+			// re-add stage
 			if (!taskPool.scheduleStage(stage)) {
 				throw new IllegalStateException(String.format("(processNextStage) Re-scheduling failed for paused %s", stage));
 			}
 			return;
 		}
 
-		if (lastStage != stage) {
+		if (lastStage != stage) { // for debugging purposes only
 			LOGGER.trace("Changed execution from {} to {}", lastStage, stage);
 			lastStage = stage;
 		}
 
 		if (scheduling.isPausedStage(stage)) {
 			if (LOGGER.isTraceEnabled()) {
-				LOGGER.trace("Stage is paused: {}", stage);
+				LOGGER.trace("Stage is paused. Continueing stage: {}", stage);
 			}
-			// if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
-			// taskPool.scheduleStage(stage); // re-add stage
-			// } else {
 			scheduling.continueStage(stage);
-			// }
 		} else {
-			// if (!scheduling.setIsBeingExecuted(stage, true)) { // TODO perhaps realize by compareAndSet(owningThread)
-			// taskPool.scheduleStage(stage); // re-add stage
-			// } else {
-			// try {
-			// long currentPulls = countNonNullPulls(stage);
-			// if (scheduling.setIsBeingExecuted(stage, true)) {
-			// return;
-			// }
 			try {
 				// do nothing if the stage is about to terminate or has already been terminated
 				if (stage.getCurrentState().isAfter(StageState.STARTED)) {
@@ -165,7 +158,9 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	}
 
 	private void executeStage(final AbstractStage stage) {
-		LOGGER.debug("Executing {}", stage);
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace("Executing {}", stage);
+		}
 
 		STAGE_FACADE.setExceptionHandler(stage, listener); // FIXME do not set it on each execution
 		STAGE_FACADE.runStage(stage, numOfExecutions);
@@ -188,7 +183,9 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 			passFrontStatusToSuccessorStages(stage);
 		}
 
-		LOGGER.debug("Executed {}", stage);
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace("Executed {}", stage);
+		}
 	}
 
 	private void afterStageExecution(final AbstractStage stage) {
@@ -207,7 +204,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		Set<AbstractStage> frontStages = scheduling.getFrontStages();
 		synchronized (frontStages) {
 			if (frontStages.remove(stage)) {
-				PrioritizedTaskPool taskPool = scheduling.getPrioritizedTaskPool();
+				ScheduleQueue taskPool = scheduling.getPrioritizedTaskPool();
 				for (OutputPort<?> outputPort : STAGE_FACADE.getOutputPorts(stage)) {
 					AbstractStage targetStage = outputPort.getPipe().getTargetPort().getOwningStage();
 					if (targetStage.getCurrentState().isBefore(StageState.TERMINATING)) {
@@ -235,7 +232,7 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 				}
 			}
 
-			PrioritizedTaskPool taskPool = scheduling.getPrioritizedTaskPool();
+			ScheduleQueue taskPool = scheduling.getPrioritizedTaskPool();
 			if (reschedule && !taskPool.scheduleStage(stage)) {
 				String message = String.format("(reschedule) Scheduling stage again failed for %s", stage);
 				throw new IllegalStateException(message);

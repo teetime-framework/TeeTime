@@ -1,12 +1,9 @@
 package teetime.framework.scheduling.globaltaskpool;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jctools.queues.MpmcArrayQueue;
 import org.slf4j.Logger;
@@ -19,15 +16,14 @@ import teetime.framework.AbstractStage;
  * A thread searches for the next task in the task pool starting at the deepest level and traversing up to the highest level, i.e., the root.
  * A stage at the deepest level has no output ports.
  */
-class PrioritizedTaskPool {
+class PrioritizedTaskPool implements ScheduleQueue {
 
 	private static final int CAPACITY = 128;
 	private static final Logger LOGGER = LoggerFactory.getLogger(PrioritizedTaskPool.class);
 
 	/** contains the stages categorized by their levels */
 	private final List<MpmcArrayQueue<AbstractStage>> levels;
-
-	private final ConcurrentMap<AbstractStage, AtomicInteger> numSchedulesByStage = new ConcurrentHashMap<>();
+	/** ensures that each stage is not added more than once */
 	private final Set<AbstractStage> addedStages = ConcurrentHashMap.newKeySet();
 
 	/**
@@ -54,62 +50,37 @@ class PrioritizedTaskPool {
 		}
 	}
 
-	public boolean scheduleStages(final Collection<AbstractStage> stages) {
-		boolean allScheduled = false;
-		for (AbstractStage stage : stages) {
-			boolean scheduled = scheduleStage(stage);
-			allScheduled = allScheduled && scheduled;
-		}
-		return allScheduled;
-	}
-
-	public synchronized boolean scheduleStage(final AbstractStage stage) {
+	@Override
+	public boolean scheduleStage(final AbstractStage stage) {
 		if (!addedStages.add(stage)) {
 			return true;
 		}
-		LOGGER.trace("Added {} to task pool", stage);
 
 		MpmcArrayQueue<AbstractStage> stages = levels.get(stage.getLevelIndex());
-
-		// if (!numSchedulesByStage.containsKey(stage)) {
-		// numSchedulesByStage.put(stage, new AtomicInteger(0));
-		// }
-		// AtomicInteger numSchedules = numSchedulesByStage.get(stage);
-		// numSchedules.incrementAndGet();
 
 		boolean offered = stages.offer(stage);
 		if (!offered) {
 			Object peekElement = stages.peek();
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("(scheduleStage) Full level {} with first element {}", stage.getLevelIndex(), peekElement);
+			if (LOGGER.isWarnEnabled()) {
+				LOGGER.warn("(scheduleStage) Full level {} (size={}) with first element {}", stage.getLevelIndex(), stages.size(), peekElement);
 			}
 		}
 
 		return offered;
 	}
 
-	// public boolean containsStage(final AbstractStage stage) {
-	// AtomicInteger numSchedules = numSchedulesByStage.getOrDefault(stage, new AtomicInteger(0));
-	// return numSchedules.get() > 0;
-	// }
-
-	/**
-	 * @return and removes the next stage from this queue, or <code>null</code> otherwise.
-	 */
+	@Override
 	public AbstractStage removeNextStage() {
 		return removeNextStage(levels.size() - 1);
 	}
 
-	public synchronized AbstractStage removeNextStage(final int deepestStartLevel) {
+	public AbstractStage removeNextStage(final int deepestStartLevel) {
 		// TODO requires O(n) so far. Try to improve.
 		// => find non-empty lowest level in O(1)
 		// corresponding ticket: https://build.se.informatik.uni-kiel.de/teetime/teetime/issues/343
 		for (int i = deepestStartLevel; i >= 0; i--) {
 			MpmcArrayQueue<AbstractStage> stages = levels.get(i);
-
-			// AbstractStage stage = stages.peek();
 			AbstractStage stage = stages.poll();
-
 			// (only) read next stage with work
 			if (null != stage) {
 				// TODO possible alternative implementation: AbstractStage.getExecutingThread().compareAndSet()
@@ -122,8 +93,8 @@ class PrioritizedTaskPool {
 				// AtomicInteger numSchedules = numSchedulesByStage.get(stage);
 				// numSchedules.decrementAndGet();
 
+				// the stage cannot be re-added to this pool until the following call 'remove' has finished
 				addedStages.remove(stage);
-				LOGGER.trace("Removed {} from task pool", stage);
 
 				return stage;
 			}

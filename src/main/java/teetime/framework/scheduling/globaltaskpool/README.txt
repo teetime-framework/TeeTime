@@ -83,3 +83,20 @@ A:	Minimum: number of executions per task so that the thread does not block due 
 	=> ensures back-pressure
 2. fetch a stage instance which is not being executed in this moment
 	=> avoid re-scheduling without progress (not that important)
+
+[Schedule queue]
+Stages are ordered according to their level index (only).
+
+-scheduleStage(s):
+	-insert stage if not already added (Set<> behavior)
+	-synchronized
+	-
+
+-removeNextStage():
+	-remove an arbitrary stage with the deepest level
+	-synchronized
+	-deepest level may not necessarily be the key; an (ordered) queue would be sufficient
+	-reserve a slot at index i for stage with index i
+	=> order would always prioritize some stages within the same level (should not be a problem)
+	-return stage at index i if not null, otherwise repeat with i-1
+	-potential (cache) improvement (?): deepest stage is at index 0, lowest stage at index n-1

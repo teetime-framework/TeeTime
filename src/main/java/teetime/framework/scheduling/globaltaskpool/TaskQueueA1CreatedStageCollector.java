@@ -22,9 +22,9 @@ import teetime.framework.*;
 import teetime.framework.pipe.DummyPipe;
 
 /**
- * Created by nilsziermann on 30.12.16.
+ * Visits stages which are in the state {@link teetime.framework.StageState#CREATED}.
  */
-class TaskQueueA1StageCollector implements ITraverserVisitor {
+class TaskQueueA1CreatedStageCollector implements ITraverserVisitor {
 
 	private final Set<AbstractStage> stages = new HashSet<AbstractStage>();
 
