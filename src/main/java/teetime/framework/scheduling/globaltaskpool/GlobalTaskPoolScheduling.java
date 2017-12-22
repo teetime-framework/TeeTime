@@ -121,9 +121,8 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 			TeeTimeTaskQueueThreadChw thread = new TeeTimeTaskQueueThreadChw(this, actualNumOfExecutions);
 			AbstractExceptionListener listener = factory.createInstance(thread);
 			thread.setExceptionListener(listener);
-			LOGGER.debug("Starting {}", thread.getName());
-			thread.start();
 			thread.setUncaughtExceptionHandler(this);
+			thread.start();
 			threadPool.add(thread);
 		}
 	}
@@ -165,7 +164,8 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		initializeBackupThreads(allStages.size() /*- numThreads*/);
 
 		// instantiate pipes
-		TaskQueueA2PipeInstantiation pipeVisitor = new TaskQueueA2PipeInstantiation(this);
+		int requestPipeCapcity = actualNumOfExecutions * 128; // with additional buffer factor
+		TaskQueueA2PipeInstantiation pipeVisitor = new TaskQueueA2PipeInstantiation(this, requestPipeCapcity);
 		traversor = new Traverser(pipeVisitor);
 		for (AbstractStage startStage : startStages) {
 			traversor.traverse(startStage);
@@ -329,7 +329,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 
 	@Override
 	public void onElementAdded(final AbstractSynchedPipe<?> pipe) {
-		UnboundedMpMcSynchedPipe<?> castedPipe = (UnboundedMpMcSynchedPipe<?>) pipe;
+		BoundedMpMcSynchedPipe<?> castedPipe = (BoundedMpMcSynchedPipe<?>) pipe;
 		long numPushes = castedPipe.getNumPushesSinceAppStart();
 		long lastNumPushes = castedPipe.getLastProducerIndex();
 		// performance optimization: & represents % (modulo)

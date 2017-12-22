@@ -40,9 +40,11 @@ class TaskQueueA2PipeInstantiation implements ITraverserVisitor {
 	private final Set<IPipe<?>> visitedPipes = new HashSet<IPipe<?>>();
 
 	private final PipeScheduler scheduler;
+	private final int requestedCapcity;
 
-	public TaskQueueA2PipeInstantiation(final PipeScheduler scheduler) {
+	public TaskQueueA2PipeInstantiation(final PipeScheduler scheduler, final int requestedCapcity) {
 		this.scheduler = scheduler;
+		this.requestedCapcity = requestedCapcity;
 	}
 
 	@Override
@@ -75,8 +77,8 @@ class TaskQueueA2PipeInstantiation implements ITraverserVisitor {
 			return;
 		}
 
-		UnboundedMpMcSynchedPipe<T> synchedPipe = new UnboundedMpMcSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
+		BoundedMpMcSynchedPipe<T> synchedPipe = new BoundedMpMcSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort(), requestedCapcity);
 		synchedPipe.setScheduler(scheduler);
-		LOGGER.debug("Connected (unbounded MpMc) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
+		LOGGER.debug("Connected (bounded MpMc) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
 	}
 }

@@ -22,17 +22,15 @@ import teetime.framework.OutputPort;
 import teetime.framework.pipe.AbstractSynchedPipe;
 import teetime.framework.pipe.IMonitorablePipe;
 
-class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
+class BoundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
 
 	private final MpmcArrayQueue<Object> queue;
 
 	private transient long lastProducerIndex, lastConsumerIndex;
 
-	public UnboundedMpMcSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
+	public BoundedMpMcSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int requestedCapacity) {
 		super(sourcePort, targetPort);
-		// TODO: Make this really unbounded or implement capacity check earlier.
-		this.queue = new MpmcArrayQueue<Object>(100000);
-		// this.queue = new ConcurrentLinkedQueue<>();
+		this.queue = new MpmcArrayQueue<Object>(requestedCapacity);
 	}
 
 	@Override
