@@ -15,7 +15,7 @@
  */
 package teetime.framework.pipe;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class UnsynchedPipeTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testAdd() throws Exception {
 		UnsynchedPipe<Object> pipe = new UnsynchedPipe<Object>(null, null);
-		assertFalse(pipe.add(null));
+		assertFalse(pipe.addNonBlocking(null));
 	}
 
 }

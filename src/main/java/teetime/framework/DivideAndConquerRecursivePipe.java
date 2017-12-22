@@ -15,7 +15,9 @@
  */
 package teetime.framework;
 
-import teetime.framework.divideandconquer.*;
+import teetime.framework.divideandconquer.AbstractDivideAndConquerProblem;
+import teetime.framework.divideandconquer.AbstractDivideAndConquerSolution;
+import teetime.framework.divideandconquer.DividedDCProblem;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.pipe.UnsynchedPipe;
 import teetime.framework.scheduling.PipeScheduler;
@@ -129,6 +131,10 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 		// do nothing
 	}
 
+	/**
+	 * @deprecated since 3.0. Is removed without replacement.
+	 */
+	@Deprecated
 	@Override
 	public final void reportNewElement() {
 		// no nothing
@@ -146,15 +152,12 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 
 	@Override
 	public boolean addNonBlocking(final Object element) {
-		return this.add(element);
+		return outputPipe.addNonBlocking(element);
 	}
 
 	@Override
-	public boolean add(final Object element) {
-		if (!isClosed()) {
-			return outputPipe.add(element);
-		}
-		return true;
+	public void add(final Object element) {
+		outputPipe.add(element);
 	}
 
 	@Override

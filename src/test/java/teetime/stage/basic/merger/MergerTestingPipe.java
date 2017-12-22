@@ -19,7 +19,9 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.scheduling.PipeScheduler;
-import teetime.framework.signal.*;
+import teetime.framework.signal.ISignal;
+import teetime.framework.signal.StartingSignal;
+import teetime.framework.signal.TerminatingSignal;
 
 public class MergerTestingPipe implements IPipe<Object> {
 
@@ -49,8 +51,7 @@ public class MergerTestingPipe implements IPipe<Object> {
 	}
 
 	@Override
-	public boolean add(final Object element) {
-		// return false;
+	public void add(final Object element) {
 		throw new IllegalStateException();
 	}
 

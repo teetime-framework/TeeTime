@@ -42,16 +42,19 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMo
 	}
 
 	@Override
-	public boolean add(final Object element) {
-		boolean added = strategy.add(this, element);
+	public void add(final Object element) {
+		strategy.add(this, element);
 		getScheduler().onElementAdded(this);
-		return added;
 	}
 
 	@Override
 	public boolean addNonBlocking(final Object element) {
 		boolean offered = this.queue.offer(element);
-		getScheduler().onElementAdded(this);
+		if (offered) {
+			getScheduler().onElementAdded(this);
+		} else {
+			getScheduler().onElementNotAdded(this);
+		}
 		return offered;
 	}
 

@@ -125,21 +125,6 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 					executeStage(stage);
 
 					reschedule(stage);
-
-					// long afterPulls = countNonNullPulls(stage);
-					// if (afterPulls - currentPulls == 0) {
-					// // execute stage with a shallower level
-					// processNextStage(taskPool, levelIndex - 1);
-					// // re-schedule stage
-					// while (!taskPool.scheduleStage(stage)) {
-					// throw new IllegalStateException(String.format("(processNextStage) Self-scheduling failed for blocked %s", stage));
-					// }
-					// }
-					// refillTaskPool(stage, taskPool);
-					// } finally {
-					// taskPool.releaseStage(stage); // release lock (FIXME bad API)
-					// }
-					// }
 				} finally {
 					scheduling.setOwningThreadSynced(stage, null);
 				}
@@ -175,15 +160,6 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 			scheduleSuccessorStages(stage);
 
 			scheduling.getNumRunningStages().countDown();
-			// LOGGER.info("FINISHED: Count down {}; stages={}", stage, scheduling);
-			// 18:10:07.626 INFO Thread-228 TeeTimeTaskQueueThreadChw.executeStage 162 - TERMINATING teetime.stage.StreamProducer: StreamProducer-22 [TERMINATING]
-			// 18:10:07.626 INFO Thread-222-backup TeeTimeTaskQueueThreadChw.executeStage 162 - TERMINATING teetime.stage.Counter: Counter-50 [TERMINATING]
-			// 18:10:07.626 INFO Thread-228 TeeTimeTaskQueueThreadChw.executeStage 176 - FINISHED: Count down teetime.stage.StreamProducer: StreamProducer-22
-			// [TERMINATED]; stages=teetime.framework.scheduling.globaltaskpool.GlobalTaskPoolScheduling@5ccddd20: [teetime.stage.CollectorSink: CollectorSink-40
-			// [STARTED], teetime.stage.StreamProducer: StreamProducer-22 [TERMINATED], teetime.stage.Counter: Counter-50 [TERMINATING]]
-			// 18:10:07.626 INFO Thread-222-backup TeeTimeTaskQueueThreadChw.executeStage 176 - FINISHED: Count down teetime.stage.Counter: Counter-50 [TERMINATED];
-			// stages=teetime.framework.scheduling.globaltaskpool.GlobalTaskPoolScheduling@5ccddd20: [teetime.stage.CollectorSink: CollectorSink-40 [STARTED],
-			// teetime.stage.StreamProducer: StreamProducer-22 [TERMINATED], teetime.stage.Counter: Counter-50 [TERMINATED]]
 		}
 
 		if (LOGGER.isTraceEnabled()) {
@@ -236,6 +212,8 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 		if (!STAGE_FACADE.shouldBeTerminated(stage)) {
 			boolean reschedule = stage.isProducer();
 
+			// Only schedule this (consumer) stage if it has input to consume.
+			// Otherwise, wait for a predecessor stage to re-schedule this stage again.
 			for (InputPort<?> inputPort : STAGE_FACADE.getInputPorts(stage)) {
 				if (inputPort.getPipe().hasMore()) {
 					reschedule = true;

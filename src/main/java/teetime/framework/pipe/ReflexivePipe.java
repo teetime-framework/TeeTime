@@ -36,9 +36,12 @@ public class ReflexivePipe<T> extends AbstractUnsynchedPipe<T> {
 	}
 
 	@Override
-	public boolean add(final Object element) {
+	public void add(final Object element) {
 		this.element = element;
-		// getScheduler().onElementAdded(this);
+	}
+
+	@Override
+	public boolean addNonBlocking(final Object element) {
 		return true;
 	}
 

@@ -31,16 +31,17 @@ import teetime.framework.signal.ISignal;
 public interface IPipe<T> {
 
 	/**
-	 * Adds an element to the pipe.
+	 * Adds an element to the pipe. This method does not return anything because it should guarantee element delivery (as opposed to
+	 * {@link #addNonBlocking(Object)}).
+	 * If it cannot guarantee element delivery in some special situation, it then must throw an exception.
 	 *
 	 * @param element
-	 *            which should be added
-	 * @return <code>true</code> if the element could be added, <code>false</code> otherwise.
+	 *            to be added
 	 */
-	boolean add(Object element); // TODO correct javadoc: no return type since guarantee of element delivery
+	void add(Object element);
 
 	/**
-	 * Adds an element to the Pipe.
+	 * Adds an element to the pipe.
 	 *
 	 * @param element
 	 *            Element which will be added
@@ -98,11 +99,22 @@ public interface IPipe<T> {
 	@Deprecated
 	void reportNewElement();
 
+	/**
+	 * @return <code>true</code> if the pipe is closed, that is, if the pipe is empty <b>and</b> if the source stage will not send any elements anymore (because the
+	 *         stage has finished its whole work);
+	 *         returns <code>false</code> in all other cases.
+	 */
 	boolean isClosed(); // FIXME remove dead method?
 
-	void close();// FIXME remove if migration to TERM element has finished
-
+	/**
+	 * @return <code>true</code> if the pipe is not empty, that is, if the pipe contains at least one element.
+	 */
 	boolean hasMore();
+
+	/**
+	 * May only be invoked by the input port and the owning (target) stage.
+	 */
+	void close();// FIXME remove if migration to TERM element has finished
 
 	// "signal" handling
 

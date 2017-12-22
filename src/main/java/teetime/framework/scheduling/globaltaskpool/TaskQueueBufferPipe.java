@@ -18,7 +18,9 @@ package teetime.framework.scheduling.globaltaskpool;
 import java.util.Queue;
 
 import org.jctools.queues.QueueFactory;
-import org.jctools.queues.spec.*;
+import org.jctools.queues.spec.ConcurrentQueueSpec;
+import org.jctools.queues.spec.Ordering;
+import org.jctools.queues.spec.Preference;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
@@ -36,8 +38,6 @@ class TaskQueueBufferPipe<T> implements IPipe<T> {
 	private final InputPort<T> targetPort;
 	private final OutputPort<? extends T> sourcePort;
 	private final IPipe<? extends T> replacedPipe;
-
-	private PipeScheduler scheduler;
 
 	public TaskQueueBufferPipe(final InputPort<T> targetPort, final OutputPort<? extends T> sourcePort, final IPipe<? extends T> replacedPipe) {
 		this.targetPort = targetPort;
@@ -57,15 +57,16 @@ class TaskQueueBufferPipe<T> implements IPipe<T> {
 	}
 
 	@Override
-	public boolean add(final Object element) {
+	public void add(final Object element) {
 		boolean added = queue.offer(element);
-		// scheduler.onElementAdded(this);
-		return added;
+		if (!added) {
+			throw new IllegalStateException();
+		}
 	}
 
 	@Override
 	public boolean addNonBlocking(final Object element) {
-		return add(element);
+		return queue.offer(element);
 	}
 
 	@Override
@@ -134,6 +135,6 @@ class TaskQueueBufferPipe<T> implements IPipe<T> {
 
 	@Override
 	public void setScheduler(final PipeScheduler scheduler) {
-		this.scheduler = scheduler;
+		// do nothing
 	}
 }

@@ -20,8 +20,8 @@ import teetime.framework.pipe.IPipe;
 public class SkipIfFullStrategy implements PipeElementInsertionStrategy {
 
 	@Override
-	public boolean add(final IPipe<?> pipe, final Object element) {
-		return pipe.addNonBlocking(element);
+	public void add(final IPipe<?> pipe, final Object element) {
+		pipe.addNonBlocking(element);
 	}
 
 }

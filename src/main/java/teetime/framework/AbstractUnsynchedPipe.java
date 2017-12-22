@@ -36,11 +36,6 @@ public abstract class AbstractUnsynchedPipe<T> extends AbstractPipe<T> {
 	}
 
 	@Override
-	public boolean addNonBlocking(final Object element) {
-		return add(element);
-	}
-
-	@Override
 	public final void sendSignal(final ISignal signal) {
 		// getTargetPort is always non-null since the framework adds dummy ports if necessary
 		this.cachedTargetStage.onSignal(signal, this.getTargetPort());

@@ -36,52 +36,16 @@ class UnboundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMon
 	}
 
 	@Override
-	public boolean add(final Object element) {
-		// try {
-		// this.queue.add(element);
-		// } catch (IllegalStateException e) {
-		// String message = String.format("in pipe %s --> %s", getSourcePort().getOwningStage().getId(), getTargetPort().getOwningStage().getId());
-		// throw new IllegalStateException(message, e);
-		// }
-
-		// FIXME only for debugging purposes
-		boolean yield = false;
+	public void add(final Object element) {
 		while (!this.queue.offer(element)) {
-			// GlobalTaskPoolScheduling globalTaskPoolScheduling = (GlobalTaskPoolScheduling) getScheduler();
-			// PrioritizedTaskPool taskPool = globalTaskPoolScheduling.getPrioritizedTaskPool();
-			// AbstractStage targetStage = getCachedTargetStage();
-			// if (!StageFacade.INSTANCE.shouldBeTerminated(targetStage) && targetStage.getCurrentState() != StageState.TERMINATED) {
-			// TeeTimeTaskQueueThreadChw currentThread = (TeeTimeTaskQueueThreadChw) Thread.currentThread();
-			// // while (!taskPool.scheduleStage(targetStage)) {
-			//// currentThread.processNextStage(taskPool);
-			// // }
-			// }
-			yield = true;
 			getScheduler().onElementNotAdded(this);
 		}
-		if (yield) {
-			// LoggerFactory.getLogger(getSourcePort().getOwningStage().getClass()).debug("Continue {} cause of the non-full pipe {}",
-			// getSourcePort().getOwningStage(),
-			// this);
-		}
-
 		getScheduler().onElementAdded(this);
-		reportNewElement();
-		return true;
 	}
 
 	@Override
 	public boolean addNonBlocking(final Object element) {
-		return add(element);
-	}
-
-	@Override
-	public void reportNewElement() {
-		// Create task for new element
-		// numElements++;
-		// for (; numElements >= 1000; numElements -= 1000) {
-		// createTask();
-		// }
+		return this.queue.offer(element);
 	}
 
 	@Override

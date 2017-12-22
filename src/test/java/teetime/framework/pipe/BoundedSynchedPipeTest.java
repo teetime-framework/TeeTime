@@ -15,8 +15,7 @@
  */
 package teetime.framework.pipe;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +70,6 @@ public class BoundedSynchedPipeTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testAdd() throws Exception {
 		BoundedSynchedPipe<?> pipe = new BoundedSynchedPipe<Object>(null, null, 4);
-		assertFalse(pipe.add(null));
+		assertFalse(pipe.addNonBlocking(null));
 	}
 }

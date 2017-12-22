@@ -127,7 +127,7 @@ class ExtractionTestPipe<T> implements IMonitorablePipe, IPipe<T> {
 	}
 
 	@Override
-	public boolean add(final Object element) {
+	public void add(final Object element) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -51,7 +51,7 @@ public class WordCounterTestWithGlobalTaskPool {
 	public static void main(final String[] args) throws UnsupportedEncodingException, FileNotFoundException {
 		String numWorkerThreadsParam = (args.length > 0) ? args[0] : "3";
 		String numWarmUpsParam = (args.length > 1) ? args[1] : "1";
-		String fileNameParam = (args.length > 2) ? args[2] : "no default file name";
+		String fileNameParam = (args.length > 2) ? args[2] : "data\\wordcounter\\medium_textfile.txt";
 		String monitoringEnabledParam = (args.length > 3) ? args[3] : "true";
 
 		int numWorkerThreads = parseAsInteger(numWorkerThreadsParam, 3);

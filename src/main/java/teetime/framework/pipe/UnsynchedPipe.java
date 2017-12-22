@@ -28,7 +28,7 @@ public final class UnsynchedPipe<T> extends AbstractUnsynchedPipe<T> {
 	}
 
 	@Override
-	public boolean add(final Object element) {
+	public void add(final Object element) {
 		if (null == element) {
 			throw new IllegalArgumentException("Parameter 'element' is null, but must be non-null.");
 		}
@@ -38,6 +38,11 @@ public final class UnsynchedPipe<T> extends AbstractUnsynchedPipe<T> {
 		getScheduler().onElementAdded(this);
 		// this.stopWatch.end();
 		// this.getSourcePort().getOwningStage().addActiveWaitingTime(this.stopWatch.getDurationInNs());
+	}
+
+	@Override
+	public boolean addNonBlocking(final Object element) {
+		add(element);
 		return true;
 	}
 

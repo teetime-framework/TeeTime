@@ -19,5 +19,15 @@ import teetime.framework.pipe.IPipe;
 
 public interface PipeElementInsertionStrategy {
 
-	boolean add(IPipe<?> pipe, Object element);
+	/**
+	 * Adds the given element to the given pipe. This method does not return anything because it should guarantee element delivery.
+	 * If it cannot guarantee element delivery in some special situation, it then must throw an exception.
+	 *
+	 * @param pipe
+	 *            to be used
+	 *
+	 * @param element
+	 *            to be added
+	 */
+	void add(IPipe<?> pipe, Object element);
 }

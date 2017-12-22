@@ -53,7 +53,7 @@ public class InstantiationPipe<T> implements IPipe<T> {
 	}
 
 	@Override
-	public boolean add(final Object element) {
+	public void add(final Object element) {
 		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 

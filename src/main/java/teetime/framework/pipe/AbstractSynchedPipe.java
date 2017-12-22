@@ -19,11 +19,15 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 
 import org.jctools.queues.QueueFactory;
-import org.jctools.queues.spec.*;
+import org.jctools.queues.spec.ConcurrentQueueSpec;
+import org.jctools.queues.spec.Ordering;
+import org.jctools.queues.spec.Preference;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
-import teetime.framework.signal.*;
+import teetime.framework.signal.ISignal;
+import teetime.framework.signal.StartingSignal;
+import teetime.framework.signal.ValidatingSignal;
 import teetime.util.framework.concurrent.queue.PCBlockingQueue;
 import teetime.util.framework.concurrent.queue.putstrategy.PutStrategy;
 import teetime.util.framework.concurrent.queue.putstrategy.YieldPutStrategy;
@@ -65,6 +69,10 @@ public abstract class AbstractSynchedPipe<T> extends AbstractPipe<T> {
 		return this.signalQueue.poll();
 	}
 
+	/**
+	 * @deprecated since 3.0. Is removed without replacement.
+	 */
+	@Deprecated
 	@Override
 	public void reportNewElement() { // NOPMD
 		// default implementation

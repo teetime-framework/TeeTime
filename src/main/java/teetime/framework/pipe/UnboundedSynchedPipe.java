@@ -18,12 +18,14 @@ package teetime.framework.pipe;
 import java.util.Queue;
 
 import org.jctools.queues.QueueFactory;
-import org.jctools.queues.spec.*;
+import org.jctools.queues.spec.ConcurrentQueueSpec;
+import org.jctools.queues.spec.Ordering;
+import org.jctools.queues.spec.Preference;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
-public final class UnboundedSynchedPipe<T> extends AbstractSynchedPipe<T> {
+public class UnboundedSynchedPipe<T> extends AbstractSynchedPipe<T> {
 
 	private final Queue<Object> queue;
 
@@ -34,15 +36,20 @@ public final class UnboundedSynchedPipe<T> extends AbstractSynchedPipe<T> {
 	}
 
 	@Override
-	public boolean add(final Object element) {
-		boolean offered = this.queue.offer(element);
+	public void add(final Object element) {
+		this.queue.add(element);
 		getScheduler().onElementAdded(this);
-		return offered;
 	}
 
 	@Override
 	public boolean addNonBlocking(final Object element) {
-		return add(element);
+		boolean offered = this.queue.offer(element);
+		if (offered) {
+			getScheduler().onElementAdded(this);
+		} else {
+			getScheduler().onElementNotAdded(this);
+		}
+		return offered;
 	}
 
 	@Override

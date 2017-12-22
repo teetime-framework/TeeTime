@@ -51,6 +51,11 @@ public class InputPort<T> extends AbstractPort<T> {
 				throw new IllegalStateException("Pipe " + pipe + " should be empty, but has a size of " + size);
 			}
 			AbstractStage owningStage = getOwningStage();
+
+			// TODO let the input port trigger the (TERM) signal for the stage
+			// ISignal signal = pipe.removeNextSignal();
+			// owningStage.onSignal(signal, this);
+
 			int numOpenedInputPorts = owningStage.decNumOpenedInputPorts();
 			owningStage.logger.trace("numOpenedInputPorts (dec): {}", numOpenedInputPorts);
 			if (numOpenedInputPorts == 0) {

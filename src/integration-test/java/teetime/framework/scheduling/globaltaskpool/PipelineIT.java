@@ -30,7 +30,7 @@ import teetime.framework.Execution;
 import teetime.framework.TeeTimeService;
 import teetime.stage.*;
 
-public class PipelineTest {
+public class PipelineIT {
 
 	private static final String WRONG_PIPELINE_EXECUTION = "Wrong pipeline execution";
 	private static final int NUM_THREADS = 4;
@@ -86,6 +86,7 @@ public class PipelineTest {
 	}
 
 	@Test
+	// FIXME stopped 22.12.2017
 	public void shouldExecutePipelineCorrectlyThreeElementsWithOneSingleThread() {
 		String[] inputElements = { "a", "b", "c" };
 		GlobalTaskPoolConfig<String> config = new GlobalTaskPoolConfig<>(inputElements);

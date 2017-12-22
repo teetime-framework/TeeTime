@@ -25,7 +25,7 @@ public class SleepIfFullStrategy implements PipeElementInsertionStrategy {
 	private int numWaits;
 
 	@Override
-	public boolean add(final IPipe<?> pipe, final Object element) {
+	public void add(final IPipe<?> pipe, final Object element) {
 		while (!pipe.addNonBlocking(element)) {
 			// the following sending*-related lines are commented out since they are computationally too expensive
 			// this.getSourcePort().getOwningStage().sendingFailed();
@@ -44,7 +44,6 @@ public class SleepIfFullStrategy implements PipeElementInsertionStrategy {
 		}
 		// this.getSourcePort().getOwningStage().sendingSucceeded();
 		// this.reportNewElement();
-		return true;
 	}
 
 	public int getNumWaits() {
