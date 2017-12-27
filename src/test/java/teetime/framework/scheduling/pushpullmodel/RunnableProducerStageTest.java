@@ -22,15 +22,14 @@ import org.junit.Test;
 
 import teetime.framework.StageFacade;
 import teetime.framework.StageState;
-import teetime.framework.pipe.DummyPipe;
+import teetime.stage.InitialElementProducer;
 
 public class RunnableProducerStageTest {
 
 	@Test(timeout = 1000)
 	// t/o if join() waits infinitely
 	public void testInit() throws InterruptedException {
-		RunnableTestStage testStage = new RunnableTestStage();
-		testStage.getOutputPort().setPipe(DummyPipe.INSTANCE);
+		InitialElementProducer<Integer> testStage = new InitialElementProducer<>(1);
 
 		RunnableProducerStage runnable = new RunnableProducerStage(testStage);
 		Thread thread = new Thread(runnable);
@@ -39,13 +38,12 @@ public class RunnableProducerStageTest {
 
 		thread.start();
 
-		// Not running, but initialized
-		assertFalse(testStage.executed);
+		// Not running/started
+		assertThat(testStage.getCurrentState(), is(StageState.CREATED));
 		runnable.triggerStartingSignal();
 
 		thread.join();
 
 		assertThat(testStage.getCurrentState(), is(StageState.TERMINATED));
-		assertTrue(testStage.executed);
 	}
 }

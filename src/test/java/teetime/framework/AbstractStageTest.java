@@ -18,11 +18,16 @@ package teetime.framework;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
-import teetime.stage.*;
+import teetime.stage.Cache;
+import teetime.stage.Counter;
+import teetime.stage.InitialElementProducer;
 import teetime.stage.basic.Sink;
 import teetime.stage.basic.merger.Merger;
 
@@ -130,7 +135,7 @@ public class AbstractStageTest {
 	private static class TerminatingProducerStage extends AbstractStage {
 		@Override
 		protected void execute() {
-			terminateStage();
+			workCompleted();
 		}
 	}
 
@@ -165,7 +170,7 @@ public class AbstractStageTest {
 
 	@Test
 	@Ignore
-	public void testSameSignal() {
+	public void testSameSignalType() {
 		Sink<Integer> sink;
 
 		sink = resetSinkStatus();
@@ -236,12 +241,12 @@ public class AbstractStageTest {
 
 	@Test
 	public void terminateProducerStage() throws Exception {
-		new InitialElementProducer<>().terminateStage();
+		new InitialElementProducer<>().workCompleted();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void terminateConsumerStage() throws Exception {
-		new Counter<>().terminateStage();
+		new Counter<>().workCompleted();
 	}
 
 }

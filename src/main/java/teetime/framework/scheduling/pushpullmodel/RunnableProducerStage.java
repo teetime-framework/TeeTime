@@ -37,10 +37,12 @@ class RunnableProducerStage extends AbstractRunnableStage {
 
 	@Override
 	protected void afterStageExecution() {
-		final TerminatingSignal terminatingSignal = new TerminatingSignal();
-		this.stage.onSignal(terminatingSignal, null);
+		this.stage.onSignal(new TerminatingSignal(), null);
 	}
 
+	/**
+	 * This method is thread-safe.
+	 */
 	void triggerStartingSignal() {
 		startSemaphore.release();
 	}
@@ -50,8 +52,4 @@ class RunnableProducerStage extends AbstractRunnableStage {
 		startSemaphore.acquire();
 	}
 
-	void runNow() {
-		triggerStartingSignal();
-		super.run();
-	}
 }

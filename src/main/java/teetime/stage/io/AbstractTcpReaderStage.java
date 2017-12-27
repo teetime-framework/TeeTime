@@ -64,7 +64,7 @@ public abstract class AbstractTcpReaderStage<T> extends AbstractProducerStage<T>
 				}
 			}
 
-			this.terminateStage();
+			this.workCompleted();
 		}
 	}
 
@@ -92,7 +92,7 @@ public abstract class AbstractTcpReaderStage<T> extends AbstractProducerStage<T>
 	 * @param buffer
 	 *            to be read from
 	 * @return
-	 * 		<ul>
+	 *         <ul>
 	 *         <li><code>true</code> when there were enough bytes to perform the read operation
 	 *         <li><code>false</code> otherwise. In this case, the buffer is reset, compacted, and filled with new content.
 	 *         </ul>

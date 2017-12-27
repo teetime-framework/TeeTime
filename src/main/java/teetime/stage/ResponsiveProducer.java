@@ -15,6 +15,8 @@ import teetime.framework.AbstractProducerStage;
  *            the type of the elements
  *
  * @see {@link InitialElementProducer}
+ *
+ * @since 3.0
  */
 public class ResponsiveProducer<T> extends AbstractProducerStage<T> {
 	// #281: not Iterable<T> since it would forbid to pass java.nio.Path as single object
@@ -41,7 +43,7 @@ public class ResponsiveProducer<T> extends AbstractProducerStage<T> {
 			T element = iterator.next();
 			this.outputPort.send(element);
 		} else {
-			this.terminateStage();
+			this.workCompleted();
 		}
 	}
 

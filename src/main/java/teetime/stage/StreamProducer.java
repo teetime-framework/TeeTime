@@ -50,7 +50,7 @@ public class StreamProducer<T> extends AbstractProducerStage<T> {
 			T newObject = iterator.next();
 			localOutputPort.send(newObject);
 		}
-		this.terminateStage();
+		this.workCompleted();
 	}
 
 }

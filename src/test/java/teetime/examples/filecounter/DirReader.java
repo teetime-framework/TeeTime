@@ -40,7 +40,7 @@ class DirReader extends AbstractProducerStage<File> {
 	@Override
 	protected void execute() {
 		visit(element);
-		this.terminateStage(); // If everything is done, terminate
+		this.workCompleted(); // If everything is done, terminate
 	}
 
 	/**

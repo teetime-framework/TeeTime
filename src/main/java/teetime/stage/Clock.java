@@ -90,7 +90,7 @@ public class Clock extends AbstractProducerStage<Long> {
 		outputPort.send(this.getCurrentTimeInNs());
 
 		if (terminationCondition.isMet()) {
-			terminateStage();
+			workCompleted();
 		}
 	}
 
@@ -98,7 +98,7 @@ public class Clock extends AbstractProducerStage<Long> {
 		try {
 			Thread.sleep(delayInMs);
 		} catch (InterruptedException e) {
-			this.terminateStage();
+			this.workCompleted();
 		}
 	}
 
