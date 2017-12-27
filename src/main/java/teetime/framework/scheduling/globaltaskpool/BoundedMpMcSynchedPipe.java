@@ -61,16 +61,9 @@ class BoundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonit
 		return this.queue.poll();
 	}
 
-	// TODO: Add interface for this to allow different pipes
-	// private void createTask() {
-	// tasksCreated++;
-	// // TODO: Extract add to task queue in function. Remove also.
-	// GlobalTaskQueueScheduling.getTaskQueue().add(cachedTargetStage); // FIXME use a listener; do not depend on a specific scheduling algo!
-	// }
-
 	@Override
 	public int capacity() {
-		return Integer.MAX_VALUE; // unbounded
+		return this.queue.capacity();
 	}
 
 	@Override
@@ -96,12 +89,10 @@ class BoundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonit
 		return diff;
 	}
 
-	// FIXME only for testing purposes until global task pool scheduling works
 	public long getLastProducerIndex() {
 		return lastProducerIndex;
 	}
 
-	// FIXME only for testing purposes until global task pool scheduling works
 	public void setLastProducerIndex(final long lastProducerIndex) {
 		this.lastProducerIndex = lastProducerIndex;
 	}
