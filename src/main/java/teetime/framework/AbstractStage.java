@@ -599,14 +599,6 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * @deprecated As of v2.1. Use {@link #terminateStage()} instead.
-	 */
-	@Deprecated
-	protected void terminate() {
-		this.terminateStage();
-	}
-
-	/**
 	 * Terminates the execution of the stage. After terminating, this stage sends a signal to all its direct and indirect successor stages to terminate.
 	 *
 	 * @deprecated since 3.0. Use {@link #markAsFinished()} instead.

@@ -22,6 +22,15 @@ import teetime.framework.OutputPort;
 import teetime.framework.pipe.AbstractSynchedPipe;
 import teetime.framework.pipe.IMonitorablePipe;
 
+/**
+ *
+ * @author Christian Wulf (chw)
+ *
+ * @param <T>
+ *            the permitted type of the elements
+ *
+ * @since 3.0
+ */
 class BoundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
 
 	private final MpmcArrayQueue<Object> queue;
