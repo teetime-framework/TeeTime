@@ -3,10 +3,13 @@ package teetime.framework.scheduling.globaltaskpool;
 import teetime.framework.AbstractPort;
 import teetime.framework.AbstractStage;
 import teetime.framework.ITraverserVisitor;
+import teetime.framework.StageFacade;
 import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.DummyPipe;
 
 class LevelIndexVisitor implements ITraverserVisitor {
+
+	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 
 	private int maxLevelIndex;
 
@@ -20,8 +23,10 @@ class LevelIndexVisitor implements ITraverserVisitor {
 		AbstractStage sourceStage = port.getOwningStage();
 		AbstractStage targetStage = port.getPipe().getTargetPort().getOwningStage();
 
-		int levelIndex = Math.max(targetStage.getLevelIndex(), sourceStage.getLevelIndex() + 1);
-		targetStage.setLevelIndex(levelIndex);
+		int targetLevelIndex = STAGE_FACADE.getLevelIndex(targetStage);
+		int sourceLevelIndex = STAGE_FACADE.getLevelIndex(sourceStage);
+		int levelIndex = Math.max(targetLevelIndex, sourceLevelIndex + 1);
+		STAGE_FACADE.setLevelIndex(targetStage, levelIndex);
 
 		maxLevelIndex = Math.max(maxLevelIndex, levelIndex);
 

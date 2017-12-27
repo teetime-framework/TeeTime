@@ -18,7 +18,7 @@ package teetime.framework.exceptionHandling;
 import teetime.util.StacklessException;
 
 /**
- * Represents an exception that is used to terminate the running thread.
+ * Represents an exception which is used to terminate the running thread.
  *
  * @since 1.1
  */

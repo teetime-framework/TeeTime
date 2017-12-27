@@ -102,4 +102,12 @@ public final class StageFacade {
 		return stage.getOutputPorts();
 	}
 
+	public int getLevelIndex(final AbstractStage stage) {
+		return stage.getLevelIndex();
+	}
+
+	public void setLevelIndex(final AbstractStage stage, final int levelIndex) {
+		stage.setLevelIndex(levelIndex);
+	}
+
 }

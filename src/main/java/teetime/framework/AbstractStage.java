@@ -115,11 +115,11 @@ public abstract class AbstractStage {
 		this.logger = logger;
 	}
 
-	public void setLevelIndex(final int levelIndex) {
+	void setLevelIndex(final int levelIndex) {
 		this.levelIndex = levelIndex;
 	}
 
-	public int getLevelIndex() {
+	int getLevelIndex() {
 		return levelIndex;
 	}
 
@@ -157,6 +157,9 @@ public abstract class AbstractStage {
 		this.scheduler = scheduler;
 	}
 
+	/**
+	 * Returns a string representation of this stage including its unique identifier.
+	 */
 	@Override
 	public String toString() {
 		return this.getClass().getName() + ": " + this.getId() + " [" + currentState + "]";
@@ -179,6 +182,13 @@ public abstract class AbstractStage {
 		INSTANCES_COUNTER.clear();
 	}
 
+	/**
+	 * This method is internally called by the framework.
+	 * It must not be executed by user code.
+	 * In particular, it must not be invoked from within any stage.
+	 *
+	 * @throws TerminateException
+	 */
 	public final void executeByFramework() throws TerminateException {
 		if (performanceLoggingEnabled) {
 			beforeExecuteTime = System.nanoTime();
@@ -287,7 +297,9 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * <i>This method is threadsafe.</i>
+	 * <i>This method is thread-safe.</i>
+	 *
+	 * @return the current state of this stage (one of {@link StageState})
 	 */
 	public StageState getCurrentState() {
 		return currentState;
@@ -375,7 +387,25 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * Event that is triggered after constructing this stage, but before starting the analysis.
+	 * Event that is triggered, if all of the following conditions hold:
+	 * <ul>
+	 * <li>after constructing this stage and
+	 * <li>before starting the analysis.
+	 * </ul>
+	 * <p>
+	 * If stage developers want to override this method, they must always call the super implementation first:
+	 *
+	 * <pre>
+	 * &#64;Override
+	 * public void onValidating() {
+	 * 	super.onValidating();
+	 * 	// insert your code here
+	 * }
+	 * </pre>
+	 * <p>
+	 * To throw a checked exception, wrap it to an unchecked exception, e.g. to an
+	 * {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
+	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
 	 *
 	 * @param invalidPortConnections
 	 */
@@ -389,7 +419,7 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * Event that is triggered
+	 * Event that is triggered, if all of the following conditions hold:
 	 * <ul>
 	 * <li>after passing the validation phase and
 	 * <li>after the threads are ready-to-run and
@@ -417,7 +447,7 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * Event that is triggered
+	 * Event that is triggered, if all of the following conditions hold:
 	 * <ul>
 	 * <li>while executing the P&F configuration and
 	 * <li>after receiving the termination signal.
@@ -732,10 +762,18 @@ public abstract class AbstractStage {
 		activeWaitingTime += time;
 	}
 
+	/**
+	 * @return <code>true</code> iff this stage has no input ports, <code>false</code> otherwise.
+	 */
 	public boolean isProducer() {
 		return inputPorts.size() == 0;
 	}
 
+	/**
+	 * This method is used by some schedulers to improve parallelism and thus to improve the overall performance.
+	 *
+	 * @return <code>true</code> iff this stage has no internal fields which represent some kind of state; <code>false</code> otherwise.
+	 */
 	public boolean isStateless() {
 		return stateless;
 	}

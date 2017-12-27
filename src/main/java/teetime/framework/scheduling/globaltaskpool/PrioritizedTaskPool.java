@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.AbstractStage;
+import teetime.framework.StageFacade;
 
 /**
  * Represents a task pool whose tasks are stages and categorized into levels.
@@ -19,8 +20,9 @@ import teetime.framework.AbstractStage;
  */
 class PrioritizedTaskPool implements ScheduleQueue {
 
-	private static final int CAPACITY = 128;
 	private static final Logger LOGGER = LoggerFactory.getLogger(PrioritizedTaskPool.class);
+	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
+	private static final int CAPACITY = 128;
 
 	/** contains the stages categorized by their levels */
 	private final List<Queue<AbstractStage>> levels;
@@ -58,14 +60,15 @@ class PrioritizedTaskPool implements ScheduleQueue {
 			return true;
 		}
 
-		Queue<AbstractStage> stages = levels.get(stage.getLevelIndex());
+		int levelIndex = STAGE_FACADE.getLevelIndex(stage);
+		Queue<AbstractStage> stages = levels.get(levelIndex);
 
 		boolean offered = stages.offer(stage);
 		if (!offered) {
 			addedStages.remove(stage);
 
 			Object peekElement = stages.peek();
-			String message = String.format("(scheduleStage) Full level %s (size=%s/%s) with first element %s", stage.getLevelIndex(), stages.size(),
+			String message = String.format("(scheduleStage) Full level %s (size=%s/%s) with first element %s", levelIndex, stages.size(),
 					peekElement);
 			if (LOGGER.isWarnEnabled()) {
 				LOGGER.warn(message);

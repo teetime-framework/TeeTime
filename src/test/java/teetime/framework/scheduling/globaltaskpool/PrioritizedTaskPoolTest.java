@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import teetime.framework.AbstractStage;
+import teetime.framework.StageFacade;
 import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
 
@@ -25,15 +26,15 @@ public class PrioritizedTaskPoolTest {
 		threadPool = new PrioritizedTaskPool(5);
 
 		producer = new InitialElementProducer<>();
-		producer.setLevelIndex(0);
+		StageFacade.INSTANCE.setLevelIndex(producer, 0);
 		counter1 = new Counter<>();
-		counter1.setLevelIndex(1);
+		StageFacade.INSTANCE.setLevelIndex(counter1, 1);
 		counter2 = new Counter<>();
-		counter2.setLevelIndex(2);
+		StageFacade.INSTANCE.setLevelIndex(counter2, 2);
 		counter3 = new Counter<>();
-		counter3.setLevelIndex(3);
+		StageFacade.INSTANCE.setLevelIndex(counter3, 3);
 		counter4 = new Counter<>();
-		counter4.setLevelIndex(4);
+		StageFacade.INSTANCE.setLevelIndex(counter4, 4);
 	}
 
 	@After
