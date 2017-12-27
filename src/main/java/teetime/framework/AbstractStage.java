@@ -69,7 +69,7 @@ public abstract class AbstractStage {
 	private boolean calledOnTerminating = false;
 	private boolean calledOnStarting = false;
 
-	private volatile StageState currentState = StageState.CREATED; // TODO remove volatile since the state is never set by another thread anymore
+	private volatile StageState currentState = StageState.CREATED;
 	/** used to detect termination */
 	// private final AtomicInteger numOpenedInputPorts = new AtomicInteger();
 	private int numOpenedInputPorts;

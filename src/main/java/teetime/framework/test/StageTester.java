@@ -56,7 +56,8 @@ public final class StageTester {
 	 *
 	 * @return
 	 */
-	public <I> InputHolder<I> send(final I... elements) {
+	@SafeVarargs
+	public final <I> InputHolder<I> send(final I... elements) {
 		return this.send(Arrays.asList(elements));
 	}
 
