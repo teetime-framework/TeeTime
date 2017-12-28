@@ -69,7 +69,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 	/** the configuration to execute/schedule */
 	private final Configuration configuration;
 	/** Holds all threads which are used to execute the stages */
-	private final List<TeeTimeTaskQueueThreadChw> threadPool = new ArrayList<>(); // NOPMD (MissingPluralVariableName)
+	private final List<TeeTimeTaskQueueThreadChw> regularThreads = new ArrayList<>();
 	private final CountDownAndUpLatch numRunningStages = new CountDownAndUpLatch();
 	private final List<TeeTimeTaskQueueThreadChw> backupThreads = Collections.synchronizedList(new ArrayList<>());
 	private Set<AbstractStage> allStages;
@@ -114,16 +114,22 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		Collection<AbstractStage> startStages = CONFIG_FACADE.getStartStages(configuration);
 		initialize(startStages);
 
+		initializeThreads(numThreads, regularThreads, "regular");
+		initializeThreads(allStages.size() /*- numThreads*/, backupThreads, "backup");
+	}
+
+	private void initializeThreads(final int size, final List<TeeTimeTaskQueueThreadChw> threads, final String threadNameSuffix) {
 		final AbstractExceptionListenerFactory<?> factory = ConfigurationFacade.INSTANCE.getFactory(configuration);
 
-		// Add threads to thread pool and start
-		for (int i = 0; i < numThreads; i++) {
-			TeeTimeTaskQueueThreadChw thread = new TeeTimeTaskQueueThreadChw(this, actualNumOfExecutions);
-			AbstractExceptionListener listener = factory.createInstance(thread);
-			thread.setExceptionListener(listener);
-			thread.setUncaughtExceptionHandler(this);
-			thread.start();
-			threadPool.add(thread);
+		for (int i = 0; i < size; i++) {
+			TeeTimeTaskQueueThreadChw backupThread = new TeeTimeTaskQueueThreadChw(this, actualNumOfExecutions);
+			backupThread.setName(backupThread.getName() + "-" + threadNameSuffix);
+			AbstractExceptionListener listener = factory.createInstance(backupThread);
+			backupThread.setExceptionListener(listener);
+			backupThread.setUncaughtExceptionHandler(this);
+			backupThread.start();
+
+			threads.add(backupThread);
 		}
 	}
 
@@ -161,28 +167,12 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		taskPool = new PrioritizedTaskPool(levelIndexVisitor.getMaxLevelIndex() + 1, capacity);
 		taskPool.scheduleStages(frontStages);
 
-		initializeBackupThreads(allStages.size() /*- numThreads*/);
-
 		// instantiate pipes
 		int requestPipeCapcity = actualNumOfExecutions * 128; // with additional buffer factor
 		TaskQueueA2PipeInstantiation pipeVisitor = new TaskQueueA2PipeInstantiation(this, requestPipeCapcity);
 		traversor = new Traverser(pipeVisitor);
 		for (AbstractStage startStage : startStages) {
 			traversor.traverse(startStage);
-		}
-	}
-
-	private void initializeBackupThreads(final int size) {
-		final AbstractExceptionListenerFactory<?> factory = ConfigurationFacade.INSTANCE.getFactory(configuration);
-
-		for (int i = 0; i < size; i++) {
-			TeeTimeTaskQueueThreadChw backupThread = new TeeTimeTaskQueueThreadChw(this, actualNumOfExecutions);
-			backupThread.setName(backupThread.getName() + "-backup");
-			AbstractExceptionListener listener = factory.createInstance(backupThread);
-			backupThread.setExceptionListener(listener);
-			backupThread.setUncaughtExceptionHandler(this);
-			backupThread.start();
-			backupThreads.add(backupThread);
 		}
 	}
 
@@ -235,7 +225,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		}
 
 		// TODO move before onExecute so that starting the threads does not count to the execution time #350
-		for (TeeTimeTaskQueueThreadChw thread : threadPool) {
+		for (TeeTimeTaskQueueThreadChw thread : regularThreads) {
 			thread.awake();
 		}
 	}
@@ -256,7 +246,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		LOGGER.debug("Finished execution.");
 
 		try {
-			for (TeeTimeTaskQueueThreadChw thread : threadPool) {
+			for (TeeTimeTaskQueueThreadChw thread : regularThreads) {
 				thread.awake();
 				thread.join();
 			}
