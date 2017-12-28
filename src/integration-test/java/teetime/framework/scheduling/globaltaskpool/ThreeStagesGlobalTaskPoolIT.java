@@ -143,6 +143,11 @@ public class ThreeStagesGlobalTaskPoolIT {
 		shouldExecutePipelineCorrectlyManyElements(NUM_ELEMENTS, 4, 1024);
 	}
 
+	@Test
+	public void shouldExecuteWith08Thread1024Executions() {
+		shouldExecutePipelineCorrectlyManyElements(NUM_ELEMENTS, 8, 31);
+	}
+
 	private void shouldExecutePipelineCorrectlyManyElements(final int numElements, final int numThreads, final int numExecutions) {
 		List<Integer> processedElements = new ArrayList<>();
 

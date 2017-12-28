@@ -115,7 +115,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		initialize(startStages);
 
 		initializeThreads(numThreads, regularThreads, "regular");
-		initializeThreads(allStages.size() /*- numThreads*/, backupThreads, "backup");
+		initializeThreads(allStages.size() - 1, backupThreads, "backup");
 	}
 
 	private void initializeThreads(final int size, final List<TeeTimeTaskQueueThreadChw> threads, final String threadNameSuffix) {
