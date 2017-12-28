@@ -115,6 +115,10 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		initialize(startStages);
 
 		initializeThreads(numThreads, regularThreads, "regular");
+		// We need at most n-1 backup threads.
+		// Consider the situation where all consumers are slower than their producers.
+		// Then, all stages but sinks are paused.
+		// For each of these paused stage, the scheduler requires a backup thread.
 		initializeThreads(allStages.size() - 1, backupThreads, "backup");
 	}
 
