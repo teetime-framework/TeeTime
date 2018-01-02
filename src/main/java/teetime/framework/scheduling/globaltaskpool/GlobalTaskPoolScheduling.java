@@ -28,6 +28,7 @@ import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.AbstractExceptionListenerFactory;
 import teetime.framework.pipe.AbstractSynchedPipe;
 import teetime.framework.pipe.AbstractUnsynchedPipe;
+import teetime.framework.scheduling.CountDownAndUpLatch;
 import teetime.framework.scheduling.PipeScheduler;
 import teetime.framework.signal.StartingSignal;
 import teetime.framework.signal.ValidatingSignal;
@@ -245,9 +246,12 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 
 	@Override
 	public void onFinish() {
-		numRunningStages.await();
-
-		LOGGER.debug("Finished execution.");
+		try {
+			numRunningStages.await();
+			LOGGER.debug("Finished execution.");
+		} catch (InterruptedException e) {
+			LOGGER.warn("Interrupted execution.", e);
+		}
 
 		try {
 			for (TeeTimeTaskQueueThreadChw thread : regularThreads) {

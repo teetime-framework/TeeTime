@@ -21,9 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.*;
+import teetime.framework.scheduling.CountDownAndUpLatch;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
-import teetime.util.framework.concurrent.SignalingCounter;
 
 public class PushPullScheduling implements TeeTimeService, ThreadListener {
 
@@ -40,8 +40,8 @@ public class PushPullScheduling implements TeeTimeService, ThreadListener {
 
 	private final Configuration configuration;
 
-	private final SignalingCounter numRunningFiniteProducers = new SignalingCounter();
-	private final SignalingCounter numRunningConsumers = new SignalingCounter();
+	private final CountDownAndUpLatch numRunningFiniteProducers = new CountDownAndUpLatch();
+	private final CountDownAndUpLatch numRunningConsumers = new CountDownAndUpLatch();
 
 	// requires: startstages, factory and context
 	public PushPullScheduling(final Configuration configuration) {
@@ -189,7 +189,7 @@ public class PushPullScheduling implements TeeTimeService, ThreadListener {
 	@Override
 	public void onFinish() {
 		try {
-			numRunningFiniteProducers.waitFor(0);
+			numRunningFiniteProducers.await();
 		} catch (InterruptedException e) {
 			LOGGER.error("Execution has stopped unexpectedly", e);
 			for (Thread thread : this.finiteProducerThreads) {
@@ -206,7 +206,7 @@ public class PushPullScheduling implements TeeTimeService, ThreadListener {
 		}
 
 		try {
-			numRunningConsumers.waitFor(0);
+			numRunningConsumers.await();
 		} catch (InterruptedException e) {
 			LOGGER.error("Execution has stopped unexpectedly", e);
 			synchronized (consumerThreads) {
@@ -226,10 +226,10 @@ public class PushPullScheduling implements TeeTimeService, ThreadListener {
 	public void onBeforeStart(final AbstractStage stage) {
 		switch (STAGE_FACADE.getTerminationStrategy(stage)) {
 		case BY_SELF_DECISION:
-			numRunningFiniteProducers.inc();
+			numRunningFiniteProducers.countUp();
 			break;
 		case BY_SIGNAL:
-			numRunningConsumers.inc();
+			numRunningConsumers.countUp();
 			break;
 		default:
 			break;
@@ -240,10 +240,10 @@ public class PushPullScheduling implements TeeTimeService, ThreadListener {
 	public void onAfterTermination(final AbstractStage stage) {
 		switch (STAGE_FACADE.getTerminationStrategy(stage)) {
 		case BY_SELF_DECISION:
-			numRunningFiniteProducers.dec();
+			numRunningFiniteProducers.countDown();
 			break;
 		case BY_SIGNAL:
-			numRunningConsumers.dec();
+			numRunningConsumers.countDown();
 			break;
 		default:
 			break;

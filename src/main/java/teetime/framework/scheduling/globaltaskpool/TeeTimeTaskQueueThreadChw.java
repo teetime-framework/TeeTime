@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import teetime.framework.*;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
+import teetime.framework.scheduling.CountDownAndUpLatch;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 
