@@ -24,7 +24,7 @@ import teetime.framework.pipe.DummyPipe;
 /**
  * Visits stages which are in the state {@link teetime.framework.StageState#CREATED}.
  */
-class TaskQueueA1CreatedStageCollector implements ITraverserVisitor {
+class A1CreatedStageCollector implements ITraverserVisitor {
 
 	private final Set<AbstractStage> stages = new HashSet<AbstractStage>();
 

@@ -33,16 +33,16 @@ import teetime.framework.scheduling.PipeScheduler;
 /**
  * Created by nilsziermann on 30.12.16.
  */
-class TaskQueueA2PipeInstantiation implements ITraverserVisitor {
+class A3PipeInstantiation implements ITraverserVisitor {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueueA2PipeInstantiation.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(A3PipeInstantiation.class);
 
 	private final Set<IPipe<?>> visitedPipes = new HashSet<IPipe<?>>();
 
 	private final PipeScheduler scheduler;
 	private final int requestedCapcity;
 
-	public TaskQueueA2PipeInstantiation(final PipeScheduler scheduler, final int requestedCapcity) {
+	public A3PipeInstantiation(final PipeScheduler scheduler, final int requestedCapcity) {
 		this.scheduler = scheduler;
 		this.requestedCapcity = requestedCapcity;
 	}

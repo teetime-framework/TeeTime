@@ -7,7 +7,7 @@ import teetime.framework.StageFacade;
 import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.DummyPipe;
 
-class LevelIndexVisitor implements ITraverserVisitor {
+class A2LevelIndexVisitor implements ITraverserVisitor {
 
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 

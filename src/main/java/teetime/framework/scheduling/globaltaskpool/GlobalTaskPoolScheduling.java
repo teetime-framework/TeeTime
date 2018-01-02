@@ -144,7 +144,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 			throw new IllegalStateException("No start stages passed. You need to pass at least one start stage.");
 		}
 
-		TaskQueueA1CreatedStageCollector stageCollector = new TaskQueueA1CreatedStageCollector();
+		A1CreatedStageCollector stageCollector = new A1CreatedStageCollector();
 		Traverser traversor = new Traverser(stageCollector);
 		for (AbstractStage startStage : startStages) {
 			traversor.traverse(startStage);
@@ -162,7 +162,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 		}
 
 		// (re-)compute level index for each stage
-		LevelIndexVisitor levelIndexVisitor = new LevelIndexVisitor();
+		A2LevelIndexVisitor levelIndexVisitor = new A2LevelIndexVisitor();
 		traversor = new Traverser(levelIndexVisitor);
 		for (AbstractStage startStage : finiteProducerStages) {
 			traversor.traverse(startStage);
@@ -174,7 +174,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 
 		// instantiate pipes
 		int requestPipeCapcity = actualNumOfExecutions * 128; // with additional buffer factor
-		TaskQueueA2PipeInstantiation pipeVisitor = new TaskQueueA2PipeInstantiation(this, requestPipeCapcity);
+		A3PipeInstantiation pipeVisitor = new A3PipeInstantiation(this, requestPipeCapcity);
 		traversor = new Traverser(pipeVisitor);
 		for (AbstractStage startStage : startStages) {
 			traversor.traverse(startStage);
