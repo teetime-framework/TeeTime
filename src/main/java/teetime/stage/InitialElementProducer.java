@@ -28,7 +28,7 @@ import teetime.framework.AbstractProducerStage;
  * @param <T>
  *            the type of the elements
  *
- * @see {@link ResponsiveProducer}
+ * @see ResponsiveProducer
  */
 public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 

@@ -449,7 +449,7 @@ public abstract class AbstractStage {
 	/**
 	 * Event that is triggered, if all of the following conditions hold:
 	 * <ul>
-	 * <li>while executing the P&F configuration and
+	 * <li>while executing the P&amp;F configuration and
 	 * <li>after receiving the termination signal.
 	 * </ul>
 	 * <p>
@@ -631,7 +631,7 @@ public abstract class AbstractStage {
 	/**
 	 * Terminates the execution of the stage. After terminating, this stage sends a signal to all its direct and indirect successor stages to terminate.
 	 *
-	 * @deprecated since 3.0. Use {@link #markAsFinished()} instead.
+	 * @deprecated since 3.0. Use {@link #workCompleted()} instead.
 	 */
 	@Deprecated
 	protected void terminateStage() {
@@ -645,7 +645,7 @@ public abstract class AbstractStage {
 	 * Marks this stage as having finished its work such that it will not be scheduled anymore.
 	 * The framework then automatically propagates a termination signal to the direct and indirect successor stages.
 	 * In this way, each stage terminates itself after having processed all of its remaining input elements.
-	 * Thus, the framework automatically terminates the whole P&F configuration in a graceful way when all of its producer stages have finished their work.
+	 * Thus, the framework automatically terminates the whole P&amp;F configuration in a graceful way when all of its producer stages have finished their work.
 	 * The user does not need to implement any additional or alternative termination logic.
 	 * <p>
 	 * This method may only be invoked by producers.

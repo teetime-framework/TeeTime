@@ -87,7 +87,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, 
 
 	/**
 	 * @param numThreads
-	 *            the number of threads to use for executing the given P&F configuration
+	 *            the number of threads to use for executing the given P&amp;F configuration
 	 * @param configuration
 	 *            the configuration to execute/schedule
 	 * @param numOfExecutions

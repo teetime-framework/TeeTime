@@ -14,7 +14,7 @@ import teetime.framework.AbstractProducerStage;
  * @param <T>
  *            the type of the elements
  *
- * @see {@link InitialElementProducer}
+ * @see InitialElementProducer
  *
  * @since 3.0
  */
