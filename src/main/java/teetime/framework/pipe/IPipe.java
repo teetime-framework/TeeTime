@@ -67,9 +67,9 @@ public interface IPipe<T> {
 	int capacity();
 
 	/**
-	 * Retrieves the last element of the pipe and deletes it.
+	 * Retrieves and removes the last element from the pipe.
 	 *
-	 * @return The last element in the pipe.
+	 * @return the last element from the pipe, or <code>null</code> if the pipe is currently empty.
 	 */
 	Object removeLast();
 
