@@ -39,7 +39,7 @@ public class InputPort<T> extends AbstractPort<T> {
 
 	/**
 	 *
-	 * @return the next element from the connected pipe
+	 * @return the next element from the connected pipe, or <code>null</code> if the pipe is currently empty.
 	 */
 	@SuppressWarnings("unchecked")
 	public T receive() {
