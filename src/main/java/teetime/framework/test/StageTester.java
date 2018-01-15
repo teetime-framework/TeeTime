@@ -89,17 +89,25 @@ public final class StageTester {
 
 	/**
 	 * This method will start the test and block until it is finished.
+	 * 
+	 * @return
 	 *
 	 * @throws ExecutionException
 	 *             if at least one exception in one thread has occurred within the analysis.
 	 *             The exception contains the pairs of thread and throwable.
 	 *
 	 */
-	public void start() {
+	public StageTestResult start() {
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		final Configuration configuration = new TestConfiguration(inputHolders, stage, outputHolders);
 		final Execution<Configuration> analysis = new Execution<Configuration>(configuration);
 		analysis.executeBlocking();
+
+		StageTestResult result = new StageTestResult();
+		for (OutputHolder<?> outputHolder : outputHolders) {
+			result.add(outputHolder.getPort(), outputHolder.getOutputElements());
+		}
+		return result;
 	}
 
 	private static class TestConfiguration<I> extends Configuration {
