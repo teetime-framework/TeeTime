@@ -24,7 +24,8 @@
 		<javadocOutputDir>apidocs</javadocOutputDir>
 
 		<java.version>1.8</java.version>
-		<checkstyle.version>3.0.0</checkstyle.version>
+		<checkstyle.plugin.version>3.0.0</checkstyle.plugin.version>
+		<checkstyle.lib.version>8.7</checkstyle.lib.version>
 		<findbugs.version>3.0.5</findbugs.version>
 		<pmd.version>3.8</pmd.version>
 		<javadoc.version>3.0.0</javadoc.version>
@@ -333,7 +334,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>${checkstyle.version}</version>
 				<executions>
 					<execution>
 						<id>validate</id>
@@ -480,6 +480,30 @@
 				<version>2.9</version>
 			</plugin>
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>${checkstyle.plugin.version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>${checkstyle.lib.version}</version>
+							<exclusions>
+								<!-- MCHECKSTYLE-156 -->
+								<exclusion>
+									<groupId>com.sun</groupId>
+									<artifactId>tools</artifactId>
+								</exclusion>
+							</exclusions>
+						</dependency>
+					</dependencies>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<reporting>
@@ -506,13 +530,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>${checkstyle.version}</version>
-				<!-- <reportSets> -->
-				<!-- <reportSet> -->
-				<!-- <reports> -->
-				<!-- <report>checkstyle</report> -->
-				<!-- </reports> -->
-				<!-- </reportSet> -->
-				<!-- </reportSets> -->
 			</plugin>
 			<!-- Findbugs -->
 			<plugin>
