@@ -336,7 +336,6 @@
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>validate</id>
 						<phase>validate</phase>
 						<configuration>
 							<configLocation>${project.basedir}/conf/quality-config/cs-conf.xml</configLocation>
@@ -395,11 +394,9 @@
 				<version>${pmd.version}</version>
 				<dependencies>
 					<dependency>
-						<groupId>de.chw</groupId>
+						<groupId>net.sourceforge.teetime</groupId>
 						<artifactId>pmd.ruleset</artifactId>
-						<version>0.0.1-SNAPSHOT</version>
-						<scope>system</scope>
-						<systemPath>${project.basedir}/conf/quality-config/pmd/pmd.ruleset-0.0.1-SNAPSHOT.jar</systemPath>
+						<version>1.0.0-SNAPSHOT</version>
 					</dependency>
 				</dependencies>
 				<configuration>
