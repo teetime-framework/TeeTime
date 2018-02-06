@@ -1,3 +1,6 @@
+[![GitHub license](https://img.shields.io/github/license/teetime-framework/TeeTime.svg)](https://github.com/teetime-framework/TeeTime/blob/master/LICENSE.txt)
+
+
 # TeeTime
 
 This project contains the Java reference implementation of the Pipe-and-Filter framework TeeTime.
