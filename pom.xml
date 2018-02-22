@@ -234,6 +234,14 @@
 						<format>xml</format>
 					</formats>
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>net.sourceforge.cobertura</groupId>
+						<artifactId>cobertura</artifactId>
+						<version>2.1.1</version>
+						<scope>test</scope>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<!-- we want JDK 1.6 source and binary compatibility -->
 			<plugin>
