@@ -25,7 +25,7 @@ public class StageTestResult {
 
 	private final Map<OutputPort<?>, List<?>> elementsPerPort = new HashMap<>();
 
-	public <T> void add(final OutputPort<T> port, final List<T> outputElements) {
+	<T> void add(final OutputPort<T> port, final List<T> outputElements) {
 		elementsPerPort.put(port, outputElements);
 	}
 
