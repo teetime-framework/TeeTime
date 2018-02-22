@@ -224,24 +224,9 @@
 				</executions>
 			</plugin>
 			<!-- code coverage -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<formats>
-						<format>html</format>
-						<format>xml</format>
-					</formats>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>net.sourceforge.cobertura</groupId>
-						<artifactId>cobertura</artifactId>
-						<version>2.1.1</version>
-					</dependency>
-				</dependencies>
-			</plugin>
+			<!-- the "cobertura mven plugin" is not up-to-date anymore -->
+			<!-- "open clover" could help here -->
+
 			<!-- we want JDK 1.6 source and binary compatibility -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
