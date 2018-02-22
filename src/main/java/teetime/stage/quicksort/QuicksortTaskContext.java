@@ -3,14 +3,14 @@ package teetime.stage.quicksort;
 class QuicksortTaskContext {
 
 	private final int[] elements;
-	private final int stack[];
+	private final int[] stack;
 	private int top = -1;
 
 	private int lowestIndex;
 	private int highestIndex;
 	private int pivotIndex;
 
-	public QuicksortTaskContext(int[] elements) {
+	public QuicksortTaskContext(final int[] elements) {
 		this.elements = elements;
 		this.stack = new int[elements.length];
 	}
@@ -19,7 +19,7 @@ class QuicksortTaskContext {
 		return top;
 	}
 
-	void push(int lowestIndex, int highestIndex) {
+	void push(final int lowestIndex, final int highestIndex) {
 		stack[++top] = lowestIndex;
 		stack[++top] = highestIndex;
 	}
@@ -29,7 +29,7 @@ class QuicksortTaskContext {
 		this.lowestIndex = stack[top--];
 	}
 
-	public void setPivotIndex(int pivotIndex) {
+	public void setPivotIndex(final int pivotIndex) {
 		this.pivotIndex = pivotIndex;
 	}
 

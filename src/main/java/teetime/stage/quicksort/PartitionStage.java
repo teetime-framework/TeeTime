@@ -1,11 +1,11 @@
 package teetime.stage.quicksort;
 
-import teetime.stage.basic.*;
+import teetime.stage.basic.AbstractFilter;
 
 class PartitionStage extends AbstractFilter<QuicksortTaskContext> {
 
 	@Override
-	protected void execute(QuicksortTaskContext context) {
+	protected void execute(final QuicksortTaskContext context) {
 		int[] elements = context.getElements();
 		int lowestIndex = context.getLowestIndex();
 		int highestIndex = context.getHighestIndex();
@@ -17,7 +17,7 @@ class PartitionStage extends AbstractFilter<QuicksortTaskContext> {
 		outputPort.send(context);
 	}
 
-	private int partition(int[] elements, int lowestIndex, int highestIndex) {
+	private int partition(final int[] elements, final int lowestIndex, final int highestIndex) {
 		int x = elements[highestIndex];
 		int i = (lowestIndex - 1);
 
@@ -33,7 +33,7 @@ class PartitionStage extends AbstractFilter<QuicksortTaskContext> {
 		return (i + 1);
 	}
 
-	void swap(int elements[], int i, int j) {
+	void swap(final int[] elements, final int i, final int j) {
 		int t = elements[i];
 		elements[i] = elements[j];
 		elements[j] = t;
