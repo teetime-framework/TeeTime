@@ -16,20 +16,18 @@
 package teetime.framework.test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import teetime.framework.*;
-import teetime.stage.CollectorSink;
-import teetime.stage.InitialElementProducer;
+import teetime.framework.AbstractStage;
+import teetime.framework.StageState;
 
 /**
  * This class can be used to test single stages in JUnit test cases.
  *
  * @author Nils Christian Ehmke
  */
-public final class StageTester {
+public class StageTester extends MinimalStageTestSetup {
 
 	private final List<InputHolder<?>> inputHolders = new ArrayList<InputHolder<?>>();
 	private final List<OutputHolder<?>> outputHolders = new ArrayList<OutputHolder<?>>();
@@ -51,84 +49,44 @@ public final class StageTester {
 	 *            which serve as input. If nothing should be sent, pass
 	 *
 	 *            <pre>
-	 * Collections.&lt;your type&gt;emptyList()
+	 * Collections.&lt;your type&gt;emptyList().
 	 *            </pre>
-	 *
-	 * @return
 	 */
-	@SafeVarargs
-	public final <I> InputHolder<I> send(final I... elements) {
-		return this.send(Arrays.asList(elements));
-	}
-
-	/**
-	 * @param elements
-	 *            which serve as input. If nothing should be sent, pass
-	 *
-	 *            <pre>
-	 * Collections.&lt;your type&gt;emptyList()
-	 *            </pre>
-	 *
-	 * @return
-	 */
+	@Override
 	public <I> InputHolder<I> send(final Collection<I> elements) {
 		final InputHolder<I> inputHolder = new InputHolder<I>(this, stage, elements);
 		this.inputHolders.add(inputHolder);
 		return inputHolder;
 	}
 
-	public <O> OutputHolder<O> receive(final List<O> outputList) {
-		final OutputHolder<O> outputHolder = new OutputHolder<O>(this, outputList);
+	/**
+	 * @param actualElements
+	 *            which should be tested against the expected elements.
+	 */
+	@Override
+	public <O> OutputHolder<O> receive(final List<O> actualElements) {
+		final OutputHolder<O> outputHolder = new OutputHolder<O>(this, actualElements);
 		this.outputHolders.add(outputHolder);
 		return outputHolder;
 	}
 
+	/**
+	 * Does nothing. Can be used to make the test more readable.
+	 */
 	public StageTester and() {
 		return this;
 	}
 
-	/**
-	 * This method will start the test and block until it is finished.
-	 *
-	 * @return
-	 *
-	 * @throws ExecutionException
-	 *             if at least one exception in one thread has occurred within the analysis.
-	 *             The exception contains the pairs of thread and throwable.
-	 *
-	 */
-	public StageTestResult start() {
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		final Configuration configuration = new TestConfiguration(inputHolders, stage, outputHolders);
-		final Execution<Configuration> analysis = new Execution<Configuration>(configuration);
-		analysis.executeBlocking();
-
-		StageTestResult result = new StageTestResult();
-		for (OutputHolder<?> outputHolder : outputHolders) {
-			result.add(outputHolder.getPort(), outputHolder.getOutputElements());
-		}
-		return result;
+	/* default */ List<InputHolder<?>> getInputHolders() {
+		return inputHolders;
 	}
 
-	private static class TestConfiguration<I> extends Configuration {
-		@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-		public TestConfiguration(final List<InputHolder<I>> inputHolders, final AbstractStage stage, final List<OutputHolder<?>> outputHolders) {
-			if (inputHolders.isEmpty() && outputHolders.isEmpty()) {
-				throw new InvalidTestCaseSetupException("The stage under test must at least receive or send anything.");
-			}
+	/* default */ List<OutputHolder<?>> getOutputHolders() {
+		return outputHolders;
+	}
 
-			for (InputHolder<I> inputHolder : inputHolders) {
-				final InitialElementProducer<I> producer = new InitialElementProducer<I>(inputHolder.getInputElements());
-				connectPorts(producer.getOutputPort(), inputHolder.getPort());
-			}
-
-			stage.declareActive();
-
-			for (OutputHolder<?> outputHolder : outputHolders) {
-				final CollectorSink<Object> sink = new CollectorSink<Object>(outputHolder.getOutputElements());
-				connectPorts(outputHolder.getPort(), sink.getInputPort());
-			}
-		}
+	/* default */ AbstractStage getStage() {
+		return stage;
 	}
 
 }

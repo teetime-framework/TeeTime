@@ -19,7 +19,7 @@ import java.util.List;
 
 import teetime.framework.OutputPort;
 
-public final class OutputHolder<O> {
+public class OutputHolder<O> {
 
 	private final StageTester stageTester;
 	private final List<Object> outputElements;
@@ -33,17 +33,17 @@ public final class OutputHolder<O> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public StageTester from(final OutputPort<O> port) {
+	public StageTestSetup from(final OutputPort<O> port) {
 		this.port = (OutputPort<Object>) port;
 
-		return stageTester;
+		return new StageTestSetup(stageTester);
 	}
 
-	public List<Object> getOutputElements() {
+	/* default */ List<Object> getOutputElements() {
 		return outputElements;
 	}
 
-	public OutputPort<Object> getPort() {
+	/* default */ OutputPort<Object> getPort() {
 		return port;
 	}
 

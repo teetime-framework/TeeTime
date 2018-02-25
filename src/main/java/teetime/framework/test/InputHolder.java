@@ -20,7 +20,7 @@ import java.util.Collection;
 import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 
-public final class InputHolder<I> {
+public class InputHolder<I> {
 
 	private final StageTester stageTester;
 	private final AbstractStage stage;
@@ -34,20 +34,20 @@ public final class InputHolder<I> {
 		this.inputElements = inputElements;
 	}
 
-	public StageTester to(final InputPort<? super I> port) { // NOPMD deliberately chosen name
+	public StageTestSetup to(final InputPort<? super I> port) { // NOPMD deliberately chosen name
 		if (port.getOwningStage() != stage) {
-			throw new IllegalStateException("The given input port does not belong to the stage which should be tested.");
+			throw new InvalidTestCaseSetupException("The given input port does not belong to the stage which should be tested.");
 		}
 		this.port = port;
 
-		return stageTester;
+		return new StageTestSetup(stageTester);
 	}
 
-	public Collection<I> getInputElements() {
+	/* default */ Collection<I> getInputElements() {
 		return inputElements;
 	}
 
-	public InputPort<? super I> getPort() {
+	/* default */ InputPort<? super I> getPort() {
 		return port;
 	}
 
