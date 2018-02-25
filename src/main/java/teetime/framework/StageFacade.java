@@ -114,4 +114,8 @@ public final class StageFacade {
 		stage.onStarting();
 	}
 
+	public void onTerminating(final AbstractStage stage) {
+		stage.onTerminating();
+	}
+
 }

@@ -430,7 +430,7 @@ public abstract class AbstractStage {
 	 *
 	 * <pre>
 	 * &#64;Override
-	 * public void onStarting() {
+	 * protected void onStarting() {
 	 * 	super.onStarting();
 	 * 	// insert your code here
 	 * }
@@ -457,7 +457,7 @@ public abstract class AbstractStage {
 	 *
 	 * <pre>
 	 * &#64;Override
-	 * public void onTerminating() {
+	 * protected void onTerminating() {
 	 * 	// insert your code here
 	 * 	super.onTerminating();
 	 * }
@@ -466,7 +466,7 @@ public abstract class AbstractStage {
 	 * To throw a checked exception, wrap it to an unchecked exception, e.g. to an {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
 	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
 	 */
-	public void onTerminating() {
+	protected void onTerminating() {
 		logger.trace(ON_STATE_CHANGE_MARKER, "Terminating {}", this);
 		if (newStateRequired(StageActivationState.TERMINATED)) {
 			this.addState(StageActivationState.TERMINATED, System.nanoTime());
