@@ -32,7 +32,7 @@ public class Cache<T> extends AbstractFilter<T> {
 	}
 
 	@Override
-	public void onTerminating() {
+	protected void onTerminating() {
 		this.logger.debug("Emitting {} cached elements...", this.cachedObjects.size());
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
