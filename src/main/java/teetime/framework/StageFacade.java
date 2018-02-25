@@ -110,4 +110,8 @@ public final class StageFacade {
 		stage.setLevelIndex(levelIndex);
 	}
 
+	public void onStarting(final AbstractStage stage) {
+		stage.onStarting();
+	}
+
 }

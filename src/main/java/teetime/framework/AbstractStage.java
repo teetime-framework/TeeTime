@@ -440,7 +440,7 @@ public abstract class AbstractStage {
 	 * {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
 	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
 	 */
-	public void onStarting() {
+	protected void onStarting() {
 		logger.trace(ON_STATE_CHANGE_MARKER, "Starting {}", this);
 		changeState(StageState.STARTED);
 		calledOnStarting = true;

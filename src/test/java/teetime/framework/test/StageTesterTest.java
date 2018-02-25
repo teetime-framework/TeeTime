@@ -20,8 +20,35 @@ public class StageTesterTest {
 		List<Integer> outputElements = new ArrayList<>();
 
 		test(producer)
-				// .send(4,5,6).to(port)
 				.receive(outputElements).from(producer.getOutputPort())
+				.start();
+
+		assertThat(outputElements, contains(1, 2, 3));
+	}
+
+	@Test(expected = InvalidTestCaseSetupException.class)
+	public void testProducerAlreadyStarted() throws Exception {
+		InitialElementProducer<Integer> producer = new InitialElementProducer<>(1, 2, 3);
+
+		// let the producer be used once before testing it actually
+		test(producer).receive(new ArrayList<Integer>()).from(producer.getOutputPort()).start();
+
+		List<Integer> outputElements = new ArrayList<>();
+
+		test(producer)
+				.receive(outputElements).from(producer.getOutputPort())
+				.start();
+
+		assertThat(outputElements, contains(1, 2, 3));
+	}
+
+	@Test(expected = InvalidTestCaseSetupException.class)
+	public void testProducerWithoutReceive() throws Exception {
+		InitialElementProducer<Integer> producer = new InitialElementProducer<>(1, 2, 3);
+
+		List<Integer> outputElements = new ArrayList<>();
+
+		test(producer)
 				.start();
 
 		assertThat(outputElements, contains(1, 2, 3));

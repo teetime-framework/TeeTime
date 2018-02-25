@@ -41,7 +41,7 @@ public final class StageTester {
 
 	public static StageTester test(final AbstractStage stage) { // NOPMD
 		if (stage.getCurrentState() != StageState.CREATED) {
-			throw new IllegalStateException("This stage has already been tested in this test method. Move this test into a new test method.");
+			throw new InvalidTestCaseSetupException("This stage has already been tested in this test method. Move this test into a new test method.");
 		}
 		return new StageTester(stage);
 	}
@@ -89,7 +89,7 @@ public final class StageTester {
 
 	/**
 	 * This method will start the test and block until it is finished.
-	 * 
+	 *
 	 * @return
 	 *
 	 * @throws ExecutionException
@@ -113,6 +113,10 @@ public final class StageTester {
 	private static class TestConfiguration<I> extends Configuration {
 		@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 		public TestConfiguration(final List<InputHolder<I>> inputHolders, final AbstractStage stage, final List<OutputHolder<?>> outputHolders) {
+			if (inputHolders.isEmpty() && outputHolders.isEmpty()) {
+				throw new InvalidTestCaseSetupException("The stage under test must at least receive or send anything.");
+			}
+
 			for (InputHolder<I> inputHolder : inputHolders) {
 				final InitialElementProducer<I> producer = new InitialElementProducer<I>(inputHolder.getInputElements());
 				connectPorts(producer.getOutputPort(), inputHolder.getPort());

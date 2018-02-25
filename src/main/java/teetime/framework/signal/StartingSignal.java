@@ -20,12 +20,13 @@ import java.util.Set;
 
 import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
+import teetime.framework.StageFacade;
 
 public final class StartingSignal implements ISignal {
 
 	@Override
 	public void trigger(final AbstractStage stage) {
-		stage.onStarting();
+		StageFacade.INSTANCE.onStarting(stage);
 	}
 
 	@Override
