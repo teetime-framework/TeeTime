@@ -1,5 +1,7 @@
 package teetime.framework.test;
 
+import java.util.List;
+
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -10,13 +12,15 @@ import teetime.stage.CollectorSink;
 
 class Produces<T, O extends OutputPort<T>> extends BaseMatcher<O> {
 
-	private final T[] expectedElements;
 	private final Matcher<Iterable<? extends T>> matcher;
 
 	@SafeVarargs
 	public Produces(final T... expectedElements) {
-		this.expectedElements = expectedElements;
 		this.matcher = Matchers.contains(expectedElements);
+	}
+
+	public Produces() {
+		this.matcher = Matchers.emptyIterable();
 	}
 
 	@Override
@@ -36,7 +40,8 @@ class Produces<T, O extends OutputPort<T>> extends BaseMatcher<O> {
 
 	@Override
 	public void describeTo(final Description description) {
-		description.appendText("to produce ").appendValueList("", ", ", "", expectedElements);
+		description.appendText("to produce ");
+		matcher.describeTo(description);
 	}
 
 	@Override
@@ -49,7 +54,8 @@ class Produces<T, O extends OutputPort<T>> extends BaseMatcher<O> {
 		OutputPort<T> outputPort = (OutputPort<T>) item;
 		CollectorSink<T> collectorSink = StageFactory.getSinkFromOutputPort(outputPort);
 
-		description.appendText("has produced ").appendValueList("", ", ", "", collectorSink.getElements());
+		List<T> actualElements = collectorSink.getElements();
+		description.appendText("has produced ").appendValueList("[", ", ", "]", actualElements);
 	}
 
 }

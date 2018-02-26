@@ -163,4 +163,9 @@ public class StageTester {
 		return new Produces<T, OutputPort<T>>(values);
 	}
 
+	@Factory
+	public static <T> Matcher<OutputPort<T>> producesNothing() {
+		return new Produces<T, OutputPort<T>>();
+	}
+
 }
