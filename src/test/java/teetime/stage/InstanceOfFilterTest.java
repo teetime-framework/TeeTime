@@ -15,12 +15,12 @@
  */
 package teetime.stage;
 
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static teetime.framework.test.StageTester.test;
+import static org.hamcrest.collection.IsCollectionWithSize.*;
+import static org.hamcrest.collection.IsEmptyCollection.*;
+import static org.hamcrest.collection.IsIterableContainingInOrder.*;
+import static org.hamcrest.core.Is.*;
+import static org.junit.Assert.*;
+import static teetime.framework.test.StageTester.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +54,24 @@ public class InstanceOfFilterTest {
 				.start();
 
 		assertThat(results, contains(clazz));
+	}
+
+	@Test
+	public void outputMatchedAndMismatchedElements() {
+		final List<Clazz> matchedElements = new ArrayList<InstanceOfFilterTest.Clazz>();
+		final List<Object> mismatchedElements = new ArrayList<>();
+
+		final Clazz clazz = new Clazz();
+		final Integer number = 42;
+
+		test(filter)
+				.and().send(clazz, number, clazz).to(filter.getInputPort())
+				.and().receive(matchedElements).from(filter.getMatchedOutputPort())
+				.and().receive(mismatchedElements).from(filter.getMismatchedOutputPort())
+				.start();
+
+		assertThat(matchedElements, contains(clazz, clazz));
+		assertThat(mismatchedElements, contains(number));
 	}
 
 	@Test
