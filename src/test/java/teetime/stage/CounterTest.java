@@ -15,10 +15,10 @@
  */
 package teetime.stage;
 
-import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static teetime.framework.test.StageTester.test;
+import static org.hamcrest.collection.IsIterableContainingInOrder.*;
+import static org.hamcrest.core.Is.*;
+import static org.junit.Assert.*;
+import static teetime.framework.test.StageTester.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,9 @@ public class CounterTest {
 
 	@Test
 	public void counterValueShouldBeCorrect() {
-		test(counter).and().send(1, 2, -5, 10, 9).to(counter.getInputPort()).start();
+		test(counter).and()
+				.send(1, 2, -5, 10, 9).to(counter.getInputPort())
+				.start();
 
 		assertThat(counter.getNumElementsPassed(), is(5));
 	}
@@ -54,7 +56,10 @@ public class CounterTest {
 	public void counterShouldForwardElements() {
 		List<Integer> results = new ArrayList<Integer>();
 
-		test(counter).and().send(1, 2, 3).to(counter.getInputPort()).and().receive(results).from(counter.getOutputPort()).start();
+		test(counter).and()
+				.send(1, 2, 3).to(counter.getInputPort()).and()
+				.receive(results).from(counter.getOutputPort()).and()
+				.start();
 
 		assertThat(results, contains(1, 2, 3));
 	}
