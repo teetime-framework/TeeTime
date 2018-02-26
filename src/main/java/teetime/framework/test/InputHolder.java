@@ -15,40 +15,31 @@
  */
 package teetime.framework.test;
 
-import java.util.Collection;
+import java.util.List;
 
-import teetime.framework.AbstractStage;
 import teetime.framework.InputPort;
 
 public class InputHolder<I> {
 
 	private final StageTester stageTester;
-	private final AbstractStage stage;
-	private final Collection<I> inputElements;
+	private final List<Object> inputElements;
 
-	private InputPort<? super I> port;
-
-	InputHolder(final StageTester stageTester, final AbstractStage stage, final Collection<I> inputElements) {
+	@SuppressWarnings("unchecked")
+	InputHolder(final StageTester stageTester, final List<I> inputElements) {
 		this.stageTester = stageTester;
-		this.stage = stage;
-		this.inputElements = inputElements;
+		this.inputElements = (List<Object>) inputElements;
 	}
 
-	public StageTestSetup to(final InputPort<? super I> port) { // NOPMD deliberately chosen name
-		if (port.getOwningStage() != stage) {
+	@SuppressWarnings("unchecked")
+	public StageTester to(final InputPort<? super I> inputPort) { // NOPMD deliberately chosen name
+		List<InputPort<?>> inputPorts = this.stageTester.getStageUnderTest().getInputPorts();
+		if (!inputPorts.contains(inputPort)) {
 			throw new InvalidTestCaseSetupException("The given input port does not belong to the stage which should be tested.");
 		}
-		this.port = port;
+		InputPort<Object> castedPort = (InputPort<Object>) inputPort;
+		this.stageTester.getInputElementsByPort().put(castedPort, inputElements); // overwrite
 
-		return new StageTestSetup(stageTester);
-	}
-
-	/* default */ Collection<I> getInputElements() {
-		return inputElements;
-	}
-
-	/* default */ InputPort<? super I> getPort() {
-		return port;
+		return stageTester;
 	}
 
 }

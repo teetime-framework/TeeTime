@@ -15,13 +15,15 @@
  */
 package teetime.stage.quicksort;
 
-import teetime.framework.*;
+import teetime.framework.CompositeStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 
 /**
  * A P&F implementation of the iterative Quicksort algorithm.
- * 
+ *
  * @author Christian Wulf
- * 
+ *
  * @see https://www.geeksforgeeks.org/iterative-quick-sort
  */
 public class QuicksortStage extends CompositeStage {
@@ -37,8 +39,6 @@ public class QuicksortStage extends CompositeStage {
 		PushLeftSideStage pushLeftSideStage = new PushLeftSideStage();
 		PushRightSideStage pushRightSideStage = new PushRightSideStage();
 
-		inputPort = initStage.getInputPort();
-
 		connectPorts(initStage.getOutputPort(), ifStage.getNewTaskInputPort());
 
 		connectPorts(ifStage.getTrueOutputPort(), setupRangeStage.getInputPort());
@@ -48,7 +48,9 @@ public class QuicksortStage extends CompositeStage {
 		connectPorts(pushRightSideStage.getOutputPort(), ifStage.getSubTaskInputPort());
 		// -> feedback loop to the ifStage
 
-		outputPort = ifStage.getFalseOutputPort();
+		// map outer ports to inner ports
+		inputPort = createInputPort(initStage.getInputPort());
+		outputPort = createOutputPort(ifStage.getFalseOutputPort());
 	}
 
 	public InputPort<int[]> getInputPort() {

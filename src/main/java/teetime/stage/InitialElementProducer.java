@@ -58,4 +58,11 @@ public class InitialElementProducer<T> extends AbstractProducerStage<T> {
 		this.workCompleted();
 	}
 
+	/**
+	 * @return the elements which should be sent.
+	 */
+	public Collection<T> getElements() {
+		return elements;
+	}
+
 }

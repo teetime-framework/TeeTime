@@ -62,6 +62,10 @@ public class AbstractPort<T> {
 		this.pipe = pipe;
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	@SuppressWarnings("PMD.ConfusingTernary")
 	@Override
 	public String toString() {

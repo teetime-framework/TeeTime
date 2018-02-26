@@ -67,7 +67,7 @@ public class DivideAndConquerStageTest {
 
 		test(this.quicksortStage).and()
 				.send(problem).to(quicksortStage.getInputPort()).and()
-				.receive(solutions).from(quicksortStage.getOutputPort())
+				.receive(solutions).from(quicksortStage.getOutputPort()).and()
 				.start();
 
 		int[] sortedNumbers = new int[] { 1, 2, 3, 4, 5 };

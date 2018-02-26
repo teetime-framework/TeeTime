@@ -18,7 +18,9 @@ package teetime.stage.taskfarm;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.*;
+import teetime.framework.CompositeStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.stage.basic.ITransformation;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.merger.Merger;
@@ -43,6 +45,9 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 	private final Merger<O> merger;
 	/** List of all currently existing worker stages */
 	private final List<ITaskFarmDuplicable<I, O>> workerStages;
+
+	private InputPort<I> inputPort;
+	private OutputPort<O> outputPort;
 
 	/**
 	 * Creates a task farm stage with <i>n</i> worker stages and a pipe capacity of {@value #DEFAULT_PIPE_CAPACITY}, where <i>n</i>
@@ -98,6 +103,10 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 		if (numberStages > 1) {
 			this.merger.declareActive();
 		}
+
+		// map outer ports to inner ports
+		inputPort = createInputPort(this.distributor.getInputPort());
+		outputPort = createOutputPort(this.merger.getOutputPort());
 	}
 
 	private void connectWorkerStage(final ITaskFarmDuplicable<I, O> workerStage, final int pipeCapacity) {
@@ -117,7 +126,7 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 	 */
 	@Override
 	public InputPort<I> getInputPort() {
-		return this.distributor.getInputPort();
+		return inputPort;
 	}
 
 	/**
@@ -127,7 +136,7 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 	 */
 	@Override
 	public OutputPort<O> getOutputPort() {
-		return this.merger.getOutputPort();
+		return outputPort;
 	}
 
 	// /**

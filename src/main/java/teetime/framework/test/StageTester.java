@@ -15,33 +15,79 @@
  */
 package teetime.framework.test;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import teetime.framework.AbstractStage;
-import teetime.framework.StageState;
+import org.hamcrest.Factory;
+import org.hamcrest.Matcher;
+
+import teetime.framework.*;
 
 /**
  * This class can be used to test single stages in JUnit test cases.
  *
- * @author Nils Christian Ehmke
+ * @author Christian Wulf, Nils Christian Ehmke
  */
-public class StageTester extends MinimalStageTestSetup {
+public class StageTester {
 
-	private final List<InputHolder<?>> inputHolders = new ArrayList<InputHolder<?>>();
-	private final List<OutputHolder<?>> outputHolders = new ArrayList<OutputHolder<?>>();
-	private final AbstractStage stage;
+	private final StageUnderTest stageUnderTest;
+	private final Map<InputPort<Object>, List<Object>> inputElementsByPort = new HashMap<>();
+	private final Map<OutputPort<Object>, List<Object>> outputElementsByPort = new HashMap<>();
 
-	private StageTester(final AbstractStage stage) {
-		this.stage = stage;
+	private StageTester(final StageUnderTest stageUnderTest) {
+		this.stageUnderTest = stageUnderTest;
 	}
 
-	public static StageTester test(final AbstractStage stage) { // NOPMD
+	/**
+	 * Prepares to test the given stage.
+	 *
+	 * @param stage
+	 *            to be tested
+	 * @return
+	 * 		a stage test builder
+	 */
+	public static StageTester test(final AbstractStage stage) {
+		StageUnderTest stageUnderTest = new PrimitiveStageUnderTest(stage);
+
 		if (stage.getCurrentState() != StageState.CREATED) {
-			throw new InvalidTestCaseSetupException("This stage has already been tested in this test method. Move this test into a new test method.");
+			String message = "This stage has already been tested in this test method. Move this test into a new test method.";
+			throw new InvalidTestCaseSetupException(message);
 		}
-		return new StageTester(stage);
+
+		return new StageTester(stageUnderTest);
+	}
+
+	/**
+	 * Prepares to test the given composite stage.
+	 *
+	 * @param compositeStage
+	 *            to be tested
+	 * @return
+	 * 		a stage test builder
+	 */
+	public static StageTester test(final CompositeStage compositeStage) {
+		StageUnderTest stageUnderTest = new CompositeStageUnderTest(compositeStage);
+
+		for (InputPort<?> inputPort : compositeStage.getInputPorts()) {
+			AbstractStage stage = inputPort.getOwningStage();
+			if (stage.getCurrentState() != StageState.CREATED) {
+				String message = "This stage has already been tested in this test method. Move this test into a new test method.";
+				throw new InvalidTestCaseSetupException(message);
+			}
+		}
+
+		return new StageTester(stageUnderTest);
+	}
+
+	/**
+	 * @param elements
+	 *            which serve as input. If nothing should be sent, pass
+	 */
+	@SafeVarargs
+	public final <I> InputHolder<I> send(final I... elements) {
+		return this.send(Arrays.asList(elements));
 	}
 
 	/**
@@ -52,21 +98,29 @@ public class StageTester extends MinimalStageTestSetup {
 	 * Collections.&lt;your type&gt;emptyList().
 	 *            </pre>
 	 */
-	@Override
-	public <I> InputHolder<I> send(final Collection<I> elements) {
-		final InputHolder<I> inputHolder = new InputHolder<I>(this, stage, elements);
-		this.inputHolders.add(inputHolder);
+	public <I> InputHolder<I> send(final List<I> elements) {
+		final InputHolder<I> inputHolder = new InputHolder<I>(this, elements);
 		return inputHolder;
 	}
 
 	/**
 	 * @param actualElements
 	 *            which should be tested against the expected elements.
+	 *
+	 * @deprecated since 3.0. Use the following code instead:
+	 *
+	 *             <pre>
+	 * {@code
+	 * import static StageTester.*;
+	 * ...
+	 * assertThat(stage.getOutputPort(), produces(1,2,3));
+	 * }
+	 *             </pre>
+	 *
 	 */
-	@Override
+	@Deprecated
 	public <O> OutputHolder<O> receive(final List<O> actualElements) {
 		final OutputHolder<O> outputHolder = new OutputHolder<O>(this, actualElements);
-		this.outputHolders.add(outputHolder);
 		return outputHolder;
 	}
 
@@ -77,16 +131,36 @@ public class StageTester extends MinimalStageTestSetup {
 		return this;
 	}
 
-	/* default */ List<InputHolder<?>> getInputHolders() {
-		return inputHolders;
+	/**
+	 * This method will start the test and block until it is finished.
+	 *
+	 * @throws ExecutionException
+	 *             if at least one exception in one thread has occurred within the analysis.
+	 *             The exception contains the pairs of thread and throwable.
+	 *
+	 */
+	public void start() {
+		final Configuration configuration = new TestConfiguration(this);
+		final Execution<Configuration> analysis = new Execution<Configuration>(configuration);
+		analysis.executeBlocking();
 	}
 
-	/* default */ List<OutputHolder<?>> getOutputHolders() {
-		return outputHolders;
+	/* default */ StageUnderTest getStageUnderTest() {
+		return stageUnderTest;
 	}
 
-	/* default */ AbstractStage getStage() {
-		return stage;
+	/* default */ Map<InputPort<Object>, List<Object>> getInputElementsByPort() {
+		return inputElementsByPort;
+	}
+
+	/* default */ Map<OutputPort<Object>, List<Object>> getOutputElementsByPort() {
+		return outputElementsByPort;
+	}
+
+	@SafeVarargs
+	@Factory
+	public static <T> Matcher<OutputPort<T>> produces(final T... values) {
+		return new Produces<T, OutputPort<T>>(values);
 	}
 
 }
