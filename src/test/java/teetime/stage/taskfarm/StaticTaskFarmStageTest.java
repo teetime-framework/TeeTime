@@ -19,14 +19,15 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static teetime.framework.test.StageTester.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
-import teetime.framework.AbstractStage;
 import teetime.stage.Counter;
 import teetime.stage.basic.distributor.strategy.BlockingBusyWaitingRoundRobinDistributorStrategy;
-import teetime.stage.basic.merger.strategy.BusyWaitingRoundRobinStrategy;
+import teetime.stage.basic.merger.strategy.BlockingBusyWaitingRoundRobinMergerStrategy;
 import teetime.testutil.ArrayCreator;
 
 public class StaticTaskFarmStageTest {
@@ -101,8 +102,7 @@ public class StaticTaskFarmStageTest {
 
 			List<Integer> outputElements = new ArrayList<Integer>();
 
-			AbstractStage firstInternalStage = taskFarmStage.getInputPort().getOwningStage();
-			test(firstInternalStage).and()
+			test(taskFarmStage).and()
 					.send(testTuple.inputElements).to(taskFarmStage.getInputPort()).and()
 					.receive(outputElements).from(taskFarmStage.getOutputPort())
 					.start();
@@ -126,12 +126,11 @@ public class StaticTaskFarmStageTest {
 			StaticTaskFarmStage<Integer, Integer, Counter<Integer>> taskFarmStage = createTaskFarm(testTuple.numWorkerStages);
 			// ordered element passing
 			taskFarmStage.getDistributor().setStrategy(new BlockingBusyWaitingRoundRobinDistributorStrategy());
-			taskFarmStage.getMerger().setStrategy(new BusyWaitingRoundRobinStrategy());
+			taskFarmStage.getMerger().setStrategy(new BlockingBusyWaitingRoundRobinMergerStrategy());
 
 			List<Integer> outputElements = new ArrayList<Integer>();
 
-			AbstractStage firstInternalStage = taskFarmStage.getInputPort().getOwningStage();
-			test(firstInternalStage).and()
+			test(taskFarmStage).and()
 					.send(testTuple.inputElements).to(taskFarmStage.getInputPort()).and()
 					.receive(outputElements).from(taskFarmStage.getOutputPort())
 					.start();

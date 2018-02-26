@@ -1,30 +1,46 @@
 package teetime.framework.test;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import teetime.framework.AbstractStage;
 import teetime.framework.Configuration;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
+import teetime.framework.pipe.DummyPipe;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 
-class TestConfiguration<I> extends Configuration {
+class TestConfiguration extends Configuration {
 
-	@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-	public TestConfiguration(final List<InputHolder<I>> inputHolders, final AbstractStage stage, final List<OutputHolder<?>> outputHolders) {
-		if (inputHolders.isEmpty() && outputHolders.isEmpty()) {
-			throw new InvalidTestCaseSetupException("The stage under test must at least receive or send anything.");
+	@SuppressWarnings({ "PMD.AvoidInstantiatingObjectsInLoops", "unchecked" })
+	public TestConfiguration(final StageTester stageTester) {
+		StageUnderTest stageUnderTest = stageTester.getStageUnderTest();
+
+		Map<InputPort<Object>, List<Object>> inputElementsByPort = stageTester.getInputElementsByPort();
+		for (InputPort<?> inputPort : stageUnderTest.getInputPorts()) {
+			if (inputPort.getPipe() != null) {
+				continue; // skip reflexive/loop pipe
+			}
+			List<Object> inputElements = inputElementsByPort.getOrDefault(inputPort, new ArrayList<>());
+			final InitialElementProducer<?> producer = StageFactory.createProducer(inputElements);
+			connectPorts(producer.getOutputPort(), (InputPort<Object>) inputPort);
 		}
 
-		for (InputHolder<I> inputHolder : inputHolders) {
-			final InitialElementProducer<I> producer = new InitialElementProducer<I>(inputHolder.getInputElements());
-			connectPorts(producer.getOutputPort(), inputHolder.getPort());
+		// declareActive that works for both AbstractStage and CompositeStage
+		for (InputPort<?> inputPort : stageUnderTest.getInputPorts()) {
+			inputPort.getOwningStage().declareActive();
 		}
 
-		stage.declareActive();
-
-		for (OutputHolder<?> outputHolder : outputHolders) {
-			final CollectorSink<Object> sink = new CollectorSink<Object>(outputHolder.getOutputElements());
-			connectPorts(outputHolder.getPort(), sink.getInputPort());
+		Map<OutputPort<Object>, List<Object>> outputElementsByPort = stageTester.getOutputElementsByPort();
+		for (OutputPort<?> outputPort : stageUnderTest.getOutputPorts()) {
+			if (outputPort.getPipe() != DummyPipe.INSTANCE) {
+				continue; // skip reflexive/loop pipe
+			}
+			List<Object> outputElements = outputElementsByPort.getOrDefault(outputPort, new ArrayList<>());
+			final CollectorSink<Object> sink = StageFactory.createSink(outputElements);
+			connectPorts(outputPort, sink.getInputPort());
 		}
 	}
+
 }

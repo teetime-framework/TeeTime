@@ -15,6 +15,9 @@
  */
 package teetime.framework;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.InstantiationPipe;
 
@@ -33,6 +36,9 @@ public class CompositeStage {
 	 * Default capacity for pipes
 	 */
 	protected static final int DEFAULT_PIPE_CAPACITY = 512;
+
+	private final List<InputPort<?>> inputPorts = new ArrayList<>();
+	private final List<OutputPort<?>> outputPorts = new ArrayList<>();
 
 	protected CompositeStage() {
 		// prohibit direct instantiation of this class
@@ -75,6 +81,26 @@ public class CompositeStage {
 			throw new IllegalStateException("1005 - Ports may not be reconnected");
 		}
 		new InstantiationPipe<T>(sourcePort, targetPort, capacity);
+	}
+
+	protected <T> InputPort<T> createInputPort(final InputPort<T> subStageInputPort) {
+		// InputPort<T> inputPort = new InputPort<>(inputPort.getType(), this, inputPort.getName());
+		inputPorts.add(subStageInputPort);
+		return subStageInputPort;
+	}
+
+	protected <T> OutputPort<T> createOutputPort(final OutputPort<T> subStageOutputPort) {
+		// InputPort<T> inputPort = new InputPort<>(inputPort.getType(), this, inputPort.getName());
+		outputPorts.add(subStageOutputPort);
+		return subStageOutputPort;
+	}
+
+	public List<InputPort<?>> getInputPorts() {
+		return inputPorts;
+	}
+
+	public List<OutputPort<?>> getOutputPorts() {
+		return outputPorts;
 	}
 
 }

@@ -16,9 +16,6 @@
 package teetime.stage;
 
 import static org.hamcrest.collection.IsCollectionWithSize.*;
-import static org.hamcrest.collection.IsEmptyCollection.*;
-import static org.hamcrest.collection.IsIterableContainingInOrder.*;
-import static org.hamcrest.core.Is.*;
 import static org.junit.Assert.*;
 import static teetime.framework.test.StageTester.*;
 
@@ -45,59 +42,48 @@ public class InstanceOfFilterTest {
 
 	@Test
 	public void filterShouldForwardCorrectTypes() {
-		final List<Clazz> results = new ArrayList<InstanceOfFilterTest.Clazz>();
-		final Object clazz = new Clazz();
+		final Clazz clazz = new Clazz();
 
 		test(filter)
 				.and().send(clazz).to(filter.getInputPort())
-				.and().receive(results).from(filter.getMatchedOutputPort())
 				.start();
 
-		assertThat(results, contains(clazz));
+		assertThat(filter.getMatchedOutputPort(), produces(clazz));
 	}
 
 	@Test
 	public void outputMatchedAndMismatchedElements() {
-		final List<Clazz> matchedElements = new ArrayList<InstanceOfFilterTest.Clazz>();
-		final List<Object> mismatchedElements = new ArrayList<>();
-
 		final Clazz clazz = new Clazz();
 		final Integer number = 42;
 
-		test(filter)
-				.and().send(clazz, number, clazz).to(filter.getInputPort())
-				.and().receive(matchedElements).from(filter.getMatchedOutputPort())
-				.and().receive(mismatchedElements).from(filter.getMismatchedOutputPort())
+		test(filter).and()
+				.send(clazz, number, clazz).to(filter.getInputPort())
 				.start();
 
-		assertThat(matchedElements, contains(clazz, clazz));
-		assertThat(mismatchedElements, contains(number));
+		assertThat(filter.getMatchedOutputPort(), produces(clazz, clazz));
+		assertThat(filter.getMismatchedOutputPort(), produces(number));
 	}
 
 	@Test
 	public void filterShouldForwardSubTypes() {
-		final List<Clazz> results = new ArrayList<InstanceOfFilterTest.Clazz>();
-		final Object clazz = new SubClazz();
+		final SubClazz clazz = new SubClazz();
 
-		test(filter)
-				.and().send(clazz).to(filter.getInputPort())
-				.and().receive(results).from(filter.getMatchedOutputPort())
+		test(filter).and()
+				.send(clazz).to(filter.getInputPort()).and()
 				.start();
 
-		assertThat(results, contains(clazz));
+		assertThat(filter.getMatchedOutputPort(), produces(clazz));
 	}
 
 	@Test
 	public void filterShouldDropInvalidTypes() {
-		final List<Clazz> results = new ArrayList<InstanceOfFilterTest.Clazz>();
 		final Object object = new Object();
 
 		test(filter)
 				.and().send(object).to(filter.getInputPort())
-				.and().receive(results).from(filter.getMatchedOutputPort())
 				.start();
 
-		assertThat(results, is(empty()));
+		assertThat(filter.getMatchedOutputPort(), producesNothing());
 	}
 
 	@Test

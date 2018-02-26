@@ -15,7 +15,9 @@
  */
 package teetime.stage.taskfarm;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -30,6 +32,7 @@ public class ElementTrigger<E> extends AbstractProducerStage<E> {
 	private final Collection<E> elements;
 	private Iterator<E> iterator;
 
+	@SafeVarargs
 	public ElementTrigger(final E... elements) {
 		this(Arrays.asList(elements));
 	}

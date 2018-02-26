@@ -24,27 +24,22 @@ public class OutputHolder<O> {
 	private final StageTester stageTester;
 	private final List<Object> outputElements;
 
-	private OutputPort<Object> port;
-
 	@SuppressWarnings("unchecked")
-	OutputHolder(final StageTester stageTester, final List<O> outputList) {
+	OutputHolder(final StageTester stageTester, final List<O> outputElements) {
 		this.stageTester = stageTester;
-		this.outputElements = (List<Object>) outputList;
+		this.outputElements = (List<Object>) outputElements;
 	}
 
 	@SuppressWarnings("unchecked")
-	public StageTestSetup from(final OutputPort<O> port) {
-		this.port = (OutputPort<Object>) port;
+	public StageTester from(final OutputPort<O> outputPort) {
+		List<OutputPort<?>> outputPorts = this.stageTester.getStageUnderTest().getOutputPorts();
+		if (!outputPorts.contains(outputPort)) {
+			throw new InvalidTestCaseSetupException("The given output port does not belong to the stage which should be tested.");
+		}
+		OutputPort<Object> castedPort = (OutputPort<Object>) outputPort;
+		this.stageTester.getOutputElementsByPort().put(castedPort, outputElements); // overwrite
 
-		return new StageTestSetup(stageTester);
-	}
-
-	/* default */ List<Object> getOutputElements() {
-		return outputElements;
-	}
-
-	/* default */ OutputPort<Object> getPort() {
-		return port;
+		return stageTester;
 	}
 
 }
