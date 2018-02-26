@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import teetime.stage.CollectorSink;
 import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
 
@@ -60,6 +61,12 @@ public class StageTesterTest {
 
 	@Test
 	public void testSink() throws Exception {
+		CollectorSink<Integer> consumer = new CollectorSink<>();
 
+		test(consumer).and()
+				.send(1, 2, 3).to(consumer.getInputPort()).and()
+				.start();
+
+		assertThat(consumer.getElements(), contains(1, 2, 3));
 	}
 }
