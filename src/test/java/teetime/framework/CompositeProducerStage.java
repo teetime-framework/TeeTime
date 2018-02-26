@@ -28,22 +28,28 @@ import teetime.stage.basic.merger.Merger;
  */
 class CompositeProducerStage<T> extends CompositeStage {
 
-	private final Merger<T> merger;
+	private final InputPort<T> inputPort;
+	private final OutputPort<T> outputPort;
 
+	@SafeVarargs
 	public CompositeProducerStage(final T... elements) {
 		InitialElementProducer<T> producer = new InitialElementProducer<T>(elements);
-		merger = new Merger<T>();
+		Merger<T> merger = new Merger<T>();
 
 		connectPorts(producer.getOutputPort(), merger.getNewInputPort());
 
 		merger.declareActive();
+
+		// map outer ports to inner ports
+		inputPort = createInputPort(merger.getNewInputPort());
+		outputPort = createOutputPort(merger.getOutputPort());
 	}
 
 	InputPort<T> getInputPort() {
-		return merger.getNewInputPort();
+		return inputPort;
 	}
 
 	OutputPort<T> getOutputPort() {
-		return merger.getOutputPort();
+		return outputPort;
 	}
 }

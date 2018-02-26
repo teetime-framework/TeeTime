@@ -16,7 +16,6 @@
 package teetime.stage;
 
 import teetime.framework.AbstractProducerStage;
-import teetime.framework.TerminationStrategy;
 import teetime.framework.termination.NextActiveStageShouldTerminate;
 import teetime.framework.termination.TerminationCondition;
 
@@ -69,12 +68,6 @@ public class Clock extends AbstractProducerStage<Long> {
 
 	public Clock(final TerminationCondition terminationCondition) {
 		this.terminationCondition = terminationCondition;
-	}
-
-	@Override
-	public TerminationStrategy getTerminationStrategy() {
-		// return TerminationStrategy.BY_INTERRUPT;
-		return TerminationStrategy.BY_SELF_DECISION;
 	}
 
 	@Override
