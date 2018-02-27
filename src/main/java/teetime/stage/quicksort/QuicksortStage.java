@@ -24,7 +24,7 @@ import teetime.framework.OutputPort;
  *
  * @author Christian Wulf
  *
- * @see https://www.geeksforgeeks.org/iterative-quick-sort
+ * @see <a href="https://www.geeksforgeeks.org/iterative-quick-sort">https://www.geeksforgeeks.org/iterative-quick-sort</a>
  */
 public class QuicksortStage extends CompositeStage {
 

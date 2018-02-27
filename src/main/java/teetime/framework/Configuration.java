@@ -30,7 +30,6 @@ import teetime.framework.pipe.IPipeFactory;
  * @author Christian Wulf, Nelson Tavares de Sousa
  *
  * @since 2.0
- *
  */
 public class Configuration extends CompositeStage {
 
@@ -45,6 +44,10 @@ public class Configuration extends CompositeStage {
 		this(new TerminatingExceptionListenerFactory());
 	}
 
+	/**
+	 * @param factory
+	 *            to define a common exception behavior
+	 */
 	// TODO use ctor with 2 arguments (problem: ConfigContext uses this)
 	public Configuration(final AbstractExceptionListenerFactory<?> factory) {
 		this.factory = factory;
@@ -53,9 +56,10 @@ public class Configuration extends CompositeStage {
 	}
 
 	/**
-	 *
 	 * @param factory
+	 *            that defines a common exception behavior
 	 * @param context
+	 *            that includes the scheduler algorithm to use
 	 *
 	 * @deprecated since 3.0. Scheduled to be removed in 3.1 or above. Use {@link #Configuration(AbstractExceptionListenerFactory)} instead.
 	 */
