@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.AbstractPort;
 import teetime.framework.AbstractStage;
 import teetime.framework.ITraverserVisitor;
+import teetime.framework.InstantiationPipe;
 import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.*;
 import teetime.framework.scheduling.PipeScheduler;

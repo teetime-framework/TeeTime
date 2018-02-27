@@ -20,7 +20,7 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 
 /**
- * A P&F implementation of the iterative Quicksort algorithm.
+ * A Pipe-and-Filter implementation of the iterative Quicksort algorithm.
  *
  * @author Christian Wulf
  *

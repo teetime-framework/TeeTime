@@ -51,11 +51,6 @@ public class StageTester {
 	public static StageTester test(final AbstractStage stage) {
 		StageUnderTest stageUnderTest = new PrimitiveStageUnderTest(stage);
 
-		if (stage.getCurrentState() != StageState.CREATED) {
-			String message = "This stage has already been tested in this test method. Move this test into a new test method.";
-			throw new InvalidTestCaseSetupException(message);
-		}
-
 		return new StageTester(stageUnderTest);
 	}
 
@@ -69,14 +64,6 @@ public class StageTester {
 	 */
 	public static StageTester test(final CompositeStage compositeStage) {
 		StageUnderTest stageUnderTest = new CompositeStageUnderTest(compositeStage);
-
-		for (InputPort<?> inputPort : compositeStage.getInputPorts()) {
-			AbstractStage stage = inputPort.getOwningStage();
-			if (stage.getCurrentState() != StageState.CREATED) {
-				String message = "This stage has already been tested in this test method. Move this test into a new test method.";
-				throw new InvalidTestCaseSetupException(message);
-			}
-		}
 
 		return new StageTester(stageUnderTest);
 	}

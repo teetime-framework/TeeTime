@@ -2,10 +2,7 @@ package teetime.framework.test;
 
 import java.util.List;
 
-import teetime.framework.AbstractStage;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
-import teetime.framework.StageFacade;
+import teetime.framework.*;
 
 class PrimitiveStageUnderTest implements StageUnderTest {
 
@@ -13,6 +10,12 @@ class PrimitiveStageUnderTest implements StageUnderTest {
 
 	public PrimitiveStageUnderTest(final AbstractStage stage) {
 		this.stage = stage;
+
+		if (stage.getCurrentState() != StageState.CREATED) {
+			String message = "This stage has already been tested in this test method. Move this test into a new test method.";
+			throw new InvalidTestCaseSetupException(message);
+		}
+
 	}
 
 	@Override

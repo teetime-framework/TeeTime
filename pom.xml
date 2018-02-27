@@ -328,6 +328,9 @@
 				<executions>
 					<execution>
 						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
 						<configuration>
 							<configLocation>${project.basedir}/conf/quality-config/cs-conf.xml</configLocation>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
@@ -337,9 +340,6 @@
 							<failOnViolation>false</failOnViolation>
 							<linkXRef>false</linkXRef>
 						</configuration>
-						<goals>
-							<goal>check</goal>
-						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -349,13 +349,6 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
 				<version>${findbugs.version}</version>
-				<configuration>
-					<effort>Max</effort>
-					<threshold>Max</threshold>
-					<includeTests>true</includeTests>
-					<failOnError>true</failOnError>
-					<excludeFilterFile>${project.basedir}/conf/quality-config/fb-filter.xml</excludeFilterFile>
-				</configuration>
 				<executions>
 					<execution>
 						<phase>test</phase>
@@ -364,6 +357,13 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<effort>Max</effort>
+					<threshold>Max</threshold>
+					<includeTests>true</includeTests>
+					<failOnError>true</failOnError>
+					<excludeFilterFile>${project.basedir}/conf/quality-config/fb-filter.xml</excludeFilterFile>
+				</configuration>
 				<dependencies>
 					<dependency>
 						<groupId>junit</groupId>
@@ -383,6 +383,15 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>${pmd.version}</version>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>pmd</goal>
+							<goal>cpd</goal>
+						</goals>
+					</execution>
+				</executions>
 				<dependencies>
 					<dependency>
 						<groupId>net.sourceforge.teetime</groupId>
@@ -401,15 +410,7 @@
 					<!-- <failurePriority>1</failurePriority> -->
 					<failOnViolation>true</failOnViolation>
 				</configuration>
-				<executions>
-					<execution>
-						<phase>test</phase>
-						<goals>
-							<goal>pmd</goal>
-							<goal>cpd</goal>
-						</goals>
-					</execution>
-				</executions>
+
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -489,6 +490,37 @@
 							</exclusions>
 						</dependency>
 					</dependencies>
+				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-checkstyle-plugin
+										</artifactId>
+										<versionRange>
+											[3.0.0,)
+										</versionRange>
+										<goals>
+											<goal>check</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>

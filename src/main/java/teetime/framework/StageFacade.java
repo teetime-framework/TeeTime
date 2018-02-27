@@ -21,7 +21,7 @@ import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.TerminateException;
 
 /**
- * Used to access the package-private methods of {@link AbstractStage}.
+ * Used to access the package-private methods of {@link AbstractStage} and {@link CompositeStage}.
  *
  * @author Christian Wulf (chw)
  *
@@ -38,6 +38,10 @@ public final class StageFacade {
 		stage.abort();
 	}
 
+	/**
+	 * @deprecated since 3.0. Will be removed.
+	 */
+	@Deprecated
 	public TerminationStrategy getTerminationStrategy(final AbstractStage stage) {
 		return stage.getTerminationStrategy();
 	}
@@ -98,7 +102,15 @@ public final class StageFacade {
 		return stage.getInputPorts();
 	}
 
+	public List<InputPort<?>> getInputPorts(final CompositeStage stage) {
+		return stage.getInputPorts();
+	}
+
 	public List<OutputPort<?>> getOutputPorts(final AbstractStage stage) {
+		return stage.getOutputPorts();
+	}
+
+	public List<OutputPort<?>> getOutputPorts(final CompositeStage stage) {
 		return stage.getOutputPorts();
 	}
 

@@ -2,9 +2,7 @@ package teetime.framework.test;
 
 import java.util.List;
 
-import teetime.framework.CompositeStage;
-import teetime.framework.InputPort;
-import teetime.framework.OutputPort;
+import teetime.framework.*;
 
 class CompositeStageUnderTest implements StageUnderTest {
 
@@ -12,22 +10,33 @@ class CompositeStageUnderTest implements StageUnderTest {
 
 	public CompositeStageUnderTest(final CompositeStage compositeStage) {
 		this.compositeStage = compositeStage;
+
+		List<InputPort<?>> inputPorts = StageFacade.INSTANCE.getInputPorts(compositeStage);
+		for (InputPort<?> inputPort : inputPorts) {
+			AbstractStage stage = inputPort.getOwningStage();
+			if (stage.getCurrentState() != StageState.CREATED) {
+				String message = "This stage has already been tested in this test method. Move this test into a new test method.";
+				throw new InvalidTestCaseSetupException(message);
+			}
+		}
 	}
 
 	@Override
 	public List<InputPort<?>> getInputPorts() {
-		return compositeStage.getInputPorts();
+		return StageFacade.INSTANCE.getInputPorts(compositeStage);
 	}
 
 	@Override
 	public List<OutputPort<?>> getOutputPorts() {
-		return compositeStage.getOutputPorts();
+		return StageFacade.INSTANCE.getOutputPorts(compositeStage);
 	}
 
 	@Override
 	public void declareActive() {
-		// TODO Auto-generated method stub
-
+		for (InputPort<?> inputPort : getInputPorts()) {
+			inputPort.getOwningStage().declareActive();
+		}
+		// do nothing
 	}
 
 }

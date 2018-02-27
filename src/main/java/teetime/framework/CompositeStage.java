@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import teetime.framework.pipe.DummyPipe;
-import teetime.framework.pipe.InstantiationPipe;
 
 /**
  * Represents a minimal stage that composes several other stages.
@@ -95,11 +94,11 @@ public class CompositeStage {
 		return subStageOutputPort;
 	}
 
-	public List<InputPort<?>> getInputPorts() {
+	List<InputPort<?>> getInputPorts() {
 		return inputPorts;
 	}
 
-	public List<OutputPort<?>> getOutputPorts() {
+	List<OutputPort<?>> getOutputPorts() {
 		return outputPorts;
 	}
 

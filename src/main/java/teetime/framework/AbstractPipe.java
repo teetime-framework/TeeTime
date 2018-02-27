@@ -15,20 +15,19 @@
  */
 package teetime.framework;
 
+import teetime.framework.pipe.AbstractSynchedPipe;
+import teetime.framework.pipe.AbstractUnsynchedPipe;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.scheduling.PipeScheduler;
 
 /**
- * Represents an abstract implementation of a {@link IPipe}.
+ * Represents an abstract implementation of an {@link teetime.framework.pipe.IPipe}.
  *
  * @author Christian Wulf (chw)
  *
  * @param <T>
  *            the type of the elements which this pipe should transfer.
- *
- * @deprecated since 3.0. Use {@link teetime.framework.pipe.AbstractPipe} instead.
  */
-@Deprecated
 public abstract class AbstractPipe<T> implements IPipe<T> {
 
 	protected final AbstractStage cachedTargetStage;
@@ -36,7 +35,24 @@ public abstract class AbstractPipe<T> implements IPipe<T> {
 	private final OutputPort<? extends T> sourcePort;
 	private final InputPort<T> targetPort;
 
-	private PipeScheduler scheduler;
+	// FIXME each scheduler should set a default pipe scheduler by its own
+	private PipeScheduler scheduler = new PipeScheduler() {
+
+		@Override
+		public void onElementAdded(final AbstractSynchedPipe<?> pipe) {
+			// do nothing
+		}
+
+		@Override
+		public void onElementAdded(final AbstractUnsynchedPipe<?> pipe) {
+			// do nothing
+		}
+
+		@Override
+		public void onElementNotAdded(final AbstractSynchedPipe<?> pipe) {
+			// do nothing
+		}
+	};
 
 	protected AbstractPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		if (sourcePort == null) {

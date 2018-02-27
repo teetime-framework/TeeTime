@@ -15,6 +15,7 @@
  */
 package teetime.framework.pipe;
 
+import teetime.framework.AbstractPipe;
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.ISignal;

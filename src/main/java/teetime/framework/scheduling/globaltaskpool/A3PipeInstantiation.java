@@ -21,13 +21,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.AbstractPort;
-import teetime.framework.AbstractStage;
-import teetime.framework.ITraverserVisitor;
-import teetime.framework.Traverser;
+import teetime.framework.*;
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
-import teetime.framework.pipe.InstantiationPipe;
 import teetime.framework.scheduling.PipeScheduler;
 
 /**

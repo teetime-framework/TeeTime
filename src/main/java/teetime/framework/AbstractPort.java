@@ -58,7 +58,7 @@ public class AbstractPort<T> {
 		return this.pipe;
 	}
 
-	public void setPipe(final IPipe<?> pipe) {
+	/* default */ void setPipe(final IPipe<?> pipe) {
 		this.pipe = pipe;
 	}
 
