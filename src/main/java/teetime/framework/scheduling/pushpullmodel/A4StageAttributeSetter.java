@@ -31,9 +31,9 @@ class A4StageAttributeSetter {
 	// requires: factory and context
 	private final Configuration configuration;
 	private final Set<AbstractStage> threadableStages;
-	private final TeeTimeService scheduler;
+	private final TeeTimeScheduler scheduler;
 
-	public A4StageAttributeSetter(final Configuration configuration, final Set<AbstractStage> threadableStages, final TeeTimeService scheduler) {
+	public A4StageAttributeSetter(final Configuration configuration, final Set<AbstractStage> threadableStages, final TeeTimeScheduler scheduler) {
 		super();
 		this.configuration = configuration;
 		this.threadableStages = threadableStages;

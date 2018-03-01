@@ -26,7 +26,7 @@ import com.google.common.primitives.Longs;
 
 import teetime.framework.AbstractPort;
 import teetime.framework.Execution;
-import teetime.framework.TeeTimeService;
+import teetime.framework.TeeTimeScheduler;
 import teetime.framework.pipe.IMonitorablePipe;
 import teetime.framework.scheduling.globaltaskpool.GlobalTaskPoolScheduling;
 import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
@@ -75,7 +75,7 @@ public class WordCounterTestWithGlobalTaskPool {
 		for (int i = 0; i < numWarmUps; i++) {
 			LOGGER.info("Warm up #{}", i);
 			final WordCounterConfiguration wcc = new WordCounterConfiguration(numWorkerThreads, testFile);
-			final TeeTimeService scheduling = new GlobalTaskPoolScheduling(numWorkerThreads, wcc, numOfExecutions);
+			final TeeTimeScheduler scheduling = new GlobalTaskPoolScheduling(numWorkerThreads, wcc, numOfExecutions);
 			final Execution<?> analysis = new Execution<WordCounterConfiguration>(wcc, true, scheduling);
 
 			stopWatch.start();
@@ -87,7 +87,7 @@ public class WordCounterTestWithGlobalTaskPool {
 
 		LOGGER.info("Starting analysis...");
 		final WordCounterConfiguration wcc = new WordCounterConfiguration(numWorkerThreads, testFile);
-		final TeeTimeService scheduling = new GlobalTaskPoolScheduling(numWorkerThreads, wcc, numOfExecutions);
+		final TeeTimeScheduler scheduling = new GlobalTaskPoolScheduling(numWorkerThreads, wcc, numOfExecutions);
 		final Execution<?> analysis = new Execution<WordCounterConfiguration>(wcc, true, scheduling);
 
 		if (monitoringEnabled) {

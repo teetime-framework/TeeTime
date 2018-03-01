@@ -28,7 +28,7 @@ import org.junit.runners.MethodSorters;
 
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
-import teetime.framework.TeeTimeService;
+import teetime.framework.TeeTimeScheduler;
 import teetime.framework.scheduling.pushpullmodel.PushPullScheduling;
 import teetime.stage.CollectorSink;
 import teetime.stage.Counter;
@@ -63,7 +63,7 @@ public class ThreeStagesPushPullIT {
 				.to(new Counter<>())
 				.end(new CollectorSink<>(processedElements));
 
-		TeeTimeService scheduling = new PushPullScheduling(config);
+		TeeTimeScheduler scheduling = new PushPullScheduling(config);
 		Execution<Configuration> execution = new Execution<>(config, true, scheduling);
 		execution.executeBlocking();
 

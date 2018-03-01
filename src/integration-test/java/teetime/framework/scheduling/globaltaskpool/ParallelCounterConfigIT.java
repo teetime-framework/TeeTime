@@ -24,7 +24,7 @@ import java.util.List;
 import org.junit.Test;
 
 import teetime.framework.Execution;
-import teetime.framework.TeeTimeService;
+import teetime.framework.TeeTimeScheduler;
 
 //@Ignore("test run infinitely on 20.10.17")
 public class ParallelCounterConfigIT {
@@ -63,7 +63,7 @@ public class ParallelCounterConfigIT {
 		List<Integer> processedElements = new ArrayList<>();
 
 		ParallelCounterConfig config = new ParallelCounterConfig(numElements, numThreads, processedElements);
-		TeeTimeService scheduling = new GlobalTaskPoolScheduling(numThreads, config, numExecutions);
+		TeeTimeScheduler scheduling = new GlobalTaskPoolScheduling(numThreads, config, numExecutions);
 		Execution<ParallelCounterConfig> execution = new Execution<>(config, true, scheduling);
 		execution.executeBlocking();
 

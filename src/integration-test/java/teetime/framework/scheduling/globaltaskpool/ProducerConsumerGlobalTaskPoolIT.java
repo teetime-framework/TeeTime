@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
-import teetime.framework.TeeTimeService;
+import teetime.framework.TeeTimeScheduler;
 import teetime.framework.scheduling.globaltaskpool.GlobalTaskPoolScheduling;
 import teetime.stage.CollectorSink;
 import teetime.stage.StreamProducer;
@@ -72,7 +72,7 @@ public class ProducerConsumerGlobalTaskPoolIT {
 				.from(new StreamProducer<>(inputElements))
 				.end(new CollectorSink<>(processedElements));
 
-		TeeTimeService scheduling = new GlobalTaskPoolScheduling(numThreads, config, numExecutions);
+		TeeTimeScheduler scheduling = new GlobalTaskPoolScheduling(numThreads, config, numExecutions);
 		Execution<Configuration> execution = new Execution<>(config, true, scheduling);
 		execution.executeBlocking();
 

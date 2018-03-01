@@ -27,13 +27,13 @@ import teetime.framework.scheduling.pushpullmodel.PushPullScheduling;
 @Deprecated
 public final class ConfigurationContext {
 
-	private final TeeTimeService teeTimeService;
+	private final TeeTimeScheduler teeTimeService;
 
 	public ConfigurationContext(final Configuration configuration) {
 		this.teeTimeService = new PushPullScheduling(configuration);
 	}
 
-	public ConfigurationContext(final TeeTimeService teeTimeService) {
+	public ConfigurationContext(final TeeTimeScheduler teeTimeService) {
 		this.teeTimeService = teeTimeService;
 	}
 

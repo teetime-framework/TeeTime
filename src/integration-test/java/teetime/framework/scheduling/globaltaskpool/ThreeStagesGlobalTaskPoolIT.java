@@ -28,7 +28,7 @@ import org.junit.runners.MethodSorters;
 
 import teetime.framework.Configuration;
 import teetime.framework.Execution;
-import teetime.framework.TeeTimeService;
+import teetime.framework.TeeTimeScheduler;
 import teetime.stage.CollectorSink;
 import teetime.stage.Counter;
 import teetime.stage.StreamProducer;
@@ -172,7 +172,7 @@ public class ThreeStagesGlobalTaskPoolIT {
 				.to(new Counter<>())
 				.end(new CollectorSink<>(processedElements));
 
-		TeeTimeService scheduling = new GlobalTaskPoolScheduling(numThreads, config, numExecutions);
+		TeeTimeScheduler scheduling = new GlobalTaskPoolScheduling(numThreads, config, numExecutions);
 		Execution<Configuration> execution = new Execution<>(config, true, scheduling);
 		execution.executeBlocking();
 

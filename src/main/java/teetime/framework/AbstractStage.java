@@ -58,7 +58,7 @@ public abstract class AbstractStage {
 	private Thread owningThread;
 	private boolean isActive;
 	/** the scheduler used for this stage and all of the other stages */
-	private TeeTimeService scheduler;
+	private TeeTimeScheduler scheduler;
 
 	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
 	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
@@ -149,11 +149,11 @@ public abstract class AbstractStage {
 	/**
 	 * Required by {@link RuntimeServiceFacade#startWithinNewThread(AbstractStage, AbstractStage)}
 	 */
-	TeeTimeService getScheduler() {
+	TeeTimeScheduler getScheduler() {
 		return scheduler;
 	}
 
-	void setScheduler(final TeeTimeService scheduler) {
+	void setScheduler(final TeeTimeScheduler scheduler) {
 		this.scheduler = scheduler;
 	}
 

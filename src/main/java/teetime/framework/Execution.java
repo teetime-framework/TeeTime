@@ -104,7 +104,7 @@ public final class Execution<T extends Configuration> {
 
 	private ExecutionState state;
 
-	private TeeTimeService scheduler;
+	private TeeTimeScheduler scheduler;
 
 	/**
 	 * Creates a new {@link Execution}. It validates the given configuration and uses the {@link PushPullScheduling} as default scheduler.
@@ -136,7 +136,7 @@ public final class Execution<T extends Configuration> {
 	 * @param scheduler
 	 *            to be used for the given configuration.
 	 */
-	public Execution(final T configuration, final boolean validationEnabled, final TeeTimeService scheduler) {
+	public Execution(final T configuration, final boolean validationEnabled, final TeeTimeScheduler scheduler) {
 		this.scheduler = scheduler;
 		this.configuration = configuration;
 		if (configuration.isInitialized()) {

@@ -45,7 +45,7 @@ import teetime.framework.validation.AnalysisNotValidException;
  * @since 3.0
  *
  */
-public class GlobalTaskPoolScheduling implements TeeTimeService, PipeScheduler, UncaughtExceptionHandler {
+public class GlobalTaskPoolScheduling implements TeeTimeScheduler, PipeScheduler, UncaughtExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalTaskPoolScheduling.class);
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;

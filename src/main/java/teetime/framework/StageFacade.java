@@ -58,7 +58,7 @@ public final class StageFacade {
 		stage.setExceptionHandler(exceptionHandler);
 	}
 
-	public void setScheduler(final AbstractStage stage, final TeeTimeService scheduler) {
+	public void setScheduler(final AbstractStage stage, final TeeTimeScheduler scheduler) {
 		stage.setScheduler(scheduler);
 	}
 

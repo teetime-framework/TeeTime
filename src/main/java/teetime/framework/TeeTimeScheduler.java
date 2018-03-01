@@ -22,7 +22,7 @@ package teetime.framework;
  *
  * @since 2.0
  */
-public interface TeeTimeService {
+public interface TeeTimeScheduler {
 
 	abstract void onInitialize();
 

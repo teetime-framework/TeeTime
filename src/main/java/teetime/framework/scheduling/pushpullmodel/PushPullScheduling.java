@@ -25,7 +25,7 @@ import teetime.framework.scheduling.CountDownAndUpLatch;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
 
-public class PushPullScheduling implements TeeTimeService, ThreadListener {
+public class PushPullScheduling implements TeeTimeScheduler, ThreadListener {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PushPullScheduling.class);
 
