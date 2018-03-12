@@ -47,7 +47,7 @@ public abstract class AbstractStage {
 
 	private static final Marker ON_STATE_CHANGE_MARKER = MarkerFactory.getMarker("ON_STATE_CHANGE_MARKER");
 
-	private static final boolean performanceLoggingEnabled = Boolean.getBoolean("performance.logging.enabled");
+	private static final boolean PERFORMANCE_LOGGING_ENABLED = Boolean.getBoolean("performance.logging.enabled");
 
 	/** This stage's unique logger */
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
@@ -188,7 +188,7 @@ public abstract class AbstractStage {
 	 * @throws TerminateException
 	 */
 	public final void executeByFramework() throws TerminateException {
-		if (performanceLoggingEnabled) {
+		if (PERFORMANCE_LOGGING_ENABLED) {
 			beforeExecuteTime = System.nanoTime();
 			executeWithCatchedExceptions();
 			if (lastState.getStageActivationState() == StageActivationState.ACTIVE) {
@@ -728,7 +728,7 @@ public abstract class AbstractStage {
 	}
 
 	private boolean newStateRequired(final StageActivationState state) {
-		if (!performanceLoggingEnabled) {
+		if (!PERFORMANCE_LOGGING_ENABLED) {
 			return false;
 		}
 		return (this.lastState.getStageActivationState() != state);
@@ -778,6 +778,13 @@ public abstract class AbstractStage {
 
 	protected void setStateless(final boolean stateless) {
 		this.stateless = stateless;
+	}
+
+	/**
+	 * Only for testing purposes.
+	 */
+	static boolean isPerformanceLoggingEnabled() {
+		return PERFORMANCE_LOGGING_ENABLED;
 	}
 
 }

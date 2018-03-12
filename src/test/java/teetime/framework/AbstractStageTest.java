@@ -249,4 +249,28 @@ public class AbstractStageTest {
 		new Counter<>().workCompleted();
 	}
 
+	// @Test
+	// public void testActivedPerformanceLogging() throws Exception {
+	// System.setProperty("performance.logging.enabled", "true");
+	// assertThat(AbstractStage.isPerformanceLoggingEnabled(), is(true));
+	// }
+	//
+	// @Test
+	// public void testDeactivedPerformanceLogging() throws Exception {
+	// System.setProperty("performance.logging.enabled", "false");
+	// assertThat(AbstractStage.isPerformanceLoggingEnabled(), is(false));
+	// }
+	//
+	// @Test
+	// public void testInvalidPerformanceLogging() throws Exception {
+	// System.setProperty("performance.logging.enabled", "");
+	// assertThat(AbstractStage.isPerformanceLoggingEnabled(), is(false));
+	// }
+	//
+	// @Test
+	// public void testClearedPerformanceLogging() throws Exception {
+	// System.clearProperty("performance.logging.enabled");
+	// assertThat(AbstractStage.isPerformanceLoggingEnabled(), is(false));
+	// }
+
 }
