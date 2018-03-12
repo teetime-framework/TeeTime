@@ -47,6 +47,8 @@ public abstract class AbstractStage {
 
 	private static final Marker ON_STATE_CHANGE_MARKER = MarkerFactory.getMarker("ON_STATE_CHANGE_MARKER");
 
+	private static final boolean performanceLoggingEnabled = Boolean.getBoolean("performance.logging.enabled");
+
 	/** This stage's unique logger */
 	@SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 	protected final Logger logger;
@@ -93,10 +95,6 @@ public abstract class AbstractStage {
 
 	private StateChange lastState = new StateChange(StageActivationState.INITIALIZED, System.nanoTime());
 
-	/**
-	 * Deactivated if performance logging does not reduce the performance. must be measured first. (28.10.2016)
-	 */
-	private final boolean performanceLoggingEnabled = false;
 	private long activeWaitingTime;
 	/** indicates that this stage has no state and can thus be easily executed in parallel */
 	private boolean stateless;
