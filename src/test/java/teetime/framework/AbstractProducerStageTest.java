@@ -108,6 +108,19 @@ public class AbstractProducerStageTest {
 		}
 	}
 
+	@SuppressWarnings("unused")
+	private static class ShadowingProducer<O> extends AbstractProducerStage<O> {
+
+		// Hides the field of the same name in the super type.
+		// This must be detected by some QA tool, e.g., PMD.
+		private final OutputPort<O> outputPort = super.createOutputPort();
+
+		@Override
+		protected void execute() throws Exception {
+			// do nothing
+		}
+	}
+
 	/*
 	 * Use a t/o since the execution may not block infinitely;
 	 * expected execution time is 500 ms, so the t/o should be sufficiently high
