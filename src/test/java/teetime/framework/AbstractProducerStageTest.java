@@ -113,6 +113,7 @@ public class AbstractProducerStageTest {
 
 		// Hides the field of the same name in the super type.
 		// This must be detected by some QA tool, e.g., PMD.
+		// see: https://docs.oracle.com/javase/tutorial/java/IandI/hidevariables.html
 		private final OutputPort<O> outputPort = super.createOutputPort();
 
 		@Override
