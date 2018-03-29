@@ -23,7 +23,7 @@ import teetime.framework.OutputPort;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 
-class StageFactory {
+final class StageFactory {
 
 	private StageFactory() {
 		// factory class

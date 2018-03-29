@@ -30,7 +30,7 @@ import teetime.framework.*;
  *
  * @author Christian Wulf, Nils Christian Ehmke
  */
-public class StageTester {
+public final class StageTester {
 
 	private final StageUnderTest stageUnderTest;
 	private final Map<InputPort<Object>, List<Object>> inputElementsByPort = new HashMap<>();
