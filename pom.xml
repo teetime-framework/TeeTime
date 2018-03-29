@@ -398,7 +398,7 @@
 						<artifactId>pmd.ruleset</artifactId>
 						<version>1.0.0-SNAPSHOT</version>
 						<scope>system</scope>
-						<systemPath>${project.basedir}/conf/quality-config/pmd.ruleset-1.0.0-20180202.075023-7.jar</systemPath>
+						<systemPath>${project.basedir}/conf/quality-config/pmd/pmd.ruleset-1.0.0-20180202.075023-7.jar</systemPath>
 					</dependency>
 				</dependencies>
 				<configuration>
