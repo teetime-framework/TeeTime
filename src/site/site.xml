@@ -86,7 +86,7 @@
 		<links>
 			<item name="Download" href="download.html" />
 			<item name="Wiki" href="wiki/home.html" />
-			<item name="Publications" href="http://eprints.uni-kiel.de/cgi/search/archive/advanced?_action_search=1&dataset=archive&exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Cprojects%3Aprojects%3AALL%3AIN%3ATeeTime%7C-%7Ccollection%3Acollection%3AANY%3AEQ%3Apublic+cau%7Ceprint_status%3Aeprint_status%3AANY%3AEQ%3Aarchive&order=-date%2Fcreators_name%2Ftitle" />
+			<item name="Publications" href="http://eprints.uni-kiel.de/id/saved_search/25" />
 		</links>
 		<menu name="Documentation">
 			<item name="JavaDoc" href="stabledocs/index.html" />
