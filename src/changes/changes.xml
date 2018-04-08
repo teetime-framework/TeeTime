@@ -5,10 +5,31 @@
 		<title>Release Notes</title>
 	</properties>
 	<body>
-		<release version="3.0-SNAPSHOT" description="Nightly builds">
-			<action dev="ntd" type="update" issue="270">
-				AbstractStage.terminate() renamed to terminateStage()
+		<release version="3.1-SNAPSHOT" description="Nightly build">
+			
+		</release>
+		<release version="3.0" date="26.03.2018" description="Earl Grey Release">
+			<action type="add" dev="chw" issue="318">
+				Added support for arbitrary scheduling concepts.
 			</action>
+			<action type="add" dev="chw" issue="210">
+				Added another scheduling concept: thread pool with task queues.
+			</action>
+			<action type="add" due-to="Christian Claus Wiechmann" issue="325">
+				Introduction of a configuration builder.
+			</action>
+
+			<action type="update" dev="ntd" issue="270">
+				AbstractStage.terminate() renamed to terminateStage().
+			</action>
+			<action type="update" dev="chw" issue="311">
+				Switched to Java 1.8.
+			</action>
+
+			<action type="remove" dev="chw" issue="313">
+				Removed NotEnoughInputException and returnNoElement().
+			</action>
+
 		</release>
 		<release version="2.1" date="22.02.2016" description="Darjeeling Release">
 			<action dev="ntd" type="add" issue="163">

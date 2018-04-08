@@ -100,6 +100,9 @@
 				href="https://build.se.informatik.uni-kiel.de/gitlab/teetime/teetime/issues" />
 			<item name="Team" href="team-list.html" />
 		</menu>
+		<links>
+			<item name="Publications" href="http://eprints.uni-kiel.de/cgi/search/archive/advanced?_action_search=1&dataset=archive&exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Cprojects%3Aprojects%3AALL%3AIN%3ATeeTime%7C-%7Ccollection%3Acollection%3AANY%3AEQ%3Apublic+cau%7Ceprint_status%3Aeprint_status%3AANY%3AEQ%3Aarchive&order=-date%2Fcreators_name%2Ftitle" />
+		</links>
 		<menu name="Main">
 			<item name="Home" href="index.html" />
 			<item name="Download" href="download.html" />
@@ -112,7 +115,7 @@
 	<version position="none" />
 	<custom>
 		<reflowSkin>
-			<topNav>News|Download|Wiki|Documentation|Get Involved</topNav>
+			<topNav>News|Download|Wiki|Documentation|Get Involved|Publications</topNav>
 			<!-- <toc>sidebar</toc> -->
 			<!-- <tocTopMax>4</tocTopMax> -->
 			<absoluteResourceURL>https://teetime-framework.github.io
@@ -124,7 +127,7 @@
 				<name>
 					TeeTime
 				</name>
-				<href>http://teetime-framework.github.io/</href>
+				<href>https://teetime-framework.github.io/</href>
 			</brand>
 			<slogan>
 				<![CDATA[
