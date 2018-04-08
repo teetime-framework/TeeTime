@@ -15,7 +15,7 @@
 			<action type="add" dev="chw" issue="210">
 				Added another scheduling concept: thread pool with task queues.
 			</action>
-			<action type="add" due-to="Christian Claus Wiechmann" issue="325">
+			<action type="add" due-to="Sören Henning" issue="325">
 				Introduction of a configuration builder.
 			</action>
 
