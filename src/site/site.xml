@@ -10,18 +10,22 @@
 	<bannerLeft>
 		<name>
 			<![CDATA[
-					<img src="https://teetime-framework.github.io/images/teetime-path.svg" id="logo">
-					]]>
+					<img src="//teetime-framework.github.io/images/teetime-path.svg" id="logo">
+			]]>
 		</name>
 		<href>https://teetime-framework.github.io/</href>
 	</bannerLeft>
 	<poweredBy>
 		<logo name="Maven" href="http://maven.apache.org/"
-			img="http://maven.apache.org/images/logos/maven-feather.png" />
+			img="https://maven.apache.org/images/logos/maven-feather.png" />
 	</poweredBy>
+	<publishDate position="navigation-bottom" />
+	<version position="none" />
+
 	<body>
 		<head>
-			<script>
+			<![CDATA[
+			<script type="text/javascript">
 				window.twttr = (function(d, s, id) {
 				var js, fjs =
 				d.getElementsByTagName(s)[0],
@@ -34,7 +38,7 @@
 				js.src =
 				"https://platform.twitter.com/widgets.js";
 				fjs.parentNode.insertBefore(js, fjs);
-
+	
 				t._e = [];
 				t.ready = function(f)
 				{
@@ -44,9 +48,10 @@
 				}(document, "script", "twitter-wjs"));
 			</script>
 			<link rel="stylesheet"
-				href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/xcode.min.css" />
-			<script
-				src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/highlight.min.js"></script>
+				href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/xcode.min.css" />
+			<script 
+				src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/highlight.min.js"></script>
+
 			<link rel="apple-touch-icon" sizes="57x57"
 				href="https://teetime-framework.github.io/apple-touch-icon-57x57.png" />
 			<link rel="apple-touch-icon" sizes="114x114"
@@ -66,6 +71,7 @@
 			<link rel="apple-touch-icon" sizes="180x180"
 				href="https://teetime-framework.github.io/apple-touch-icon-180x180.png" />
 			<meta name="apple-mobile-web-app-title" content="TeeTime" />
+
 			<link rel="icon" type="image/png"
 				href="https://teetime-framework.github.io/favicon-192x192.png"
 				sizes="192x192" />
@@ -78,15 +84,18 @@
 				href="https://teetime-framework.github.io/favicon-16x16.png" sizes="16x16" />
 			<link rel="icon" type="image/png"
 				href="https://teetime-framework.github.io/favicon-32x32.png" sizes="32x32" />
+
 			<meta name="msapplication-TileColor" content="#2b5797" />
-			<meta name="msapplication-TileImage"
-				content="https://teetime-framework.github.io/mstile-144x144.png" />
+			<meta name="msapplication-TileImage" content="https://teetime-framework.github.io/mstile-144x144.png" />
 			<meta name="application-name" content="TeeTime" />
+			]]>
 		</head>
 		<links>
 			<item name="Download" href="download.html" />
 			<item name="Wiki" href="wiki/home.html" />
-			<item name="Publications" href="https://eprints.uni-kiel.de/cgi/search/archive/advanced?_action_search=1&amp;dataset=archive&amp;exp=0|1|-date%2Fcreators_name%2Ftitle|archive|-|projects%3Aprojects%3AALL%3AIN%3ATeeTime" />
+			<!-- "and symbol" is &amp; -->
+			<!-- "pipe symbol" is %7C -->
+			<item name="Publications" href="https://eprints.uni-kiel.de/cgi/search/archive/advanced?_action_search=1&amp;dataset=archive&amp;exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Cprojects%3Aprojects%3AALL%3AIN%3ATeeTime" />
 		</links>
 		<menu name="Documentation">
 			<item name="JavaDoc" href="stabledocs/index.html" />
@@ -109,8 +118,7 @@
 		<!-- <menu ref="modules"/> -->
 		<!-- <menu ref="reports"/> -->
 	</body>
-	<publishDate position="navigation-bottom" />
-	<version position="none" />
+
 	<custom>
 		<reflowSkin>
 			<topNav>News|Download|Wiki|Documentation|Get Involved|Publications</topNav>
@@ -144,14 +152,22 @@
 				<br />
 				Snapshot state:
 				<br />
-				<a href="https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nightly-release/"><img alt="Jenkins build status" src="https://img.shields.io/jenkins/s/https/build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nightly-release.svg?style=flat-square"></a>
+				<a href="https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nightly-release/">
+					<img alt="Jenkins build status" 
+						src="https://img.shields.io/jenkins/s/https/build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nightly-release.svg?style=flat-square">
+				</a>
 				<br />
-				<a href="https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nightly-release/lastCompletedBuild/testReport/"><img alt="Jenkins build status" src="https://img.shields.io/jenkins/t/https/build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nightly-release.svg?style=flat-square"></a>
+				<a href="https://build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nightly-release/lastCompletedBuild/testReport/">
+					<img alt="Jenkins build status" 
+						src="https://img.shields.io/jenkins/t/https/build.se.informatik.uni-kiel.de/jenkins/view/TeeTime/job/teetime-nightly-release.svg?style=flat-square">
+				</a>
 				<br />Stable state:
 				<br />
 				<a href="https://github.com/teetime-framework/teetime/releases/latest" rel="nofollow"><img alt="Download TeeTime" src="https://img.shields.io/badge/GitHub-v2.1-blue.svg?style=flat-square"></a>
 				<br />
-				<a href="http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22net.sourceforge.teetime%22%20AND%20a%3A%22teetime%22"><img alt="Download TeeTime" src="https://img.shields.io/maven-central/v/net.sourceforge.teetime/teetime.svg?style=flat-square"></a>
+				<a href="https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22net.sourceforge.teetime%22%20AND%20a%3A%22teetime%22">
+					<img alt="Download TeeTime" src="https://img.shields.io/maven-central/v/net.sourceforge.teetime/teetime.svg?style=flat-square">
+				</a>
 				]]>
 			</bottomDescription>
 			<endContent>
@@ -161,11 +177,10 @@
 			<pages>
 				<index>
 					<endContent>
-						<script src="//cdn.rawgit.com/namuol/cheet.js/master/cheet.min.js"
-        type="text/javascript"></script>
-        				<link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.6.0/css/alertify.min.css"/>
-        				<link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.6.0/css/themes/bootstrap.min.css"/>
-        				<script src="//cdn.jsdelivr.net/alertifyjs/1.6.0/alertify.min.js"></script>
+						<script src="https://cdn.rawgit.com/namuol/cheet.js/master/cheet.min.js" type="text/javascript"></script>
+        				<link rel="stylesheet" href="https://cdn.jsdelivr.net/alertifyjs/1.6.0/css/alertify.min.css"/>
+        				<link rel="stylesheet" href="https://cdn.jsdelivr.net/alertifyjs/1.6.0/css/themes/bootstrap.min.css"/>
+        				<script src="https://cdn.jsdelivr.net/alertifyjs/1.6.0/alertify.min.js"></script>
 						<script src="$resourcePath/js/twitter_index.js"></script>
 						<script src="$resourcePath/js/jquery.cookiesdirective.js"></script>
 						<script src="$resourcePath/js/teetime.js"></script>

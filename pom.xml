@@ -412,18 +412,19 @@
 					<!-- <failurePriority>1</failurePriority> -->
 					<failOnViolation>true</failOnViolation>
 				</configuration>
-
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
+				<!-- 3.5 and above generates invalid websites -->
 				<version>3.4</version>
+				<!-- after having changed the version, 'clean' is required -->
 				<dependencies>
 					<!-- for using markdown syntax gitlab@build.se.informatik.uni-kiel.de:nts/doxia-module-markdown-teetime.git -->
 					<dependency>
 						<groupId>org.apache.maven.doxia</groupId>
 						<artifactId>doxia-module-markdown-teetime</artifactId>
-						<version>1.6</version>
+						<version>1.7</version>
 					</dependency>
 					<!-- skin -->
 					<dependency>
@@ -555,7 +556,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>${checkstyle.version}</version>
+				<version>${checkstyle.plugin.version}</version>
 			</plugin>
 			<!-- Findbugs -->
 			<plugin>
