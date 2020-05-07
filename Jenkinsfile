@@ -14,7 +14,6 @@ pipeline {
         }
 	stage('Static Analysis') {
             steps {
-                sh './gradlew check'
                 sh 'mvn --batch-mode package checkstyle:checkstyle pmd:pmd -Dworkspace=' + env.WORKSPACE // spotbugs:spotbugs
             }
             post {
