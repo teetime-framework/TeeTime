@@ -24,8 +24,8 @@
 		<javadocOutputDir>apidocs</javadocOutputDir>
 
 		<java.version>1.8</java.version>
-		<checkstyle.plugin.version>3.0.0</checkstyle.plugin.version>
-		<checkstyle.lib.version>8.15</checkstyle.lib.version>
+		<checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
+		<checkstyle.lib.version>8.29</checkstyle.lib.version>
 		<findbugs.version>3.0.5</findbugs.version>
 		<pmd.plugin.version>3.8</pmd.plugin.version>
 		<javadoc.version>3.0.0</javadoc.version>
