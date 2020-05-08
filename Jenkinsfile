@@ -25,5 +25,8 @@ pipeline {
                 }
             }
         }
+        stage ('Deploy') {
+            //sh 'mvn --batch-mode deploy -Psigning -Dcobertura.skip -U'
+        }
     }
 }
