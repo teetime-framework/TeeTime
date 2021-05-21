@@ -4,7 +4,7 @@ pipeline {
               image 'kieker/kieker-build:openjdk8'
               args env.DOCKER_ARGS
             }
-          }
+    }
 
 
     stages {
