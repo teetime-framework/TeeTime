@@ -1,7 +1,7 @@
 pipeline {
     agent {
             docker {
-              image 'kieker/kieker-build:openjdk8'
+              image 'prefec2/jdk11-maven-363-gradle671'
               args env.DOCKER_ARGS
             }
     }
