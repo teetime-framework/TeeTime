@@ -91,15 +91,4 @@
 		<exclude name="LocalVariableCouldBeFinal" />
 		<exclude name="SimplifyStartsWith" />
 	</rule>
-
-	<rule ref="rulesets/chw/basic.xml">
-		<exclude name="NonHeaderCommentSize"/>
-	</rule>
-
-<!-- 	<rule ref="rulesets/chw/basic.xml/NonHeaderCommentSize"> -->
-<!-- 		<properties> -->
-<!-- 			<property name="maxLineLength" value="100" /> -->
-<!-- 		</properties> -->
-<!-- 	</rule> -->
-
 </ruleset>
