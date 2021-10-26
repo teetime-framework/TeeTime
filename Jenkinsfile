@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-	BASE = WORKSPACE
+	BASE = env.WORKSPACE
     } 
 
     stages {
