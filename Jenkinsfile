@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        GRADLE_USER_HOME= env.WORKSAPCE + '/.gradle'
+        GRADLE_USER_HOME= env.WORKSPACE + '/.gradle'
     }
 
     stages {
