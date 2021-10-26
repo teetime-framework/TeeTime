@@ -34,7 +34,7 @@ pipeline {
           recordIssues(
             enabledForFailure: true, tools: [
               java(), 
-              javaDoc()
+              javaDoc(),
               checkStyle(pattern: '**/build/reports/checkstyle/*.xml'),
               pmdParser(pattern: '**/build/reports/pmd/*.xml')
             ]
