@@ -13,7 +13,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mkdir $GRADLE_USER_HOME ; ./gradlew assemble'
+                sh 'test -d $GRADLE_USER_HOME || mkdir $GRADLE_USER_HOME'
+		sh './gradlew assemble'
             }
         }
         stage('Test') {
