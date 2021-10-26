@@ -42,10 +42,22 @@ pipeline {
         }
       }
     }
-//        stage ('Deploy') {
-//            steps {
-//                sh 'mvn --batch-mode deploy -Psigning -Dcobertura.skip -U'
-//            }
-//        }
+    stage ('Deploy') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      steps {
+        withCredentials([
+          usernamePassword(
+            credentialsId: 'artifactupload', 
+            usernameVariable: 'teetimeMavenUser', 
+            passwordVariable: 'teetimeMavenPassword'
+          )
+        ]) {
+          sh './gradlew publish'
+        }
+      }
+    }
   }
 }

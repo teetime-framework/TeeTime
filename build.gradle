@@ -3,6 +3,9 @@ plugins {
 	id 'java-library'
 	id 'checkstyle'
 	id 'pmd'
+	id 'maven-publish'
+	id 'signing'
+	id 'jacoco'
 }
 
 repositories {
@@ -186,4 +189,94 @@ def parsePmdReport(File reportFile) {
     return [errors, warnings, infos]
 }
 
+java {
+ //   withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+	        pom {
+                groupId = 'de.cau.cs.se.teetime'
+                artifactId = 'teetime'
+                version = teeTimeVersion
+                name = 'TeeTime'
+                description = 'TeeTime is a Pipe-and-Filter framework for Java'
+                url = 'http://teetime-framework.github.io'
+
+                licenses {
+                    license {
+                        name = 'The Apache Software License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'chw'
+                        name = 'Christian Wulf'
+                        email = 'chw@informatik.uni-kiel.de'
+                        organization = 'Kiel University'
+                    }
+                    developer {
+                        id = 'ntd'
+                        name = 'Nelson Tavares de Sousa'
+                        email = 'ntd@informatik.uni-kiel.de'
+                        organization = 'Kiel University'
+                    }
+                    developer {
+                        id = "rju"
+                        name = "Reiner Jung"
+                        email = 'reiner.jung@email.uni-kiel.de'
+                        organization = 'Kiel University'
+                    }
+                }
+                contributors {
+                    contributor {
+                        name = 'Christian Claus Wiechmann'
+                        email = 'ccw@informatik.uni-kiel.de'
+                    }
+                    contributor {
+                        id = 'christian.wulf'
+                        name = 'Mathis Neumann'
+                        email = 'teetime@madd.is'
+                    }
+                }
+                
+                scm {
+                    connection = 'scm:git:https://github.com/teetime-framework/TeeTime.git'
+                    url = 'https://github.com/teetime-framework/teetime'
+                }
+            }
+        }
+    }
+    
+    repositories {
+        maven {
+            def mavenUser = "NoMavenUser"
+            if (System.env.teetimeMavenUser != null) {
+                mavenUser = System.env.teetimeMavenUser
+            }
+            def mavenPassword = "NoMavenPassword"
+            if (System.env.teetimeMavenPassword != null) {
+                 mavenPassword = System.env.teetimeMavenPassword
+            }
+            //credentials {
+            //    username = mavenUser
+            //    password = mavenPassword
+            //}
+
+            // for local tests:
+            //def releasesRepoUrl = "file:///tmp/myRepo/releases"
+            //def snapshotsRepoUrl = "file://localhost/tmp/myRepo/snapshots"
+            // Maven central:
+            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}
 
