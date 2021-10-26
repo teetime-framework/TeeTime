@@ -40,46 +40,6 @@ import teetime.framework.signal.ISignal;
 class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>> implements
 		IPipe<P> {
 
-	private static class DivideAndConquerIntermediateStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>>
-			extends AbstractStage {
-		private final InputPort<P> inputPort = createInputPort();
-		private final OutputPort<S> outputPort = createOutputPort();
-
-		@Override
-		protected void execute() {
-			P problem = inputPort.receive();
-			if (null == problem) {
-				return; // returns null even if the stage is passive (due to AbstractPort.TerminateElement)
-			}
-			S solution = solve(problem);
-			// logger.trace("Sending (reflexive) solution: " + solution + " > " + outputPort.pipe.getTargetPort().getOwningStage());
-			outputPort.send(solution);
-		}
-
-		private S solve(final P problem) {
-			S solution;
-			if (problem.isBaseCase()) {
-				solution = problem.baseSolve();
-			} else {
-				DividedDCProblem<P> dividedProblem = problem.divide();
-				S firstSolution = solve(dividedProblem.leftProblem); // recursive call
-				S secondSolution = solve(dividedProblem.rightProblem); // recursive call
-				solution = firstSolution.combine(secondSolution);
-			}
-
-			// solution = (S) ((QuicksortProblem) problem).solveDirectly();
-			return solution;
-		}
-
-		public InputPort<P> getInputPort() {
-			return inputPort;
-		}
-
-		public OutputPort<S> getOutputPort() {
-			return outputPort;
-		}
-	}
-
 	private final OutputPort<P> sourcePort;
 	private final InputPort<S> targetPort;
 	private final UnsynchedPipe<P> outputPipe;
@@ -180,4 +140,43 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 		// is not used since it delegates to another pipe
 	}
 
+	private static class DivideAndConquerIntermediateStage<P extends AbstractDivideAndConquerProblem<P, S>, S extends AbstractDivideAndConquerSolution<S>>
+			extends AbstractStage {
+		private final InputPort<P> inputPort = createInputPort();
+		private final OutputPort<S> outputPort = createOutputPort();
+
+		@Override
+		protected void execute() {
+			P problem = inputPort.receive();
+			if (null == problem) {
+				return; // returns null even if the stage is passive (due to AbstractPort.TerminateElement)
+			}
+			S solution = solve(problem);
+			// logger.trace("Sending (reflexive) solution: " + solution + " > " + outputPort.pipe.getTargetPort().getOwningStage());
+			outputPort.send(solution);
+		}
+
+		private S solve(final P problem) {
+			S solution;
+			if (problem.isBaseCase()) {
+				solution = problem.baseSolve();
+			} else {
+				DividedDCProblem<P> dividedProblem = problem.divide();
+				S firstSolution = solve(dividedProblem.leftProblem); // recursive call
+				S secondSolution = solve(dividedProblem.rightProblem); // recursive call
+				solution = firstSolution.combine(secondSolution);
+			}
+
+			// solution = (S) ((QuicksortProblem) problem).solveDirectly();
+			return solution;
+		}
+
+		public InputPort<P> getInputPort() {
+			return inputPort;
+		}
+
+		public OutputPort<S> getOutputPort() {
+			return outputPort;
+		}
+	}
 }

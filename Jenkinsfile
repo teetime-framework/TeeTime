@@ -10,21 +10,21 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn --batch-mode compile'
+                sh './gradlew assemble'
             }
         }
         stage('Test') {
             steps {
-                sh 'mvn --batch-mode test'
+                sh './gradlew test'
             }
         }
 	stage('Static Analysis') {
             steps {
-                sh 'mvn --batch-mode package checkstyle:checkstyle pmd:pmd -Dworkspace=' + env.WORKSPACE // spotbugs:spotbugs
+                sh './gradlew build'
             }
             post {
                 always {
-                    recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
+                    recordIssues enabledForFailure: true, tools: [java(), javaDoc()]
                     recordIssues enabledForFailure: true, tool: checkStyle()
 // recordIssues enabledForFailure: true, tool: spotBugs()
                     recordIssues enabledForFailure: true, tool: pmdParser()

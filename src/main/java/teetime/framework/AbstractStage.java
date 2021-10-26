@@ -242,7 +242,7 @@ public abstract class AbstractStage {
 	}
 
 	void setOwningThread(final Thread owningThread) {
-		if (this.owningThread != null && this.owningThread != owningThread) {
+		if (this.owningThread != null && this.owningThread != owningThread) { // NOPMD avoid empty if statement
 			// checks also for "crossing threads"
 			// throw new IllegalStateException("Attribute owningThread was set twice each with another thread");
 		}

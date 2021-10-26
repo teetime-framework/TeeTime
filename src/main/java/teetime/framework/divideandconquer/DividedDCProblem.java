@@ -23,7 +23,8 @@ package teetime.framework.divideandconquer;
  */
 public final class DividedDCProblem<P> {
 
-	public final P leftProblem, rightProblem;
+	public final P leftProblem;
+	public final P rightProblem;
 
 	public DividedDCProblem(final P leftProblem, final P rightProblem) {
 		super();
