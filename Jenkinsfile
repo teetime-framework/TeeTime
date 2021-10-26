@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh './gradlew assemble'
+                sh 'export GRADLE_USER_HOME=~/.gradle ; mkdir $GRADLE_USER_HOME ; ./gradlew assemble'
             }
         }
         stage('Test') {
