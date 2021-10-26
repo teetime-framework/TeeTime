@@ -24,9 +24,9 @@ import teetime.framework.performancelogging.StateChange;
  *
  * @author Christian Wulf (chw)
  */
-public final class StateStatistics {
+public final class StateStatisticsUtils {
 
-	private StateStatistics() {
+	private StateStatisticsUtils() {
 		// utility class
 	}
 

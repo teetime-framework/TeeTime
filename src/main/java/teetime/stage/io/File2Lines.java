@@ -15,7 +15,12 @@
  */
 package teetime.stage.io;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 
 import teetime.stage.basic.AbstractTransformation;
 
@@ -53,7 +58,7 @@ public final class File2Lines extends AbstractTransformation<File, String> {
 	protected void execute(final File textFile) {
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(textFile), this.charset));
+			reader = Files.newBufferedReader(textFile.toPath(), Charset.forName(this.charset));
 			String line;
 			while ((line = reader.readLine()) != null) { // NOPMD
 				line = line.trim();

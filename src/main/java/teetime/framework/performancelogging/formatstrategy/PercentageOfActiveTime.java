@@ -18,7 +18,7 @@ package teetime.framework.performancelogging.formatstrategy;
 import java.util.Collection;
 
 import teetime.framework.AbstractStage;
-import teetime.framework.StateStatistics;
+import teetime.framework.StateStatisticsUtils;
 import teetime.framework.performancelogging.ActivationStateLogger.IFormatingStrategy;
 import teetime.framework.performancelogging.StateChange;
 import teetime.framework.performancelogging.StateChange.StageActivationState;
@@ -63,7 +63,7 @@ public class PercentageOfActiveTime implements IFormatingStrategy {
 			long firstTimestamp = Long.MAX_VALUE;
 			long lastTimestamp = Long.MIN_VALUE;
 
-			for (StateChange state : StateStatistics.getStates(stage)) {
+			for (StateChange state : StateStatisticsUtils.getStates(stage)) {
 				if (state.getTimeStamp() < firstTimestamp) {
 					firstTimestamp = state.getTimeStamp();
 				}

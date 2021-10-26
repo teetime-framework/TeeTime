@@ -18,7 +18,7 @@ package teetime.framework.performancelogging.formatstrategy;
 import java.util.Collection;
 
 import teetime.framework.AbstractStage;
-import teetime.framework.StateStatistics;
+import teetime.framework.StateStatisticsUtils;
 import teetime.framework.performancelogging.ActivationStateLogger.IFormatingStrategy;
 import teetime.framework.performancelogging.StateChange;
 import teetime.framework.performancelogging.StateChange.StageActivationState;
@@ -58,11 +58,11 @@ public class CumulativeActivePassivTime implements IFormatingStrategy {
 			long lastTimeStamp = 0;
 			StageActivationState lastState = StageActivationState.INITIALIZED;
 			long cumulativeActiveTime = 0;
-			long cumulativeActiveWaitingTime = StateStatistics.getActiveWaitingTime(stage);
+			long cumulativeActiveWaitingTime = StateStatisticsUtils.getActiveWaitingTime(stage);
 			long cumulativeBlockedTime = 0;
 
 			// go through all states of this stage and sum up the active times while counting the number of active timestamp
-			for (StateChange state : StateStatistics.getStates(stage)) {
+			for (StateChange state : StateStatisticsUtils.getStates(stage)) {
 				long actualTimeStamp = state.getTimeStamp();
 
 				// update earliest and latest timeStamp if necessary

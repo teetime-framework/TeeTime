@@ -18,7 +18,7 @@ package teetime.framework.performancelogging.formatstrategy;
 import java.util.Collection;
 
 import teetime.framework.AbstractStage;
-import teetime.framework.StateStatistics;
+import teetime.framework.StateStatisticsUtils;
 import teetime.framework.performancelogging.ActivationStateLogger.IFormatingStrategy;
 import teetime.framework.performancelogging.StateChange;
 import teetime.framework.performancelogging.StateChange.StageActivationState;
@@ -69,7 +69,7 @@ public class RNTFormating implements IFormatingStrategy {
 			boolean lastActive = false;
 
 			// go through all states of this stage and sum up the active times while counting the number of active times
-			for (StateChange state : StateStatistics.getStates(stage)) {
+			for (StateChange state : StateStatisticsUtils.getStates(stage)) {
 				if (state.getStageActivationState() == StageActivationState.ACTIVE && !lastActive) {
 					lastActiveTimeStamp = state.getTimeStamp();
 					lastActive = true;
