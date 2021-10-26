@@ -263,10 +263,10 @@ publishing {
             if (System.env.teetimeMavenPassword != null) {
                  mavenPassword = System.env.teetimeMavenPassword
             }
-            //credentials {
-            //    username = mavenUser
-            //    password = mavenPassword
-            //}
+            credentials {
+                username = mavenUser
+                password = mavenPassword
+            }
 
             // for local tests:
             //def releasesRepoUrl = "file:///tmp/myRepo/releases"
