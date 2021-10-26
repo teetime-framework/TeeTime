@@ -6,10 +6,14 @@ pipeline {
             }
     }
 
+    environment {
+        GRADLE_USER_HOME= env.WORKSAPCE + '/.gradle'
+    }
+
     stages {
         stage('Build') {
             steps {
-                sh 'export GRADLE_USER_HOME=' + env.WORKSPACE + '/.gradle ; mkdir $GRADLE_USER_HOME ; ./gradlew assemble'
+                sh 'mkdir $GRADLE_USER_HOME ; ./gradlew assemble'
             }
         }
         stage('Test') {
