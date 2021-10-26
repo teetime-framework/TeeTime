@@ -18,6 +18,7 @@ package teetime.stage.taskfarm.adaptation.reconfiguration;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import teetime.stage.basic.AbstractFilter;
@@ -28,6 +29,7 @@ public class TaskFarmReconfigurationCommandServiceTest {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
+	@Ignore
 	public void executionPlanTestA() {
 		DynamicTaskFarmStage taskFarmStage = createTaskFarm();
 		TaskFarmReconfigurationCommandService commandService = new TaskFarmReconfigurationCommandService(taskFarmStage);
@@ -41,6 +43,7 @@ public class TaskFarmReconfigurationCommandServiceTest {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
+	@Ignore
 	public void executionPlanTestB() {
 		DynamicTaskFarmStage taskFarmStage = createTaskFarm();
 		TaskFarmReconfigurationCommandService commandService = new TaskFarmReconfigurationCommandService(taskFarmStage);
