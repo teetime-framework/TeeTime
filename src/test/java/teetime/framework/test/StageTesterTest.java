@@ -21,6 +21,7 @@ import static teetime.framework.test.StageTester.*;
 
 import org.junit.Test;
 
+import teetime.framework.test.InvalidTestCaseSetupException;
 import teetime.stage.CollectorSink;
 import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
