@@ -51,7 +51,7 @@ public class AbstractPort<T> {
 	}
 
 	public AbstractStage getOwningStage() {
-		return owningStage;
+		return this.owningStage;
 	}
 
 	public IPipe<?> getPipe() {
@@ -63,13 +63,12 @@ public class AbstractPort<T> {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
-	@SuppressWarnings("PMD.ConfusingTernary")
 	@Override
 	public String toString() {
-		return (name != null) ? name : super.toString();
+		return (this.name != null) ? this.name : super.toString();
 	}
 
 }
