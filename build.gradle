@@ -21,10 +21,10 @@ dependencies {
 	implementation 'org.jctools:jctools-core:3.3.0'
 	implementation 'com.carrotsearch:hppc:0.7.3'
 	implementation 'org.apache.commons:commons-math3:3.6.1'
-	implementation 'org.hamcrest:hamcrest-library:1.3'
-	
+
+	testImplementation 'org.hamcrest:hamcrest-library:1.3'
 	testImplementation 'junit:junit:4.13.2'
-	testImplementation 'ch.qos.logback:logback-classic:1.1.7'
+  testImplementation 'ch.qos.logback:logback-classic:1.1.7'
 }
 
 checkstyle {
@@ -189,18 +189,26 @@ def parsePmdReport(File reportFile) {
     return [errors, warnings, infos]
 }
 
-java {
- //   withJavadocJar()
-    withSourcesJar()
+task mainJar(type: Jar) {
+   from sourceSets.main.output
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from project.sourceSets.main.allJava
+}
+
+task testJar(type: Jar, dependsOn: classes) {
+    classifier = 'test'
+    from sourceSets.test.output
 }
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
-	    groupId = 'de.cau.cs.se.teetime'
-	    artifactId = 'teetime'
-	    version = teeTimeVersion
-        from components.java
+	    artifact mainJar
+	    artifact sourcesJar
+	    artifact testJar
 	    pom {
                 groupId = 'de.cau.cs.se.teetime'
                 artifactId = 'teetime'
