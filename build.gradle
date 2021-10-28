@@ -280,8 +280,8 @@ publishing {
             }
 
             // for local tests:
-            def releasesRepoUrl = "file:///tmp/myRepo/releases"
-            def snapshotsRepoUrl = "file://tmp/myRepo/snapshots"
+//            def releasesRepoUrl = "file:///tmp/myRepo/releases"
+//            def snapshotsRepoUrl = "file://tmp/myRepo/snapshots"
             // Maven central:
             def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
             def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
