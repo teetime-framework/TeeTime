@@ -273,17 +273,17 @@ publishing {
             if (System.env.teetimeMavenPassword != null) {
                  mavenPassword = System.env.teetimeMavenPassword
             }
-//            credentials {
-//                username = mavenUser
-//                password = mavenPassword
-//            }
+            credentials {
+                username = mavenUser
+                password = mavenPassword
+            }
 
             // for local tests:
-            def releasesRepoUrl = "file:///tmp/myRepo/releases"
-            def snapshotsRepoUrl = "file://tmp/myRepo/snapshots"
+//            def releasesRepoUrl = "file:///tmp/myRepo/releases"
+//            def snapshotsRepoUrl = "file://tmp/myRepo/snapshots"
             // Maven central:
-//            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-//            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
 
             url = teeTimeVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
