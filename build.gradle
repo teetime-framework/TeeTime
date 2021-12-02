@@ -190,9 +190,13 @@ def parsePmdReport(File reportFile) {
     return [errors, warnings, infos]
 }
 
-java {
- //   withJavadocJar()
-    withSourcesJar()
+task mainJar(type: Jar) {
+   from sourceSets.main.output
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from project.sourceSets.main.allJava
 }
 
 task testJar(type: Jar, dependsOn: classes) {
@@ -203,13 +207,9 @@ task testJar(type: Jar, dependsOn: classes) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact jar
+            artifact mainJar
             artifact sourcesJar
             artifact testJar
-	        groupId = 'de.cau.cs.se.teetime'
-	        artifactId = 'teetime'
-	        version = teeTimeVersion
-            from components.java
 	        pom {
                 groupId = 'de.cau.cs.se.teetime'
                 artifactId = 'teetime'
