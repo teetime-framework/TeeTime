@@ -203,12 +203,14 @@ task testJar(type: Jar, dependsOn: classes) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifact mainJar
+            artifact sourcesJar
             artifact testJar
-	    groupId = 'de.cau.cs.se.teetime'
-	    artifactId = 'teetime'
-	    version = teeTimeVersion
+	        groupId = 'de.cau.cs.se.teetime'
+	        artifactId = 'teetime'
+	        version = teeTimeVersion
             from components.java
-	    pom {
+	        pom {
                 groupId = 'de.cau.cs.se.teetime'
                 artifactId = 'teetime'
                 version = teeTimeVersion
