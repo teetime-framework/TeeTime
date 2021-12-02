@@ -203,7 +203,7 @@ task testJar(type: Jar, dependsOn: classes) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact mainJar
+            artifact jar
             artifact sourcesJar
             artifact testJar
 	        groupId = 'de.cau.cs.se.teetime'
