@@ -203,6 +203,10 @@ task testJar(type: Jar, dependsOn: classes) {
     from sourceSets.test.output
 }
 
+signing {
+     sign configurations.archives
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
