@@ -63,7 +63,7 @@ pipeline {
             variable: 'KEY_FILE'),
           string(
             credentialsId: 'sonatype-key-id',
-            variable: 'KEY_ID'),
+            variable: 'KEY_ID')
         ]) {
           sh './gradlew -Psigning.secretKeyRingFile=${KEY_FILE} -Psigning.password=${PASSPHRASE} -Psigning.keyId=${KEY_ID} publish'
         }
