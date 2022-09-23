@@ -20,4 +20,24 @@ Please visit the download section on our website: http://teetime-framework.githu
 
 TeeTime requires an existing Maven and JDK installation.
 
-Simply execute "mvn install" and you are good to go!
+Simply execute "./gradlew build"
+
+## TeeTime Release Train
+
+- Create a release branch based on the version number with the prefix -RC, e.g., 3.1.2-RC
+- Set the `teeTimeVersion` in `gradle.properties` to the release version, e.g., 3.1.2  (without RC)
+- Build TeeTime locally, `./gradlew build`
+
+- Ensure that the version/revision is set
+- Run this script, if no errors occur, continue
+- login to nexus with the credentials below https://oss.sonatype.org/
+- Click on "Staging Repositories"
+- There should be a new deposit, if not wait a little and reload the page
+- If nothing shows up something went horribly wrong or you have your build.gradle
+  file still set to publish locally.
+- Select the deposit, it should be open if the step went fine you get an email.
+- Now click on "close" (button bar above the list of deposits)
+- Wait, after a while reload the page
+- If closing failed check the issues and fix them, rerun the ./publish.sh
+- If it worked, click on "release"
+

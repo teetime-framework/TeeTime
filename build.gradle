@@ -189,8 +189,13 @@ def parsePmdReport(File reportFile) {
     return [errors, warnings, infos]
 }
 
+task makeJavadoc(type: Javadoc) {
+    failOnError false
+    source = project.sourceSets.main.allJava
+}
+
 task mainJar(type: Jar) {
-   from sourceSets.main.output
+    from sourceSets.main.output
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -203,15 +208,19 @@ task testJar(type: Jar, dependsOn: classes) {
     from sourceSets.test.output
 }
 
-signing {
-     sign configurations.archives
+task javadocJar(type: Jar, dependsOn: 'makeJavadoc') {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
 }
+
+
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
             artifact mainJar
             artifact sourcesJar
+            artifact javadocJar
             artifact testJar
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -304,5 +313,9 @@ publishing {
             url = teeTimeVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
 
