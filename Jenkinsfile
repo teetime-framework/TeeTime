@@ -56,6 +56,7 @@ pipeline {
           ),
           usernamePassword(
             credentialsId: 'sonatype-pgp-passphrase',
+            usernameVariable: 'PASS_USER',
             passwordVariable: 'PASSPHRASE'
           ),
           file(
