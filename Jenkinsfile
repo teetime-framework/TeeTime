@@ -54,10 +54,9 @@ pipeline {
             usernameVariable: 'teetimeMavenUser', 
             passwordVariable: 'teetimeMavenPassword'
           ),
-          usernamePassword(
-            credentialsId: 'sonatype-pgp-passphrase',
-            usernameVariable: 'PASS_USER',
-            passwordVariable: 'PASSPHRASE'
+          string(
+            credentialsId: 'sonatype-teetime-pgp-passphrase',
+            Variable: 'PASSPHRASE'
           ),
           file(
             credentialsId: 'sonatype-pgp-key', 
