@@ -56,7 +56,7 @@ pipeline {
           ),
           string(
             credentialsId: 'sonatype-teetime-pgp-passphrase',
-            Variable: 'PASSPHRASE'),
+            variable: 'PASSPHRASE'),
           file(
             credentialsId: 'sonatype-pgp-key', 
             variable: 'KEY_FILE'),
