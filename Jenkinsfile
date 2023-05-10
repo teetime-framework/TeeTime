@@ -56,8 +56,7 @@ pipeline {
           ),
           string(
             credentialsId: 'sonatype-teetime-pgp-passphrase',
-            Variable: 'PASSPHRASE'
-          ),
+            Variable: 'PASSPHRASE'),
           file(
             credentialsId: 'sonatype-pgp-key', 
             variable: 'KEY_FILE'),
@@ -65,7 +64,7 @@ pipeline {
             credentialsId: 'sonatype-key-id',
             variable: 'KEY_ID')
         ]) {
-          sh './gradlew -Psigning.secretKeyRingFile=${KEY_FILE} -Psigning.password=${PASSPHRASE} -Psigning.keyId=${KEY_ID} publish'
+          sh './gradlew -Psigning.secretKeyRingFile="${KEY_FILE}" -Psigning.password="${PASSPHRASE}" -Psigning.keyId="${KEY_ID}" publish'
         }
       }
     }
