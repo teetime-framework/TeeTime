@@ -19,13 +19,13 @@ import teetime.framework.StageState;
 import teetime.framework.exceptionHandling.TerminateException;
 import teetime.framework.pipe.IPipe;
 
-public class SleepIfFullStrategy implements PipeElementInsertionStrategy {
+public class SleepIfFullStrategy<T> implements PipeElementInsertionStrategy<T> {
 
 	// statistics
 	private int numWaits;
 
 	@Override
-	public void add(final IPipe<?> pipe, final Object element) {
+	public void add(final IPipe<T> pipe, final T element) {
 		while (!pipe.addNonBlocking(element)) {
 			// the following sending*-related lines are commented out since they are computationally too expensive
 			// this.getSourcePort().getOwningStage().sendingFailed();

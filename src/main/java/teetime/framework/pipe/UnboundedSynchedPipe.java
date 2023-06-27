@@ -27,7 +27,7 @@ import teetime.framework.OutputPort;
 
 public class UnboundedSynchedPipe<T> extends AbstractSynchedPipe<T> {
 
-	private final Queue<Object> queue;
+	private final Queue<T> queue;
 
 	public UnboundedSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
@@ -36,13 +36,13 @@ public class UnboundedSynchedPipe<T> extends AbstractSynchedPipe<T> {
 	}
 
 	@Override
-	public void add(final Object element) {
+	public void add(final T element) {
 		this.queue.add(element);
 		getScheduler().onElementAdded(this);
 	}
 
 	@Override
-	public boolean addNonBlocking(final Object element) {
+	public boolean addNonBlocking(final T element) {
 		boolean offered = this.queue.offer(element);
 		if (offered) {
 			getScheduler().onElementAdded(this);
@@ -53,7 +53,7 @@ public class UnboundedSynchedPipe<T> extends AbstractSynchedPipe<T> {
 	}
 
 	@Override
-	public Object removeLast() {
+	public T removeLast() {
 		return this.queue.poll();
 	}
 

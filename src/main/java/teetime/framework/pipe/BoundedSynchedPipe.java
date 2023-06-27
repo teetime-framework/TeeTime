@@ -30,7 +30,7 @@ import teetime.framework.pipe.strategy.SleepIfFullStrategy;
  */
 public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
 
-	private final SpscArrayQueue<Object> queue;
+	private final SpscArrayQueue<T> queue;
 	private final SleepIfFullStrategy strategy;
 
 	private transient long lastProducerIndex, lastConsumerIndex;
@@ -42,13 +42,13 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMo
 	}
 
 	@Override
-	public void add(final Object element) {
+	public void add(final T element) {
 		strategy.add(this, element);
 		getScheduler().onElementAdded(this);
 	}
 
 	@Override
-	public boolean addNonBlocking(final Object element) {
+	public boolean addNonBlocking(final T element) {
 		boolean offered = this.queue.offer(element);
 		if (offered) {
 			getScheduler().onElementAdded(this);
@@ -59,7 +59,7 @@ public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMo
 	}
 
 	@Override
-	public Object removeLast() {
+	public T removeLast() {
 		return this.queue.poll();
 	}
 

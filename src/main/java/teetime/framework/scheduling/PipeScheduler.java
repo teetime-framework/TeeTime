@@ -18,27 +18,27 @@ package teetime.framework.scheduling;
 import teetime.framework.pipe.AbstractSynchedPipe;
 import teetime.framework.pipe.AbstractUnsynchedPipe;
 
-public interface PipeScheduler {
+public interface PipeScheduler<T> {
 
 	/**
 	 * This event is invoked by the given <b>unsynchronized</b> pipe whenever a new element was added to it.
 	 *
 	 * @param pipe
 	 */
-	void onElementAdded(AbstractUnsynchedPipe<?> pipe);
+	void onElementAdded(AbstractUnsynchedPipe<T> pipe);
 
 	/**
 	 * This event is invoked by the given <b>synchronized</b> pipe whenever a new element was added to it.
 	 *
 	 * @param pipe
 	 */
-	void onElementAdded(AbstractSynchedPipe<?> pipe);
+	void onElementAdded(AbstractSynchedPipe<T> pipe);
 
 	/**
 	 * This event is invoked by the given <b>synchronized</b> pipe whenever a new element could not be added to it.
 	 *
 	 * @param pipe
 	 */
-	void onElementNotAdded(AbstractSynchedPipe<?> pipe);
+	void onElementNotAdded(AbstractSynchedPipe<T> pipe);
 
 }

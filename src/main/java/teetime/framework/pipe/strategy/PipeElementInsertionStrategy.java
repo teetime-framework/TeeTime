@@ -17,7 +17,7 @@ package teetime.framework.pipe.strategy;
 
 import teetime.framework.pipe.IPipe;
 
-public interface PipeElementInsertionStrategy {
+public interface PipeElementInsertionStrategy<T> {
 
 	/**
 	 * Adds the given element to the given pipe. This method does not return anything because it should guarantee element delivery.
@@ -29,5 +29,5 @@ public interface PipeElementInsertionStrategy {
 	 * @param element
 	 *            to be added
 	 */
-	void add(IPipe<?> pipe, Object element);
+	void add(IPipe<T> pipe, T element);
 }

@@ -29,19 +29,19 @@ import teetime.framework.OutputPort;
  */
 public class ReflexivePipe<T> extends AbstractUnsynchedPipe<T> {
 
-	private Object element;
+	private T element;
 
 	public ReflexivePipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
 	}
 
 	@Override
-	public void add(final Object element) {
+	public void add(final T element) {
 		this.element = element;
 	}
 
 	@Override
-	public boolean addNonBlocking(final Object element) {
+	public boolean addNonBlocking(final T element) {
 		return true;
 	}
 
@@ -56,8 +56,8 @@ public class ReflexivePipe<T> extends AbstractUnsynchedPipe<T> {
 	}
 
 	@Override
-	public Object removeLast() {
-		final Object temp = this.element;
+	public T removeLast() {
+		final T temp = this.element;
 		this.element = null; // NOPMD
 		return temp;
 	}

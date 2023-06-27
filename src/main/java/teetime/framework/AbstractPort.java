@@ -28,7 +28,7 @@ public class AbstractPort<T> {
 
 	protected static final Object TERMINATE_ELEMENT = new Object();
 
-	protected IPipe<?> pipe;
+	protected IPipe<T> pipe;
 	/**
 	 * The type of this port.
 	 * <p>
@@ -58,7 +58,7 @@ public class AbstractPort<T> {
 		return this.pipe;
 	}
 
-	/* default */ void setPipe(final IPipe<?> pipe) {
+	/* default */ void setPipe(final IPipe<T> pipe) {
 		this.pipe = pipe;
 	}
 

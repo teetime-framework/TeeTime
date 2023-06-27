@@ -32,13 +32,13 @@ public interface IPipe<T> {
 
 	/**
 	 * Adds an element to the pipe. This method does not return anything because it should guarantee element delivery (as opposed to
-	 * {@link #addNonBlocking(Object)}).
+	 * {@link #addNonBlocking(T)}).
 	 * If it cannot guarantee element delivery in some special situation, it then must throw an exception.
 	 *
 	 * @param element
 	 *            to be added
 	 */
-	void add(Object element);
+	void add(T element);
 
 	/**
 	 * Adds an element to the pipe.
@@ -47,7 +47,7 @@ public interface IPipe<T> {
 	 *            Element which will be added
 	 * @return <code>true</code> if the element could be added, false otherwise
 	 */
-	boolean addNonBlocking(Object element);
+	boolean addNonBlocking(T element);
 
 	/**
 	 * Checks whether the pipe is empty or not.
@@ -71,7 +71,7 @@ public interface IPipe<T> {
 	 *
 	 * @return the last element from the pipe, or <code>null</code> if the pipe is currently empty.
 	 */
-	Object removeLast();
+	T removeLast();
 
 	/**
 	 * @return the output port that is connected to the pipe.

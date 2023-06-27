@@ -17,10 +17,10 @@ package teetime.framework.pipe.strategy;
 
 import teetime.framework.pipe.IPipe;
 
-public class SkipIfFullStrategy implements PipeElementInsertionStrategy {
+public class SkipIfFullStrategy<T> implements PipeElementInsertionStrategy<T> {
 
 	@Override
-	public void add(final IPipe<?> pipe, final Object element) {
+	public void add(final IPipe<T> pipe, final T element) {
 		pipe.addNonBlocking(element);
 	}
 
