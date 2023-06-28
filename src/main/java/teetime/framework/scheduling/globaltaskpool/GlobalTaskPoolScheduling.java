@@ -45,7 +45,7 @@ import teetime.framework.validation.AnalysisNotValidException;
  * @since 3.0
  *
  */
-public class GlobalTaskPoolScheduling implements TeeTimeScheduler, PipeScheduler, UncaughtExceptionHandler {
+public class GlobalTaskPoolScheduling<T> implements TeeTimeScheduler, PipeScheduler<T>, UncaughtExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalTaskPoolScheduling.class);
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
@@ -320,13 +320,13 @@ public class GlobalTaskPoolScheduling implements TeeTimeScheduler, PipeScheduler
 	}
 
 	@Override
-	public void onElementAdded(final AbstractUnsynchedPipe<?> pipe) {
+	public void onElementAdded(final AbstractUnsynchedPipe<T> pipe) {
 		String message = String.format("This scheduler does not allow unsynched pipes: %s", pipe);
 		throw new IllegalStateException(message);
 	}
 
 	@Override
-	public void onElementAdded(final AbstractSynchedPipe<?> pipe) {
+	public void onElementAdded(final AbstractSynchedPipe<T> pipe) {
 		BoundedMpMcSynchedPipe<?> castedPipe = (BoundedMpMcSynchedPipe<?>) pipe;
 		long numPushes = castedPipe.getNumPushesSinceAppStart();
 		long lastNumPushes = castedPipe.getLastProducerIndex();
@@ -345,7 +345,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeScheduler, PipeScheduler
 	}
 
 	@Override
-	public void onElementNotAdded(final AbstractSynchedPipe<?> pipe) {
+	public void onElementNotAdded(final AbstractSynchedPipe<T> pipe) {
 		if (!taskPool.scheduleStage(pipe.getCachedTargetStage())) {
 			throw new IllegalStateException(String.format("onElementNotAdded: scheduling target stage failed for %s", pipe.getCachedTargetStage()));
 		}

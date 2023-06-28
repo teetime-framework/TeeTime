@@ -72,7 +72,7 @@ public class InstantiationPipe<T> implements IPipe<T> {
 	}
 
 	@Override
-	public Object removeLast() {
+	public T removeLast() {
 		throw new IllegalStateException(ERROR_MESSAGE);
 	}
 

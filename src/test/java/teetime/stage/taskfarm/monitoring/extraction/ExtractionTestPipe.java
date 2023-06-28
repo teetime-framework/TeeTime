@@ -142,7 +142,7 @@ class ExtractionTestPipe<T> implements IMonitorablePipe, IPipe<T> {
 	}
 
 	@Override
-	public Object removeLast() {
+	public T removeLast() {
 		return null;
 	}
 

@@ -26,7 +26,7 @@ import teetime.framework.pipe.IPipe;
  */
 public class AbstractPort<T> {
 
-	protected static final Object TERMINATE_ELEMENT = new Object();
+	protected final T TERMINATE_ELEMENT = null;
 
 	protected IPipe<T> pipe;
 	/**
