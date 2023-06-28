@@ -32,7 +32,7 @@ import teetime.framework.scheduling.PipeScheduler;
 /**
  * Automatically instantiates the correct pipes
  */
-class A3PipeInstantiation implements ITraverserVisitor, PipeScheduler {
+class A3PipeInstantiation<T> implements ITraverserVisitor, PipeScheduler<T> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(A3PipeInstantiation.class);
 
@@ -89,17 +89,17 @@ class A3PipeInstantiation implements ITraverserVisitor, PipeScheduler {
 	}
 
 	@Override
-	public void onElementAdded(final AbstractUnsynchedPipe<?> pipe) {
+	public void onElementAdded(final AbstractUnsynchedPipe<T> pipe) {
 		pipe.getCachedTargetStage().executeByFramework();
 	}
 
 	@Override
-	public void onElementAdded(final AbstractSynchedPipe<?> pipe) {
+	public void onElementAdded(final AbstractSynchedPipe<T> pipe) {
 		// do nothing
 	}
 
 	@Override
-	public void onElementNotAdded(final AbstractSynchedPipe<?> pipe) {
+	public void onElementNotAdded(final AbstractSynchedPipe<T> pipe) {
 		// do nothing
 	}
 

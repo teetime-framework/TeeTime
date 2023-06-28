@@ -33,17 +33,17 @@ import teetime.framework.pipe.IMonitorablePipe;
  */
 class BoundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
 
-	private final MpmcArrayQueue<Object> queue;
+	private final MpmcArrayQueue<T> queue;
 
 	private transient long lastProducerIndex, lastConsumerIndex;
 
 	public BoundedMpMcSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int requestedCapacity) {
 		super(sourcePort, targetPort);
-		this.queue = new MpmcArrayQueue<Object>(requestedCapacity);
+		this.queue = new MpmcArrayQueue<T>(requestedCapacity);
 	}
 
 	@Override
-	public void add(final Object element) {
+	public void add(final T element) {
 		while (!this.queue.offer(element)) {
 			getScheduler().onElementNotAdded(this);
 		}
@@ -51,7 +51,7 @@ class BoundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonit
 	}
 
 	@Override
-	public boolean addNonBlocking(final Object element) {
+	public boolean addNonBlocking(final T element) {
 		return this.queue.offer(element);
 	}
 
@@ -66,7 +66,7 @@ class BoundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonit
 	}
 
 	@Override
-	public Object removeLast() {
+	public T removeLast() {
 		return this.queue.poll();
 	}
 

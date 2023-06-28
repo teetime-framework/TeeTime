@@ -46,7 +46,7 @@ public final class DummyPipe<T> implements IPipe<T> {
 	}
 
 	@Override
-	public Object removeLast() {
+	public T removeLast() {
 		return null;
 	}
 
@@ -61,12 +61,12 @@ public final class DummyPipe<T> implements IPipe<T> {
 	}
 
 	@Override
-	public OutputPort<? extends Object> getSourcePort() {
+	public OutputPort<? extends T> getSourcePort() {
 		return null;
 	}
 
 	@Override
-	public InputPort<Object> getTargetPort() {
+	public InputPort<T> getTargetPort() {
 		return null;
 	}
 

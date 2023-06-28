@@ -111,12 +111,12 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 	}
 
 	@Override
-	public boolean addNonBlocking(final Object element) {
+	public boolean addNonBlocking(final P element) {
 		return outputPipe.addNonBlocking(element);
 	}
 
 	@Override
-	public void add(final Object element) {
+	public void add(final P element) {
 		outputPipe.add(element);
 	}
 
@@ -131,7 +131,7 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 	}
 
 	@Override
-	public Object removeLast() {
+	public P removeLast() {
 		return outputPipe.removeLast();
 	}
 
