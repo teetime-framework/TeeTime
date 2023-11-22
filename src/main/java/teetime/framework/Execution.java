@@ -23,8 +23,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.slf4j.Logger;
+
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.scheduling.pushpullmodel.PushPullScheduling;
@@ -59,35 +59,35 @@ public final class Execution<T extends Configuration> {
 
 		@Override
 		public boolean cancel(final boolean mayInterruptIfRunning) {
-			if (execution.getState() == ExecutionState.COMPLETED) {
+			if (this.execution.getState() == ExecutionState.COMPLETED) {
 				return false;
 			}
-			if (execution.getState() == ExecutionState.CANCELING) {
+			if (this.execution.getState() == ExecutionState.CANCELING) {
 				return false;
 			}
-			if (execution.getState() == ExecutionState.CANCELED) {
+			if (this.execution.getState() == ExecutionState.CANCELED) {
 				return false;
 			}
-			if (execution.getState() == ExecutionState.INITIALIZED) {
+			if (this.execution.getState() == ExecutionState.INITIALIZED) {
 				return true;
 			}
-			execution.abortEventually();
+			this.execution.abortEventually();
 			return true;
 		}
 
 		@Override
 		public boolean isCancelled() {
-			return execution.getState() == ExecutionState.CANCELED;
+			return this.execution.getState() == ExecutionState.CANCELED;
 		}
 
 		@Override
 		public boolean isDone() {
-			return execution.getState() == ExecutionState.COMPLETED;
+			return this.execution.getState() == ExecutionState.COMPLETED;
 		}
 
 		@Override
 		public Void get() throws InterruptedException, java.util.concurrent.ExecutionException {
-			execution.waitForTermination();
+			this.execution.waitForTermination();
 			return null;
 		}
 
@@ -145,9 +145,9 @@ public final class Execution<T extends Configuration> {
 		configuration.setInitialized(true);
 
 		scheduler.onInitialize();
-		state = ExecutionState.INITIALIZED;
+		this.state = ExecutionState.INITIALIZED;
 
-		LOGGER.info("Using scheduler: {}", scheduler);
+		Execution.LOGGER.debug("Using scheduler: {}", scheduler.getClass().getCanonicalName());
 
 		if (validationEnabled) {
 			scheduler.onValidate();
@@ -163,17 +163,17 @@ public final class Execution<T extends Configuration> {
 	 * @since 2.0
 	 */
 	public void waitForTermination() {
-		scheduler.onFinish();
-		if (state == ExecutionState.CANCELING) {
-			state = ExecutionState.CANCELED;
+		this.scheduler.onFinish();
+		if (this.state == ExecutionState.CANCELING) {
+			this.state = ExecutionState.CANCELED;
 		} else {
-			state = ExecutionState.COMPLETED;
+			this.state = ExecutionState.COMPLETED;
 		}
 
-		Map<Thread, List<Exception>> threadExceptionsMap = configuration.getFactory().getThreadExceptionsMap();
-		Iterator<Entry<Thread, List<Exception>>> iterator = threadExceptionsMap.entrySet().iterator();
+		final Map<Thread, List<Exception>> threadExceptionsMap = this.configuration.getFactory().getThreadExceptionsMap();
+		final Iterator<Entry<Thread, List<Exception>>> iterator = threadExceptionsMap.entrySet().iterator();
 		while (iterator.hasNext()) {
-			Entry<Thread, List<Exception>> entry = iterator.next();
+			final Entry<Thread, List<Exception>> entry = iterator.next();
 			if (entry.getValue().isEmpty()) {
 				iterator.remove();
 			}
@@ -188,9 +188,9 @@ public final class Execution<T extends Configuration> {
 	 * Terminates all producer stages, interrupts all threads, and waits for a graceful termination.
 	 */
 	public void abortEventually() {
-		state = ExecutionState.CANCELING;
-		scheduler.onTerminate();
-		waitForTermination();
+		this.state = ExecutionState.CANCELING;
+		this.scheduler.onTerminate();
+		this.waitForTermination();
 	}
 
 	/**
@@ -202,12 +202,12 @@ public final class Execution<T extends Configuration> {
 	 * @since 2.0
 	 */
 	public Future<Void> executeNonBlocking() {
-		if (configuration.isExecuted()) {
+		if (this.configuration.isExecuted()) {
 			throw new IllegalStateException("3002 - Any configuration instance may only be executed once.");
 		}
-		configuration.setExecuted(true);
-		state = ExecutionState.EXECUTING;
-		scheduler.onExecute();
+		this.configuration.setExecuted(true);
+		this.state = ExecutionState.EXECUTING;
+		this.scheduler.onExecute();
 		return new ExecutionFuture(this);
 	}
 
@@ -220,8 +220,8 @@ public final class Execution<T extends Configuration> {
 	 * @since 2.0
 	 */
 	public void executeBlocking() {
-		executeNonBlocking();
-		waitForTermination();
+		this.executeNonBlocking();
+		this.waitForTermination();
 	}
 
 	/**
@@ -234,25 +234,25 @@ public final class Execution<T extends Configuration> {
 	}
 
 	private static List<Configuration> configLoader(final String... args) {
-		List<Configuration> instances = new ArrayList<Configuration>();
-		for (String each : args) {
+		final List<Configuration> instances = new ArrayList<Configuration>();
+		for (final String each : args) {
 			try {
-				Class<?> clazz = Class.forName(each);
-				Object obj = clazz.newInstance();
+				final Class<?> clazz = Class.forName(each);
+				final Object obj = clazz.newInstance();
 				if (obj instanceof Configuration) {
 					instances.add((Configuration) obj);
 				}
-			} catch (ClassNotFoundException e) {
-				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error("Could not find class " + each);
+			} catch (final ClassNotFoundException e) {
+				if (Execution.LOGGER.isErrorEnabled()) {
+					Execution.LOGGER.error("Could not find class " + each);
 				}
-			} catch (InstantiationException e) {
-				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error("Could not instantiate class " + each, e);
+			} catch (final InstantiationException e) {
+				if (Execution.LOGGER.isErrorEnabled()) {
+					Execution.LOGGER.error("Could not instantiate class " + each, e);
 				}
-			} catch (IllegalAccessException e) {
-				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error("IllegalAccessException arised while instantiating class " + each, e);
+			} catch (final IllegalAccessException e) {
+				if (Execution.LOGGER.isErrorEnabled()) {
+					Execution.LOGGER.error("IllegalAccessException arised while instantiating class " + each, e);
 				}
 			}
 		}
@@ -260,14 +260,14 @@ public final class Execution<T extends Configuration> {
 	}
 
 	public static void main(final String... args) {
-		List<Configuration> instances = configLoader(args);
-		for (Configuration configuration : instances) {
+		final List<Configuration> instances = Execution.configLoader(args);
+		for (final Configuration configuration : instances) {
 			new Execution<Configuration>(configuration).executeBlocking(); // NOPMD
 		}
 	}
 
 	/* default */ ExecutionState getState() {
-		return state;
+		return this.state;
 	}
 
 }
