@@ -16,7 +16,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-	implementation 'org.slf4j:slf4j-api:2.0.9'
+	implementation 'org.slf4j:slf4j-api:2.0.10'
 
 
 
