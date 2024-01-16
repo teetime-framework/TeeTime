@@ -18,7 +18,6 @@ package teetime.framework;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 
-import org.jctools.util.QueueFactory;
 import org.jctools.queues.spec.*;
 
 import teetime.framework.signal.*;
@@ -93,5 +92,31 @@ public abstract class AbstractSynchedPipe<T> extends AbstractPipe<T> {
 	@Override
 	public final void close() {
 		closed = true;
+	}
+
+	public static <E> Queue<E> newQueue(ConcurrentQueueSpec qs) {
+        	if (qs.isBounded()) {
+            		// SPSC
+            		if (qs.isSpsc()) {
+                		return new SpscArrayQueue<E>(qs.capacity);
+            		} else if (qs.isMpsc()) {
+                		if (qs.ordering != Ordering.NONE) {
+                    			return new MpscArrayQueue<E>(qs.capacity);
+                		} else {
+                    			return new MpscCompoundQueue<E>(qs.capacity);
+                		}
+            		} else if (qs.isSpmc()) {
+                		return new SpmcArrayQueue<E>(qs.capacity);
+            		} else {
+                		return new MpmcArrayQueue<E>(qs.capacity);
+            		}
+        	} else {
+	        	if (qs.isSpsc()) {
+	            		return new SpscLinkedQueue<E>();
+            		} else if (qs.isMpsc()) {
+                		return new MpscLinkedQueue();
+            		}
+        	}
+        	return new ConcurrentLinkedQueue<E>();
 	}
 }
