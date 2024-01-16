@@ -18,7 +18,7 @@ package teetime.framework;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 
-import org.jctools.queues.QueueFactory;
+import org.jctools.util.QueueFactory;
 import org.jctools.queues.spec.*;
 
 import teetime.framework.signal.*;
