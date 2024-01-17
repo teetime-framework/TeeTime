@@ -26,17 +26,11 @@ public class PortList<T extends AbstractPort<?>> {
 
 	private final List<T> openedPorts = new ArrayList<T>();
 
-	// private final List<T> closedPorts = new ArrayList<T>();
-
 	private final Set<PortRemovedListener<T>> portsRemovedListeners = new HashSet<PortRemovedListener<T>>();
 
 	public List<T> getOpenedPorts() {
 		return openedPorts;
 	}
-
-	// public List<T> getClosedPorts() {
-	// return closedPorts;
-	// }
 
 	public boolean add(final T port) {
 		return openedPorts.add(port);
@@ -52,15 +46,7 @@ public class PortList<T extends AbstractPort<?>> {
 	}
 
 	public boolean close(final T port) {
-		boolean removed = remove(port);
-		// if (removed) {
-		// boolean added = closedPorts.add(port);
-		// if (added) {
-		// return true;
-		// }
-		// openedPorts.add(port);
-		// }
-		return removed;
+		return remove(port);
 	}
 
 	public int size() {

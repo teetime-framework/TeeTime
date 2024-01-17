@@ -47,9 +47,7 @@ public final class CipherStage extends AbstractFilter<byte[]> {
 
 		try {
 			secretKey = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").generateSecret(keySpec);
-		} catch (final InvalidKeySpecException e1) {
-			throw new IllegalStateException(e1);
-		} catch (final NoSuchAlgorithmException e1) {
+		} catch (final NoSuchAlgorithmException | InvalidKeySpecException e1) {
 			throw new IllegalStateException(e1);
 		}
 
@@ -57,9 +55,7 @@ public final class CipherStage extends AbstractFilter<byte[]> {
 
 		try {
 			this.cipher = Cipher.getInstance(skeyspec.getAlgorithm());
-		} catch (final NoSuchAlgorithmException e) {
-			throw new IllegalStateException(e);
-		} catch (final NoSuchPaddingException e) {
+		} catch (final NoSuchPaddingException | NoSuchAlgorithmException e) {
 			throw new IllegalStateException(e);
 		}
 
@@ -76,9 +72,7 @@ public final class CipherStage extends AbstractFilter<byte[]> {
 		try {
 			byte[] outputBytes = this.cipher.doFinal(element);
 			this.outputPort.send(outputBytes);
-		} catch (IllegalBlockSizeException e) {
-			throw new IllegalStateException(e);
-		} catch (BadPaddingException e) {
+		} catch (BadPaddingException | IllegalBlockSizeException e) {
 			throw new IllegalStateException(e);
 		}
 	}

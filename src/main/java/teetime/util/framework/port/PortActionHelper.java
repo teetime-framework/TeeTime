@@ -37,8 +37,7 @@ public final class PortActionHelper {
 		final Queue<T> localQueue = new SpscLinkedQueue<>();
 		final PutStrategy<T> putStrategy = new YieldPutStrategy<T>();
 		final TakeStrategy<T> takeStrategy = new SCParkTakeStrategy<T>();
-		PCBlockingQueue<T> portActions = new PCBlockingQueue<T>(localQueue, putStrategy, takeStrategy);
-		return portActions;
+		return new PCBlockingQueue<T>(localQueue, putStrategy, takeStrategy);
 	}
 
 	public static <T extends AbstractStage> PortAction<T> checkForPendingPortActionRequest(final T stage, final BlockingQueue<PortAction<T>> portActions) {

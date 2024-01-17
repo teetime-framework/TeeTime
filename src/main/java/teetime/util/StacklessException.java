@@ -24,7 +24,7 @@ public abstract class StacklessException extends RuntimeException {
 	}
 
 	@Override
-	public synchronized Throwable fillInStackTrace() { // greatly improves performance when constructing
+	public synchronized Throwable fillInStackTrace() { // NOPMD, greatly improves performance when constructing
 		return this;
 	}
 

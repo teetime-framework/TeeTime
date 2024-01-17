@@ -26,7 +26,7 @@ import teetime.util.ConstructorClosure;
  * @deprecated since 3.0. Use {@link teetime.stage.StreamProducer} instead.
  */
 @Deprecated
-public class ObjectProducer<T> extends AbstractProducerStage<T> {
+public class ObjectProducer<T> extends AbstractProducerStage<T> { // NOPMD not a data class
 
 	private long numInputObjects;
 	private ConstructorClosure<T> inputObjectCreator;

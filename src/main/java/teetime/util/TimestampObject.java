@@ -22,7 +22,7 @@ package teetime.util;
  *
  * @since 1.10
  */
-public final class TimestampObject {
+public final class TimestampObject { // NOPMD
 
 	@SuppressWarnings("PMD.CommentRequired")
 	private long startTimestamp;

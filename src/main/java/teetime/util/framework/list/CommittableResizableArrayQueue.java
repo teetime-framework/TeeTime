@@ -22,7 +22,8 @@ public final class CommittableResizableArrayQueue<T> implements CommittableQueue
 	private final ArrayPool<T> arrayPool;
 	private T[] elements;
 
-	private int lastFreeIndex, lastFreeIndexUncommitted;
+	private int lastFreeIndex;
+	private int lastFreeIndexUncommitted;
 
 	@SuppressWarnings("unchecked")
 	public CommittableResizableArrayQueue(final Object emptyObject, final int initialCapacity) {
@@ -37,8 +38,7 @@ public final class CommittableResizableArrayQueue<T> implements CommittableQueue
 
 	@Override
 	public final T get(final int index) {
-		T element = this.elements[index + 1];
-		return element;
+		return this.elements[index + 1];
 	}
 
 	@Override
@@ -51,11 +51,7 @@ public final class CommittableResizableArrayQueue<T> implements CommittableQueue
 
 	@Override
 	public T removeFromHeadUncommitted() {
-		T element = this.get(--this.lastFreeIndexUncommitted);
-		// if (this.capacity() > this.MIN_CAPACITY && this.lastFreeIndexUncommitted < this.capacity() / 2) { // TODO uncomment
-		// this.shrink();
-		// }
-		return element;
+		return this.get(--this.lastFreeIndexUncommitted);
 	}
 
 	@Override
@@ -86,21 +82,13 @@ public final class CommittableResizableArrayQueue<T> implements CommittableQueue
 
 	@Override
 	public T getTail() {
-		T element = this.get(this.lastFreeIndex - 1);
-		return element;
+		return this.get(this.lastFreeIndex - 1);
 	}
 
 	private void grow() {
 		T[] newElements = this.arrayPool.acquire(this.elements.length * 2);
-		// System.out.println("grow: " + this.lastFreeIndexUncommitted);
 		this.replaceCurrentArrayBy(newElements);
 	}
-
-	// private void shrink() {
-	// T[] newElements = this.arrayPool.acquire(this.elements.length / 2);
-	// // System.out.println("shrink: " + this.lastFreeIndexUncommitted);
-	// this.replaceCurrentArrayBy(newElements);
-	// }
 
 	private final void replaceCurrentArrayBy(final T[] newElements) {
 		this.copyArray(this.elements, newElements);
@@ -108,11 +96,8 @@ public final class CommittableResizableArrayQueue<T> implements CommittableQueue
 		this.elements = newElements;
 	}
 
-	private final void copyArray(final T[] elements, final T[] newElements) {
+	private final void copyArray(final T[] elements, final T[] newElements) { // NOPMD storing arrays is ok
 		System.arraycopy(elements, 0, newElements, 0, this.lastFreeIndexUncommitted + 1);
-		// for (int i = 0; i < this.lastFreeIndexUncommitted; i++) {
-		// newElements[i] = elements[i];
-		// }
 	}
 
 	private final void put(final int index, final T element) {
