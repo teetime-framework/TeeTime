@@ -17,10 +17,7 @@ package teetime.framework.pipe;
 
 import java.util.Queue;
 
-import org.jctools.queues.QueueFactory;
-import org.jctools.queues.spec.ConcurrentQueueSpec;
-import org.jctools.queues.spec.Ordering;
-import org.jctools.queues.spec.Preference;
+import org.jctools.queues.SpscLinkedQueue;
 
 import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
@@ -31,8 +28,7 @@ public class UnboundedSynchedPipe<T> extends AbstractSynchedPipe<T> {
 
 	public UnboundedSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
-		ConcurrentQueueSpec specification = new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT);
-		this.queue = QueueFactory.newQueue(specification);
+		this.queue = new SpscLinkedQueue<>();
 	}
 
 	@Override
