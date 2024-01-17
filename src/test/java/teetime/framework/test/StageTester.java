@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 
 import teetime.framework.*;
@@ -145,12 +144,10 @@ public final class StageTester {
 	}
 
 	@SafeVarargs
-	@Factory
 	public static <T> Matcher<OutputPort<T>> produces(final T... values) {
 		return new Produces<T, OutputPort<T>>(values);
 	}
 
-	@Factory
 	public static <T> Matcher<OutputPort<T>> producesNothing() {
 		return new Produces<T, OutputPort<T>>();
 	}
