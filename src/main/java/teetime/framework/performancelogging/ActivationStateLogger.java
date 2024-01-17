@@ -15,13 +15,13 @@
  */
 package teetime.framework.performancelogging;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,7 +32,8 @@ import teetime.framework.AbstractStage;
 import teetime.framework.performancelogging.formatstrategy.CumulativeActivePassivTime;
 
 /**
- * This class serves as storage for information about active and inactive times of objects.
+ * This class serves as storage for information about active and inactive times
+ * of objects.
  *
  * @author Adrian
  *
@@ -63,10 +64,10 @@ public class ActivationStateLogger {
 	}
 
 	/**
-	 * Any stage can register itself here. It will be stored with an empty List of States.
+	 * Any stage can register itself here. It will be stored with an empty List of
+	 * States.
 	 *
-	 * @param stage
-	 *            Stage to be registered.
+	 * @param stage Stage to be registered.
 	 */
 	public void register(final AbstractStage stage) {
 		this.setLongestName(stage.getClass().getSimpleName().length());
@@ -86,14 +87,15 @@ public class ActivationStateLogger {
 		this.logToFile(path, filename);
 	}
 
-	public void logToFile(final String path, final String filename) throws UnsupportedEncodingException, FileNotFoundException {
+	public void logToFile(final String path, final String filename)
+			throws UnsupportedEncodingException, FileNotFoundException {
 		this.logToFile(new File(path + filename));
 	}
 
 	public void logToFile(final File file) throws UnsupportedEncodingException, FileNotFoundException {
 		try {
 			this.printToFile(file);
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			try {
 				if (file.createNewFile()) {
 					this.printToFile(file);
@@ -107,8 +109,10 @@ public class ActivationStateLogger {
 		}
 	}
 
-	private void printToFile(final File file) throws UnsupportedEncodingException, FileNotFoundException {
-		PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(file, true), 8192 * 8), false, "UTF-8");
+	private void printToFile(final File file) throws IOException {
+//		PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(file, true), 8192 * 8), false, "UTF-8");
+		PrintStream ps = new PrintStream(Files.newOutputStream(file.toPath(), StandardOpenOption.APPEND), false,
+				"UTF-8");
 		ps.print(this);
 		ps.close();
 		System.out.println("Log saved to File: " + file.getAbsolutePath());
