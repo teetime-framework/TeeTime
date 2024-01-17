@@ -17,6 +17,7 @@ pipeline {
     stage('Build') {
       steps {
         sh 'test -d $GRADLE_USER_HOME || mkdir $GRADLE_USER_HOME'
+	sh './gradlew clean'
         sh './gradlew assemble'
       }
     }
