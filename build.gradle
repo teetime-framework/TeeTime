@@ -12,15 +12,15 @@ repositories {
 	mavenCentral()
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 11
+targetCompatibility = 11
 
 dependencies {
-	implementation 'org.slf4j:slf4j-api:2.0.9'
+	implementation 'org.slf4j:slf4j-api:2.0.11'
 
 
 
-	implementation 'com.google.guava:guava:32.1.3-jre'
+	implementation 'com.google.guava:guava:33.0.0-jre'
 
 	implementation 'org.jctools:jctools-core:4.0.2'
 	implementation 'com.carrotsearch:hppc:0.9.1'
@@ -28,7 +28,7 @@ dependencies {
 
 	testImplementation 'org.hamcrest:hamcrest-library:1.3'
 	testImplementation 'junit:junit:4.13.2'
-	testImplementation 'ch.qos.logback:logback-classic:1.4.11'
+	testImplementation 'ch.qos.logback:logback-classic:1.4.14'
 }
 
 checkstyle {
@@ -203,18 +203,18 @@ task mainJar(type: Jar) {
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     from project.sourceSets.main.allJava
 }
 
 task testJar(type: Jar, dependsOn: classes) {
-    classifier = 'test'
+    archiveClassifier = 'test'
     from sourceSets.test.output
 }
 
 task javadocJar(type: Jar, dependsOn: 'makeJavadoc') {
     from javadoc.destinationDir
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
 }
 
 
@@ -226,18 +226,19 @@ publishing {
             artifact sourcesJar
             artifact javadocJar
             artifact testJar
+            
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
                 //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
-			    configurations.implementation.allDependencies.each {
-			        def dependencyNode = dependenciesNode.appendNode('dependency')
-			        dependencyNode.appendNode('groupId', it.group)
-			        dependencyNode.appendNode('artifactId', it.name)
-			        dependencyNode.appendNode('version', it.version)
-			    }
-			}
+		configurations.implementation.allDependencies.each {
+		    def dependencyNode = dependenciesNode.appendNode('dependency')
+		    dependencyNode.appendNode('groupId', it.group)
+		    dependencyNode.appendNode('artifactId', it.name)
+		    dependencyNode.appendNode('version', it.version)
+		}
+            }
             
-	        pom {
+	    pom {
                 groupId = 'de.cau.cs.se.teetime'
                 artifactId = 'teetime'
                 version = teeTimeVersion

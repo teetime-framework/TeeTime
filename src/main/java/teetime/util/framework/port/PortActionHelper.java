@@ -18,8 +18,7 @@ package teetime.util.framework.port;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 
-import org.jctools.queues.QueueFactory;
-import org.jctools.queues.spec.*;
+import org.jctools.queues.SpscLinkedQueue;
 
 import teetime.framework.AbstractStage;
 import teetime.util.framework.concurrent.queue.PCBlockingQueue;
@@ -35,7 +34,7 @@ public final class PortActionHelper {
 	}
 
 	public static <T> BlockingQueue<T> createPortActionQueue() {
-		final Queue<T> localQueue = QueueFactory.newQueue(new ConcurrentQueueSpec(1, 1, 0, Ordering.FIFO, Preference.THROUGHPUT));
+		final Queue<T> localQueue = new SpscLinkedQueue<>();
 		final PutStrategy<T> putStrategy = new YieldPutStrategy<T>();
 		final TakeStrategy<T> takeStrategy = new SCParkTakeStrategy<T>();
 		PCBlockingQueue<T> portActions = new PCBlockingQueue<T>(localQueue, putStrategy, takeStrategy);
