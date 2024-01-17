@@ -67,7 +67,7 @@ public class ObjectProducerTest {
 
 		@Override
 		public Integer create() {
-			return new Integer(this.counter++);
+			return Integer.valueOf(this.counter++);
 		}
 	}
 
