@@ -30,7 +30,7 @@ public class StatelessCounter<T> extends AbstractStage implements ITransformatio
 	private final OutputPort<CounterContainer> counterOutputPort = this.createOutputPort();
 
 	public StatelessCounter() {
-		new ReflexivePipe<CounterContainer>(counterOutputPort, counterInputPort);
+		new ReflexivePipe<>(counterOutputPort, counterInputPort);
 		counterOutputPort.send(new CounterContainer());
 		setStateless(true);
 	}

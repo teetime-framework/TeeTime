@@ -32,7 +32,7 @@ public class ThroughputHistory {
 	private final int maxEntries;
 
 	/** throughput sums **/
-	private final LinkedList<ThroughputEntry> entries = new LinkedList<ThroughputEntry>(); // NOPMD LinkedList is needed as type in the code
+	private final LinkedList<ThroughputEntry> entries = new LinkedList<>(); // NOPMD LinkedList is needed as type in the code
 
 	/**
 	 * Creates a new throughput history with the analysis window specified in the configuration.

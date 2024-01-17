@@ -39,7 +39,7 @@ class BoundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonit
 
 	public BoundedMpMcSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int requestedCapacity) {
 		super(sourcePort, targetPort);
-		this.queue = new MpmcArrayQueue<Object>(requestedCapacity);
+		this.queue = new MpmcArrayQueue<>(requestedCapacity);
 	}
 
 	@Override

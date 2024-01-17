@@ -41,7 +41,7 @@ public class Counter<T> extends AbstractFilter<T> implements ITaskFarmDuplicable
 
 	@Override
 	public ITaskFarmDuplicable<T, T> duplicate() {
-		return new Counter<T>(); // no state duplication
+		return new Counter<>(); // no state duplication
 	}
 
 }

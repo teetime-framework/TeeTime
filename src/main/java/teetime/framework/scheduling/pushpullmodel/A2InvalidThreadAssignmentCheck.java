@@ -44,7 +44,7 @@ public class A2InvalidThreadAssignmentCheck {
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	public void check() {
 		int color = DEFAULT_COLOR;
-		ObjectIntMap<AbstractStage> colors = new ObjectIntHashMap<AbstractStage>();
+		ObjectIntMap<AbstractStage> colors = new ObjectIntHashMap<>();
 		ThreadPainter threadPainter = new ThreadPainter();
 		Traverser traverser = new Traverser(threadPainter);
 

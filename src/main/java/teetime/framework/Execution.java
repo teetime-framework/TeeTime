@@ -23,8 +23,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.slf4j.Logger;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import teetime.framework.scheduling.pushpullmodel.PushPullScheduling;
@@ -59,13 +59,7 @@ public final class Execution<T extends Configuration> {
 
 		@Override
 		public boolean cancel(final boolean mayInterruptIfRunning) {
-			if (this.execution.getState() == ExecutionState.COMPLETED) {
-				return false;
-			}
-			if (this.execution.getState() == ExecutionState.CANCELING) {
-				return false;
-			}
-			if (this.execution.getState() == ExecutionState.CANCELED) {
+			if ((this.execution.getState() == ExecutionState.COMPLETED) || (this.execution.getState() == ExecutionState.CANCELING) || (this.execution.getState() == ExecutionState.CANCELED)) {
 				return false;
 			}
 			if (this.execution.getState() == ExecutionState.INITIALIZED) {
@@ -234,7 +228,7 @@ public final class Execution<T extends Configuration> {
 	}
 
 	private static List<Configuration> configLoader(final String... args) {
-		final List<Configuration> instances = new ArrayList<Configuration>();
+		final List<Configuration> instances = new ArrayList<>();
 		for (final String each : args) {
 			try {
 				final Class<?> clazz = Class.forName(each);
@@ -262,7 +256,7 @@ public final class Execution<T extends Configuration> {
 	public static void main(final String... args) {
 		final List<Configuration> instances = Execution.configLoader(args);
 		for (final Configuration configuration : instances) {
-			new Execution<Configuration>(configuration).executeBlocking(); // NOPMD
+			new Execution<>(configuration).executeBlocking(); // NOPMD
 		}
 	}
 

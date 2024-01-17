@@ -26,7 +26,13 @@ import teetime.framework.AbstractStage;
 import teetime.framework.ITraverserVisitor;
 import teetime.framework.InstantiationPipe;
 import teetime.framework.Traverser.VisitorBehavior;
-import teetime.framework.pipe.*;
+import teetime.framework.pipe.AbstractSynchedPipe;
+import teetime.framework.pipe.AbstractUnsynchedPipe;
+import teetime.framework.pipe.BoundedSynchedPipe;
+import teetime.framework.pipe.DummyPipe;
+import teetime.framework.pipe.IPipe;
+import teetime.framework.pipe.UnboundedSynchedPipe;
+import teetime.framework.pipe.UnsynchedPipe;
 import teetime.framework.scheduling.PipeScheduler;
 
 /**
@@ -36,7 +42,7 @@ class A3PipeInstantiation implements ITraverserVisitor, PipeScheduler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(A3PipeInstantiation.class);
 
-	private final Set<IPipe<?>> visitedPipes = new HashSet<IPipe<?>>();
+	private final Set<IPipe<?>> visitedPipes = new HashSet<>();
 
 	@Override
 	public VisitorBehavior visit(final AbstractStage stage) {
@@ -73,15 +79,15 @@ class A3PipeInstantiation implements ITraverserVisitor, PipeScheduler {
 			instantiatedPipe = pipe;
 		} else if (!targetStage.isActive() || sourceStage == targetStage) { // NOPMD .equals() can't be used here
 			// normal or reflexive pipe => intra
-			instantiatedPipe = new UnsynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
+			instantiatedPipe = new UnsynchedPipe<>(pipe.getSourcePort(), pipe.getTargetPort());
 			LOGGER.debug("Connected (unsynch) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
 		} else if (pipe.capacity() == 0) {
 			// synchronized, unlimited capacity
-			instantiatedPipe = new UnboundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort());
+			instantiatedPipe = new UnboundedSynchedPipe<>(pipe.getSourcePort(), pipe.getTargetPort());
 			LOGGER.debug("Connected (unbounded) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
 		} else {
 			// synchronized, limited capacity
-			instantiatedPipe = new BoundedSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort(), pipe.capacity());
+			instantiatedPipe = new BoundedSynchedPipe<>(pipe.getSourcePort(), pipe.getTargetPort(), pipe.capacity());
 			LOGGER.debug("Connected (bounded) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
 		}
 

@@ -93,4 +93,4 @@ public class RNTFormating implements IFormatingStrategy {
 		return result.replace("\n", String.format("%n"));
 	}
 
-};
+}

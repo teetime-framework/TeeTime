@@ -31,7 +31,7 @@ public interface IMonitoringService<K, V extends IMonitoringData> {
 
 	/**
 	 * Add object to list of monitored elements.
-	 * 
+	 *
 	 * @param item
 	 *            object to be monitored
 	 */

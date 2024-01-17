@@ -28,7 +28,7 @@ public final class CircularList<T> {
 	private Node<T> currentNode;
 
 	public void add(final T value) {
-		Node<T> newNode = new Node<T>();
+		Node<T> newNode = new Node<>();
 		newNode.value = value;
 
 		if (this.headNode == null) { // newNode is the first node

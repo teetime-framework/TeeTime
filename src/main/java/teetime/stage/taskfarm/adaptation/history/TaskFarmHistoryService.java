@@ -73,8 +73,8 @@ public class TaskFarmHistoryService<I, O, T extends ITaskFarmDuplicable<I, O>> {
 	}
 
 	private double getSumOfPipePushThroughputs() {
-		this.lastPullThroughputs = new HashMap<IMonitorablePipe, Long>();
-		this.lastPushThroughputs = new HashMap<IMonitorablePipe, Long>();
+		this.lastPullThroughputs = new HashMap<>();
+		this.lastPushThroughputs = new HashMap<>();
 		double sum = 0; // NOPMD
 
 		try {

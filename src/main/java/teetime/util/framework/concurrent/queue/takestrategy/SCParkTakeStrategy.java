@@ -23,7 +23,7 @@ public final class SCParkTakeStrategy<E> implements TakeStrategy<E> {
 
 	public volatile int storeFence = 0; // NOCS
 
-	private final AtomicReference<Thread> t = new AtomicReference<Thread>(null);
+	private final AtomicReference<Thread> t = new AtomicReference<>(null);
 
 	@Override
 	// Make sure the offer is visible before unpark

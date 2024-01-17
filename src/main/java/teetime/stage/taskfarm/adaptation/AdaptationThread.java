@@ -18,7 +18,9 @@ package teetime.stage.taskfarm.adaptation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.stage.taskfarm.*;
+import teetime.stage.taskfarm.DynamicTaskFarmStage;
+import teetime.stage.taskfarm.ITaskFarmDuplicable;
+import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.adaptation.analysis.TaskFarmAnalysisService;
 import teetime.stage.taskfarm.adaptation.history.TaskFarmHistoryService;
 import teetime.stage.taskfarm.adaptation.reconfiguration.TaskFarmReconfigurationService;
@@ -61,9 +63,9 @@ public class AdaptationThread<I, O, T extends ITaskFarmDuplicable<I, O>> extends
 	 *            given task farm instance
 	 */
 	public AdaptationThread(final DynamicTaskFarmStage<I, O, T> taskFarmStage) {
-		this.historyService = new TaskFarmHistoryService<I, O, T>(taskFarmStage);
-		this.analysisService = new TaskFarmAnalysisService<I, O, T>(taskFarmStage.getConfiguration());
-		this.reconfigurationService = new TaskFarmReconfigurationService<I, O, T>(taskFarmStage);
+		this.historyService = new TaskFarmHistoryService<>(taskFarmStage);
+		this.analysisService = new TaskFarmAnalysisService<>(taskFarmStage.getConfiguration());
+		this.reconfigurationService = new TaskFarmReconfigurationService<>(taskFarmStage);
 		this.taskFarmStageConfiguration = taskFarmStage.getConfiguration();
 
 		this.taskFarmMonitoringService = new SingleTaskFarmMonitoringService(taskFarmStage, historyService);

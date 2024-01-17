@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractExceptionListenerFactory<T extends AbstractExceptionListener> {
 
-	private final Map<Thread, List<Exception>> threadExceptionsMap = new ConcurrentHashMap<Thread, List<Exception>>();
+	private final Map<Thread, List<Exception>> threadExceptionsMap = new ConcurrentHashMap<>();
 
 	protected abstract T createInstance();
 

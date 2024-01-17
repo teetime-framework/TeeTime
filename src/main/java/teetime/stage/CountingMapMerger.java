@@ -31,7 +31,7 @@ import teetime.stage.util.CountingMap;
  */
 public final class CountingMapMerger<T> extends AbstractConsumerStage<CountingMap<T>> {
 
-	private final CountingMap<T> mergedResult = new CountingMap<T>();
+	private final CountingMap<T> mergedResult = new CountingMap<>();
 
 	@Override
 	protected void execute(final CountingMap<T> element) {

@@ -28,12 +28,12 @@ public final class CommittableResizableArrayQueue<T> implements CommittableQueue
 	@SuppressWarnings("unchecked")
 	public CommittableResizableArrayQueue(final Object emptyObject, final int initialCapacity) {
 		super();
-		this.arrayPool = new ArrayPool<T>();
+		this.arrayPool = new ArrayPool<>();
 		// this.MIN_CAPACITY = initialCapacity + 1;
 		this.elements = this.arrayPool.acquire(initialCapacity + 1);
 
 		this.elements[0] = (T) emptyObject; // optimization: avoids the use of an index out-of-bounds check
-		this.clear(); 
+		this.clear();
 	}
 
 	@Override

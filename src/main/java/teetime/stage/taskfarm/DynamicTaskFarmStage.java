@@ -51,7 +51,7 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicTaskFarmStage.class);
 
 	/** configuration of the task farm **/
-	private final TaskFarmConfiguration<I, O, T> configuration = new TaskFarmConfiguration<I, O, T>();
+	private final TaskFarmConfiguration<I, O, T> configuration = new TaskFarmConfiguration<>();
 
 	/**
 	 * Creates a task farm using <i>n</i> worker stages with a pipe capacity of 100, where <i>n</i> is
@@ -90,7 +90,7 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 	 *            the initial number of stages used by the task farm
 	 */
 	public DynamicTaskFarmStage(final T workerStage, final int initialNumOfStages, final int pipeCapacity) {
-		super(workerStage, initialNumOfStages, pipeCapacity, new DynamicDistributor<I>(), new DynamicMerger<O>(new NonBlockingFiniteRoundRobinStrategy()));
+		super(workerStage, initialNumOfStages, pipeCapacity, new DynamicDistributor<>(), new DynamicMerger<>(new NonBlockingFiniteRoundRobinStrategy()));
 
 		// for (ITaskFarmDuplicable<I, O> workerStage : getWorkerStages()) {
 		// includedStage.setTaskFarmStage(this);
@@ -124,13 +124,13 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 		final ITaskFarmDuplicable<I, O> newStage = getBasicEnclosedStage().duplicate();
 		// newStage.setTaskFarmStage(this);
 
-		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<I>(newStage.getInputPort(),
+		final CreatePortActionDistributor<I> distributorPortAction = new CreatePortActionDistributor<>(newStage.getInputPort(),
 				getPipeCapacity());
 		getDistributor().addPortActionRequest(distributorPortAction);
 
 		distributorPortAction.waitForCompletion();
 
-		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<O>(newStage.getOutputPort(),
+		final CreatePortActionMerger<O> mergerPortAction = new CreatePortActionMerger<>(newStage.getOutputPort(),
 				getPipeCapacity());
 		getMerger().addPortActionRequest(mergerPortAction);
 
@@ -175,7 +175,7 @@ public class DynamicTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> ext
 		ITaskFarmDuplicable<I, O> stageToBeRemoved = getWorkerStages().get(getStageIndexWithLeastRemainingInput());
 		OutputPort<? extends I> distributorOutputPort = this.getRemoveableDistributorOutputPort(stageToBeRemoved);
 
-		final RemovePortActionDistributor<I> distributorPortAction = new RemovePortActionDistributor<I>(distributorOutputPort);
+		final RemovePortActionDistributor<I> distributorPortAction = new RemovePortActionDistributor<>(distributorOutputPort);
 		getDistributor().addPortActionRequest(distributorPortAction);
 		getWorkerStages().remove(stageToBeRemoved);
 

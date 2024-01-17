@@ -50,7 +50,7 @@ public class Traverser {
 		}
 	}
 
-	private final Set<AbstractStage> visitedStages = new HashSet<AbstractStage>();
+	private final Set<AbstractStage> visitedStages = new HashSet<>();
 
 	private final ITraverserVisitor traverserVisitor;
 
@@ -66,11 +66,7 @@ public class Traverser {
 	}
 
 	public void traverse(final AbstractStage stage) {
-		if (endOfTraverse.isMet(stage)) {
-			return; // NOPMD sequential termination conditions are more readable
-		}
-
-		if (!visitedStages.add(stage)) {
+		if (endOfTraverse.isMet(stage) || !visitedStages.add(stage)) {
 			return;
 		}
 

@@ -18,7 +18,9 @@ package teetime.stage.taskfarm;
 import java.util.ArrayList;
 import java.util.List;
 
-import teetime.framework.*;
+import teetime.framework.CompositeStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.stage.basic.ITransformation;
 import teetime.stage.basic.distributor.Distributor;
 import teetime.stage.basic.merger.Merger;
@@ -66,7 +68,7 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Co
 	}
 
 	public TaskFarmStage(final T workerStage, final int numberStages, final int pipeCapacity) {
-		this(workerStage, numberStages, pipeCapacity, new Distributor<I>(), new Merger<O>());
+		this(workerStage, numberStages, pipeCapacity, new Distributor<>(), new Merger<>());
 	}
 
 	protected TaskFarmStage(final T workerStage, final int numberStages, final int pipeCapacity, final Distributor<I> distributor, final Merger<O> merger) {
@@ -82,7 +84,7 @@ public class TaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> extends Co
 		}
 		this.distributor = distributor;
 		this.merger = merger;
-		this.workerStages = new ArrayList<ITaskFarmDuplicable<I, O>>();
+		this.workerStages = new ArrayList<>();
 
 		this.init(workerStage, numberStages, pipeCapacity);
 	}

@@ -31,7 +31,7 @@ import teetime.stage.util.CountingMap;
  */
 public final class MappingCounter<T> extends AbstractTransformation<T, CountingMap<T>> {
 
-	private final CountingMap<T> counter = new CountingMap<T>();
+	private final CountingMap<T> counter = new CountingMap<>();
 
 	@Override
 	protected void execute(final T element) {

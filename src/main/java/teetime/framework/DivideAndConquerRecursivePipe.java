@@ -48,9 +48,9 @@ class DivideAndConquerRecursivePipe<P extends AbstractDivideAndConquerProblem<P,
 		this.sourcePort = sourcePort;
 		this.targetPort = targetPort;
 
-		DivideAndConquerIntermediateStage<P, S> divideAndConquerIntermediateStage = new DivideAndConquerIntermediateStage<P, S>();
-		outputPipe = new UnsynchedPipe<P>(sourcePort, divideAndConquerIntermediateStage.getInputPort());
-		new UnsynchedPipe<S>(divideAndConquerIntermediateStage.getOutputPort(), targetPort);
+		DivideAndConquerIntermediateStage<P, S> divideAndConquerIntermediateStage = new DivideAndConquerIntermediateStage<>();
+		outputPipe = new UnsynchedPipe<>(sourcePort, divideAndConquerIntermediateStage.getInputPort());
+		new UnsynchedPipe<>(divideAndConquerIntermediateStage.getOutputPort(), targetPort);
 
 		sourcePort.setPipe(this);
 	}

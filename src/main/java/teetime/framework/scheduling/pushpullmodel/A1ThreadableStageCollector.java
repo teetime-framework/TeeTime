@@ -29,7 +29,7 @@ import teetime.framework.pipe.DummyPipe;
  */
 class A1ThreadableStageCollector implements ITraverserVisitor {
 
-	private final Set<AbstractStage> threadableStages = new HashSet<AbstractStage>();
+	private final Set<AbstractStage> threadableStages = new HashSet<>();
 
 	public Set<AbstractStage> getThreadableStages() {
 		return threadableStages;

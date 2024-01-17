@@ -68,7 +68,7 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 	}
 
 	public StaticTaskFarmStage(final T workerStage, final int numberStages, final int pipeCapacity) {
-		this(workerStage, numberStages, pipeCapacity, new Distributor<I>(), new Merger<O>());
+		this(workerStage, numberStages, pipeCapacity, new Distributor<>(), new Merger<>());
 	}
 
 	protected StaticTaskFarmStage(final T workerStage, final int numberStages, final int pipeCapacity, final Distributor<I> distributor, final Merger<O> merger) {
@@ -84,7 +84,7 @@ public class StaticTaskFarmStage<I, O, T extends ITaskFarmDuplicable<I, O>> exte
 		}
 		this.distributor = distributor;
 		this.merger = merger;
-		this.workerStages = new ArrayList<ITaskFarmDuplicable<I, O>>();
+		this.workerStages = new ArrayList<>();
 
 		this.init(workerStage, numberStages, pipeCapacity);
 	}

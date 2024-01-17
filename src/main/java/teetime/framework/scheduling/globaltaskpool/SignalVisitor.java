@@ -15,7 +15,11 @@
  */
 package teetime.framework.scheduling.globaltaskpool;
 
-import teetime.framework.*;
+import teetime.framework.AbstractPort;
+import teetime.framework.AbstractStage;
+import teetime.framework.ITraverserVisitor;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.framework.Traverser.VisitorBehavior;
 import teetime.framework.pipe.AbstractSynchedPipe;
 import teetime.framework.pipe.DummyPipe;

@@ -17,18 +17,18 @@ package teetime.stage;
 
 import java.io.File;
 
-import teetime.framework.AbstractConsumerStage;
-import teetime.framework.OutputPort;
-
 import com.carrotsearch.hppc.ObjectObjectHashMap;
 import com.carrotsearch.hppc.ObjectObjectMap;
 import com.google.common.io.Files;
+
+import teetime.framework.AbstractConsumerStage;
+import teetime.framework.OutputPort;
 
 public final class FileExtensionSwitch extends AbstractConsumerStage<File> {
 
 	private final OutputPort<File> unknownFileExtensionOutputPort = createOutputPort(File.class);
 
-	private final ObjectObjectMap<String, OutputPort<File>> fileExtensions = new ObjectObjectHashMap<String, OutputPort<File>>();
+	private final ObjectObjectMap<String, OutputPort<File>> fileExtensions = new ObjectObjectHashMap<>();
 
 	@Override
 	protected void execute(final File file) {

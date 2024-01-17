@@ -30,7 +30,7 @@ public class MonitoringThread extends Thread {
 
 	private volatile boolean terminated;
 
-	private final List<AbstractPort<?>> monitoredPorts = new ArrayList<AbstractPort<?>>();
+	private final List<AbstractPort<?>> monitoredPorts = new ArrayList<>();
 
 	@Override
 	public void run() {

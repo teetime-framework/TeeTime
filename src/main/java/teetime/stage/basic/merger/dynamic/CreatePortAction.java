@@ -47,7 +47,7 @@ public class CreatePortAction<T> implements PortAction<DynamicMerger<T>> {
 	public void execute(final DynamicMerger<T> dynamicDistributor) {
 		InputPort<T> newInputPort = dynamicDistributor.getNewInputPort();
 
-		new BoundedSynchedPipe<T>(outputPort, newInputPort, capacity);
+		new BoundedSynchedPipe<>(outputPort, newInputPort, capacity);
 
 		condition.signalAll();
 	}

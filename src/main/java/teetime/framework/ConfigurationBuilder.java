@@ -38,7 +38,7 @@ public class ConfigurationBuilder {
 
 	private <O> ConfigurationBuilder.Connection<O> start(final AbstractProducerStage<O> stage) {
 		final OutputPort<O> outputPort = stage.getOutputPort();
-		return new Connection<O>(outputPort);
+		return new Connection<>(outputPort);
 	}
 
 	protected static <O> ConfigurationBuilder.Connection<O> create(final Configuration configuration, final AbstractProducerStage<O> stage) {
@@ -64,7 +64,7 @@ public class ConfigurationBuilder {
 
 			ConfigurationBuilder.this.configuration.connectPorts(this.lastPort, inputPort);
 
-			return new Connection<O>(outputPort);
+			return new Connection<>(outputPort);
 		}
 
 		public <S extends AbstractStage, O> Connection<O> to(final S stage, final Function<S, InputPort<I>> inputPort, final Function<S, OutputPort<O>> outputPort) {
@@ -107,7 +107,7 @@ public class ConfigurationBuilder {
 
 		public static <S extends AbstractStage, I, O> TransfomerStage<I, O> of(final S stage, final Function<S, InputPort<I>> inputPort,
 				final Function<S, OutputPort<O>> outputPort) {
-			return new TransfomerStage<I, O>(inputPort.apply(stage), outputPort.apply(stage));
+			return new TransfomerStage<>(inputPort.apply(stage), outputPort.apply(stage));
 		}
 
 	}

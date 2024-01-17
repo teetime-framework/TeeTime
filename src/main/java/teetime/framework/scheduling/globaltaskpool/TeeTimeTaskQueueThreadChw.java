@@ -21,7 +21,11 @@ import java.util.concurrent.Semaphore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.*;
+import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
+import teetime.framework.StageFacade;
+import teetime.framework.StageState;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.scheduling.CountDownAndUpLatch;
 import teetime.framework.signal.ISignal;

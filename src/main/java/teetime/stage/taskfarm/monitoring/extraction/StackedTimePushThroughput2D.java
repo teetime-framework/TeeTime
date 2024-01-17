@@ -20,6 +20,7 @@ import java.io.Writer;
 
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService.PipeMonitoringDataContainer;
+import teetime.stage.taskfarm.monitoring.PipeMonitoringService.ValueWithId;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
 /**
@@ -49,9 +50,9 @@ public class StackedTimePushThroughput2D extends AbstractStackedCSVExporter {
 		entryStrings[0] = Long.toString(container.getTime());
 
 		// add values while keeping pipe throughput consistent with pipe identity
-		for (int i = 0; i < container.getPushThroughputsWithPipeIds().size(); i++) {
-			Integer pipeId = container.getPushThroughputsWithPipeIds().get(i).getId();
-			Long value = container.getPushThroughputsWithPipeIds().get(i).getValue();
+		for (ValueWithId<Long> element : container.getPushThroughputsWithPipeIds()) {
+			Integer pipeId = element.getId();
+			Long value = element.getValue();
 
 			entryStrings[pipeId + 1] = Long.toString(value);
 		}

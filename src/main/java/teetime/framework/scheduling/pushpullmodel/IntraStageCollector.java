@@ -26,7 +26,7 @@ import teetime.framework.pipe.DummyPipe;
 
 class IntraStageCollector implements ITraverserVisitor {
 
-	private final Set<AbstractStage> intraStages = new HashSet<AbstractStage>();
+	private final Set<AbstractStage> intraStages = new HashSet<>();
 	private final AbstractStage startStage;
 
 	public IntraStageCollector(final AbstractStage startStage) {

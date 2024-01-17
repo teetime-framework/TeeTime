@@ -15,7 +15,9 @@
  */
 package teetime.framework.scheduling.pushpullmodel;
 
-import teetime.framework.*;
+import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
+import teetime.framework.StageFacade;
 import teetime.framework.signal.ISignal;
 import teetime.framework.signal.TerminatingSignal;
 

@@ -33,9 +33,9 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 	/** time of monitoring start to calculate elapsed time **/
 	private long startingTimestamp = INIT;
 	/** list of monitored pipes **/
-	private final List<IMonitorablePipe> pipes = new LinkedList<IMonitorablePipe>();
+	private final List<IMonitorablePipe> pipes = new LinkedList<>();
 	/** monitored data **/
-	private final List<PipeMonitoringDataContainer> containers = new LinkedList<PipeMonitoringDataContainer>();
+	private final List<PipeMonitoringDataContainer> containers = new LinkedList<>();
 	/** task farm history service to access the latest throughput measurement **/
 	private final TaskFarmHistoryService<?, ?, ?> history;
 
@@ -125,7 +125,7 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 		/** time of measurement **/
 		private final Long time;
 		/** data of all pipes for this measurement **/
-		private final List<PipeMonitoringData> monitoringDatas = new LinkedList<PipeMonitoringData>();
+		private final List<PipeMonitoringData> monitoringDatas = new LinkedList<>();
 
 		/**
 		 * Constructor.
@@ -151,9 +151,9 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 		 * @return push throughput measurements with their corresponding pipe ids
 		 */
 		public List<ValueWithId<Long>> getPushThroughputsWithPipeIds() {
-			List<ValueWithId<Long>> results = new LinkedList<ValueWithId<Long>>();
+			List<ValueWithId<Long>> results = new LinkedList<>();
 			for (PipeMonitoringData data : this.monitoringDatas) {
-				results.add(new ValueWithId<Long>(data.getPushThroughput(), data.getUniquePipeId()));
+				results.add(new ValueWithId<>(data.getPushThroughput(), data.getUniquePipeId()));
 			}
 			return results;
 		}
@@ -162,9 +162,9 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 		 * @return pull throughput measurements with their corresponding pipe ids
 		 */
 		public List<ValueWithId<Long>> getPullThroughputsWithPipeIds() {
-			List<ValueWithId<Long>> results = new LinkedList<ValueWithId<Long>>();
+			List<ValueWithId<Long>> results = new LinkedList<>();
 			for (PipeMonitoringData data : this.monitoringDatas) {
-				results.add(new ValueWithId<Long>(data.getPullThroughput(), data.getUniquePipeId()));
+				results.add(new ValueWithId<>(data.getPullThroughput(), data.getUniquePipeId()));
 			}
 			return results;
 		}
@@ -173,9 +173,9 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 		 * @return pipe size measurements with their corresponding pipe ids
 		 */
 		public List<ValueWithId<Integer>> getSizesWithPipeIds() {
-			List<ValueWithId<Integer>> results = new LinkedList<ValueWithId<Integer>>();
+			List<ValueWithId<Integer>> results = new LinkedList<>();
 			for (PipeMonitoringData data : this.monitoringDatas) {
-				results.add(new ValueWithId<Integer>(data.getSize(), data.getUniquePipeId()));
+				results.add(new ValueWithId<>(data.getSize(), data.getUniquePipeId()));
 			}
 			return results;
 		}
@@ -184,9 +184,9 @@ public class PipeMonitoringService implements IMonitoringService<IMonitorablePip
 		 * @return pipe capacity measurements with their corresponding pipe ids
 		 */
 		public List<ValueWithId<Integer>> getCapacitiesWithPipeIds() {
-			List<ValueWithId<Integer>> results = new LinkedList<ValueWithId<Integer>>();
+			List<ValueWithId<Integer>> results = new LinkedList<>();
 			for (PipeMonitoringData data : this.monitoringDatas) {
-				results.add(new ValueWithId<Integer>(data.getCapacity(), data.getUniquePipeId()));
+				results.add(new ValueWithId<>(data.getCapacity(), data.getUniquePipeId()));
 			}
 			return results;
 		}

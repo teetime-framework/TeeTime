@@ -48,9 +48,9 @@ public abstract class AbstractSynchedPipe<T> extends AbstractPipe<T> {
 	protected AbstractSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
 		final Queue<ISignal> localSignalQueue =  new SpscLinkedQueue<>();
-		final PutStrategy<ISignal> putStrategy = new YieldPutStrategy<ISignal>();
-		final TakeStrategy<ISignal> takeStrategy = new SCParkTakeStrategy<ISignal>();
-		signalQueue = new PCBlockingQueue<ISignal>(localSignalQueue, putStrategy, takeStrategy);
+		final PutStrategy<ISignal> putStrategy = new YieldPutStrategy<>();
+		final TakeStrategy<ISignal> takeStrategy = new SCParkTakeStrategy<>();
+		signalQueue = new PCBlockingQueue<>(localSignalQueue, putStrategy, takeStrategy);
 	}
 
 	@Override

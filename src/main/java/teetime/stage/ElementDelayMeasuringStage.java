@@ -28,7 +28,7 @@ public final class ElementDelayMeasuringStage<T> extends AbstractFilter<T> {
 	private long numPassedElements;
 	private long lastTimestampInNs;
 
-	private final List<Long> delays = new LinkedList<Long>();
+	private final List<Long> delays = new LinkedList<>();
 
 	@Override
 	protected void execute(final T element) {

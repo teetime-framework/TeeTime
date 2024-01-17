@@ -28,7 +28,7 @@ public class Delay<T> extends AbstractStage {
 	private final InputPort<Long> timestampTriggerInputPort = this.createInputPort();
 	private final OutputPort<T> outputPort = this.createOutputPort();
 
-	private final List<T> bufferedElements = new ArrayList<T>();
+	private final List<T> bufferedElements = new ArrayList<>();
 
 	@Override
 	protected void execute() {

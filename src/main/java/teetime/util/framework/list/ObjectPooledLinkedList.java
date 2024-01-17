@@ -17,9 +17,9 @@ package teetime.util.framework.list;
 
 public final class ObjectPooledLinkedList<T> {
 
-	private static final ListContainer<?> BOTTOM = new ListContainer<Object>();
+	private static final ListContainer<?> BOTTOM = new ListContainer<>();
 
-	private final ObjectPool<ListContainer<T>> objectPool = new ListContainerPool<T>(10);
+	private final ObjectPool<ListContainer<T>> objectPool = new ListContainerPool<>(10);
 	private ListContainer<T> top;
 	private int size;
 

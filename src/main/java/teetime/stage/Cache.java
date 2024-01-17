@@ -24,7 +24,7 @@ import teetime.util.StopWatch;
 
 public class Cache<T> extends AbstractFilter<T> {
 
-	private final List<T> cachedObjects = new LinkedList<T>();
+	private final List<T> cachedObjects = new LinkedList<>();
 
 	@Override
 	protected void execute(final T element) {

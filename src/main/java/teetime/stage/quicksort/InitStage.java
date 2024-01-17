@@ -26,5 +26,5 @@ class InitStage extends AbstractTransformation<int[], QuicksortTaskContext> {
 
 		outputPort.send(quicksortTaskContext);
 	}
-	
+
 }

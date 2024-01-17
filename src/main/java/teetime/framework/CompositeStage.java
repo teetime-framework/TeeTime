@@ -79,7 +79,7 @@ public class CompositeStage {
 		if (targetPort.getPipe() != null || sourcePort.getPipe() != DummyPipe.INSTANCE) {
 			throw new IllegalStateException("1005 - Ports may not be reconnected");
 		}
-		new InstantiationPipe<T>(sourcePort, targetPort, capacity);
+		new InstantiationPipe<>(sourcePort, targetPort, capacity);
 	}
 
 	protected <T> InputPort<T> createInputPort(final InputPort<T> subStageInputPort) {

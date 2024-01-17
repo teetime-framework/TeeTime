@@ -52,7 +52,7 @@ public class Configuration extends CompositeStage {
 	public Configuration(final AbstractExceptionListenerFactory<?> factory) {
 		this.factory = factory;
 		this.context = new ConfigurationContext(this);
-		this.startStages = new HashSet<AbstractStage>();
+		this.startStages = new HashSet<>();
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class Configuration extends CompositeStage {
 	public Configuration(final AbstractExceptionListenerFactory<?> factory, final ConfigurationContext context) {
 		this.factory = factory;
 		this.context = context;
-		this.startStages = new HashSet<AbstractStage>();
+		this.startStages = new HashSet<>();
 	}
 
 	boolean isInitialized() {

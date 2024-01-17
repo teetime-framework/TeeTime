@@ -29,7 +29,7 @@ public final class ElementThroughputMeasuringStage<T> extends AbstractFilter<T> 
 	private long numPassedElements;
 	private long lastTimestampInNs;
 
-	private final List<Long> throughputs = new LinkedList<Long>();
+	private final List<Long> throughputs = new LinkedList<>();
 
 	@Override
 	protected void execute(final T element) {

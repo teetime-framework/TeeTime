@@ -46,7 +46,7 @@ public class TaskFarmReconfigurationService<I, O, T extends ITaskFarmDuplicable<
 	 */
 	public TaskFarmReconfigurationService(final DynamicTaskFarmStage<I, O, T> taskFarmStage) {
 		this.taskFarmStage = taskFarmStage;
-		this.reconfigurationCommandService = new TaskFarmReconfigurationCommandService<I, O, T>(taskFarmStage);
+		this.reconfigurationCommandService = new TaskFarmReconfigurationCommandService<>(taskFarmStage);
 	}
 
 	/**

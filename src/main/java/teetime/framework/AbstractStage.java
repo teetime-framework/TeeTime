@@ -15,7 +15,12 @@
  */
 package teetime.framework;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,7 +48,7 @@ import teetime.util.framework.port.PortRemovedListener;
  */
 public abstract class AbstractStage {
 
-	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<String, Integer>();
+	private static final ConcurrentMap<String, Integer> INSTANCES_COUNTER = new ConcurrentHashMap<>();
 
 	private static final Marker ON_STATE_CHANGE_MARKER = MarkerFactory.getMarker("ON_STATE_CHANGE_MARKER");
 
@@ -62,11 +67,11 @@ public abstract class AbstractStage {
 	/** the scheduler used for this stage and all of the other stages */
 	private TeeTimeScheduler scheduler;
 
-	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<Class<? extends ISignal>, Set<InputPort<?>>>();
-	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<Class<? extends ISignal>>();
+	private final Map<Class<? extends ISignal>, Set<InputPort<?>>> signalMap = new HashMap<>();
+	private final Set<Class<? extends ISignal>> triggeredSignalTypes = new HashSet<>();
 
-	private final PortList<InputPort<?>> inputPorts = new PortList<InputPort<?>>();
-	private final PortList<OutputPort<?>> outputPorts = new PortList<OutputPort<?>>();
+	private final PortList<InputPort<?>> inputPorts = new PortList<>();
+	private final PortList<OutputPort<?>> outputPorts = new PortList<>();
 
 	private boolean calledOnTerminating = false;
 	private boolean calledOnStarting = false;
@@ -91,7 +96,7 @@ public abstract class AbstractStage {
 	 * A list which save a timestamp and an associated state (active or inactive).
 	 * This Information can be used for Bottleneck analysis.
 	 */
-	private final List<StateChange> states = new ArrayList<StateChange>();
+	private final List<StateChange> states = new ArrayList<>();
 
 	private StateChange lastState = new StateChange(StageActivationState.INITIALIZED, System.nanoTime());
 
@@ -320,7 +325,7 @@ public abstract class AbstractStage {
 		if (signalMap.containsKey(signalClass)) {
 			signalReceivedInputPorts = signalMap.get(signalClass);
 		} else {
-			signalReceivedInputPorts = new HashSet<InputPort<?>>();
+			signalReceivedInputPorts = new HashSet<>();
 			signalMap.put(signalClass, signalReceivedInputPorts);
 		}
 
@@ -550,7 +555,7 @@ public abstract class AbstractStage {
 	 * @return the newly added InputPort
 	 */
 	protected <T> InputPort<T> createInputPort(final Class<T> type, final String name) {
-		final InputPort<T> inputPort = new InputPort<T>(type, this, name);
+		final InputPort<T> inputPort = new InputPort<>(type, this, name);
 		inputPorts.add(inputPort);
 		// numOpenedInputPorts.incrementAndGet();
 		numOpenedInputPorts++;
@@ -621,7 +626,7 @@ public abstract class AbstractStage {
 	 * @return the newly added OutputPort
 	 */
 	protected <T> OutputPort<T> createOutputPort(final Class<T> type, final String name) {
-		final OutputPort<T> outputPort = new OutputPort<T>(type, this, name);
+		final OutputPort<T> outputPort = new OutputPort<>(type, this, name);
 		outputPorts.add(outputPort);
 		return outputPort;
 	}

@@ -108,7 +108,7 @@ public class QuicksortProblem extends AbstractDivideAndConquerProblem<QuicksortP
 			}
 		}
 		// recursively sort two sub parts
-		return new DividedDCProblem<QuicksortProblem>(
+		return new DividedDCProblem<>(
 				new QuicksortProblem(this.getID(), low, highPointer, numbers),
 				new QuicksortProblem(this.getID(), lowPointer, high, numbers));
 	}

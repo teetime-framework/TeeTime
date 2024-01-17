@@ -24,9 +24,9 @@ import teetime.framework.AbstractPort;
 
 public class PortList<T extends AbstractPort<?>> {
 
-	private final List<T> openedPorts = new ArrayList<T>();
+	private final List<T> openedPorts = new ArrayList<>();
 
-	private final Set<PortRemovedListener<T>> portsRemovedListeners = new HashSet<PortRemovedListener<T>>();
+	private final Set<PortRemovedListener<T>> portsRemovedListeners = new HashSet<>();
 
 	public List<T> getOpenedPorts() {
 		return openedPorts;

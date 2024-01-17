@@ -37,7 +37,7 @@ public class SingleTaskFarmMonitoringService implements IMonitoringService<Dynam
 	private long startingTimestamp = INIT;
 
 	/** monitored data **/
-	private final List<TaskFarmMonitoringData> monitoredDatas = new LinkedList<TaskFarmMonitoringData>();
+	private final List<TaskFarmMonitoringData> monitoredDatas = new LinkedList<>();
 	/** monitored task farm **/
 	private final DynamicTaskFarmStage<?, ?, ?> taskFarmStage;
 	/** task farm history service to access the latest throughput measurement **/

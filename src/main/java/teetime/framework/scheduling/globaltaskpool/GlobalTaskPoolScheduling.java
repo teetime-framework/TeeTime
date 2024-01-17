@@ -16,14 +16,25 @@
 package teetime.framework.scheduling.globaltaskpool;
 
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jctools.util.Pow2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.*;
+import teetime.framework.AbstractStage;
+import teetime.framework.BreadthFirstTraverser;
+import teetime.framework.Configuration;
+import teetime.framework.ConfigurationFacade;
+import teetime.framework.StageFacade;
+import teetime.framework.TeeTimeScheduler;
+import teetime.framework.Traverser;
 import teetime.framework.exceptionHandling.AbstractExceptionListener;
 import teetime.framework.exceptionHandling.AbstractExceptionListenerFactory;
 import teetime.framework.pipe.AbstractSynchedPipe;
@@ -53,7 +64,7 @@ public class GlobalTaskPoolScheduling implements TeeTimeScheduler, PipeScheduler
 	private static final int DEFAULT_NUM_OF_EXECUTIONS = 1;
 
 	/** (synchronized) */
-	private final List<AbstractStage> finiteProducerStages = Collections.synchronizedList(new LinkedList<AbstractStage>());
+	private final List<AbstractStage> finiteProducerStages = Collections.synchronizedList(new LinkedList<>());
 	/** Contains all stages which have no predecessors or only terminated predecessors (synchronized) */
 	private final Set<AbstractStage> frontStages = ConcurrentHashMap.newKeySet();
 

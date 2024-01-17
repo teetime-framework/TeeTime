@@ -15,10 +15,18 @@
  */
 package teetime.framework.performancelogging;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import teetime.framework.AbstractStage;
 import teetime.framework.performancelogging.formatstrategy.CumulativeActivePassivTime;
@@ -38,7 +46,7 @@ public class ActivationStateLogger {
 	/**
 	 * Set of registered Stages
 	 */
-	private final Set<AbstractStage> stages = new LinkedHashSet<AbstractStage>();
+	private final Set<AbstractStage> stages = new LinkedHashSet<>();
 	/**
 	 * An Integer that holds the longest of all registered simple Stage names.
 	 */

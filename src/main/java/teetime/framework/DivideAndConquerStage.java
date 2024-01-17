@@ -51,7 +51,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	private final int maxCopiedInstances;
 	private boolean firstExecution;
 
-	private final IntObjectMap<S> solutionBuffer = new IntObjectHashMap<S>();
+	private final IntObjectMap<S> solutionBuffer = new IntObjectHashMap<>();
 
 	private final InputPort<P> inputPort = this.createInputPort();
 	private final InputPort<S> leftInputPort = this.createInputPort();
@@ -88,8 +88,8 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	 *            positive number indicated the maximal number of threads
 	 */
 	DivideAndConquerStage(final AtomicInteger numCopiedInstances, final int maxCopiedInstances) {
-		new DivideAndConquerRecursivePipe<P, S>(this.leftOutputPort, this.leftInputPort);
-		new DivideAndConquerRecursivePipe<P, S>(this.rightOutputPort, this.rightInputPort);
+		new DivideAndConquerRecursivePipe<>(this.leftOutputPort, this.leftInputPort);
+		new DivideAndConquerRecursivePipe<>(this.rightOutputPort, this.rightInputPort);
 		this.numCopiedInstances = numCopiedInstances;
 		this.maxCopiedInstances = maxCopiedInstances;
 		this.firstExecution = true;
@@ -218,7 +218,7 @@ public class DivideAndConquerStage<P extends AbstractDivideAndConquerProblem<P, 
 	}
 
 	private void copy(final OutputPort<P> outputPort, final InputPort<S> inputPort, final DivideAndConquerStage<P, S> callingStage) {
-		DivideAndConquerStage<P, S> newStage = new DivideAndConquerStage<P, S>(numCopiedInstances, maxCopiedInstances);
+		DivideAndConquerStage<P, S> newStage = new DivideAndConquerStage<>(numCopiedInstances, maxCopiedInstances);
 		RuntimeServiceFacade.INSTANCE.connectPorts(outputPort, newStage.getInputPort());
 		RuntimeServiceFacade.INSTANCE.connectPorts(newStage.getOutputPort(), inputPort);
 		outputPort.sendSignal(new ValidatingSignal());

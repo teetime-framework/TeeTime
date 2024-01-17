@@ -23,7 +23,7 @@ import java.util.Set;
 public class BreadthFirstTraverser {
 
 	public void traverse(final AbstractStage startStage, final ITraverserVisitor traverserVisitor) {
-		final Set<AbstractStage> visitedStages = new HashSet<AbstractStage>();
+		final Set<AbstractStage> visitedStages = new HashSet<>();
 		final Queue<AbstractStage> queue = new LinkedList<>();
 
 		queue.add(startStage);

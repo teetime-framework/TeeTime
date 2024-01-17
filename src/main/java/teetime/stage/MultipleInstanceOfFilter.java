@@ -27,7 +27,7 @@ import teetime.framework.OutputPort;
  */
 public final class MultipleInstanceOfFilter<I> extends AbstractConsumerStage<I> {
 
-	private final Map<Class<? extends I>, OutputPort<? super I>> outputPortsMap = new HashMap<Class<? extends I>, OutputPort<? super I>>();
+	private final Map<Class<? extends I>, OutputPort<? super I>> outputPortsMap = new HashMap<>();
 	private Entry<Class<? extends I>, OutputPort<? super I>>[] cachedOutputPortsMaps;
 
 	@SuppressWarnings("unchecked")

@@ -15,12 +15,24 @@
  */
 package teetime.framework.scheduling.pushpullmodel;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.*;
+import teetime.framework.AbstractStage;
+import teetime.framework.Configuration;
+import teetime.framework.ConfigurationFacade;
+import teetime.framework.StageFacade;
+import teetime.framework.TeeTimeScheduler;
+import teetime.framework.TerminationStrategy;
+import teetime.framework.Traverser;
 import teetime.framework.scheduling.CountDownAndUpLatch;
 import teetime.framework.signal.ValidatingSignal;
 import teetime.framework.validation.AnalysisNotValidException;
@@ -32,11 +44,11 @@ public class PushPullScheduling implements TeeTimeScheduler, ThreadListener {
 	private static final StageFacade STAGE_FACADE = StageFacade.INSTANCE;
 	private static final ConfigurationFacade CONFIG_FACADE = ConfigurationFacade.INSTANCE;
 
-	private final List<Thread> consumerThreads = Collections.synchronizedList(new LinkedList<Thread>());
-	private final List<Thread> finiteProducerThreads = Collections.synchronizedList(new LinkedList<Thread>());
-	private final List<Thread> infiniteProducerThreads = Collections.synchronizedList(new LinkedList<Thread>());
+	private final List<Thread> consumerThreads = Collections.synchronizedList(new LinkedList<>());
+	private final List<Thread> finiteProducerThreads = Collections.synchronizedList(new LinkedList<>());
+	private final List<Thread> infiniteProducerThreads = Collections.synchronizedList(new LinkedList<>());
 
-	private final Set<AbstractStage> threadableStages = Collections.synchronizedSet(new HashSet<AbstractStage>());
+	private final Set<AbstractStage> threadableStages = Collections.synchronizedSet(new HashSet<>());
 
 	private final Configuration configuration;
 

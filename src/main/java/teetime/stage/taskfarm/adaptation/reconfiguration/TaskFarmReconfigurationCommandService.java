@@ -16,7 +16,9 @@
 package teetime.stage.taskfarm.adaptation.reconfiguration;
 
 import teetime.framework.pipe.IMonitorablePipe;
-import teetime.stage.taskfarm.*;
+import teetime.stage.taskfarm.DynamicTaskFarmStage;
+import teetime.stage.taskfarm.ITaskFarmDuplicable;
+import teetime.stage.taskfarm.TaskFarmConfiguration;
 import teetime.stage.taskfarm.adaptation.analysis.AbstractThroughputAlgorithm;
 
 /**

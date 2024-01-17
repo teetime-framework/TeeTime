@@ -21,7 +21,7 @@ import java.util.Map;
 public final class ArrayPool<T> {
 
 	// BETTER use a map with int as key due to performance
-	private final Map<Integer, T[]> cache = new HashMap<Integer, T[]>();
+	private final Map<Integer, T[]> cache = new HashMap<>();
 
 	@SuppressWarnings("unchecked")
 	public T[] acquire(final int capacity) {

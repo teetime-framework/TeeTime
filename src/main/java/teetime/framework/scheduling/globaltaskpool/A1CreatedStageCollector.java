@@ -18,7 +18,11 @@ package teetime.framework.scheduling.globaltaskpool;
 import java.util.HashSet;
 import java.util.Set;
 
-import teetime.framework.*;
+import teetime.framework.AbstractPort;
+import teetime.framework.AbstractStage;
+import teetime.framework.ITraverserVisitor;
+import teetime.framework.StageState;
+import teetime.framework.Traverser;
 import teetime.framework.pipe.DummyPipe;
 
 /**
@@ -26,7 +30,7 @@ import teetime.framework.pipe.DummyPipe;
  */
 class A1CreatedStageCollector implements ITraverserVisitor {
 
-	private final Set<AbstractStage> stages = new HashSet<AbstractStage>();
+	private final Set<AbstractStage> stages = new HashSet<>();
 
 	public Set<AbstractStage> getStages() {
 		return this.stages;

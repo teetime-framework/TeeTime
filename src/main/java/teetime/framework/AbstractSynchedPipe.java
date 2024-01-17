@@ -20,7 +20,9 @@ import java.util.concurrent.BlockingQueue;
 
 import org.jctools.queues.SpscLinkedQueue;
 
-import teetime.framework.signal.*;
+import teetime.framework.signal.ISignal;
+import teetime.framework.signal.StartingSignal;
+import teetime.framework.signal.ValidatingSignal;
 import teetime.util.framework.concurrent.queue.PCBlockingQueue;
 import teetime.util.framework.concurrent.queue.putstrategy.PutStrategy;
 import teetime.util.framework.concurrent.queue.putstrategy.YieldPutStrategy;
@@ -46,9 +48,9 @@ public abstract class AbstractSynchedPipe<T> extends AbstractPipe<T> {
 	protected AbstractSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort) {
 		super(sourcePort, targetPort);
 		final Queue<ISignal> localSignalQueue = new SpscLinkedQueue<>();
-		final PutStrategy<ISignal> putStrategy = new YieldPutStrategy<ISignal>();
-		final TakeStrategy<ISignal> takeStrategy = new SCParkTakeStrategy<ISignal>();
-		signalQueue = new PCBlockingQueue<ISignal>(localSignalQueue, putStrategy, takeStrategy);
+		final PutStrategy<ISignal> putStrategy = new YieldPutStrategy<>();
+		final TakeStrategy<ISignal> takeStrategy = new SCParkTakeStrategy<>();
+		signalQueue = new PCBlockingQueue<>(localSignalQueue, putStrategy, takeStrategy);
 	}
 
 	@Override

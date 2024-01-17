@@ -28,7 +28,7 @@ import teetime.util.stage.OneTimeCondition;
 
 public class CreatePortActionDistributor<T> implements PortAction<DynamicDistributor<T>> {
 
-	private final List<PortActionListener<T>> listeners = new ArrayList<PortActionListener<T>>();
+	private final List<PortActionListener<T>> listeners = new ArrayList<>();
 	private final OneTimeCondition condition = new OneTimeCondition();
 
 	private final InputPort<T> inputPort;
@@ -44,7 +44,7 @@ public class CreatePortActionDistributor<T> implements PortAction<DynamicDistrib
 	public void execute(final DynamicDistributor<T> dynamicDistributor) {
 		OutputPort<T> newOutputPort = dynamicDistributor.getNewOutputPort();
 
-		new BoundedSynchedPipe<T>(newOutputPort, inputPort, capacity);
+		new BoundedSynchedPipe<>(newOutputPort, inputPort, capacity);
 
 		newOutputPort.sendSignal(new ValidatingSignal());
 		newOutputPort.sendSignal(new StartingSignal());

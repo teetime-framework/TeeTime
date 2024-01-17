@@ -20,6 +20,7 @@ import java.io.Writer;
 
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService.PipeMonitoringDataContainer;
+import teetime.stage.taskfarm.monitoring.PipeMonitoringService.ValueWithId;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
 /**
@@ -51,9 +52,9 @@ public class StackedTimeSizeWithCapacity2D extends AbstractStackedCSVExporter {
 		entryStrings[1] = Integer.toString(container.getCapacitiesWithPipeIds().get(0).getValue());
 
 		// add values while keeping pipe size consistent with pipe identity
-		for (int i = 0; i < container.getSizesWithPipeIds().size(); i++) {
-			Integer pipeId = container.getSizesWithPipeIds().get(i).getId();
-			Integer value = container.getSizesWithPipeIds().get(i).getValue();
+		for (ValueWithId<Integer> element : container.getSizesWithPipeIds()) {
+			Integer pipeId = element.getId();
+			Integer value = element.getValue();
 
 			entryStrings[pipeId + 2] = Integer.toString(value);
 		}

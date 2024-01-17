@@ -39,7 +39,7 @@ public class TaskFarmMonitoringData implements IMonitoringData {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param time
 	 *            time of measurement
 	 * @param stages

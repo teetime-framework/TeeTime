@@ -15,7 +15,9 @@
  */
 package teetime.util.framework.concurrent.queue;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 

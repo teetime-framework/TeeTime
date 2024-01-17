@@ -17,7 +17,9 @@ package teetime.stage.basic.distributor.strategy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import teetime.framework.OutputPort;
 
@@ -65,7 +67,7 @@ public final class CloneStrategy implements IDistributorStrategy {
 	}
 
 	private static Collection<Method> findSetters(final Class<?> clazz) {
-		final List<Method> methods = new ArrayList<Method>();
+		final List<Method> methods = new ArrayList<>();
 
 		for (Method method : clazz.getMethods()) {
 			if (method.getReturnType() == Void.TYPE) {
@@ -81,7 +83,7 @@ public final class CloneStrategy implements IDistributorStrategy {
 	}
 
 	private static Collection<Method> findGetters(final Class<?> clazz) {
-		final List<Method> methods = new ArrayList<Method>();
+		final List<Method> methods = new ArrayList<>();
 
 		for (Method method : clazz.getMethods()) {
 			if (method.getReturnType() != Void.TYPE) {

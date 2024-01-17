@@ -41,7 +41,7 @@ public class WordCounter extends CompositeStage implements ITaskFarmDuplicable<S
 	public WordCounter() {
 		this.tokenizer = new Tokenizer("\\s");
 		final ToLowerCase toLowerCase = new ToLowerCase();
-		this.mapCounter = new MappingCounter<String>();
+		this.mapCounter = new MappingCounter<>();
 
 		connectPorts(this.tokenizer.getOutputPort(), toLowerCase.getInputPort());
 		connectPorts(toLowerCase.getOutputPort(), this.mapCounter.getInputPort());

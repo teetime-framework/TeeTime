@@ -31,7 +31,7 @@ import com.carrotsearch.hppc.procedures.ObjectIntProcedure;
  */
 public final class CountingMap<T> {
 
-	/* default */final ObjectIntMap<T> map = new ObjectIntHashMap<T>();
+	/* default */final ObjectIntMap<T> map = new ObjectIntHashMap<>();
 
 	private final ObjectIntProcedure<? super T> procedure = new ObjectIntProcedure<T>() {
 		@Override

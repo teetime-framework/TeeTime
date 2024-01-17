@@ -57,7 +57,7 @@ public final class RuntimeServiceFacade {
 					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
 		}
 		// TODO: unbounded?
-		new UnboundedSynchedPipe<T>(sourcePort, targetPort);
+		new UnboundedSynchedPipe<>(sourcePort, targetPort);
 	}
 
 	/**
@@ -77,7 +77,7 @@ public final class RuntimeServiceFacade {
 			LOGGER.warn("Overwriting existing pipe while connecting stages " +
 					sourcePort.getOwningStage().getId() + " and " + targetPort.getOwningStage().getId() + ".");
 		}
-		new BoundedSynchedPipe<T>(sourcePort, targetPort, capacity);
+		new BoundedSynchedPipe<>(sourcePort, targetPort, capacity);
 	}
 
 }

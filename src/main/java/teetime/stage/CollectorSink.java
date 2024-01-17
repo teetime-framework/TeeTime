@@ -36,7 +36,7 @@ public final class CollectorSink<T> extends AbstractConsumerStage<T> {
 	 * Creates a new {@link CollectorSink} with an empty {@link ArrayList}.
 	 */
 	public CollectorSink() {
-		this(new ArrayList<T>());
+		this(new ArrayList<>());
 	}
 
 	public CollectorSink(final List<T> list) {

@@ -21,7 +21,11 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import teetime.framework.*;
+import teetime.framework.AbstractPort;
+import teetime.framework.AbstractStage;
+import teetime.framework.ITraverserVisitor;
+import teetime.framework.InstantiationPipe;
+import teetime.framework.Traverser;
 import teetime.framework.pipe.DummyPipe;
 import teetime.framework.pipe.IPipe;
 import teetime.framework.scheduling.PipeScheduler;
@@ -33,7 +37,7 @@ class A3PipeInstantiation implements ITraverserVisitor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(A3PipeInstantiation.class);
 
-	private final Set<IPipe<?>> visitedPipes = new HashSet<IPipe<?>>();
+	private final Set<IPipe<?>> visitedPipes = new HashSet<>();
 
 	private final PipeScheduler scheduler;
 	private final int requestedCapcity;
@@ -73,7 +77,7 @@ class A3PipeInstantiation implements ITraverserVisitor {
 			return;
 		}
 
-		BoundedMpMcSynchedPipe<T> synchedPipe = new BoundedMpMcSynchedPipe<T>(pipe.getSourcePort(), pipe.getTargetPort(), requestedCapcity);
+		BoundedMpMcSynchedPipe<T> synchedPipe = new BoundedMpMcSynchedPipe<>(pipe.getSourcePort(), pipe.getTargetPort(), requestedCapcity);
 		synchedPipe.setScheduler(scheduler);
 		LOGGER.debug("Connected (bounded MpMc) {} and {}", pipe.getSourcePort(), pipe.getTargetPort());
 	}

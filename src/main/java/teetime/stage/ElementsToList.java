@@ -24,7 +24,7 @@ public final class ElementsToList<I> extends AbstractTransformation<I, List<I>> 
 
 	private final int size;
 
-	private final List<I> cachedObjects = new LinkedList<I>();
+	private final List<I> cachedObjects = new LinkedList<>();
 
 	public ElementsToList(final int size) {
 		this.size = size;
