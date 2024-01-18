@@ -50,6 +50,7 @@ public class TokenizerTest {
 	private static final File INPUT = new File("src/test/resources/data/input.txt");
 
 	public TokenizerTest() {
+		// empty constructor
 	}
 
 	@Test

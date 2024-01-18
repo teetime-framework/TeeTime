@@ -26,7 +26,8 @@ import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
 final class ExtractorTestHelper {
 
-	private ExtractorTestHelper() {}
+	private ExtractorTestHelper() {
+	}
 
 	static PipeMonitoringService generate4PipeMonitoringServiceWithBehavior() {
 		ExtractionTestPipe<Integer> pipe1 = new ExtractionTestPipe<Integer>();
@@ -121,19 +122,18 @@ final class ExtractorTestHelper {
 
 	static SingleTaskFarmMonitoringService generateEmptySingleTaskFarmMonitoringService() {
 		DynamicTaskFarmStage<?, ?, ?> taskFarmStage = createDummyTaskFarm();
-		SingleTaskFarmMonitoringService service = new SingleTaskFarmMonitoringService(taskFarmStage, null);
-
-		return service;
+		return new SingleTaskFarmMonitoringService(taskFarmStage, null);
 	}
 
 	private static DynamicTaskFarmStage<?, ?, ?> createDummyTaskFarm() {
 		DynamicTaskFarmStage<Integer, Integer, ITaskFarmDuplicable<Integer, Integer>> taskFarmStage;
-		taskFarmStage = new DynamicTaskFarmStage<Integer, Integer, ITaskFarmDuplicable<Integer, Integer>>(createDummyEnclosedStage(), 1);
+		taskFarmStage = new DynamicTaskFarmStage<Integer, Integer, ITaskFarmDuplicable<Integer, Integer>>(
+				createDummyEnclosedStage(), 1);
 		return taskFarmStage;
 	}
 
 	private static ITaskFarmDuplicable<Integer, Integer> createDummyEnclosedStage() {
-		ITaskFarmDuplicable<Integer, Integer> stage = new ITaskFarmDuplicable<Integer, Integer>() {
+		return new ITaskFarmDuplicable<Integer, Integer>() {
 			IMonitorablePipe inputPipe = new ExtractionTestPipe<Integer>();
 
 			@Override
@@ -152,7 +152,6 @@ final class ExtractorTestHelper {
 				return new ExtractionTestOutputPort<Integer>();
 			}
 		};
-		return stage;
 	}
 
 	static void wait50Millis() {

@@ -47,8 +47,7 @@ public final class File2TextLinesFilter extends AbstractTransformation<File, Tex
 
 	/**
 	 *
-	 * @param charset
-	 *            to be used when interpreting text files
+	 * @param charset to be used when interpreting text files
 	 *
 	 * @since 1.1
 	 */
@@ -60,9 +59,7 @@ public final class File2TextLinesFilter extends AbstractTransformation<File, Tex
 	@Override
 	protected void execute(final File textFile) {
 		int lineNumber = 1;
-		BufferedReader reader = null;
-		try {
-			reader = Files.newBufferedReader(textFile.toPath(), Charset.forName(this.charset));
+		try (BufferedReader reader = Files.newBufferedReader(textFile.toPath(), Charset.forName(this.charset))) {
 			String textLine;
 			while ((textLine = reader.readLine()) != null) {
 				textLine = textLine.trim();
@@ -73,14 +70,6 @@ public final class File2TextLinesFilter extends AbstractTransformation<File, Tex
 			}
 		} catch (final IOException e) {
 			this.logger.error("", e);
-		} finally {
-			try {
-				if (reader != null) {
-					reader.close();
-				}
-			} catch (final IOException e) {
-				this.logger.warn("", e);
-			}
 		}
 	}
 

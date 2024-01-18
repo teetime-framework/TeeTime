@@ -15,10 +15,15 @@
  */
 package teetime.framework;
 
-import static org.hamcrest.Matchers.*; // NOPMD relevant for tests
-import static org.junit.Assert.*; // NOPMD relevant for tests
+// NOPMD relevant for tests
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+// NOPMD relevant for tests
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -50,12 +55,12 @@ public class AbstractStageTest {
 
 		Counter<Object> counter0 = new Counter<Object>();
 		Counter<Object> counter1 = new Counter<Object>();
-		Assert.assertEquals("Counter-0", counter0.getId());
-		Assert.assertEquals("Counter-1", counter1.getId());
+		assertEquals("Counter-0", counter0.getId());
+		assertEquals("Counter-1", counter1.getId());
 
 		for (int i = 0; i < 100; i++) {
 			Cache<Object> cache = new Cache<Object>();
-			Assert.assertEquals("Cache-" + i, cache.getId());
+			assertEquals("Cache-" + i, cache.getId());
 		}
 	}
 
@@ -123,7 +128,8 @@ public class AbstractStageTest {
 		TestConnectionsConfig(final boolean fails) {
 			TerminatingProducerStage stage = new TerminatingProducerStage();
 			if (fails) {
-				connectPorts((OutputPort) new TerminatingProducerStage().createOutputPort(Object.class), new Merger().createInputPort(Integer.class));
+				connectPorts((OutputPort) new TerminatingProducerStage().createOutputPort(Object.class),
+						new Merger().createInputPort(Integer.class));
 			} else {
 				connectPorts(stage.createOutputPort(Integer.class), new Merger().createInputPort(Object.class));
 			}
@@ -143,7 +149,8 @@ public class AbstractStageTest {
 
 		private final Sink<Integer> sink;
 
-		public ConfigToTestSignalHandling(final Merger<Integer> arbitraryStage, final InputPort<Integer> firstPort, final InputPort<Integer> secondPort) {
+		public ConfigToTestSignalHandling(final Merger<Integer> arbitraryStage, final InputPort<Integer> firstPort,
+				final InputPort<Integer> secondPort) {
 			InitialElementProducer<Integer> firstProducer = new InitialElementProducer<Integer>();
 			InitialElementProducer<Integer> secondProducer = new InitialElementProducer<Integer>();
 			sink = new Sink<Integer>();
@@ -190,7 +197,8 @@ public class AbstractStageTest {
 	// assertTrue(mergerOutputPipe.startSent());
 	// mergerOutputPipe.reset();
 	//
-	// ((AbstractStage) arbitraryStage).onSignal(new TerminatingSignal(), secondPort);
+	// ((AbstractStage) arbitraryStage).onSignal(new TerminatingSignal(),
+	// secondPort);
 	// assertFalse(mergerOutputPipe.startSent());
 	// }
 	//
@@ -201,17 +209,20 @@ public class AbstractStageTest {
 	// assertFalse(mergerOutputPipe.terminateSent());
 	// mergerOutputPipe.reset();
 	//
-	// ((AbstractStage) arbitraryStage).onSignal(new TerminatingSignal(), secondPort);
+	// ((AbstractStage) arbitraryStage).onSignal(new TerminatingSignal(),
+	// secondPort);
 	// assertFalse(mergerOutputPipe.startSent());
 	// assertFalse(mergerOutputPipe.terminateSent());
 	// mergerOutputPipe.reset();
 	//
-	// ((AbstractStage) arbitraryStage).onSignal(new TerminatingSignal(), firstPort);
+	// ((AbstractStage) arbitraryStage).onSignal(new TerminatingSignal(),
+	// firstPort);
 	// assertFalse(mergerOutputPipe.startSent());
 	// assertTrue(mergerOutputPipe.terminateSent());
 	// mergerOutputPipe.reset();
 	//
-	// ((AbstractStage) arbitraryStage).onSignal(new TerminatingSignal(), firstPort);
+	// ((AbstractStage) arbitraryStage).onSignal(new TerminatingSignal(),
+	// firstPort);
 	// assertFalse(mergerOutputPipe.startSent());
 	// assertFalse(mergerOutputPipe.terminateSent());
 	// mergerOutputPipe.reset();

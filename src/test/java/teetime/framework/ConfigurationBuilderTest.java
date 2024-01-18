@@ -26,11 +26,11 @@ import teetime.stage.basic.AbstractTransformation;
 public class ConfigurationBuilderTest {
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() throws Exception { // NOPMD
 	}
 
 	@After
-	public void tearDown() throws Exception {
+	public void tearDown() throws Exception { // NOPMD
 	}
 
 	@Test
@@ -124,19 +124,19 @@ public class ConfigurationBuilderTest {
 
 	private static class DummyProducerStage extends AbstractProducerStage<Object> {
 		@Override
-		protected void execute() throws Exception {
+		protected void execute() throws Exception { // NOPMD
 		}
 	}
 
 	private static class DummyTransformerStage extends AbstractTransformation<Object, Object> {
 		@Override
-		protected void execute(final Object object) {
+		protected void execute(final Object object) { // NOPMD
 		}
 	};
 
 	private static class DummyConsumerStage extends AbstractConsumerStage<Object> {
 		@Override
-		protected void execute(final Object object) {
+		protected void execute(final Object object) { // NOPMD
 		}
 	};
 

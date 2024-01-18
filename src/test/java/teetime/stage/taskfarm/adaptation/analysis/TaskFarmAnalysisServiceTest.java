@@ -57,8 +57,7 @@ public class TaskFarmAnalysisServiceTest {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private TaskFarmConfiguration createConfiguration() {
 		DynamicTaskFarmStage taskFarmStage = new DynamicTaskFarmStage(new DummyDuplicableStage(), 1);
-		TaskFarmConfiguration configuration = taskFarmStage.getConfiguration();
-		return configuration;
+		return taskFarmStage.getConfiguration();
 	}
 
 	@SuppressWarnings("rawtypes")

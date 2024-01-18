@@ -54,9 +54,7 @@ public final class File2Lines extends AbstractTransformation<File, String> {
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	@Override
 	protected void execute(final File textFile) {
-		BufferedReader reader = null;
-		try {
-			reader = Files.newBufferedReader(textFile.toPath(), Charset.forName(this.charset));
+		try (BufferedReader reader = Files.newBufferedReader(textFile.toPath(), Charset.forName(this.charset))) {
 			String line;
 			while ((line = reader.readLine()) != null) { // NOPMD
 				line = line.trim();
@@ -66,14 +64,6 @@ public final class File2Lines extends AbstractTransformation<File, String> {
 			}
 		} catch (final IOException e) {
 			this.logger.error("", e);
-		} finally {
-			try {
-				if (reader != null) {
-					reader.close();
-				}
-			} catch (final IOException e) {
-				this.logger.warn("", e);
-			}
 		}
 	}
 

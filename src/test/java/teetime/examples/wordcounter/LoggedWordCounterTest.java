@@ -44,7 +44,7 @@ public class LoggedWordCounterTest { // NOPMD
 		final PrintStream ps = new PrintStream(Files.newOutputStream(outputFile.toPath(), StandardOpenOption.APPEND),
 				false, "UTF-8");
 		try {
-			final Joiner joiner = com.google.common.base.Joiner.on(' ');
+			final Joiner joiner = Joiner.on(' ');
 			final String timingsString = joiner.join(Longs.asList(timings));
 			ps.println(timingsString);
 		} finally {

@@ -85,8 +85,7 @@ public final class StageTester {
 	 *                 </pre>
 	 */
 	public <I> InputHolder<I> send(final List<I> elements) {
-		final InputHolder<I> inputHolder = new InputHolder<I>(this, elements);
-		return inputHolder;
+		return new InputHolder<I>(this, elements);
 	}
 
 	/**
@@ -105,8 +104,7 @@ public final class StageTester {
 	 */
 	@Deprecated
 	public <O> OutputHolder<O> receive(final List<O> actualElements) {
-		final OutputHolder<O> outputHolder = new OutputHolder<O>(this, actualElements);
-		return outputHolder;
+		return new OutputHolder<O>(this, actualElements);
 	}
 
 	/**

@@ -22,7 +22,7 @@ import teetime.framework.AbstractStage;
 import teetime.framework.StageFacade;
 import teetime.util.StopWatch;
 
-abstract class AbstractRunnableStage implements Runnable {
+abstract class AbstractRunnableStage implements Runnable { // NOPMD MoreThanOneLogger (error is wrong)
 
 	private static final String TERMINATING_THREAD_DUE_TO_THE_FOLLOWING_EXCEPTION = "Terminating thread due to the following exception: ";
 

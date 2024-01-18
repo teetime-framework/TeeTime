@@ -30,8 +30,7 @@ final class StageFactory {
 	}
 
 	static <T> InitialElementProducer<T> createProducer(final List<T> inputElements) {
-		InitialElementProducer<T> producer = new InitialElementProducer<T>(inputElements);
-		return producer;
+		return new InitialElementProducer<T>(inputElements);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -47,8 +46,7 @@ final class StageFactory {
 	}
 
 	static <T> CollectorSink<T> createSink(final List<T> outputElements) {
-		CollectorSink<T> sink = new CollectorSink<T>(outputElements);
-		return sink;
+		return new CollectorSink<T>(outputElements);
 	}
 
 	@SuppressWarnings("unchecked")

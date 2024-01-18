@@ -92,7 +92,7 @@ public class MergerTestingPipe implements IPipe<Object> {
 	}
 
 	@Override
-	public void reportNewElement() {
+	public void reportNewElement() { // NOPMD
 
 	}
 

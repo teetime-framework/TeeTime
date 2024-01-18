@@ -65,8 +65,7 @@ public class TaskFarmReconfigurationCommandServiceTest {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private DynamicTaskFarmStage createTaskFarm() {
-		DynamicTaskFarmStage taskFarmStage = new DynamicTaskFarmStage(new DummyDuplicableStage(), 1);
-		return taskFarmStage;
+		return new DynamicTaskFarmStage(new DummyDuplicableStage(), 1);
 	}
 
 	@SuppressWarnings("rawtypes")

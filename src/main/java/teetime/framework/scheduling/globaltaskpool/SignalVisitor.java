@@ -46,7 +46,7 @@ public class SignalVisitor implements ITraverserVisitor {
 		if (!(port instanceof OutputPort)) {
 			throw new IllegalStateException("Unexpected port type: " + port.getClass());
 		}
-		InputPort<?> inputPort = port.getPipe().getTargetPort();
+		InputPort<?> inputPort = port.getPipe().getTargetPort(); // NOPMD necessary due to potential side effect
 
 		// drain signal from internal signal queue
 		AbstractSynchedPipe<?> synchedPipe = (AbstractSynchedPipe<?>) port.getPipe();

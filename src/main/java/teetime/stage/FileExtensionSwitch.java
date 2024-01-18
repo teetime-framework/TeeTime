@@ -39,7 +39,7 @@ public final class FileExtensionSwitch extends AbstractConsumerStage<File> {
 
 	@SuppressWarnings("PMD.AvoidReassigningParameters")
 	public OutputPort<File> addFileExtension(String fileExtension) {
-		if (fileExtension.startsWith(".")) {
+		if (fileExtension.charAt(0) == '.') {
 			fileExtension = fileExtension.substring(1);
 		}
 		OutputPort<File> outputPort = this.createOutputPort();

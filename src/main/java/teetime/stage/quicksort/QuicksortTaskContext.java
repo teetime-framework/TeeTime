@@ -61,6 +61,6 @@ class QuicksortTaskContext { // NOPMD
 	}
 
 	public int[] getElements() {
-		return elements;
+		return elements; // NOPMD MethodReturnsInternalArray
 	}
 }

@@ -68,7 +68,7 @@ public class QuicksortProblem extends AbstractDivideAndConquerProblem<QuicksortP
 	}
 
 	public int[] getNumbers() {
-		return this.numbers;
+		return this.numbers; // NOPMD MeThodReturnsInternalArray
 	}
 
 	@Override

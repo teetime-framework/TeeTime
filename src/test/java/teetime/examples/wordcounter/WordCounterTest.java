@@ -35,7 +35,7 @@ import teetime.stage.basic.distributor.strategy.NonBlockingRoundRobinStrategy;
 import teetime.stage.util.CountingMap;
 import teetime.util.StopWatch;
 
-public class WordCounterTest {
+public class WordCounterTest { // NOPMD
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WordCounterTest.class);
 
@@ -43,7 +43,7 @@ public class WordCounterTest {
 		final PrintStream ps = new PrintStream(Files.newOutputStream(outputFile.toPath(), StandardOpenOption.APPEND),
 				false, "UTF-8");
 		try {
-			final Joiner joiner = com.google.common.base.Joiner.on(' ');
+			final Joiner joiner = Joiner.on(' ');
 			final String timingsString = joiner.join(Longs.asList(timings));
 			ps.println(timingsString);
 		} finally {

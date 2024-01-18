@@ -26,8 +26,7 @@ import teetime.framework.pipe.IMonitorablePipe;
  *
  * @author Christian Wulf (chw)
  *
- * @param <T>
- *            the permitted type of the elements
+ * @param <T> the permitted type of the elements
  *
  * @since 3.0
  */
@@ -35,9 +34,11 @@ class BoundedMpMcSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonit
 
 	private final MpmcArrayQueue<Object> queue;
 
-	private transient long lastProducerIndex, lastConsumerIndex;
+	private transient long lastProducerIndex;
+	private transient long lastConsumerIndex;
 
-	public BoundedMpMcSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int requestedCapacity) {
+	public BoundedMpMcSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort,
+			final int requestedCapacity) {
 		super(sourcePort, targetPort);
 		this.queue = new MpmcArrayQueue<>(requestedCapacity);
 	}

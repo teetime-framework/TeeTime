@@ -45,6 +45,7 @@ public class ListWordCounterTest {
 	private static final List<String> STRINGS = Arrays.asList("Hello World!", "Hello TeeTime.", "Bye world");
 
 	public ListWordCounterTest() {
+		// empty constructor
 	}
 
 	@Test

@@ -43,6 +43,7 @@
 		<exclude name="GodClass" />
 		<exclude name="JUnitAssertionsShouldIncludeMessage" />
 		<exclude name="JUnitTestContainsTooManyAsserts" />
+		<exclude name="JUnitTestsShouldIncludeAssert" />
 		<exclude name="LawOfDemeter" />
 		<exclude name="LongVariable" />
 		<exclude name="LoosePackageCoupling" />

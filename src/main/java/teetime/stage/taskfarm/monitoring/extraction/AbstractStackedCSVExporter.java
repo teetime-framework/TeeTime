@@ -33,12 +33,11 @@ public abstract class AbstractStackedCSVExporter extends AbstractMonitoringDataE
 	/**
 	 * Constructor.
 	 *
-	 * @param pipeMonitoringService
-	 *            monitoring service concerning pipes
-	 * @param taskFarmMonitoringService
-	 *            monitoring service concerning a task farm
+	 * @param pipeMonitoringService     monitoring service concerning pipes
+	 * @param taskFarmMonitoringService monitoring service concerning a task farm
 	 */
-	public AbstractStackedCSVExporter(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
+	public AbstractStackedCSVExporter(final PipeMonitoringService pipeMonitoringService,
+			final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		super(pipeMonitoringService, taskFarmMonitoringService);
 	}
 
@@ -56,15 +55,15 @@ public abstract class AbstractStackedCSVExporter extends AbstractMonitoringDataE
 				}
 			}
 		} catch (IOException e) {
-			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage());
+			throw new IllegalArgumentException("The writer could not be written to: " + e.getMessage(), e);
 		}
 	}
 
 	/**
-	 * If a {@link String} in the given array is <code>null</code>, it is replaced with <code>"0"</code>.
+	 * If a {@link String} in the given array is <code>null</code>, it is replaced
+	 * with <code>"0"</code>.
 	 *
-	 * @param values
-	 *            array of {@link String} values
+	 * @param values array of {@link String} values
 	 */
 	protected void fillNullValuesWithZeros(final String[] values) {
 		for (int i = 0; i < values.length; i++) {
@@ -77,10 +76,8 @@ public abstract class AbstractStackedCSVExporter extends AbstractMonitoringDataE
 	/**
 	 * Creates the header of a CSV file.
 	 *
-	 * @param writer
-	 *            writer for the header to be written to
-	 * @param maxNumberOfStages
-	 *            maximal number of stages of task farm measurements
+	 * @param writer            writer for the header to be written to
+	 * @param maxNumberOfStages maximal number of stages of task farm measurements
 	 * @throws IOException
 	 */
 	protected abstract void createHeader(final Writer writer, final int maxNumberOfStages) throws IOException;
@@ -88,14 +85,11 @@ public abstract class AbstractStackedCSVExporter extends AbstractMonitoringDataE
 	/**
 	 * Adds a line of values, separated by commas, to the {@link Writer}.
 	 *
-	 * @param writer
-	 *            writer to be written to
-	 * @param maxNumberOfPipes
-	 *            maximum amount of pipes monitored
-	 * @param container
-	 *            pipe measurement container
+	 * @param writer           writer to be written to
+	 * @param maxNumberOfPipes maximum amount of pipes monitored
+	 * @param container        pipe measurement container
 	 * @throws IOException
 	 */
-	protected abstract void addLineOfValuesToCSV(final Writer writer, final int maxNumberOfPipes, final PipeMonitoringDataContainer container)
-			throws IOException;
+	protected abstract void addLineOfValuesToCSV(final Writer writer, final int maxNumberOfPipes,
+			final PipeMonitoringDataContainer container) throws IOException;
 }

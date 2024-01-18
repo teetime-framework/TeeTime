@@ -55,9 +55,7 @@ public final class File2SeqOfWords extends AbstractTransformation<File, String> 
 
 	@Override
 	protected void execute(final File textFile) {
-		BufferedReader reader = null; // NOPMD
-		try {
-			reader = Files.newBufferedReader(textFile.toPath(), Charset.forName(this.charset));
+		try (BufferedReader reader = Files.newBufferedReader(textFile.toPath(), Charset.forName(this.charset))) {
 			CharBuffer charBuffer = CharBuffer.allocate(bufferCapacity);
 			int iterations = 0;
 			while (reader.read(charBuffer) != -1) {
@@ -83,14 +81,6 @@ public final class File2SeqOfWords extends AbstractTransformation<File, String> 
 			}
 		} catch (final IOException e) {
 			this.logger.error("", e);
-		} finally {
-			try {
-				if (reader != null) {
-					reader.close();
-				}
-			} catch (final IOException e) {
-				this.logger.warn("", e);
-			}
 		}
 	}
 

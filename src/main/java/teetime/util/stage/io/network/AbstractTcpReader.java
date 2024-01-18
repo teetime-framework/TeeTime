@@ -43,9 +43,7 @@ public abstract class AbstractTcpReader implements Runnable {
 
 	@Override
 	public final void run() {
-		ServerSocketChannel serversocket = null;
-		try {
-			serversocket = ServerSocketChannel.open();
+		try (ServerSocketChannel serversocket = ServerSocketChannel.open()) {
 			serversocket.socket().bind(new InetSocketAddress(this.port));
 			if (logger.isDebugEnabled()) {
 				logger.debug("Listening on port " + this.port);
@@ -62,14 +60,6 @@ public abstract class AbstractTcpReader implements Runnable {
 			}
 		} catch (final IOException ex) {
 			logger.error("Error while reading.", ex);
-		} finally {
-			if (null != serversocket) {
-				try {
-					serversocket.close();
-				} catch (final IOException e) {
-					logger.debug("Failed to close TCP connection.", e);
-				}
-			}
 		}
 	}
 
@@ -94,12 +84,13 @@ public abstract class AbstractTcpReader implements Runnable {
 	}
 
 	/**
-	 * @param buffer
-	 *            to be read from
+	 * @param buffer to be read from
 	 * @return
 	 *         <ul>
-	 *         <li><code>true</code> when there were enough bytes to perform the read operation
-	 *         <li><code>false</code> otherwise. In this case, the buffer is reset, compacted, and filled with new content.
+	 *         <li><code>true</code> when there were enough bytes to perform the
+	 *         read operation
+	 *         <li><code>false</code> otherwise. In this case, the buffer is reset,
+	 *         compacted, and filled with new content.
 	 *         </ul>
 	 */
 	protected abstract boolean onBufferReceived(final ByteBuffer buffer);

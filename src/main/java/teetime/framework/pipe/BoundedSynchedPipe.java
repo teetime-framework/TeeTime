@@ -25,17 +25,18 @@ import teetime.framework.pipe.strategy.SleepIfFullStrategy;
  *
  * @author Christian Wulf
  *
- * @param <T>
- *            the type of the elements which this pipe should transfer.
+ * @param <T> the type of the elements which this pipe should transfer.
  */
 public class BoundedSynchedPipe<T> extends AbstractSynchedPipe<T> implements IMonitorablePipe {
 
 	private final SpscArrayQueue<Object> queue;
 	private final SleepIfFullStrategy strategy;
 
-	private transient long lastProducerIndex, lastConsumerIndex;
+	private transient long lastProducerIndex;
+	private transient long lastConsumerIndex;
 
-	public BoundedSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort, final int capacity) {
+	public BoundedSynchedPipe(final OutputPort<? extends T> sourcePort, final InputPort<T> targetPort,
+			final int capacity) {
 		super(sourcePort, targetPort);
 		this.queue = new SpscArrayQueue<>(capacity);
 		this.strategy = new SleepIfFullStrategy();
