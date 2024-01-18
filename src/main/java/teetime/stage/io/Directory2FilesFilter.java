@@ -22,23 +22,21 @@ import java.util.Comparator;
 
 import teetime.stage.basic.AbstractFilter;
 
-public final class Directory2FilesFilter extends AbstractFilter<File> {
+public final class Directory2FilesFilter extends AbstractFilter<File> { // NOPMD
 
 	private FileFilter filter;
 	private Comparator<File> fileComparator;
 
 	/**
 	 *
-	 * @param fileFilter
-	 *            to emit only files matching the filter.
+	 * @param fileFilter to emit only files matching the filter.
 	 */
 	public Directory2FilesFilter(final FileFilter fileFilter) {
 		this.setFilter(fileFilter);
 	}
 
 	/**
-	 * @param fileComparator
-	 *            to sort the files before emitting each one by one.
+	 * @param fileComparator to sort the files before emitting each one by one.
 	 */
 	public Directory2FilesFilter(final Comparator<File> fileComparator) {
 		this.setFileComparator(fileComparator);
@@ -46,10 +44,8 @@ public final class Directory2FilesFilter extends AbstractFilter<File> {
 
 	/**
 	 *
-	 * @param fileFilter
-	 *            to emit only files matching the filter.
-	 * @param fileComparator
-	 *            to sort the files before emitting each one by one.
+	 * @param fileFilter     to emit only files matching the filter.
+	 * @param fileComparator to sort the files before emitting each one by one.
 	 */
 	public Directory2FilesFilter(final FileFilter fileFilter, final Comparator<File> fileComparator) {
 		this.setFilter(fileFilter);

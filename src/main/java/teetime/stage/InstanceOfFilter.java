@@ -19,10 +19,11 @@ import teetime.framework.AbstractConsumerStage;
 import teetime.framework.OutputPort;
 
 /**
- * @author Jan Waller, Nils Christian Ehmke, Christian Wulf, Nelson Tavares de Sousa
+ * @author Jan Waller, Nils Christian Ehmke, Christian Wulf, Nelson Tavares de
+ *         Sousa
  *
  */
-public final class InstanceOfFilter<I, O extends I> extends AbstractConsumerStage<I> {
+public final class InstanceOfFilter<I, O extends I> extends AbstractConsumerStage<I> { // NOPMD
 
 	private final OutputPort<O> matchedOutputPort = this.createOutputPort();
 	private final OutputPort<I> mismatchedOutputPort = this.createOutputPort();
@@ -40,7 +41,8 @@ public final class InstanceOfFilter<I, O extends I> extends AbstractConsumerStag
 			matchedOutputPort.send((O) element);
 		} else {
 			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("element is not an instance of " + this.type.getName() + ", but of " + element.getClass());
+				this.logger.debug(
+						"element is not an instance of " + this.type.getName() + ", but of " + element.getClass());
 			}
 			mismatchedOutputPort.send(element);
 		}
@@ -56,7 +58,8 @@ public final class InstanceOfFilter<I, O extends I> extends AbstractConsumerStag
 
 	/**
 	 *
-	 * @return the output port that is used when the element is a (sub)type of the internal type attribute
+	 * @return the output port that is used when the element is a (sub)type of the
+	 *         internal type attribute
 	 *
 	 * @deprecated Since 1.1. Use {@link #getMatchedOutputPort()} instead.
 	 */

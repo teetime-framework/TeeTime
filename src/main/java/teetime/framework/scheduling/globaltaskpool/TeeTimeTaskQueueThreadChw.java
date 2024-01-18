@@ -83,24 +83,27 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 
 		// what's the purpose of this flag?:
 		// ensures that only one thread executes the stage instance at once
-		// TODO perhaps realize with the owningThread variable and remove the additional beingExecuted variable
+		// TODO perhaps realize with the owningThread variable and remove the additional
+		// beingExecuted variable
 		if (!scheduling.setIsBeingExecuted(stage, true)) {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("{} is being executed. Trying another stage...", stage);
 			}
 
 			// process next stage (potentially across the current level index)
-			// without re-adding the current stage in order to prevent re-executing this stage again
+			// without re-adding the current stage in order to prevent re-executing this
+			// stage again
 			processNextStage(taskPool); // recursive call
 
 			// re-add stage
 			if (!taskPool.scheduleStage(stage)) {
-				throw new IllegalStateException(String.format("(processNextStage) Re-scheduling failed for paused %s", stage));
+				throw new IllegalStateException(
+						String.format("(processNextStage) Re-scheduling failed for paused %s", stage));
 			}
 			return;
 		}
 
-		if (lastStage != stage) { // for debugging purposes only
+		if (lastStage != stage) { // NOPMD must test for identity, for debugging purposes only
 			LOGGER.trace("Changed execution from {} to {}", lastStage, stage);
 			lastStage = stage;
 		}
@@ -154,7 +157,8 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 			sendTerminationSignal(stage);
 
 			if (stage.getCurrentState() != StageState.TERMINATED) {
-				String message = String.format("(TeeTimeTaskQueueThreadChw) %s: Expected state TERMINATED, but was %s", stage, stage.getCurrentState());
+				String message = String.format("(TeeTimeTaskQueueThreadChw) %s: Expected state TERMINATED, but was %s",
+						stage, stage.getCurrentState());
 				throw new IllegalStateException(message);
 			}
 
@@ -184,7 +188,8 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 	}
 
 	private void passFrontStatusToSuccessorStages(final AbstractStage stage) {
-		// a set, not a list since multiple predecessors of a merger would add the merger multiple times
+		// a set, not a list since multiple predecessors of a merger would add the
+		// merger multiple times
 		Set<AbstractStage> frontStages = scheduling.getFrontStages();
 		synchronized (frontStages) {
 			frontStages.remove(stage);
@@ -206,7 +211,8 @@ class TeeTimeTaskQueueThreadChw extends Thread {
 			if (targetStage.getCurrentState().isBefore(StageState.TERMINATING)) {
 
 				if (!taskPool.scheduleStage(targetStage)) {
-					String message = String.format("(passFrontStatusToSuccessorStages) Scheduling successor failed for %s", targetStage);
+					String message = String.format(
+							"(passFrontStatusToSuccessorStages) Scheduling successor failed for %s", targetStage);
 					throw new IllegalStateException(message);
 				}
 			}

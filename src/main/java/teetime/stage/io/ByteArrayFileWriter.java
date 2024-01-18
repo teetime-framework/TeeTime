@@ -16,8 +16,8 @@
 package teetime.stage.io;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import com.google.common.io.Files;
 
@@ -25,12 +25,12 @@ import teetime.framework.AbstractConsumerStage;
 
 public final class ByteArrayFileWriter extends AbstractConsumerStage<byte[]> {
 
-	private FileOutputStream fileOutput;
+	private OutputStream fileOutput;
 
 	public ByteArrayFileWriter(final File file) {
 		try {
 			Files.touch(file);
-			fileOutput = new FileOutputStream(file);
+			fileOutput = java.nio.file.Files.newOutputStream(file.toPath());
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}

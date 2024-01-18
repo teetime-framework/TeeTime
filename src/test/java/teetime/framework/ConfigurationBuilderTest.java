@@ -15,7 +15,10 @@
  */
 package teetime.framework;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import teetime.framework.pipe.IPipe;
 import teetime.stage.basic.AbstractTransformation;
@@ -23,10 +26,12 @@ import teetime.stage.basic.AbstractTransformation;
 public class ConfigurationBuilderTest {
 
 	@Before
-	public void setUp() throws Exception {}
+	public void setUp() throws Exception {
+	}
 
 	@After
-	public void tearDown() throws Exception {}
+	public void tearDown() throws Exception {
+	}
 
 	@Test
 	public void testFromToConnection() {
@@ -49,7 +54,8 @@ public class ConfigurationBuilderTest {
 		DummyTransformerStage secondTransformerStage = new DummyTransformerStage();
 		DummyConsumerStage consumerStage = new DummyConsumerStage();
 
-		ConfigurationBuilder.from(producerStage).to(firstTransformerStage).to(secondTransformerStage).end(consumerStage);
+		ConfigurationBuilder.from(producerStage).to(firstTransformerStage).to(secondTransformerStage)
+				.end(consumerStage);
 
 		IPipe<?> firstTransformerOutPipe = firstTransformerStage.getOutputPort().getPipe();
 		IPipe<?> secondTransformerInPipe = secondTransformerStage.getInputPort().getPipe();
@@ -90,8 +96,7 @@ public class ConfigurationBuilderTest {
 		DummyTransformerStage transformerStage = new DummyTransformerStage();
 		DummyConsumerStage consumerStage = new DummyConsumerStage();
 
-		ConfigurationBuilder.from(producerStage)
-				.to(transformerStage, s -> s.getInputPort(), s -> s.getOutputPort())
+		ConfigurationBuilder.from(producerStage).to(transformerStage, s -> s.getInputPort(), s -> s.getOutputPort())
 				.end(consumerStage);
 
 		IPipe<?> producerOutPipe = producerStage.getOutputPort().getPipe();
@@ -108,8 +113,7 @@ public class ConfigurationBuilderTest {
 		DummyConsumerStage consumerStage = new DummyConsumerStage();
 
 		ConfigurationBuilder.from(producerStage)
-				.to(firstTransformerStage, s -> s.getInputPort(), s -> s.getOutputPort())
-				.to(secondTransformerStage)
+				.to(firstTransformerStage, s -> s.getInputPort(), s -> s.getOutputPort()).to(secondTransformerStage)
 				.end(consumerStage);
 
 		IPipe<?> firstTransformerOutPipe = firstTransformerStage.getOutputPort().getPipe();
@@ -120,17 +124,20 @@ public class ConfigurationBuilderTest {
 
 	private static class DummyProducerStage extends AbstractProducerStage<Object> {
 		@Override
-		protected void execute() throws Exception {}
+		protected void execute() throws Exception {
+		}
 	}
 
 	private static class DummyTransformerStage extends AbstractTransformation<Object, Object> {
 		@Override
-		protected void execute(final Object object) {}
+		protected void execute(final Object object) {
+		}
 	};
 
 	private static class DummyConsumerStage extends AbstractConsumerStage<Object> {
 		@Override
-		protected void execute(final Object object) {}
+		protected void execute(final Object object) {
+		}
 	};
 
 }

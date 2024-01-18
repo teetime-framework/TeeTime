@@ -15,7 +15,8 @@
  */
 package teetime.framework.pipe;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,9 @@ public class BoundedSynchedPipeTest {
 		Merger<Object> portSource = new Merger<Object>();
 		OutputPort<Object> sourcePort = portSource.getOutputPort();
 		InputPort<Object> targetPort = portSource.getNewInputPort();
-		AbstractSynchedPipe<?> pipe = new BoundedSynchedPipe<Object>(sourcePort, targetPort, 1); // IPipe does not provide getSignal method
+		AbstractSynchedPipe<?> pipe = new BoundedSynchedPipe<Object>(sourcePort, targetPort, 1); // IPipe does not
+																									// provide getSignal
+																									// method
 
 		List<ISignal> signals = new ArrayList<ISignal>();
 		signals.add(new StartingSignal());

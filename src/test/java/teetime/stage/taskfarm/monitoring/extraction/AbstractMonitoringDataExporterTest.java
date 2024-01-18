@@ -15,10 +15,13 @@
  */
 package teetime.stage.taskfarm.monitoring.extraction;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Scanner;
 
 import org.junit.Test;
@@ -32,10 +35,7 @@ public class AbstractMonitoringDataExporterTest {
 		AbstractMonitoringDataExporter extractor = new TestExtractionImpl();
 		String result = extractor.extractToString();
 
-		String outputToBe = "foo,poo"
-				+ NEWLINE
-				+ "poo,foo"
-				+ NEWLINE;
+		String outputToBe = "foo,poo" + NEWLINE + "poo,foo" + NEWLINE;
 		assertThat(result, is(equalTo(outputToBe)));
 	}
 
@@ -49,10 +49,7 @@ public class AbstractMonitoringDataExporterTest {
 			extractor.extractToFile(file);
 
 			String result = readFileToString(file.getAbsolutePath());
-			String outputToBe = "foo,poo"
-					+ NEWLINE
-					+ "poo,foo"
-					+ NEWLINE;
+			String outputToBe = "foo,poo" + NEWLINE + "poo,foo" + NEWLINE;
 			assertThat(result, is(equalTo(outputToBe)));
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
@@ -62,17 +59,15 @@ public class AbstractMonitoringDataExporterTest {
 	@Test
 	public void toFileWithPathTest() {
 		try {
-			// String file = System.getProperty("java.io.tmpdir") + "abstractmonitoringdataextractiontest.tmp";
+			// String file = System.getProperty("java.io.tmpdir") +
+			// "abstractmonitoringdataextractiontest.tmp";
 			String file = File.createTempFile("abstractmonitoringdataextractiontest", ".tmp").toString();
 
 			AbstractMonitoringDataExporter extractor = new TestExtractionImpl();
 			extractor.extractToFile(file);
 
 			String result = readFileToString(file);
-			String outputToBe = "foo,poo"
-					+ NEWLINE
-					+ "poo,foo"
-					+ NEWLINE;
+			String outputToBe = "foo,poo" + NEWLINE + "poo,foo" + NEWLINE;
 			assertThat(result, is(equalTo(outputToBe)));
 
 			File fileToDelete = new File(file);

@@ -22,15 +22,20 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import teetime.framework.*;
+import teetime.framework.Configuration;
+import teetime.framework.ConfigurationBuilder;
+import teetime.framework.Execution;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
-import teetime.stage.string.*;
+import teetime.stage.string.ToLowerCase;
+import teetime.stage.string.WordCounter;
+import teetime.stage.string.WordcharacterFilter;
 import teetime.stage.util.CountingMap;
 
 /**
- * Execute stages that count count the occurrences of words in a list of strings.
- * Procedure: read string list > to lower case > remove punctuation > count word occurrences
+ * Execute stages that count count the occurrences of words in a list of
+ * strings. Procedure: read string list > to lower case > remove punctuation >
+ * count word occurrences
  *
  * @author Sören Henning
  *
@@ -39,7 +44,8 @@ public class ListWordCounterTest {
 
 	private static final List<String> STRINGS = Arrays.asList("Hello World!", "Hello TeeTime.", "Bye world");
 
-	public ListWordCounterTest() {}
+	public ListWordCounterTest() {
+	}
 
 	@Test
 	public void executeTestWithDefaultConfiguration() throws IOException {
@@ -57,7 +63,8 @@ public class ListWordCounterTest {
 
 	@Test
 	public void executeTestWithBuilderBasedConfiguration() throws IOException {
-		final ListWordCounterConfigurationFromBuilder configuration = new ListWordCounterConfigurationFromBuilder(STRINGS);
+		final ListWordCounterConfigurationFromBuilder configuration = new ListWordCounterConfigurationFromBuilder(
+				STRINGS);
 		final Execution<ListWordCounterConfigurationFromBuilder> execution = new Execution<>(configuration);
 		execution.executeBlocking();
 
@@ -73,18 +80,14 @@ public class ListWordCounterTest {
 	public void executeTestWithConfigurationCreatedByBuilder() throws IOException {
 		final CollectorSink<CountingMap<String>> collector = new CollectorSink<>();
 
-		final Configuration configuration = ConfigurationBuilder
-				.from(new InitialElementProducer<>(STRINGS))
-				.to(new ToLowerCase())
-				.to(new WordcharacterFilter())
-				.to(new WordCounter())
-				.end(collector);
+		final Configuration configuration = ConfigurationBuilder.from(new InitialElementProducer<>(STRINGS))
+				.to(new ToLowerCase()).to(new WordcharacterFilter()).to(new WordCounter()).end(collector);
 		final Execution<Configuration> execution = new Execution<Configuration>(configuration);
 		execution.executeBlocking();
 
 		final List<CountingMap<String>> maps = collector.getElements();
 
-		Assert.assertTrue(maps.size() > 0);
+		Assert.assertTrue(!maps.isEmpty());
 
 		CountingMap<String> map = maps.get(0);
 

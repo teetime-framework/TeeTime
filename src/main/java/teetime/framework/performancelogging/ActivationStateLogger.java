@@ -100,10 +100,10 @@ public class ActivationStateLogger {
 				if (file.createNewFile()) {
 					this.printToFile(file);
 				} else {
-					System.err.println("File wasn't created!");
+					System.err.println("File wasn't created!"); // NOPMD
 				}
 			} catch (IOException ioe) {
-				System.err.println("Error creating " + file.toString());
+				System.err.println("Error creating " + file.toString()); // NOPMD
 			}
 
 		}
@@ -115,7 +115,7 @@ public class ActivationStateLogger {
 				"UTF-8");
 		ps.print(this);
 		ps.close();
-		System.out.println("Log saved to File: " + file.getAbsolutePath());
+		System.out.println("Log saved to File: " + file.getAbsolutePath()); // NOPMD
 	}
 	// getter and setter:
 

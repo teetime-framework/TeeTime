@@ -24,9 +24,15 @@ import org.junit.Test;
 
 import com.google.common.io.Files;
 
-import teetime.framework.*;
-import teetime.stage.*;
+import teetime.framework.Configuration;
+import teetime.framework.ConfigurationBuilder;
+import teetime.framework.Execution;
+import teetime.stage.ByteArray2String;
+import teetime.stage.CipherStage;
 import teetime.stage.CipherStage.CipherMode;
+import teetime.stage.Counter;
+import teetime.stage.InitialElementProducer;
+import teetime.stage.ZipByteArray;
 import teetime.stage.ZipByteArray.ZipMode;
 import teetime.stage.io.File2ByteArray;
 import teetime.stage.string.Tokenizer;
@@ -43,7 +49,8 @@ public class TokenizerTest {
 	private static final String PASSWORD = "Password";
 	private static final File INPUT = new File("src/test/resources/data/input.txt");
 
-	public TokenizerTest() {}
+	public TokenizerTest() {
+	}
 
 	@Test
 	public void executeTestWithDefaultConfiguration() throws IOException {
@@ -57,7 +64,8 @@ public class TokenizerTest {
 
 	@Test
 	public void executeTestWithBuilderBasedConfiguration() throws IOException {
-		final TokenizerConfigurationFromBuilder configuration = new TokenizerConfigurationFromBuilder(INPUT_FILE, PASSWORD);
+		final TokenizerConfigurationFromBuilder configuration = new TokenizerConfigurationFromBuilder(INPUT_FILE,
+				PASSWORD);
 		final Execution<TokenizerConfigurationFromBuilder> execution = new Execution<>(configuration);
 		execution.executeBlocking();
 
@@ -70,13 +78,9 @@ public class TokenizerTest {
 		final Counter<String> counterStage = new Counter<String>();
 
 		final Configuration configuration = ConfigurationBuilder
-				.from(new InitialElementProducer<File>(new File(INPUT_FILE)))
-				.to(new File2ByteArray())
-				.to(new ZipByteArray(ZipMode.DECOMP))
-				.to(new CipherStage(PASSWORD, CipherMode.DECRYPT))
-				.to(new ByteArray2String())
-				.to(new Tokenizer(" "))
-				.end(counterStage);
+				.from(new InitialElementProducer<File>(new File(INPUT_FILE))).to(new File2ByteArray())
+				.to(new ZipByteArray(ZipMode.DECOMP)).to(new CipherStage(PASSWORD, CipherMode.DECRYPT))
+				.to(new ByteArray2String()).to(new Tokenizer(" ")).end(counterStage);
 
 		final Execution<Configuration> execution = new Execution<>(configuration);
 		execution.executeBlocking();

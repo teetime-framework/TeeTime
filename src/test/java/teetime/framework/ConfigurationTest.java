@@ -15,8 +15,11 @@
  */
 package teetime.framework;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+// NOPMD relevant for tests
+import static org.hamcrest.MatcherAssert.assertThat;
+// NOPMD relevant for tests
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,9 +50,12 @@ public class ConfigurationTest {
 			if (withProvidedPipe) {
 				connectPorts(producer.getOutputPort(), collectorSink.getInputPort());
 			} else {
-				// AbstractPipe<Integer> pipe = new BoundedSynchedPipe<Integer>(producer.getOutputPort(), collectorSink.getInputPort(), 512);
+				// AbstractPipe<Integer> pipe = new
+				// BoundedSynchedPipe<Integer>(producer.getOutputPort(),
+				// collectorSink.getInputPort(), 512);
 				// registerCustomPipe(pipe);
-				connectPorts(producer.getOutputPort(), collectorSink.getInputPort(), CUSTOM_PIPE_CAPACITY, BoundedSynchedPipeFactory.INSTANCE);
+				connectPorts(producer.getOutputPort(), collectorSink.getInputPort(), CUSTOM_PIPE_CAPACITY,
+						BoundedSynchedPipeFactory.INSTANCE);
 			}
 
 			this.collectorSink = collectorSink;

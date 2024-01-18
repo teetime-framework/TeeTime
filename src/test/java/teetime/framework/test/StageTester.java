@@ -22,7 +22,13 @@ import java.util.Map;
 
 import org.hamcrest.Matcher;
 
-import teetime.framework.*;
+import teetime.framework.AbstractStage;
+import teetime.framework.CompositeStage;
+import teetime.framework.Configuration;
+import teetime.framework.Execution;
+import teetime.framework.ExecutionException;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 
 /**
  * This class can be used to test single stages in JUnit test cases.
@@ -42,12 +48,10 @@ public final class StageTester {
 	/**
 	 * Prepares to test the given stage.
 	 *
-	 * @param stage
-	 *            to be tested
-	 * @return
-	 * 		a stage test builder
+	 * @param stage to be tested
+	 * @return a stage test builder
 	 */
-	public static StageTester test(final AbstractStage stage) {
+	public static StageTester test(final AbstractStage stage) { // NOPMD not a junit test
 		StageUnderTest stageUnderTest = new PrimitiveStageUnderTest(stage);
 
 		return new StageTester(stageUnderTest);
@@ -56,20 +60,17 @@ public final class StageTester {
 	/**
 	 * Prepares to test the given composite stage.
 	 *
-	 * @param compositeStage
-	 *            to be tested
-	 * @return
-	 * 		a stage test builder
+	 * @param compositeStage to be tested
+	 * @return a stage test builder
 	 */
-	public static StageTester test(final CompositeStage compositeStage) {
+	public static StageTester test(final CompositeStage compositeStage) { // NOPMD not a junit test
 		StageUnderTest stageUnderTest = new CompositeStageUnderTest(compositeStage);
 
 		return new StageTester(stageUnderTest);
 	}
 
 	/**
-	 * @param elements
-	 *            which serve as input. If nothing should be sent, pass
+	 * @param elements which serve as input. If nothing should be sent, pass
 	 */
 	@SafeVarargs
 	public final <I> InputHolder<I> send(final I... elements) {
@@ -77,12 +78,11 @@ public final class StageTester {
 	}
 
 	/**
-	 * @param elements
-	 *            which serve as input. If nothing should be sent, pass
+	 * @param elements which serve as input. If nothing should be sent, pass
 	 *
-	 *            <pre>
+	 *                 <pre>
 	 * Collections.&lt;your type&gt;emptyList().
-	 *            </pre>
+	 *                 </pre>
 	 */
 	public <I> InputHolder<I> send(final List<I> elements) {
 		final InputHolder<I> inputHolder = new InputHolder<I>(this, elements);
@@ -90,8 +90,7 @@ public final class StageTester {
 	}
 
 	/**
-	 * @param actualElements
-	 *            which should be tested against the expected elements.
+	 * @param actualElements which should be tested against the expected elements.
 	 *
 	 * @deprecated since 3.0. Use the following code instead:
 	 *
@@ -120,9 +119,9 @@ public final class StageTester {
 	/**
 	 * This method will start the test and block until it is finished.
 	 *
-	 * @throws ExecutionException
-	 *             if at least one exception in one thread has occurred within the analysis.
-	 *             The exception contains the pairs of thread and throwable.
+	 * @throws ExecutionException if at least one exception in one thread has
+	 *                            occurred within the analysis. The exception
+	 *                            contains the pairs of thread and throwable.
 	 *
 	 */
 	public void start() {

@@ -46,7 +46,7 @@ public class ElementTrigger<E> extends AbstractProducerStage<E> {
 	protected void execute() {
 		try {
 			Object trigger = queue.take(); // blocking
-			if (trigger == TERMINATE_TRIGGER) {
+			if (trigger == TERMINATE_TRIGGER) { // NOPMD must test for identity
 				terminateStage();
 			} else {
 				if (iterator.hasNext()) {

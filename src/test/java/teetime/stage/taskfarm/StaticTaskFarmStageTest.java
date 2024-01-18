@@ -15,9 +15,9 @@
  */
 package teetime.stage.taskfarm;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static teetime.framework.test.StageTester.*;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertThat;
+import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +52,7 @@ public class StaticTaskFarmStageTest {
 			return new TestTuple(numWorkerStages, inputElements);
 		}
 
-		TestTuple expect(final Integer... expectedOutputElements) {
+		TestTuple expect(final Integer... expectedOutputElements) { // NOPMD
 			this.expectedOutputElements = expectedOutputElements;
 			return this;
 		}
@@ -92,20 +92,20 @@ public class StaticTaskFarmStageTest {
 		List<Integer> randomNumbers = creator.createFilledList(1024);
 
 		TestTuple[] testInputTuples = {
-			// tuple semantics: number of worker stages, input elements, and (expect) output elements
-			TestTuple.use(1, 1, 2).expect(1, 2),
-			TestTuple.use(1, randomNumbers).expect(randomNumbers), // expect in any order
+				// tuple semantics: number of worker stages, input elements, and (expect) output
+				// elements
+				TestTuple.use(1, 1, 2).expect(1, 2), TestTuple.use(1, randomNumbers).expect(randomNumbers), // expect in
+																											// any order
 		};
 
 		for (TestTuple testTuple : testInputTuples) {
-			StaticTaskFarmStage<Integer, Integer, Counter<Integer>> taskFarmStage = createTaskFarm(testTuple.numWorkerStages);
+			StaticTaskFarmStage<Integer, Integer, Counter<Integer>> taskFarmStage = createTaskFarm(
+					testTuple.numWorkerStages);
 
 			List<Integer> outputElements = new ArrayList<Integer>();
 
-			test(taskFarmStage).and()
-					.send(testTuple.inputElements).to(taskFarmStage.getInputPort()).and()
-					.receive(outputElements).from(taskFarmStage.getOutputPort())
-					.start();
+			test(taskFarmStage).and().send(testTuple.inputElements).to(taskFarmStage.getInputPort()).and()
+					.receive(outputElements).from(taskFarmStage.getOutputPort()).start();
 
 			assertThat(outputElements, contains(testTuple.expectedOutputElements));
 		}
@@ -117,23 +117,23 @@ public class StaticTaskFarmStageTest {
 		List<Integer> randomNumbers = creator.createFilledList(1024);
 
 		TestTuple[] testInputTuples = {
-			// tuple semantics: number of worker stages, input elements, and (expect) output elements
-			TestTuple.use(2, randomNumbers).expect(randomNumbers), // expect in correct order
-			TestTuple.use(3, randomNumbers).expect(randomNumbers), // expect in correct order
+				// tuple semantics: number of worker stages, input elements, and (expect) output
+				// elements
+				TestTuple.use(2, randomNumbers).expect(randomNumbers), // expect in correct order
+				TestTuple.use(3, randomNumbers).expect(randomNumbers), // expect in correct order
 		};
 
 		for (TestTuple testTuple : testInputTuples) {
-			StaticTaskFarmStage<Integer, Integer, Counter<Integer>> taskFarmStage = createTaskFarm(testTuple.numWorkerStages);
+			StaticTaskFarmStage<Integer, Integer, Counter<Integer>> taskFarmStage = createTaskFarm(
+					testTuple.numWorkerStages);
 			// ordered element passing
 			taskFarmStage.getDistributor().setStrategy(new BlockingBusyWaitingRoundRobinDistributorStrategy());
 			taskFarmStage.getMerger().setStrategy(new BlockingBusyWaitingRoundRobinMergerStrategy());
 
 			List<Integer> outputElements = new ArrayList<Integer>();
 
-			test(taskFarmStage).and()
-					.send(testTuple.inputElements).to(taskFarmStage.getInputPort()).and()
-					.receive(outputElements).from(taskFarmStage.getOutputPort())
-					.start();
+			test(taskFarmStage).and().send(testTuple.inputElements).to(taskFarmStage.getInputPort()).and()
+					.receive(outputElements).from(taskFarmStage.getOutputPort()).start();
 
 			assertThat(outputElements, contains(testTuple.expectedOutputElements));
 		}
@@ -141,8 +141,8 @@ public class StaticTaskFarmStageTest {
 
 	private StaticTaskFarmStage<Integer, Integer, Counter<Integer>> createTaskFarm(final int numWorkerStages) {
 		Counter<Integer> workerStage = new Counter<Integer>();
-		StaticTaskFarmStage<Integer, Integer, Counter<Integer>> taskFarmStage = new StaticTaskFarmStage<Integer, Integer, Counter<Integer>>(workerStage,
-				numWorkerStages);
+		StaticTaskFarmStage<Integer, Integer, Counter<Integer>> taskFarmStage = new StaticTaskFarmStage<Integer, Integer, Counter<Integer>>(
+				workerStage, numWorkerStages);
 
 		return taskFarmStage;
 	}

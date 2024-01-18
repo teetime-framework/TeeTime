@@ -15,8 +15,8 @@
  */
 package teetime.framework.scheduling.pushpullmodel;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 

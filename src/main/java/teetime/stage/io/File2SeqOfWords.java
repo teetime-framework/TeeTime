@@ -17,7 +17,6 @@ package teetime.stage.io;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -64,7 +63,8 @@ public final class File2SeqOfWords extends AbstractTransformation<File, String> 
 			while (reader.read(charBuffer) != -1) {
 				final int position = getPreviousWhitespacePosition(charBuffer);
 				if (-1 == position && logger.isErrorEnabled()) {
-					logger.error("A word in the following text file is bigger than the buffer's capacity: " + textFile.getAbsolutePath());
+					logger.error("A word in the following text file is bigger than the buffer's capacity: "
+							+ textFile.getAbsolutePath());
 					return;
 				}
 				final int limit = charBuffer.limit();
@@ -81,8 +81,6 @@ public final class File2SeqOfWords extends AbstractTransformation<File, String> 
 				charBuffer.position(position);
 				charBuffer.compact();
 			}
-		} catch (final FileNotFoundException e) {
-			this.logger.error("", e);
 		} catch (final IOException e) {
 			this.logger.error("", e);
 		} finally {

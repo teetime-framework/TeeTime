@@ -29,8 +29,8 @@ import teetime.stage.basic.AbstractTransformation;
 
 /**
  * Represents a transformation stage. It accepts a file path and tries to
- * interpret that file as an XML file. If successful, it is sent to the
- * output port as a {@link Document}.
+ * interpret that file as an XML file. If successful, it is sent to the output
+ * port as a {@link Document}.
  *
  * @author Christian Claus Wiechmann
  */
@@ -46,13 +46,9 @@ public class LoadXMLToDocumentStage extends AbstractTransformation<String, Docum
 		try {
 			DocumentBuilder documentBuilder = factory.newDocumentBuilder();
 			document = documentBuilder.parse(file); // NOPMD DU-Anomaly: must remain in try-scope
-		} catch (ParserConfigurationException e) {
+		} catch (ParserConfigurationException | SAXException | IOException e) {
 			// parser cannot be build
-			throw new IllegalStateException(e);
-		} catch (SAXException e) {
 			// parser init error
-			throw new IllegalStateException(e);
-		} catch (IOException e) {
 			// i/o error
 			throw new IllegalStateException(e);
 		}

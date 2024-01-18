@@ -20,7 +20,6 @@ import java.io.StringWriter;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -32,7 +31,8 @@ import org.w3c.dom.Document;
 import teetime.stage.basic.AbstractTransformation;
 
 /**
- * Represents a transformation stage. It accepts an XML {@link Document} and applies an XSL transformation. It then, if successful, sends the output as a
+ * Represents a transformation stage. It accepts an XML {@link Document} and
+ * applies an XSL transformation. It then, if successful, sends the output as a
  * {@link String} to the output port.
  *
  * @author Christian Claus Wiechmann
@@ -45,8 +45,7 @@ public class ApplyXSLTToDocumentStage extends AbstractTransformation<Document, S
 	/**
 	 * Constructor.
 	 *
-	 * @param xsltFile
-	 *            XSL transformation file path used for the transformations
+	 * @param xsltFile XSL transformation file path used for the transformations
 	 */
 	public ApplyXSLTToDocumentStage(final String xsltFile) {
 		this.xslt = new File(xsltFile);
@@ -55,8 +54,7 @@ public class ApplyXSLTToDocumentStage extends AbstractTransformation<Document, S
 	/**
 	 * Constructor.
 	 *
-	 * @param xsltFile
-	 *            XSL transformation {@link File} used for the transformations
+	 * @param xsltFile XSL transformation {@link File} used for the transformations
 	 */
 	public ApplyXSLTToDocumentStage(final File xsltFile) {
 		this.xslt = xsltFile;
@@ -71,8 +69,6 @@ public class ApplyXSLTToDocumentStage extends AbstractTransformation<Document, S
 		try {
 			Transformer transformer = transformerFactory.newTransformer(stylesheet);
 			transformer.transform(source, result);
-		} catch (TransformerConfigurationException e) {
-			throw new IllegalStateException(e);
 		} catch (TransformerException e) {
 			throw new IllegalStateException(e);
 		}

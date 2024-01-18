@@ -15,8 +15,9 @@
  */
 package teetime.stage.basic.merger.dynamic;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -67,7 +68,8 @@ public class DynamicMergerTest {
 	}
 
 	@Test
-	@Ignore // we cannot ensure anymore to consume at least one element before executing a port action
+	@Ignore // we cannot ensure anymore to consume at least one element before executing a
+			// port action
 	public void shouldWorkWithRemoveActionTriggers() {
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2);
 
@@ -115,7 +117,8 @@ public class DynamicMergerTest {
 		boolean addCreatePortAction(final Integer number) {
 			final InitialElementProducer<Integer> initialElementProducer = new InitialElementProducer<Integer>(number);
 
-			PortAction<DynamicMerger<Integer>> portAction = new CreatePortActionMerger<Integer>(initialElementProducer.getOutputPort(), DEFAULT_CAPACITY) {
+			PortAction<DynamicMerger<Integer>> portAction = new CreatePortActionMerger<Integer>(
+					initialElementProducer.getOutputPort(), DEFAULT_CAPACITY) {
 				@Override
 				public void execute(final DynamicMerger<Integer> dynamicMerger) {
 					super.execute(dynamicMerger);

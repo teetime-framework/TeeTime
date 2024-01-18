@@ -15,8 +15,9 @@
  */
 package teetime.stage.quicksort;
 
-import static org.junit.Assert.*;
-import static teetime.framework.test.StageTester.*;
+import static org.junit.Assert.assertThat;
+import static teetime.framework.test.StageTester.produces;
+import static teetime.framework.test.StageTester.test;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -36,9 +37,7 @@ public class QuicksortStageTest {
 		int[] unorderedElements = { 5, 4, 3, 2, 1 };
 		int[] expectedElements = { 1, 2, 3, 4, 5 };
 
-		test(quicksortStage).and()
-				.send(unorderedElements).to(quicksortStage.getInputPort()).and()
-				.start();
+		test(quicksortStage).and().send(unorderedElements).to(quicksortStage.getInputPort()).and().start();
 
 		assertThat(quicksortStage.getOutputPort(), produces(expectedElements));
 	}
@@ -48,9 +47,7 @@ public class QuicksortStageTest {
 		int[] unorderedElements = { 4, 2, 5, 1, 3 };
 		int[] expectedElements = { 1, 2, 3, 4, 5 };
 
-		test(quicksortStage).and()
-				.send(unorderedElements).to(quicksortStage.getInputPort()).and()
-				.start();
+		test(quicksortStage).and().send(unorderedElements).to(quicksortStage.getInputPort()).and().start();
 
 		assertThat(quicksortStage.getOutputPort(), produces(expectedElements));
 	}
@@ -60,9 +57,7 @@ public class QuicksortStageTest {
 		int[] unorderedElements = { 1, 2, 3, 4, 5 };
 		int[] expectedElements = { 1, 2, 3, 4, 5 };
 
-		test(quicksortStage).and()
-				.send(unorderedElements).to(quicksortStage.getInputPort()).and()
-				.start();
+		test(quicksortStage).and().send(unorderedElements).to(quicksortStage.getInputPort()).and().start();
 
 		assertThat(quicksortStage.getOutputPort(), produces(expectedElements));
 	}
@@ -73,9 +68,7 @@ public class QuicksortStageTest {
 		int[] unorderedElements = {};
 		int[] expectedElements = {};
 
-		test(quicksortStage).and()
-				.send(unorderedElements).to(quicksortStage.getInputPort()).and()
-				.start();
+		test(quicksortStage).and().send(unorderedElements).to(quicksortStage.getInputPort()).and().start();
 
 		assertThat(quicksortStage.getOutputPort(), produces());
 	}
@@ -85,9 +78,7 @@ public class QuicksortStageTest {
 		int[][] unorderedElements = { { 1, 2, 3, 4, 5 }, { 5, 4, 3, 2, 1 }, { 4, 2, 5, 1, 3 } };
 		int[] expectedElements = { 1, 2, 3, 4, 5 };
 
-		test(quicksortStage).and()
-				.send(unorderedElements).to(quicksortStage.getInputPort()).and()
-				.start();
+		test(quicksortStage).and().send(unorderedElements).to(quicksortStage.getInputPort()).and().start();
 
 		assertThat(quicksortStage.getOutputPort(), produces(expectedElements, expectedElements, expectedElements));
 	}

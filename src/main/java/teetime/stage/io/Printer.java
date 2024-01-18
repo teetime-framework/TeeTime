@@ -15,10 +15,12 @@
  */
 package teetime.stage.io;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import teetime.framework.AbstractConsumerStage;
 
@@ -29,7 +31,7 @@ import teetime.framework.AbstractConsumerStage;
  *
  * @since 1.10
  */
-public final class Printer<T> extends AbstractConsumerStage<T> {
+public final class Printer<T> extends AbstractConsumerStage<T> { // NOPMD not a data class
 
 	public static final String STREAM_STDOUT = "STDOUT";
 	public static final String STREAM_STDERR = "STDERR";
@@ -49,8 +51,8 @@ public final class Printer<T> extends AbstractConsumerStage<T> {
 		if (this.active) {
 			final StringBuilder sb = new StringBuilder(128);
 
-			sb.append(super.getId());
-			sb.append('(').append(object.getClass().getSimpleName()).append(") ").append(object.toString());
+			sb.append(super.getId()).append('(').append(object.getClass().getSimpleName()).append(") ")
+					.append(object.toString());
 
 			final String msg = sb.toString();
 			if (this.printStream != null) {
@@ -105,21 +107,23 @@ public final class Printer<T> extends AbstractConsumerStage<T> {
 			this.printStream = System.err;
 			this.active = true;
 		} else if (STREAM_STDLOG.equals(this.streamName)) {
-			this.printStream = null;
+			this.printStream = null; // NOPMD
 			this.active = true;
 		} else if (STREAM_NULL.equals(this.streamName)) {
-			this.printStream = null;
+			this.printStream = null; // NOPMD
 			this.active = false;
 		} else {
 			try {
-				this.printStream = new PrintStream(new FileOutputStream(this.streamName, this.append), false, this.encoding);
+				this.printStream = new PrintStream(
+						Files.newOutputStream(Paths.get(this.streamName), StandardOpenOption.APPEND), false,
+						this.encoding);
 				this.active = true;
-			} catch (final FileNotFoundException ex) {
-				this.active = false;
-				throw new IllegalStateException("Stream could not be created", ex);
 			} catch (final UnsupportedEncodingException ex) {
 				this.active = false;
 				throw new IllegalStateException("Encoding not supported", ex);
+			} catch (final IOException ex) {
+				this.active = false;
+				throw new IllegalStateException("Stream could not be created", ex);
 			}
 		}
 	}

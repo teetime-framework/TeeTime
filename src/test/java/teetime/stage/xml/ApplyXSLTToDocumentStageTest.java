@@ -21,8 +21,9 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,57 +36,44 @@ import teetime.framework.test.StageTester;
 public class ApplyXSLTToDocumentStageTest {
 
 	@Test
-	public void applyXSLTStageTest() {
-		try {
-			File xmlFile = createExampleXMLFile();
+	public void applyXSLTStageTest() throws FileNotFoundException, IOException {
+		File xmlFile = createExampleXMLFile();
 
-			LoadXMLToDocumentStage loadStage = new LoadXMLToDocumentStage();
-			List<Document> documents = new ArrayList<Document>();
+		LoadXMLToDocumentStage loadStage = new LoadXMLToDocumentStage();
+		List<Document> documents = new ArrayList<Document>();
 
-			StageTester.test(loadStage).and()
-					.send(xmlFile.getAbsolutePath()).to(loadStage.getInputPort()).and()
-					.receive(documents).from(loadStage.getOutputPort())
-					.start();
+		StageTester.test(loadStage).and().send(xmlFile.getAbsolutePath()).to(loadStage.getInputPort()).and()
+				.receive(documents).from(loadStage.getOutputPort()).start();
 
-			Document outputXML = documents.get(0);
-			NodeList as = outputXML.getDocumentElement().getChildNodes();
-			assertThat(as.getLength(), is(equalTo(5)));
-			documents.clear();
+		Document outputXML = documents.get(0);
+		NodeList as = outputXML.getDocumentElement().getChildNodes();
+		assertThat(as.getLength(), is(equalTo(5)));
+		documents.clear();
 
-			File xsltFile = createExampleXSLTFile();
+		File xsltFile = createExampleXSLTFile();
 
-			ApplyXSLTToDocumentStage xsltStage = new ApplyXSLTToDocumentStage(xsltFile);
-			List<String> outputs = new ArrayList<String>();
+		ApplyXSLTToDocumentStage xsltStage = new ApplyXSLTToDocumentStage(xsltFile);
+		List<String> outputs = new ArrayList<String>();
 
-			StageTester.test(xsltStage).and()
-					.send(outputXML).to(xsltStage.getInputPort()).and()
-					.receive(outputs).from(xsltStage.getOutputPort())
-					.start();
+		StageTester.test(xsltStage).and().send(outputXML).to(xsltStage.getInputPort()).and().receive(outputs)
+				.from(xsltStage.getOutputPort()).start();
 
-			assertThat(outputs.get(0), is(equalTo("54321")));
+		assertThat(outputs.get(0), is(equalTo("54321")));
 
-			xmlFile.delete();
-			xsltFile.delete();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		xmlFile.delete();
+		xsltFile.delete();
 	}
 
 	private File createExampleXSLTFile() throws IOException, FileNotFoundException {
 		File xsltFile = File.createTempFile("applyxslttest", ".xslt");
-		FileOutputStream outputStreamXSLT = new FileOutputStream(xsltFile);
+		OutputStream outputStreamXSLT = Files.newOutputStream(xsltFile.toPath());
 
-		String xslt = "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\r\n" +
-				"<xsl:output method=\"text\"/>\r\n" +
-				"<xsl:template match=\"/\">\r\n" +
-				"    <xsl:apply-templates select=\"root/a\">\r\n" +
-				"        <xsl:sort select=\"position()\" data-type=\"number\" order=\"descending\"/>\r\n" +
-				"    </xsl:apply-templates>\r\n" +
-				"</xsl:template>\r\n" +
-				"<xsl:template match=\"root\">\r\n" +
-				"<xsl:value-of select=\".\"/>\r\n" +
-				"</xsl:template>\r\n" +
-				"</xsl:stylesheet>\r\n";
+		String xslt = "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\r\n"
+				+ "<xsl:output method=\"text\"/>\r\n" + "<xsl:template match=\"/\">\r\n"
+				+ "    <xsl:apply-templates select=\"root/a\">\r\n"
+				+ "        <xsl:sort select=\"position()\" data-type=\"number\" order=\"descending\"/>\r\n"
+				+ "    </xsl:apply-templates>\r\n" + "</xsl:template>\r\n" + "<xsl:template match=\"root\">\r\n"
+				+ "<xsl:value-of select=\".\"/>\r\n" + "</xsl:template>\r\n" + "</xsl:stylesheet>\r\n";
 		outputStreamXSLT.write(xslt.getBytes());
 		outputStreamXSLT.flush();
 		outputStreamXSLT.close();
@@ -94,7 +82,7 @@ public class ApplyXSLTToDocumentStageTest {
 
 	private File createExampleXMLFile() throws IOException, FileNotFoundException {
 		File xmlFile = File.createTempFile("applyxslttest", ".xml");
-		FileOutputStream outputStreamXML = new FileOutputStream(xmlFile);
+		OutputStream outputStreamXML = Files.newOutputStream(xmlFile.toPath());
 
 		String xml = "<?xml version=\"1.0\" ?>"
 				+ "<root><a>1</a><a value=\"2\">2</a><a value=\"3\">3</a><a value=\"4\">4</a><a value=\"5\">5</a></root>";

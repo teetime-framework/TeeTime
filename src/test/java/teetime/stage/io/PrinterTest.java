@@ -36,8 +36,8 @@ public class PrinterTest {
 		Merger<Object> testStage = new Merger<Object>();
 
 		final StringBuilder sb = new StringBuilder(128);
-		sb.append(printer.getId());
-		sb.append('(').append(testStage.getClass().getSimpleName()).append(") ").append(testStage.toString());
+		sb.append(printer.getId()).append('(').append(testStage.getClass().getSimpleName()).append(") ")
+				.append(testStage.toString());
 
 		PrintStream systemOut = System.out;
 		final ByteArrayOutputStream outContent = new ByteArrayOutputStream();

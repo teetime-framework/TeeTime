@@ -15,13 +15,14 @@
  */
 package teetime.framework.test;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static teetime.framework.test.StageTester.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static teetime.framework.test.StageTester.produces;
+import static teetime.framework.test.StageTester.test;
 
 import org.junit.Test;
 
-import teetime.framework.test.InvalidTestCaseSetupException;
 import teetime.stage.CollectorSink;
 import teetime.stage.Counter;
 import teetime.stage.InitialElementProducer;
@@ -53,9 +54,7 @@ public class StageTesterTest {
 	public void testConsumer() throws Exception {
 		Counter<Integer> consumer = new Counter<>();
 
-		test(consumer).and()
-				.send(1, 2, 3).to(consumer.getInputPort()).and()
-				.start();
+		test(consumer).and().send(1, 2, 3).to(consumer.getInputPort()).and().start();
 
 		assertThat(consumer.getOutputPort(), produces(1, 2, 3));
 		assertThat(consumer.getNumElementsPassed(), is(3));
@@ -65,9 +64,7 @@ public class StageTesterTest {
 	public void testSink() throws Exception {
 		CollectorSink<Integer> consumer = new CollectorSink<>();
 
-		test(consumer).and()
-				.send(1, 2, 3).to(consumer.getInputPort()).and()
-				.start();
+		test(consumer).and().send(1, 2, 3).to(consumer.getInputPort()).and().start();
 
 		assertThat(consumer.getElements(), contains(1, 2, 3));
 	}

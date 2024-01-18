@@ -23,7 +23,8 @@ import java.lang.Thread.State;
 
 import org.junit.Test;
 
-import teetime.framework.*;
+import teetime.framework.Execution;
+import teetime.framework.StageState;
 
 public class RunnableConsumerStageTest {
 

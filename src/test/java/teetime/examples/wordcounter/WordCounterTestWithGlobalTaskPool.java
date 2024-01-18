@@ -15,7 +15,11 @@
  */
 package teetime.examples.wordcounter;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -37,8 +41,9 @@ public class WordCounterTestWithGlobalTaskPool {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WordCounterTestWithGlobalTaskPool.class);
 
-	public static void writeTimingsToFile(final File outputFile, final long[] timings) throws UnsupportedEncodingException, FileNotFoundException {
-		final PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(outputFile, true), 8192 * 8), false, "UTF-8");
+	public static void writeTimingsToFile(final File outputFile, final long[] timings) throws IOException {
+		final PrintStream ps = new PrintStream(Files.newOutputStream(outputFile.toPath(), StandardOpenOption.APPEND),
+				false, "UTF-8");
 		try {
 			final Joiner joiner = com.google.common.base.Joiner.on(' ');
 			final String timingsString = joiner.join(Longs.asList(timings));
@@ -48,17 +53,17 @@ public class WordCounterTestWithGlobalTaskPool {
 		}
 	}
 
-	public static void main(final String[] args) throws UnsupportedEncodingException, FileNotFoundException {
+	public static void main(final String[] args) throws IOException {
 		String numWorkerThreadsParam = (args.length > 0) ? args[0] : "3";
 		String numWarmUpsParam = (args.length > 1) ? args[1] : "1";
 		String fileNameParam = (args.length > 2) ? args[2] : "data\\wordcounter\\medium_textfile.txt";
 		String monitoringEnabledParam = (args.length > 3) ? args[3] : "true";
 
 		int numWorkerThreads = parseAsInteger(numWorkerThreadsParam, 3);
-		LOGGER.info("# worker threads: " + numWorkerThreads);
+		LOGGER.info("# worker threads: {}", numWorkerThreads);
 
 		int numWarmUps = parseAsInteger(numWarmUpsParam, 1);
-		LOGGER.info("# warm ups: " + numWarmUps);
+		LOGGER.info("# warm ups: {}", numWarmUps);
 
 		final String fileName = fileNameParam;
 		final File testFile = new File(fileName);
@@ -70,7 +75,7 @@ public class WordCounterTestWithGlobalTaskPool {
 		final long[] timings = new long[1];
 		final StopWatch stopWatch = new StopWatch();
 		/** maximal number of executions for a scheduled stage per thread */
-		final int numOfExecutions = 1;
+		final int numOfExecutions = 1; // NOPMD
 
 		for (int i = 0; i < numWarmUps; i++) {
 			LOGGER.info("Warm up #{}", i);
@@ -98,30 +103,31 @@ public class WordCounterTestWithGlobalTaskPool {
 		stopWatch.end();
 		wcc.getMonitoringThread().terminate();
 
-		LOGGER.info("duration: " + TimeUnit.NANOSECONDS.toSeconds(stopWatch.getDurationInNs()) + " secs");
+		LOGGER.info("duration: {} secs", TimeUnit.NANOSECONDS.toSeconds(stopWatch.getDurationInNs()));
 		timings[0] = stopWatch.getDurationInNs();
 
 		// results for some words to verify the correctness of the word counter
 		final CountingMap<String> map = wcc.getResult();
-		System.out.println("vero: " + (map.get("vero") == 3813850) + "->" + map.get("vero") + " should be " + 3813850);
-		System.out.println("sit: " + (map.get("sit") == 7627700) + "->" + map.get("sit") + " should be " + 7627700);
+		System.out.println("vero: " + (map.get("vero") == 3813850) + "->" + map.get("vero") + " should be " + 3813850); // NOPMD
+		System.out.println("sit: " + (map.get("sit") == 7627700) + "->" + map.get("sit") + " should be " + 7627700); // NOPMD
 
 		final File outputFile = new File("timings.txt");
 		writeTimingsToFile(outputFile, timings);
 
 		// some statistics about the output pipes of the distributor
-		System.out.println("distributor pipes:");
+		System.out.println("distributor pipes:"); // NOPMD
 		for (final AbstractPort<?> port : wcc.getDistributorPorts()) {
 			final IMonitorablePipe spscPipe = (IMonitorablePipe) port.getPipe();
-			System.out.println("numWaits: " + spscPipe.getNumWaits());
+			System.out.println("numWaits: " + spscPipe.getNumWaits()); // NOPMD
 		}
-		System.out.println("distributor waits: " + ((NonBlockingRoundRobinStrategy) wcc.getDistributor().getStrategy()).getNumWaits());
+		System.out.println("distributor waits: " // NOPMD
+				+ ((NonBlockingRoundRobinStrategy) wcc.getDistributor().getStrategy()).getNumWaits());
 
 		// some statistics about the output pipes of the distributor
-		System.out.println("merger pipes:");
+		System.out.println("merger pipes:"); // NOPMD
 		for (final AbstractPort<?> port : wcc.getMergerPorts()) {
 			final IMonitorablePipe spscPipe = (IMonitorablePipe) port.getPipe();
-			System.out.println("numWaits: " + spscPipe.getNumWaits());
+			System.out.println("numWaits: " + spscPipe.getNumWaits()); // NOPMD
 		}
 	}
 

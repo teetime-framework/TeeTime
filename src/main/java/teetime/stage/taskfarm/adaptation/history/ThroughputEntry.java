@@ -21,7 +21,7 @@ package teetime.stage.taskfarm.adaptation.history;
  * @author Christian Claus Wiechmann
  *
  */
-class ThroughputEntry {
+class ThroughputEntry { // NOPMD
 
 	/** timestamp of measurement **/
 	private long timestamp;
@@ -31,10 +31,8 @@ class ThroughputEntry {
 	/**
 	 * Constructor.
 	 *
-	 * @param timestamp
-	 *            timestamp in millis
-	 * @param throughput
-	 *            measured throughput value
+	 * @param timestamp  timestamp in millis
+	 * @param throughput measured throughput value
 	 */
 	ThroughputEntry(final long timestamp, final double throughput) {
 		this.timestamp = timestamp;
@@ -49,8 +47,7 @@ class ThroughputEntry {
 	}
 
 	/**
-	 * @param timestamp
-	 *            timestamp of measurement
+	 * @param timestamp timestamp of measurement
 	 */
 	public void setTimestamp(final long timestamp) {
 		this.timestamp = timestamp;
@@ -64,8 +61,7 @@ class ThroughputEntry {
 	}
 
 	/**
-	 * @param throughput
-	 *            throughput sum of all monitored pipes
+	 * @param throughput throughput sum of all monitored pipes
 	 */
 	public void setThroughput(final double throughput) {
 		this.throughput = throughput;

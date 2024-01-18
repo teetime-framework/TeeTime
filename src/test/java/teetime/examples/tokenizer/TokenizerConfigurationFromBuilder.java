@@ -19,14 +19,19 @@ import java.io.File;
 
 import teetime.framework.Configuration;
 import teetime.framework.ConfigurationBuilder;
-import teetime.stage.*;
+import teetime.stage.ByteArray2String;
+import teetime.stage.CipherStage;
 import teetime.stage.CipherStage.CipherMode;
+import teetime.stage.Counter;
+import teetime.stage.InitialElementProducer;
+import teetime.stage.ZipByteArray;
 import teetime.stage.ZipByteArray.ZipMode;
 import teetime.stage.io.File2ByteArray;
 import teetime.stage.string.Tokenizer;
 
 /**
- * Same configuration as {@link TokenizerConfiguration} but created with a {@link ConfigurationBuilder}.
+ * Same configuration as {@link TokenizerConfiguration} but created with a
+ * {@link ConfigurationBuilder}.
  *
  * @author Sören Henning
  *

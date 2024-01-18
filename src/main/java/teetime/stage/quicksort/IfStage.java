@@ -20,7 +20,7 @@ import teetime.framework.InputPort;
 import teetime.framework.OutputPort;
 import teetime.framework.signal.TerminatingSignal;
 
-class IfStage extends AbstractStage {
+class IfStage extends AbstractStage { // NOPMD
 
 	private final InputPort<QuicksortTaskContext> newTaskInputPort = createInputPort(QuicksortTaskContext.class);
 	private final InputPort<QuicksortTaskContext> subTaskInputPort = createInputPort(QuicksortTaskContext.class);

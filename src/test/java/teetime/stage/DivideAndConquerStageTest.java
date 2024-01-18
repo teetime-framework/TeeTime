@@ -16,9 +16,9 @@
 package teetime.stage;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static teetime.framework.test.StageTester.*;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertArrayEquals;
+import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +50,8 @@ public class DivideAndConquerStageTest {
 		QuicksortProblem problem = new QuicksortProblem(noInputValues);
 		List<QuicksortSolution> solutions = new ArrayList<QuicksortSolution>();
 
-		test(this.quicksortStage).and()
-				.send(problem).to(quicksortStage.getInputPort()).and()
-				.receive(solutions).from(quicksortStage.getOutputPort())
-				.start();
+		test(this.quicksortStage).and().send(problem).to(quicksortStage.getInputPort()).and().receive(solutions)
+				.from(quicksortStage.getOutputPort()).start();
 
 		assertThat(solutions.get(0).getNumbers(), is(noInputValues));
 		assertThat(solutions.size(), is(1));
@@ -65,10 +63,8 @@ public class DivideAndConquerStageTest {
 		QuicksortProblem problem = new QuicksortProblem(numbers);
 		List<QuicksortSolution> solutions = new ArrayList<QuicksortSolution>();
 
-		test(this.quicksortStage).and()
-				.send(problem).to(quicksortStage.getInputPort()).and()
-				.receive(solutions).from(quicksortStage.getOutputPort()).and()
-				.start();
+		test(this.quicksortStage).and().send(problem).to(quicksortStage.getInputPort()).and().receive(solutions)
+				.from(quicksortStage.getOutputPort()).and().start();
 
 		int[] sortedNumbers = new int[] { 1, 2, 3, 4, 5 };
 		assertArrayEquals(solutions.get(0).getNumbers(), sortedNumbers);
@@ -89,10 +85,8 @@ public class DivideAndConquerStageTest {
 
 		List<QuicksortSolution> solutions = new ArrayList<QuicksortSolution>();
 
-		test(this.quicksortStage).and()
-				.send(problems).to(quicksortStage.getInputPort()).and()
-				.receive(solutions).from(quicksortStage.getOutputPort())
-				.start();
+		test(this.quicksortStage).and().send(problems).to(quicksortStage.getInputPort()).and().receive(solutions)
+				.from(quicksortStage.getOutputPort()).start();
 
 		AssertHelper.assertSorted(solutions.get(0).getNumbers());
 		AssertHelper.assertSorted(solutions.get(1).getNumbers());
@@ -107,10 +101,8 @@ public class DivideAndConquerStageTest {
 		QuicksortProblem problem = new QuicksortProblem(numbers);
 		List<QuicksortSolution> solutions = new ArrayList<QuicksortSolution>();
 
-		test(this.quicksortStage).and()
-				.send(problem).to(quicksortStage.getInputPort()).and()
-				.receive(solutions).from(quicksortStage.getOutputPort())
-				.start();
+		test(this.quicksortStage).and().send(problem).to(quicksortStage.getInputPort()).and().receive(solutions)
+				.from(quicksortStage.getOutputPort()).start();
 
 		AssertHelper.assertSorted(solutions.get(0).getNumbers());
 		assertThat(solutions.size(), is(1));
@@ -127,10 +119,8 @@ public class DivideAndConquerStageTest {
 
 		List<QuicksortSolution> solutions = new ArrayList<QuicksortSolution>();
 
-		test(this.quicksortStage).and()
-				.send(problems).to(quicksortStage.getInputPort()).and()
-				.receive(solutions).from(quicksortStage.getOutputPort())
-				.start();
+		test(this.quicksortStage).and().send(problems).to(quicksortStage.getInputPort()).and().receive(solutions)
+				.from(quicksortStage.getOutputPort()).start();
 
 		AssertHelper.assertSorted(solutions.get(0).getNumbers());
 		AssertHelper.assertSorted(solutions.get(1).getNumbers());

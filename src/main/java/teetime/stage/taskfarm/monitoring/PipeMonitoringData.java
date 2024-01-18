@@ -20,7 +20,7 @@ package teetime.stage.taskfarm.monitoring;
  *
  * @author Christian Claus Wiechmann
  */
-public class PipeMonitoringData implements IMonitoringData {
+public class PipeMonitoringData implements IMonitoringData { // NOPMD
 
 	/** number of elements added to the pipe **/
 	private final long numPushes;
@@ -42,25 +42,19 @@ public class PipeMonitoringData implements IMonitoringData {
 	/**
 	 * Constructor.
 	 *
-	 * @param numPushes
-	 *            number of elements added to the pipe
-	 * @param numPulls
-	 *            number of elements removed from the pipe
-	 * @param size
-	 *            current amount of elements in the pipe
-	 * @param capacity
-	 *            pipe capacity
-	 * @param pushThroughput
-	 *            amount of elements added to the pipe since the last measurement
-	 * @param pullThroughput
-	 *            amount of elements removed from the pipe since the last measurement
-	 * @param numWaits
-	 *            number of wait calls in the pipe
-	 * @param uniquePipeId
-	 *            id given to the corresponding measured pipe
+	 * @param numPushes      number of elements added to the pipe
+	 * @param numPulls       number of elements removed from the pipe
+	 * @param size           current amount of elements in the pipe
+	 * @param capacity       pipe capacity
+	 * @param pushThroughput amount of elements added to the pipe since the last
+	 *                       measurement
+	 * @param pullThroughput amount of elements removed from the pipe since the last
+	 *                       measurement
+	 * @param numWaits       number of wait calls in the pipe
+	 * @param uniquePipeId   id given to the corresponding measured pipe
 	 */
-	PipeMonitoringData(final long numPushes, final long numPulls, final int size, final int capacity, final long pushThroughput,
-			final long pullThroughput, final int numWaits, final int uniquePipeId) {
+	PipeMonitoringData(final long numPushes, final long numPulls, final int size, final int capacity,
+			final long pushThroughput, final long pullThroughput, final int numWaits, final int uniquePipeId) {
 		this.numPushes = numPushes;
 		this.numPulls = numPulls;
 		this.size = size;

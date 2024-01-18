@@ -54,7 +54,7 @@ public class SignalVisitor implements ITraverserVisitor {
 		if (null == receivedSignal) {
 			return VisitorBehavior.CONTINUE_FORWARD;
 		}
-		if (receivedSignal != signal) {
+		if (receivedSignal != signal) { // NOPMD must test for identity
 			throw new IllegalStateException("Unexpected signal: " + receivedSignal);
 		}
 		inputPort.getOwningStage().onSignal(receivedSignal, inputPort);

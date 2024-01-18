@@ -15,9 +15,10 @@
  */
 package teetime.stage.basic.merger;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static teetime.framework.test.StageTester.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.assertThat;
+import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +45,9 @@ public class MergerTest {
 
 		List<Integer> mergedElements = new ArrayList<Integer>();
 
-		test(mergerUnderTest).and()
-				.send(1, 2, 3).to(mergerUnderTest.getNewInputPort()).and()
-				.send(4, 5, 6).to(mergerUnderTest.getNewInputPort()).and()
-				.receive(mergedElements).from(mergerUnderTest.getOutputPort())
-				.start();
+		test(mergerUnderTest).and().send(1, 2, 3).to(mergerUnderTest.getNewInputPort()).and().send(4, 5, 6)
+				.to(mergerUnderTest.getNewInputPort()).and().receive(mergedElements)
+				.from(mergerUnderTest.getOutputPort()).start();
 
 		assertThat(mergedElements, containsInAnyOrder(1, 2, 3, 4, 5, 6));
 	}
@@ -59,10 +58,8 @@ public class MergerTest {
 
 		List<Integer> mergedElements = new ArrayList<Integer>();
 
-		test(mergerUnderTest).and()
-				.send(1, 2, 3).to(mergerUnderTest.getNewInputPort()).and()
-				.receive(mergedElements).from(mergerUnderTest.getOutputPort())
-				.start();
+		test(mergerUnderTest).and().send(1, 2, 3).to(mergerUnderTest.getNewInputPort()).and().receive(mergedElements)
+				.from(mergerUnderTest.getOutputPort()).start();
 
 		assertThat(mergedElements, contains(1, 2, 3));
 	}

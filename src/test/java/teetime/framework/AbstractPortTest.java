@@ -15,8 +15,8 @@
  */
 package teetime.framework;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*; // NOPMD relevant for tests
+import static org.junit.Assert.*; // NOPMD relevant for tests
 
 import org.junit.Test;
 

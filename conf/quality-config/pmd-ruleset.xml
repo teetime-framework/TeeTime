@@ -12,11 +12,11 @@
 
 	<!-- We'll use the following rulesets -->
 	<rule ref="rulesets/internal/all-java.xml">
-		<exclude name="AssignmentInOperand"/>
+		<exclude name="AssignmentInOperand" />
 		<exclude name="AtLeastOneConstructor" />
 		<exclude name="AvoidCatchingGenericException" />
 		<exclude name="AvoidCatchingNPE" />
-		<exclude name="AvoidDeeplyNestedIfStmts"/>
+		<exclude name="AvoidDeeplyNestedIfStmts" />
 		<exclude name="AvoidDuplicateLiterals" />
 		<exclude name="AvoidFieldNameMatchingMethodName" />
 		<exclude name="AvoidInstantiatingObjectsInLoops" />
@@ -42,6 +42,7 @@
 		<exclude name="FieldDeclarationsShouldBeAtStartOfClass" />
 		<exclude name="GodClass" />
 		<exclude name="JUnitAssertionsShouldIncludeMessage" />
+		<exclude name="JUnitTestContainsTooManyAsserts" />
 		<exclude name="LawOfDemeter" />
 		<exclude name="LongVariable" />
 		<exclude name="LoosePackageCoupling" />
@@ -50,7 +51,7 @@
 		<exclude name="LongVariable" />
 		<exclude name="NPathComplexity" />
 		<exclude name="OnlyOneReturn" />
-		<exclude name="PackageCase"/>
+		<exclude name="PackageCase" />
 		<exclude name="RedundantFieldInitializer" />
 		<exclude name="ShortClassName" />
 		<exclude name="ShortMethodName" />
@@ -59,9 +60,9 @@
 		<exclude name="TooManyMethods" />
 		<exclude name="TooManyFields" />
 		<!-- Java automatically compiles to StringBuilder and StringBuffer is unnecessarily 
-		        synchronized -->
+			synchronized -->
 		<exclude name="UseConcurrentHashMap" />
-		<exclude name="UseDiamondOperator" />    
+		<exclude name="UseDiamondOperator" />
 		<exclude name="UseStringBufferForStringAppends" />
 		<exclude name="UnnecessaryConstructor" />
 		<exclude name="UnnecessaryModifier" />
@@ -69,19 +70,32 @@
 		<exclude name="UseProperClassLoader" />
 		<exclude name="UseUnderscoresInNumericLiterals" />
 		<exclude name="UselessParentheses" />
-		<exclude name="UselessQualifiedThis"/>
+		<exclude name="UselessQualifiedThis" />
 		<exclude name="UseVarargs" />
-		
+
 	</rule>
 
 	<!-- custom adaptations -->
 
-	<rule ref="rulesets/java/empty.xml/EmptyCatchBlock" message="Throw at least an IllegalStateException(e)">
+	<rule ref="rulesets/java/empty.xml/EmptyCatchBlock"
+		message="Throw at least an IllegalStateException(e)">
 		<priority>1</priority>
 	</rule>
 
+	<rule ref="category/java/codestyle.xml/ClassNamingConventions">
+		<properties>
+			<property name="classPattern" value="[A-Z][a-zA-Z0-9]*" />
+			<property name="abstractClassPattern"
+				value="[A-Z][a-zA-Z0-9]*" />
+			<property name="interfacePattern" value="[A-Z][a-zA-Z0-9]*" />
+			<property name="enumPattern" value="[A-Z][a-zA-Z0-9]*" />
+			<property name="annotationPattern" value="[A-Z][a-zA-Z0-9]*" />
+			<property name="utilityClassPattern"
+				value="[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants|Factory|Keys)" />
+		</properties>
+	</rule>
 
-	<rule ref="rulesets/java/naming.xml/VariableNamingConventions">
+	<rule ref="category/java/codestyle.xml/VariableNamingConventions">
 		<priority>5</priority>
 	</rule>
 </ruleset>

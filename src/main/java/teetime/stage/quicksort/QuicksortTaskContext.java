@@ -15,7 +15,7 @@
  */
 package teetime.stage.quicksort;
 
-class QuicksortTaskContext {
+class QuicksortTaskContext { // NOPMD
 
 	private final int[] elements;
 	private final int[] stack;
@@ -25,7 +25,7 @@ class QuicksortTaskContext {
 	private int highestIndex;
 	private int pivotIndex;
 
-	public QuicksortTaskContext(final int[] elements) {
+	public QuicksortTaskContext(final int[] elements) { // NOPMD
 		this.elements = elements;
 		this.stack = new int[elements.length];
 	}

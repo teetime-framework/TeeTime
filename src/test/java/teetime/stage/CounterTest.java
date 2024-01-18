@@ -15,9 +15,10 @@
  */
 package teetime.stage;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static teetime.framework.test.StageTester.*;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static teetime.framework.test.StageTester.produces;
+import static teetime.framework.test.StageTester.test;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,18 +42,14 @@ public class CounterTest {
 
 	@Test
 	public void counterValueShouldBeCorrect() {
-		test(counter).and()
-				.send(1, 2, -5, 10, 9).to(counter.getInputPort())
-				.start();
+		test(counter).and().send(1, 2, -5, 10, 9).to(counter.getInputPort()).start();
 
 		assertThat(counter.getNumElementsPassed(), is(5));
 	}
 
 	@Test
 	public void counterValueShouldBeCorrect2() {
-		test(counter).and()
-				.send(1, 2, -5, 10, 9).to(counter.getInputPort())
-				.start();
+		test(counter).and().send(1, 2, -5, 10, 9).to(counter.getInputPort()).start();
 
 		assertThat(counter.getOutputPort(), produces(1, 2, -5, 10, 9));
 		assertThat(counter.getNumElementsPassed(), is(5));
@@ -60,9 +57,7 @@ public class CounterTest {
 
 	@Test
 	public void counterShouldForwardElements() {
-		test(counter).and()
-				.send(1, 2, 3).to(counter.getInputPort()).and()
-				.start();
+		test(counter).and().send(1, 2, 3).to(counter.getInputPort()).and().start();
 
 		assertThat(counter.getOutputPort(), produces(1, 2, 3));
 	}

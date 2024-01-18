@@ -22,12 +22,12 @@ import teetime.framework.pipe.IPipe;
 import teetime.framework.scheduling.PipeScheduler;
 import teetime.framework.signal.ISignal;
 
-class ExtractionTestPipe<T> implements IMonitorablePipe, IPipe<T> {
+class ExtractionTestPipe<T> implements IMonitorablePipe, IPipe<T> { // NOPMD
 
 	private long numPushes = 0;
 	private long numPulls = 0;
 	private int size = 1;
-	private final int capacity = 1000;
+	private final int capacity = 1000; // NOPMD for consitency reason not a static field
 	private long pushThroughput = 1;
 	private long pullThroughput = 1;
 	private int numWaits = 1;

@@ -15,8 +15,13 @@
  */
 package teetime.framework;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.Future;
 
@@ -121,10 +126,12 @@ public class ExecutionTest {
 	@Test
 	public void testInstantiatePipes() throws Exception {
 		Execution<AnalysisTestConfig> interAnalysis = new Execution<AnalysisTestConfig>(new AnalysisTestConfig(true));
-		assertThat(interAnalysis.getConfiguration().init.getOwningThread(), is(not(interAnalysis.getConfiguration().sink.getOwningThread())));
+		assertThat(interAnalysis.getConfiguration().init.getOwningThread(),
+				is(not(interAnalysis.getConfiguration().sink.getOwningThread())));
 
 		Execution<AnalysisTestConfig> intraAnalysis = new Execution<AnalysisTestConfig>(new AnalysisTestConfig(false));
-		assertThat(intraAnalysis.getConfiguration().init.getOwningThread(), is(intraAnalysis.getConfiguration().sink.getOwningThread()));
+		assertThat(intraAnalysis.getConfiguration().init.getOwningThread(),
+				is(intraAnalysis.getConfiguration().sink.getOwningThread()));
 	}
 
 	private class AnalysisTestConfig extends Configuration {
@@ -239,7 +246,8 @@ public class ExecutionTest {
 		TestConfiguration config = new TestConfiguration();
 		new Execution<TestConfiguration>(config); // sets owning thread for each stage
 
-		Thread wordCounterThread = config.distributor.getOutputPorts().get(0).pipe.getTargetPort().getOwningStage().getOwningThread();
+		Thread wordCounterThread = config.distributor.getOutputPorts().get(0).pipe.getTargetPort().getOwningStage()
+				.getOwningThread();
 		assertThat(config.distributor.getOwningThread(), is(not(wordCounterThread)));
 	}
 

@@ -43,8 +43,8 @@ import teetime.util.framework.port.PortList;
 import teetime.util.framework.port.PortRemovedListener;
 
 /**
- * Represents a minimal Stage, with some pre-defined methods.
- * Implemented stages need to adapt all abstract methods with own implementations.
+ * Represents a minimal Stage, with some pre-defined methods. Implemented stages
+ * need to adapt all abstract methods with own implementations.
  */
 public abstract class AbstractStage {
 
@@ -61,7 +61,10 @@ public abstract class AbstractStage {
 	/** This stage's unique identifier */
 	private final String id;
 	private AbstractExceptionListener exceptionListener;
-	/** The owning thread of this stage if this stage is directly executed by an {@link AbstractRunnableStage}, <code>null</code> otherwise. */
+	/**
+	 * The owning thread of this stage if this stage is directly executed by an
+	 * {@link AbstractRunnableStage}, <code>null</code> otherwise.
+	 */
 	private Thread owningThread;
 	private boolean isActive;
 	/** the scheduler used for this stage and all of the other stages */
@@ -86,7 +89,9 @@ public abstract class AbstractStage {
 	private long lastTimeAfterExecute;
 
 	// for GlobalTaskQueueScheduling only
-	/** producers start with a level index of 0. All other stages have an index > 0. */
+	/**
+	 * producers start with a level index of 0. All other stages have an index > 0.
+	 */
 	private int levelIndex = 0;
 	// TODO used only by global task pool scheduling so far
 	private final AtomicBoolean atomicBeingExecuted = new AtomicBoolean(false);
@@ -101,7 +106,10 @@ public abstract class AbstractStage {
 	private StateChange lastState = new StateChange(StageActivationState.INITIALIZED, System.nanoTime());
 
 	private long activeWaitingTime;
-	/** indicates that this stage has no state and can thus be easily executed in parallel */
+	/**
+	 * indicates that this stage has no state and can thus be easily executed in
+	 * parallel
+	 */
 	private boolean stateless;
 
 	protected AbstractStage() {
@@ -110,8 +118,8 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * @param logger
-	 *            a custom logger (potentially shared by multiple stage instances)
+	 * @param logger a custom logger (potentially shared by multiple stage
+	 *               instances)
 	 */
 	protected AbstractStage(final Logger logger) {
 		this.id = this.createId();
@@ -143,14 +151,16 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * @return an identifier that is unique among all stage instances. It is especially unique among all instances of the same stage type.
+	 * @return an identifier that is unique among all stage instances. It is
+	 *         especially unique among all instances of the same stage type.
 	 */
 	public String getId() {
 		return this.id;
 	}
 
 	/**
-	 * Required by {@link RuntimeServiceFacade#startWithinNewThread(AbstractStage, AbstractStage)}
+	 * Required by
+	 * {@link RuntimeServiceFacade#startWithinNewThread(AbstractStage, AbstractStage)}
 	 */
 	TeeTimeScheduler getScheduler() {
 		return scheduler;
@@ -161,7 +171,8 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * Returns a string representation of this stage including its unique identifier.
+	 * Returns a string representation of this stage including its unique
+	 * identifier.
 	 */
 	@Override
 	public String toString() {
@@ -186,9 +197,8 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * This method is internally called by the framework.
-	 * It must not be executed by user code.
-	 * In particular, it must not be invoked from within any stage.
+	 * This method is internally called by the framework. It must not be executed by
+	 * user code. In particular, it must not be invoked from within any stage.
 	 *
 	 * @throws TerminateException
 	 */
@@ -219,21 +229,23 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * Contains the logic of this stage and is invoked (possibly multiple times) by the framework.
+	 * Contains the logic of this stage and is invoked (possibly multiple times) by
+	 * the framework.
 	 *
-	 * @throws Exception
-	 *             arbitrary exception triggered by the logic of this stage
+	 * @throws Exception arbitrary exception triggered by the logic of this stage
 	 */
 	@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	protected abstract void execute() throws Exception;
 
 	// left commented out because:
-	// without returnNoElement, it is now unknown when a consumer stage is busy-waiting.
+	// without returnNoElement, it is now unknown when a consumer stage is
+	// busy-waiting.
 	// We need a way to detect such a blocking behavior anyway.
 	// only used by consumer stages
 	// protected final void returnNoElement() {
 	// // If the stage get null-element it can't be active. If it's the first time
-	// // after being active the according time stamp is saved so that one can gather
+	// // after being active the according time stamp is saved so that one can
+	// gather
 	// // information about the time the stage was in one state uninterrupted.
 	// if (newStateRequired(ExecutionState.BLOCKED)) {
 	// this.addState(ExecutionState.BLOCKED, beforeExecuteTime);
@@ -249,7 +261,8 @@ public abstract class AbstractStage {
 	void setOwningThread(final Thread owningThread) {
 		if (this.owningThread != null && this.owningThread != owningThread) { // NOPMD avoid empty if statement
 			// checks also for "crossing threads"
-			// throw new IllegalStateException("Attribute owningThread was set twice each with another thread");
+			// throw new IllegalStateException("Attribute owningThread was set twice each
+			// with another thread");
 		}
 		this.owningThread = owningThread;
 	}
@@ -286,7 +299,8 @@ public abstract class AbstractStage {
 	 */
 	public void declarePassive() {
 		// TODO implement so that active/passive can be changed even at runtime
-		// requires: to check whether this stage may be declared passive (a merger, e.g., is not allowed to do so in most cases)
+		// requires: to check whether this stage may be declared passive (a merger,
+		// e.g., is not allowed to do so in most cases)
 		throw new UnsupportedOperationException("Declaring a stage 'passive' at runtime is not yet supported.");
 		// this.isActive = false;
 	}
@@ -311,11 +325,9 @@ public abstract class AbstractStage {
 	/**
 	 * May not be invoked outside of IPipe implementations
 	 *
-	 * @param signal
-	 *            The incoming signal
+	 * @param signal    The incoming signal
 	 *
-	 * @param inputPort
-	 *            The port which received the signal
+	 * @param inputPort The port which received the signal
 	 */
 	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	public void onSignal(final ISignal signal, final InputPort<?> inputPort) {
@@ -357,11 +369,10 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * @param signal
-	 *            arriving signal
-	 * @param inputPort
-	 *            which received the signal
-	 * @return <code>true</code> if this stage has already received the given <code>signal</code>, <code>false</code> otherwise
+	 * @param signal    arriving signal
+	 * @param inputPort which received the signal
+	 * @return <code>true</code> if this stage has already received the given
+	 *         <code>signal</code>, <code>false</code> otherwise
 	 */
 	protected boolean signalAlreadyReceived(final ISignal signal, final InputPort<?> inputPort) {
 		final boolean signalAlreadyReceived = this.triggeredSignalTypes.contains(signal.getClass());
@@ -396,7 +407,8 @@ public abstract class AbstractStage {
 	 * <li>before starting the analysis.
 	 * </ul>
 	 * <p>
-	 * If stage developers want to override this method, they must always call the super implementation first:
+	 * If stage developers want to override this method, they must always call the
+	 * super implementation first:
 	 *
 	 * <pre>
 	 * &#64;Override
@@ -408,7 +420,8 @@ public abstract class AbstractStage {
 	 * <p>
 	 * To throw a checked exception, wrap it to an unchecked exception, e.g. to an
 	 * {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
-	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
+	 * Always pass the original exception to the new unchecked exception to allow
+	 * easy debugging.
 	 *
 	 * @param invalidPortConnections
 	 */
@@ -429,7 +442,8 @@ public abstract class AbstractStage {
 	 * <li>just before the threads execute any stage.
 	 * </ul>
 	 * <p>
-	 * If stage developers want to override this method, they must always call the super implementation first:
+	 * If stage developers want to override this method, they must always call the
+	 * super implementation first:
 	 *
 	 * <pre>
 	 * &#64;Override
@@ -441,7 +455,8 @@ public abstract class AbstractStage {
 	 * <p>
 	 * To throw a checked exception, wrap it to an unchecked exception, e.g. to an
 	 * {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
-	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
+	 * Always pass the original exception to the new unchecked exception to allow
+	 * easy debugging.
 	 */
 	protected void onStarting() {
 		logger.trace(ON_STATE_CHANGE_MARKER, "Starting {}", this);
@@ -456,7 +471,8 @@ public abstract class AbstractStage {
 	 * <li>after receiving the termination signal.
 	 * </ul>
 	 * <p>
-	 * If stage developers want to override this method, they must always call the super implementation last:
+	 * If stage developers want to override this method, they must always call the
+	 * super implementation last:
 	 *
 	 * <pre>
 	 * &#64;Override
@@ -466,8 +482,10 @@ public abstract class AbstractStage {
 	 * }
 	 * </pre>
 	 * <p>
-	 * To throw a checked exception, wrap it to an unchecked exception, e.g. to an {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
-	 * Always pass the original exception to the new unchecked exception to allow easy debugging.
+	 * To throw a checked exception, wrap it to an unchecked exception, e.g. to an
+	 * {@link IllegalArgumentException#IllegalArgumentException(String, Throwable)}.
+	 * Always pass the original exception to the new unchecked exception to allow
+	 * easy debugging.
 	 */
 	protected void onTerminating() {
 		logger.trace(ON_STATE_CHANGE_MARKER, "Terminating {}", this);
@@ -482,8 +500,10 @@ public abstract class AbstractStage {
 	 * Checks if connections to this pipe are correct in regards to type compliance.
 	 * Incoming elements must be instanceof input port type.
 	 *
-	 * @param invalidPortConnections
-	 *            List of invalid connections. Adding invalid connections to this list is a performance advantage in comparison to returning a list by each stage.
+	 * @param invalidPortConnections List of invalid connections. Adding invalid
+	 *                               connections to this list is a performance
+	 *                               advantage in comparison to returning a list by
+	 *                               each stage.
 	 */
 	private void checkTypeCompliance(final List<InvalidPortConnection> invalidPortConnections) {
 		for (InputPort<?> port : getInputPorts()) {
@@ -492,7 +512,8 @@ public abstract class AbstractStage {
 			if (targetType != null && sourceType != null) {
 				if (!targetType.isAssignableFrom(sourceType)) { // if targetType is not superclass of sourceType
 					invalidPortConnections.add(new InvalidPortConnection(port.pipe.getSourcePort(), port));
-					// throw new IllegalStateException("2002 - Invalid pipe at " + port.toString() + ": " + targetType + " is not a superclass/type of " +
+					// throw new IllegalStateException("2002 - Invalid pipe at " + port.toString() +
+					// ": " + targetType + " is not a superclass/type of " +
 					// sourceType);
 				}
 			}
@@ -502,8 +523,7 @@ public abstract class AbstractStage {
 	/**
 	 * Creates and adds an InputPort to the stage
 	 *
-	 * @param <T>
-	 *            the type of elements to be received
+	 * @param <T> the type of elements to be received
 	 *
 	 * @return the newly added InputPort
 	 *
@@ -515,11 +535,9 @@ public abstract class AbstractStage {
 	/**
 	 * Creates and adds an InputPort to the stage
 	 *
-	 * @param type
-	 *            class of elements to be received
+	 * @param type class of elements to be received
 	 *
-	 * @param <T>
-	 *            the type of elements to be received
+	 * @param <T>  the type of elements to be received
 	 *
 	 * @return the newly added InputPort
 	 */
@@ -530,10 +548,8 @@ public abstract class AbstractStage {
 	/**
 	 * Creates and adds an InputPort to the stage
 	 *
-	 * @param name
-	 *            a specific name for the new port
-	 * @param <T>
-	 *            the type of elements to be received
+	 * @param name a specific name for the new port
+	 * @param <T>  the type of elements to be received
 	 *
 	 * @return the newly added InputPort
 	 *
@@ -545,12 +561,9 @@ public abstract class AbstractStage {
 	/**
 	 * Creates and adds an InputPort to the stage
 	 *
-	 * @param type
-	 *            class of elements to be received
-	 * @param name
-	 *            a specific name for the new port
-	 * @param <T>
-	 *            the type of elements to be received
+	 * @param type class of elements to be received
+	 * @param name a specific name for the new port
+	 * @param <T>  the type of elements to be received
 	 *
 	 * @return the newly added InputPort
 	 */
@@ -559,7 +572,7 @@ public abstract class AbstractStage {
 		inputPorts.add(inputPort);
 		// numOpenedInputPorts.incrementAndGet();
 		numOpenedInputPorts++;
-		logger.debug("numOpenedInputPorts (inc): " + numOpenedInputPorts);
+		logger.debug("numOpenedInputPorts (inc): {}", numOpenedInputPorts);
 		return inputPort;
 	}
 
@@ -571,8 +584,7 @@ public abstract class AbstractStage {
 	/**
 	 * Creates and adds an OutputPort to the stage
 	 *
-	 * @param <T>
-	 *            the type of elements to be sent
+	 * @param <T> the type of elements to be sent
 	 *
 	 * @return the newly added OutputPort
 	 *
@@ -584,11 +596,9 @@ public abstract class AbstractStage {
 	/**
 	 * Creates and adds an OutputPort to the stage
 	 *
-	 * @param type
-	 *            class of elements to be sent
+	 * @param type class of elements to be sent
 	 *
-	 * @param <T>
-	 *            the type of elements to be sent
+	 * @param <T>  the type of elements to be sent
 	 *
 	 * @return the newly added OutputPort
 	 */
@@ -599,11 +609,9 @@ public abstract class AbstractStage {
 	/**
 	 * Creates and adds an OutputPort to the stage
 	 *
-	 * @param name
-	 *            a specific name for the new port
+	 * @param name a specific name for the new port
 	 *
-	 * @param <T>
-	 *            the type of elements to be sent
+	 * @param <T>  the type of elements to be sent
 	 *
 	 * @return the newly added OutputPort
 	 *
@@ -615,13 +623,10 @@ public abstract class AbstractStage {
 	/**
 	 * Creates and adds an OutputPort to the stage
 	 *
-	 * @param name
-	 *            a specific name for the new port
-	 * @param type
-	 *            class of elements to be sent
+	 * @param name a specific name for the new port
+	 * @param type class of elements to be sent
 	 *
-	 * @param <T>
-	 *            the type of elements to be sent
+	 * @param <T>  the type of elements to be sent
 	 *
 	 * @return the newly added OutputPort
 	 */
@@ -632,27 +637,31 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * Terminates the execution of the stage. After terminating, this stage sends a signal to all its direct and indirect successor stages to terminate.
+	 * Terminates the execution of the stage. After terminating, this stage sends a
+	 * signal to all its direct and indirect successor stages to terminate.
 	 *
 	 * @deprecated since 3.0. Use {@link #workCompleted()} instead.
 	 */
 	@Deprecated
 	protected void terminateStage() {
-		if (getInputPorts().size() != 0) {
+		if (getOutputPorts().isEmpty()) {
 			throw new UnsupportedOperationException("Consumer stages may not invoke this method.");
 		}
 		terminateStageByFramework();
 	}
 
 	/**
-	 * Marks this stage as having finished its work such that it will not be scheduled anymore.
-	 * The framework then automatically propagates a termination signal to the direct and indirect successor stages.
-	 * In this way, each stage terminates itself after having processed all of its remaining input elements.
-	 * Thus, the framework automatically terminates the whole P&amp;F configuration in a graceful way when all of its producer stages have finished their work.
-	 * The user does not need to implement any additional or alternative termination logic.
+	 * Marks this stage as having finished its work such that it will not be
+	 * scheduled anymore. The framework then automatically propagates a termination
+	 * signal to the direct and indirect successor stages. In this way, each stage
+	 * terminates itself after having processed all of its remaining input elements.
+	 * Thus, the framework automatically terminates the whole P&amp;F configuration
+	 * in a graceful way when all of its producer stages have finished their work.
+	 * The user does not need to implement any additional or alternative termination
+	 * logic.
 	 * <p>
-	 * This method may only be invoked by producers.
-	 * Otherwise an {@link UnsupportedOperationException} is thrown.
+	 * This method may only be invoked by producers. Otherwise an
+	 * {@link UnsupportedOperationException} is thrown.
 	 *
 	 * @since 3.0
 	 */
@@ -680,9 +689,10 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * @deprecated since 3.0.
-	 *             We will completely remove framework-backed support for infinite producers since it has never worked correctly in all (corner) cases.
-	 *             Instead, please use finite producers and implement an appropriate termination condition by your own.
+	 * @deprecated since 3.0. We will completely remove framework-backed support for
+	 *             infinite producers since it has never worked correctly in all
+	 *             (corner) cases. Instead, please use finite producers and
+	 *             implement an appropriate termination condition by your own.
 	 *
 	 * @return the termination strategy of this stage
 	 */
@@ -692,13 +702,15 @@ public abstract class AbstractStage {
 	}
 
 	// protected <T> DynamicOutputPort<T> createDynamicOutputPort() {
-	// final DynamicOutputPort<T> outputPort = new DynamicOutputPort<T>(null, this, outputPorts.size());
+	// final DynamicOutputPort<T> outputPort = new DynamicOutputPort<T>(null, this,
+	// outputPorts.size());
 	// outputPorts.add(outputPort);
 	// return outputPort;
 	// }
 
 	// protected <T> DynamicInputPort<T> createDynamicInputPort() {
-	// final DynamicInputPort<T> inputPort = new DynamicInputPort<T>(null, this, inputPorts.size());
+	// final DynamicInputPort<T> inputPort = new DynamicInputPort<T>(null, this,
+	// inputPorts.size());
 	// inputPorts.add(inputPort);
 	// return inputPort;
 	// }
@@ -711,7 +723,8 @@ public abstract class AbstractStage {
 		inputPorts.remove(inputPort); // TODO update setIndex IF it is still used
 	}
 
-	protected final void addOutputPortRemovedListener(final PortRemovedListener<OutputPort<?>> outputPortRemovedListener) {
+	protected final void addOutputPortRemovedListener(
+			final PortRemovedListener<OutputPort<?>> outputPortRemovedListener) {
 		outputPorts.addPortRemovedListener(outputPortRemovedListener);
 	}
 
@@ -721,12 +734,14 @@ public abstract class AbstractStage {
 
 	//
 	// /**
-	// * This should check, if the OutputPorts are connected correctly. This is needed to avoid NullPointerExceptions and other errors.
+	// * This should check, if the OutputPorts are connected correctly. This is
+	// needed to avoid NullPointerExceptions and other errors.
 	// *
 	// * @param invalidPortConnections
 	// * <i>(Passed as parameter for performance reasons)</i>
 	// */
-	// public abstract void validateOutputPorts(List<InvalidPortConnection> invalidPortConnections);
+	// public abstract void validateOutputPorts(List<InvalidPortConnection>
+	// invalidPortConnections);
 
 	List<StateChange> getStates() {
 		return states;
@@ -766,16 +781,19 @@ public abstract class AbstractStage {
 	}
 
 	/**
-	 * @return <code>true</code> iff this stage has no input ports, <code>false</code> otherwise.
+	 * @return <code>true</code> iff this stage has no input ports,
+	 *         <code>false</code> otherwise.
 	 */
 	public boolean isProducer() {
 		return inputPorts.size() == 0;
 	}
 
 	/**
-	 * This method is used by some schedulers to improve parallelism and thus to improve the overall performance.
+	 * This method is used by some schedulers to improve parallelism and thus to
+	 * improve the overall performance.
 	 *
-	 * @return <code>true</code> iff this stage has no internal fields which represent some kind of state; <code>false</code> otherwise.
+	 * @return <code>true</code> iff this stage has no internal fields which
+	 *         represent some kind of state; <code>false</code> otherwise.
 	 */
 	public boolean isStateless() {
 		return stateless;

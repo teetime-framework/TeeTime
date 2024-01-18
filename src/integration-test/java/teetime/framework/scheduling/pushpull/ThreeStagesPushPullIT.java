@@ -15,8 +15,8 @@
  */
 package teetime.framework.scheduling.pushpull;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 import java.util.ArrayList;
 import java.util.List;

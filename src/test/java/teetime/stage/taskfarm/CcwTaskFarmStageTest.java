@@ -15,8 +15,10 @@
  */
 package teetime.stage.taskfarm;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +28,14 @@ import org.junit.Test;
 import teetime.framework.Execution;
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
-import teetime.stage.taskfarm.monitoring.extraction.*;
+import teetime.stage.taskfarm.monitoring.extraction.AbstractMonitoringDataExporter;
+import teetime.stage.taskfarm.monitoring.extraction.StackedTimePullThroughput2D;
+import teetime.stage.taskfarm.monitoring.extraction.StackedTimePushThroughput2D;
+import teetime.stage.taskfarm.monitoring.extraction.StackedTimeSizeWithCapacity2D;
+import teetime.stage.taskfarm.monitoring.extraction.TimeBoundary2D;
+import teetime.stage.taskfarm.monitoring.extraction.TimeBoundaryMSPullThroughput3D;
+import teetime.stage.taskfarm.monitoring.extraction.TimeBoundaryMSPushThroughput3D;
+import teetime.stage.taskfarm.monitoring.extraction.TimeBoundaryStages3D;
 
 public class CcwTaskFarmStageTest {
 
@@ -34,8 +43,10 @@ public class CcwTaskFarmStageTest {
 
 	@Test
 	public void simpleTaskFarmStageTest() throws IOException {
-		final CcwTaskFarmStageTestConfiguration configuration = new CcwTaskFarmStageTestConfiguration(NUMBER_OF_TEST_ELEMENTS);
-		final Execution<CcwTaskFarmStageTestConfiguration> execution = new Execution<CcwTaskFarmStageTestConfiguration>(configuration);
+		final CcwTaskFarmStageTestConfiguration configuration = new CcwTaskFarmStageTestConfiguration(
+				NUMBER_OF_TEST_ELEMENTS);
+		final Execution<CcwTaskFarmStageTestConfiguration> execution = new Execution<CcwTaskFarmStageTestConfiguration>(
+				configuration);
 
 		execution.executeBlocking();
 
@@ -46,11 +57,13 @@ public class CcwTaskFarmStageTest {
 
 	private void checkIfLoggingWorks(final CcwTaskFarmStageTestConfiguration configuration) throws IOException {
 		PipeMonitoringService pipeService = configuration.getAdaptationThread().getPipeMonitoringService();
-		SingleTaskFarmMonitoringService taskFarmService = configuration.getAdaptationThread().getTaskFarmMonitoringService();
+		SingleTaskFarmMonitoringService taskFarmService = configuration.getAdaptationThread()
+				.getTaskFarmMonitoringService();
 		applyExtractors(pipeService, taskFarmService);
 	}
 
-	private void applyExtractors(final PipeMonitoringService pipeService, final SingleTaskFarmMonitoringService taskFarmService) throws IOException {
+	private void applyExtractors(final PipeMonitoringService pipeService,
+			final SingleTaskFarmMonitoringService taskFarmService) throws IOException {
 		extractToTempFile(new StackedTimeSizeWithCapacity2D(pipeService, taskFarmService));
 		extractToTempFile(new StackedTimePullThroughput2D(pipeService, taskFarmService));
 		extractToTempFile(new StackedTimePushThroughput2D(pipeService, taskFarmService));

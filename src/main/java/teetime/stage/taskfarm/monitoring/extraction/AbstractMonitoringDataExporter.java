@@ -15,18 +15,19 @@
  */
 package teetime.stage.taskfarm.monitoring.extraction;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 
 import teetime.stage.taskfarm.monitoring.PipeMonitoringService;
 import teetime.stage.taskfarm.monitoring.SingleTaskFarmMonitoringService;
 
 /**
- * Represents basic CSV export functionality for monitoring data exporters.
- * Used for task farms.
+ * Represents basic CSV export functionality for monitoring data exporters. Used
+ * for task farms.
  *
  * @author Christian Claus Wiechmann
  */
@@ -41,12 +42,11 @@ public abstract class AbstractMonitoringDataExporter {
 	/**
 	 * Constructor.
 	 *
-	 * @param pipeMonitoringService
-	 *            monitoring service concerning pipes
-	 * @param taskFarmMonitoringService
-	 *            monitoring service concerning a task farm
+	 * @param pipeMonitoringService     monitoring service concerning pipes
+	 * @param taskFarmMonitoringService monitoring service concerning a task farm
 	 */
-	public AbstractMonitoringDataExporter(final PipeMonitoringService pipeMonitoringService, final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
+	public AbstractMonitoringDataExporter(final PipeMonitoringService pipeMonitoringService,
+			final SingleTaskFarmMonitoringService taskFarmMonitoringService) {
 		this.pipeMonitoringService = pipeMonitoringService;
 		this.taskFarmMonitoringService = taskFarmMonitoringService;
 	}
@@ -54,16 +54,14 @@ public abstract class AbstractMonitoringDataExporter {
 	/**
 	 * Writes the formatted monitored data to a {@link Writer}.
 	 *
-	 * @param writer
-	 *            writer to be written to
+	 * @param writer writer to be written to
 	 */
 	protected abstract void extractToWriter(Writer writer);
 
 	/**
 	 * Saves the monitored data to a specified {@link File}.
 	 *
-	 * @param file
-	 *            specified file
+	 * @param file specified file
 	 * @throws IOException
 	 */
 	public void extractToFile(final File file) throws IOException {
@@ -71,7 +69,7 @@ public abstract class AbstractMonitoringDataExporter {
 			file.createNewFile();
 		}
 
-		FileWriter writer = new FileWriter(file, false);
+		BufferedWriter writer = Files.newBufferedWriter(file.toPath());
 
 		this.extractToWriter(writer);
 
@@ -81,8 +79,7 @@ public abstract class AbstractMonitoringDataExporter {
 	/**
 	 * Creates a file at the specified path and saves the monitored data to it.
 	 *
-	 * @param filepath
-	 *            specified file path
+	 * @param filepath specified file path
 	 * @throws IOException
 	 */
 	public void extractToFile(final String filepath) throws IOException {
@@ -104,12 +101,11 @@ public abstract class AbstractMonitoringDataExporter {
 	}
 
 	/**
-	 * Add a CSV line to the specified {@link Writer}. The specified arguments are separated by commas.
+	 * Add a CSV line to the specified {@link Writer}. The specified arguments are
+	 * separated by commas.
 	 *
-	 * @param writer
-	 *            writer to be written to
-	 * @param args
-	 *            values of the line
+	 * @param writer writer to be written to
+	 * @param args   values of the line
 	 * @throws IOException
 	 */
 	protected static void addCSVLineToWriter(final Writer writer, final String... args) throws IOException {
@@ -118,7 +114,7 @@ public abstract class AbstractMonitoringDataExporter {
 		for (int i = 0; i < args.length; i++) {
 			builder.append(args[i]);
 			if (i != args.length - 1) {
-				builder.append(",");
+				builder.append(',');
 			}
 		}
 

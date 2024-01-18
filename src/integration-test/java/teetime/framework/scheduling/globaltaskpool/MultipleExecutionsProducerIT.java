@@ -15,8 +15,8 @@
  */
 package teetime.framework.scheduling.globaltaskpool;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*; // NOPMD relevant for tests
+import static org.hamcrest.Matchers.*; // NOPMD relevant for tests
 
 import java.util.ArrayList;
 import java.util.Arrays;

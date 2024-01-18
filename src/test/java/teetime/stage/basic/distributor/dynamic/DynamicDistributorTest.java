@@ -15,8 +15,9 @@
  */
 package teetime.stage.basic.distributor.dynamic;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,10 +40,13 @@ public class DynamicDistributorTest {
 		PortAction<DynamicDistributor<Integer>> createAction = new DoNothingPortAction<Integer>();
 
 		List<Integer> inputNumbers = Arrays.asList(0, 1, 2, 3, 4);
-		List<PortAction<DynamicDistributor<Integer>>> inputActions = Arrays.asList(createAction, createAction, createAction, createAction, createAction);
+		List<PortAction<DynamicDistributor<Integer>>> inputActions = Arrays.asList(createAction, createAction,
+				createAction, createAction, createAction);
 
-		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, inputActions);
-		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config);
+		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers,
+				inputActions);
+		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(
+				config);
 
 		analysis.executeBlocking();
 
@@ -60,8 +64,10 @@ public class DynamicDistributorTest {
 			inputActions[i] = createAction;
 		}
 
-		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config);
+		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers,
+				Arrays.asList(inputActions));
+		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(
+				config);
 
 		try {
 			analysis.executeBlocking();
@@ -74,7 +80,7 @@ public class DynamicDistributorTest {
 		assertValuesForIndex(inputActions[1], Arrays.asList(2));
 		assertValuesForIndex(inputActions[2], Arrays.asList(3));
 		assertValuesForIndex(inputActions[3], Arrays.asList(4));
-		assertValuesForIndex(inputActions[4], Collections.<Integer> emptyList());
+		assertValuesForIndex(inputActions[4], Collections.<Integer>emptyList());
 	}
 
 	@Test
@@ -95,25 +101,29 @@ public class DynamicDistributorTest {
 		inputActions[4] = new RemovePortActionDelegation<Integer>(portContainer1);
 		inputActions[5] = new RemovePortActionDelegation<Integer>(portContainer2);
 
-		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers, Arrays.asList(inputActions));
-		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(config);
+		DynamicDistributorTestConfig<Integer> config = new DynamicDistributorTestConfig<Integer>(inputNumbers,
+				Arrays.asList(inputActions));
+		Execution<DynamicDistributorTestConfig<Integer>> analysis = new Execution<DynamicDistributorTestConfig<Integer>>(
+				config);
 
 		analysis.executeBlocking();
 
 		assertThat(config.getOutputElements(), contains(0, 1, 2, 4, 5));
-		assertValuesForIndex(inputActions[0], Collections.<Integer> emptyList());
+		assertValuesForIndex(inputActions[0], Collections.<Integer>emptyList());
 		assertValuesForIndex(inputActions[2], Arrays.asList(3));
-		assertValuesForIndex(inputActions[3], Collections.<Integer> emptyList());
+		assertValuesForIndex(inputActions[3], Collections.<Integer>emptyList());
 	}
 
 	private CreatePortActionDistributor<Integer> createPortCreateAction(final PortContainer<Integer> portContainer) {
 		CollectorSink<Integer> newStage = new CollectorSink<Integer>();
 		InputPort<Integer> targetInputPort = newStage.getInputPort();
 		// InputPort<Integer> targetInputPort = new InputPort<>();
-		CreatePortActionDistributor<Integer> portAction = new CreatePortActionDistributor<Integer>(targetInputPort, 512);
+		CreatePortActionDistributor<Integer> portAction = new CreatePortActionDistributor<Integer>(targetInputPort,
+				512);
 		portAction.addPortActionListener(new PortActionListener<Integer>() {
 			@Override
-			public void onOutputPortCreated(final DynamicDistributor<Integer> distributor, final OutputPort<Integer> port) {
+			public void onOutputPortCreated(final DynamicDistributor<Integer> distributor,
+					final OutputPort<Integer> port) {
 				portContainer.setPort(port); // memorize output port for later removal
 				// RuntimeServiceFacade.INSTANCE.startWithinNewThread(distributor, newStage);
 			}
@@ -145,7 +155,8 @@ public class DynamicDistributorTest {
 		private final CollectorSink<T> collectorSink;
 		private final DynamicDistributor<T> distributor;
 
-		public DynamicDistributorTestConfig(final List<T> elements, final List<PortAction<DynamicDistributor<T>>> inputActions) {
+		public DynamicDistributorTestConfig(final List<T> elements,
+				final List<PortAction<DynamicDistributor<T>>> inputActions) {
 			InitialElementProducer<T> initialElementProducer = new InitialElementProducer<T>(elements);
 			distributor = new DynamicDistributor<T>();
 			collectorSink = new CollectorSink<T>();

@@ -21,10 +21,9 @@ import teetime.framework.pipe.IPipe;
  *
  * @author Christian Wulf (chw)
  *
- * @param <T>
- *            the type of the elements which this port accepts
+ * @param <T> the type of the elements which this port accepts
  */
-public class AbstractPort<T> {
+public class AbstractPort<T> { // NOPMD
 
 	protected static final Object TERMINATE_ELEMENT = new Object();
 

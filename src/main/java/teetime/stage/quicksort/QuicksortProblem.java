@@ -39,21 +39,20 @@ public class QuicksortProblem extends AbstractDivideAndConquerProblem<QuicksortP
 	/**
 	 * An implementation of a quicksort problem.
 	 *
-	 * @param low
-	 *            Pointer to the lower bound of indices to be compared in the array
-	 * @param high
-	 *            Pointer to the upper bound of indices to be compared in the array
-	 * @param numbers
-	 *            Array to be sorted
+	 * @param low     Pointer to the lower bound of indices to be compared in the
+	 *                array
+	 * @param high    Pointer to the upper bound of indices to be compared in the
+	 *                array
+	 * @param numbers Array to be sorted
 	 */
-	public QuicksortProblem(final int low, final int high, final int... numbers) {
+	public QuicksortProblem(final int low, final int high, final int... numbers) { // NOPMD
 		super();
 		this.low = low;
 		this.high = high;
 		this.numbers = numbers;
 	}
 
-	public QuicksortProblem(final int identifier, final int low, final int high, final int... numbers) {
+	public QuicksortProblem(final int identifier, final int low, final int high, final int... numbers) { // NOPMD
 		super(identifier);
 		this.low = low;
 		this.high = high;
@@ -108,8 +107,7 @@ public class QuicksortProblem extends AbstractDivideAndConquerProblem<QuicksortP
 			}
 		}
 		// recursively sort two sub parts
-		return new DividedDCProblem<>(
-				new QuicksortProblem(this.getID(), low, highPointer, numbers),
+		return new DividedDCProblem<>(new QuicksortProblem(this.getID(), low, highPointer, numbers),
 				new QuicksortProblem(this.getID(), lowPointer, high, numbers));
 	}
 
@@ -154,18 +152,10 @@ public class QuicksortProblem extends AbstractDivideAndConquerProblem<QuicksortP
 
 	@Override
 	public QuicksortSolution baseSolve() {
-		return new QuicksortSolution(
-				this.getID(),
-				this.low,
-				this.high,
-				this.numbers);
+		return new QuicksortSolution(this.getID(), this.low, this.high, this.numbers);
 	}
 
 	public QuicksortSolution baseSolve(final int low, final int high, final int[] numbers) {
-		return new QuicksortSolution(
-				this.getID(),
-				low,
-				high,
-				numbers);
+		return new QuicksortSolution(this.getID(), low, high, numbers);
 	}
 }

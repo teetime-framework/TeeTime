@@ -15,9 +15,11 @@
  */
 package teetime.stage;
 
-import static org.hamcrest.collection.IsCollectionWithSize.*;
-import static org.junit.Assert.*;
-import static teetime.framework.test.StageTester.*;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.junit.Assert.assertThat;
+import static teetime.framework.test.StageTester.produces;
+import static teetime.framework.test.StageTester.producesNothing;
+import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,7 @@ import teetime.framework.Execution;
 /**
  * @author Nils Christian Ehmke
  */
-public class InstanceOfFilterTest {
+public class InstanceOfFilterTest { // NOPMD
 
 	private InstanceOfFilter<Object, Clazz> filter;
 
@@ -44,9 +46,7 @@ public class InstanceOfFilterTest {
 	public void filterShouldForwardCorrectTypes() {
 		final Clazz clazz = new Clazz();
 
-		test(filter)
-				.and().send(clazz).to(filter.getInputPort())
-				.start();
+		test(filter).and().send(clazz).to(filter.getInputPort()).start();
 
 		assertThat(filter.getMatchedOutputPort(), produces(clazz));
 	}
@@ -54,11 +54,9 @@ public class InstanceOfFilterTest {
 	@Test
 	public void outputMatchedAndMismatchedElements() {
 		final Clazz clazz = new Clazz();
-		final Integer number = 42;
+		final Integer number = 42; // NOPMD
 
-		test(filter).and()
-				.send(clazz, number, clazz).to(filter.getInputPort())
-				.start();
+		test(filter).and().send(clazz, number, clazz).to(filter.getInputPort()).start();
 
 		assertThat(filter.getMatchedOutputPort(), produces(clazz, clazz));
 		assertThat(filter.getMismatchedOutputPort(), produces(number));
@@ -68,9 +66,7 @@ public class InstanceOfFilterTest {
 	public void filterShouldForwardSubTypes() {
 		final SubClazz clazz = new SubClazz();
 
-		test(filter).and()
-				.send(clazz).to(filter.getInputPort()).and()
-				.start();
+		test(filter).and().send(clazz).to(filter.getInputPort()).and().start();
 
 		assertThat(filter.getMatchedOutputPort(), produces(clazz));
 	}
@@ -79,9 +75,7 @@ public class InstanceOfFilterTest {
 	public void filterShouldDropInvalidTypes() {
 		final Object object = new Object();
 
-		test(filter)
-				.and().send(object).to(filter.getInputPort())
-				.start();
+		test(filter).and().send(object).to(filter.getInputPort()).start();
 
 		assertThat(filter.getMatchedOutputPort(), producesNothing());
 	}
@@ -97,10 +91,8 @@ public class InstanceOfFilterTest {
 		inputObjects.add(new SubClazz());
 		inputObjects.add(new Object());
 
-		test(filter)
-				.and().send(inputObjects).to(filter.getInputPort())
-				.and().receive(results).from(filter.getMatchedOutputPort())
-				.start();
+		test(filter).and().send(inputObjects).to(filter.getInputPort()).and().receive(results)
+				.from(filter.getMatchedOutputPort()).start();
 
 		assertThat(results, hasSize(2));
 	}

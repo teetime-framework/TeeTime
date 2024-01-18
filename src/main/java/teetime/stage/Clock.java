@@ -20,7 +20,8 @@ import teetime.framework.termination.NextActiveStageShouldTerminate;
 import teetime.framework.termination.TerminationCondition;
 
 /**
- * This stage sends the current timestamp repeatedly with a given interval delay of {@link #intervalDelayInMs}.
+ * This stage sends the current timestamp repeatedly with a given interval delay
+ * of {@link #intervalDelayInMs}.
  *
  * @stage.sketch
  *
@@ -39,7 +40,7 @@ import teetime.framework.termination.TerminationCondition;
  * @stage.output Current timestamp as long.
  *
  */
-public class Clock extends AbstractProducerStage<Long> {
+public class Clock extends AbstractProducerStage<Long> { // NOPMD
 
 	private boolean initialDelayExceeded;// = false;
 

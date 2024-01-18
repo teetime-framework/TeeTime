@@ -41,7 +41,7 @@ public class NextActiveStageShouldTerminate extends TerminationCondition {
 
 		AbstractStage activeStage = inputPortOfActiveStage.getOwningStage();
 		for (InputPort<?> inputPort : StageFacade.INSTANCE.getInputPorts(activeStage)) {
-			if (inputPort != inputPortOfActiveStage && !inputPort.isClosed()) {
+			if (inputPort != inputPortOfActiveStage && !inputPort.isClosed()) { // NOPMD must test for identity
 				return false;
 			}
 		}

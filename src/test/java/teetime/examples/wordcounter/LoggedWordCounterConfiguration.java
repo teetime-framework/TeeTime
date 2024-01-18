@@ -33,19 +33,22 @@ import teetime.stage.string.WordCounter;
 import teetime.stage.util.CountingMap;
 
 /**
- * A simple configuration, which counts the words of a set of files.
- * The execution of this configuration is demonstrated in {@link WordCountingTest}.
+ * A simple configuration, which counts the words of a set of files. The
+ * execution of this configuration is demonstrated in {@link WordCountingTest}.
  *
- * This configuration is divided into three parts. The first part reads files and distributes them to different {@link WordCounter} instances.
- * The second part are a certain number of WordCounter instances. On construction of this class the number of concurrent WordCounter instances is specified with the
- * threads parameter.
- * The third and last part collects the results from all WordCounter instances and merges them. This final result can be read afterwards.
+ * This configuration is divided into three parts. The first part reads files
+ * and distributes them to different {@link WordCounter} instances. The second
+ * part are a certain number of WordCounter instances. On construction of this
+ * class the number of concurrent WordCounter instances is specified with the
+ * threads parameter. The third and last part collects the results from all
+ * WordCounter instances and merges them. This final result can be read
+ * afterwards.
  *
  *
  * @author Nelson Tavares de Sousa
  *
  */
-public class LoggedWordCounterConfiguration extends Configuration {
+public class LoggedWordCounterConfiguration extends Configuration { // NOPMD
 
 	// Last stage is saved as field, to retrieve the result after execution.
 	private final CountingMapMerger<String> result = new CountingMapMerger<String>();
@@ -81,9 +84,11 @@ public class LoggedWordCounterConfiguration extends Configuration {
 
 		monitoringThread = new MonitoringThread();
 
-		// Middle part... multiple instances of WordCounter are created and connected to the merger and distrubuter stages
+		// Middle part... multiple instances of WordCounter are created and connected to
+		// the merger and distrubuter stages
 		for (int i = 0; i < threads; i++) {
-			// final InputPortSizePrinter<String> inputPortSizePrinter = new InputPortSizePrinter<String>();
+			// final InputPortSizePrinter<String> inputPortSizePrinter = new
+			// InputPortSizePrinter<String>();
 			final WordCounter wc = new WordCounter();
 			wc.registerStatebles();
 			// intraFact.create(inputPortSizePrinter.getOutputPort(), wc.getInputPort());
@@ -115,7 +120,8 @@ public class LoggedWordCounterConfiguration extends Configuration {
 		return monitoringThread;
 	}
 
-	// Further methods are allowed. For e.g. it is possible to read data from certain stages.
+	// Further methods are allowed. For e.g. it is possible to read data from
+	// certain stages.
 	public CountingMap<String> getResult() {
 		return result.getResult();
 	}

@@ -15,11 +15,11 @@
  */
 package teetime.stage;
 
-import static org.hamcrest.collection.IsEmptyCollection.*;
-import static org.hamcrest.collection.IsIterableContainingInOrder.*;
-import static org.hamcrest.core.Is.*;
-import static org.junit.Assert.*;
-import static teetime.framework.test.StageTester.*;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static teetime.framework.test.StageTester.test;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,7 +44,8 @@ public class InitialElementProducerTest {
 
 	// @Test
 	// public void testSetIterArray() {
-	// InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>(new Integer[] { 1, 2, 3 });
+	// InitialElementProducer<Integer> producer = new
+	// InitialElementProducer<Integer>(new Integer[] { 1, 2, 3 });
 	//
 	// List<Integer> results = new ArrayList<Integer>();
 	//
@@ -54,7 +55,8 @@ public class InitialElementProducerTest {
 	//
 	// @Test
 	// public void testSetIterVarargs() {
-	// InitialElementProducer<Integer> producer = new InitialElementProducer<Integer>(1, 2, 3);
+	// InitialElementProducer<Integer> producer = new
+	// InitialElementProducer<Integer>(1, 2, 3);
 	// List<Integer> results = new ArrayList<Integer>();
 	//
 	// test(producer).and().receive(results).from(producer.getOutputPort()).start();
@@ -69,7 +71,8 @@ public class InitialElementProducerTest {
 		/* StageTestResult testResult = */
 		test(producer).and().receive(results).from(producer.getOutputPort()).start();
 		assertThat(results, contains(1, 2, 3));
-		// assertThat(testResult.getElementsFrom(producer.getOutputPort()), contains(1, 2, 3));
+		// assertThat(testResult.getElementsFrom(producer.getOutputPort()), contains(1,
+		// 2, 3));
 		// assertThat(producer.getOutputPort(), hasProduced(1, 2, 3));
 		// assertThat(testResult, contains(1, 2, 3).for(producer.getOutputPort()));
 	}

@@ -15,8 +15,9 @@
  */
 package teetime.framework.scheduling.globaltaskpool;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -53,7 +54,8 @@ public class PrioritizedTaskPoolTest {
 	}
 
 	@After
-	public void tearDown() throws Exception {}
+	public void tearDown() throws Exception {
+	}
 
 	@Test
 	public void nextStageIsShallowStageLevel() throws Exception {

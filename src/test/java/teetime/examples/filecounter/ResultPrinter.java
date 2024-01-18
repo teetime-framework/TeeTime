@@ -27,7 +27,7 @@ class ResultPrinter extends AbstractConsumerStage<Integer> {
 
 	@Override
 	protected void execute(final Integer element) {
-		System.out.println("Result: " + element);
+		System.out.println("Result: " + element); // NOPMD
 	}
 
 }

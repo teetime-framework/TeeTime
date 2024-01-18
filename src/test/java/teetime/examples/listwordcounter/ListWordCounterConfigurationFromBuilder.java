@@ -22,11 +22,14 @@ import teetime.framework.Configuration;
 import teetime.framework.ConfigurationBuilder;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
-import teetime.stage.string.*;
+import teetime.stage.string.ToLowerCase;
+import teetime.stage.string.WordCounter;
+import teetime.stage.string.WordcharacterFilter;
 import teetime.stage.util.CountingMap;
 
 /**
- * Same configuration as {@link ListWordCounterConfiguration} but created with a {@link ConfigurationBuilder}.
+ * Same configuration as {@link ListWordCounterConfiguration} but created with a
+ * {@link ConfigurationBuilder}.
  *
  * @author Sören Henning
  *
@@ -46,7 +49,7 @@ public class ListWordCounterConfigurationFromBuilder extends Configuration {
 
 	public Optional<CountingMap<String>> getCountingMap() {
 		final List<CountingMap<String>> maps = this.collector.getElements();
-		if (maps.size() > 0) {
+		if (!maps.isEmpty()) {
 			return Optional.of(maps.get(0));
 		} else {
 			return Optional.empty();

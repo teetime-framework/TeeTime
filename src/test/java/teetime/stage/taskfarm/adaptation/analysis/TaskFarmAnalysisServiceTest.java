@@ -15,14 +15,19 @@
  */
 package teetime.stage.taskfarm.adaptation.analysis;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
 import teetime.stage.basic.AbstractFilter;
-import teetime.stage.taskfarm.*;
-import teetime.stage.taskfarm.adaptation.analysis.algorithm.*;
+import teetime.stage.taskfarm.DynamicTaskFarmStage;
+import teetime.stage.taskfarm.ITaskFarmDuplicable;
+import teetime.stage.taskfarm.TaskFarmConfiguration;
+import teetime.stage.taskfarm.adaptation.analysis.algorithm.MeanAlgorithm;
+import teetime.stage.taskfarm.adaptation.analysis.algorithm.RegressionAlgorithm;
+import teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm;
 import teetime.stage.taskfarm.adaptation.history.ThroughputHistory;
 
 public class TaskFarmAnalysisServiceTest {

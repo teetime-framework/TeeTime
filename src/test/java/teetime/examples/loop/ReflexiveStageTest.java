@@ -15,9 +15,9 @@
  */
 package teetime.examples.loop;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static teetime.framework.test.StageTester.*;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +31,9 @@ import teetime.stage.StatelessCounter;
 
 public class ReflexiveStageTest {
 
+	private static final List<Integer> INPUT_ELEMENTS = Arrays.asList(1, 2, 3, 4, 5);
+	private static final List<Integer> EXPECTED_OUTPUT_ELEMENTS = new ArrayList<Integer>(INPUT_ELEMENTS);
+
 	private StatelessCounter<Integer> reflexiveStage;
 
 	@Before
@@ -41,15 +44,10 @@ public class ReflexiveStageTest {
 	@Test(timeout = 200)
 	@Ignore("requires loop detection")
 	public void reflexiveStageShouldExecute() throws Exception {
-		final List<Integer> INPUT_ELEMENTS = Arrays.asList(1, 2, 3, 4, 5);
-		final List<Integer> EXPECTED_OUTPUT_ELEMENTS = new ArrayList<Integer>(INPUT_ELEMENTS);
-
 		List<Integer> outputElements = new ArrayList<Integer>();
 
-		test(reflexiveStage).and()
-				.send(INPUT_ELEMENTS).to(reflexiveStage.getInputPort()).and()
-				.receive(outputElements).from(reflexiveStage.getOutputPort()).and()
-				.start();
+		test(reflexiveStage).and().send(INPUT_ELEMENTS).to(reflexiveStage.getInputPort()).and().receive(outputElements)
+				.from(reflexiveStage.getOutputPort()).and().start();
 
 		assertThat(outputElements, is(EXPECTED_OUTPUT_ELEMENTS));
 	}

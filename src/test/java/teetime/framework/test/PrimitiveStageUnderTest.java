@@ -17,7 +17,11 @@ package teetime.framework.test;
 
 import java.util.List;
 
-import teetime.framework.*;
+import teetime.framework.AbstractStage;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
+import teetime.framework.StageFacade;
+import teetime.framework.StageState;
 
 class PrimitiveStageUnderTest implements StageUnderTest {
 

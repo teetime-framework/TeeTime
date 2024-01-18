@@ -18,9 +18,14 @@ package teetime.stage.taskfarm;
 import java.util.LinkedList;
 import java.util.List;
 
-import teetime.framework.*;
+import teetime.framework.CompositeStage;
+import teetime.framework.Configuration;
+import teetime.framework.InputPort;
+import teetime.framework.OutputPort;
 import teetime.stage.InitialElementProducer;
-import teetime.stage.basic.*;
+import teetime.stage.basic.AbstractFilter;
+import teetime.stage.basic.AbstractTransformation;
+import teetime.stage.basic.Sink;
 import teetime.stage.taskfarm.adaptation.AdaptationThread;
 
 public class CcwTaskFarmStageTestConfiguration extends Configuration {
@@ -89,7 +94,8 @@ public class CcwTaskFarmStageTestConfiguration extends Configuration {
 		}
 	}
 
-	private static class StringDuplicationStage extends AbstractFilter<String> implements ITaskFarmDuplicable<String, String> {
+	private static class StringDuplicationStage extends AbstractFilter<String>
+			implements ITaskFarmDuplicable<String, String> {
 
 		@Override
 		protected void execute(final String element) {

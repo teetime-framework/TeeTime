@@ -17,7 +17,6 @@ package teetime.stage.io;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -45,8 +44,7 @@ public final class File2Lines extends AbstractTransformation<File, String> {
 
 	/**
 	 *
-	 * @param charset
-	 *            to be used when interpreting text files
+	 * @param charset to be used when interpreting text files
 	 */
 	public File2Lines(final String charset) {
 		super();
@@ -66,8 +64,6 @@ public final class File2Lines extends AbstractTransformation<File, String> {
 					this.outputPort.send(line);
 				} // else: ignore empty line
 			}
-		} catch (final FileNotFoundException e) {
-			this.logger.error("", e);
 		} catch (final IOException e) {
 			this.logger.error("", e);
 		} finally {

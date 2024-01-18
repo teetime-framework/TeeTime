@@ -57,11 +57,7 @@ public final class CloneStrategy implements IDistributorStrategy {
 			}
 
 			return newInstance;
-		} catch (InstantiationException e) {
-			throw new IllegalStateException(e);
-		} catch (IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		} catch (InvocationTargetException e) {
+		} catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
 			throw new IllegalStateException(e);
 		}
 	}

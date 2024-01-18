@@ -21,12 +21,15 @@ import java.util.Optional;
 import teetime.framework.Configuration;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
-import teetime.stage.string.*;
+import teetime.stage.string.ToLowerCase;
+import teetime.stage.string.WordCounter;
+import teetime.stage.string.WordcharacterFilter;
 import teetime.stage.util.CountingMap;
 
 /**
  * Configuration that counts the occurrences of words in a list of strings.
- * Procedure: read string list > to lower case > remove punctuation > count word occurrences
+ * Procedure: read string list > to lower case > remove punctuation > count word
+ * occurrences
  *
  *
  * @author Sören Henning
@@ -50,7 +53,7 @@ public class ListWordCounterConfiguration extends Configuration {
 
 	public Optional<CountingMap<String>> getCountingMap() {
 		final List<CountingMap<String>> maps = this.collector.getElements();
-		if (maps.size() > 0) {
+		if (!maps.isEmpty()) {
 			return Optional.of(maps.get(0));
 		} else {
 			return Optional.empty();

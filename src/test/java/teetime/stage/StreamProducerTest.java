@@ -15,9 +15,9 @@
  */
 package teetime.stage;
 
-import static org.hamcrest.collection.IsIterableContainingInOrder.*;
-import static org.junit.Assert.*;
-import static teetime.framework.test.StageTester.*;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.junit.Assert.assertThat;
+import static teetime.framework.test.StageTester.test;
 
 import java.util.ArrayList;
 import java.util.List;

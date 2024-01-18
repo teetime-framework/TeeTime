@@ -15,8 +15,8 @@
  */
 package teetime.stage.taskfarm;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -52,11 +52,13 @@ public class DynamicTaskFarmStageTest {
 
 		dynamicTaskFarmStage.addStageAtRuntime();
 		producer.trigger();
-		// assertThat(dynamicTaskFarmStage.getMerger().isActive(), is(true)); // TODO uncomment if "declareActive at runtime" is implemented
+		// assertThat(dynamicTaskFarmStage.getMerger().isActive(), is(true)); // TODO
+		// uncomment if "declareActive at runtime" is implemented
 
 		dynamicTaskFarmStage.removeStageAtRuntime();
 		producer.trigger();
-		// assertThat(dynamicTaskFarmStage.getMerger().isActive(), is(false)); // TODO uncomment if "declareActive at runtime" is implemented
+		// assertThat(dynamicTaskFarmStage.getMerger().isActive(), is(false)); // TODO
+		// uncomment if "declareActive at runtime" is implemented
 
 		execution.abortEventually();
 

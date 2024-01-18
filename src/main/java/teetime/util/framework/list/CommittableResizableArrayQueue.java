@@ -90,7 +90,7 @@ public final class CommittableResizableArrayQueue<T> implements CommittableQueue
 		this.replaceCurrentArrayBy(newElements);
 	}
 
-	private final void replaceCurrentArrayBy(final T[] newElements) {
+	private final void replaceCurrentArrayBy(final T[] newElements) { // NOPMD
 		this.copyArray(this.elements, newElements);
 		this.arrayPool.release(this.elements);
 		this.elements = newElements;

@@ -22,21 +22,22 @@ import teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm.We
  *
  * @author Christian Claus Wiechmann
  *
- * @param <I>
- *            Input type of Task Farm
- * @param <O>
- *            Output type of Task Farm
- * @param <T>
- *            Type of enclosed stage
+ * @param <I> Input type of Task Farm
+ * @param <O> Output type of Task Farm
+ * @param <T> Type of enclosed stage
  */
-public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
+public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> { // NOPMD
 
 	/**
-	 * represents an initial value for the samples until remove for TaskFarmReconfigurationCommandService
+	 * represents an initial value for the samples until remove for
+	 * TaskFarmReconfigurationCommandService
 	 **/
 	public static final int INIT_SAMPLES_UNTIL_REMOVE = -1;
 
-	/** should the monitoring services be activated (does not affect the adaptation thread!)? **/
+	/**
+	 * should the monitoring services be activated (does not affect the adaptation
+	 * thread!)?
+	 **/
 	private volatile boolean monitoringEnabled;// = false;
 
 	/** the waiting time between each iteration of the adaptation thread **/
@@ -44,16 +45,24 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/** the amount of previous measurements used by the throughput algorithm **/
 	private volatile int analysisWindow = 5;
-	/** used throughput algorithm (has to exist in the package <code>teetime.stage.taskfarm.adaptation.analysis.algorithm</code>) **/
+	/**
+	 * used throughput algorithm (has to exist in the package
+	 * <code>teetime.stage.taskfarm.adaptation.analysis.algorithm</code>)
+	 **/
 	private volatile String throughputAlgorithm = "RegressionAlgorithm";
 	/**
-	 * if the {@link teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm WeightedAlgorithm} is used as the throughput algorithm, this
-	 * {@link teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm.WeightMethod WeightMethod} is used
+	 * if the
+	 * {@link teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm
+	 * WeightedAlgorithm} is used as the throughput algorithm, this
+	 * {@link teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm.WeightMethod
+	 * WeightMethod} is used
 	 **/
 	private volatile WeightMethod weightedAlgorithmMethod = WeightMethod.EXPONENTIAL;
 	/**
-	 * the {@link teetime.stage.taskfarm.adaptation.reconfiguration.TaskFarmReconfigurationCommandService
-	 * TaskFarmReconfigurationCommandService} waits this amount of adaptation thread iterations for performance improvements after a new worker stage is added
+	 * the
+	 * {@link teetime.stage.taskfarm.adaptation.reconfiguration.TaskFarmReconfigurationCommandService
+	 * TaskFarmReconfigurationCommandService} waits this amount of adaptation thread
+	 * iterations for performance improvements after a new worker stage is added
 	 **/
 	private volatile int maxSamplesUntilRemove = 5;
 	/** throughput boundary of this task farm **/
@@ -79,8 +88,8 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @param analysisWindow
-	 *            the amount of previous measurements used by the throughput algorithm
+	 * @param analysisWindow the amount of previous measurements used by the
+	 *                       throughput algorithm
 	 */
 	public void setAnalysisWindow(final int analysisWindow) {
 		this.analysisWindow = analysisWindow;
@@ -88,7 +97,8 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @return used throughput algorithm (has to exist in the package <code>teetime.stage.taskfarm.adaptation.analysis.algorithm</code>)
+	 * @return used throughput algorithm (has to exist in the package
+	 *         <code>teetime.stage.taskfarm.adaptation.analysis.algorithm</code>)
 	 */
 	public String getThroughputAlgorithm() {
 		return this.throughputAlgorithm;
@@ -96,8 +106,9 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @param throughputAlgorithm
-	 *            used throughput algorithm (has to exist in the package <code>teetime.stage.taskfarm.adaptation.analysis.algorithm</code>)
+	 * @param throughputAlgorithm used throughput algorithm (has to exist in the
+	 *                            package
+	 *                            <code>teetime.stage.taskfarm.adaptation.analysis.algorithm</code>)
 	 */
 	public void setThroughputAlgorithm(final String throughputAlgorithm) {
 		this.throughputAlgorithm = throughputAlgorithm;
@@ -105,8 +116,11 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @return if the {@link teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm WeightedAlgorithm} is used as the throughput algorithm, this
-	 *         {@link teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm.WeightMethod WeightMethod} is used
+	 * @return if the
+	 *         {@link teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm
+	 *         WeightedAlgorithm} is used as the throughput algorithm, this
+	 *         {@link teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm.WeightMethod
+	 *         WeightMethod} is used
 	 */
 	public WeightMethod getWeightedAlgorithmMethod() {
 		return this.weightedAlgorithmMethod;
@@ -114,9 +128,12 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @param weightedAlgorithmMethod
-	 *            if the {@link teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm WeightedAlgorithm} is used as the throughput algorithm, this
-	 *            {@link teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm.WeightMethod WeightMethod} is used
+	 * @param weightedAlgorithmMethod if the
+	 *                                {@link teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm
+	 *                                WeightedAlgorithm} is used as the throughput
+	 *                                algorithm, this
+	 *                                {@link teetime.stage.taskfarm.adaptation.analysis.algorithm.WeightedAlgorithm.WeightMethod
+	 *                                WeightMethod} is used
 	 */
 	public void setWeightedAlgorithmMethod(final WeightMethod weightedAlgorithmMethod) {
 		this.weightedAlgorithmMethod = weightedAlgorithmMethod;
@@ -124,8 +141,9 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @return the TaskFarmReconfigurationCommandService waits this amount of adaptation thread iterations for performance improvements after a new worker stage is
-	 *         added
+	 * @return the TaskFarmReconfigurationCommandService waits this amount of
+	 *         adaptation thread iterations for performance improvements after a new
+	 *         worker stage is added
 	 */
 	public int getMaxSamplesUntilRemove() {
 		return this.maxSamplesUntilRemove;
@@ -133,10 +151,10 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @param maxSamplesUntilRemove
-	 *            the TaskFarmReconfigurationCommandService waits this amount of adaptation thread iterations for performance improvements after a new worker stage
-	 *            is
-	 *            added
+	 * @param maxSamplesUntilRemove the TaskFarmReconfigurationCommandService waits
+	 *                              this amount of adaptation thread iterations for
+	 *                              performance improvements after a new worker
+	 *                              stage is added
 	 */
 	public void setMaxSamplesUntilRemove(final int maxSamplesUntilRemove) {
 		this.maxSamplesUntilRemove = maxSamplesUntilRemove;
@@ -152,8 +170,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @param throughputScoreBoundary
-	 *            throughput boundary of this task farm
+	 * @param throughputScoreBoundary throughput boundary of this task farm
 	 */
 	public void setThroughputScoreBoundary(final double throughputScoreBoundary) {
 		this.throughputScoreBoundary = throughputScoreBoundary;
@@ -161,7 +178,8 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @return should the monitoring services be activated (does not affect the adaptation thread!)?
+	 * @return should the monitoring services be activated (does not affect the
+	 *         adaptation thread!)?
 	 */
 	public boolean isMonitoringEnabled() {
 		return this.monitoringEnabled;
@@ -169,8 +187,8 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @param monitoringEnabled
-	 *            should the monitoring services be activated (does not affect the adaptation thread!)?
+	 * @param monitoringEnabled should the monitoring services be activated (does
+	 *                          not affect the adaptation thread!)?
 	 */
 	public void setMonitoringEnabled(final boolean monitoringEnabled) {
 		this.monitoringEnabled = monitoringEnabled;
@@ -186,8 +204,8 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @param adaptationWaitingTimeMillis
-	 *            the waiting time between each iteration of the adaptation thread
+	 * @param adaptationWaitingTimeMillis the waiting time between each iteration of
+	 *                                    the adaptation thread
 	 */
 	public void setAdaptationWaitingTimeMillis(final int adaptationWaitingTimeMillis) {
 		this.adaptationWaitingTimeMillis = adaptationWaitingTimeMillis;
@@ -203,8 +221,7 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @param pipeCapacity
-	 *            pipe capacity of all pipes inside the task farm
+	 * @param pipeCapacity pipe capacity of all pipes inside the task farm
 	 */
 	public void setPipeCapacity(final int pipeCapacity) {
 		this.pipeCapacity = pipeCapacity;
@@ -220,8 +237,8 @@ public class TaskFarmConfiguration<I, O, T extends ITaskFarmDuplicable<I, O>> {
 
 	/**
 	 *
-	 * @param maxNumberOfCores
-	 *            the maximum number of worker stages the task farm may have
+	 * @param maxNumberOfCores the maximum number of worker stages the task farm may
+	 *                         have
 	 */
 	public void setMaxNumberOfCores(final int maxNumberOfCores) {
 		this.maxNumberOfCores = maxNumberOfCores;

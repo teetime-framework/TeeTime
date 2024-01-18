@@ -15,14 +15,18 @@
  */
 package teetime.examples.quicksort;
 
-import static org.junit.Assert.*;
+// NOPMD relevant for tests
+import static org.junit.Assert.assertArrayEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
-import teetime.framework.*;
+import teetime.framework.Configuration;
+import teetime.framework.ConfigurationBuilder;
+import teetime.framework.DivideAndConquerStage;
+import teetime.framework.Execution;
 import teetime.stage.CollectorSink;
 import teetime.stage.InitialElementProducer;
 import teetime.stage.quicksort.QuicksortProblem;
@@ -77,12 +81,12 @@ public class QuicksortTest {
 		ArrayList<QuicksortSolution> outputs = new ArrayList<QuicksortSolution>();
 
 		// set up quicksort stage since it should be declared active
-		DivideAndConquerStage<QuicksortProblem, QuicksortSolution> quicksortStage = new DivideAndConquerStage<QuicksortProblem, QuicksortSolution>(2);
+		DivideAndConquerStage<QuicksortProblem, QuicksortSolution> quicksortStage = new DivideAndConquerStage<QuicksortProblem, QuicksortSolution>(
+				2);
 		quicksortStage.declareActive();
 
 		final Configuration configuration = ConfigurationBuilder
-				.from(new InitialElementProducer<QuicksortProblem>(inputs))
-				.to(quicksortStage)
+				.from(new InitialElementProducer<QuicksortProblem>(inputs)).to(quicksortStage)
 				.end(new CollectorSink<QuicksortSolution>(outputs));
 
 		final Execution<Configuration> execution = new Execution<>(configuration);
