@@ -20,7 +20,7 @@ dependencies {
 
 
 
-	implementation 'com.google.guava:guava:33.0.0-jre'
+	implementation 'com.google.guava:guava:33.1.0-jre'
 
 	implementation 'org.jctools:jctools-core:4.0.3'
 	implementation 'com.carrotsearch:hppc:0.9.1'
